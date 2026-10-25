@@ -1,0 +1,2904 @@
+{
+  "schemaVersion": 1,
+  "locale": "ru",
+  "entries": {
+    "accountMenu.account": {
+      "sourceHash": "4b72de375818833166e9ae88a55964de281768343f342c92dfa32a2968a1ecfb",
+      "translationHash": "b7a3cf1f3dc5b5458c84b06d95c88a9d70019cbef4c78de74d3c0dee2b50d21a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.755Z"
+    },
+    "accountMenu.documentation": {
+      "sourceHash": "ea37588077383632aaf63c5d8679a2ac47a0cd231b2d09020fece2f92d65e52a",
+      "translationHash": "679e082512f933f56508a71ef2d4dde68d52a9ba5bdb28f33601adfebd8b5ae1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.755Z"
+    },
+    "accountMenu.invite": {
+      "sourceHash": "0c7af2b68a91cd3131364d076263986ff76858d867202c87484d05dfa57706a8",
+      "translationHash": "cb9f14ee93469b6c64e224777fa9fc85f5b5de65f7e886f7436de7c2b7a8e57b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.localWorkspaceBoard": {
+      "sourceHash": "1429d2da61d46455017b9b534d9a91063d3b857b6bf1ded0df4d71e18eec61a0",
+      "translationHash": "2bf1e67b4465a6b60003bfb98053fab4e6769facebb1e288cf868bd723ea8c8a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.openAccountMenu": {
+      "sourceHash": "7a86555e4f06d350c520c02b231fb33a5dbee86da7d978936f97a6ba2bbad1c1",
+      "translationHash": "bd8174011396f347a66dd6108abb4676fc5d486c38c018084ec7205201b963f7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.settings": {
+      "sourceHash": "18dab8622a96fe57cf5b9587a6629c7d832aa3267eaa66b052a0a8f87e28425e",
+      "translationHash": "193654222524ac218db9bdb322d8d999a97582914e2b765c16e488472c14ea31",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.shareFeedback": {
+      "sourceHash": "ec013f0eb930d5f2e2687f1ad395253af7eaca51cc010d100621302905d0bd8c",
+      "translationHash": "dd48a9dfea16158642b97f6762c406599a7ea0385a0945fc406cff24463882a0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.signedIn": {
+      "sourceHash": "7a14fc4575d3a40b188e09c78e73e11f2f78d3d5cbb299aeceba7aa85664201d",
+      "translationHash": "fa8ea0030455f79e2b06d97d104087c9076cfa551e0d0f35be6c683ded5d2b44",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.signingOut": {
+      "sourceHash": "c1d9680d07756ffc1c7eff89af7042149fdc871dde34a7cdd6d8a6864ee857e4",
+      "translationHash": "a433a381d497c524f9e9cf5c6ecda636d6da86d0f08df9a21171b056a46154a1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.signOut": {
+      "sourceHash": "50f733202bb7afa260c3366b6b56ba4b033fe580d5c32e2ef55bab768ece5d0a",
+      "translationHash": "0800bcb7b4b61632092004c1ff3c6a45592f015902f171dc75b25819a9f42bb3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.viewCommit": {
+      "sourceHash": "bb7e3a9904ec4a409a603870807bc50ad2d0496f23b268dea6e5bdab308e1b5c",
+      "translationHash": "86829946e4f4389a77631fc20507fc592331a441baec7b1f4626049e5b830d10",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "accountMenu.viewProfile": {
+      "sourceHash": "112ab7e5f3b0f2a180303a2d4f61eec552cc5b6b54f41fd07e27d922d9edbcec",
+      "translationHash": "8b2286740128a62e73cfd29d525af674f46b328603583b713f81c899595da537",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.chat": {
+      "sourceHash": "955429025ed1eb8f5e5227b1a67918807d4776f055766d51effbe3b6b20e696e",
+      "translationHash": "f06a95a4b4d78c4e73215fc8c580fbb66389d82a40d9eca604d5f48e33b03aa0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.controls": {
+      "sourceHash": "f17ba92f7654e2fff379a9280e4c278053512df6860a3e14093adfe2693befcb",
+      "translationHash": "1c0759105e5703c153ccc81d9e90d9c5d39aeb080a0b53ce1037abc160521c05",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.count": {
+      "sourceHash": "24d32785e1c4acc9f023c0ac828455bbde22387d943d9ec41d664507bffd0e3d",
+      "translationHash": "022195312778f9b5dd6e919e89e798d6cc050bb9383bf1dd74cafb7628198289",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.createFirstAgent": {
+      "sourceHash": "423a64dbb076f963aef55c6389c48106e3a58a1b9ee5294c21f8bf8dbe65a4fb",
+      "translationHash": "57446d454d50765f139887db94250bfddbbc640f2bfa9e88746444aa393507e9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.filterActive": {
+      "sourceHash": "17273fd08b67132f8e0d09c18165daab2e6e810b503b25504ac5a9b51adb3ec4",
+      "translationHash": "8ba2a25f891af9f320801e74ac88aee8fd086c21d54c53c90b44aa89c9bc6249",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.filterAll": {
+      "sourceHash": "5abd68a132d50692013f8e8b8aa3d0ac39da7d7b313a09df8dff4841d210a140",
+      "translationHash": "4134ceee4612ff0f153deed30b9cff87f90937646167204013d8c5c23bc7a39d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.filterBuiltin": {
+      "sourceHash": "54e3a29b455320cb2f78ad901f97d24bd6d84c1becd36a39ae2a27861eef3b48",
+      "translationHash": "48b93d3e7a47d008cd41298c4e1d926205fc0f721fad503d4d88c04dde16dc62",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.filterError": {
+      "sourceHash": "ab18c057e6db677ec50d98c578b1a8f7624f6688705ec4d3fa9b2b86ff8d70f8",
+      "translationHash": "e47d4ab38c91b5e21898b238467b8071dca264c3b86a5832980b5d6dfbd71da4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.filterPaused": {
+      "sourceHash": "be60a9a573ef535717154304185509e2a9a45c673a7ef3c11953244ed49ce9b3",
+      "translationHash": "24eb46d4da5b13d990f79477ddba58d234c639003570ccce004cb733665b86cf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.invalidReportingChain": {
+      "sourceHash": "b78a5dd12fe884a318901e648ee753c47434a23db8afccef6136d1c5c1e1e4c9",
+      "translationHash": "3dd83739ed4365aa0e120a7e40a2fb6bef7332ba057d08b4720e45ea8b0c545d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.lastHeartbeat": {
+      "sourceHash": "7618646ac76968e9c3872f7ddf7432f5c00acddee0af7b4ee7764654b595985c",
+      "translationHash": "701476a3232c2685a0a35274e389060992382d20d3fc653536aabe82364b8ee0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.listView": {
+      "sourceHash": "f8269706a316030e354214843cbf5c15555ef88101f5f3cea1375106fdca17f1",
+      "translationHash": "0bbf7a4fe9340a0f2de40a494e24f989e836f71e24bb54e091699abea79548d6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.live": {
+      "sourceHash": "ff97932a3f7662c87b718dbb421814a285a6419e69ada0b36020d1e53bb570a5",
+      "translationHash": "a6c003a071b061505a752aefcd14c7223ca01a745cb8eab0ff9406a0d13e267c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.756Z"
+    },
+    "agents.loadingEnvironment": {
+      "sourceHash": "f269e8ecab2733bc09432b633b9660fcd93a3116b38b5907ac7be50e817b9d8f",
+      "translationHash": "da5fb571a02e1ffe9b4b8109c33c9da0ea566ccdc9fc1a8a5789660129810f6f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.localEnvironment": {
+      "sourceHash": "4daf336b22237f0a154f3068668764514a045ca5882d3a7a1ebeb02e0dc6cf0b",
+      "translationHash": "e7244a07c3e6e02feb82561b5e4bfeb6a25c3f959f47ef03a02d9a1fbae11122",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.localEnvironmentTitle": {
+      "sourceHash": "e2998a2218872f098e2bc4180d424e4275330b3a1f118ac61ba2f404966cb4d2",
+      "translationHash": "ce55afb67afd851fec3123a7fc4e24d59da471c346b39dffd7dde5396e7f4738",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.managedEnvironment": {
+      "sourceHash": "d6db84a708a47422a2adcfb3ab19064478cbddf1299527fe338d7360db9d83d7",
+      "translationHash": "6717fab4221f7fb718e65ad1691f1e4e79feb56d0762969467345c2813d48298",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.newAgent": {
+      "sourceHash": "43a51cd85b4453f6d9a4a5c651527b9aa47605ea45d6f757a7e4184ed53746ad",
+      "translationHash": "adfbe1d420126ecc10bd2a2a88f0925ce2738fa2217d83a7adc8383037e771e1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.noHierarchy": {
+      "sourceHash": "21e4f13ed5eae18b4975e4b2144d839f42856376dd9a1e81827815191edff515",
+      "translationHash": "a1cfaf5f92e567fdca5879aa96e1a2d12da696806c418f8669489fbea1241cf5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.noMatch": {
+      "sourceHash": "364653c1bc189c3262285464b2f50575c940518675c6cda05d4d7e1926b5993d",
+      "translationHash": "ea9b16887fac219e011331ab8b74b03576e062f03f0ad06b340fb1702891fddf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.757Z"
+    },
+    "agents.noSearchMatch": {
+      "sourceHash": "be0d1cdd77d3417a31731a4de3d8f2547ac7bcb951d5a9d3129e9edee55c32e6",
+      "translationHash": "a28a29909b07ec8d5eb3b3d85624e76ab1f7ffa494121e108e8bf0ab1788d810",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.orgChartView": {
+      "sourceHash": "22c93dda79b2b5e7608967d432458e19737492bcee4565b5a2358ebd221448e3",
+      "translationHash": "95bf42fa9f343991ae16fdb53fbdbf2625cf26fe6b61572594fb6329dad6a817",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.paperclipHost": {
+      "sourceHash": "c90a895bb13caa9dbe55b854b48e0e2e69a09a2f6c5ca76f4c1d211e73f22218",
+      "translationHash": "69e07de190ea2d62509f4283b70b16695a226ee8fd197d9a130f0a5d2dfb465b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.sandbox": {
+      "sourceHash": "dd0e0635bae4f7573bfa74d1402e675d0b55d1f9d1e5771b12c923b7aee566a5",
+      "translationHash": "989cc48fd763726a15379cbeed14a53669bb992a17834e4b5f690dec633fc385",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.sandboxProvider": {
+      "sourceHash": "ac0301924ecd857671ca03e93f073a735c3ffba396318d1aed57d8ed739fa3bf",
+      "translationHash": "483071f446e15e40cb31e7268c79fbdaf2050758fd6e3a776dfb46ff62512ea9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.search": {
+      "sourceHash": "128ed5858e95236ff30786fb8eea4574378472a431a69e1f4d39c2e1e5da9085",
+      "translationHash": "f3f578464eb5069a45aff93c660e1e6cc582fc5b54f59a2165a87433c3ac70d8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.searchPlaceholder": {
+      "sourceHash": "d58b27a894619dfe52609427637b963db505eec62207a764e536f8d2ce8aaa8b",
+      "translationHash": "5aff1c9e67319783369f4fe8f78d22ba817b43651679946141139e6e1aad9708",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.selectCompany": {
+      "sourceHash": "d76a2aecfabae8418049ddd899c661838fe3abb6cffb4fe992f6c04e96a3760f",
+      "translationHash": "4f6aeffd486e58f72714bca9692285ce4cc196b2960c000f4a00b874ec70d8e7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.selectOrganization": {
+      "sourceHash": "479fe07729e376a274ba1f653e16766754a18298d5a85a4a354f52858a362967",
+      "translationHash": "cb99c3aed7e866da31899753b3e3aa3f89f5392982418eb3d9b49e92c8ca2a92",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.setUp": {
+      "sourceHash": "87d77917d2d04124b70e00a6e1f50a4d20bd8b12ad0c57468b198c2e5f421191",
+      "translationHash": "aa2da3155ffeccaa10eb0efbdca98668480ab5953b8f85b3f0ae22e833e0bf6f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.title": {
+      "sourceHash": "a03380f2e27f18a14eb0fd2668726076df37ccf6998b393379af6523f0241800",
+      "translationHash": "961e67fa5281a1cd44c26e3626038f9a6731794b7561ddbaa289171f6ba04736",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.unknownEnvironment": {
+      "sourceHash": "f932e0c94909075b4eb14da961af20b0cfebfba51122d81016576ca3e9aaae35",
+      "translationHash": "1aff38568101bd63cfa3bf8748e2122e4eb18047de4234fbb6d6e60a9e232418",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.unknownEnvironmentTitle": {
+      "sourceHash": "088188b44167a9618b37858839cf9ab71166036cef55b498cdb24922ccfcc98c",
+      "translationHash": "76435aaab934ba0075d0817ce609cc9a5010b0f05730384209f67077495f0b91",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.viewGroup": {
+      "sourceHash": "241ff30ed860d7deaf8b775421b54b86bac28f2f11eebae9773890ab0de9dc60",
+      "translationHash": "5bead2a3aab9a83364a4123f86887c10e1ce458d3d85e4de4bc34c9ba81c70a7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "agents.viewMode": {
+      "sourceHash": "f13b9fb595d0cac441b1a7b6944cd70291b2ce4d1e773dcf0371adc2f57f6198",
+      "translationHash": "218279bc9ce003529b82b2860f262338e0b1e215cf3d844d305e89c8b4ecdf54",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "app.cloudCreateUnavailable": {
+      "sourceHash": "21541186c133eba2aa8f08fe8cc2e6238759e97796c6b938ad63e61be3db13d0",
+      "translationHash": "73edb3ec2c6720654ea4a72a6db15388899ab66549d7b9ae08a6cf6a5350ad89",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "app.noCompanies.description": {
+      "sourceHash": "ecd4f056727a7cef1e4d3a60b963e330d191c036d33831cb67ee5fd5306a1f6b",
+      "translationHash": "52229a52cf5dd729b83f48efac4038ecef0bd7529456401de543315308adfbce",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "app.noCompanies.newCompany": {
+      "sourceHash": "45160f9e34b1532132fee47ed4bd375f7e23bf1c875f7e832470d61c3b562cbe",
+      "translationHash": "36e63136ce34b80c4b34388ae7d8d18c76f3ecf40595d67058747ca7f687a8ef",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "app.noCompanies.title": {
+      "sourceHash": "4158595971a801613ba4fe0c7790a20f9824c7041a439fb92b7a3b3da5b40eed",
+      "translationHash": "3aeb5ee7a87f233bedcde36ed1d2cf4fa77a1e3e9c8e0b71b0bbd3beb5bdd079",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.createAccount": {
+      "sourceHash": "4b3389d76155901edf859707da14db8438cbded13a010f6558ce7d3336667474",
+      "translationHash": "9156078b52d1bc2457ffc7bed5c3a0eae92f51ffd89d9dff4af445a893c3779e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.createOne": {
+      "sourceHash": "30a835c80dc24ccbb26ce9c0955db7efc38440acfb575cd1c695081d4b355ca0",
+      "translationHash": "65574d76a136aae82a914d353738c97cf33c939c5dd2f6d5f34bddc977bd82da",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.email": {
+      "sourceHash": "3c0248a7527faf1c493baf5fb97fa92ff1b4cfa231fc621d05ac95b23c58b995",
+      "translationHash": "232e9fa5240de5fc8d6abb6f244c8f274f9292cd1cb7fd28763ae611e69e7961",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.errors.authenticationFailed": {
+      "sourceHash": "93fd4fe993a862a2652a83555ae525a6cb07369018bd4e93c351544f252c52d2",
+      "translationHash": "67ecab2e3d5dfa497d5af657c76eab21ab4465725195b3f7b08f48b4e8c5946d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.errors.checkSignIn": {
+      "sourceHash": "f1af6dcc0742b94c445692d453d2d72a6a1254a532f5096b520486b81a04e3e9",
+      "translationHash": "7a013e4138bac61b70e48867670ed11bc613d9dc5ab6ab8eefe6cc76fcd09ced",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.errors.requiredFields": {
+      "sourceHash": "3ab90ba7723a212d93cfcd56517baf19eb7bb8b84eb5436213b362554dcf0b51",
+      "translationHash": "8f9f4d5f64c3a38452016262a68ed3dc08c47991b6f407f6282745ddf07d77c9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.haveAccount": {
+      "sourceHash": "e2399abb6f5c13a997238f68097820d4bc6cc608272e0ba9e7a06ee7a95270f5",
+      "translationHash": "ccf6cfe822d8e133ebb6ae5de26ada246bfbc23592bfe272942dc6df30bcfecd",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.name": {
+      "sourceHash": "1361d3b4f4f95cb031e498ebc89398c6a7e3e6ccf7f15f84c3354a13d0434d0e",
+      "translationHash": "1a536d4e1a8266d37f5635d71e5334e3b88d321b94d26e79887b452ef5845748",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.needAccount": {
+      "sourceHash": "cd4dca82be2ba0969c66ddc84c754a495133952bd7e4927410a4ae6540eafea3",
+      "translationHash": "10b50b8064ee2fe9c3ccf9826aaedc3ca8a57611a44df3a1fd912ce029541e10",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.password": {
+      "sourceHash": "1a9ceeae248ef2ca6a14af68c3b6419cbdc4be134a2a246d15ba3c2fdd2e2a23",
+      "translationHash": "d4d276686bd56d8b4c2d5b737d5cf7485e4471c25140a1288748678aa2c662ed",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signIn": {
+      "sourceHash": "14c6cb6ae31fb7bdc3fefbad706c15218775b8da610c63917b500b17d81504fc",
+      "translationHash": "19bc29bfb083c4ef62b0762945cd37965c0ff34332a5695b22979dbeafc9f1d7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signInDescription": {
+      "sourceHash": "56ccce897b4642b8c251664835c40f3e3e47988218f00a8672786e76d4b5e69b",
+      "translationHash": "f06c5c1ad8acd9bc0af26afd29d7eb26d9820369df7d5a088d5836374ccdc532",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signInHeading": {
+      "sourceHash": "bbc4750ad7b48aaa5f9de9ee1918ceeec22557b4fd9f75dc0bcd0223410e54b6",
+      "translationHash": "d36f3ef5a0b520db16c1ebfad82f1bd11e7935a7f81f68bb2e003c1a11027bae",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signInLink": {
+      "sourceHash": "4d3f231c72d575fd481294874cf2d15f8cc5af2cee0fc5dfb5f8afe6fb0dee52",
+      "translationHash": "9f7458c998e7347a4e06331f0deccd9dbb18ca4796466b30b8a532c21a391ca5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signUpDescription": {
+      "sourceHash": "bf43f4d4f3e7adafe906da9d98ef8eba128331a1feffbf93a20c426d4fa01a6c",
+      "translationHash": "7f3d6f48d7cb3749afac904076c8d7b553714cc48b6532cce8c9c618a1fae69c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.signUpHeading": {
+      "sourceHash": "e161ece306326ad060306a0bc059afa6913e851e9ae80701694209911cd7aea7",
+      "translationHash": "5496e138000dd8af92420241ebf24816439407382fd1a763d097e6607d1b28a3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "auth.working": {
+      "sourceHash": "130b3c6dbf37489b16f4d8ed0e23e14e6727ec12bc9d7e4e7a33803dd8f64d7a",
+      "translationHash": "58bd806111f3c56f96c587d582d73286e6a979294a1b6c3e0c1190cac01ec99d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "common.clearSearch": {
+      "sourceHash": "80208281af75ec1f500e0a3b9b5cc70df6e56c7b51289e0b755263dd2e876159",
+      "translationHash": "b2f7edb387405b2f2492ccc130649edbfd395e5fbed6ba14448bfb41d0d05e94",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.loadError": {
+      "sourceHash": "47189915ba377bfb0825b07fcabd8472a90b251d727e33403f63f752954f3196",
+      "translationHash": "a738bd622d476ecee768fbf9054a1c199679786f51e74a2e4ca6727d7866938e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.manage": {
+      "sourceHash": "c7c7a4649d7efb08c93cc75091c16304ed48c58225ebbf479d987b4234402224",
+      "translationHash": "54d8a1671786cb14609a688d4daf5146b55f58c26f10a04af9106e9582ff633e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.none": {
+      "sourceHash": "ed39f57a603b819f7dbfe1d02d93539c6b9f931c775cfc235dadf3b18b1ee079",
+      "translationHash": "3ab2155940d8ab42f85224e48a11a99fe154408c1dfccaabfe7289d1002b9e64",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.organizations": {
+      "sourceHash": "085d248fb530d8f965a2b898fc8cf150ba4530f80c97e5aaa46e93f6201d6d9d",
+      "translationHash": "e14def5fba7f0771b920c5061c7cca034aeccf520a5c7d8e8b02a9c98f474f0e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.selectOrganization": {
+      "sourceHash": "2615d1a27d8f63a9b988837a0cd265c5f5b13288bfb90015eb51d624ece98072",
+      "translationHash": "b70c1155f3caf34db41c3f773c7ff90c23d2f600d835c2bba38b98aeb19f98cf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.settings": {
+      "sourceHash": "d50b619e4f1189d37632583b35bd72edb8534fa82c0ede252ae3a3df6a74f2f4",
+      "translationHash": "031f3fa51864b6316af273bfe5c55ecd4a562d121968f83cbccb39c0ab904c48",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.758Z"
+    },
+    "companySwitcher.tryAgain": {
+      "sourceHash": "40324041ddc86311a078c722d7dc3ed327967892cdbed3d54454b0ae1142830c",
+      "translationHash": "74e112100bc1d6a809d012acb6a69b47aa6b2f84ac5a4cd06ee05cc931c5e0de",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.days": {
+      "sourceHash": "928a314eb482e179721fdaf0c6d8a8822685d8ab2816b4c3cbb32f7e5ec9e144",
+      "translationHash": "1c05f74b015bfb43a5cb121f28cf5cccd3c55ccd7616d975659dfef2efc76ecc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.daysAgo": {
+      "sourceHash": "63837d674d2c4d86ef9f37c5b617176b3d1722f3e3f29e7274fbb6c8452abbbd",
+      "translationHash": "1b4deb7d5cc6782a136ad9c771cbb9b3d7a436457388d56d8292acc4147afa4f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.hours": {
+      "sourceHash": "940f1ce64539a2bbf3e31543f8fc5d10e222880e851163e18308a068657e0081",
+      "translationHash": "5cb844a418286820de6af585d163e4adeaf7852d56d1a1cc6a19b6b370cee882",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.hoursAgo": {
+      "sourceHash": "3ee39a267304cdc6e5cf5fcb89219de3a77b53138bdffb2a862e08a7fbb06c9a",
+      "translationHash": "a698e7a511d5266a93659dccf5810bd5863c2110721a9fa09accc7bb6349df7f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.justNow": {
+      "sourceHash": "e96ec9df44ddd69bd4bf0b1933330ceea497900aa32460433791303725804b28",
+      "translationHash": "43dcb3479f02fc5aaf9fc957bbdc134ca870ca457e328fcaf490245b9583a396",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.minutes": {
+      "sourceHash": "fad58948a012a9969c5f21b9f0e139d8a5bfe5617eee647c67f06d3bde03493d",
+      "translationHash": "5066b84690c3b3faa5b3b3dc3f2c2d370080d69874eb608233d2abfe45f279b1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.minutesAgo": {
+      "sourceHash": "445fc43a02d9117941897e2fdfa5f6f8210ddc90fcdaac0f102cf4d3e34aa219",
+      "translationHash": "770818d13723d85b1784dc962df2c80547aba7845ae5ac1550037f7e9f610584",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.monthly": {
+      "sourceHash": "d68e4bc16b7ced339d668666e3211a82a699d82abb2e42845c53116f8005f36e",
+      "translationHash": "2ecb32fd99b6e5d4fba930e4c20bd4bb31ede28795417576e1289e662d73e586",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "format.seconds": {
+      "sourceHash": "e656cee6d3abc884a9fe6076633c1ddc1bfcd17a98a2df54861216b159cdc03f",
+      "translationHash": "12bed78695947e7426091ec094001ef6166daab4fd1a4a551387bc2e2e7707d1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.allowedAgents": {
+      "sourceHash": "396013ad00d4f3b528ac7e39a80c69fe7496dae382a5768e8f3955fdc7122eb3",
+      "translationHash": "ea0bf9f726e1aa4082669ce04930f95cabec4d964991c6606f737991a8170bdb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.allowlistDescription": {
+      "sourceHash": "1f27ae0b761a4874811dee394d6002c782157fc07df96f86ac404565d8102514",
+      "translationHash": "616104027d56303ea6cb44220763739ba09e087dccbaf5e15e7676401dcec612",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.allowlistTitle": {
+      "sourceHash": "6c90cfa6b1510dc70e731d8a2dea4feade90d320d547d79a5958cc6977c46277",
+      "translationHash": "c75bd002b70fd466e62bfc26f98b37eed4f4f64b7af77bef887da189efb89bf1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.description": {
+      "sourceHash": "64182c48fc0f994e728e7358d8e3334835f7aec70e13bd8eb6df7754518b6693",
+      "translationHash": "9acec955a6095652a7a678c8668dc1ecf83d2882da8fa5b88106dc89edbd24d0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.disabledDescription": {
+      "sourceHash": "bc4a13ba841d620b9c771ed5f95144bab780f6cc71adff8fb324114ae0cc0b32",
+      "translationHash": "5da91abd88814bbe8e2728b0f636b798ff772d061694161201f1420182512ba5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.disabledTitle": {
+      "sourceHash": "b91f18c13eefb264e2dcf7e425b925c68e8cf05ad3c7a97fd705ab78b4a946fb",
+      "translationHash": "46b50660d2fb14abc282345a51af25e98430a051b4ff245be71385bd7d7d4ee0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.loadFailed": {
+      "sourceHash": "3ffea78db2a45140aaec0517ef5e5dea18bc0e56a6635c5588ec58888dedcd92",
+      "translationHash": "029fc62ac01f8e660c9a6f2d801d8536549af9f650e19d1da5ea3ef3a83da76d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.loading": {
+      "sourceHash": "38bdd2639a67ba5644dc6edae9f75758b14257783579f88b519c4a559e3eb530",
+      "translationHash": "d6bf7c9d12c035d6e9742e183e9e96e9eb11ade2f1098e20c39ed92e6ee1fc83",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.noAgents": {
+      "sourceHash": "a680e4614bfca94be93d10b38ae3f78766f37bc4bf79e42af8c9476953ce4da4",
+      "translationHash": "14256d22fce974072fafb372bd6727946304e498bb9f4b4fff6941215181ead9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.openDescription": {
+      "sourceHash": "a945c358279c3e72919dcc1bb9da87d262965e0e22e95405a1279fc17c4ca7f2",
+      "translationHash": "9503e1c585e9c9f5a116ffd3908e9043211adb60b1b049b656e9e33cc2c4d686",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.openTitle": {
+      "sourceHash": "588964710945a7edd315f397274102727fc33eca9998166f23110bb36a37550c",
+      "translationHash": "816ff1f7fce743543d982918214d69d12c736664ece30e74fb46a18f7b21f71f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.radioLabel": {
+      "sourceHash": "36c2e07b30a5b54d97ae0bb3663e52c727cf71f9e5e24160df5fbdf93568bbf2",
+      "translationHash": "bfa513f8ac09747fe4084f9ddb258a681e66b66143680d5d17986af34b74d509",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.save": {
+      "sourceHash": "9d3c1b0b0f81759ada67dce3991939eba8773756c5701dcccfad73d68f4dfef9",
+      "translationHash": "9407f035a07556f74a3de88218c0ab491402499da6d371c45bfd83fd67f69216",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.saved": {
+      "sourceHash": "ef950647383e073ce481f9e3875b109f5120a2ebfc3116fe4ea154b5d36b5c64",
+      "translationHash": "246b1e40dc0627f68ea8b4838c8da22ddd71675b3d71c2a966b021e68844be89",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.saveFailed": {
+      "sourceHash": "97898accdf5e0a99283ce685bb511a41ee9f3a6faa35d63eb5fb3786a43b5bc7",
+      "translationHash": "09cc99688cd449710081c1fccd881943636f5ee57d9c4bd7d3462a6d502c29ac",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.saving": {
+      "sourceHash": "60a05bdd2139d1b916e14b82e6d1d2e9fc79bd3a11e3e68454c1d1b75157a7fb",
+      "translationHash": "ed4e4e41c42d20e5b42e0c537504b6754de82d718efc1196dc9de02eb2500123",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.selectAgents": {
+      "sourceHash": "933531655db5fc8cf7395ea2a3def3d7ccc01a7ed871329696a578c61bb439f7",
+      "translationHash": "2574336443cb5d8377aa02eb6f52be3de8ba0abbfc828a1e8ad783fdc213716c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.selected": {
+      "sourceHash": "4d96951f19b6fb3ec6741ad8326c3a70f5dee5c7cc892c66c90a44daaf138689",
+      "translationHash": "b36ba6b57b9d28045a8754c3479b76888a12a0935cc86a9d323385827334e2ab",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "inboxPolicy.title": {
+      "sourceHash": "864ddaf4e13163234a48552b3afa6f3d53eb52bd258419817f3475e666dd18ec",
+      "translationHash": "5badc265a7174a25ca6cfe8567736d4cb9154b90c5d0f4619580dd7fe9c56dfa",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.activeCount": {
+      "sourceHash": "a3451979550a9d837c1e10337f02256bd26ef5a1c4fdfd57918c2595f05cb3c3",
+      "translationHash": "081a71f897e0b604581878455a2a2a85e8577481f7a52d71942a1d73a12bae53",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.alerts": {
+      "sourceHash": "5b0f169e37883ad170f86f0ec470d59f30fd4ed27ad968db5d627e870cd0958d",
+      "translationHash": "f72eb704d6ce2cd89d4c1be821a95675a0c0dd350ea61404b34bc45803cb7973",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.allApprovalStatuses": {
+      "sourceHash": "41b589461491dd9eb0b978a63b86b8676d4d0e86a3ec855d8658a36d4029a4d4",
+      "translationHash": "02b3fb1623d16586e20f3325f2a3a908e48d15d38c66f4fab280f3f24560ec22",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.allCategories": {
+      "sourceHash": "e25afaa0db9c60f98cd7143b4e559bc23598bf10d96a0e7f94abfb1f68991d6d",
+      "translationHash": "8abd554a1485993fce03e74175135e5f9bd855431a116be684d03dcc4eb2414e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.approvals": {
+      "sourceHash": "791a32d728af94034405a1115f16d8a108600fdb021a6c7e9f207345dfd0fec0",
+      "translationHash": "30efefc444e4a6723deec1ba48d42652c9d09af50f4dcbc146def756232463ac",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.approvalStatus": {
+      "sourceHash": "dd455f4b90b842d0a22bd06d53e13b590bf5e5e029126b07e59289e4170b4cf1",
+      "translationHash": "989bf46765ec28da615714ca5588af7ec3ad343cc4a7b5b6c6c3ca0514c3869a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.category": {
+      "sourceHash": "b5fb7265cf1ae52f1acf22f5c8e51cacdea33a9925a74a2833b9564be67fe84f",
+      "translationHash": "615c86a46b20bddbfd604758b18100e513e644b73734b939dea06bdf634c87ba",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.clear": {
+      "sourceHash": "7ea146179c4726db8cea70f39de860ccf1635cb08cbc758774bba803c4d467c5",
+      "translationHash": "54baff5fb2380e74bc3fea44366ee240b18074de1798c03362d5b28e3a44948e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.creator": {
+      "sourceHash": "98658a6b7e7af8dd18f7ab4b7d39600bbbe97ffa8c219b2cd8a768f3984ea705",
+      "translationHash": "d1da55cca1d3e11e590859ddfc0a55a4dc152ad5cf6ddbfe39106883d815e061",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.auth_required": {
+      "sourceHash": "01d638cd47622cbd8fd88ec0c7232f4e5f43b599c7a09385c113b23f6201f50a",
+      "translationHash": "e29d56c8ac3b918f0e02c4830dc8ec5d18572d0097f33e4e473d312534d6bbc9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.failed": {
+      "sourceHash": "931a8b07f675f1c3adfab7fe1ca88054ca9b162be883be2fcbb0c5a9a04287d4",
+      "translationHash": "cf018501f8a99d1e2486cce17df63033cca82f449d442d5a2271fceb8a95e3df",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.none": {
+      "sourceHash": "6f092d04824122501e6426b825a55fa7599187bdf9025f67c4e9469d148ecdbf",
+      "translationHash": "f9577928f7868fe411c8df9396a0c3eda996ce14bfe566cac1ffe82a1583b7cc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.running": {
+      "sourceHash": "03a68559539b257421287f65471eb302302a72a415d4e227db80426045196125",
+      "translationHash": "24830a222cf39b951bdf79daa88e403ceb31fee4edeef0ab06d79e5258a709f9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.stale": {
+      "sourceHash": "93e5f8113a2891e47c1c1153eb94ae918dcafb853f320c0b6f4f4a3d92a4dd4f",
+      "translationHash": "d3cfafa4fb12eb49b1e97640de9677e06e40e0cf6fc25c114b351cfd728a9564",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.unreachable": {
+      "sourceHash": "bc70e33d164995a87d057d8c339c150bf5c60928519f856cdae512a03a690d8d",
+      "translationHash": "3123aa0fd0c0dadab6c65ab18e8a8bd1cbf3e881db7b157a29f5dfc5026f5fff",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.external.waiting": {
+      "sourceHash": "3b399cd60703aa5f659175b63e473de914fc2578f99518498cbed7eac35ab04d",
+      "translationHash": "a13fe736aac691a536655f335a0be1ece067ecbeaeb9151226df941daf7ff5f5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.759Z"
+    },
+    "issueFilters.externalStatus": {
+      "sourceHash": "9dbef43f4173dabbc82fc9740d9e1d28403be4d65f2f792ac11de285a3272aaa",
+      "translationHash": "ffea070d77c5d851b61af828897b60434d1c2bc77bb31d2457b3ea916b9c02fb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.failedRuns": {
+      "sourceHash": "dbb5812f0ae72b826f20ccfd1c509743fe4a3e682f4b673bbb0af481ebf53e22",
+      "translationHash": "64e73ea09566aab58003e21cf12daac984a15dad9e453947747548ca9240cfb7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.filter": {
+      "sourceHash": "148107d962319278296f1485bf1ab92d69f590799f136507684c94d319fb12c3",
+      "translationHash": "5268ea99fdff7743fc0bccda07a62675dfd6d615bfe1eb349a0a3c5862a83004",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.joinRequests": {
+      "sourceHash": "2a37398949099f0fd050ca171990914ad9e3852aea616fa14454756901c45f62",
+      "translationHash": "e7823338e27afa18154c060e6fd1adefc0623dc76e759f6af0552809c213ef55",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.labels": {
+      "sourceHash": "93896cabac22bc0ffc52b3e84b07c67755f4a34bab2384f5bd07048946151121",
+      "translationHash": "58ded25af2ce65c0413257f5c09232a7b64edafc8cae7d3655670a7641847b81",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.liveOnly": {
+      "sourceHash": "c7e81f03c3a701994d81c22fd9fbbcb6f3c5e5d4f4fde26cb4d3166ca78d5c18",
+      "translationHash": "a5c524f50e083fdb82f2749a97cf105e88343465de51037ceae20817a6574793",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.me": {
+      "sourceHash": "6e817349b172de3391d2982ec5e75c0358f56285ac30204edcd7009d675ed103",
+      "translationHash": "cdbaf4929e266fb07e0d0ba834b28d9c3b44450b357c8d0b7d70b470ce409e7e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.needsAction": {
+      "sourceHash": "44976c860bc5a87e2ba3456073c12933f14c8a3c2eb880ccbd4cc5746d73cc5e",
+      "translationHash": "300429113c449e963209a46de3907788206c369a05eaba96063cb211c0991ccd",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.noCreators": {
+      "sourceHash": "fd7695558b9a9191a7c51defecee7fd72b56416353f3a36a18d3154d3af72560",
+      "translationHash": "936e33aad58f119791c2cf7e8d1859ba325f8c2aa3c864fb0d5da7784760df56",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.noResponsible": {
+      "sourceHash": "1539558e94395356a41ff687a774bc2bb24ad9e1774f1565c9a070cf754d735a",
+      "translationHash": "ca34f6215eb0cdd9c44ab97777777626f08fb9c81b2fed0d25fafcb795063164",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.presets.active": {
+      "sourceHash": "26fb94152e36f07603ea467a94a559a5265e70f38eab7306095d4fd6a601752b",
+      "translationHash": "0d74f4f9deab61f35b37aeb4af533de3aae3ef0ab367633ff683599fb5e1fadf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.presets.all": {
+      "sourceHash": "ba6d402dd226adebb86a2039be5462008912ca53e372f68c11f71bf878258cad",
+      "translationHash": "c840d7fed922f520870766a5dd02724b66b0df530389f1d356dab7b8c925fcca",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.presets.backlog": {
+      "sourceHash": "6183be39daade141112ca1fa19b439f7a089d88d23c8e293d7fd650cf5292dda",
+      "translationHash": "5758bde93b6b1c41126a04e780360fb12ed7bfd7b1da67994ef105b8cc58c5e1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.presets.done": {
+      "sourceHash": "d50c8733df414724d903c007978d42a9958e016ca124613aa90540cf6c335c17",
+      "translationHash": "2241c971bac9f7c4c0f5051833547c3a8548d6cd1e33a46ca3e1e16991d2cd73",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.priority": {
+      "sourceHash": "66088485497ca4caaf577f65d11a4848380d1620bc4cfdaed8bfe9744c243b27",
+      "translationHash": "692bfbeacbcec893dfb0fd6728c8c837e151e0ad086fd9777e4f2f7930c4c733",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.project": {
+      "sourceHash": "4b50a4f9a8029b33b5a1f00246f596f12233ecda49fbc70b86393f09401f3873",
+      "translationHash": "40d186eee633b8e91c85b0b3b344e1d9b8213341374098803a819974ab0636e3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.projects": {
+      "sourceHash": "ab23d64b7cd744611e45dfd4b8cee6434e9366082c81b9638f1b14c5f243cb3e",
+      "translationHash": "8ff6305c4b0a08818837d0409d5ce1a0a0fab789c9c49b4a764a03182d333574",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.quickFilters": {
+      "sourceHash": "9fcfdf381410a64bcdb6e9c0d99e2e8599d6abfbd21a39c0bb781cce164b61e0",
+      "translationHash": "3477369ae461e82789ae40a02429e3e63ec2358db175045c59d23b8973dc6cfe",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.recentTasks": {
+      "sourceHash": "e97d7ae26ad5acd84cb4a789358afe8759f99f28710e751f230722a8785ae8e2",
+      "translationHash": "e8fbe209cbc36fa5c9ffacba0fe13172f10c4bb70e2bcabf75a81470fee1571b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.removeCreator": {
+      "sourceHash": "1733de18dcdbcefca9998a41cde07d59f568abe6b35fa71175bd22673a8b393e",
+      "translationHash": "a4c2fe5968dda627855f08cd72ad50e56f4c5ab52bced6b274ce74db5e599cd2",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.resolved": {
+      "sourceHash": "682d4feb877a93303efedd53fafe730f9276e52f783a2964e7ddf15468600ac8",
+      "translationHash": "d7d066e0cc33955e0bba4e608691ee9f3d4505dbad17e6d9f4984a1ae75ab8cd",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.responsible": {
+      "sourceHash": "6256ea36341fa4e4ee3b3485b6f4a8cd7ca4a4d1ddf58408b695a10eda659114",
+      "translationHash": "c40be894b27b6d03d9dd08796aa9e7c37316a7c5dd04d3b7c53ce4cb72a58655",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.search": {
+      "sourceHash": "decc20a0671ce1224dd0a14d578c571ff2175514cd65bd2f63cfa1ddcde7a4cd",
+      "translationHash": "c526db4c8c4ecd6703c47a6579722a39a39759af455d5ec66b120d70916edd90",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.searchCreators": {
+      "sourceHash": "8cd3708e2df6354a5d50cd92b72b06dd0ee2d12b22a2298c4299768bb958284d",
+      "translationHash": "2b9a16e18e09dc969f7875924f43709e8556dff952cc653e3b041850a46daf2f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.searchPlaceholder": {
+      "sourceHash": "06c021fea93ed88a733f0f9e1b67299aaa7262d54a3581afb0b389a99b8b932d",
+      "translationHash": "c54338c46c364c5886becb2efaaaca843133a79d3a1afc4f85a92ab5c18b9689",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.showAgentCreated": {
+      "sourceHash": "570c6cb288e1ca6d9a65cf1d04784279436346dd6484f63083b3cd5a7a19ce9c",
+      "translationHash": "f999141e408c7196513babb970cbb933b6677c15acd01c90ac69f8aab4b582d9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.status": {
+      "sourceHash": "ca23faad88d4d339e76ed0dae8475b7a738dde959ff909c2cd5a10071b66cc40",
+      "translationHash": "da16c2aca4f55469d6bb326bbec0843e3de36d1f3835e54b98b7fb319b2b1099",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.title": {
+      "sourceHash": "bbabcd1afa6d3e6be5ad29448bbc52bfae5b2dd4b282f7800ea50e2d0eaf3115",
+      "translationHash": "664b526b540a898904f262be27243a363b4ea907628cd398730c12362f6c06e4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "issueFilters.visibility": {
+      "sourceHash": "f755497f971bfbf676acc64a24d3a63ee4a948f4577aa97b3c0b7dbb232b6c76",
+      "translationHash": "1e376f43d83491dbfaa610b4fa9491b169786ce9de6d895fea15f9c2a54c6535",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "localeSwitcher.language": {
+      "sourceHash": "4977d083088ca0844effedb0f350c8aba219e399ef90d38b865a8749e75b4be2",
+      "translationHash": "7c11dc416eb9d1883ede2105a27f25dbe16aff762f52b36960aec30e248a7c5e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.join": {
+      "sourceHash": "ea398934182154da51e60bdfb62705645728bca855f0783cf4410b14184c6f57",
+      "translationHash": "b7dc77bd80413a949f55d15728ec341798a53ed9a6616938cfc651395de39bb6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.joining": {
+      "sourceHash": "1acac7f332ca3cf2f7fd9fa31fd574a35e53286c7f03c1f4c8166d790f889e44",
+      "translationHash": "2b6e42403c1d109bb60b66d1d3bb0c8ead9d73370df65ae7d7c237103b306e26",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.joinResource": {
+      "sourceHash": "9e2c3519da1d84710428775a7c4033fb75266d355668b26ec355a33d19a7bc75",
+      "translationHash": "ada3089ac0b63b253484589899e6051fd929265762896b8d0c1dcc39687910a4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.leave": {
+      "sourceHash": "a54a07da53a93a4c566e07cfe8d4f044e42058a846f88afc8e5d3654bc9f4349",
+      "translationHash": "cdd009e51f51987a6b7db9bdf7e5a16be378f49143b6b1f57bca97bbe97653fc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.leaveResource": {
+      "sourceHash": "c42222fb6c38db992b3b0e3203d3295921486e5e0c9babfb61c7d4ecfef2ece0",
+      "translationHash": "3c6feb03e5e045cd78f0a0e9780feea1bef41218c8a101870f8e4dc3b5ed83c6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "membership.leaving": {
+      "sourceHash": "a69633cde0baa752b106a41c08a2bd780a50733234307d04e8a8aae4f68d9beb",
+      "translationHash": "f3c7c693484fba33c64b35a706ce88d6d85ccdc7bbbd5c48b079450248209896",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "mobileNav.agents": {
+      "sourceHash": "4c60d67b53c23d3db89ebd4b41ff26e6964ea86bb1fa1904006c57fdb4b96c9b",
+      "translationHash": "afc735864933baaf380e87c1931eae4a3bb22efdc0364691fa4a2258a1e09103",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.760Z"
+    },
+    "mobileNav.chat": {
+      "sourceHash": "0319bfe2888402a4f3d5bf30f039a4f355c4ffd695016edde3fa42535a44946c",
+      "translationHash": "01a8030368724f372e2430f1130fbb1a67c98552f9950fd09153683f6681daf7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "mobileNav.home": {
+      "sourceHash": "1f4a6701e106db78b580e32500e92e16cadddc4a520f1dac00407120ee1eb49f",
+      "translationHash": "43cfcb2aead90698e6830832b8552709d1ac17cb664822d363fffc7cec3d9fd5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "mobileNav.inbox": {
+      "sourceHash": "1fbf8f1ca848aba7960683e643bd43bb6cefc0da4f5c86a928ac0fe39d216580",
+      "translationHash": "90270a62420bd87221e632ae58a43f409b63f6d8270420871d6f858837a3a4d8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "mobileNav.label": {
+      "sourceHash": "3f579eb5d5f7b9cd0797c257eea66707a81a63fac88e237c968c19861f00197e",
+      "translationHash": "15f7770ad94bfc88d23d173c0ab07939aecaec311f7a2a2f7925af2f555567db",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "mobileNav.newTask": {
+      "sourceHash": "9439ce5d9ea96f37bfb682e50c289d11abd893375760509832046115c13e82b3",
+      "translationHash": "de16aeaa370ee49a2b619950af43329c19a67f1cb511082b709969fde9562b74",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "mobileNav.tasks": {
+      "sourceHash": "26688edbb1823fed8e54c1e85e1424910940c78bbd569630ef4a5d0579df7f0c",
+      "translationHash": "0604bd77f1057e5f1b36f802287a31bb236475491d1a63b77a190ed489a07a01",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.attachments": {
+      "sourceHash": "ca48ad49522b97fefeff611a0f42929717ee5b358783aff6f593131b1afe3699",
+      "translationHash": "e754058eee1a3768024437d8ea3fa42c5c4885d2b389970f2fc387f47fae6ebe",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.backlogNotice": {
+      "sourceHash": "deb85f8e2c34956f0ae6ac4841f47a5687ec7129075eca3ef111d7aa15ccc8b4",
+      "translationHash": "df6ce4170aed078ba05e10d0c0743be1f12b64dd53eac3268f0bd4e51ef87db7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.checkingParentAccess": {
+      "sourceHash": "04aa9b564c7a0612cfbfdd004cb5fef64585c8386725c77f1f473174398187b8",
+      "translationHash": "170c1f51e2d5056c6b11c24b1dd39c483e1061a70164eed83e8b950bbaa33c2d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.created": {
+      "sourceHash": "0b9b9067a1e811734f98cfc8f1b7980aa7d84b48734bfc150b2a3106d053d86f",
+      "translationHash": "29d2b63e4ed98071ecaeff7402915bbfcce7a35b95391ffc1a01663cd47f55fa",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.createdWithWarnings": {
+      "sourceHash": "7ffa6a3557fd1e36037ae77e527c3681c1ae439677b8a3057563be62943fec19",
+      "translationHash": "a815a42b2e867cf9602d9de517b9047ed45318b6d3700d40010d6b343c6f8f51",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.createSubTask": {
+      "sourceHash": "3f43dc660922e2d60c83368a5911e39e9576032dab81c1fc5d4582fb0414f86f",
+      "translationHash": "0cc319999c34b6d4337878c8e010ee496ce07605951d2dafb669aa33b6ae502f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.createTask": {
+      "sourceHash": "549ac323dde05d929dbf7036c69be25ef32f9ead230fea1f7e6138c88b37a173",
+      "translationHash": "0ca520ef8a7cadaed8cb08b37e1c33be2bf3e4c1fdee9d9b5d34d5f5240f1bce",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.descriptionPlaceholder": {
+      "sourceHash": "5342286cb3b65bca2c495d43a2ebd62d4a706fc5eb5877a3ecf75ad5fc88b549",
+      "translationHash": "59b05d06c2256e53c5a3988a78064ab8c6bd53862b1f72e3887b59a31878e583",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.documents": {
+      "sourceHash": "6503f6365476d1f367c76d78fc3cd5d1565de44fa33d8b31c710a02ede7c9e3c",
+      "translationHash": "cc50ad7fbb4497a12c441af97cf6ea0122d8308b0f05df4042ef32f7e8047599",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.failedUploads": {
+      "sourceHash": "5fb25434cee23786b11a5418d44eb00ec658b325c90df51b3cd8dc0a0cbb085f",
+      "translationHash": "2385e9a84b89a30c28312e9138a252c1ca5b06aca64c6014c9ec9209864cbbc1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.inPrivateProject": {
+      "sourceHash": "47b07f66882b120a481d1327c545c5de5e099105252e5c75c62e24b0acd8cb73",
+      "translationHash": "a07d36b4c058dbde3c6399aa97f91ca8148efd601b7e6e21c65b9698fb68543c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.lowTrustNotice": {
+      "sourceHash": "66235c798c1c43ad9c9e04cb420e80c07952fbc884e72de76a59940f89eaa1e0",
+      "translationHash": "7fb5d9ad8ae1191946425b8dc318840ac51f65d40bf847313a71ccb2abe72975",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.newSubTask": {
+      "sourceHash": "dcfba1a0bfdc2ee038e2d67804b5350b2b8c93c54f757c0b4015ff0799be0a7f",
+      "translationHash": "c1ff58a434c9c805ccff58ab1fffb2b006359de4c61d68e9be78eddc47f35960",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.newTask": {
+      "sourceHash": "bccffa9b5ddccc586b6a423018064bf6a7ce3be235504ec51bb43325e23685d1",
+      "translationHash": "a7e47371c005745e7f040340e514976afe9ee0f7e7c3d09e8f8d5e4c34a9b6a3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.noOrganization": {
+      "sourceHash": "fcb768baded751aa58b6935138e7bbbbba1b265d9da461ff4a17aa68731a923e",
+      "translationHash": "468949553e27c0a1f1169d87e63aef815932c2d81203671e4650c377566dc74d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.noProject": {
+      "sourceHash": "590952a973ad683601d3c661d9e3337c0aaa1636cebdc94aee01dd2162842f61",
+      "translationHash": "366bfe886df3296803d81faea355a2c90fdfc9f07abf9772141cd58856ce80fd",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.noProjectsFound": {
+      "sourceHash": "bb0b3ca1dbc84220680520e9c51eb63529ef122d1aa5caf0f1851b4c46c51a04",
+      "translationHash": "fd67472f9d5a17570803287ce4a653b7e5b66241014577a1f2b26734728e162c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.openTask": {
+      "sourceHash": "3fe77be594232068004dd3a347641810219e430c9bebd11c1e106e3104c28363",
+      "translationHash": "fcf8503b89d9e28f4212428fe89cbbee56561aac68ef3b56682d424fb45feab0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.parentAccessError": {
+      "sourceHash": "372b501ef85cf7e9eb396305b8c8851e51d456ba3bb8a59e6b0978e4ac1a4b6a",
+      "translationHash": "2a51d088cd8879fc9f8dc2d81d579efc7ccdf94e6a1b55934f73bd61e1ec8581",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.parentTask": {
+      "sourceHash": "87aafad2ecfc4436e39583ec4a3cba9a94ee5abcd6eee8542643b07b52dfb6ad",
+      "translationHash": "a25ba0d762cabb51fb398543fc18b7d230fa1f442575f3005be1768c536cdef8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.parentWorkspaceNotice": {
+      "sourceHash": "e1312d24f87aba4e2641d30f66b1c150422ba99a13750266740c4314b0fa642c",
+      "translationHash": "ba5e2c0e7a5f441a1acb4acd24c632afcf2dd7050a9466bf2c2b478ca8edf324",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.pausedAssignee": {
+      "sourceHash": "2d61306e7b95b0939aeb4c16c4cf31bb160e810bd7ce1ccac748ac66d38edab7",
+      "translationHash": "35cd3b82624ce6a53bdc1ce97acd53f131bae598f7c94f6602fcbdba93a76072",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.pausedImportedAssignee": {
+      "sourceHash": "fc1b9c6f4e57457d833f0f57678a695480482a23be01db5c283b4a8de25882b7",
+      "translationHash": "39887d91f5748d1af55c23baaa201c2bae8fa05aad3b8611302dea7b13d6ccfb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.privateParent": {
+      "sourceHash": "c0ac9b544719f044b273f40fe510f31feafd1558ae20246d1b1b0b8d5ed6d63a",
+      "translationHash": "882cef96cd97031d5973009f15eb54dea3d0aa9bc6e0a0f354dbdb6bb5d2bbb6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.privateProject": {
+      "sourceHash": "b077b544020b6559be813d47246716d6d4cd708bdd0f7ca5913a77dfda4645ed",
+      "translationHash": "7831206490bf85c1d18e935b4c2d3bdcbc4e3e80d94ba6ab13d712efff800acd",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.project": {
+      "sourceHash": "6379324575ada64af2e237fcf73604175eff5d9b2940c1c95ecbfcb40f13e3cc",
+      "translationHash": "5d34a5369b019b9eac4f1cc80ee6d5376ac472e484631fae130bd58287b8bb54",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.removeAttachment": {
+      "sourceHash": "48476b851674369fad6916b0e605ee89fd820e9a591c5041339d3772db7b64ac",
+      "translationHash": "dd26884f853d81961fa343ae0df42eeddd4a6a5304910a11237154086d9de7f0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.removeDocument": {
+      "sourceHash": "3cbe9ba6586efe5abfb0c44401e3c503ec99d0a7ae8e713e044c93fed4e063c4",
+      "translationHash": "daaf9d11149a3ad90a88426d24ff854be093699b00e7799ca19489bd41795d3e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.retry": {
+      "sourceHash": "566a29f4324f122b2632b42c1a7315573af6f4cdd4bced5488fde291ff2fdaf7",
+      "translationHash": "48e2a17b933e53572737dbdf955834fed9ba6a57d87fa19110379f83e591d049",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.searchProjects": {
+      "sourceHash": "038d40ad7097f8232fcbc01d447c71798e49a446f77db7d40bb2d6172adc3520",
+      "translationHash": "fe99c3c85f208636587f1c77a74aa9e2d5a7e7f8c1f4f7c14422febe9b44415d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.761Z"
+    },
+    "newIssue.selectProject": {
+      "sourceHash": "15e67b1cea7902616ed68a3145ea854e3931e690dbb4e45ae7561b64b45234be",
+      "translationHash": "578f91b324bdedd6c1aa607d14b27d52eb27e218a3e70f3a28bb2b811a352c33",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "newIssue.taskTitle": {
+      "sourceHash": "06a518ea2ce415b8fafb3c40b8fcd851c8c9a7edcf5ba90af922b8fa6f977cb7",
+      "translationHash": "a4207efce0ba3a4f7729884ea0aac8a901e4c66a6f4e2ca4f325061400672cc0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "newIssue.worktreeCheckFailed": {
+      "sourceHash": "2a28bbab493cdaad38754621e820d0bd3c4c9055975ae35a64836fcbec57c5f5",
+      "translationHash": "71815d038739539a7a52f70ec9a41a8dba4e00bf8d81e61002af41f628de7d70",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "newIssue.worktreeUnavailable": {
+      "sourceHash": "804a364d731f4d6a3e8f96b524a81c79442dcab601ebfd4e0584cae6b050233b",
+      "translationHash": "66954605ea4f7bf75f75149a45d8d61872dc8f88c16dbb75a8d2380950348d8c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.board": {
+      "sourceHash": "d586b6095978ee2ca372fd14060cbe67c31d0e17613239338ee254964c0765d3",
+      "translationHash": "98c739a44b606c941c22629a1a1e72273a2e8e6b753f1c3ef076e4fdd01b3cc1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.changePhoto": {
+      "sourceHash": "7b88e825759c32a600113ff5df2d9e81cc691ec55eab6a5b16d0076ebe6efeff",
+      "translationHash": "2afb69bc0dbfd3e631171d7d83d8f79b219fd0bd81ccea20cb4664a6881941dc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.clickAvatar": {
+      "sourceHash": "d8825524d8b294eecf30053a4e132a6cddec2f36b60c891a2305a09945295f8b",
+      "translationHash": "0eab244b7a4ae4e42a12c3802e01185d6f624f5bd470469082bf78ab5dfed777",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.description": {
+      "sourceHash": "ac69ce80dc7d74a0f5670b4070de38fb9f9be4e548c0a2dc01909945bd2bbcbb",
+      "translationHash": "460e25810b5ba0c6a0a9389e6ff52b5113ec47f4d9332dc5e83fcc9119e0705e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.displayName": {
+      "sourceHash": "7923f63c4f54d753d2d7935be50f2490611f77121e9b7b7a3d3a301de082cf1e",
+      "translationHash": "2c217f244b62cd87e620fd0d03515ca1a9c0d03e5b3431ccb313c8e661a0b014",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.email": {
+      "sourceHash": "a3c1eb5ee4e987eee8bbff4931ede30deeed22b5d9a9ce68c06131a6f9cc367a",
+      "translationHash": "5c567abe27902525de7d437490b8b9ca5a2c8437bb4f32b9f5be72706cde4031",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.emailHint": {
+      "sourceHash": "511980279ce502a0e5131ed90595bbcbb3a3817ab2972efd005f38e7214448ac",
+      "translationHash": "b53625f7801c472ed3b27c6dbb4fa688d1c71084316b3c5545acbabfc5936354",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.loadFailed": {
+      "sourceHash": "235c1276fc04459fac391573c6d363453be740bb5017430d30fed859e368b9a9",
+      "translationHash": "e5e850bd5d19ae1bbaf0f805585f055015e8654867d120d6e54572e9ae594f6c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.loading": {
+      "sourceHash": "005b1a7574e7da09de3f9b37339878e23f7744bf2378fa916c27d267fa41cb3c",
+      "translationHash": "4a82a3b45e206a4e53e0c2cf48c00ac622605ba2b05c2e1ccb248492a4e66fb6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.nameHint": {
+      "sourceHash": "1d1b9d6c221d1ded4d2521604a5d472a952f7fb1e43938379189fb08b959735d",
+      "translationHash": "cf246b0df7c0a328cb59ec740a6f9c24952a01fb8205d17888610111128a45e6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.noEmail": {
+      "sourceHash": "5bf99ec966bd1062ea9246974e5e4993ede855fc23a7dee24c4533a3a69b7095",
+      "translationHash": "abc4ffeaf71b02bd95b4e25fb3637cb506f30b5937a36271774a81ca1378388e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.remove": {
+      "sourceHash": "5bcb4f728ebffbe7472f9bc89a123db03dfa6bcef6572e276fcd58d34819ba1d",
+      "translationHash": "a063eeaad81ee3ce73e14271beedb9e9375749f78c948ac44efb262d4a3e3007",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.removeFailed": {
+      "sourceHash": "7452551e66e99b5fa6df15a009c368d8008c7018ce7ea9c20a8d256127f255a6",
+      "translationHash": "e8cfc02ba0f8913d0da9758a6733ca83eb93a0b254ea189f3cd604af4914d433",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.save": {
+      "sourceHash": "a1000fbcb321338f90debe600cc8cde0f4d984e4ce58473e20b2adb98f3837ff",
+      "translationHash": "2de1a591288340d61e4010240e1494cc2bb25f2414733529986f38fc3c8ea2e4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.saving": {
+      "sourceHash": "7b544e025eb27daba2bcf17803d7fd31d267e795d9ebd1ef7bcbc9f3063a33d0",
+      "translationHash": "cd3d7783e9b34b74d27f42e1be601d068a51e81e8ede60027bd77044fe02471d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.selectForStorage": {
+      "sourceHash": "22f70f580dbe7b6cfc9e3431a9caa9d4488b61ef0b5c6d3e02f51ab97b55cd68",
+      "translationHash": "45b9fb4358d0fef63087ac42567829aa14775c47313435c4f9e6331c9a8c1b64",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.selectOrganization": {
+      "sourceHash": "15a53619cf83493ebc363dc24e28f06108104923fd490bb7f4976a6677b05b70",
+      "translationHash": "a42f9b8d09b182b03e83f4af8a530c9899fa0d39c0e0932408876d81484b6d0c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.settings": {
+      "sourceHash": "2024778c91c0efaec0d9a1a871d13ac5980361b5939bbe912fae5670f14febe2",
+      "translationHash": "91936ce53301f5003b7ddffe32e8dbfe83e8b98d50ebaf1551dfc1df690d70cc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.storageHint": {
+      "sourceHash": "d8ac873e530d144180db912a476628bc64bb694bd5582220425f66b5828b4daa",
+      "translationHash": "a03db38c12e4a023a8d354b6c671ba650f3955dce2ce9253eb282c4fc4c1e65a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.762Z"
+    },
+    "profile.title": {
+      "sourceHash": "80e91bd0966223e1b81370a4c4c2a8f38f95e3d638914f3ef746f473b807ab12",
+      "translationHash": "4b2b12785c19a0a2ee6687f0090b7a72cf9422370de7380dd9a3bef126fa2ee3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "profile.updateFailed": {
+      "sourceHash": "9186a6f0c7af470a6dcd77e469f531525e36f2dc15d3a9b85ceb199a3b89e175",
+      "translationHash": "9b0c930219f66d6c1b25318e20ffc1e7dae53c4b2b7cd2ef2c64c6489b2bfd0d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "profile.uploadFailed": {
+      "sourceHash": "90d324aa1d29d05f059e703cb7a3c4d818d12b07ea1bfc3b26b2766a405bf19f",
+      "translationHash": "9277bf804da510fca90c87bc5f61c0781065cfa7c0aa6c5f8c80dcc422723fbf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "profile.uploadPhoto": {
+      "sourceHash": "cffd8b7639b5f9832832b4da5cbd6be162ea06a11581e77aac1e735efd0b2aec",
+      "translationHash": "887f29b6063fe95d465a7d2871abe5f1096ecc7b6a28e5a78dd55028eddcffaf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.add": {
+      "sourceHash": "f82336b38df14275477dcd0b2b0ae51bdb9217b34618b5ca09889ff203366afd",
+      "translationHash": "434cf44e10a60ba8ba3e9d67e1d903e7fd260535ab3488479877f5658ab37c7f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.ascending": {
+      "sourceHash": "468ff671c1460e08126f590a7d520900cb9c05b9e3aa1d725452da18615872f6",
+      "translationHash": "ee0b51dc43cfa48a56d1f2940359b27efb365b8f43960aa88a86e2d6fe0d4e9c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.controls": {
+      "sourceHash": "4b17f0efc414d926cfb1345f5509efaf7b89f141bbbd5e018d3a6a0ed7512a05",
+      "translationHash": "6c1457f56471b1cbbe1ec3274da17b9474d9fa5f76e87896e8719982a72e3e4e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.count": {
+      "sourceHash": "e5f56bc972ab12e43b3c4f0d12a100d65aa163a0b0e32ec57e8091ec03f7fde0",
+      "translationHash": "3c28465e9d30db984d13fb80d47d5477ec4a2620e0fbbf6a415da55dba17abe2",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.descending": {
+      "sourceHash": "1f593086ae9293204924ca2f6814517896f03be0579ac3ecc98fced624d969b5",
+      "translationHash": "a8afdc8e7b345e8a734cbaec89ba4351cf9936b28a4c0c4a76284f8cb70ecb5c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.empty": {
+      "sourceHash": "03b01f7ccf3f34f0f5e9909e5aecf4498b7cff3b8971a110d6c6da0237585e52",
+      "translationHash": "90ef29f770882c52d008ca28b0c9c110e19851c001d0eec477022606384c5716",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.mine": {
+      "sourceHash": "257ead0f69fcd9aa5cbc5b3c033efc85b0b1c0a6dba22210822a64f8adf03125",
+      "translationHash": "65a25ffd5072fa8ec797e05b6c5f0fa606ec0f2aa9a0165d6d88c3caca0a5b46",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.noSearchMatch": {
+      "sourceHash": "a57d49f431c862ce0a2cd872050ec2bdc1f852f8127e35a44d40becdff1fd4cd",
+      "translationHash": "cb9d8f0d9633b29b75c389c8e1489768f50d8fb91682ba6c6f08f61294b21d2d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.other": {
+      "sourceHash": "611ccb0bf05898660929848d964178a2bd68232e5ea127e1b851104a885d2bde",
+      "translationHash": "7b882af8b436c9c34c67c1d4570a3a48f8237006b4e35f7694080d1a625acad6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.private": {
+      "sourceHash": "bbe308526cb17d13a8e458f7ab3c76dea626392da3e28b2c03f86f7010de2b21",
+      "translationHash": "656c959381e5f3b4fc907219aa0eae4c2994db787381749dfc3600ff5fb1c9b5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.search": {
+      "sourceHash": "bd00a2d9c5bcaf05c99080a7733f86abe5f24879bb8348405003b36704f766d3",
+      "translationHash": "9b64861e5db3c8752b8d4467cf8cc24561afa2f26270c9e68d8d79bfa9d3d697",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.searchPlaceholder": {
+      "sourceHash": "32a5f28a9cfb35c5864f8c6935a9b4d089dfa145d6ae1eb7a90a0f33f273c440",
+      "translationHash": "381f2c25e7da8c7947e517a9a2c41f5698c1949288b579ead6e526507719d53e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.selectOrganization": {
+      "sourceHash": "7f0953c5e62d6527804059727079aa2aceed7d4dffa3cdd383037aec8aa69ae3",
+      "translationHash": "9f771e1826957803dcd99a0a266beac386fcb7d5dab01fe48fdaffe5d50a03e6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sort.created": {
+      "sourceHash": "0c1fd46d7a9bcfbf2d3bc1c9a7cabbc643e0baf65b2786a64cfd5d16f7461914",
+      "translationHash": "76ea0984a2f8d900a71346e7ee5f36ae592575a1889249f26db068c248e45807",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sort.name": {
+      "sourceHash": "3e29f3cc480c74e367c4b3f61cdedbf3ebbbb96c46a27bd12f35be27048e2bb6",
+      "translationHash": "b20db5cdb838f7f8dce369d26b619eda4ad8d75d5a6812fcf7dcb91fa09c3a58",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sort.targetDate": {
+      "sourceHash": "2205b18a9da322a3ade15055e927a4d7c8660083d7b41bba046651a0ab2a3204",
+      "translationHash": "95c104dee953f6fecf5390ca875975100df0cb41cd46e42184fdfae1aa253dc4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sort.updated": {
+      "sourceHash": "7d786151e3d1d98ee78aceb207e8bd9fb151145046d379977fdb262548539fe9",
+      "translationHash": "2ed8e9f4ecf3fcbdf4cb1c00c8a073a3450fbcb5c3afe2bfeb9060ce972645aa",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sortBy": {
+      "sourceHash": "a6ead5ff91fc7e67823a9c27c253cdf48a3872866bf805e8c288b16ce14c4823",
+      "translationHash": "098bb87319a8c9e411f800d6f8b4f2e173253f201723d69164852954aed5be3f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.sortTitle": {
+      "sourceHash": "11d4ddaf14f72b769c2842440bcd3330d4e2ddc429aa822212237f719fdc5fb5",
+      "translationHash": "8fcd84b5aadb6a5881117d222d6980543514374026fa0b0b1fcb0b632116d9de",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.tasks": {
+      "sourceHash": "79fdaaf69bdda0103bba3559f489b2d950b56b612be8581410d16ac3081d57ce",
+      "translationHash": "34cb4ca19b7bb96e5126e30ff53a78940e72b785dacccfea55f0bdd701193d5d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projects.title": {
+      "sourceHash": "302f665dcea40340d848b67a2b196c1473bd3a226a5708c9e4f7f32d0dca99a8",
+      "translationHash": "523b3a1ce460f91dd4c51b59c0f92ac9a7b926069dd0743b1f074609e6a85c61",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "sidebar.activity": {
+      "sourceHash": "e2799131e196be7aff1764cfe6b5fcb47ca15affec761586e1a22518d33064e1",
+      "translationHash": "1ebe0fda50509877c1c2e65555c6aec11c3f6e31df1ed24f7f12cf0be3f6ce43",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.764Z"
+    },
+    "sidebar.agents": {
+      "sourceHash": "8483244843bd2fa8009522b4726390c291bc0f563ebea5e193da68b7f8658bd3",
+      "translationHash": "cf27edcb14120afff6c59c1fa6d2eeceaee53379c06c9cb1a8b82b82e8fe744b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.764Z"
+    },
+    "sidebar.artifacts": {
+      "sourceHash": "69f513ef343df08c030516ce834a05d6ddadc308c8b03d2642da45ebc2a11a14",
+      "translationHash": "09ff11f9419e7e358f0a1cf0d41867ce57a7363a390493d925263201208e7275",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.764Z"
+    },
+    "sidebar.audit": {
+      "sourceHash": "f0bdeab358bfe1a8c683f447b432926f71a2101da3ff0d6af390a0a03ad76fd5",
+      "translationHash": "c4a2a93eae8548e8b7b9db026a3bbc8a1e94659554f88bcd33d3b9d15aa7ec37",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.cases": {
+      "sourceHash": "504b0cd9e7496a807552f618316afa6b5341db433d96101bc1abc5f4e01e28c5",
+      "translationHash": "84a596ddfc8e626f1d16e449e8763ff3f103c0eccde56f340c4601cb26eb03ef",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.chat": {
+      "sourceHash": "fe88479a319fcda8c3210e5d1a1c38114035bddc05a33459d8f6ed1ea5302d86",
+      "translationHash": "205f283cb99d9078a0d9b234de2e50a64ac294dc7040dc331897910cf773a818",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.conferenceRoom": {
+      "sourceHash": "87571b1c474470668ded8ed3cb65de2292389af81172a4af10ba0b833a967226",
+      "translationHash": "60bf85d8992076eb9ccc86576924505b72cd8d1fa321f9b22c889ecb54c4b309",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.connectors": {
+      "sourceHash": "ef93170c617c11b5703b963d2c2310f5f8de01862a61b55187d6c3abc6ae363a",
+      "translationHash": "4d93f8a7ef498a3bfc10542eee257ad0f17abe4c18c3da8f00dfcd9d5e9c0a19",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.costs": {
+      "sourceHash": "8cc9d3e137901998f4cf3ac0b3e29146a59625891879ef2aa0f50288e1d889dc",
+      "translationHash": "1242db4fa27237aeae499cb769e1d63e24ea74528f6540bdd3e4d118c965af4e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.dashboard": {
+      "sourceHash": "371d143db7a0850f7c3cf67fc06559b1b3375d139923020ad88e366926067a5e",
+      "translationHash": "8e8438181b483d1f359f56c0aea26d65cb5d5da1b8352b321604e3261ce5eded",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.decisions": {
+      "sourceHash": "5f64b082c3ec437c3ae341dc02049b647409cc53e6d19a03282de4938245dad1",
+      "translationHash": "e2e933a98925717af003f23a252bec1169eb87bd358db7f15f77e591eb00a1ab",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.goals": {
+      "sourceHash": "9d618fd290f8010204dee6095ab44072d8d4ad30165ad79c7d337ca7136a8b61",
+      "translationHash": "ccbeb58a8ebfaf2480ab55fd9aa6ed9750eba4e8ea22920770d77d8fadab21ef",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.inbox": {
+      "sourceHash": "6547ee79e0b8db1afb4d5396703ac728e3e0768bf5a30d2a918405ad73b3b0d5",
+      "translationHash": "48b551181b8448a24a779482388b54a43e5e7e61843259d596a6dc5f6205de2f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.newTask": {
+      "sourceHash": "0019e3ca197ff52dd0cbe39518d88a622518a3d80b5a412388e2e9a83d302356",
+      "translationHash": "3ced90fd25b8dbb4d36d4d0fa6004734bb3899fbf9323bd0a3621900160835d8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.org": {
+      "sourceHash": "ad7789417be39a30f9bdb06b22ed136e074279d08569c4fa85b88f74e4ec991b",
+      "translationHash": "68b2078c29f1c8edf7e64d06d22b8eb149d0618847f15b0f9a48828c7b9d9545",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.organization": {
+      "sourceHash": "c99b0b379ad77bc8dd9649ebeb4dbf3fbe362ad558522a66076df0c6100ca255",
+      "translationHash": "2d899d4c114078bc627464a1cfa877e6fb512bdb5fe3381ea8d417d3812dc967",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.pipelines": {
+      "sourceHash": "d9b3046589777a6dd03be02d32b3918aecdcc0943c422992ebafdc17b36bce15",
+      "translationHash": "dcdc9d28dbbcc1d84c89d5c0928ee7a5d18703ff5de20bee9d040b79293293d3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.projects": {
+      "sourceHash": "08b9c1ac814664b1170dc369ebc43a82a989095b07b7684ee12e11fef0bc4f35",
+      "translationHash": "c7fbba65e5d2409ea1fd9b70458f7a215b6a37212bdcced6ca79c762111fa38a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.routines": {
+      "sourceHash": "ad82c7fc98e02b50512aaf4f250e9ee631cd2e3cd801a25a6c71fcd1a378b3b7",
+      "translationHash": "a60307f71c24bf60c34e9f17ee04861e99e3980a35674ba459d76fbe25f93ee6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.search": {
+      "sourceHash": "21eab9ec244c656cdce575cd9135626dd23b29977e30eacb25c379dd3349ea27",
+      "translationHash": "a625eeb70ab02eececd2f5c01d9b820110bb178c9cec6f7523706cb24fcf842b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.settings": {
+      "sourceHash": "146cf8edc1aae5d15deb35138d6d8b6b600013f119968cd507638190efbaf513",
+      "translationHash": "f784a21bef12f09258d5d57bc75b2f2ee50c74336338fa7afe600bcf2cb3d7eb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.skills": {
+      "sourceHash": "ae5942cd6d76e47eeaa34cd6b6b861da43700e47e690158523f675b8ad2889cb",
+      "translationHash": "8791b2e3c5404e360ba8981291caa80d70a6d71b5ed675fc44cb7828e3c6abe6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.status": {
+      "sourceHash": "e48f3b7d980347bd7886262c6028d36f384692deb8e5db92e17f3ce6c65ca9be",
+      "translationHash": "320295e860def944dd56d7866d181c60e678f81e9fac193994f9e3e7f7eb377e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.tasks": {
+      "sourceHash": "4549719d594134ec197c3840b1e6a236a26c57212c6327679b7c717391716b62",
+      "translationHash": "b0a7ade3480ef1d6598e568bc0e9418323228d67c3ff5c9abb3b705ec1c6ceee",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.timeline": {
+      "sourceHash": "c3ed5ac54c25c79c270c07152597a72c4969d289ef24162c25833fed0159a82e",
+      "translationHash": "104c7d6664fd1fb4c16003124f52c6653daed0ae7ba6022c35f0f7cd1e087635",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.unread": {
+      "sourceHash": "8f90d55ccced177b5f39f64303244d6548fd1d6e9a8de7849702f0c2bafad090",
+      "translationHash": "8a4a61f362279b8625857cceda1bdbdcd1cd88b147491181cc5c83d4fdb2fdca",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.work": {
+      "sourceHash": "a297a035035a79b8bfca6cc32b2f67e49b77b500adc6730d2ee77c9c9d8fd6eb",
+      "translationHash": "fc1e33939dea7de0c792840370cfa2b4f0f966a51e18777749603cf24085eb27",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "sidebar.workspaces": {
+      "sourceHash": "bb3a85654ce323aa2dbc68bf28a836574d2653ef20df8d5a4512145da3a61635",
+      "translationHash": "d6ca883aca193d3b56855acde4f02a686e0e641fce5226bd1417dfaadcb2f304",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "star.add": {
+      "sourceHash": "2142a08f417189203ef034d84d0a570bc3b0c5c5ceb0da80436c70084c0eea00",
+      "translationHash": "da1f18326b3a22e1025eb4e2cec76b2aa76943cb248d60d5452a1bd0bfd33bce",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "star.remove": {
+      "sourceHash": "10c0235f9bd3c96bb8b03d6ab7cb3b55dbc1f8bd9a053eb5f19aca7cdc9c1169",
+      "translationHash": "f6d440dc628b8f2ec90d7a729252a443ca33987cafd72c7c9b9502ccdf09ec57",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "star.retry": {
+      "sourceHash": "339be0d79dca0500d2348abcc04866992f0f2b4d5a92e89a6070c384f9a1f337",
+      "translationHash": "6a539f1e150c603d3906e065fc161a2e6a658710b7fdfdc63ce28c164d1f0c59",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.achieved": {
+      "sourceHash": "8ebd953400b9a0011004bdb21c466d835aa4978b0837a59da42d851e5d92cae4",
+      "translationHash": "54d2c896144794c56803c27c4b49729feb310634ac0db81d1f90170eb6ea7e2a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.active": {
+      "sourceHash": "92ebe88ef08d79dd7f170b40284b1b9e9553a53e52c45812936dc68184d75266",
+      "translationHash": "29d3b7613053327bd615757cc338799c59a0123aeb925a2ef0977f277e361acf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.allowed": {
+      "sourceHash": "85bffafef97f9deb28cc845b28d0783d7d2d77fbdea7bd05ee2680edc07e9ddc",
+      "translationHash": "8dcfdcf033b398c4418dc0cac1a4e0018d7143d6ffe8f9d92dacde66eb8f0c97",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.approved": {
+      "sourceHash": "e2799956810a1c648bf7dd7d8cb5eac39c20ecb729aa8968807a7dbd06fdcb7d",
+      "translationHash": "03f1adf2816e608db786d1621e7ec5a5f52ab8c3a4c926070b453cbf94debbc2",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.archived": {
+      "sourceHash": "594aa21bd8c90a8e2ec5b9bf2b89f03a3eed56aa7e132e3f948d2e50e84a6c82",
+      "translationHash": "d925a80ea47a08e1259c2624120ba7b4ee09b580312bd59d523f00274f2fb77c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.backlog": {
+      "sourceHash": "fba336a8473dd4418253ad70c903bf76cf2428a78c9facf64ebe2640ff2117c3",
+      "translationHash": "de44af32035b0763082c301599bd0cda0909e70e285b5371dcc1929579216ad5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.block": {
+      "sourceHash": "f526ea6b1ca3e2b6de707adc430e8773096f9ab4c5dd424e0f5f51382ed8e7ff",
+      "translationHash": "74a5af8b7aee62750641a8313f10dece24e9ca0ddd9e16d5af76bd70d17bd27b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.blocked": {
+      "sourceHash": "a78623f0fcf1931aadbaf79be091eeb5c6c2e1a83391226ce47105d8b53d3799",
+      "translationHash": "7126cd6a7c57b8de73410a8f597eea2b3f2a619c48d9272cf0ab2d18e453922c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.cancelled": {
+      "sourceHash": "b8255849fe994828898141161e7f21447cd660dc1f602b9b6f1d22b1488de8cf",
+      "translationHash": "46826c92b6807b20673b74ed41d0f4870b16587dda5902076556c2f152a9dd46",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.completed": {
+      "sourceHash": "28adee27006758349373778c13fb62cdaddfaca593cbe6835d3fe59ea94e7a57",
+      "translationHash": "0db07bfd0cf9e4894ceba2aef18dc6307d5fa1449501450abfa30fc6bed76cce",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.critical": {
+      "sourceHash": "a6121a6dbfc0f8ec2729b3d887051989bbdc348c66583a0d65417d60ed86a1bc",
+      "translationHash": "360d93cb4da0b7f1a2f6f8b375356bdeab65388d72939d9a0b73e7a6fbf04fab",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.deferred": {
+      "sourceHash": "64344e58402413cf2e81525f2c00876d283f605eb79f15e4244d9d6bcef6ebea",
+      "translationHash": "b07b49521628d657cd4112f2ffee1323660ae59baf32d22d446beae630432798",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.765Z"
+    },
+    "statuses.denied": {
+      "sourceHash": "7fa2f1c884878d2897d908ab63b01bcf6908003bec22fa6f653d38419cd25f71",
+      "translationHash": "35e88f49f8117cf6b9b7dac07a737b70fb23885ba305b81cb858a18aa51e1fb0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.done": {
+      "sourceHash": "e70f71a1f02ad5f576e5bfcdad9ee447198f390804679905c4d301096a719d24",
+      "translationHash": "acd051c96721d31123fea0b26ce29428a90df1cbd04f2a4b6e379f7b533b4f7b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.draft": {
+      "sourceHash": "1b67deab620c9187a42c29bdb749315ce38f7a6d407872e124010efe959b9d91",
+      "translationHash": "0a30f8934ca600000f072d8247c40a78a09810e9d196cd8fe31fb50ae9e5a2ad",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.error": {
+      "sourceHash": "26658af005ce01f62407443c81b37d0dc7885c0e7e8d0c0ae02efa3a69dff587",
+      "translationHash": "dc4779b682048be435ff377556803e6cab3049d421369f4dc77bbb841fb5d22d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.failed": {
+      "sourceHash": "9980896c58c85a997b21ae59b28d2be94316f2a448efb0075e7271145ff3a954",
+      "translationHash": "1058bfd7a122b43821cc20911e264e996ad660702f34ef7df68730cb8dcf9c14",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.hidden": {
+      "sourceHash": "ce477a3847abfc9b149998d971201801b8c7305b68b8498202f0313edabea918",
+      "translationHash": "fd0b1315c5f88fe8c6d761752deeb4be9c3f7d6227b6875fac843befb2f8a3a7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.high": {
+      "sourceHash": "1dfc5b12dabffa210a1d19e7ce8a959aa6113d557041ea71f57e41e8a1d326ba",
+      "translationHash": "a05189e804554d95fc31a9d707b32b06f799d54b3f839272f24f324089d2cd92",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.idle": {
+      "sourceHash": "87b3e7120b75ffb0a8c6ac0bae7512d939248b83215971d5bf32c4d7dd9d9322",
+      "translationHash": "3d29dc5c972c33142cf115b610e9d61b4e63b3bfed179bf21c6ec43d31214564",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.in_progress": {
+      "sourceHash": "2b19b6694d497552e2c0d1e7d68fec886f5e8ccd0fbbb29e45ff0b07b6d312d2",
+      "translationHash": "2d7be4c66b137656e9f86977552f03f9a51cd0fe4d9ea8c239e23cd75d6d0c0f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.in_review": {
+      "sourceHash": "83e5fbc3fd015809226f8e7a38b2c80e1e1ccccb2e515b37c43e8febbff3863a",
+      "translationHash": "37f33bd054ec748846a447034e60e5c217ee31006bb933472b2c58fd55ffa322",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.info": {
+      "sourceHash": "f8cd80ff3f16a832aa92d4d73128e75b37cc2576739abb7052738b035ad3d1a9",
+      "translationHash": "90c2ce2409d399a9c96870f9d20178affb224f1cc4ed7dc187d334ea22e891eb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.low": {
+      "sourceHash": "9a94a51d4580f27f7a3322d6c839a9441e9784635d5f3a21a7e559f5ba544005",
+      "translationHash": "250acb8a7dc468f01de8cbc28f1c3bfd3e60ceff5205031403259e80eb53c37b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.medium": {
+      "sourceHash": "21eb557e0d93eddbbf407d45acd9946a67052938bae5bf5273d9f9897eb90eb1",
+      "translationHash": "0b24e7fddc0c7b7445dda76dd19b9262a5971fe18a65046a4211835e5ea5f13a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.ok": {
+      "sourceHash": "94cc89c8af307d6371766c6067b2729f859b1d9f03c1305a2f604cc4384f25e4",
+      "translationHash": "7ee571a3895398da7121b13a3a642e9577d2f70eba7083c605c7721295a86ced",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.paused": {
+      "sourceHash": "f95c524d40ae629056bfee957d26556240d40e0741057223928a0c41e0a76448",
+      "translationHash": "010d5ed5dc777b75eb1fbd130eacbb375f14b31b2f4bb16a5e8c216ad65bcd15",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.pending": {
+      "sourceHash": "ceb2277afc7e1e7101a1f77b49dd85a11b80e12d57986d3b38d55e3b6677d721",
+      "translationHash": "89abc7cdd5274e9f85f4c88dd662bcdf1c9636d7a08b0d473a0f6df369be7a71",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.pending_approval": {
+      "sourceHash": "d45b3dbc7ef96f25d42595067dd078638cb052047d276c63cb38a1aa1eede4f7",
+      "translationHash": "08eefe4ee117ad3e591e059b24e3441fbbba873f159847394279dd9b001aec35",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.planned": {
+      "sourceHash": "d19909f6f0c4589c93032faef7c9f9100f888b407f039cd402c15954612dad82",
+      "translationHash": "320f45e5c91e02d998549babfdf3ecf576a9e3b0c0162a093632dcdfdaabc426",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.queued": {
+      "sourceHash": "840fa63852e7be88e7a04f282be2358dca7c23752be84ac1a5fa279ece4a0227",
+      "translationHash": "853145429ab070ec61e3e4306f34cb93bd3d5826c0e7dde0e23bd9c9f372489f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.766Z"
+    },
+    "statuses.rate_limit": {
+      "sourceHash": "200c2b566a992b84e149fd58d9ee2c89882c0a2f2f6a6f3ea9cbd5fa67add2d8",
+      "translationHash": "36b33511c61b7349c5b39e07953d3ec22b083c033790c55b885d036c78e1ed66",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.redacted": {
+      "sourceHash": "790f0a1c01b77ccab3121df38643f68d9e15e371b9e0e72f737b7ec62d81dbf5",
+      "translationHash": "0d6b8dd02999a41172f789e3035f15b8d55884d29d453bad98a5a5468af26704",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.rejected": {
+      "sourceHash": "19cc730514d5949d756e8fd0a08a072cf01343d7f2df3d52fa05bdf2fb60d0db",
+      "translationHash": "0f0f20763fb8c5a9433cbfc5ac1fa32a7b9334f895a5dff8a978276e9db9d8eb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.require_approval": {
+      "sourceHash": "10ef57712f1086bb106d6ded612239ff7d46cc37f488944c023ef69ec6892420",
+      "translationHash": "6ba6ee907df55bd3ebf17ee9a8a81254a692a3e525c59eff65ab82ad42a2816d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.revision_requested": {
+      "sourceHash": "dd11e583c163a22a44b3f505a64e3a6dd1c49213a2e592717aa158ef27af948e",
+      "translationHash": "194810db35201f87f186bdb8959ba9989070c6604c003ed8478b5c81e983f5e9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.running": {
+      "sourceHash": "d3420733988c305c1de94f735b8510f82192d2b4a8455f38f7a01f4ee4ec9c46",
+      "translationHash": "a74cee985de10a86d3b9ea405cdc2ac05ba0d42263ffc8d6ecc62784441a4362",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.scheduled_retry": {
+      "sourceHash": "a1ad34f1e7602c621ea716daa2bb83670706240ec4e6e0e29402de5c97d3f752",
+      "translationHash": "dd085a5de8df0d62179ba0cf3458423ddb5569485d07db76b2e57b7a97d465a7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.succeeded": {
+      "sourceHash": "207afe7a08d8fc16b4570e0153aa62e8f3cc12aaf73f340e7853c62a909c29ad",
+      "translationHash": "b1f1bada7fd861f8e4f5ec11b7a0a00e8c360dfc4b4c855704b7702304adbc32",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.terminated": {
+      "sourceHash": "21da5585038a39151fca66302cb57fdfbe54b3a2c1f79c33bdae47587823bd2c",
+      "translationHash": "313991b09711acc0ea1f04134c928ff31d00eb5ea73266df0d50d6ddbb686805",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.timed_out": {
+      "sourceHash": "3e328e20081fcb10180451d1c51d3f3ec12910cb6c67158f7245adaea8e35e5c",
+      "translationHash": "e5a3b66bc2687e47ea0ad49ec053da1981891bed5327fdd2702cf612c4bbf910",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.todo": {
+      "sourceHash": "6c834f8c35b4f3d00d63c45d80fa609e37b84d9005b611f2ef6dc53fe0818220",
+      "translationHash": "4edd5661ce8226efa3b1a237cb66a55b6503a68b59e36b7fe65e85756443a564",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "statuses.warning": {
+      "sourceHash": "51fb5875c76905e21f92ef1c8d8e2685fbc823907174e2c113034f870500537e",
+      "translationHash": "313f1efcadc1cd8c9d2375578043c0fb25ea6bb944dbf2b18aced00f06759302",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.created": {
+      "sourceHash": "985b3e92667f6b63446cf1e61917b35f4232e04002bac9f93903ec92a08e3790",
+      "translationHash": "4be87a0dbc30874d88ad08fd1df867faa63fef06bdfe40f8b862338dbbee0b2a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.none": {
+      "sourceHash": "a3ab04d78a67315a7d15bf47a36c21ea60eb497acc5381074f78e0a875f47056",
+      "translationHash": "ec4684a9d0e6ea837b5072fc3e173b07e8bdc81672a8ffa6b152c9ab00a14ea2",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.parent": {
+      "sourceHash": "e03066eccca8296a6483dbd20baaeec7003a18705c203df5aa72e53f9d2e4ee1",
+      "translationHash": "f2419b1dcf064b55c86e87bb1bf700c4304c9aaa8947677b72444e75d5f8812e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.priority": {
+      "sourceHash": "62b01877ae660a848b1ecebba03338f240d19caeac47b1e111ce18394c8029aa",
+      "translationHash": "52df94899061d91fe1cacfcd52a459828a26c8bb1ba3653d183de50547d1f0fb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.project": {
+      "sourceHash": "f84d19b7a593abb28ada3c6a4a4d499f14f63a67fba64b2f9886610b8688f0bd",
+      "translationHash": "97e39f0c4ea843a4d593c9a79b56c149177c7d4b5b0c8c27a188baa3b49659d0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.responsible": {
+      "sourceHash": "6a2dc492439234ae8776558c0a0a31ad6249f001268d29428efa64989658f963",
+      "translationHash": "4779bf614ef8601e90daa89240184539abbf5f28e174d1d0bb3deab6d0255151",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.status": {
+      "sourceHash": "4387bf266137adb716ec2c50cd628b8a626a32e687234bfe7f3c1df481a1dd47",
+      "translationHash": "09ec5e49ef31868ce5b7d923bd7e56aaa65de78180e694a157271f3f9eda2dee",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.title": {
+      "sourceHash": "4dbf9836dfcca23a3ba3a3f8814ed20b396b686c188b090f38629b5e6ac63d07",
+      "translationHash": "36b9a0f8d84cab19ce7dfcf4044a0d8b35fcbe7ac4e7022d7b0b814599d65f4a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.updated": {
+      "sourceHash": "0421650749c59c36bd176013d948182b520d2e7593f83a56a924dc99c1757fff",
+      "translationHash": "3349ee3d54059f90057397d28d4d6f4c2b7cb9eb7a15bf4a2815c30650252f50",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.workflow": {
+      "sourceHash": "e69f4213f608ef1e7b9261d69d32e0b4bf3e33fdd52630eaaaced3818d3e64d2",
+      "translationHash": "76405f6b4e642a075b0ad0b829c36d07166ca72aa35d58f7c165cfcb7edb9f8e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskFields.workspace": {
+      "sourceHash": "e68dd86f64ab13022e6b2ba55ab4acf6051af4933d6c12cf73a7b5046a8a74f1",
+      "translationHash": "157b55f990ca6bae21e2d67e2af54d8fb2c74a4f7fe99a933908e8d67771e24f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "tasks.allSubtasksDone": {
+      "sourceHash": "ce23a7c5e64b92a58596d35a135c3b81d6003d2cfaa081361f95a2189a750c4a",
+      "translationHash": "3a3fa1d90a3612eb4fc5045487af9e9255af30a9b295c92d4d28da63b671ddb6",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.assignee": {
+      "sourceHash": "ead63991219109f206b46699ede6e296847842f4a5227a228b44f387fa8ebbda",
+      "translationHash": "26dd807910ebe24c48311990810351512dbae06c54d84b14fad1883dcb4c82e4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.blockedSummary": {
+      "sourceHash": "e99ba23e34632bc87f4314afc2bc8b18f901db8c28346c6b5aa00d826d1a2e45",
+      "translationHash": "77d48c60beca85a0b2973aee7aa350730e0228fcfc76ca73a03c260fb169a5ed",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.boardLimit": {
+      "sourceHash": "75bed37706f39f19ce51e8c003cae0bec2d6297ee2e625eea4d5677fd33f9732",
+      "translationHash": "10b6ce7005ca88e117ba0e725632847c071d4521651ff104eb277ae260233ed9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.boardUser": {
+      "sourceHash": "12d2cdd515ffccd47d6165dc728ef4666cd6fb42100cecb104557224cb769588",
+      "translationHash": "911a7c48cd343d164a73ad4da8def42105e68555771c2984059994c4d9e7aab7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.boardView": {
+      "sourceHash": "788e9a21a91314dae02a67069227d95705f355afda0ac21007339663440602fc",
+      "translationHash": "f7bde078c6e0fe8be58ce26c35dccffb191143bb7ed9f89e2fc6fe66ca3b5cf5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.cardsPerColumn": {
+      "sourceHash": "fa20465ec0a537650bb7b72059289632b066410abbfae3ce8fcda4dcf3baca2d",
+      "translationHash": "8e228e7d9e73094f9fe33fb39e9ae00f296c99c8253ca5380ab0cbdc09b08510",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.chooseColumns": {
+      "sourceHash": "60efd0e2cb6d29d8cb540fdfc59cb413cef37cdfc4548f058f222268b88d2830",
+      "translationHash": "727e1e94e479c317e0b4c351e20da648b1bc640536ced762215797db4fa1d4e4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "tasks.collapseCold": {
+      "sourceHash": "8c432fda80496c86c26eab39c272471b26266fdf4c16bb1435de2799a3ca3ccd",
+      "translationHash": "73a697d39454188b95408ed0e62781f0556e52f7790feeef9dddb6dd877173a7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.collapseSubtasks": {
+      "sourceHash": "b7b861a44602602baac8ba86ce0d350c255f11c5200a27f9e103083a95ca8863",
+      "translationHash": "02307f166889efb99c5b2d490cdedf2c7e2c246cb37a84aa4ab67e19c9d70873",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.comfortableCards": {
+      "sourceHash": "7d06aa4da2014f78391e608f4cb6351c33c9b80c05ea8891c988be353d12d070",
+      "translationHash": "4664021afed83ba1007c9e9b264814576338f6a4c840f3a70c98c081eeef0889",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.compactCards": {
+      "sourceHash": "e59033df3c03955622f428758016f86ed9cf6665570c90d54514464b7065d7ce",
+      "translationHash": "b48f76eb8e0a4c07d7c9fa674944b118942e3774a514b81eca98df255346c2e4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.controls": {
+      "sourceHash": "6ffe1fb60878fdac648630c2404f5f7b4bb5b4354b2f06df4cd5d9030713539c",
+      "translationHash": "9fda8850723e5b78d2f80c198a16530f9edc107c8067002cf545356b7cc73e31",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.costSummary": {
+      "sourceHash": "fee0f80c30db2d27ae83ada6e303d3596a40615b81b9311f2f61b7ca3eeefeb8",
+      "translationHash": "86ba8f01739beb06efd5580efd940f929972795f00ed65e15ae2058aec8ff63a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.create": {
+      "sourceHash": "1d2fd1f0b4b5d53fb9026ad889471c4a56a745fc1f86c51cf1f314c00966042e",
+      "translationHash": "5b2b87b249463be83d2e27890825b48637e254be562e8f4dd7c40ea57f5e0ebf",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.createNamed": {
+      "sourceHash": "8927dd5ccf9f0dd7e7fe27e534c81828b7a80f93b92322106594de922a8e34ed",
+      "translationHash": "a2241e97596663a23736e55e0eb5974c8e8eebaf88013e69548bd1e6dd23ca7f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.disableNesting": {
+      "sourceHash": "8c870b5f78b4c6d5028dc206bfc0bbbcf9e9d25e116411c5e0e56c8f987fd883",
+      "translationHash": "2cc4b477002f085d43f8789f93d58813d189063c74f8b76596c0f148bb487c92",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.doneSummary": {
+      "sourceHash": "28dccd11017a1b419733e4a70016a5da414e01edd6b9990c00c7669bab867809",
+      "translationHash": "03ebe83576df32ef9339d814653576cb04fab2ac2eb9f88a358084cff4981c6d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.enableNesting": {
+      "sourceHash": "4093f793c2c424a09c2ef760147e869b1d37dfb890f687b897bb698a3ed033da",
+      "translationHash": "5469fd07ad7cbc086155d33823e51512768a0523810bd8b7cf6c004435884399",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.expandCold": {
+      "sourceHash": "0e223220fdf2b37922e382d8a56121be21a6a5db9135e091069c767e79a5d1ca",
+      "translationHash": "f921a3a1589052df14a31f20013ea4f0c818eaa6062b131f8f8c2f4668dfa14a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.expandSubtasks": {
+      "sourceHash": "641f1775d437fb4ca6d0e013c024f909c29bc8cb0cc209fd6e8d4bd59fb64623",
+      "translationHash": "eec082f77c9f1a3c2b22c5d25acdf01aefb227fbf0cec6f45095b09b0b0d5392",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.group": {
+      "sourceHash": "b491483cac836cb19098afde27c67bbfd423b47811bacc5492408bc68a479a2c",
+      "translationHash": "c39a0003af50faa8ba87ce6ed5a4810131738761644cdbc033b0a1ab609a4c42",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.hierarchyError": {
+      "sourceHash": "4d79e69f8d38113e0a0d64317bad2ca0a7f31f4b56f6aa2637e5e638aec2c8cb",
+      "translationHash": "3531390a12d316035bc53d42672f77e54eca3394dbef0af927de6a19fe619088",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.inProgressSummary": {
+      "sourceHash": "114e7b21d53356f0be5c240448b9e7c395d74a7c248d88c68f28b60374e38ab7",
+      "translationHash": "cfa079692162aadabd867752f1f98a0a5987bbfd57692c0f48457602ce39a815",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.listView": {
+      "sourceHash": "f9038b5759118d437bca80c9dd2bac7eafb0a842354fb499f4caddaf5bce4d05",
+      "translationHash": "415d77c5a22f6593a66e6ec4ce070f2ecf845dc672b95739c1819a4fc512cc6e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.loadingMore": {
+      "sourceHash": "fe5d6671ed346eb93828f330749eb90376ab83b2d24984b5cfefcb38d28abdb2",
+      "translationHash": "506739e18f77a8b7fca3de4797f9f7a7b68829e790009ad9b2721b368d2b37bc",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.me": {
+      "sourceHash": "2eb513082cdfae9c965f5361cfde424b8ec598198593f674366e3dd385261fc9",
+      "translationHash": "76d339ba410e8e73e1707edcf788fa4e513649e22494143782a4787329682210",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.needsNextStep": {
+      "sourceHash": "d70216db063b12a085c966fc0e53064e21faa7aa189c28358ab77622266eb0ea",
+      "translationHash": "03e4d1ec88981a707d3387fc57b879c0606ee8a003cf646356b9698512ae437e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.needsNextStepTitle": {
+      "sourceHash": "f648459beda468bdce0887f5af5f1f2b78a9c9f601f8bde1602453bf6bfc8a11",
+      "translationHash": "11d21adfde1e176e607d4047031259549599fbbe1aa69c00f4947b00b909cab1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.new": {
+      "sourceHash": "19d7deaeed6f8760f9fd16df5d250649a72d2aa2476dd8c3e442a84ff269f254",
+      "translationHash": "365014085463b8320f2a5dc9e53c7ffefa52880b07422f96a6d892ce9c5e0484",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.newInGroup": {
+      "sourceHash": "4f60ae11a7d2853691063d0a4eb30946b32b96296f68a4d4acb2eed452d9aca3",
+      "translationHash": "751d9e7e6da6a5a2ff6afda9ebaead5c2344687def07b3096a017010e0609319",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.newNamed": {
+      "sourceHash": "987e84c949e78ba131eab7e333a9d0befe3cc532ab346989883d0d1dd9ac3a3f",
+      "translationHash": "dfbdadbf2af7623691803a1d76b188da035d3328c20fa58afdd19b8e47b38e7a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.nextUp": {
+      "sourceHash": "1e7e584b6639042d4d4e766da391bfdcefa0befbaab0eb2173a813f0c0f141aa",
+      "translationHash": "8d074a90070141b21f5fff68897d24748716e1ef3befc85b3cc803aaec543bd8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noActionableSubtasks": {
+      "sourceHash": "49bd02b68404b04ac4377bcd6bbceeb9dded71a5153622d140796807512aa1ef",
+      "translationHash": "b4ee947df9b9cc05e6586f1019d704a6a326e7fb631a04b5e3de807e35f33803",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noActiveSubtasks": {
+      "sourceHash": "0a9025c5c54a26441e374a2dcaf76246ba49b784d519ca7b7b06005048960975",
+      "translationHash": "98c71d24e71cde920e5fe7ca8ae5639896a7f4e4bab243775c5963370d8b641d",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noMatch": {
+      "sourceHash": "3a608340a3f5376727b499d89cad0d2c788b175e8eae3d379ddb79f1d19eb71e",
+      "translationHash": "9a6bc9da9d1e1f1bc76d55e8bcb2925b66e44e8e43a8201ef3a926ce5a483f17",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noParent": {
+      "sourceHash": "acfaf2d7ca5bb90fb9e380cef44e76136d53b718bdc605cf986ef43ccef89e92",
+      "translationHash": "c1f7d1b32de89f9d52d51fcab9bfd69fdd68e1908bbf5bd2a0f55ec0492591b3",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noProject": {
+      "sourceHash": "6de2ca90777d7a44665ad94e253c3395fc63b964085cff692a39f1051040910b",
+      "translationHash": "d0ad88d10fe5b1ad5037b89b21f50f39c927b55109f793a88bd8438d7fb3e460",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noResponsible": {
+      "sourceHash": "6e0d207bbea1de3e5500d98ed46ad38185da9c47001f51d1648cd4cb9c8c5ecd",
+      "translationHash": "718259c21c4bd44043355d6650ec63cc64ecaf75c7a921b81eae50e6d00dea34",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.noWorkspace": {
+      "sourceHash": "e36f636c09644e5ce81098775b5fe3df0708592672c0396b194c1c8eece960f9",
+      "translationHash": "8da8e034ae54f2e78ae9120d1a95ccbbee27b46a0e2a8edbb8e53a2e8d930653",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.olderThanDay": {
+      "sourceHash": "e91f7aff4567df39e9e80874317c946413c2be4250abb69f6db31ea837688e48",
+      "translationHash": "b12cd121cafd953681850be6fdc2e4bd7f68fe3778a10f7a094689eddff3f7ba",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.olderThanWeek": {
+      "sourceHash": "605eab338e0154bc7db48c2aa1d3d37a00ffdb183162de5f9a5ba2ab3c8d89cd",
+      "translationHash": "a1cd238bfeec47f25539b1e07560ef365df44ef4fa59ff73a8f35920799e9f27",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.paused": {
+      "sourceHash": "e440b3e254e342aa0828ee602c0686452f109cfab3d810354ec35e80e6304155",
+      "translationHash": "7d8be65df74e4aa3828cf0031633c4f1d9761ac8b1cda7abd381397024c73a4e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.perColumn": {
+      "sourceHash": "e42594f10fae177a005695d43d07b412842483f968b2287944b3fabe8efce678",
+      "translationHash": "cf5dd4567f74e33306aa55d51054aa14d719f8e2d10a12df7e20a9b7afab0196",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.progress": {
+      "sourceHash": "f790b763546956a1b10f2b0fecd3868f363e606f0973496b97abd3c6a9d80856",
+      "translationHash": "d2a3527b6fa7dfda01e66a2aa5b4c061cad9b0a6647197a541106d3ac1fe1d8e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.renderedCount": {
+      "sourceHash": "2219964d3679cbd1f2482f0a8417d9fb17d1eb27cf7ee1ec545f021195a40cde",
+      "translationHash": "59aa6c28cee8fdbeb33bbab81bb48e7eb2c6740533c2f442c13f2e249e4aee80",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.resetDensity": {
+      "sourceHash": "c5b24a290b7b61d3b31a09314b936c50ec94719d1a11e71c8679e10aea1db4cd",
+      "translationHash": "1d9fb3fe52ebc739652407d7c1c6b03522729f8743cdb04fc4eebabf37478779",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.runs": {
+      "sourceHash": "22a93284bca49b93f1a14ce3c9bc0ba35ef76375823544f6131acb38a88c7faa",
+      "translationHash": "358e6b164ec0381b6c6dd8aee85457ef57e14931bd7ba8867d132734411155b9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.runtimeSummary": {
+      "sourceHash": "8542f71a0ce0645f5d132b651c5758de5d8af0bbf381665301f5ed995fa2a09e",
+      "translationHash": "9a9b7bfd1da632c4ccf05d5b1911efd472b5201f39c89daee17d978d9711bf2e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.scrollMore": {
+      "sourceHash": "8e94e39eadcf620511e63810ab25703df9d4ee73eaa6388641e53a586d149fcf",
+      "translationHash": "2b2aaf62cad0bc366e70c36ba055b5c35ce73fc750d6d4a47902bd178d746264",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.search": {
+      "sourceHash": "dab7df25e4f3f9b37222ae2812d4900fdeca6eed5e12aa17e5bf99ac425e7cdb",
+      "translationHash": "d65904d0f511f515e9984a33e5dcafb04358e0b1d2c3a1a83a833b87cbeca3c4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.searchLimit": {
+      "sourceHash": "3560e5dcc97a0a9a53ef9a3f3c9d4557a91edffe77a502c0ad796c3a5ac17984",
+      "translationHash": "be3530c6778de608e2da1ed6fe76912dc3a6b8cd791a5043dceffbac0e47f7c9",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.searchPlaceholder": {
+      "sourceHash": "70621ba2d20e799321f7d918d4f28db87c2fa97122d84c8a0a687c53f71ef4e6",
+      "translationHash": "d9b079eae952f63b49f466ebef3ebcb25f7e73aff7d8950f2b3e7de8e0b70411",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.searchResponsible": {
+      "sourceHash": "94974749c9115cfad1bb47d635860141d108354550f08d4abbe0224f80469d08",
+      "translationHash": "2ffb69eb40dba469133f5df7e88e19a6137e77afe44b6202bb9f2df86d1fdbb5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.selectCompany": {
+      "sourceHash": "7af2c199532a001dbcb78e55ef6235ef9c1d5c1977a957b726d8a3526ce5cb45",
+      "translationHash": "2b490742861ad9241fc07247ca35e330c8e4be7521cf17afe3aa5b540fd70e60",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.selectOrganization": {
+      "sourceHash": "28f19f1150c1f5b83ae881128462ddaa75e3f18a6fe2edaf2882fd776b50ea4e",
+      "translationHash": "03f1f2ff90be421f2cfb22a19f264baf2fc3c9713036a39de9ad236ded2cbb34",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.sort": {
+      "sourceHash": "03eab84beb2405c1f6c9d6d95641a3d2b3407ac44308eb2b86f5f0c6d7d8f598",
+      "translationHash": "ddeb9d97422734b3b90937a6bae0e9aa3dff96ae4389fc7e71b0cb483436ba4a",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.subtasks": {
+      "sourceHash": "8290cf014c0a788862f9410325b48f05b49d7edd1a21a8165d88639ff946a0cd",
+      "translationHash": "60101258f37dbdb17b55d2d6e65291f011c8ad1dde1bdedb0c04a2d49c8a4d8c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.title": {
+      "sourceHash": "72b0947c71370ac5e35501c9dcd60cffedba3156aa3979a60855adae2b7b6525",
+      "translationHash": "690282ddf4acd81ec67bf1af07fda10f70925c56eb628dcce2d9f9d67cb54a4e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.tokensSummary": {
+      "sourceHash": "6b14aa79a44c79a8fc72693f413e908e2083fe19acb39c2e7f9b839a9c19fdd2",
+      "translationHash": "892209bbafddad0107811fa2ff69084ffcf8d33d95b0e6eaabc5e6e2b75d62c0",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.769Z"
+    },
+    "tasks.unassigned": {
+      "sourceHash": "adc9a6bb112f781ab6a9aa281eb7480ca4ecf0db7917d947e662706429db79b7",
+      "translationHash": "0de09b18f62c957c4b135078414adfa294c24c230e1d5c440d4b85f720865aae",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "tasks.user": {
+      "sourceHash": "0469f50d743342e905743651d65fba393a23fb50a0abe5d96a52136e154748e6",
+      "translationHash": "be2eb583690a0c27eb70d08b8ec2abf87fe9e46b278fed1809b5532a7b4bb69f",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "tasks.viewMode": {
+      "sourceHash": "cc6b277668b8a53a88c3150f7546a0d148e2c783c59348ed767b25cf1710414b",
+      "translationHash": "c93bcbae91f931f2ff77baccf3c7e8c8c6989b0407a1abb9ac981cfd8c3f6c24",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "tasks.waitingBlockers": {
+      "sourceHash": "a5f11a8c6b4d7caa2de723c1e5c4648c0bb56917a29ad16a6f3b926c2eb88d31",
+      "translationHash": "92cb3b525f21a26041fa3c39502eb84e7e10697c000714408389edf9094546eb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "taskViews.active": {
+      "sourceHash": "b19d1a89b77fffe3230edbeb5d926bed73a3be02b9cd31e27fd6dcddb39e0db2",
+      "translationHash": "e6f397d919f3dba17801e9510199cd02c24cd079ffad250d800e11a85b601cd7",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskViews.all": {
+      "sourceHash": "bcb1d7b9722ef253dcd451e11efa58e4afff9efe2d4ce24d081c96755836e11c",
+      "translationHash": "275013f0fa6e8ca9eb1bc906d590e8fba7419a174036085b7737e1a11dd7e64e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.767Z"
+    },
+    "taskViews.backlog": {
+      "sourceHash": "c1c536afd279d18c893a4315f889d99df28d5442988d196ed9f58868e5e43910",
+      "translationHash": "587800d2ba3ae812b2152d4e6ee6fe39c983dde233118e63d70bdab039bc931c",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.blocked": {
+      "sourceHash": "287e752d918b7a87e3e6d97b00e16cf24d0827ed3cdc9052df43703067000ec9",
+      "translationHash": "3ba2a4fcd14b5ab4c564a5c49feafa45efd8b5c158623f592081f1e126ed0b69",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.changeView": {
+      "sourceHash": "ff2208081f77fc18ebd20e6ebeabc278f28f146c52ee7b89756c81bb80ea1232",
+      "translationHash": "4cd1c6d032c91a6f2cece06f1bd20cdc485b51fbfd3c08da32cd8f7770e45335",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.done": {
+      "sourceHash": "02c502fa337823260472ff5137bdf84acf5a92ca3c5c2871248e93bdce4baf34",
+      "translationHash": "fc5096f78d2c34b7d54d9969b3f920242a709840e2c3f120a25678a95e90febb",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.everything": {
+      "sourceHash": "7bcadafb08ff6d8ecf50bc865a8406e64cc7122d4297f14ce6bdb71a1b8174e7",
+      "translationHash": "2e11d316ba4e82eacf856c057840eb0518d5b18c267b5a5cd5b696b42c7991b8",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.active": {
+      "sourceHash": "c0b84fa491f29b4d659ac69735505cacd2c1e7567baacda1d5c254bff135e417",
+      "translationHash": "0aec4e99ed8c034957b5f53d9cd59a751ca7b25ade5aa5045817c74da07ad150",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.all": {
+      "sourceHash": "6680047ee85cc2abb2c2d0a7888969b998bf3ab011228c4311ccbdb51532a8dc",
+      "translationHash": "0d8e35b6c31c4e12e0f4208b4a72b25fdf3f3bc02ccf849382cc194a3b8bdc05",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.backlog": {
+      "sourceHash": "ce1beed9e465846763d21b34264e7cf7720e8521f8e2edd36857da45ec178df8",
+      "translationHash": "c1f4cea28eb5e5bd23c97e47c7c27834745f5f9f656c27b4f5e189f158dff389",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.blocked": {
+      "sourceHash": "069888b1510cf08272f3890bee3e00551e5a9b9e7b376ffb2f2df8a6b51ce7c7",
+      "translationHash": "6f84c0e3fe6f6aab6895b71b54deaec997d682d268412031af97b1758ad2d423",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.done": {
+      "sourceHash": "318d100228bf54d75a7b0b043979f31651e4d6ad946ca94bcc63368fbe032844",
+      "translationHash": "448211139f2d34ef3a641ebb61812b9e6fca228ca0d0b3cf678766a7f3d1c312",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.everything": {
+      "sourceHash": "386feb17e46483e827fb4c1b7eac805c981fb02db874a0e8708faec1efdab10f",
+      "translationHash": "3fd57bda49ba8ef8342b94110e9d296a6de76c959f873a4301b7afa012636af5",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.mine": {
+      "sourceHash": "fa6e530ed491069b1df29e450ca7fde0c87c708d9e4d312b7d2a2055c8f7b450",
+      "translationHash": "47661e89888f7f353445d1d36c36119ccc3d867621a7e30f96b2ecfcf30d5874",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.recent": {
+      "sourceHash": "44cdf56fb54c2b5c5bad7ffdfc181dda69c4fa7a128e3db32a2e2883306654b5",
+      "translationHash": "b9e76ad58b953375cde8713c4ada166f6c87fd31727c95f58e644583e22914d1",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.hints.unread": {
+      "sourceHash": "1ab6fabce86fcd305059b74f4ff47e6730098fe045a06df41c9f51164e217c68",
+      "translationHash": "5f7d095cbf2d49866b792e7fcc765c6cc1f8370aba0cbf1847c5a08cfbe7be45",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.mine": {
+      "sourceHash": "27a9c2b73f3f97e4254ea162b222c3af5393645d36b8a098e2082b85efe4044f",
+      "translationHash": "8192e21e4ab98a67361c7920947f114019565b290b154a836621a57b1044478e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.myWork": {
+      "sourceHash": "384ab8519075b03e584572855120df5b606191a2cd583ddf654f5f3d7cfbeed3",
+      "translationHash": "ec8582fe6d8209aa1fbdacfc319c398fc385013102a86321603b835ad480251b",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.organization": {
+      "sourceHash": "4e51b82e880175ecdc5ff9d3d4bbcfd4a77b1b5ed5ef1bd91446447dc2de299e",
+      "translationHash": "e846acd4ab8a7f600c4e881b15e2c9cc84b830d63df01efdd979b7dcba89c533",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.recent": {
+      "sourceHash": "3b328c0d26d44feab2e0cf5ffb37924d3a87a09c0a08f9636867987dba9a8962",
+      "translationHash": "9e640805bf1084b2fc998e5228f88a2c357eee54857ea6a6f7aea2d265fc0d75",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "taskViews.unread": {
+      "sourceHash": "7cf501216ee07f93ba5efd3d36df1114639b40aa77cc504bb40a5801b234be59",
+      "translationHash": "516e23917538a601718df616d373cb9b1893c0b7cc5e19c3e345431ab89982f4",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.768Z"
+    },
+    "theme.dark": {
+      "sourceHash": "ec8a12ccff525cf9fe18d664242081331f72c3a8943dfe4fddb6a0b5ca350d24",
+      "translationHash": "39f65d2f7daa32a14c56d9aced408ba92a8128946b64db755f5ec7459498b56e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "theme.description": {
+      "sourceHash": "893879cf2c375f3510d2ccb1f3234e462e1f36d7f63e200f5c563d36ab21c2f2",
+      "translationHash": "9b017d68381c065ebf286cc7a7b0e72157d9f57fb73211530be1cd0af20d2b7e",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    },
+    "theme.light": {
+      "sourceHash": "62aad08237411f4298a6e87f48d9ad8f7939c13ba673d90f6c2bd16f4d275f6c",
+      "translationHash": "536c7589a74beeba5c584f4aba9b051ca63f8ab509b0c22b14cc852fda606277",
+      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-25T22:12:18.770Z"
+    }
+  }
+}
