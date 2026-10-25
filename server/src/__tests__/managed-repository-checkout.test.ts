@@ -1,6 +1,7 @@
 import { execFile as execFileCallback } from "node:child_process";
 import { promisify } from "node:util";
 import { mkdtemp, mkdir, writeFile, readFile, readdir, rm, stat, symlink } from "node:fs/promises";
+import { existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -47,6 +48,29 @@ describe("atomic managed repository publication", () => {
     await ensureManagedRepositoriesIgnored(source, { plainTaskDirectory: true });
     expect(await readFile(path.join(source, ".git", "info", "exclude"), "utf8")).toContain("/.paperclip-repositories/");
   });
+  it.skipIf(process.platform !== "linux" || !existsSync("/dev/shm") || statSync("/dev/shm").dev === statSync("/").dev)(
+    "handles inert metadata at a real filesystem boundary without relaxing strict checkout validation",
+    async () => {
+      const target = await mkdtemp("/dev/shm/paperclip-repository-boundary-");
+      directories.push(target);
+      for (const key of ["GIT_DISCOVERY_ACROSS_FILESYSTEM", "GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR"]) {
+        vi.stubEnv(key, undefined);
+      }
+      await mkdir(path.join(target, ".git", "info"), { recursive: true });
+      const file = path.join(target, ".git", "info", "exclude");
+      await writeFile(file, "/.paperclip-repositories/\n");
+      const failure = await execFile("git", ["-C", target, "rev-parse", "--git-path", "info/exclude"], {
+        env: { ...process.env, LC_ALL: "C" },
+      }).then(() => null, error => error);
+      expect(failure).toMatchObject({ code: 128, stderr: expect.stringContaining("Stopping at filesystem boundary") });
+      await expect(ensureManagedRepositoriesIgnored(target, { plainTaskDirectory: true })).resolves.toBeUndefined();
+      expect(await readFile(file, "utf8")).toBe("/.paperclip-repositories/\n");
+      await expect(ensureManagedRepositoriesIgnored(target)).rejects.toThrow("not a git repository");
+      vi.stubEnv("GIT_WORK_TREE", target);
+      await expect(ensureManagedRepositoriesIgnored(target, { plainTaskDirectory: true })).rejects.toThrow();
+      expect(await readFile(file, "utf8")).toBe("/.paperclip-repositories/\n");
+    },
+  );
   it("retains unexpected Git errors for declared plain task directories", async () => {
     const { root, target } = await fixture();
     await mkdir(path.join(target, ".git"), { recursive: true });
