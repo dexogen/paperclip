@@ -22,9 +22,11 @@ concurrency:
 
 jobs:
   gate:
+    if: github.repository == 'paperclipai/paperclip'
     uses: paperclipai/paperclip/.github/workflows/ci-routing.yml@master
 
   policy:
+    if: github.repository == 'paperclipai/paperclip'
     needs: [gate]
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 10
@@ -152,7 +154,7 @@ jobs:
   typecheck_release_registry:
     name: Typecheck + Release Registry
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
 
@@ -349,7 +351,7 @@ jobs:
   general_tests:
     name: General tests (${{ matrix.group_label }})
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
     strategy:
@@ -532,7 +534,7 @@ jobs:
   docker_context_integrity:
     name: Docker context integrity
     needs: gate
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 15
 
@@ -589,7 +591,7 @@ jobs:
   verify:
     # Preserve the legacy required-check name while the underlying work runs in parallel.
     name: verify
-    if: ${{ always() }}
+    if: github.repository == 'paperclipai/paperclip' && (always())
     needs: [gate, policy, typecheck_release_registry, general_tests, verify_paperclip_runner, build, docker_context_integrity]
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 5
@@ -630,7 +632,7 @@ jobs:
   verify_paperclip_runner:
     name: Verify Paperclip Runner (${{ matrix.lane_label }})
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
     strategy:
@@ -863,7 +865,7 @@ jobs:
   build:
     name: Build
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
 
@@ -1115,7 +1117,7 @@ jobs:
   verify_serialized_server:
     name: Verify serialized server suites (${{ matrix.shard_label }})
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
     strategy:
@@ -1240,7 +1242,7 @@ jobs:
   canary_dry_run:
     name: Canary Dry Run
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 20
 
@@ -1455,7 +1457,7 @@ jobs:
   e2e_shards:
     name: e2e shard (${{ matrix.shard_label }})
     needs: [gate]
-    if: ${{ needs.gate.outputs.full_ci == 'true' }}
+    if: github.repository == 'paperclipai/paperclip' && (needs.gate.outputs.full_ci == 'true')
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 30
     strategy:
@@ -1624,7 +1626,7 @@ jobs:
     # Preserve the legacy required-check name while the specs run sharded
     # across the matrix above (same pattern as the `verify` aggregate).
     name: e2e
-    if: ${{ always() }}
+    if: github.repository == 'paperclipai/paperclip' && (always())
     needs: [gate, policy, e2e_shards]
     runs-on: ${{ needs.gate.outputs.runner }}
     timeout-minutes: 5

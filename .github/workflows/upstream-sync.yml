@@ -1,0 +1,63 @@
+name: Upstream localization sync
+
+on:
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+
+permissions: {}
+concurrency:
+  group: upstream-localization-sync
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.repository == 'dexogen/paperclip' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - name: Checkout accepted control revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 9.15.4
+      - name: Install trusted audit tooling without lifecycle scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --filter . --filter @paperclipai/ui
+      - name: Create fork-scoped App token when configured
+        id: app
+        if: vars.UPSTREAM_SYNC_APP_ID != ''
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        with:
+          app-id: ${{ vars.UPSTREAM_SYNC_APP_ID }}
+          private-key: ${{ secrets.UPSTREAM_SYNC_APP_PRIVATE_KEY }}
+          owner: dexogen
+          repositories: paperclip
+          permission-contents: write
+          permission-pull-requests: write
+          permission-actions: write
+          permission-workflows: write
+      - name: Prepare pinned update and dispatch exact-source verification
+        id: sync
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token || github.token }}
+          SYNC_REPORT_DIR: ${{ runner.temp }}/upstream-reports
+        run: node scripts/upstream-sync/run.mjs
+      - name: Keep source delta and conflict evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: upstream-localization-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/upstream-reports
+          if-no-files-found: ignore
+          retention-days: 30

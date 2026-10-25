@@ -22,9 +22,7 @@ concurrency:
 
 jobs:
   paired:
-    if: >-
-      contains(github.event.pull_request.labels.*.name, 'profile-ci') &&
-      (github.event.action != 'labeled' || github.event.label.name == 'profile-ci')
+    if: github.repository == 'paperclipai/paperclip' && (contains(github.event.pull_request.labels.*.name, 'profile-ci') && (github.event.action != 'labeled' || github.event.label.name == 'profile-ci'))
     runs-on: ubuntu-latest
     timeout-minutes: 25
     defaults:

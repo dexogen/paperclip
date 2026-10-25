@@ -1,0 +1,210 @@
+name: Fork verification
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Exact branch commit to verify; a moved branch fails closed
+        required: true
+        type: string
+
+permissions:
+  contents: read
+concurrency:
+  group: fork-verification-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --max-old-space-size=4096
+  CARGO_BUILD_JOBS: 2
+  VITE_DEFAULT_LOCALE: en
+
+jobs:
+  localization:
+    if: github.repository == 'dexogen/paperclip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify dispatched source identity
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          [[ "$EXPECTED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$GITHUB_SHA" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 9.15.4
+      - run: pnpm install --frozen-lockfile --ignore-scripts --filter . --filter @paperclipai/ui
+      - name: Verify workflow ownership
+        run: node scripts/upstream-sync/check-workflows.mjs
+      - name: Exercise source detector and sync regression cases
+        run: node --test scripts/localization/*.test.mjs scripts/upstream-sync/*.test.mjs
+      - name: Check new strings and reviewed translation contracts
+        run: node scripts/localization/check.mjs --check --json localization-report.json --markdown localization-report.md
+      - name: Attach localization report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: localization-${{ github.sha }}
+          path: localization-report.*
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish check summary
+        if: always()
+        run: |
+          if test -f localization-report.md; then cat localization-report.md >> "$GITHUB_STEP_SUMMARY"; fi
+
+  code:
+    if: github.repository == 'dexogen/paperclip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      VITEST_MAX_WORKERS: 2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Verify dispatched source identity
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          [[ "$EXPECTED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$GITHUB_SHA" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 9.15.4
+      - name: Install exact dependency lock
+        run: pnpm install --frozen-lockfile
+      - name: Select the Runner Rust toolchain
+        working-directory: packages/paperclip-runner
+        run: |
+          rustup show
+          toolchain="$(rustup show active-toolchain | awk '{print $1}')"
+          echo "RUSTUP_TOOLCHAIN=$toolchain" >> "$GITHUB_ENV"
+      - name: Build workspace packages
+        run: pnpm build
+      - name: Typecheck workspace
+        run: pnpm -r typecheck
+      - name: Test UI and CLI workspaces
+        run: pnpm test:run:general -- --group general-workspaces-a
+      - name: Test shared and adapter workspaces
+        run: pnpm test:run:general -- --group general-workspaces-b
+      - name: Test database workspace
+        run: pnpm test:run:general -- --group general-workspaces-c
+      - name: Enforce UI design tokens
+        run: pnpm check:token-gates
+      - name: Install Chromium for localization journeys
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Verify English and Russian browser journeys
+        run: pnpm test:localization:browser
+
+  tests:
+    name: Server tests (${{ matrix.mode }} ${{ matrix.shard_index }})
+    if: github.repository == 'dexogen/paperclip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      VITEST_MAX_WORKERS: ${{ matrix.mode == 'serialized' && '1' || '2' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - mode: general
+            shard_index: 0
+            shard_count: 4
+          - mode: general
+            shard_index: 1
+            shard_count: 4
+          - mode: general
+            shard_index: 2
+            shard_count: 4
+          - mode: general
+            shard_index: 3
+            shard_count: 4
+          - mode: serialized
+            shard_index: 0
+            shard_count: 2
+          - mode: serialized
+            shard_index: 1
+            shard_count: 2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Verify dispatched source identity
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          [[ "$EXPECTED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$GITHUB_SHA" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 9.15.4
+      - name: Install exact dependency lock
+        run: pnpm install --frozen-lockfile
+      - name: Select the Runner Rust toolchain
+        working-directory: packages/paperclip-runner
+        run: |
+          rustup show
+          toolchain="$(rustup show active-toolchain | awk '{print $1}')"
+          echo "RUSTUP_TOOLCHAIN=$toolchain" >> "$GITHUB_ENV"
+      - name: Prepare native process fixtures
+        if: matrix.mode == 'general'
+        run: |
+          pnpm --filter @paperclipai/paperclip-runner build:runner-binaries
+          cargo build --release --locked --manifest-path packages/paperclip-runner/runner/Cargo.toml -p paperclip-runner-core --bin paperclip-runnerd --bin fake-codex-app-server
+          test -x packages/paperclip-runner/runner/target/debug/paperclip-runnerd
+          test -x packages/paperclip-runner/runner/target/debug/fake-codex-app-server
+      - name: Run complete server partition
+        env:
+          TEST_MODE: ${{ matrix.mode }}
+          SHARD_INDEX: ${{ matrix.shard_index }}
+          SHARD_COUNT: ${{ matrix.shard_count }}
+        run: |
+          if [ "$TEST_MODE" = general ]; then
+            pnpm test:run:general -- --group general-server --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
+          else
+            pnpm test:run:serialized -- --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
+          fi
+
+  verify:
+    name: Fork integration verified
+    if: github.repository == 'dexogen/paperclip' && always()
+    needs: [localization, code, tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require all verification lanes
+        env:
+          LOCALIZATION_RESULT: ${{ needs.localization.result }}
+          CODE_RESULT: ${{ needs.code.result }}
+          TEST_RESULT: ${{ needs.tests.result }}
+        run: |
+          test "$LOCALIZATION_RESULT" = success
+          test "$CODE_RESULT" = success
+          test "$TEST_RESULT" = success

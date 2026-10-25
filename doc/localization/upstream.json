@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "upstreamRepository": "paperclipai/paperclip",
+  "upstreamBranch": "master",
+  "forkBranch": "master",
+  "syncBranch": "codex/upstream-sync",
+  "lastAcceptedUpstreamSha": "2a45fd95df352b1e9d20ab366181bc715a06fe35"
+}
