@@ -49,6 +49,21 @@ test('preparation preserves both parents and advances state only in the candidat
   assert.equal(readFileSync(join(f.directory, 'new.txt'), 'utf8'), 'Upstream change\n');
 });
 
+test('preparation uses the bot identity without changing an unconfigured repository', (t) => {
+  const f = fixture(t);
+  git(f.cwd, ['config', '--local', 'user.name', '']);
+  git(f.cwd, ['config', '--local', 'user.email', '']);
+  const configPath = join(f.cwd, '.git', 'config');
+  const config = readFileSync(configPath, 'utf8');
+  const result = prepareCandidate(f);
+  assert.equal(result.status, 'prepared');
+  assert.equal(git(f.directory, ['show', '-s', '--format=%an <%ae>%n%cn <%ce>', 'HEAD']).stdout,
+    'paperclip-sync[bot] <paperclip-sync[bot]@users.noreply.github.com>\n' +
+    'paperclip-sync[bot] <paperclip-sync[bot]@users.noreply.github.com>');
+  assert.equal(git(f.directory, ['show', '-s', '--format=%P', 'HEAD']).stdout, `${f.baseSha} ${f.upstreamSha}`);
+  assert.equal(readFileSync(configPath, 'utf8'), config);
+});
+
 test('conflicting text leaves source history and accepted state unchanged', (t) => {
   const f = fixture(t, { conflict: true });
   const result = prepareCandidate(f);

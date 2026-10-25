@@ -296,7 +296,7 @@ sync App or GHCR publication has been demonstrated. The activation and recovery 
 are in [the fork runbook](../localization/UPSTREAM.md).
 
 Full workspace `pnpm -r typecheck` and `pnpm build` passed. Targeted UI tests,
-33 detector/sync regression tests, token gates, and map checks passed. The standard
+34 detector/sync regression tests, token gates, and map checks passed. The standard
 Chromium journey passed on desktop and mobile; four additional repeated runs
 confirmed the WSL headless environment correction. These browser tests use API
 fixtures and do not certify full-stack authentication.

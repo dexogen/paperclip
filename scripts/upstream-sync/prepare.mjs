@@ -28,7 +28,8 @@ export function prepareCandidate({ cwd, directory, baseSha, upstreamSha, state, 
     throw new Error('The sync branch contains unmerged work. It will not be reset or overwritten');
   }
   git(cwd, ['worktree', 'add', '--detach', directory, baseSha]);
-  const result = git(directory, ['merge', '--no-ff', '--no-commit', upstreamSha], { allowFailure: true });
+  const result = git(directory, ['-c', 'user.name=paperclip-sync[bot]', '-c', 'user.email=paperclip-sync[bot]@users.noreply.github.com',
+    'merge', '--no-ff', '--no-commit', upstreamSha], { allowFailure: true });
   if (result.status !== 0) {
     const conflicts = git(directory, ['diff', '--name-only', '--diff-filter=U']).stdout.split('\n').filter(Boolean);
     if (conflicts.length === 0) throw new Error(`Cannot merge upstream: ${result.stderr || result.stdout}`);
