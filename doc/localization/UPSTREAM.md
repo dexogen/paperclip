@@ -143,7 +143,7 @@ builds use the fork's Russian default.
 
 Test jobs set `GIT_DISCOVERY_ACROSS_FILESYSTEM=1`. Temporary non-repository fixtures
 must produce the same Git diagnostic on runners with a separate temporary filesystem.
-This corrects four observed failures in unchanged workspace/recovery tests without
+This corrects six observed failures in unchanged workspace/recovery tests without
 changing their assertions or application code. A separate sandbox test accepts a
 positive shell exit status for denied redirection: shells can return either 1 or 2.
 It still verifies a successful in-workspace write, denied external read, and unchanged
