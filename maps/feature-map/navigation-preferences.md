@@ -20,6 +20,7 @@ Agent access: [companion](../agent-access-map/navigation-preferences.md).
 - `announcements`: `navigation-preferences/announcements` — inspect and dismiss an announcement with its intended instance-wide user scope.
 - `fallbacks`: `navigation-preferences/fallbacks` — handle missing resources and old deep links without presenting another resource as the target.
 - `command-palette`: `navigation-preferences/command-palette` — open quick search and creation actions with keyboard shortcuts, then carry query/filter intent into full search.
+- `locale`: `navigation-preferences/locale` — choose English or Russian for supported UI surfaces and retain the choice in this browser.
 
 ## How to get to it (user POV)
 
@@ -63,6 +64,24 @@ Automated: [Command palette](../../ui/src/components/CommandPalette.test.tsx), [
 Manual: Use uniquely named visible and private task/project fixtures. Open the palette, find a permitted result, follow it, and reload the destination. Enter text with quick-filter chips such as `assignee:me`, `is:open`, and `updated:>7d`; use Search all and Cmd/Ctrl+Enter in separate attempts and verify the resulting query and filters. Switch person/company and confirm private results do not leak. Test `/` on a page with search and a page without it; inspect `?`, `c`, and `g i`. Type those keys inside an editor and a modal: they must not unexpectedly navigate or create work. Test a create action through its normal dialog and inspect the actual saved resource separately.
 
 Sources: [Command palette](../../ui/src/components/CommandPalette.tsx), [shortcut hook](../../ui/src/hooks/useKeyboardShortcuts.ts), [query parser](../../ui/src/lib/search-query-parser.ts), and [search routes](../../server/src/routes/issues.ts).
+
+### `locale`
+
+Use the language control at sign-in or in the sidebar account menu. The fork starts
+in Russian unless `VITE_DEFAULT_LOCALE` overrides it; a saved `paperclip.locale`
+preference wins. This is browser-local presentation, not an account-wide setting.
+
+Automated: [locale preferences](../../ui/src/i18n/locale-preferences.test.ts),
+[language control](../../ui/src/components/LocaleSwitcher.test.tsx),
+[profile](../../ui/src/pages/ProfileSettings.test.tsx), and
+[formatting](../../ui/src/lib/utils.localization.test.ts) cover storage failure,
+language changes, draft preservation, and display contracts with fixtures.
+
+Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
+document language, labels, accessible names, dates, and currency. Verify both UI
+variants and a narrow viewport. Language changes must not submit forms, change
+identifiers, convert currency, or change the time zone. Component checks do not
+establish complete UI translation coverage; consult the localization audit report.
 
 ## Gotchas
 

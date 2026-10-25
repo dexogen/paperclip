@@ -1,3 +1,4 @@
+import { useTranslation } from "../i18n";
 import { useMemo } from "react";
 import { NavLink, useLocation } from "@/lib/router";
 import {
@@ -39,6 +40,7 @@ interface MobileNavActionItem {
 type MobileNavItem = MobileNavLinkItem | MobileNavActionItem;
 
 export function MobileBottomNav({ visible }: MobileBottomNavProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const { selectedCompanyId } = useCompany();
   const { openNewIssue } = useDialogActions();
@@ -53,36 +55,36 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
   // tracks the live count, so the bar stays evenly divided in every mix.
   const items = useMemo<MobileNavItem[]>(
     () => !agentChatEnabled && !combinedInboxTasksEnabled ? [
-      { type: "link", to: "/dashboard", label: "Home", icon: House },
-      { type: "link", to: "/issues", label: "Tasks", icon: CircleCheck },
-      { type: "action", label: "New Task", icon: SquarePen, onClick: () => openNewIssue() },
-      { type: "link", to: "/agents/all", label: "Agents", icon: Users },
+      { type: "link", to: "/dashboard", label: t("mobileNav.home"), icon: House },
+      { type: "link", to: "/issues", label: t("mobileNav.tasks"), icon: CircleCheck },
+      { type: "action", label: t("mobileNav.newTask"), icon: SquarePen, onClick: () => openNewIssue() },
+      { type: "link", to: "/agents/all", label: t("mobileNav.agents"), icon: Users },
       {
         type: "link",
         to: "/inbox",
-        label: "Inbox",
+        label: t("mobileNav.inbox"),
         icon: Inbox,
         badge: inboxBadge.inbox,
       },
     ] : [
-      { type: "link", to: "/dashboard", label: "Home", icon: House },
+      { type: "link", to: "/dashboard", label: t("mobileNav.home"), icon: House },
       ...(agentChatEnabled
-        ? [{ type: "link", to: "/chats", label: "Chat", icon: MessageCircle } as MobileNavItem]
+        ? [{ type: "link", to: "/chats", label: t("mobileNav.chat"), icon: MessageCircle } as MobileNavItem]
         : []),
-      { type: "action", label: "New Task", icon: SquarePen, onClick: () => openNewIssue() },
+      { type: "action", label: t("mobileNav.newTask"), icon: SquarePen, onClick: () => openNewIssue() },
       {
         type: "link",
         to: "/issues",
-        label: "Tasks",
+        label: t("mobileNav.tasks"),
         icon: CircleCheck,
         badge: combinedInboxTasksEnabled ? inboxBadge.inbox : undefined,
       },
-      { type: "link", to: "/agents/all", label: "Agents", icon: Users },
+      { type: "link", to: "/agents/all", label: t("mobileNav.agents"), icon: Users },
       ...(!combinedInboxTasksEnabled
-        ? [{ type: "link", to: "/inbox", label: "Inbox", icon: Inbox, badge: inboxBadge.inbox } as MobileNavItem]
+        ? [{ type: "link", to: "/inbox", label: t("mobileNav.inbox"), icon: Inbox, badge: inboxBadge.inbox } as MobileNavItem]
         : []),
     ],
-    [openNewIssue, inboxBadge.inbox, agentChatEnabled, combinedInboxTasksEnabled],
+    [openNewIssue, inboxBadge.inbox, agentChatEnabled, combinedInboxTasksEnabled, t],
   );
 
   return (
@@ -92,7 +94,7 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
       )}
       data-visible={visible}
       inert={!visible}
-      aria-label="Mobile navigation"
+      aria-label={t("mobileNav.label")}
     >
       <div
         className="grid h-16 px-1"
@@ -104,7 +106,7 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
             const active = /\/issues\/new(?:\/|$)/.test(location.pathname);
             return (
               <button
-                key={item.label}
+                key="new-task"
                 type="button"
                 onClick={item.onClick}
                 className={cn(
@@ -123,7 +125,7 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
           const Icon = item.icon;
           return (
             <NavLink
-              key={item.label}
+              key={item.to}
               to={item.to}
               state={SIDEBAR_SCROLL_RESET_STATE}
               className={({ isActive }) =>

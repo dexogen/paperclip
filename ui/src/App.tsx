@@ -607,10 +607,7 @@ export function OnboardingRoutePage() {
               say why instead of rendering an inert control. */}
           {!matchedCompany && cloudInstance && !createStackUrl ? (
             <p className="text-sm text-muted-foreground">
-              {t("app.cloudCreateUnavailable", {
-                defaultValue:
-                  "Organizations are created in Paperclip Cloud. This instance can't reach it right now — try again from your Cloud portfolio.",
-              })}
+              {t("app.cloudCreateUnavailable")}
             </p>
           ) : (
             <Button
@@ -736,10 +733,7 @@ function NoCompaniesStartPage() {
               send the click, and in-app creation is a 403 floor here. */}
           {cloudInstance && !createStackUrl ? (
             <p className="text-sm text-muted-foreground">
-              {t("app.cloudCreateUnavailable", {
-                defaultValue:
-                  "Organizations are created in Paperclip Cloud. This instance can't reach it right now — try again from your Cloud portfolio.",
-              })}
+              {t("app.cloudCreateUnavailable")}
             </p>
           ) : (
             <Button

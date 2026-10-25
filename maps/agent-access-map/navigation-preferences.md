@@ -166,3 +166,29 @@ Evidence: `source-only` — reviewed at `9ef434fe79c57d976b8b03b14c5242db270b832
 Verification: `not-run` — Drive palette and shortcut entry points in the browser, preserve filter/query intent into full search, and check denied private/foreign results. Separately call the read/search path with the actual permitted agent and reject unsupported human-only filters; a board palette result is not agent authorization evidence.
 
 Gaps: The map records transient palette state, not a promise that its open state or draft input survives reload. Every shell, keyboard layout, file-viewer gate, and creation action is not qualified by one palette test.
+
+## `locale`
+
+Capability ID: `navigation-preferences/locale`.
+
+Review: `baseline`.
+
+API: `not-applicable` — language selection changes browser-local presentation through
+`setLocale` and the `paperclip.locale` localStorage key. There is no server mutation.
+
+Agent access: `not-applicable` — the existing language control is a browser action;
+agent instructions, content, API identifiers, and permissions retain their meaning.
+
+Policy: A language preference does not grant company access or alter resource data.
+Storage is local to the browser origin and is not synchronized to a person's account.
+
+Evidence: `source-only` — [runtime](../../ui/src/i18n/index.ts) and
+[control](../../ui/src/components/LocaleSwitcher.tsx). Component tests are not an
+agent authorization check.
+
+Verification: `not-run` — Use the product map's EN/RU/EN journey and verify no server mutation
+or submitted form occurs from selecting a language alone.
+
+Gaps: Localization coverage is incremental. Server diagnostics and arbitrary dynamic
+content may retain their original language; local preference storage is not identity
+isolation or a portable account setting.

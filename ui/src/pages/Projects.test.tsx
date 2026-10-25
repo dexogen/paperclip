@@ -8,6 +8,7 @@ import type { Project } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ToastProvider } from "../context/ToastContext";
 import { Projects } from "./Projects";
+import { setLocale } from "../i18n";
 
 const mockProjectsApi = vi.hoisted(() => ({
   list: vi.fn(),
@@ -114,7 +115,8 @@ describe("Projects", () => {
   let root: ReturnType<typeof createRoot> | null;
   let queryClient: QueryClient;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await setLocale("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     root = null;
@@ -162,6 +164,7 @@ describe("Projects", () => {
         currentRoot.unmount();
       });
     }
+    await setLocale("en");
     queryClient.clear();
     container.remove();
     document.body.innerHTML = "";
@@ -256,4 +259,39 @@ describe("Projects", () => {
     expect(hiddenDescriptionLine).not.toBeNull();
     expect(hiddenDescriptionLine?.className).toContain("min-h-4");
   });
+
+  it("switches a filtered project list to Russian without resetting the query or actions", async () => {
+    await renderProjects();
+    const input = container.querySelector<HTMLInputElement>('input[aria-label="Search projects"]')!;
+    await act(() => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "charlie");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    await act(async () => { await setLocale("ru"); });
+    expect(container.querySelector('input[aria-label="Поиск проектов"]')).toBe(input);
+    expect(input.value).toBe("charlie");
+    expect(container.textContent).toContain("Мои проекты");
+    expect(container.textContent).toContain("1 проект");
+    expect(container.textContent).toContain("В работе");
+    expect(container.textContent).toContain("Charlie");
+    expect(container.textContent).not.toContain("Alpha");
+    expect(mockSetBreadcrumbs).toHaveBeenLastCalledWith([{ label: "Проекты" }]);
+    expect(container.querySelector('button[title="Сортировка"]')?.textContent).toContain("Сортировка: Название");
+
+    const create = [...container.querySelectorAll("button")].find(button => button.textContent?.includes("Добавить проект"))!;
+    await act(() => create.click());
+    expect(mockOpenNewProject).toHaveBeenCalledTimes(1);
+    await act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Очистить поиск"]')!.click());
+    expect(container.textContent).toContain("2 проекта");
+    expect(container.textContent).toContain("Alpha");
+    expect(container.textContent).toContain("Bravo");
+
+    await act(async () => { await setLocale("en"); });
+    expect(container.querySelector('input[aria-label="Search projects"]')).toBe(input);
+    expect(input.value).toBe("");
+    expect(container.textContent).toContain("My Projects");
+    expect(container.textContent).toContain("2 projects");
+  });
+
 });

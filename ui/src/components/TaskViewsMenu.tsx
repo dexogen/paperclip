@@ -1,3 +1,4 @@
+import { useTranslation } from "../i18n";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +27,30 @@ export function TaskViewsMenu({
   /** Unread count surfaced next to the My-work group, mirroring the nav badge. */
   badgeCount?: number;
 }) {
+  const { t } = useTranslation();
   const active = taskView(value);
+  const labels: Record<TaskViewKey, string> = {
+    mine: t("taskViews.mine"),
+    unread: t("taskViews.unread"),
+    blocked: t("taskViews.blocked"),
+    recent: t("taskViews.recent"),
+    everything: t("taskViews.everything"),
+    all: t("taskViews.all"),
+    active: t("taskViews.active"),
+    backlog: t("taskViews.backlog"),
+    done: t("taskViews.done"),
+  };
+  const hints: Record<TaskViewKey, string> = {
+    mine: t("taskViews.hints.mine"),
+    unread: t("taskViews.hints.unread"),
+    blocked: t("taskViews.hints.blocked"),
+    recent: t("taskViews.hints.recent"),
+    everything: t("taskViews.hints.everything"),
+    all: t("taskViews.hints.all"),
+    active: t("taskViews.hints.active"),
+    backlog: t("taskViews.hints.backlog"),
+    done: t("taskViews.hints.done"),
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,18 +58,18 @@ export function TaskViewsMenu({
           size="sm"
           variant="outline"
           className="h-8 gap-1.5"
-          aria-label={`Change view — currently ${active.label}`}
+          aria-label={t("taskViews.changeView", { view: labels[active.key] })}
         >
-          <span className="max-w-(--sz-160px) truncate font-medium">{active.label}</span>
+          <span className="max-w-(--sz-160px) truncate font-medium">{labels[active.key]}</span>
           <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-(--sz-260px)">
         {TASK_VIEW_GROUPS.map((group, groupIndex) => (
-          <div key={group.label}>
+          <div key={groupIndex === 0 ? t("taskViews.myWork") : t("taskViews.organization")}>
             {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
             <DropdownMenuLabel className="flex items-center justify-between gap-2">
-              <span>{group.label}</span>
+              <span>{groupIndex === 0 ? t("taskViews.myWork") : t("taskViews.organization")}</span>
               {groupIndex === 0 && badgeCount != null && badgeCount > 0 ? (
                 <span className="rounded-full bg-primary px-1.5 text-(length:--text-nano) leading-tight text-primary-foreground">
                   {badgeCount > 99 ? "99+" : badgeCount}
@@ -66,8 +90,8 @@ export function TaskViewsMenu({
                     className={cn("mt-0.5 size-3.5 shrink-0", selected ? "opacity-100" : "opacity-0")}
                   />
                   <span className="min-w-0">
-                    <span className={cn("block truncate", selected && "font-medium")}>{view.label}</span>
-                    <span className="block text-(length:--text-nano) text-muted-foreground">{view.hint}</span>
+                    <span className={cn("block truncate", selected && "font-medium")}>{labels[view.key]}</span>
+                    <span className="block text-(length:--text-nano) text-muted-foreground">{hints[view.key]}</span>
                   </span>
                 </DropdownMenuItem>
               );
