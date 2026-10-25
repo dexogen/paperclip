@@ -301,10 +301,25 @@ Chromium journey passed on desktop and mobile; four additional repeated runs
 confirmed the WSL headless environment correction. These browser tests use API
 fixtures and do not certify full-stack authentication.
 
-The complete Vitest inventory is running in equivalent partitions: 1,156 general
-server suites, 162 serialized suites, and 20 workspace projects. Local attempts
-superseded for resource limits are not passes. Record the complete outcome and hosted
-CI result in the implementation PR before requesting merge.
+The implementation is published in [draft PR #1](https://github.com/dexogen/paperclip/pull/1).
+Its verification record tracks the exact commit, full-suite outcome, and remaining
+failures. The hosted inventory contains 1,156 general server suites, 162 serialized
+suites, and 20 workspace projects. Local attempts superseded for resource limits
+are not passes; hosted verification must cover every partition before acceptance.
+
+The full local attempt exposed an existing CompanySettings test helper that did not
+wait for React transitions. The same three assertions failed with the original
+revision. Replacing the helper with React's `act` made all four tests pass without
+changing their assertions or product behavior. A separate original server test
+depends on Git's exact non-repository error text; WSL filesystem boundaries change
+that text. A focused environment control passed with
+`GIT_DISCOVERY_ACROSS_FILESYSTEM=1`, without source changes. Keep the original
+failures and timing-sensitive test results in the PR's verification record.
+
+The inherited `commitperclip PR Review` workflow is temporarily disabled in the
+fork. Its initial `pull_request_target` run used the unguarded default branch and
+failed because Dependency Review was unavailable. Re-enable it after the owner
+guard reaches `master`; the fork's own verification remains enabled.
 
 The next translation slice should close an entire remaining user journey, prune
 resolved baseline entries, review changed message fingerprints, and add appropriate

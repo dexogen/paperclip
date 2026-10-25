@@ -30,6 +30,16 @@ this fork runs its own checks instead of mutable upstream reusable workflows.
 
 ## One-time activation
 
+During the initial fork PR, inherited `pull_request_target` workflows still use the
+unguarded definition on `master`. If `commitperclip PR Review` fails because the
+fork lacks upstream Dependency Review or bot configuration, disable that inherited
+workflow in the fork's Actions settings while the foundation is under review. Keep
+the failed run as evidence; disabling a workflow does not make that run pass. The
+fork-owned verification must still pass on the actual candidate commit. After the
+owner guard has landed on `master`, the inherited workflow can be enabled again;
+its jobs will skip this fork. Do not disable the fork's verification to bypass a
+code or test failure.
+
 1. Merge the foundation and workflow changes into the fork's default `master` branch.
    The workflow definitions must exist there for schedules and manual dispatch.
 2. Enable GitHub Actions for the fork. Allow Actions to create PRs if using the default
