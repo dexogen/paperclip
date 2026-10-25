@@ -156,7 +156,6 @@ if sys.argv[1] != "completion":
     const read = await executeWorkspaceTool(directory, "workspace_run", { program: "/bin/cat", args: [secret] }, authorize);
     expect(read).toMatchObject({ exitCode: 1 }); expect(String((read as any).output)).not.toContain("PRIVATE");
     const write = await executeWorkspaceTool(directory, "workspace_run", { program: "/bin/sh", args: ["-c", 'printf stolen > "$1"', "sh", secret] }, authorize);
-    // Shells differ in the status they return when redirection is denied.
     expect((write as { exitCode: number }).exitCode).toBeGreaterThan(0);
     expect(await readFile(secret, "utf8")).toBe("PRIVATE");
   });

@@ -74,7 +74,6 @@ jobs:
     timeout-minutes: 90
     env:
       VITEST_MAX_WORKERS: 2
-      # Keep Git's non-repository diagnostic stable for temporary fixture paths.
       GIT_DISCOVERY_ACROSS_FILESYSTEM: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
