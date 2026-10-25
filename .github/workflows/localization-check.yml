@@ -114,6 +114,8 @@ jobs:
         run: pnpm check:token-gates
       - name: Install Chromium for localization journeys
         run: pnpm exec playwright install --with-deps chromium
+      - name: Typecheck localization browser harness
+        run: pnpm typecheck:localization:browser
       - name: Verify English and Russian browser journeys
         run: pnpm test:localization:browser
 

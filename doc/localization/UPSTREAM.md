@@ -131,6 +131,14 @@ catalog and new literals. Ordinary verification builds use English for existing
 browser/test contracts; locale tests select Russian explicitly. Production image
 builds use the fork's Russian default.
 
+In WSL, the headless browser fixture removes `DISPLAY`, `WAYLAND_DISPLAY`, and
+`XDG_RUNTIME_DIR` from the browser child process only. In this environment, inherited
+WSLg settings stopped animation frames even on a plain HTML page while timers kept
+running; clicks could not pass Playwright's stability check and screenshots stalled.
+The fixture retains actionability checks and the real application. It preserves the
+parent environment, non-WSL launches, and headed debugging (`--headed` or `PWDEBUG`). The config
+sets the headless option explicitly so the launch fixture can read the resolved mode.
+
 Local checks for the orchestration code:
 
 ```sh

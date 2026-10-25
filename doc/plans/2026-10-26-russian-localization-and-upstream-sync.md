@@ -295,9 +295,16 @@ workflow token is read-only and Actions PR creation/approval is disabled. No ins
 sync App or GHCR publication has been demonstrated. The activation and recovery steps
 are in [the fork runbook](../localization/UPSTREAM.md).
 
-Targeted UI tests, the UI typecheck, token gates, detector fixtures, and sync fixtures
-have passed. Full repository typecheck/tests/build and Chromium checks are in progress;
-record their final outcome in the implementation PR before requesting merge.
+Full workspace `pnpm -r typecheck` and `pnpm build` passed. Targeted UI tests,
+33 detector/sync regression tests, token gates, and map checks passed. The standard
+Chromium journey passed on desktop and mobile; four additional repeated runs
+confirmed the WSL headless environment correction. These browser tests use API
+fixtures and do not certify full-stack authentication.
+
+The complete Vitest inventory is running in equivalent partitions: 1,156 general
+server suites, 162 serialized suites, and 20 workspace projects. Local attempts
+superseded for resource limits are not passes. Record the complete outcome and hosted
+CI result in the implementation PR before requesting merge.
 
 The next translation slice should close an entire remaining user journey, prune
 resolved baseline entries, review changed message fingerprints, and add appropriate

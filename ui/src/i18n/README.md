@@ -50,6 +50,9 @@ The legacy task list, board/column renderers, onboarding, detail pages, and most
 organization settings remain follow-up work. Shared child components may still
 contain untranslated copy; the source audit tracks that debt.
 An English/Russian key match is not a claim of complete application localization.
+Formatting helpers update when their host component renders. Screens that do not
+yet subscribe to locale changes, such as Costs and Dashboard, may retain their
+previous display formatting until that next render.
 
 The initial foundation adapts the 19-file diff from
 [upstream PR #17546](https://github.com/paperclipai/paperclip/pull/17546), head

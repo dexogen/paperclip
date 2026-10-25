@@ -97,7 +97,8 @@
     "test:lifecycle-baseline:typecheck": "tsc -p tests/lifecycle-baseline/tsconfig.json",
     "check:localization": "node scripts/localization/check.mjs --check",
     "test:localization": "node --test scripts/localization/*.test.mjs scripts/upstream-sync/*.test.mjs",
-    "test:localization:browser": "playwright test --config tests/localization/playwright.config.ts"
+    "test:localization:browser": "playwright test --config tests/localization/playwright.config.ts",
+    "typecheck:localization:browser": "tsc -p tests/localization/tsconfig.json"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
