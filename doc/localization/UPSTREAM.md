@@ -11,7 +11,7 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
   dispatch from `master`. GitHub schedules may run late. It fetches immutable source
   SHAs, audits the upstream source delta, and prepares one draft PR on
   `codex/upstream-sync`. No automatic merge or deployment occurs.
-- **Fork verification** runs on every PR into `master`, every `master` push, and an
+- **Fork verification** runs on every PR into `master` or `codex/**`, every `master` push, and an
   explicit dispatch bound to an expected full SHA. There are no workflow-level path
   filters. Require its **Fork integration verified** check on the maintained branch.
 - **Russian edition image** publishes `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>`
@@ -73,6 +73,14 @@ and [schedule rules](https://docs.github.com/en/actions/reference/workflows-and-
 when changing authentication or scheduling.
 
 ## Review and merge an update
+
+During bootstrap, a stacked sync PR may target its parent `codex/**` branch so the
+upstream delta can be reviewed and tested before the foundation lands. Verification
+keeps read-only repository permissions; branch pushes alone do not publish an image.
+Merge the parent PR first, then change the sync PR base to `master`. A base edit alone
+does not trigger the configured PR events: dispatch **Fork verification** on the
+current sync branch with its exact head SHA after retargeting. Keep both PRs separate
+and accept the upstream tracking state only when the sync PR lands on `master`.
 
 The report contains both the original upstream delta and the candidate-tree audit.
 The former remains available when merging conflicts. The trusted scanner comes from

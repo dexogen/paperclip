@@ -2,7 +2,7 @@ name: Fork verification
 
 on:
   pull_request:
-    branches: [master]
+    branches: [master, 'codex/**']
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [master]

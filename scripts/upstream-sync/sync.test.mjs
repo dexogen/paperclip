@@ -148,6 +148,17 @@ test('sync PR explains pending checks rather than claiming acceptance', () => {
   assert.match(body, /Merge with a merge commit/);
 });
 
+test('fork verification covers stacked PRs while push verification stays on master', () => {
+  const root = resolve(import.meta.dirname, '../..');
+  const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
+  const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
+  const workflow = load(readFileSync(join(root, '.github/workflows/localization-check.yml'), 'utf8'));
+  assert.deepEqual(workflow.on.pull_request.branches, ['master', 'codex/**']);
+  assert.deepEqual(workflow.on.push.branches, ['master']);
+  assert.equal(Object.hasOwn(workflow.on, 'pull_request_target'), false);
+  assert.deepEqual(workflow.permissions, { contents: 'read' });
+});
+
 test('fork CI partitions the full test inventory without omissions or duplicate suites', () => {
   const root = resolve(import.meta.dirname, '../..');
   const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
