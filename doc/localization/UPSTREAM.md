@@ -141,6 +141,14 @@ catalog and new literals. Ordinary verification builds use English for existing
 browser/test contracts; locale tests select Russian explicitly. Production image
 builds use the fork's Russian default.
 
+Test jobs set `GIT_DISCOVERY_ACROSS_FILESYSTEM=1`. Temporary non-repository fixtures
+must produce the same Git diagnostic on runners with a separate temporary filesystem.
+This corrects four observed failures in unchanged workspace/recovery tests without
+changing their assertions or application code. A separate sandbox test accepts a
+positive shell exit status for denied redirection: shells can return either 1 or 2.
+It still verifies a successful in-workspace write, denied external read, and unchanged
+external file. The original failed hosted run remains part of the verification record.
+
 In WSL, the headless browser fixture removes `DISPLAY`, `WAYLAND_DISPLAY`, and
 `XDG_RUNTIME_DIR` from the browser child process only. In this environment, inherited
 WSLg settings stopped animation frames even on a plain HTML page while timers kept
