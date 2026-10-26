@@ -121,7 +121,10 @@
     "signingOut": "Выход…",
     "signOut": "Выйти",
     "shareFeedback": "Оставить отзыв",
-    "account": "Учётная запись"
+    "account": "Учётная запись",
+    "inviteDescription": "Пригласить людей в вашу организацию.",
+    "documentationDescription": "Открыть документацию Paperclip в новой вкладке.",
+    "signOutDescription": "Завершить сеанс в этом браузере."
   },
   "agents": {
     "filterAll": "Все",

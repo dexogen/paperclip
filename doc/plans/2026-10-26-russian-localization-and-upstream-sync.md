@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current catalog has 1,306 reviewed semantic families, 1,333 English forms, and
-1,387 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 20,068.
+The current combined catalog has 1,959 reviewed semantic families, 2,003 English
+forms, and 2,091 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 19,491.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -351,12 +351,11 @@ The search repair is published separately in
 tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
 comparisons passed. Unicode capability selection preserves existing databases.
 The recorded 10k-task timing run missed the 250 ms target; query plans and the
-limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The new real
-browser acceptance is still pending; the original failed result is retained.
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The original failed result is retained.
 
 The task-detail/properties and common-editor slice adds 650 reviewed families.
-The combined catalog has 1,956 families, 2,000 English forms and 2,088 Russian
-forms. The baseline removes 563 resolved occurrences and retains 19,505; twelve
+The combined catalog has 1,959 families, 2,003 English forms and 2,091 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,491; twelve
 exact technical exceptions describe enum guards and currency formatting.
 Independent agent reviews found and corrected terminology and two missing
 accessible labels. The actual installed MDXEditor regression first reproduced
@@ -364,6 +363,19 @@ a stale language callback, then passed with live translation updates preserving
 its edited content, DOM and selection. UI typecheck, token gates, focused task,
 sharing, editor and composer tests passed. Combined Linux and browser acceptance
 of this expanded slice remains pending.
+
+A separate search correction at `cd50089b9c09276506293ee75e82e03a7f20746f`
+passed frozen installation, full Russian-default build and workspace typecheck on
+Linux. The real browser retry found Cyrillic titles and applied status filters in
+both active renderers. It then stopped at the language controls: a visible
+announcement covered the standard account menu, and the legacy menu had no
+language selector. No task writes or browser exceptions occurred; owned services
+stopped. The legacy menu now shares the real locale control and translated account
+labels. Its complete component suite passes 37 tests, including a regression that
+first failed with the missing selector. A revised browser recipe dismisses the
+announcement through its ordinary button and records the successful response.
+The complete browser retry on the combined source remains pending.
+
 
 Document/artifact side panels are prepared as the next isolated slice. Full
 chat/composer, Activity, and remaining view branches still require separate work.
