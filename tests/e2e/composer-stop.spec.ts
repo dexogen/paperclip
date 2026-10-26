@@ -240,12 +240,13 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       if (adapter === "paperclip_runner") {
         const expected = [owner, childOwner, otherOwner].map(({ id }) => ({
           id, companyId: company.id, lifecycleState: "ready", status: "idle",
-          lifecycleOperation: null, lifecycleHolds: [], lifecycleError: null,
+          lifecycleHolds: [], lifecycleError: null,
         }));
         let readyAgents: Record<string, unknown>[] = [];
         await expect.poll(async () => {
           readyAgents = await Promise.all(expected.map(async ({ id }) => {
             const current = await json(await request.get(`/api/agents/${id}`));
+            expect(current).not.toHaveProperty("lifecycleOperation");
             return Object.fromEntries(Object.keys(expected[0]).map((key) => [key, current[key]]));
           }));
           return readyAgents;
