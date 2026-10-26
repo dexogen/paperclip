@@ -53,6 +53,8 @@ jobs:
         run: node scripts/upstream-sync/check-workflows.mjs
       - name: Exercise source detector and sync regression cases
         run: node --test scripts/localization/*.test.mjs scripts/upstream-sync/*.test.mjs
+      - name: Verify deterministic provider fixture isolation
+        run: node --test tests/e2e/fixtures/composer-stop-*.test.mjs
       - name: Check new strings and reviewed translation contracts
         run: node scripts/localization/check.mjs --check --json localization-report.json --markdown localization-report.md
       - name: Attach localization report
