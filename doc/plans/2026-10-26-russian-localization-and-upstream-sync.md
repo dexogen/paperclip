@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current catalog has 1,306 reviewed semantic families, 1,333 English forms, and
-1,387 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 20,068.
+The current catalog has 1,309 reviewed semantic families, 1,336 English forms, and
+1,390 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 20,054.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -344,6 +344,18 @@ and both Cyrillic-only and mixed queries return no matches. This is a server sea
 problem requiring correction before accepting the Russian task journey; replacing
 the test query with English would not establish acceptance. Both attempts retained
 their original evidence and stopped their owned runtime, database, and listener.
+
+A separate search correction at `cd50089b9c09276506293ee75e82e03a7f20746f`
+passed frozen installation, full Russian-default build and workspace typecheck on
+Linux. The real browser retry found Cyrillic titles and applied status filters in
+both active renderers. It then stopped at the language controls: a visible
+announcement covered the standard account menu, and the legacy menu had no
+language selector. No task writes or browser exceptions occurred; owned services
+stopped. The legacy menu now shares the real locale control and translated account
+labels. Its complete component suite passes 37 tests, including a regression that
+first failed with the missing selector. A revised browser recipe dismisses the
+announcement through its ordinary button and records the successful response.
+The complete browser retry on the combined source remains pending.
 
 The next isolated translation slices cover task detail/properties and document/
 artifact side panels. They do not alter the frozen task-collection candidate. Full

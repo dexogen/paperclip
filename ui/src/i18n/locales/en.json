@@ -119,7 +119,10 @@
     "signingOut": "Signing out...",
     "signOut": "Sign out",
     "shareFeedback": "Share feedback",
-    "account": "Account"
+    "account": "Account",
+    "inviteDescription": "Invite people to your organization.",
+    "documentationDescription": "Open Paperclip docs in a new tab.",
+    "signOutDescription": "End this browser session."
   },
   "agents": {
     "filterAll": "All",
