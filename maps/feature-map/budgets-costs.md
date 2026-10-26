@@ -59,6 +59,8 @@ or unavailable cost data without treating missing data as zero spend.
 
 ### `budget-enforcement`
 
+Automated: [budget locale controls](../../ui/src/components/ProjectConfigControls.locale.test.tsx) preserve budget and reservation drafts, exact cents and policy values across English/Russian. They cover both card variants and plural notices; they do not prove backend enforcement or a live write.
+
 Automated: [budget service](../../server/src/__tests__/budgets-service.test.ts) exercises soft incidents, hard stops, scope, and valid budget raises.
 
 Automated: [scoped budget accounting](../../server/src/__tests__/budget-enforcement-scoping.test.ts) exercises cumulative running usage, reservation capacity, final settlement, project isolation, and concurrent admission. [Budget cancellation](../../server/src/services/heartbeat/budget-cancellation.test.ts) exercises durable scoped cancellation, delayed providers, stale generations, and recovery. These controlled-provider tests establish enforcement semantics, not live provider termination latency.
