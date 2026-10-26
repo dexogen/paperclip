@@ -80,7 +80,7 @@ it("preserves the sequential import-resume operation, raw task data and query id
   expect(api.onboarding).not.toHaveBeenCalled();
   await act(async () => resume.click());
   expect(api.resume).toHaveBeenCalledExactlyOnceWith("import-a", "company-id");
-  expect(resume.disabled).toBe(true);
+  await vi.waitFor(() => expect(resume.disabled).toBe(true));
   await act(async () => { await i18n.changeLanguage("en"); });
   expect(resume.textContent).toBe("Resuming…");
   await act(async () => { await i18n.changeLanguage("ru"); });
@@ -91,7 +91,7 @@ it("preserves the sequential import-resume operation, raw task data and query id
   await vi.waitFor(() => expect(resume.disabled).toBe(false));
   expect(api.resume).toHaveBeenCalledTimes(2);
   expect(api.resume).toHaveBeenNthCalledWith(2, "import-b", "company-id");
-  expect(host.textContent).toContain("1 импортированный агент приостановлен и не будет выполнять задачи.");
+  await vi.waitFor(() => expect(host.textContent).toContain("1 импортированный агент приостановлен и не будет выполнять задачи."));
   expect(api.summary).toHaveBeenCalledTimes(originalReads[0] + 1);
   expect(api.agents).toHaveBeenCalledTimes(originalReads[1] + 1);
 });

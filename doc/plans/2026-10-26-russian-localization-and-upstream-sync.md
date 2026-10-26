@@ -1093,6 +1093,16 @@ results (last result 400,014 bytes, escaped wrapper 800,082 bytes), before turn
 completion. That failure remains under investigation; the earlier passing runs
 do not explain it. The failed hosted run is retained, and full CI of the repairs
 remains pending.
+
+The [workspace integration run](https://github.com/dexogen/paperclip/actions/runs/40324609862)
+on `320a21509bedd36c33261ccffeefaf963c5c2cf3` repeats the editor readiness
+failure and also observes the dashboard resume button before its pending-state
+notification commits. The dashboard test now waits for that state and for the
+subsequent agent-cache rendering, retaining its exact payload, count, focus and
+draft assertions. Both complete dashboard suites pass five tests locally. These
+test repairs change no production behavior. The native large-result partition
+passes in this hosted run, but that does not resolve its earlier intermittent
+failure.
 Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
