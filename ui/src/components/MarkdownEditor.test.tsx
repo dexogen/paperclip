@@ -472,7 +472,9 @@ describe("MarkdownEditor", () => {
       );
     });
 
-    await flush();
+    await reactAct(async () => {
+      await flush();
+    });
     expect(container.textContent).toContain("Loaded plan body");
 
     await act(async () => {

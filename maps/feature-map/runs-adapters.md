@@ -179,6 +179,14 @@ a separate acceptance requirement.
 
 Automated: [live run routes](../../server/src/__tests__/agent-live-run-routes.test.ts) and [run event sequencing](../../server/src/__tests__/heartbeat-run-event-sequencing.test.ts) cover run data contracts.
 
+The [agent run-log locale cases](../../ui/src/pages/AgentDetail.log-visibility.test.tsx)
+retain stored log errors and offsets without new reads on a language change.
+Owned fallback errors translate; identical provider text stays literal. Closed
+workspace-operation status captions translate, while unknown values retain the
+existing display fallback. Accounting checks keep the currency and recorded
+values; formatting follows the active locale. These are component checks with
+mocked API responses, not evidence of a live provider run.
+
 Manual: Start a disposable task, open its running transcript, and follow it to a terminal outcome. Reload and compare task/run IDs, status, output, and cost. Verify a failed run remains distinguishable from a completed run with useful output.
 
 For Legacy OpenCode on a disposable Linux sandbox, run a Bash tool that reads
