@@ -427,13 +427,27 @@ A fresh-worktree UI typecheck first stopped on missing generated plugin SDK type
 the normal SDK prerequisite build resolved that setup error, and UI typecheck and
 token gates passed without a source workaround.
 
-The source is being frozen for full Linux build/typecheck, the complete UI project,
-seven affected backend files, fresh Russian list/detail journeys and the six
-shipped paused/composer-stop E2E cases. These checks remain pending. The Stop cases
-must use the deterministic fake provider and real runner binaries; a skipped native
-case does not satisfy the matrix. English E2E builds must follow Russian browser
-proof because they replace generated static UI assets. Recheck upstream before
-actual deployment; this recorded candidate is not production acceptance.
+The frozen candidate `6848bcc26aa4d53804a31468e6fc029f2a79169a` passed Linux
+frozen installation, full Russian-default build, full workspace typecheck and native
+fixture preparation. Its complete UI run finished with 9,235 passed and one failed
+test across 806 files, with no skips. The failure was a stale source assertion for
+`Retry queued`, now a catalog entry. The original failed run remains preserved.
+Process and database cleanup passed; the checkout remains clean at that candidate.
+
+The correction changes only two test files. It keeps the original API-binding
+assertions, checks the translation key and unchanged English caption, and exercises
+the selected failed-run callback in English and Russian. Switching language makes
+no retry request; explicit retry submits the selected run, agent and company and
+shows the translated queued notice. Both complete test files passed 172 tests;
+UI typecheck and diff validation also passed. These focused results do not replace
+the failed full run.
+
+Seven affected backend files, fresh Russian list/detail journeys and the six
+shipped paused/composer-stop E2E cases did not start and remain pending. The Stop
+cases must use the deterministic fake provider and real runner binaries; a skipped
+native case does not satisfy the matrix. English E2E builds must follow Russian
+browser proof because they replace generated static UI assets. Recheck upstream
+before actual deployment; this candidate is not production acceptance.
 
 ### Search and command palette integration
 

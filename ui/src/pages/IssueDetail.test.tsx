@@ -46,6 +46,7 @@ import { getRecentTasksStorageKey, readRecentTasks } from "../lib/recent-tasks";
 import { getLastProjectId, trackRecentProject } from "../lib/recent-projects";
 import { ApiError } from "../api/client";
 import type { issuesApi } from "../api/issues";
+import type { RunForIssue } from "../api/activity";
 
 const mockGrokBotApi = vi.hoisted(() => ({ stop: vi.fn().mockResolvedValue({ stopped: true }) }));
 vi.mock("../api/grokBot", () => ({ grokBotApi: mockGrokBotApi }));
@@ -101,6 +102,7 @@ const mockHeartbeatsApi = vi.hoisted(() => ({
 
 const mockAgentsApi = vi.hoisted(() => ({
   list: vi.fn(),
+  retryFailedRun: vi.fn(),
 }));
 
 const mockAccessApi = vi.hoisted(() => ({
@@ -1384,6 +1386,7 @@ describe("IssueDetail", () => {
     mockHeartbeatsApi.liveRunsForIssue.mockResolvedValue([]);
     mockHeartbeatsApi.activeRunForIssue.mockResolvedValue(null);
     mockAgentsApi.list.mockResolvedValue([]);
+    mockAgentsApi.retryFailedRun.mockReset().mockResolvedValue({ runId: null });
     mockAccessApi.getCurrentBoardAccess.mockResolvedValue({
       companyIds: ["company-1"],
       isInstanceAdmin: true,
@@ -1431,6 +1434,53 @@ describe("IssueDetail", () => {
     mockLocation.state = null;
     mockRouteParams.issueId = "PAP-1";
     mockRouteParams.companyPrefix = "PAP";
+  });
+
+  it.each([
+    { locale: "en", title: "Retry queued", body: "The exact request will retry when this task is ready." },
+    { locale: "ru", title: "Повтор поставлен в очередь", body: "Этот же запрос будет повторён, когда задача будет готова." },
+  ])("retries only the selected failed run with a $locale queued notice after switching language", async ({ locale, title, body }) => {
+    const issue = createIssue({ status: "blocked", assigneeAgentId: "current-agent" });
+    const linkedRuns: RunForIssue[] = ["earlier", "selected"].map((name) => ({
+      runId: `failed-run-${name}`,
+      agentId: `previous-agent-${name}`,
+      status: "failed",
+      adapterType: "process",
+      invocationSource: "assignment",
+      createdAt: "2026-04-21T00:00:00.000Z",
+      startedAt: "2026-04-21T00:00:01.000Z",
+      finishedAt: "2026-04-21T00:00:02.000Z",
+      usageJson: null,
+      resultJson: null,
+      contextIssueId: issue.id,
+    }));
+    const originalRuns = JSON.stringify(linkedRuns);
+    mockIssuesApi.get.mockResolvedValue(issue);
+    mockActivityApi.runsForIssue.mockResolvedValue(linkedRuns);
+    await act(async () => renderIssueView());
+    const thread = () => mockIssueChatThreadRender.mock.calls.at(-1)?.[0] as {
+      linkedRuns: RunForIssue[];
+      onRetryFailedRun: (runId: string) => Promise<void>;
+    };
+    await waitForAssertion(() => {
+      expect(thread().linkedRuns.map((run) => run.runId)).toEqual(linkedRuns.map((run) => run.runId));
+      expect(thread().onRetryFailedRun).toEqual(expect.any(Function));
+    });
+    for (const language of ["ru", "en", locale]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      await flushReact();
+      expect(mockAgentsApi.retryFailedRun).not.toHaveBeenCalled();
+      expect(mockPushToast).not.toHaveBeenCalled();
+    }
+    const selected = linkedRuns[1];
+    await act(async () => { await thread().onRetryFailedRun(selected.runId); });
+    await waitForAssertion(() => expect(mockPushToast).toHaveBeenCalledWith({ title, body, tone: "success" }));
+    expect(mockAgentsApi.retryFailedRun).toHaveBeenCalledExactlyOnceWith(selected.agentId, selected.runId, issue.companyId);
+    await act(async () => { await i18n.changeLanguage(locale === "ru" ? "en" : "ru"); });
+    await flushReact();
+    expect(mockAgentsApi.retryFailedRun).toHaveBeenCalledTimes(1);
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect(JSON.stringify(linkedRuns)).toBe(originalRuns);
   });
 
   it("clears only the monitor after confirmation and refreshes the task", async () => {
