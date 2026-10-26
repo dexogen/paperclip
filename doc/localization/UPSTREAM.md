@@ -122,7 +122,15 @@ source/catalog changes and editorial acceptance, not just `report.ok`.
 
 ## Verification and recovery
 
-The code lane installs the frozen dependency lock, selects the Runner toolchain from
+The dependency-lock job resolves manifest changes once, without lifecycle scripts,
+using the same resolution command as upstream CI. It rejects changes outside the
+unstaged `pnpm-lock.yaml`. Its artifact contains the lock and a manifest bound to
+the source commit, Git tree, verification run and SHA-256 digest. Every lane verifies
+and applies this artifact before a frozen install; lanes do not resolve independently.
+The artifact name stays stable for retries. Rerunning failed jobs reuses it, while
+rerunning the complete workflow replaces it from the dependency-lock job.
+
+The code lane installs that frozen dependency lock, selects the Runner toolchain from
 `packages/paperclip-runner/rust-toolchain.toml`, and runs `pnpm build`,
 `pnpm -r typecheck`, the three `general-workspaces-a/b/c` test groups,
 `pnpm check:token-gates`, and `pnpm test:localization:browser` with Chromium.
@@ -138,7 +146,7 @@ Runner binaries before test discovery, so missing binaries do not silently skip 
 local native recovery cases. Existing opt-in live/container cases keep their own gates.
 Each test job installs the frozen lock; the existing grouped test scripts prepare
 workspace links and shared/plugin SDK builds. The required summary waits for every
-matrix result, code checks, and localization checks.
+matrix result, code checks, localization checks and the dependency-lock job.
 
 The single serial server path exceeds 90 minutes in the checked-in historical timing
 weights. Four general shards have about 26 minutes of serial weight each; the two
@@ -146,9 +154,13 @@ serialized shards have about 17 minutes each, before setup and host differences.
 These are sizing estimates, not proof of hosted execution time.
 
 The localization browser journeys exercise the shipped UI with API fixtures; they
-do not replace full-stack auth tests. Genuine upstream
-lockfile changes are allowed. An inconsistent lock stops verification; repair it in
-an explicit dependency-maintenance change rather than suppressing the failure.
+do not replace full-stack auth tests. The checked-in lock remains owned by upstream
+automation. Resolution failures still stop verification. Image publication downloads
+the lock from the accepted verification run and passes its digest to Docker's
+verified-lock mode, which checks the digest and performs only a frozen install.
+The image provenance includes the lock digest. A source deployment must likewise
+retain and use the verified artifact; its generated lock is a documented build
+input, not a manual repository lockfile commit.
 The localization lane exercises the scanner and sync tests and checks the reviewed
 catalog and new literals. Ordinary verification builds use English for existing
 browser/test contracts; locale tests select Russian explicitly. Production image

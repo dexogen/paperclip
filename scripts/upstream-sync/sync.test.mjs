@@ -9,6 +9,7 @@ import { git, isAncestor } from './git.mjs';
 import { prepareCandidate, readState, removeCandidate, STATE_PATH } from './prepare.mjs';
 import { ensureVerification, pullRequestBody, FORK } from './run.mjs';
 import { selectVerifiedRun } from './verify-build.mjs';
+import { applyDependencyLock, dependencyLockArtifactName, publishDependencyLock } from './dependency-lock.mjs';
 import { checkWorkflowOwners } from './check-workflows.mjs';
 
 function fixture(t, { conflict = false } = {}) {
@@ -205,6 +206,136 @@ test('fork CI partitions the full test inventory without omissions or duplicate 
   const workspaceGroups = workflow.jobs.code.steps.map((step) => step.run?.match(
     /^pnpm test:run:general -- --group (general-workspaces-[a-z])$/)?.[1]).filter(Boolean);
   assert.deepEqual(workspaceGroups.sort(), ['general-workspaces-a', 'general-workspaces-b', 'general-workspaces-c']);
-  assert.deepEqual([...workflow.jobs.verify.needs].sort(), ['code', 'localization', 'tests']);
+  assert.deepEqual([...workflow.jobs.verify.needs].sort(), ['code', 'dependency-lock', 'localization', 'tests']);
   assert.equal(workflow.jobs.tests.strategy['fail-fast'], false);
+});
+
+function dependencyFixture(t) {
+  const f = fixture(t);
+  writeFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'lockfileVersion: 9.0\n');
+  git(f.cwd, ['add', '--', 'pnpm-lock.yaml']);
+  git(f.cwd, ['commit', '-qm', 'Original dependency lock']);
+  return { ...f, sha: git(f.cwd, ['rev-parse', 'HEAD']).stdout,
+    directory: join(f.cwd, '..', 'dependency-lock'), verificationRun: '12345' };
+}
+
+test('one resolved lock is bound to source/tree/run and reused byte-for-byte by clean consumers', (t) => {
+  const f = dependencyFixture(t);
+  const resolved = 'lockfileVersion: 9.0\nresolved: exact-version\n';
+  writeFileSync(join(f.cwd, 'pnpm-lock.yaml'), resolved);
+  const manifest = publishDependencyLock(f);
+  assert.equal(manifest.sourceSha, f.sha);
+  assert.equal(manifest.sourceTree, git(f.cwd, ['rev-parse', 'HEAD^{tree}']).stdout);
+  assert.equal(manifest.verificationRun, '12345');
+  assert.equal(dependencyLockArtifactName(f.sha), `dependency-lock-${f.sha}`);
+  for (const lane of ['localization', 'code', 'tests', 'image']) {
+    git(f.cwd, ['restore', '--', 'pnpm-lock.yaml']);
+    assert.deepEqual(applyDependencyLock(f), manifest, lane);
+    assert.equal(readFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'utf8'), resolved, lane);
+    assert.equal(git(f.cwd, ['diff', '--name-only']).stdout, 'pnpm-lock.yaml');
+  }
+});
+
+test('lock artifacts reject wrong SHA/tree/run/digest before changing the consumer lock', (t) => {
+  const f = dependencyFixture(t);
+  const original = readFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'utf8');
+  const manifest = publishDependencyLock(f);
+  assert.throws(() => applyDependencyLock({ ...f, sha: 'b'.repeat(40) }), /source SHA mismatch/);
+  for (const change of [
+    { sourceSha: 'b'.repeat(40) }, { sourceTree: 'c'.repeat(40) }, { verificationRun: '54321' },
+    { schemaVersion: 2 }, { lockSha256: 'd'.repeat(64) },
+  ]) {
+    writeFileSync(join(f.directory, 'manifest.json'), JSON.stringify({ ...manifest, ...change }));
+    assert.throws(() => applyDependencyLock(f), /mismatch/);
+    assert.equal(readFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'utf8'), original);
+  }
+  writeFileSync(join(f.directory, 'manifest.json'), JSON.stringify(manifest));
+  writeFileSync(join(f.directory, 'pnpm-lock.yaml'), 'corrupted artifact\n');
+  assert.throws(() => applyDependencyLock(f), /digest mismatch/);
+  assert.equal(readFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'utf8'), original);
+});
+
+test('dependency resolution rejects other tracked, staged or untracked source changes', (t) => {
+  const f = dependencyFixture(t);
+  writeFileSync(join(f.cwd, 'message.txt'), 'Unexpected manifest edit\n');
+  assert.throws(() => publishDependencyLock(f), /only unstaged pnpm-lock/);
+  git(f.cwd, ['restore', '--', 'message.txt']);
+  writeFileSync(join(f.cwd, 'pnpm-lock.yaml'), 'resolved lock\n');
+  git(f.cwd, ['add', '--', 'pnpm-lock.yaml']);
+  assert.throws(() => publishDependencyLock(f), /only unstaged pnpm-lock/);
+  git(f.cwd, ['restore', '--staged', '--worktree', '--', 'pnpm-lock.yaml']);
+  writeFileSync(join(f.cwd, 'unexpected.txt'), 'unexpected source\n');
+  assert.throws(() => publishDependencyLock(f), /only unstaged pnpm-lock/);
+});
+
+test('every verification lane and image use the same run-bound lock without resolving again', () => {
+  const root = resolve(import.meta.dirname, '../..');
+  const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
+  const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
+  const workflow = load(readFileSync(join(root, '.github/workflows/localization-check.yml'), 'utf8'));
+  const producer = workflow.jobs['dependency-lock'];
+  const resolutions = Object.values(workflow.jobs).flatMap((job) => job.steps ?? [])
+    .filter((step) => step.run?.includes('--no-frozen-lockfile'));
+  assert.equal(resolutions.length, 1);
+  assert.equal(resolutions[0].run, 'pnpm install --resolution-only --ignore-scripts --no-frozen-lockfile');
+  assert.ok(producer.steps.some((step) => step.run?.includes('test "$GITHUB_SHA" = "$EXPECTED_SHA"')));
+  const upload = producer.steps.find((step) => step.uses?.startsWith('actions/upload-artifact@'));
+  assert.equal(upload.with.name, '${{ steps.lock.outputs.artifact_name }}');
+  assert.equal(upload.with.overwrite, true);
+  assert.equal(upload.with['if-no-files-found'], 'error');
+  for (const lane of ['localization', 'code', 'tests']) {
+    const job = workflow.jobs[lane];
+    assert.deepEqual(job.needs, ['dependency-lock']);
+    assert.equal(job.steps.find((step) => step.uses?.startsWith('actions/checkout@')).with.ref,
+      '${{ needs.dependency-lock.outputs.source_sha }}');
+    const download = job.steps.findIndex((step) => step.uses?.startsWith('actions/download-artifact@'));
+    const apply = job.steps.findIndex((step) => step.run?.includes('dependency-lock.mjs apply'));
+    const install = job.steps.findIndex((step) => step.run?.startsWith('pnpm install '));
+    assert.ok(download >= 0 && download < apply && apply < install, lane);
+    assert.equal(job.steps[download].with.name, '${{ needs.dependency-lock.outputs.artifact_name }}');
+    assert.equal(job.steps[apply].env.LOCK_SOURCE_SHA, '${{ needs.dependency-lock.outputs.source_sha }}');
+    assert.match(job.steps[apply].run, /"\$GITHUB_RUN_ID"$/);
+    assert.match(job.steps[install].run, /--frozen-lockfile/);
+  }
+  assert.ok(workflow.jobs.verify.needs.includes('dependency-lock'));
+  assert.equal(workflow.jobs.verify.steps[0].env.DEPENDENCY_LOCK_RESULT, '${{ needs.dependency-lock.result }}');
+  assert.match(workflow.jobs.verify.steps[0].run, /test "\$DEPENDENCY_LOCK_RESULT" = success/);
+  const image = load(readFileSync(join(root, '.github/workflows/fork-build.yml'), 'utf8')).jobs.image;
+  const download = image.steps.findIndex((step) => step.uses?.startsWith('actions/download-artifact@'));
+  const apply = image.steps.findIndex((step) => step.run?.includes('dependency-lock.mjs apply'));
+  const build = image.steps.findIndex((step) => step.uses?.startsWith('docker/build-push-action@'));
+  assert.ok(download >= 0 && download < apply && apply < build);
+  assert.equal(image.steps[download].with.name, 'dependency-lock-${{ steps.source.outputs.sha }}');
+  assert.equal(image.steps[download].with['run-id'], '${{ steps.source.outputs.verification_run }}');
+  assert.equal(image.steps[apply].env.VERIFICATION_RUN, '${{ steps.source.outputs.verification_run }}');
+  assert.equal(image.steps[build].with.context, '.');
+  assert.match(image.steps[build].with['build-args'], /PAPERCLIP_DEPENDENCY_LOCK_SHA256=\$\{\{ steps.lock.outputs.lock_sha256 \}\}/);
+  assert.match(image.steps[build].with.labels, /lock-sha256=\$\{\{ steps.lock.outputs.lock_sha256 \}\}/);
+  assert.ok(image.steps.some((step) => step.run?.includes('lockSha256: process.env.LOCK_SHA256')));
+});
+
+test('image verified-lock mode checks the digest and bypasses resolution while the upstream default still resolves', (t) => {
+  const root = resolve(import.meta.dirname, '../..');
+  const docker = readFileSync(join(root, 'Dockerfile'), 'utf8');
+  assert.match(docker, /^ARG PAPERCLIP_DEPENDENCY_LOCK_SHA256$/m);
+  const command = docker.match(/^RUN if \[ -n "\$PAPERCLIP_DEPENDENCY_LOCK_SHA256" \]; then[\s\S]*?fi && pnpm install --frozen-lockfile$/m)?.[0];
+  assert.ok(command, 'the real Docker install block is exercised');
+  const cwd = mkdtempSync(join(tmpdir(), 'paperclip-image-lock-test-'));
+  t.after(() => rmSync(cwd, { recursive: true, force: true }));
+  writeFileSync(join(cwd, 'pnpm-lock.yaml'), 'lockfileVersion: 9.0\n');
+  const hash = execFileSync('sha256sum', ['pnpm-lock.yaml'], { cwd, encoding: 'utf8' }).split(' ')[0];
+  const run = (value) => execFileSync('sh', ['-c',
+    `pnpm() { printf '%s\\n' "$*"; }; ${command.slice(4).replaceAll('\\\n', '')}`],
+    { cwd, encoding: 'utf8', env: { ...process.env, PAPERCLIP_DEPENDENCY_LOCK_SHA256: value }, stdio: 'pipe' });
+  const verified = run(hash);
+  assert.match(verified, /pnpm-lock.yaml: OK/);
+  assert.match(verified, /install --frozen-lockfile/);
+  assert.doesNotMatch(verified, /resolution-only/);
+  assert.throws(() => run('0'.repeat(64)), (error) => {
+    assert.doesNotMatch(String(error.stdout), /install --frozen-lockfile/);
+    return true;
+  });
+  const upstream = run('');
+  assert.match(upstream, /install --resolution-only --ignore-scripts --no-frozen-lockfile/);
+  assert.match(upstream, /install --frozen-lockfile/);
 });
