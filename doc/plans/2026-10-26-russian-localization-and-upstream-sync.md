@@ -890,6 +890,21 @@ remain outstanding. The final strict audit passes with 7,379 reviewed families
 and 15,324 remaining source findings, with no pending/missing/invalid messages,
 new findings, source errors or resolved-debt residue. Map checks pass.
 
+The dashboard page adds 34 independently reviewed message families (37 English
+and 43 Russian forms). It translates summary cards, budget and paused-agent
+banners, chart headings and recent-task headings. The existing sequential resume
+operation, partial-failure handling and query invalidation remain unchanged.
+One new behavioral test failed on the original English-only button, then both
+complete owning suites passed all five tests after translation. They preserve
+raw task content and link identity through EN/RU/EN during a pending resume.
+The nested panels are mocked; their translation, real shared polling and live
+agent resumption remain separate work. The source audit removes only 38 resolved
+findings from Dashboard.tsx, with no new exceptions. The one English budget-
+override phrase now uses its singular form when the count is one.
+UI typecheck, token gates and map checks pass. The strict audit passes with
+7,486 reviewed families, 15,218 remaining findings and no actionable findings.
+A full build and browser acceptance of the integrated candidate remain pending.
+
 The remaining major packages are remaining provider setup,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional

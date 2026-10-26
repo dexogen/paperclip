@@ -39,6 +39,13 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Prep
 
 Automated: [dashboard service](../../server/src/__tests__/dashboard-service.test.ts) covers server aggregation; [dashboard helpers](../../ui/src/pages/Dashboard.test.ts) is narrower UI helper coverage.
 
+The [dashboard locale check](../../ui/src/pages/Dashboard.locale.test.tsx) switches
+EN/RU/EN during a pending import-resume action. It retains the sequential writes,
+partial-failure handling, query identities and raw task links. Nested panels are
+mocked; this does not verify live agent resumption, chart internals or activity
+rows. For browser acceptance, switch language before and during an explicit
+resume in a disposable imported company, then reload and inspect each agent.
+
 Manual: Compare the dashboard with the known fixture tasks and runs. Start and finish a small task, refresh/reload, and verify the summary changes and links reach the right records. Exercise empty data and a failed fetch.
 
 ### `activity-audit`
