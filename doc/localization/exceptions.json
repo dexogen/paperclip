@@ -420,6 +420,86 @@
     {
       "id": "1b2655945c4785b63a7f0ab65ddc1ba3bf4d1dcadabe1a613f19df373c6a888c",
       "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "df5bd041e74200a6e3c6484a19fbc3479e3307c5a6aab23d10a958a4b962e95d",
+      "reason": "Codex config compares the canonical runner-provider ID acpx to select the translated ACP agents caption. The provider discriminator is not rendered or changed."
+    },
+    {
+      "id": "de1b1494ce28abf8ee36ba3653e98f2f171f7305a7ecea0e4f76c2e95d42ebc9",
+      "reason": "AgentConfigForm checks the shared normalizer warning code runner_option_ignored before translating known ignored-option fields. This canonical code is not rendered; unknown diagnostics remain literal."
+    },
+    {
+      "id": "a590b4de0112fed6ad3a577724f88c365254bb2d68af648bc9ce291be968bfd9",
+      "reason": "AgentConfigForm checks the shared normalizer warning code runner_option_ignored before translating known ignored-option fields. This canonical code is not rendered; unknown diagnostics remain literal."
+    },
+    {
+      "id": "947c0f6a8873157a8ebbdf09298855f262f4636ad87c7cfe57bf4a9694d7f3cc",
+      "reason": "The helpKeys.title property contains a semantic message ID, not visible title prose. getAgentConfigHelp resolves the closed key map using the current translator."
+    },
+    {
+      "id": "1178c275784a1d9a02c59e94c95140f3b6afc0ee950f2ad72a6011f8cbaef968",
+      "reason": "Codex permissions select message IDs from a closed local provider/mode map with Object.hasOwn guards. Unknown provider option labels remain literal; canonical option values are unchanged."
+    },
+    {
+      "id": "fd6e6413e1ac8f604e9ad07cffdc042c71613abb045535b4e3156355701f38bb",
+      "reason": "Codex permission descriptions use the closed local provider map with an own-property guard. Unknown provider descriptions remain literal and do not become translation keys."
+    },
+    {
+      "id": "7589d37636140831a68a8024cb3543dd86b086d8cda9c7ce4ccd68b5bf4609e7",
+      "reason": "Only the local AgentConfigError instance supplies a code from the closed configErrorMessages union. Provider Error messages remain literal even when their text equals the English app message."
+    },
+    {
+      "id": "038f30d1d01a47b1b9cd82ef9c54925e191566e660ac685c07cd457ba640db0d",
+      "reason": "The fallback argument is a keyof the closed configErrorMessages map, supplied by local call sites. External error text is never used as a translation key."
+    },
+    {
+      "id": "f9ec61e88a334067b68e1c3905df4c3a2af38e90fea99d0ff68dce3c042cc260",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "c95d76a99d2408d27912d83ce268b553b61bb30011fa8a9e2c132e6c17a5f2c8",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "1b29dfcf46480039689ec97f8b3570ca943a1e195c7852d3fe54c08b95c68a7a",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "9459d1f35395d6e658cf8d1b07f9cfcd0d1aa673ff3573cdf56707907427e856",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "79f9042fe4ae86503b70921c2e7968dcd766562fd8e13b874f6a8df815cb4f7e",
+      "reason": "AgentConfigForm resolves a closed local reasoning-effort message map only after Object.hasOwn. An unknown effort ID remains literal."
+    },
+    {
+      "id": "e7f6bed8f4d644f3d7b995ab058855f966b459b392ad1d53e318fcbd38fb5517",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "29e02dd3b7c12038a012a7c2cca38c670a68b640b6a1bc65335efaf9ed86a4a1",
+      "reason": "Only shared runner_option_ignored warnings with an own property in the four-field local warningKeys map receive translated captions. Unknown code/field messages remain literal."
+    },
+    {
+      "id": "c3988ed4fea26a4ae7b4ae28f736631ded33b9d565bbcb8f394dbd1deccc8806",
+      "reason": "Only shared runner_option_ignored warnings with an own property in the four-field local warningKeys map receive translated captions. Unknown code/field messages remain literal."
+    },
+    {
+      "id": "0f7dfe62a4b5388cacb1a0af9be26bea9edb2331fdbc393e49f02e8c53db6144",
+      "reason": "Built-in display names come from the local four-key map matching the server briefs/learning/reflection-coach/summarizer registry, guarded by Object.hasOwn. Stored agent names and unknown definition labels remain literal."
+    },
+    {
+      "id": "252cad37335e4df51635e49b9a68c55dd2ff370725bf3c127c7f5de5d6e28b06",
+      "reason": "Built-in short purposes come from the local four-key map matching the server briefs/learning/reflection-coach/summarizer registry, guarded by Object.hasOwn. Stored instructions and unknown definitions remain literal."
+    },
+    {
+      "id": "0e2c1ccc407f046fa58072f2e514569bb6d713460c57cfc73353584ad14fcb9a",
+      "reason": "getAgentConfigHelp iterates only the closed local helpKeys as-const map. Template examples are literal interpolation values and are not resolved again as translation keys."
+    },
+    {
+      "id": "4f3796967255b0ba6285b49130cfce0fe74d77da0a817537261fabe7d33f9d9c",
+      "reason": "agentConfigRoleLabel uses the closed local agent-role message map guarded by Object.hasOwn. Unknown role IDs remain literal; stored role values do not change."
     }
   ]
 }

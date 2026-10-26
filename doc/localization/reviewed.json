@@ -198,6 +198,2183 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T03:36:04.878Z"
     },
+    "agentConfigUi.accessAlias": {
+      "sourceHash": "c8e042b31b176b5de8aa85fb4ecf3293ce4686e85c9ea0a9a0fdcea8de5e4113",
+      "translationHash": "140bc2771d714de43db820c0f4ecfc0c4e1aedbc6202e2892daa2e2bba9fa594",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.acpAgent": {
+      "sourceHash": "fdce1e025d95e20c343ee63eb4f746948df68d1d315ff5352d9fc7b30d98a0ee",
+      "translationHash": "b24351f6747ba94f813d0ac7cce5ba546bceab4096c53248088fb93d2cd61c1e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpAgentHint": {
+      "sourceHash": "660784a16d3de37e19c32471984be292243ce31de538a40ef5b8c8b605907767",
+      "translationHash": "f09bd7161be1988e52073b700a9f23ff0e4666f426c507ca58adab4891754d40",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpAgents": {
+      "sourceHash": "46f85ea3ad4e33d48a4a2b67d8bed153a84866147366375414b58875db4fb4cb",
+      "translationHash": "0626b0474bb588e12821796c84ee5d6fdcbf718c00992270d514834a7f6b39df",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.acpCommand": {
+      "sourceHash": "eff640837a549c2022da3574a7a24ac79136969dfe20fc676e8f11d40d33d390",
+      "translationHash": "75d3adeaa77bde69446b4e112019389e98f97eeca63d0e4158e7263694527618",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpIdle": {
+      "sourceHash": "33dc43c0fa7f0053eaf9695973c7bea0ea62d24dd149d0df2934fe80921c80b3",
+      "translationHash": "99eb8a03fb2a1cd98a71aeb84658a923bd3415ad1048f8ade0000dda1e8e57ef",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpIdleHint": {
+      "sourceHash": "98e407b20e5e5c044b593b6b05403136a3cb3a577308835f015de3fac0070b27",
+      "translationHash": "51de101c6037277bc8659255a51cbeb187ad319fdce2bda15c6139a4926c68d3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpPermissions": {
+      "sourceHash": "52587249c2da38556a1e46978d22c481382ad46177fa4838e07e8b0915f8736b",
+      "translationHash": "df3a255c85eaf06182d1fa90b9de1fa57c71f6eb59549a5d2d1fb20bd931b2c2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpPermissionsHint": {
+      "sourceHash": "6587977f72b6ee1e8e249c4a87935ef4dc2914b0300b820008b23d43bccebef0",
+      "translationHash": "4b1f78733a94ab1edae5c0f9c2d404117c18f12489aa32f218ad34cd764fa31d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpSession": {
+      "sourceHash": "865dcf7f4e5a75cc13074056980fc77cfe45624bbe9b639a5db3a03dc9d72aac",
+      "translationHash": "5386bd9e9afcd15f43769b25f0a8d5cffb74601dbd2b7303632b0396de9b4bda",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpSessionHint": {
+      "sourceHash": "35f512b27c0adb0f0e8324796517b0cc7579bd38d97ca1be5d3c0af9131a2bba",
+      "translationHash": "4b2521fec981c03f66dd66a01b74fe3f61e53624e94d83d65b75d2489d4d2700",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpState": {
+      "sourceHash": "1ca21c83a75bdb4e2c340eb7643e7142f456901a5823b4053b5f0693b4d6c4dd",
+      "translationHash": "e6116809017c5044d9e529b197ee3600ef1980b3bd7a1e7071b6a496a31cf898",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.acpStateHint": {
+      "sourceHash": "4d3f5c9195c93b5f6fbe48c2bb821cd3723489967e514c903b76d57327d4da1b",
+      "translationHash": "768286aff7ccd59b7336fba892d7dfb8d75da6d21819fdc53764533015693570",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.adapter": {
+      "sourceHash": "940681b32c947229ce23fa80bc1983bfb784e675086233781cdf10000029859f",
+      "translationHash": "d3a2ade9a0f9fe63f2a3007c5815d701676a981003e4c4084cc507540fafe2dd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.addAccess": {
+      "sourceHash": "b337f547373733345fac2d66a1933282f631afd05398e3d5e33d56cf60fa20e7",
+      "translationHash": "e9991c3b9ffb48214a6fb1c75a8a096434eaaad7f71d81f3063d0416029f4fbc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.advanced": {
+      "sourceHash": "5c315326550d1d736c42fa28e904e4f581401970a79e9d80589c540f376028b3",
+      "translationHash": "5fd6b0c0ce87362e8db17f273ec36881fe5a4f6d916186c8954d6d762a563821",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.advancedRunPolicy": {
+      "sourceHash": "bc878d6bc35ea651e07620fea46d23276e1a5b2f5fabed6b352f7bb5efe7990c",
+      "translationHash": "9641ba9afbece15a7adda9ab7cf2b88947396f710ea221a536a7693ad76a6bdf",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.agent": {
+      "sourceHash": "b375c7d95c147eda7266459d87adbfc7d495ac4c6be05a562ead91515ccd0bb3",
+      "translationHash": "1ebb906d794b5111acff1a12f21b527335f6d6fc13540140c951a2a53977ad7f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.agentCoreProfile": {
+      "sourceHash": "43c0ec399af92a4e7fb794d75309092df346f05411f45af0335b1f07fd60cb34",
+      "translationHash": "2477ff12b522037438c3de7b6263d7db8c5d1c9ad2d77c872e21dd38924886e0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.agentCoreProfileHint": {
+      "sourceHash": "d5046af17e0ffe8a94cc67bae8b263ff1a46d728ad6b2eea76a355e54ef8fce6",
+      "translationHash": "ea96b1a44a7ec775fab4676c58a87ec0cd585893f5533b408a778dfb397dbd6b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.agentCoreRetention": {
+      "sourceHash": "12dd601d2f199a1a9315baa5337e6c3f018f13d846f8b65dedeeef4641c1d5d1",
+      "translationHash": "15965ec2ebe777a1bcfd8cd67a1583f6f574130d1e3a8fda9ff6a926cc86ca52",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.agentCoreRetentionHint": {
+      "sourceHash": "5aa258247b2c58b690468d1f3191300b77e0bb3b17e22e0100c5351e29f4ff2a",
+      "translationHash": "6b09f1dbe12d47af1f185d465ad9b30d83ce63fc57e6d7bc7b1cfa5e35e8e7fb",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.agentName": {
+      "sourceHash": "551f5b18d383937f56ca7cd76357825be6356a4eddac91cfa8c6dcf1464cec79",
+      "translationHash": "37d35e65e44dc01dae712f917c17f408a5facf14e786f177c9bdb3bfe8d65de7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.apiAccess": {
+      "sourceHash": "837ef82c809a61d4793447dfe77ba76eddbb48005f896fbcc2d144433a3bec7a",
+      "translationHash": "83d6b0e3ade2aa1146b57cdbbe14ad4378a059121df851965675cfcdca29157f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.apiAccessNoEnv": {
+      "sourceHash": "4d333d9867e363c94d03c8258ee9e71976387fcd74344fb9942e44cf658b8b44",
+      "translationHash": "2543c95629162ba10d8152f77f0ab7c5c742a8608a52e86cc6f889ffddbee2d7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.apiDelivery": {
+      "sourceHash": "81096651faa881c438adb44f89d00350cc362006bbf790d0c33ef8f7085420b5",
+      "translationHash": "54f6b18c02edf2ec7d85ff02b96c8c9b0014618ca8ab739a38cd04d0a2ea03e0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.ask": {
+      "sourceHash": "cafc6e29324e41c40c1b4728219daf10b94c96c9809abcd1ae626debae2c882e",
+      "translationHash": "7b978e147113393fe948285fc4237e65661f9e5e8e5d3ebafbca79166f330eaa",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.auto": {
+      "sourceHash": "5e8bfc10fede99cac9e60e89d9f098328e958dde41c79f784bf2df0d39475eb2",
+      "translationHash": "23212c941fde7d4ba38e9e861a44ff01e2e2cff40daca5ec46df7f5e175fcba8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.bootstrapPlaceholder": {
+      "sourceHash": "7cf69c1f3c01debcc31d18b9332ec224016a5da593f0917f5b59b7402c5cba26",
+      "translationHash": "5b55a8540ee282d252271b6ede0acbe2812112b57b7af75a4d00da51cce28a60",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.bootstrapPrompt": {
+      "sourceHash": "3569f9b6b9ec201735c8e50e0c5bcd997e0c1f6352327e219f52deb28641b038",
+      "translationHash": "af447d8a63f634447eb80acb5db1ddfb06b12348bfe5a0751845a6085648cf75",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.bootstrapWarning": {
+      "sourceHash": "bb35e99e10bedc3e8af9048f4d7130f915c2a156a1b12db8bdd2c139c822b5b1",
+      "translationHash": "963b6ea26fb9b04c603a9b5a3a531dc150ae5feef02de8576298b1c3f8badf50",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.builtinBriefsName": {
+      "sourceHash": "0528ae4c03da97bedcdf2d5785492e178c16d431112cb803bd37df00f3f69e37",
+      "translationHash": "a3a00d2f246b68feb24cbcb2758b055c1e8785a92d3f4c1399e953c0657dbbff",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinBriefsPurpose": {
+      "sourceHash": "b545d702b5d9baec5c90e1fbd5a1fe6bd94a2c69d8db6b1e346afcfb51b349fd",
+      "translationHash": "bec5f4794f4d6061296e996fd682482d3810b9943cb9a04d1fcdd60e56c89008",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinConfigure": {
+      "sourceHash": "5de27251a99a839cc3ebd3518cb048e873f55495501d55b9ce7510529eea2146",
+      "translationHash": "3c877618d3b001932ee18aa2124ac69dd47055e01a5984f667c7e2fbebd7086d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinConfiguring": {
+      "sourceHash": "7adbaf84c432739a7d527da19d2a941afca6094eabc2d84897a4bbea91b4db02",
+      "translationHash": "5c03fb62b5423398a4c4583288f42ccd1598d69b6008bfefc7142226da65637e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinError": {
+      "sourceHash": "6a6c8b151852859c84ac68e4cb9d7f9089c55f4951df0badd8845d959ebd2500",
+      "translationHash": "5e48f1de5ae25dfb4cf6904000d360765e3399f64af8a9118d5e4c3e7d7ed913",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinExplanation": {
+      "sourceHash": "c794ebf4624b4ad4c94da9a95edde5096f65631fc249cdbefb368d99bdedb41c",
+      "translationHash": "b0ea5e5f109e1ac47539358ebeb70f10ccb3179b3cc22387a8d134af7622bd16",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinLearningName": {
+      "sourceHash": "f2474ad66569ce8a95fcbc694a59edb003d1a9f4aa128dc9b56c4e2c6eb1f894",
+      "translationHash": "0e669721173d66c6f7ebbb15f3dfe4e0bf51efa80d4b6e16e778eace9582e999",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinLearningPurpose": {
+      "sourceHash": "92fed012aece580944ec4fd910924380d5a9894e82a70382eed419413bde32e7",
+      "translationHash": "456cac3ffc5a8692af70fbf51dd2dc377b26c4f705d2f9178e838eb88d7d1233",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinProvision": {
+      "sourceHash": "1ca8f5806c8da61d82e545d224704e21116b4b0414242ff3d652a942fe947e52",
+      "translationHash": "fe2ce7180890d6f5cf2571d1221ba692f52b61766e2d0f256caf14b63ed32dd4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinReflectionName": {
+      "sourceHash": "15e0670ec34f8ea800a4bbb9a3deed24c00cf97adce95d4c0feeb5c57a9bfc18",
+      "translationHash": "9888a01858ee2097cd4941e14657338ba0cde77047fc43aaa09f1cb43e65e833",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinReflectionPurpose": {
+      "sourceHash": "74962ae4baabf0eb420d172d09399c7dbd741b7d961425587b9f0168fef6a4bb",
+      "translationHash": "9034ea710fc7295e3678c54379fdcc02ad1d5942eb7ff2fd9531d299bdbbd291",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinSummarizerName": {
+      "sourceHash": "675dd891e1949e84cc1082973e162ba737c4568748c9f74ab6456fb05632456e",
+      "translationHash": "f607e5acc086670d98a4cfbb64f87dc55114c741cb6adb9af2ac34cded69a832",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinSummarizerPurpose": {
+      "sourceHash": "32dfc3d5559d03ee51a683859eb40458a2e512062b195ca0412385ac4d0b0861",
+      "translationHash": "1f9cd1b5731aefdaf4802f095f7211cb3b4d21604fef9218380a53795dae7efd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinTitle": {
+      "sourceHash": "372058f4b189b4c466a9ccddbf20ba4856c54ef9b857ddea0acaf4312b704319",
+      "translationHash": "1c314ddbf3aa89fdbf1e72de6a9c33367f41839d190020bf35ac56f516bc6e47",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.builtinUnknownModel": {
+      "sourceHash": "346ce7edfc43b12bf796433b1ed8324a6aa00ec073bfc26426047f9da14874bc",
+      "translationHash": "1758ce1c20212e9762f5d796292b05f820237313d861ac9916a97938b9aed745",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.bypassSandbox": {
+      "sourceHash": "c4dd2b47ce7a2f3edacdc391536f811ce5becc04465c3ce900357939ff383d27",
+      "translationHash": "ef2ff3a5133e68edec1b00c8f1485225438667f3f983f00cf063d1073cb8aa00",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.captureTraces": {
+      "sourceHash": "34cde4d39e253112290916ca47f8ca32da4935603f7fea62144c773ab92a3766",
+      "translationHash": "0360aae4783e767c5c9ab6308924eb6a7c8a4c026c7d59041e6b9f12343d57b9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.captureTracesHint": {
+      "sourceHash": "b932d776d597efeed36e14346327d09dbd4e1c167ae9eaac75cdeebd658a6d57",
+      "translationHash": "5a4ed57cbbe5f1f93788c325c27957d90204a6609422e81a505bf16c7e33c12c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.captureTracesOn": {
+      "sourceHash": "e2d6bb0a95d661660d5e3a9e0e24f9d1b1dd55d34b5d1f0b6dd8756bb68d9dbf",
+      "translationHash": "d61341ca4d500f1b7e777ee0b5f8474fc4153669430d8b207a0db243b80d1695",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.choose": {
+      "sourceHash": "314a14a89e46e309b1d13653cecb89633c1d6e67c29780bfe35a70f14635e445",
+      "translationHash": "d86c6e3184b2285a322a071e60f71d3e67cd8aef1c184547bd7bb37a988cea22",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.chooseManager": {
+      "sourceHash": "09cff6a00c3b2cb2040b12e034efac56a2fa9164c0d562699bf3fe53bb25fb8c",
+      "translationHash": "bf349ee24bed98de5ee26789dddb7edb61f58d87d5f054b3cf51bf7eaab6ec34",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.chrome": {
+      "sourceHash": "297e41fed0e19cbfb72feb564917940ea9d1a490a8fc184aea5fffddc111c670",
+      "translationHash": "b94e300ce0bf714b1b5cc6b6d2fd3b3806566789423c49c6ac9b6b3f387ee90e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.claudeAcpCommandHint": {
+      "sourceHash": "c01237761845da641eb82905b46abf8b8c084c2973c8f77e8121e893f11b764a",
+      "translationHash": "c9785a3566633c0bf77f4f12e8e863580a6b363e44341cee1e11d3bc51a4e8e5",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.claudeInstructionsHint": {
+      "sourceHash": "0119b6d85213a9963c77ed376ee799a12af41b613460da6440df01b294c014d4",
+      "translationHash": "1f033a73ae6db9297f1f04d592ba4761cbae29ccfa39842ca3b8a842d5529217",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.codexAcpCommandHint": {
+      "sourceHash": "6805b01848119481fbbbc54437a0c22ac4dc49decb51511a3f065f60b21241a5",
+      "translationHash": "dc1c54700bb2d10c1ea1aa6e4b5a6bb325feb73a9d2bf089ce1395cc699accd2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.codexInstructionsHint": {
+      "sourceHash": "74477e7ef6f66cb469ba75f9eabc36982e0f8e4e6fec7f824a4b23973185b1bf",
+      "translationHash": "1ad9d79e2e58ebb959cbd8297487a27e352080755bec1c070eda86bea14e8095",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.codexPermissionWarning": {
+      "sourceHash": "10e2c3c019e757b4170d797e702ee162b8c8b288eb4bbd1e86af9928180ea3e4",
+      "translationHash": "8fa1e2a0ee96b2037e869a18172127f9524c13c36d7c52479736b1db896eb914",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.comingSoon": {
+      "sourceHash": "5504088bf29263ad87fc062a5dce2018bc8f80b682ec1dae7184bf0bdb3e6594",
+      "translationHash": "a69a5b4634dc6210118536316b8bd58674486e579c39f4b40f9c301ed2f4e2f5",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.command": {
+      "sourceHash": "0d1128614e59240b7a6cd26c91fe147be62ff72ca9c4cb7a5a5d4fa9cf1af365",
+      "translationHash": "8a9c594f5abc15934aa5bd40b550523d6c9915e845b87ad23ac1597381bf9403",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.concurrentRuns": {
+      "sourceHash": "da61682d56dd1809900497957751691830c6d8d99ddb6b6e405d9bcbe6ae1468",
+      "translationHash": "c472d9c36503372ac84e196bd034decda82a712fa55a38315b8fefd5976081d2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.configuration": {
+      "sourceHash": "4c4008cf36471d86b1114fa2ea3e41626f92c9d472827c657d405124ff1a425e",
+      "translationHash": "9087e782bab2b89ffdeafbcbffb86944f4e2140aaa0f0e353b0f6e00225557b6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.continuationAttempts": {
+      "sourceHash": "f579771ed2e582ee2b45f8771f32b63b1c6ed3fefa9d424f6dd8ba5b305a21ca",
+      "translationHash": "8f18193dc60438a6af42acffe9acf19521b43e9f12e25b006be7276cc890127c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.continuationDelay": {
+      "sourceHash": "ff065d99ab8d97bb348d0f79c58b953bb64bf09db1b8f071bcf93ef40d5e3903",
+      "translationHash": "5b3867b1df3ca17bdc86bd98937af8f504db4d405de071b7b1022d8e3a776853",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.continueAfterLimit": {
+      "sourceHash": "4c16bd79c6f9f423ee6d8d4d092e024c2c4788c0ec778affeac8c5487c96ce12",
+      "translationHash": "e41108b29e920ffdf21569271e70f3343a753edff1e54955e0e8d321907dca68",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.cooldown": {
+      "sourceHash": "d8bd5ca09669cf82225cf6bb752160d0902e139d4f04563a218d9f4c0169c93b",
+      "translationHash": "53ab8528ba11c1552e87278ffa7d8d9f63db3a8dbb51e20ea8083d48a127179f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.cursorMode": {
+      "sourceHash": "f45c371a090d8dc7c94f2c51b342be3ec00d3fc9e05c5472c2b045b82b86231d",
+      "translationHash": "4215e941b5257539025c1c5c7fb2fd1814539b9c1a8580895cff70291dcb42fc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.cursorModeHint": {
+      "sourceHash": "96d22d8d3b3e38e4ed5eee0a69b687f2e6e8f9608043660869220a9d16b44c6d",
+      "translationHash": "16a74d206dd79bf9b867d88862790842a27dcc2f2f9f7d0eed4ab19c0fbe87e9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.cursorModeUnsupported": {
+      "sourceHash": "2979bf361658baa99f56d09351595c21186b3c952a93f4c14035c490c55a5fec",
+      "translationHash": "c851278d15c57129939bc576cd56d29cb86102de140d617a091d2c33aa7db287",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.debugging": {
+      "sourceHash": "301c130a2898ab55ccaf99443c8ac87d89a28daace1f8a047d4cf595889d514e",
+      "translationHash": "07c171195f16a8cde44b7e2627edeadf0de7253fa5cbaed5033f66b5bb74add3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.defaultAcp": {
+      "sourceHash": "082d71670c3123c7b7a1467d762407c14d34f5ec891e152056d1f00bae6176bb",
+      "translationHash": "75620e5833ed5685250d9500eda9feac0173dcf4608e012562f1dbb4dc2543dc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.defaultEnvironment": {
+      "sourceHash": "6efde595cf26389e675ed3f2c846d76bf18340c11001397dd575deb5182464c9",
+      "translationHash": "267733a5b6501d5499399f653dac6186932287989b4fab58324425fd8e15d022",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.deny": {
+      "sourceHash": "f797c5a02e932e255bb84b14b0b3da2cf2cd27e594a259e4b438a98eb2a0c132",
+      "translationHash": "3c9e9a0be9509cde6c17148a46a5ae2621bc98190f22fb9c1353a5f7a0844ec2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.detectModel": {
+      "sourceHash": "91b86426ea2dce398b21eb6d2f63e756b591320b1acc87ba2457379cfbef62a6",
+      "translationHash": "a8f56f95039e7c93181123ce8b1c7cb5a6b6456b7388bcebde351f7f9c4f27e4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.dotBillingHint": {
+      "sourceHash": "a9dfb2cb9234f324f5dd774fcd9da09dc79cf63578d7761653f99f2e5589bfc3",
+      "translationHash": "20e7b1f03eb513ba4a8af1584916397e6406a71f330360675af2c0ad0eb0c38a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.dotConnection": {
+      "sourceHash": "80ccd6dfc958270439ffb2559e3224ee5716584e6eae48ee32e89d6aa29ff020",
+      "translationHash": "5014da4263997a0758bfece31b4299602f06713b4589ad2a17e459dc2cd3d66a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.dotConnectionHint": {
+      "sourceHash": "04bb378664658592e5684c377df3a70a4dd911014bdb391ba769782eb3b4f388",
+      "translationHash": "c34fa5c982ff3ca3bf54137c7d94148043d5dafbec4002fd2b4eab2a44584a5c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.duplicateAlias": {
+      "sourceHash": "54fdcd50d1cfc0db45be54c81a51150b4c4124382e17bddf8cc64dcd6b73f41d",
+      "translationHash": "1c98c3f3b76f74f0337368a19588235e68d4bd6917e7e353701ed49601bde422",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.effortAsk": {
+      "sourceHash": "cd17f30eecf7025a036c7d3aa9b842bfd11699029387083877ac8e84f09daa46",
+      "translationHash": "b1c63228d0f548d44c4663f8973e42b58b247687bb128a1a78fdd42d977aa267",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortAuto": {
+      "sourceHash": "2dc59bcbe8acd6f40670033dc841ab1e76ce5f1da6927e56ba4d13db46593e3b",
+      "translationHash": "265cc87d52c0f26298e0e88a6b3d78a7fbf9557935502cf1ec68bc86d72adfef",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortHigh": {
+      "sourceHash": "e59545dc0bea0f194566cdc94b6e332cd96a188dd4b4bd66179d58ea6a4705d7",
+      "translationHash": "a5f7ee4ad419f3acbd3d3af5fcc4f4c4b555057c5d6e9195c61a56106623687f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortLow": {
+      "sourceHash": "b95c22b09ee217c71736d40bfa7f82bfa566d69e5a71424d735a369edcf51cd8",
+      "translationHash": "d40536da13ed9108a3d046b266bac440cbac7c7828b3f65557b06bc238c06d83",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortMax": {
+      "sourceHash": "bb342eb39eac2c0803c5dfe9209255dbe7cde19733882d1ee35239ca3fdb453c",
+      "translationHash": "91f132c567a7870f8abfb2c2f295bcb7f3b604301487b9765f6dad30c18183da",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortMedium": {
+      "sourceHash": "f66e9c8992df1a10bb7f276339fff61fd6437cef610d2ad0b6df256e0e6f3523",
+      "translationHash": "2a09d624016669238c383f9441967b4fc0748932b2e38d2e1b42c637379769c2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortMinimal": {
+      "sourceHash": "e24f81c307ca88204f4c6dc105ab8536268a2b989dab4be60f4d71e51059e048",
+      "translationHash": "f4139055e2e1434619832fa9b6dd30d43c48b35c610e9a34b7143978d3c26adc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortPlan": {
+      "sourceHash": "881b628fa0a5d11049a5fdab61c15c1557b0ef93400d8d3e80588a216e23b84c",
+      "translationHash": "f6f9ca43f202e7f1bd31a9d409fc9d21c19f4ba17b5d64a65792a1c1001d0468",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortUltra": {
+      "sourceHash": "7176bdb5a12b5301852d4a83289ceeb81b9c5f2d2a43a23564c4eb652bdb9c08",
+      "translationHash": "e365bda7b23291671af2af5b3f1fbe2eeb9e1521aeeccf37cb1cd919e9263ec6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.effortXhigh": {
+      "sourceHash": "bc282053c59414abe45e5d059b91dd552d5721e1e7d66e43e38c3dab1c4c9981",
+      "translationHash": "1e652589a827cad04effe4f75fbf99a03fe026cdc7532c86f00aad37dc2aec5d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.environment": {
+      "sourceHash": "f92cd0fb5888f7d6bf5d019de33bfa18fe228c8d881d53b175407b37c50b43cd",
+      "translationHash": "e452083b0348d940bffee6988404aeea5089b64942f5582796d80bec3e5ad5b3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.environmentDefault": {
+      "sourceHash": "0e7bf1c214d9f256d8d12acbff17cacc2e87a5272249575b3a72e9df83f5b527",
+      "translationHash": "4b8d43129bd6b1cf4e30feb313c9b3247823a14369826ce37b62f148a08afd5a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.environmentOverride": {
+      "sourceHash": "8be84e42027d7b4c63e63c6d6064f2b3ad82637a259ab2037551b2fa9ae7199c",
+      "translationHash": "1e25c49b1099d187edcb82ddf777ebb59b43003d534c09feaa6b719073896170",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.environmentVariables": {
+      "sourceHash": "47929a2c3020e6c9dc2ad06e6b048c2f6eb98c5757d654ec9914f2324cc02fdb",
+      "translationHash": "b4ab0c385d4b35c937586fd4cf767c8f20928579c1c6778dfd338af3c676d653",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.envVar": {
+      "sourceHash": "5c05b660f0aab7e83968d30a596a84be88e0a170bb1a46e2ccb149e0c50dfc40",
+      "translationHash": "5b5599bf20bfabd8b25e052f29e15df9805212092486a8dd0471b1fa847cd2b3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.error": {
+      "sourceHash": "d123cbd77a9b968f5ea462a26ca124bf665bfceb9aa82e960c6f96d1fadf39a3",
+      "translationHash": "f8cf3b66e5157a09664db3ed061a72eaf82256061ebd04e9ee0087fbc548bcb2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.createSecretCompany": {
+      "sourceHash": "b2b9f6b94c9b0413aba56770ae0882b64bf482399942993be611e24b6a3731b1",
+      "translationHash": "376f5629a4fcab3695990e56617056e471b23e88923e74b920c5b6bc434a6235",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.detectModelCompany": {
+      "sourceHash": "4d809c2415a3b311b8831f26ff49d958e01ba653649cbdf39517689aa6e122c0",
+      "translationHash": "6a988a2fda2073a26259aa73debd68810e8c7b340ace5dec3fd52e791812ddb7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.environmentSettings": {
+      "sourceHash": "abcac5bb8c48d584ea2d3ff90b4b2c0975269954bdbba3fc8fddb1af3f21c4a9",
+      "translationHash": "08e18421b60d09dfcf7cad0927d4b52f60c3394cb2e426bc8507688f3732d85b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.loadModelsFailed": {
+      "sourceHash": "5db865663e1e240c7d4aa90e607381cb788c66933ecb3e20373b974325e1236f",
+      "translationHash": "966185f509c202876bf0663a842e304662894a1cb8687013ca6be18e652bc3a7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.refreshModelsFailed": {
+      "sourceHash": "85f62b0de95d02e179f765fbcaeb0949e9cd4249fdce186be6ae5e5debbb8475",
+      "translationHash": "fad74a97a8a178ef4d8ce2479ff2d24bd6153a2e49ba3251c47c08f59577b145",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.testCompany": {
+      "sourceHash": "8ce0155a472c40714bdfaa5a2d907db0374075f9cdcb45f0bf1eff5b5c146bca",
+      "translationHash": "1fd7af63d12b3e521bd8aafa4d7cad2e5dc1d09794b7cc156ec45adb6e90e9af",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.testFailed": {
+      "sourceHash": "f23083882b7295c7210adc8f16b229ba3b0305dee660ade9d87a34fa57586283",
+      "translationHash": "0ea725115cbc346bc5d6d523f6805b1f7182ee8f8bfd28dcaaf80d43734a5e14",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.upgradeChanged": {
+      "sourceHash": "968105649c66ee2ea5c27515cc152bebcd643a224b3278bb771a0e10e9d3e22c",
+      "translationHash": "a0b20e84fc4e3afe075d7f565a7b33cc07afd479baac100cc96863f63fadef6b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.upgradeEnvironment": {
+      "sourceHash": "d86f5e9a3f16cb244d401c28843f94fe40e8d8a66b428f8e1297f47d0c61b9ca",
+      "translationHash": "118317356206c9e943a3c88b601d1e1d0fe3700c4d9869cc8183e9f085f9a26d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.upgradeFailed": {
+      "sourceHash": "b6e5aeb027f98944d8a1e07ca158241e73015f5307052ece5a721fda7818adf8",
+      "translationHash": "35c353bf244081c318010b3d281846d15959d865633926428755d6c020ec7ae6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.upgradeUnsupported": {
+      "sourceHash": "a1dfb6571e6a93d57ba4c0e0dd27fddc8079592ae3c5277f8982831f57edd30a",
+      "translationHash": "376210eaaca76ac72b51c870f0e734727999aca1f9b04b9957731226798cc8bd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.errors.uploadImageCompany": {
+      "sourceHash": "bce424d25cef6fff343deb0723521f776e56ae69461521f85823419fe93b941e",
+      "translationHash": "bc03a28051040741e756fa740a99666e6c7367241094e160c6020c76e2ad220e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.estimatedCeiling": {
+      "sourceHash": "8e4b1893fc63c6be4158cf976015d371d69a9ad12334425ec66367e197124aec",
+      "translationHash": "8e8520f3910af30a2a53c3e5dfcf31103818cd077ee138ba5a2f40b8f6a02466",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.estimatedCeilingHint": {
+      "sourceHash": "ef4cd4ff1b092a51be51d2e7c92aad98b3411eb136e54319b89234a16c0699c9",
+      "translationHash": "176c1c61b11a39b4b4b44f220c2360eb472c34d3f66deabd4d67e61825c3db59",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.executionEngine": {
+      "sourceHash": "39e2518294ebb5122dfe3824e95bf7f2028deb93ea1ba1f927d77de83f997041",
+      "translationHash": "3c6d8fe7d4dc22041197a878d492b319b95fd42cb63ea97992e40773508150a0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.executionEngineHint": {
+      "sourceHash": "917e5c913876bb62ec7b07dcef2970468114951e6736db35b21369294652de87",
+      "translationHash": "489381599302a06fb12c83cc022d974bd80023322bfcfe9cc67d212f90901ee6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.experimental": {
+      "sourceHash": "501d3da880d60d8725db10d3b362fb9ea60e41de8f95e043a240d5f9b7a9b1f3",
+      "translationHash": "29e78a48f62a8f7bc89ab599be52b1c6847159846664486ea1505d950e7fd3d1",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.externalBilling": {
+      "sourceHash": "e2221d234a947f21eb3e0e97225e089081fb622f0adf41ef0ba655edbf38e2dc",
+      "translationHash": "8687bf39213ff1342126dfe0751d6114dd53e6e372becbb882442bd7006d3cc1",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.extraArgs": {
+      "sourceHash": "fdbbf1f040845751636b3d4c8c74d932347222d24ba368a3c47bd15d53e18f5d",
+      "translationHash": "9f22d1c6297808a621f044e557b54da2b9eeeb177b5e65358525281ad2f875ad",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.extraArgsExample": {
+      "sourceHash": "40c90399ce391364c9a84fa225b5704ea3683b553fad244deacabbfe329722bc",
+      "translationHash": "3d6795222b04b571a06792e142b575a85f83711153313fd8edcab6dd6b51a96f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.fail": {
+      "sourceHash": "31b7c82ef867a6c2e84ba165b4ce9d1996b9a8f2baa2d7b781a786449742d293",
+      "translationHash": "9f7ebf2699c70bc91041f7bc5983e948039ce2662699ccac13f3c0904d59b74a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.failed": {
+      "sourceHash": "3e7d82737982760b0c13e8ae724491394dad0d221ace612d0d48e2931ec99b85",
+      "translationHash": "ade7948a809cf9ee5bd3c274cb615e3d3ab6b9da0c44e39af2e66e2b945dbf98",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.fastCost": {
+      "sourceHash": "57060ea2acb8f14ecfa0d15176a9af5c445513a9b31d066c81ce86a76a12fef8",
+      "translationHash": "0409ac40e59880330d7480662ae535a41ad9dc111a8e7b82a5cd411677d4b934",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.fastManual": {
+      "sourceHash": "f390275f827ccd2af100640a75685ace3ada276d53f689eaf954ae59606ce04b",
+      "translationHash": "81a3b5d054828a0fb8013fac6a2305175eb3c2c4058c613b6c4c026b875815d0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.fastMode": {
+      "sourceHash": "74da15bff7b68417ed7669a0235cbc6dece445669179232f3c7698fe71d9cf0c",
+      "translationHash": "200d090fe4514f4e4c9eb896ad51869793c615d1c4d09aeca1ee0164a11ed531",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.fastUnsupported": {
+      "sourceHash": "a594420b2ac31fa029c50b6145eb9653d8e4fad363fc2c8b3abaa145e6a61868",
+      "translationHash": "3f4f7721d29e2bf22750621791fa5c295628203aee1de3b8624da93691a5d48d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.finderCopy": {
+      "sourceHash": "54c950172fda071f2ee59e45ce00a8f2c9d3de5dc23d72348998dc76dccdec36",
+      "translationHash": "4c7b08d32acf6abea5199ee91a5b6895e09948f290647eb65046ae2165570481",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.finderFind": {
+      "sourceHash": "c4b2cd6951ed312ee48fabc74aef97e8ce1e347e789a87c02877f071f37a8263",
+      "translationHash": "529666f1d07789e8dd825a401f708c4c949a254498d3f503ba7fe248cbb29e05",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.forcedEnvironmentHint": {
+      "sourceHash": "e3858b9555b299eef56aad9e4258dc13aa73e0d670191b9a2d80cabdfd8b84fa",
+      "translationHash": "adae550520f75694510f34d9e22018a4131f9085d92147a8526306e8995ed864",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.forcedEnvironmentMissing": {
+      "sourceHash": "b720522fe020bb24d2870ed7d403e7e2247c08334588ef09c40f456aa2b51987",
+      "translationHash": "1bbd8e009bf057a98e13d62b5a01499da1c936ae3f5c2e0ba41a7b1c05b63cfa",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.gracePeriod": {
+      "sourceHash": "7822cf5c15e3ce0fec2d34b5ba2eec276e096a0558df36b8dcbdce52c966f5b3",
+      "translationHash": "e662d6edc17953a1c1bc9583601e7f2a8ec9ea32710c954e0feadaad4a639e58",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.harness": {
+      "sourceHash": "db123bd90fae325f1751e46c68522a3366f2c74afa5ea68d221ceceaff61476a",
+      "translationHash": "6a0f0c51069f7acaf97c7ebbcaceaa1c537b32fb906aa80061272398ed86353e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.harnessHint": {
+      "sourceHash": "5d9fa822a25a798d0336cf1926fcc7e414a1681d43092c7089d6ab6d8c90a8ff",
+      "translationHash": "7346696e3826c6cc340c5b7b054ffaa50b6df28b411f7bae08704167cee294d0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.heartbeatEvery": {
+      "sourceHash": "77a2122ebe18fa888e49d351066b46f5b3fdc487383e718ec52bbe6089bece61",
+      "translationHash": "59e070ec1c67293e02d32d8d3727c7573b5929e500dc940a29f0b057f0c20985",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.heartbeatInterval": {
+      "sourceHash": "8c7515015883fee200c9ad59519a80ad2ef2a899849b5a3d78a4c3f6f84fa849",
+      "translationHash": "3d3c3b409bf551ab114e7bb96b96ee9476eefa1aeba93817797b048649c62c7d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.help.adapterType": {
+      "sourceHash": "d539d815fdab87b226a7cfacab9e29c60c464c768f5d43cf206ea72dc0a804d1",
+      "translationHash": "00ff59afe043d199c4e33da80c2e93d0e40ddc33237fcdf773a1efc2506ef67c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.args": {
+      "sourceHash": "0689b2fc2305b4b04d1dc970d4776c0aa8e810f6c2e35050632765060f12517e",
+      "translationHash": "a4b643a27c147c344704934c7a43bd63836352d033c4edcb0d554b6df5098e3b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.bootstrapPrompt": {
+      "sourceHash": "0a797d6f35a8b3956ba82dc5e10833be50d2a59c3cb07d3149b27e12a76bacad",
+      "translationHash": "e5de18c3dfce8173c85243ecd9cd0d04b7fd782b6d872e19aaf5cdcf8c014d48",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.budgetMonthlyCents": {
+      "sourceHash": "f855fe179a0e5362cae1a9c3895b49db551dc1aea48d81377223c06a160579c5",
+      "translationHash": "08d07fa39fed7cdfa9cbe16729ee49fcee3652e302ab7ee1be66fafe27a7162a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.capabilities": {
+      "sourceHash": "613709245a7c3cf8313ab72e28587ad8abb091506b650bfcc8eaaebe25543550",
+      "translationHash": "aa2c9928e0f0c55c142237efa7b85e20da2abac7e309f1382ab9bf296accb2ee",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.chrome": {
+      "sourceHash": "812ace89f66592875e10813f5553a0f91558d2bc5b5fbbffbb13f8b565f4b667",
+      "translationHash": "341502c73039b300f3c05ed28946fc5d212e95e3c6e350e8ae80f4a0fee11b83",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.command": {
+      "sourceHash": "fdcc054d4d56de40aeab0c47ba973393aaa793d5a2bfbd9e940fba42b8ab1ab6",
+      "translationHash": "29b892c520efc9f1f98b0ed40b74f5d7bd98c969eee18aea67eed373cd208856",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.cooldownSec": {
+      "sourceHash": "6b8b7de735cf6f0408bc5ca28a2ddedb6a19dd8f5540ef33dca4fbbe1b399bb3",
+      "translationHash": "59732d9ea3f6301f1c77d443ddd278d77ce0c528c499326c4a62c22cf6de646a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.cwd": {
+      "sourceHash": "425960e173772016fa154749276b4ae4c2d42109f6fab1ca2658041ac6b4ed6b",
+      "translationHash": "ec30a33fe8e2c549ae1b0fe072545e69906e079801c0ecf97c9a842eb040d383",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.dangerouslyBypassSandbox": {
+      "sourceHash": "0d91028c9624e682123da42199492fbd4a308def9952bb137ee6cf01eb2320a2",
+      "translationHash": "75709606fa5f020e713be74c6e67eecd18cfb7eb6a28b62ce769853cad1bd27c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.dangerouslySkipPermissions": {
+      "sourceHash": "91089fb97738c638cc374a29c920f5ce7d1ae2b80a56f12670aea65a6acc7409",
+      "translationHash": "a05bb8d0beb9846cc44937d3dd7d42d723c024697fe28eae2476fbc6670f3e6f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.envVars": {
+      "sourceHash": "d058ac872c1686ca7e1042186251993c7dc051bbe58652902f9fda6e3e39e971",
+      "translationHash": "1b45ea458245c3aabb0c8fe342de08a2dfc1a998082c762bc9864013e9ced62a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.extraArgs": {
+      "sourceHash": "0eb6c0b2ebff24fefab060e40ae588e4f10e62d312c83db6a2a8aa15c786eccb",
+      "translationHash": "818693855238356b92896865a5ad09a267069b40650c52630f24aebdf73c946a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.fastMode": {
+      "sourceHash": "8c8f33451e70380c85c874420db237c1dbbbf10c45d13f8981574491821efcbe",
+      "translationHash": "9999cbaf7fec5a957846efc87bf87a0610c8f8bfd80f78e7ef3c98cd291f4321",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.graceSec": {
+      "sourceHash": "1be21e464dfae2a5bb13648b2f7054d3b0a99c6fb58985aff59964f4f92ced99",
+      "translationHash": "f20db3e5b0077031cdadc12ad812f81b713717cdab5000432eced585f5e234e6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.heartbeatInterval": {
+      "sourceHash": "781ff02be83ef3802ea2a9776b310f75809ed7fc9c1ebce6385ec57a47c4e2c9",
+      "translationHash": "88e5add2e14b21513062985b698cf63b4df89bcd3ee17415178d309182eefadd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.intervalSec": {
+      "sourceHash": "8e22cf7d99acadde8f7dda7a9152dbc86ad715a1cef3c991b669b20777308393",
+      "translationHash": "9ae6f4b93fff4bf6f8266697e849c589001b23ad614ec0d91b4c09302011bbb1",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.localCommand": {
+      "sourceHash": "17d7d974123c4bb7251cec970ab0b768bb0970d0244ce542932c1ac19fa490d2",
+      "translationHash": "e72a52908aad3cb965db99bb941df96d5672c8a061fe09ac8e903dd0f36e29f1",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.maxConcurrentRuns": {
+      "sourceHash": "e2a98e5e8719faa54e6062e3ff329680c4668438f4774ed44b0bb7bb26817f39",
+      "translationHash": "ea729ce7ce9c13095037068e1ecee0ecf84f91cc5287b73372e7fd14b2105b77",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.maxTurnContinuationDelaySec": {
+      "sourceHash": "d6aee15ef0314ff7ca3f1cdb664773cc9e9a66226ee17e3dd05e5e0a351990ec",
+      "translationHash": "7ed0ef69b6454a46c0f295da29c2021266d1aca88651d999e8d3629802b1adbc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.maxTurnContinuationEnabled": {
+      "sourceHash": "66a07941e42b994a235af494c14a759cc724badb01c7baf712b6ccdba046ab9e",
+      "translationHash": "fce2faabbb049a286d4ee02b6cd6be250dc5052314db087034f8b9ee2a4fa58d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.maxTurnContinuationMaxAttempts": {
+      "sourceHash": "1de030400683cf32f09c3b704094be674cdcdd14cbfd21a5dc2b6f504c44824b",
+      "translationHash": "08788d6d3ae5ab73d1d18e4dcde503955365dacf216cba4182996b1ce14fa144",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.maxTurnsPerRun": {
+      "sourceHash": "b03de3c07873e07cd8f3f41db73d8949c80e0cd8adf737d4a551f04171f24f14",
+      "translationHash": "3664728cf5ae843b0ecd580eab8ca51399d9e1c4be0286d3a525583158c75990",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.model": {
+      "sourceHash": "e1b6f7ea6bb309175968a6821955b69a32f9b85f02655405448bf4ca3593bc60",
+      "translationHash": "14bebe2fc950a83d2ca0bc354587646e03252a9e20adb86255cd8eb42beb61cd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.name": {
+      "sourceHash": "f4c54f3768d46c01c9600149a1d7b0c9ca3ab5af4f67df06f8f556e88366fc9b",
+      "translationHash": "d27dae24ceaf889d3d986c6759198b475eb794fd21904fa401c0f640d7729a8e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.payloadTemplateJson": {
+      "sourceHash": "e858cdfec1358e1ad8cd73ba1b856e0f26dd2b3cbb62c2ba9f3b1eadc4303d18",
+      "translationHash": "2a1770efd4875998a84821d7371585a1bfe5070a6ae28b369e531ac370db2065",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.promptTemplate": {
+      "sourceHash": "d17234db813729d252231fbe7ebbea4fc9378b508d6ad299011512b998754979",
+      "translationHash": "70cdf8b2afcc07b94c3f7a7d02d725a5879301962871d9a72338ccb7c22be3cc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.reportsTo": {
+      "sourceHash": "f03b4aa1d40117865a66bac372a790e29055dbb5d658e5a79d5d0029bed9e33b",
+      "translationHash": "72261bf37d50b25f11594d92a19a1b5fc12460701ab2cd6b20cf21e7af7d4ccf",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.role": {
+      "sourceHash": "9a9d23c30ef6bc447ad506258c6bcac15151cb06b17a2e6f9d5819c6ed6d9732",
+      "translationHash": "f98746626e3b799fdad72b0d19831e282edbc87fbf3f160cecd539c6ac95386d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.runtimeServicesJson": {
+      "sourceHash": "66d317885a8f7b8e60de021009583a2c430f8190acf8a078d6d42b3bc00ae0f5",
+      "translationHash": "0c4373ae7f6edccbbb263dca720e02b1aaa6c8e2a6bdbdb7e60b25b4dee569d3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.search": {
+      "sourceHash": "38a024143452d949d962bb6ba6ef91812244c7e57d4a3699bb38dd57bfe8dc0e",
+      "translationHash": "554247b689ddb719d74f30373892c64ea1c6c436c10ce1c4880a9ad89c564452",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.secretAccess": {
+      "sourceHash": "b69e9250cb3a08e400680983f80959e3687d3db3b65f4e13a8f1d0867493939a",
+      "translationHash": "a1473ce6a29a07fb2ce919b26be74def997d6cae77bed17fa204bc5d2b03dfb7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.thinkingEffort": {
+      "sourceHash": "86a1e55c9bc443e17bcd1e0fbbf8babd5420ec54bc920bb1482840ac0fcf9c62",
+      "translationHash": "2c214d7cbf04d1dc7b602b7da708e991ad0c1c06a778cdff6e1e14a88ca5fdc0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.timeoutSec": {
+      "sourceHash": "7d7990f2456d504c85a1c064716a1f68acb1aa68485bdddfbab1bec48a24a47b",
+      "translationHash": "220c4cbc35c365f4ff69b806424f76d6a9b4b4ace2ec16d5dde4dd024b3050a9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.title": {
+      "sourceHash": "34c9a0cf5d306093e3649ba24867e959da912e22f1551cc62785f291450777be",
+      "translationHash": "18c62c08cde029b00bc8f473c5b5ee9b7ea006205cfedeb7ceff06456c5e7684",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.wakeOnDemand": {
+      "sourceHash": "be5a35f4242812377ca0fa7ccb17d45c33a53257c1656fe00de0bd5d12788cf9",
+      "translationHash": "5b77b351dba69f199b26211b0dda6e69fab4c00e250d2525394619abbd72c0f4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.help.webhookUrl": {
+      "sourceHash": "db7dcce2107d4fa33d16f97b843e26f6795f666ff0481305a27b879d66f00740",
+      "translationHash": "ec094d48a72fc3b191d78bd335210d2aafd00f4393d2f09749bd0a6fa1c01c9a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.workspaceBaseRef": {
+      "sourceHash": "94143955e6950d5887b63b4be37ec46ccfe4f641a4b23b9f24455526e0c98b85",
+      "translationHash": "c93e4986408147dcf53a74adef8e8c53d459737c702f42be8aebcb8da13fa29e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.workspaceBranchTemplate": {
+      "sourceHash": "b49357818b615c50bb43b52444a1d4c26d311a5ce122b7678ecb1d95dcb77cb8",
+      "translationHash": "c77d70cc0257b4e974c0b6953561d76e15767a6e459ff3ebe3d048de9eadc0bf",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.workspaceStrategy": {
+      "sourceHash": "bf28b9730e44d328f37f961bc4416136810664de095c3ddc777ef525ef7e9773",
+      "translationHash": "c45892e41a6c10cebe6a6ab07a87920a4df0ea55064612dfef7eaf469de5eb6c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.help.worktreeParentDir": {
+      "sourceHash": "73c53bd07e602690db659e71ffc2028db0ffa362d3bf9b2c11a7a22e96070394",
+      "translationHash": "a6b4f6cb5fcc80f3fe99f75b45b75554aba2133cf0062ca666bed5bb6cd7d42e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.high": {
+      "sourceHash": "fbae99d57fd694ec07c0ed710aed89bd5ba8858f361c3095a09d35bb877a5756",
+      "translationHash": "a60d9bb0865970bb01a8c7189205b0cf2dc9205a88458a3d4cc79fee7b90c59e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.hint": {
+      "sourceHash": "542651e2f38ee42b0f06b6b54415443aaec03eb208ed6ef512ed95179d0257e5",
+      "translationHash": "65f7339d7c3594d233e21fe446ce5b94b6d46da9493e0d52c5ddb07e2aa9816a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.holdOption": {
+      "sourceHash": "3e7dff7c0120206db4ba819722da542c8e29af3118fa46faa9ddf093a3bc5583",
+      "translationHash": "e596f862ef2b35667ab8d2c9083c575a69e9639e6d3cfc01dbb6d7480f1bafcd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.holdShift": {
+      "sourceHash": "1b82480cff735640cee234b8f88ef3fbf2b567b39ec975c8b6b742e7a32b1a71",
+      "translationHash": "e93ffc90716ceaae489350a7d5f9835ebc4ec3e8585fa7d3c1bca7e3c60d8531",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.identity": {
+      "sourceHash": "da538e4f137e9b835d60447b509d7ff223b6d3a6e2de4cb60b07e84798abf164",
+      "translationHash": "c154c775e448cccbf23d72da5991d3b64d45b935094c5d9ee15f266aac233c87",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.ignored.acpWarmHandleIdleMs": {
+      "sourceHash": "1c885d2c5b31d3c83a93ebce2661c739e83e3e68638a13395a812d632b288d4d",
+      "translationHash": "0a30abef843a65e85923673eebbea75430a4391bfaedb58be284ce52b11384d6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.ignored.chrome": {
+      "sourceHash": "499c20e5590a55a5d876d79063732bbc1ef0c637236f2193b1331a4f3c784cc1",
+      "translationHash": "2d8a4c4f29e4597705f80b103609063917f084ef1dbcf7f50bf7a37fba1b7dd2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.ignored.maxTurnsPerRun": {
+      "sourceHash": "7a4632358c6f34709fe0d6cd7b44af414eece5c7dd25fd1f52339fd6420ce8e5",
+      "translationHash": "6f0dea44be75688805c2fcab094213e298dd9bafde5e34e96ccd7139437eb7b4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.ignored.warmHandleIdleMs": {
+      "sourceHash": "6206c08d7ab7890e6f06ce03c0595f673bc396be209e0d6790ee1908b55b28a7",
+      "translationHash": "a3948014fb038bfe1a09bb17a9fd6bf7b2706ffebcd98d98f4915cbb284efdc6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.info": {
+      "sourceHash": "da9d931b2cf6fe26615ce7b26a7c4a38b8cd7bf5798343a7cbc991723cae9f22",
+      "translationHash": "e4f9b94366794dd3b7c676ecc03ec44dec7dc4319032c61570e7b654045f574d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.instructionsFile": {
+      "sourceHash": "ac76986a291aed01ebbe4dc4607e2960c275a4e421bc18c66ef1738c401406e9",
+      "translationHash": "8e414f04a97b7ff04790d840f80c127b93384cc5de34725b142c190453be5dd2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.invalidAlias": {
+      "sourceHash": "b3e5c26608989872b8a5750e996f694262b5e5caf0c3bfa71e30eb1b4cf8ba45",
+      "translationHash": "eab6c6f92e66f5e36b56dc21f133d25060d559855948b6de7478e613b22459c7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.invocationTimeout": {
+      "sourceHash": "897a86a77ad43eaadcce1d625b287a952fa3947ab67b4dcd5af6724d151a295e",
+      "translationHash": "da47f74f1472b3e368379b6c658c751b6d3ce8c48802c59250ddf0eca7b03760",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.invocationTimeoutHint": {
+      "sourceHash": "8cf22b6c36c0e2f8c772ca0b8f72519e6ee7a12247ba6340c1abd654b32f7c91",
+      "translationHash": "5649c72c0853794fb1cbf2504c6dec3c1a32f0a0c4d3c9d7257f206ca0125b20",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.kubernetesEnvironment": {
+      "sourceHash": "530fe8b457aa7ea54ce540b5cfbb77a9892f19d584828b3001ab182bbf06304a",
+      "translationHash": "9a98a291e8d42a557d4510810480ef0853aecbe41b0718e76442a8e46c48b1d8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.latest": {
+      "sourceHash": "0c48ae9c1f11ba887b2d8d5a07d1bf40476b1eb4555411ebfe8cf931ba3776da",
+      "translationHash": "dccc7832654517d90bb17cca64836f34e12f757efb4d50aaaf7d70416cc5f130",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.local": {
+      "sourceHash": "df1688fe9d7512067cfb76d293de3b88b23f5b2beb199a509e7f0b931926fa07",
+      "translationHash": "637fde3a372ea1dfebed5afcc44ebbb8f43148463d8b0970c77a1b8ef6d1a9b2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.low": {
+      "sourceHash": "44660889c1b1779d1878afd7156349206a2aed9d5a706e13d74a4c61b291881f",
+      "translationHash": "2556d44fff75df323927754b23b6cfef50fc551b3b06156a569f90866e228eb3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.managedProfile": {
+      "sourceHash": "2228e3c640dfbad7d30176348d34fc608b1a1cc84305398d26acead000fef644",
+      "translationHash": "b470fc82897cc4a34bc460dc4a229d1f93f73002fb64820106a2d3a91cba805e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.managedProfileHint": {
+      "sourceHash": "f80d5c03f853fc12f368e2f23bfd4599926c35639da1acfbe646a67081b85661",
+      "translationHash": "abe214cf9c5a5705b96cd64034a073f8bc93e723356d28460d5708db64e96ffc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.managedRetention": {
+      "sourceHash": "124bed45714a0a0a3461a96f2115a76b5034361e8559bacc12ac195bf41b19f9",
+      "translationHash": "0eebd732936cd659105cb1536bb7b6ea458953382d6fab1d5d2136ae5ef044cf",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.managedRetentionHint": {
+      "sourceHash": "0317ae95831613e4c8d7ec9d5f8dd39ea46375ebdfc2b9f390ab1eb681572368",
+      "translationHash": "eb7b5d342220982ec8932ade13bb2c0b73beeeefd9fc216d304d689f9f47940e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.managerCeo": {
+      "sourceHash": "f6a9d46e101b718b03990b41999df73ad7f68e1672c5d9b42f1dbfe41d292b1e",
+      "translationHash": "561da2962a36ddae9e89d10a457400d39457c15711fef8f1f2ecb37c0f6444ef",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerChoose": {
+      "sourceHash": "9bcf687fe6ee6e263db9fadcf9316b9a38209d77b551fa09c73ef5ca9894bad2",
+      "translationHash": "600b216372284fada7ba9901d460870122d49f204a20a4315aee48018d5c4101",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerCurrent": {
+      "sourceHash": "959aeed88f0e688644550f3fede36d05dcd9a90eb6675b31a91e4ba8d36b10e2",
+      "translationHash": "8e4dc7d8bb853d0879c1cb9566d92d094b18b9be0be125f859dc8c02f6a13950",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerMissing": {
+      "sourceHash": "f0f01867be34ea695b6eed21fe37767d9206245e93e80c2c16cbc3213a9fede1",
+      "translationHash": "93fc2e5750f9c011b8fcee83d813ab6ab1be23eaa8c3cbe438e5a9a42f185609",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerNone": {
+      "sourceHash": "6e8308a98f787af3e15681021493d8fb264a42865a1f8b5fc5fc91eabfa6988e",
+      "translationHash": "ae6f9043d9f0eb5708c6ee69958f32b78a05dbd48d241f50df630af797afb6ab",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerTerminated": {
+      "sourceHash": "023c97ba2d9c9830a5b410caf8957fb30ac2b4526afa9d42777a495f0a54e779",
+      "translationHash": "7ec721d257a42e6cc7e1394243974e66958e436612fa7e833793e80077e5adce",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerTerminatedCurrent": {
+      "sourceHash": "9a0670b06f22ea37dbf754b62cb81508975393deb35ba811e9a92ec43cdd90f1",
+      "translationHash": "ea2e0669f3c1f1b43c279b12257718ef0eb40708b7c0713adc7b2e290c613795",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.managerUnknown": {
+      "sourceHash": "2875078703b1479a464ef1627a98d80954816cad9016a4b34438b3bb70dc92f0",
+      "translationHash": "38f266c8281b535b00c4b551aced597cc7e76d448cf0f3fea599033effb82de8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.manualPath": {
+      "sourceHash": "c517bae4fe8208e79bfe4f92c94fead32160c5dc8ea2b2aac9ce163a711fe653",
+      "translationHash": "15ae4c253d313aa51323e303192cf1d59932666ba98c27d7878369b30dc00ea4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.manualPathHint": {
+      "sourceHash": "87a412268b5b1f93f6ebee953ccc29e926071068c45fce3b3c1848af5a8ca172",
+      "translationHash": "d447f2cefe1d4489a6c577a3f8b570195a2d1946899b2d0a06df629491489653",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.max": {
+      "sourceHash": "72c1295787c8f70ccbc5b4e066f991ffa623cb52efe77067ee4e8bbd161e15ae",
+      "translationHash": "9c8d48cca2a948a6e3893c9c581dd9c6a301f82399da019c367b73c9cf20e88a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.maxIterations": {
+      "sourceHash": "b55852cb6a71e01c17280736c292f15bd710c867b4f81f72dfff6058b60d9495",
+      "translationHash": "747e822347fc838e9e6a6208e3b1354ea699394abac330f94a461dc92bf53096",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.maxIterationsHint": {
+      "sourceHash": "127e4ff5d0a7e57b2b560ff450be9a5ef6adeba4c8f0fb922cb2ff9734fb1a3a",
+      "translationHash": "6db1db9c8359eb9cd1cf8f38c02eefc6b7199eea6d561673813a8a3049746cbd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.maxOutputTokens": {
+      "sourceHash": "c062ee7231be085b73e8aa014ae3e251433a785155aa81c8e5d184c45c3fbb4d",
+      "translationHash": "ee5d3fdbe9c1d12a42802d5c4d82e734eabc738deda455439ed9e5aa6643d396",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.maxOutputTokensHint": {
+      "sourceHash": "694fbbf110adaa66e376b5e1642197138583504654bfc348b2561a85d6ef0f42",
+      "translationHash": "c7225d20f9564f9137829b5b2b5fd9ecc4a6d6d00ff02e7a937adffdff0056af",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.maxTurns": {
+      "sourceHash": "cf8e7b0b151c09826388d94de90a456de1f86fbd3b471a1e3964d06fb69e7157",
+      "translationHash": "0f41765214004ece19766a9d3db9bbe7b45c615d34e68c246baf013c74be38f7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.minimalSearchWarning": {
+      "sourceHash": "6334e067906d2b3555ecdd93079409e03fef6bc46b67a7ce39955f439ba9bebb",
+      "translationHash": "57c27ed98a428aa4df8d8202c610619e3bcecadf5d3ae5da4321e994237c894f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.modelDefault": {
+      "sourceHash": "e265c9315893a64923edd2bb1f2bf6ae08db1fd73ee97d7fbc23aacaf3179f9b",
+      "translationHash": "e8766cec0571fe7efd2b566c338426dce880b96c3d4e621dc2603eb406933c6f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.monthlyBudget": {
+      "sourceHash": "e44b51bfc8204e78f81372f569ee1d28e65142db387790b0d41bde084fe5e983",
+      "translationHash": "b12e1969ac274738d1f8b4c11f58507c552369aff035dcc224ce124e40e22e17",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.museBillingHint": {
+      "sourceHash": "66ebc5a6312ce31e181b1b975d55f8da34cd7174b71b9e6c724969e354cd1ecd",
+      "translationHash": "df0eb999b3e708bf746d8702de484283ff7a41f4bb8aebe4339b0be056778014",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.museConnection": {
+      "sourceHash": "8a0c363827aa8bda72a74ddde8c095f98e9488bf7e34d5cc718f45afae6fb319",
+      "translationHash": "1cd6427b5ffa5905d593646348f18ace607aa03d051fcd2c7507402ac6383625",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.museConnectionHint": {
+      "sourceHash": "d9351ca5f5adedf4b3bd1f37ee606e32f680efc4e51f4f809b973672befa4ae5",
+      "translationHash": "d41804614f791d147929538008f3823630712d6182335e08e2c9b3fb4254d0e8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.musePersonal": {
+      "sourceHash": "7ee16c5b5844456cdbb73fa11e783f6a71509ae3231db9e94283e9e500efc2a1",
+      "translationHash": "628abed5da0cddc860cd371b7eb7a42d8b59ed043d9272d5b77133ddb9487036",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.name": {
+      "sourceHash": "58e17af12be26166eb9249d9ecb26bef2bf8d0daa034b7e9b1ffd7c98eccab21",
+      "translationHash": "d181e4e8e8b0899ce9126cc69a8fd8fa4be403c46ea4fcda0a4fe39ee1f062da",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.noCapHint": {
+      "sourceHash": "a9c620fb606fd2a673d2643bf19006b8dfb9b7604e3f3935bdb2b04ad613ae53",
+      "translationHash": "40f8800428f794e4994d45289dd574aa276d67bd0ad158a0bc5b0bf89ca29905",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.noModelDetected": {
+      "sourceHash": "7ddefc3f110d2aa15c40c77ca5850b65579deb587ca74999c42a1f5ee17635f9",
+      "translationHash": "3fa4622a3d05e35b04c06bac84691816cd7851e7437905c6326c0bf03da92b4e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.noSecrets": {
+      "sourceHash": "1b8488d166d58c04b45679749b380785193f982f579dbee2a01f32ebc89f8d21",
+      "translationHash": "f67d6882d5f3bcfd63aba6af5307a16d1ca5c5d3cde91d92187c6c801ecae644",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.notNow": {
+      "sourceHash": "a9bc4f129bb79136eb9f41b9e2070675acd5ea022f1272282a515237596c6379",
+      "translationHash": "2eec97a5280d0fbc965792d50e1361f4c7f8c557e973ee2d750232dbc48ae21c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.off": {
+      "sourceHash": "6b5fb033921bba5afff417fcdc52adab1f3db1fc40925a5b34558f3c76a4cc8d",
+      "translationHash": "c169eeb721c8315d11ac0afcf17b8fa7428d16e5aa0c167cdcd507febff40777",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.ok": {
+      "sourceHash": "09374c54c46856a3a563abcd30de8740146bcdf4fc70a2800c5157e4a133377a",
+      "translationHash": "f91097c7c120fb76f8ce32ce67d0c1e91fc263e988e584d179ac31d35948ab67",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.oneshot": {
+      "sourceHash": "c289deb7c7e803b0a957b6a8b44ea265606bc5f61748b81805b3fe41c2e06c6f",
+      "translationHash": "bf2bc43fefdbe6904a618c322754fb118b4a2475ff9077a35aad85d281dd9002",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.openCodeRemoteModels": {
+      "sourceHash": "451233e31aa2ee10146962f1d7f645e5ce7941c68dd82d69c9136b87b65271da",
+      "translationHash": "24703e1151b06261b05103389c81bbd60cc30d5d229eb8b94288d8f41853865b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.paperclipComputer": {
+      "sourceHash": "9f10104d1c43ec7210a5e6585b90e2a31ec9f5309f86010666e7eea47806139e",
+      "translationHash": "7d93e328b4761ea00e2e9ba4f7155576aed356da86ce7d6b47f7dd05601db015",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.passed": {
+      "sourceHash": "94bac4cc6c040ec8a7489613f7617a448ded9cca2788a9f10cb0d95062aeac6d",
+      "translationHash": "77366c58356a69bd801f069028d3f4976281a1aabb8c9c1951cc42d12c09ddd2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.pathOutput": {
+      "sourceHash": "5cb73a22e2ee54d0f32cb1dd74e9740a771b83b39bf804463d567246223c16db",
+      "translationHash": "3b63e6925e7b67ac98b4747e5608e51a011e8264541c42d91dbc5d14971075fc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.pathPaste": {
+      "sourceHash": "783c7400133ab91a71181ca983a139ff62a559c30247f82154fb3cea42cfd5d9",
+      "translationHash": "926506e534ad7175d4703090f7ecdbd4076ec3edb9c5868bba6203660ad90818",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.acpx.approve-all": {
+      "sourceHash": "6bcf2faf20f84d9478b17fdbc481d04cbaa3bab4924e11702a878f15d44cf7e3",
+      "translationHash": "18cd746358e1e6a75e81fb61c90bf5417f9c836df6bb9206f3e39aa641956184",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.acpx.approve-paperclip": {
+      "sourceHash": "4e967dfb68312d7c1987dd0dbdb179785934ee2f62a4f8a6032539cb9f994b17",
+      "translationHash": "7efb65c8cfdff4816717197b1b2d8328f0952ec6c4a5670f06f0f0157a6062c2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.acpx.approve-reads": {
+      "sourceHash": "095d3bab188784e22243c704bfd4d371d419f6dab7707f52b5aa807efea6967b",
+      "translationHash": "429bc2a14e624c8df4bdb2d3170df1743f257bb385d0345919ce6e4500a8bcc4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.acpx.deny-all": {
+      "sourceHash": "88ac9ee899aab129475ed41b8de3513a256567ecdc68dfbc75c5a1cab63dea3b",
+      "translationHash": "df7651ba8e727db175d814f6a3d5701b22801a51b8091df727dd6299b724a0c0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.codex.never": {
+      "sourceHash": "02408ba56abb7497f942f3ae73d4a65abb5fbf73d93f24f5e0741dba492859ea",
+      "translationHash": "6dc0846d5fc8507c7d456bbe52f34965dd1243bbf9298cbb700f8180d18ea25f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.opencode.allow": {
+      "sourceHash": "d86496fd341eaa74135e814296e2eabc4a9a7ebdb2effd0157c3bf19e084cacd",
+      "translationHash": "3b68c1743a0ac25070e4a71615526be00494808b4aac28c266c3444950490a1d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.opencode.ask": {
+      "sourceHash": "7815ad0b8842117f8f7cdaaea1b61ecdd6ad850c416e3ea3bab73867204ded04",
+      "translationHash": "9504af9dfdde8ceac56a56891c904333fd51f3806fc4c6269afd60f2166f163f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permission.opencode.deny": {
+      "sourceHash": "f99ee98acc0eb05268cc9a8e08e7aba5af9bb540667ac80244c543d6ea1dcc70",
+      "translationHash": "50224bab42e94ecd47eda417af7a0acf9791a433c300352bde157670af505a47",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permissionBoundary": {
+      "sourceHash": "5d113861efdb88717c86c8c1a699d983c6457ceda6601ad6e3d79e43009b8464",
+      "translationHash": "a47f39d8f982328fe6e6a4d0a4441c283a8865b8882b6baef2974b1b8db7f254",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permissionDescription.acpx": {
+      "sourceHash": "860c0c6218b053b3f828726f00c0bdc3f59e102d014229839dfb4b6fd2272253",
+      "translationHash": "d6e5abf81f48b71c678add6c38d3b5e8e1f2535aea9a74a9e4f1e8d27373f88b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permissionDescription.codex": {
+      "sourceHash": "1160dc72d317e9d4991ce50cb33c8a03c228d6980cc6cd39e872a9e8d041d785",
+      "translationHash": "9c9c242dd44bf259756031014fc21688a9084c81f75c47af25705eb2ab0d0bd7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permissionDescription.opencode": {
+      "sourceHash": "a28a5e808a75f195c6528c4c2885b912f8965984fe54cf07bd8daba4b3682241",
+      "translationHash": "51065b79afe94cab1df42bdb94046b3b219f7cc5d9642560f12f701850bb7ff3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.permissionMode": {
+      "sourceHash": "bf4692496b43c7bdb454dd4281ea791109b0b3f4fca28823b8b9c1cc92a227da",
+      "translationHash": "86e41a1c976d6c1a3a817bec25e953b0009b61ea1cc2961844e0bfd733a74699",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.permissionUnsupported": {
+      "sourceHash": "49b91a915a9edb4734a81b41979ef5bd6706e15beebe2b2a8745dfacd37dd306",
+      "translationHash": "7824a1e142ea71c946ae748546e106747c6fa1dbbd74a3e99cb3201824446686",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.perMonth": {
+      "sourceHash": "2852e25b50a507139820494c31031a67c7ed06081819914f7fb0421cdb79cfd7",
+      "translationHash": "0123d56f09dbd5c51b7d1acce6a58ca71351517992f77b06560db476e5228b2c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.persistent": {
+      "sourceHash": "c2ef267d3761b28447ecf9f90c6175c60fc8682671aa5b8910fbca53d41e7d7b",
+      "translationHash": "59ece6f52420f8da0a4cac2dfbde88b6c7f84b078ba3cdcbb8c5d1a2d2fbbe88",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.perTurn": {
+      "sourceHash": "49d4b984cd7c1de08bd8a30fe9315ee025bfa84a77694459aa6f140889329f5d",
+      "translationHash": "2b44db35e8983f1b5e060353aeedfe0c26dfb83dcef04ce5958a1f78a6a74143",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.piEffortHigh": {
+      "sourceHash": "e7501da0f088a642d653588fadc03e7c5ba1138536b47fdbbc159c5565fe7b0b",
+      "translationHash": "3c601d5d233526fa8425d59350eb6d307a94c218b3c2c6db6f03b20d4f235f9f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piEffortLow": {
+      "sourceHash": "68793a483777ef3e92a886e5a953120ee5744da4af20780ef6fca2b2cc732076",
+      "translationHash": "0f11f0856539440f2c0507fcf96c35fda2b67698d220220ac5b09ca7e68ecd68",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piEffortMedium": {
+      "sourceHash": "c3905397817332e52e8c278841ff01b5a1ef4972f4d58808161f3c66b56559aa",
+      "translationHash": "97453487c635373f9cde6c09046056e2a985b147cceddd8263bbb4a0aed5f0c7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piEffortMinimal": {
+      "sourceHash": "403e11ecb9f06fdd2c15d43436ee103fec463f474d03c8dd5bab65c8cad64095",
+      "translationHash": "2831bdaf7d0d41aa93a94cf266115a8d65d6d670416ef924b9329b3e9d779c0a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piEffortOff": {
+      "sourceHash": "c1667e62eb792b4d11ef3031c69e0c36e5f2bb8d3a26770fcfaa15265e4d9fd1",
+      "translationHash": "00cb6d77e73f783a6f6f5325dabb27585a82df1622698f8057f6cffaf6c8d731",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piEffortXhigh": {
+      "sourceHash": "908ee145b07af37d306bc0dd55129c36876f3116914f5f39532f63ef4621b8e4",
+      "translationHash": "b16f9e1d24adc3ae2eafd3ba5d7779d86ec99795696cc0dc0b1e67eb5b5862ac",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.piThinking": {
+      "sourceHash": "b118995ba07b1b422b599b1d49f9ad342833fc073fcd17b3a6a974a128734b60",
+      "translationHash": "c1959456989f589e3afdb25e38787f0544974181fc814fceec23192c52e66550",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.piThinkingHint": {
+      "sourceHash": "531e56963c8e5e7fc7631e64edb841d07e3910a2e215b685dcd32fa267bcfc11",
+      "translationHash": "9669330b0e6347b0e1f5ad6800ca71954409a7a8907a59a1dcc0a961e97093b5",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.piThinkingUnsupported": {
+      "sourceHash": "308d3ee6ab913e4766384dda6ceccb81e11ab868cc816ab51b9240c42d9e6aaa",
+      "translationHash": "5cb5ec3953d10a6e908fbbf242b4a658909400bc24c3ceb2a1f7250185fe20ae",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.plan": {
+      "sourceHash": "6254176bb623ad18e9a5585d4cd5d8c2fb061c59f1767ba04ac4f6d23768cabb",
+      "translationHash": "8b96872b80ff68ef74f01ee6af61a062e1af47dfcba67f28e4f479bb6dfdcafa",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.process": {
+      "sourceHash": "b626ca86a69cbc4e78f3e4b621f1a608634af02e0ce860c550e0cfbfee618b76",
+      "translationHash": "c4d4c00e88e93190bdb63ad866390e573f85ae14d0fe6d9b2b2a45442695104c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.promptTemplate": {
+      "sourceHash": "5c6361ee70a7910104ec6cab4763c03a74d4f0da0cfc93078aca1761548557bd",
+      "translationHash": "dcbcfdb24f5addc5f5df6b68fba433f34a518882fb69aaf2f17967b3f30f49f0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.promptWarning": {
+      "sourceHash": "6ce00505e6a88a23362bafc344e9d1caed76493498b621c60bfc36e01bc28b4a",
+      "translationHash": "150eacac4867aeaafbc096152a8a37c24efc8575c70a31f2e97d6c5a9d6474a7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.proposedAccess": {
+      "sourceHash": "f4947bfaedef623959b63a4ca5d6c62856ec26278f682d239d10a19d2fc61454",
+      "translationHash": "76a97297d731da77c9aa730bfac272bc5f20772819cf2fa9b6f695781491e036",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.proposedBy": {
+      "sourceHash": "bfb5b3c1f9bd201b02558139a176b75e6a89997db633e88404318081fc156474",
+      "translationHash": "5ccfd07cb151f24139020e2cc6cbf47add6113aedf4ae498f3156f85687e63d2",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.provisionNeedsFields": {
+      "sourceHash": "046d04701bdb8aea42bf0b5df5a3eddac0c2c20a9371aa95323be1d653e921b1",
+      "translationHash": "f600a0a7cff632e75c1c51845a3acb2778bac147530af8c36c51597dd797e3eb",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.qualificationPending": {
+      "sourceHash": "a48b5a79705d9f35a37f4e0d9308735c02a867f39b33a19332fde3979a1f993d",
+      "translationHash": "75e26d21909df8a460ca442662f78f8fa7342001755c17d800ef98546872d622",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.readAttachments": {
+      "sourceHash": "d0aab65085d1512217bdb157e105ce67f1602fc4feb8c12a4ce8974b727b4e7f",
+      "translationHash": "8be504c514e3b1a25eafac255f2699ebb2b0cfb98de75209a4f96be2cf1e02e7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.readAttachmentsHint": {
+      "sourceHash": "f44b97e9384c0a4de45f83141ec7a1b4cc123465a08532bc3c3bf84c5e9b8d9c",
+      "translationHash": "7107f7c99c2a128472bb39f0d67dafb21c7e510ef303d0f13d4d1fbf5c539357",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.redetectModel": {
+      "sourceHash": "70564c6a56d443313100fcb6fb546d24b141181c10e74c5373e830c28b6d669b",
+      "translationHash": "afce8f07ebdad248c3c5930beeeffb9257dfb048ad1f4d88f54380c6c0871be4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.removeAccess": {
+      "sourceHash": "720fb13509567e4332e9e6404fce064fecbd7d5a57a2e8c52b4d8eca9745cc36",
+      "translationHash": "faa3536207994b3fb64d53a0c0592225e7d312b6fcef770eacff13e0ca60f8da",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.reportsTo": {
+      "sourceHash": "9e63ef12efa16d85e6265bb60574546c06895acceee6b02678e64c5e85b8ef10",
+      "translationHash": "bd56998ffb9c33180545b563bb4b6b137a16c6efb6fe60141732ff88649086ef",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.retiredAcpx": {
+      "sourceHash": "3756ab2b7510b7109c3a90aeb813a616fe77cd7878d6804ea4efa5a662b8719b",
+      "translationHash": "66aeb9815090fdd8d4626638028aef5212f7e70d4417a5078c0668b7f225b381",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.runCd": {
+      "sourceHash": "75f506cff9e4d241c6af72eed94b091552d357e10edadc61e48d21f29efd687c",
+      "translationHash": "70e0d1a2ea4db5e1c43e8b28d55835852edb68ccfe6d086c00ae15902ecc9a88",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.runnerLifecycle": {
+      "sourceHash": "cb3795f800acd364cfe2c41d6a430041e5a7e59630ca70f7037af115adc6c60b",
+      "translationHash": "58b8cb27d938f6428ff03fc67f940842322ae3866b7caaf9702e862a8ccec15c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.runnerLifecycleHint": {
+      "sourceHash": "c034a90785b2ec28c9498061c2d9ff5d34d73bd961843d0c21990ac63b1759c5",
+      "translationHash": "a13738bb7dc57be39222c576cd6c6c718c7cf07e23782c3ecc6a92709405c9d0",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.runPolicy": {
+      "sourceHash": "e1e92d59a10c26ba56b5dacd37e81d8a03a2d1a445b7019184ef19b573534c4a",
+      "translationHash": "4846b5d164b7cef26e857d2366e4fb2c2d787bdc279bbd12d6813471e14f8f27",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.runPwd": {
+      "sourceHash": "b497c8adde4e6f4ce8aa818cdf6c89cd6457e5c6732a7d65c34d9d929da18f3c",
+      "translationHash": "7be4c577aa34d16bdea6a8d5c7143e972b01d18087d49148c03afb5b13e1d5d5",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.save": {
+      "sourceHash": "620a84900ead15870a459e3c84e23938e40528f6c053bfdfe0f80eb29a8d416b",
+      "translationHash": "6eba939c41ffa3f96ccd3b50fc1fde53a6cd1e40ebca5507657257e29a50c9c8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.saving": {
+      "sourceHash": "76f0a4fcc8bb7752878730934c8fb083c755a1fba2405979f03555a48e0b660d",
+      "translationHash": "0862ee2f5a009e3db628e292486215c7dce6f2fac625e822d2db2fafd9a74916",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.search": {
+      "sourceHash": "e8b19a9fd29f39c3b2402c45d5c57f265bc0c2f752aa8d6c13ef60ecd4d192e1",
+      "translationHash": "cad657a69885daf4f64da679ee30c56ca2395c87082d39e08b41175038821111",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.seconds": {
+      "sourceHash": "bbf112d34c86ad58efa572c734ac24ff2af6c523107acff96b72919ed434302a",
+      "translationHash": "8b2fd781e132164f6715c734924f945a633bdbb88975e0be67236e55846638ca",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.secretAccess": {
+      "sourceHash": "d0b281fb2b13f0f4003cc0792930c6d88b2943f742440787ce71494617a39023",
+      "translationHash": "94ce0b905d9884bb6aab18f67ae4d941773f0bb238cfe417abda3922f77e0920",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.sessionCeiling": {
+      "sourceHash": "a0ae63891d82cb2c478fc500325c84f6c7ab42ea62a5dcefc3a08eac201b40ef",
+      "translationHash": "c3b1bb73c121c7168105bc0fdef27d8457eda99ad43b36f983e318c7b982c6b9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.sessionCeilingHint": {
+      "sourceHash": "b1e9a1ae3b72fa420614f218d881e95b194e9f96d82fa7ccc8516b5c489ad9ea",
+      "translationHash": "787d2fb96db634329772bdfe3dc3e5c8a07ff352eac36eaf08bc69b1a5d114ba",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.skipPermissions": {
+      "sourceHash": "3abd8b278b6ad009540f1ca44e9fe375cf239642fee5be7a72293e17f9dbb8bb",
+      "translationHash": "40c594059c8448ff9eefe8b946635a65a806cef47f6a562a7c310201e74d9e9a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.terminalFallback": {
+      "sourceHash": "d1a5104076f962555ccb1fbe58cf47cf3cd06eaf58f2c00e345dfaef7ca73701",
+      "translationHash": "7aabd97b3864029c8f8d69535e389a13c317878b613c9d8669f4cbebdcc901fc",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.test": {
+      "sourceHash": "84bef04b7913cda4892c4abb41353f2a9fc8ccb4f964a334a27da963023bd0f6",
+      "translationHash": "56f0b6e990607c48b3d25531bbc9ca7d00dd0ded0a938905814a17928fb2fbe6",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.testing": {
+      "sourceHash": "b834ee4618491709312be70db6d6da95a3981db54c8022ca7349fd8adaa79541",
+      "translationHash": "b7cc20ecc4fe007c8a1c255ac444bd0dfd67ac8aab58708f0d24497213c9278c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.thinkingEffort": {
+      "sourceHash": "5128ede8fb655a507c596f1fdf6e6eb57d2fe64373a499ebf90d7fd0f30c76c3",
+      "translationHash": "940166557dc32ac1238bb8ca3e2ba7f09d816bbf0addc31d03335c43ef7b5b36",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.timeout": {
+      "sourceHash": "9603fd99276459ec0868c73c3728ca94152efbfa3d43b3fe810cc7ef25064d19",
+      "translationHash": "f269deafe4da80328d35e6bc79355da1228edf71ddb040e9116470617217b8c4",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.title": {
+      "sourceHash": "e24a9c805fe26ef89a8aecc5c3fc0640aad1d69dc275e372303f859d4987821d",
+      "translationHash": "8c2db223e60b6fa6db3bfbd18a962635e72fdb1635f8f725c58203b916b72438",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.titleExample": {
+      "sourceHash": "f453e19e35c3cea2653b95fc6dca60900910717b9f2c61958deabbc8313340c2",
+      "translationHash": "9bcf11dd8de3150b362b193e7e20bed7d02a3851fcd6a13b1e806e1f4f396266",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.634Z"
+    },
+    "agentConfigUi.unknownProvider": {
+      "sourceHash": "aff893b51c5bdf9e721a807daca2f01a5ceaefcd172e45574cf6d93108e31415",
+      "translationHash": "15834c478c90910e98322d9ba6e4fb775dfb9a01afeab4e3ddca425c8d9703e1",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.638Z"
+    },
+    "agentConfigUi.unsaved": {
+      "sourceHash": "2ead2bc270183a61f1025402f13449e161c662f9fd949b282150fd87b253c4cd",
+      "translationHash": "849d295a2978bb5ac8c3b25b1e6c5b89939525f93c891c306f1253ba74224aa9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.upgrade": {
+      "sourceHash": "1a559bd9a9bb716875197193c6b591eb58e333739395e0539b6b964824e56e8d",
+      "translationHash": "3b37858d46514a414f5dee4231abb543af31b35c23561e9859e75bd3df8d7d29",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.upgraded": {
+      "sourceHash": "3bbc865be1fdc6a5616d9d98e50a06caa867a511741f17cbb5b346ae85a791b5",
+      "translationHash": "e1d418e57046052e999dc284c0e9f42d768cac27c79e841a233b560667673ddd",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.upgradeDescription": {
+      "sourceHash": "831833af68ac5fa866d9284a062eb0fac9130a63ec1f0746148071d66c74d0dd",
+      "translationHash": "2d4028e2e95f0dc54085ac01d9852f957dc5bef2931b6aa88f545edddd8342bf",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.upgradeIncludesDraft": {
+      "sourceHash": "d3e0b0c93d9439f0bfcae8f2c5326ba9c0055caf22a8c95debc102adb0942c20",
+      "translationHash": "94bc4c54383df1e8c4b5c07d0117fd04fa98453b3489ea6da521cc1893f94a9a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.upgradeSaveComputer": {
+      "sourceHash": "c2ed6e878ec2fcfd36c57caf15576b1525f2ccf99248b56aed27c3c6c013cf22",
+      "translationHash": "2cedba984d345d82082a55bc1b08b72c25dba9d0acb35defbaec0366f7bccbfe",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.upgradeTitle": {
+      "sourceHash": "c320771b8ededcfb7bbeac19f1143cb7b904b5709c6b017459a7b2dd29419ac7",
+      "translationHash": "21082e11241c5e685b662a59a15903f50731ef327db362fd963e3587f95eb40c",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.upgradeVerify": {
+      "sourceHash": "1edc535bfd219e1737061c5453a489aa9e64f2cc63b9c3267aa63e2f0d11a9c0",
+      "translationHash": "f45e0d4a61663255d3fcd3886ad28026b813e34eba4e9e90336fdda9ff430b7a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.upgrading": {
+      "sourceHash": "73c2175401c047a8623c32856626ee1b32ee1540a2fbe935a9205428c78ef72e",
+      "translationHash": "dc4ddf8db1fd2620439dc73f8454a9b0c3c523474d3b5c58a0ef11013fa58c4f",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.version": {
+      "sourceHash": "caf14b1eca64615d4345b039d5c07a0905ca4f6a697d7421a1dec1dded8f382d",
+      "translationHash": "0c970dd9fc647f244f9059d0cf699283ef5d8d41888dfa1c5f6abb1d75910465",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.wakeOnDemand": {
+      "sourceHash": "dc42b75ab061b88305c369b31e847a7de724e666ed63cb537b03c46ccc1f3f80",
+      "translationHash": "9174a3a24a336322b269b32bc20eff8dbea669c7e51948d48b776cd0445ca18d",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.warm": {
+      "sourceHash": "886fa38cad70067de45d87cd163d9cf0d2651b4edac3c54e9f92d289cc194b1c",
+      "translationHash": "12c062712f5bf53d86c9eeca7b1b0b610db81937179daa57df381a14b8504502",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.warmTimeout": {
+      "sourceHash": "af9d5dd8eef8c114c895a644ddb86aa3af873c87f4994fdd98d6f9f04df4dae4",
+      "translationHash": "41342f09e43ce9f35fafec608711707208d547e6a43ed047e92e55be96e9308e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.warmTimeoutHint": {
+      "sourceHash": "13b387d3565c6a72c0ab3d055fe6279d02656fd3a8f4097ec16776f154007bc3",
+      "translationHash": "68664eb6f011a04131208cbfad5b43421e71f56d978f1eb349183c25d4f1fd4b",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.636Z"
+    },
+    "agentConfigUi.warn": {
+      "sourceHash": "630b4274682e9da7449024360f9bb78bba8ac811edfaeff6036d6caf20d2f9b7",
+      "translationHash": "d4dac8ee56e811323238899ee75a0cc3376838c14ccbb709587cd4a8578bf724",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.warnings": {
+      "sourceHash": "e186edc4fdff5e31763f37ebbad99967b4fe308fa55e4935c76860f743551be9",
+      "translationHash": "244a2f1234d10ad5d3f42e4f8f9e721b08c240577bbcda1799f9cd192548622e",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.windowsCopy": {
+      "sourceHash": "10059202a18f6f22854b3735d46663ae851bf22bcaf9dcb1df8f9c1380b8739f",
+      "translationHash": "e16f599a8e7731a4830560e7c145c6764e3119c2a64360acb71ebce212dbf9c7",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.windowsExplorer": {
+      "sourceHash": "a1da203d3fccef5b9d7fa253e8bae418f4b20370935e115f81168bc6e0f180cd",
+      "translationHash": "ac01fdfa0b21c7457b314970ca86ca856099a84ee237a5ce41dfd7b9adfc31a8",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.windowsFind": {
+      "sourceHash": "b9951aa5aa381c6d650327bb931dd58729bec95a6c3b7ee9f8336b135b1b87ac",
+      "translationHash": "6d6448374b5689cfd2c4bb14d58ca0d97643ce6be1566e60a8d613bf53178ea9",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.workingDirectory": {
+      "sourceHash": "49e4daa36d868c26ec4f7921a163579ca669432db79be43b9c11c1e0ec70ebe9",
+      "translationHash": "a9b84ecf3f25bcce69f5c46bb22774211eba761efd0e0ee03fc22f885e8641b3",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.635Z"
+    },
+    "agentConfigUi.workspaceCommands": {
+      "sourceHash": "2daab737e9ac94ab2d7ae5116be78e7d1978877ef71e5ff3aaa669dc92f2ad5b",
+      "translationHash": "0a075ebfec9ea1b67c99f28e55bea17e4c10b2f02062199d210346fd6f436867",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
+    "agentConfigUi.workspaceCommandsHint": {
+      "sourceHash": "948cbec04ed207b42700edce11612860b97a66c911fc5700b325a0c2d1b534fe",
+      "translationHash": "e81250dcc2337c5207f1b4941e7f42bdf46099daaf9ca8a1170d842c4bb42b8a",
+      "reviewer": "Codex agents /root and /root/translate_task_panels",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:55:18.637Z"
+    },
     "agents.chat": {
       "sourceHash": "955429025ed1eb8f5e5227b1a67918807d4776f055766d51effbe3b6b20e696e",
       "translationHash": "f06a95a4b4d78c4e73215fc8c580fbb66389d82a40d9eca604d5f48e33b03aa0",
