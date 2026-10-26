@@ -4,5 +4,5 @@
   "upstreamBranch": "master",
   "forkBranch": "master",
   "syncBranch": "codex/upstream-sync",
-  "lastAcceptedUpstreamSha": "a1f77821b9cd5c9c846fdf7a0fa5cc620ad2b6bb"
+  "lastAcceptedUpstreamSha": "49bd7a4ba62839a2eb219e126379e9080d1a2c4d"
 }
