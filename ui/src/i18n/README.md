@@ -58,7 +58,7 @@ The next slice adds first-administrator bootstrap, access-gate messages, board
 claim, the active onboarding wizard and its model/provider setup controls,
 organization settings, instance general/access settings, and their permission
 controls. Provider account selection and the shared access step are included;
-the complete Connections catalog and its other setup steps are not.
+the complete Connections catalog is not. GitHub setup coverage is described below.
 The task collection slice also covers the legacy list, board, column picker,
 shared rows, status picker, hover previews, retry indicators, and external-object
 summaries. Both standard and legacy task lists pass the active translator to
@@ -381,6 +381,27 @@ aggregation, chart geometry, raw error codes and smoke path IDs remain unchanged
 The focused component suites use mocked APIs; they do not prove live polling,
 provider health or translation of the recent-activity feed, audit pages and the
 optional run transcript surface.
+
+The GitHub setup slice translates the shared OAuth shell, retained-draft recovery,
+access summaries, advanced token controls and owned URL/handoff failures. Local
+failure descriptors resolve when rendered; original English Error messages and
+provider diagnostics retain their original values. Locale changes preserve the
+selected method, pending request, token draft, focus and selection. They do not
+restart authorization, change credentials or navigate to a provider.
+
+Built-in GitHub registry captions require either the canonical local object or
+server-owned `displaySource` metadata. The gallery route adds that metadata only
+to built-in definitions and removes a plugin-supplied marker. After provenance is
+established, each known caption must match its reviewed English source before
+translation. Changed or unknown copy stays literal. A five-caption contract test
+against canonical `github.json` detects upstream copy changes; the generic source
+audit does not scan that registry. This is presentation provenance, not an auth
+claim. Other providers and the complete catalog remain outside this slice.
+
+Component checks and a real PostgreSQL gallery-route fixture cover these
+boundaries. They do not establish a live GitHub grant, callback or tool invocation.
+Completion-toast locale and stable step keys are source-reviewed; no dedicated
+runtime assertions are claimed for those two details.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

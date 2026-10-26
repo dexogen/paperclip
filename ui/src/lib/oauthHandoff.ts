@@ -1,4 +1,4 @@
-import type { ToolOAuthStartResult } from "@paperclipai/shared";
+import type { OAuthEndpointUrlRejection, ToolOAuthStartResult } from "@paperclipai/shared";
 import { resolveAuthorizationTarget } from "./authorizationUrl";
 
 const CLOUD_HANDOFF_PATH = "/cloud/connections/handoff";
@@ -17,6 +17,10 @@ type PendingCloudHandoff = {
   savedAt: number;
 };
 
+export type OAuthHandoffDisplay =
+  | { kind: "authorization"; code: OAuthEndpointUrlRejection }
+  | { kind: "handoff"; code: "invalid_handoff" | "expired" | "forbidden" | "unavailable" | "invalid_provider_address" };
+
 export class OAuthHandoffError extends Error {
   constructor(
     message: string,
@@ -25,6 +29,7 @@ export class OAuthHandoffError extends Error {
       | "expired"
       | "forbidden"
       | "unavailable",
+    readonly display?: OAuthHandoffDisplay,
   ) {
     super(message);
     this.name = "OAuthHandoffError";
@@ -34,7 +39,7 @@ export class OAuthHandoffError extends Error {
 function parseHandoff(value: unknown): { kind: "paperclip_cloud"; session: string } | null {
   if (value === undefined) return null;
   if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff");
+    throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff", { kind: "handoff", code: "invalid_handoff" });
   }
   const handoff = value as Record<string, unknown>;
   if (
@@ -44,19 +49,19 @@ function parseHandoff(value: unknown): { kind: "paperclip_cloud"; session: strin
     || handoff.session.length > 512
     || !/^[A-Za-z0-9_-]+$/.test(handoff.session)
   ) {
-    throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff");
+    throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff", { kind: "handoff", code: "invalid_handoff" });
   }
   return { kind: "paperclip_cloud", session: handoff.session };
 }
 
 function handoffFailure(status: number, code: unknown): OAuthHandoffError {
   if (status === 404 || code === "SESSION_NOT_AVAILABLE") {
-    return new OAuthHandoffError("This sign-in expired. Start the connection again.", "expired");
+    return new OAuthHandoffError("This sign-in expired. Start the connection again.", "expired", { kind: "handoff", code: "expired" });
   }
   if (status === 401 || status === 403) {
-    return new OAuthHandoffError("Paperclip Cloud could not authorize this connection for your account.", "forbidden");
+    return new OAuthHandoffError("Paperclip Cloud could not authorize this connection for your account.", "forbidden", { kind: "handoff", code: "forbidden" });
   }
-  return new OAuthHandoffError("Paperclip Cloud couldn’t prepare secure sign-in. Try again.", "unavailable");
+  return new OAuthHandoffError("Paperclip Cloud couldn’t prepare secure sign-in. Try again.", "unavailable", { kind: "handoff", code: "unavailable" });
 }
 
 async function postCloudHandoff(
@@ -86,6 +91,7 @@ async function postCloudHandoff(
   throw new OAuthHandoffError(
     lastError instanceof Error ? lastError.message : "Paperclip Cloud couldn’t prepare secure sign-in. Try again.",
     "unavailable",
+    lastError instanceof Error ? undefined : { kind: "handoff", code: "unavailable" },
   );
 }
 
@@ -122,7 +128,7 @@ export async function prepareOAuthNavigation(
   const handoff = parseHandoff(start.handoff);
   if (!handoff) {
     const target = resolveAuthorizationTarget(start.authorizationUrl);
-    if (!target.ok) throw new OAuthHandoffError(target.message, "invalid_handoff");
+    if (!target.ok) throw new OAuthHandoffError(target.message, "invalid_handoff", target.displayCode ? { kind: "authorization", code: target.displayCode } : undefined);
     return { kind: "authorization", url: target.url, host: target.host };
   }
 
@@ -139,7 +145,7 @@ export async function prepareOAuthNavigation(
     typeof body?.authorizationUrl === "string" ? body.authorizationUrl : undefined,
   );
   if (!authorization.ok) {
-    throw new OAuthHandoffError("Paperclip Cloud returned an invalid provider sign-in address.", "invalid_handoff");
+    throw new OAuthHandoffError("Paperclip Cloud returned an invalid provider sign-in address.", "invalid_handoff", { kind: "handoff", code: "invalid_provider_address" });
   }
   return { kind: "authorization", url: authorization.url, host: authorization.host };
 }
@@ -149,7 +155,7 @@ export function savePendingCloudHandoff(
   storage: Pick<Storage, "setItem"> = window.sessionStorage,
 ): void {
   const handoff = parseHandoff({ kind: "paperclip_cloud", session });
-  if (!handoff) throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff");
+  if (!handoff) throw new OAuthHandoffError("Paperclip Cloud returned an invalid sign-in handoff.", "invalid_handoff", { kind: "handoff", code: "invalid_handoff" });
   const pending: PendingCloudHandoff = { version: 1, session: handoff.session, savedAt: Date.now() };
   storage.setItem(PENDING_HANDOFF_KEY, JSON.stringify(pending));
 }

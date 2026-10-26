@@ -1,8 +1,9 @@
+import type { OAuthEndpointUrlRejection } from "@paperclipai/shared";
 import { checkOAuthEndpointUrl, oauthEndpointUrlRejectionMessage } from "@paperclipai/shared";
 
 export type AuthorizationTarget =
   | { ok: true; url: string; host: string }
-  | { ok: false; message: string };
+  | { ok: false; message: string; displayCode?: OAuthEndpointUrlRejection };
 
 /**
  * Vet an authorization URL before it becomes a top-level navigation (PAP-17099).
@@ -26,5 +27,5 @@ export function resolveAuthorizationTarget(value: string | null | undefined): Au
     allowInsecureOrigins: typeof window !== "undefined" ? [window.location.origin] : [],
   });
   if (check.ok) return { ok: true, url: check.url, host: check.host };
-  return { ok: false, message: oauthEndpointUrlRejectionMessage("authorization", check.reason) };
+  return { ok: false, message: oauthEndpointUrlRejectionMessage("authorization", check.reason), displayCode: check.reason };
 }

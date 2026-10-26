@@ -600,6 +600,10 @@
     {
       "id": "4d79ede8f508e810760fd1479f50961d16b3ee4805087c64b21154254353a225",
       "reason": "CommandSection compares the app-owned disabledReasonCode discriminator to select projectWorkspacesUi.runtime.unmatched. The code is not rendered and external disabledReason text remains literal."
+    },
+    {
+      "id": "3780402f8e374c28f2f8b12ca9331d1f54aac0a5a5d335c89c7265ea7561a2a8",
+      "reason": "REVIEWED_TOKEN_FIELD_LABEL is a raw canonical GitHub registry caption used only as a copy-drift guard after trusted built-in provenance is established. The existing visible caption remains githubSetupUi.registry.keyLabel (Your GitHub key). A changed registry label is shown literally and a five-caption canonical contract test fails until its translation is reviewed; this sentinel does not infer ownership."
     }
   ]
 }

@@ -12,6 +12,8 @@ import { instanceSettingsService, normalizeExperimentalSettings } from "../servi
 import express from "express";
 import request from "supertest";
 import { toolAccessRoutes } from "../routes/tool-access.js";
+import { getConnectableAppDefinition } from "@paperclipai/shared";
+import * as connectionRouters from "../services/ai-connection-router.js";
 const actor = { actorType: "user" as const, actorId: "mcp-test-user", actorSource: "local_implicit" as const };
 const tool = (name: string) => ({ name, description: name, inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } });
 describe("remote connector lifecycle", () => {
@@ -50,6 +52,33 @@ describe("remote connector lifecycle", () => {
     });
     return { service, requests, add: () => { added = true; }, remove: () => { removed = true; }, restore: () => { removed = false; } };
   }
+  it("marks only built-in gallery definitions and removes a plugin's spoofed display source", async () => {
+    const org = await company();
+    const original = getConnectableAppDefinition("github")!;
+    const spoofed = JSON.parse(JSON.stringify({ ...original, displaySource: { registry: "paperclip-app-definitions", version: 1 } }));
+    const routerService = connectionRouters.aiConnectionRouterService(db);
+    const catalog = vi.spyOn(connectionRouters, "aiConnectionRouterService").mockReturnValue({
+      ...routerService,
+      catalog: async () => [spoofed],
+    });
+    try {
+      const app = express();
+      app.use((req, _res, next) => { req.actor = { type: "board", userId: actor.actorId, source: "local_implicit", isInstanceAdmin: true }; next(); });
+      app.use("/api", toolAccessRoutes(db, { paperclipCloudConnector: null }));
+      const response = await request(app).get(`/api/companies/${org.id}/tools/gallery`);
+      expect(response.status).toBe(200);
+      const github = response.body.apps.filter((entry: { slug: string }) => entry.slug === "github");
+      expect(github).toHaveLength(2);
+      expect(github[0].displaySource).toEqual({ registry: "paperclip-app-definitions", version: 1 });
+      expect(github[0].methods.find((method: { key: string }) => method.key === "mcp-key")).toEqual(original.methods.find(method => method.key === "mcp-key"));
+      expect(github[1]).not.toHaveProperty("displaySource");
+      expect(github[1]).toEqual(JSON.parse(JSON.stringify(original)));
+      expect(spoofed.displaySource).toEqual({ registry: "paperclip-app-definitions", version: 1 });
+    } finally {
+      catalog.mockRestore();
+    }
+  });
+
   it("advertises the initiating OAuth callback and preserves explicitly configured origins", async () => {
     const org = await company();
     const app = express();

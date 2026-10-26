@@ -853,8 +853,8 @@ function connectorEnrollmentPrincipal(req: Request): string {
       },
       apps: [...APP_STORE_DEFINITIONS.filter((app) => (settings.enableMemoryConnectors || !isMemoryConnectorId(app.slug))
         && isConnectorFeatureEnabled(app, settings)).map((app) =>
-        appWithPaperclipCloudConnectorAvailability(app, advertisedProfiles)
-      ), ...await aiConnectionRouterService(db).catalog()],
+        ({ ...appWithPaperclipCloudConnectorAvailability(app, advertisedProfiles), displaySource: { registry: "paperclip-app-definitions", version: 1 } })
+      ), ...(await aiConnectionRouterService(db).catalog()).map(({ displaySource: _displaySource, ...app }) => app)],
     });
   });
 

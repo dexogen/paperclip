@@ -93,3 +93,21 @@ describe("Paperclip Cloud OAuth handoff", () => {
     })).resolves.toMatchObject({ kind: "authorization", host: "provider.example.test" });
   });
 });
+
+
+describe("owned OAuth failure display provenance", () => {
+  it("marks its unavailable fallback but preserves an identical external error as raw", async () => {
+    const start = { authorizationUrl: "https://provider.example.test/authorize", handoff: { kind: "paperclip_cloud" as const, session: SESSION } };
+    const own = vi.fn().mockResolvedValue(new Response(null, { status: 503 }));
+    await expect(prepareOAuthNavigation(start, { request: own })).rejects.toMatchObject({ code: "unavailable", message: "Paperclip Cloud couldn’t prepare secure sign-in. Try again.", display: { kind: "handoff", code: "unavailable" } });
+    const external = new Error("Paperclip Cloud couldn’t prepare secure sign-in. Try again.");
+    try {
+      await prepareOAuthNavigation(start, { request: vi.fn().mockRejectedValue(external) });
+      throw new Error("Expected provider failure");
+    } catch (cause) {
+      expect(cause).toBeInstanceOf(OAuthHandoffError);
+      expect((cause as OAuthHandoffError).message).toBe(external.message);
+      expect(cause).not.toHaveProperty("display", expect.anything());
+    }
+  });
+});
