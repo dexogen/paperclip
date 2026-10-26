@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { Agent } from "@paperclipai/shared";
 import type { CompanyUserProfile } from "./company-members";
 import { formatReviewPolicyValue } from "./review-policy";
@@ -22,125 +24,124 @@ interface ActivityFormatOptions {
   currentUserId?: string | null;
 }
 
-const ACTIVITY_ROW_VERBS: Record<string, string> = {
-  "case.created": "created",
-  "case.updated": "updated",
-  "case.fields_changed": "updated details on",
-  "case.status_changed": "changed status on",
-  "case.issue_linked": "linked a task to",
-  "case.issue_unlinked": "unlinked a task from",
-  "case.child_linked": "linked a child to",
-  "case.attachment_added": "attached a file to",
-  "case.label_added": "added a label to",
-  "case.label_removed": "removed a label from",
-  "case.document_revised": "updated a document on",
-  "case.handoff_requested": "requested a handoff for",
-  "case.handoff_applied": "handed off",
-  "case.handoff_delivered": "delivered a handoff for",
-  "case.handoff_retry_requested": "retried a handoff for",
-  "case.handoff_cancelled": "cancelled a handoff for",
-  "case.handoff_completed": "completed",
-  "issue.created": "created",
-  "issue.updated": "updated",
-  "issue.read_marked": "read",
-  "issue.read_unmarked": "marked unread",
-  "issue.checked_out": "checked out",
-  "issue.released": "released",
-  "issue.comment_added": "commented on",
-  "issue.comment_cancelled": "cancelled a queued comment on",
-  "issue.queued_comment_edited": "edited a queued comment on",
-  "issue.queued_comments_reordered": "reordered queued comments on",
-  "issue.queued_comment_discarded": "discarded a queued comment on",
-  "issue.comment_deleted": "deleted a comment on",
-  "issue.attachment_added": "attached file to",
-  "issue.attachment_removed": "removed attachment from",
-  "issue.document_created": "created document for",
-  "issue.document_updated": "updated document on",
-  "issue.document_locked": "locked document on",
-  "issue.document_unlocked": "unlocked document on",
-  "issue.document_deleted": "deleted document from",
-  "issue.monitor_scheduled": "scheduled monitor on",
-  "issue.monitor_triggered": "triggered monitor for",
-  "issue.monitor_cleared": "cleared monitor on",
-  "issue.monitor_skipped": "skipped monitor for",
-  "issue.monitor_exhausted": "exhausted monitor on",
-  "issue.monitor_recovery_wake_queued": "queued monitor recovery for",
-  "issue.monitor_recovery_issue_created": "created monitor recovery for",
-  "issue.monitor_escalated_to_board": "escalated monitor for",
-  "issue.commented": "commented on",
-  "issue.deleted": "deleted",
-  "issue.successful_run_handoff_required": "flagged missing next step on",
-  "issue.successful_run_handoff_resolved": "recorded next step chosen on",
-  "issue.successful_run_handoff_escalated": "escalated missing next step on",
-  "issue.accepted_plan_decomposition_updated": "updated accepted-plan decomposition on",
-  "issue.recovery_action_opened": "opened a recovery action on",
-  "issue.workspace_recovered": "recovered saved work for",
-  "issue.workspace_recovery_requested": "requested workspace recovery for",
-  "issue.recovery_action_resolved": "resolved the recovery action on",
-  "issue.recovery_action_escalated": "escalated the recovery action on",
-  "agent.created": "created",
-  "agent.updated": "updated",
-  "agent.paused": "paused",
-  "agent.resumed": "resumed",
-  "agent.error_cleared": "cleared error on",
-  "agent.terminated": "terminated",
-  "agent.key_created": "created API key for",
-  "agent.budget_updated": "updated budget for",
-  "agent.runtime_session_reset": "reset session for",
-  "heartbeat.invoked": "invoked heartbeat for",
-  "heartbeat.cancelled": "cancelled heartbeat for",
-  "heartbeat.output_stale_source_resolved": "system-folded stale run on",
-  "heartbeat.output_stale_recovery_recursion_refused": "refused recovery-on-recovery for",
-  "approval.created": "requested approval",
-  "approval.approved": "approved",
-  "approval.rejected": "rejected",
-  // Interaction outcomes (PAP-16506). An agent may now resolve one — including a
-  // review of its own work — so these must read as outcomes in the feed instead
-  // of falling through to the raw "issue thread interaction accepted" action id.
-  // `details.interactionKind` sharpens the wording; see INTERACTION_OUTCOME_LABELS.
-  "issue.thread_interaction_created": "asked for a decision on",
-  "issue.thread_interaction_accepted": "accepted the request on",
-  "issue.thread_interaction_rejected": "rejected the request on",
-  "issue.thread_interaction_answered": "answered the request on",
-  "issue.thread_interaction_withdrawn": "withdrew the request on",
-  "issue.thread_interaction_cancelled": "cancelled the request on",
-  "issue.thread_interaction_skipped": "skipped the request on",
-  "issue.thread_interaction_dismissed": "deferred the request on",
-  "issue.thread_interaction_expired": "expired the request on",
-  "issue.thread_interaction_item_verdicts_submitted": "submitted verdicts on",
-  "issue.stalled_review_decided": "recorded a review verdict on",
-  "project.created": "created",
-  "project.updated": "updated",
-  "project.deleted": "deleted",
-  "goal.created": "created",
-  "goal.updated": "updated",
-  "goal.deleted": "deleted",
-  "cost.reported": "reported cost for",
-  "cost.recorded": "recorded cost for",
-  "company.created": "created organization",
-  "company.updated": "updated organization",
-  "company.archived": "archived",
-  "company.reactivated": "reactivated",
-  "company.budget_updated": "updated budget for",
-  "audit.exported": "exported the agent audit log for",
-  "tool_app.connected": "connected",
-  "tool_app.oauth_connected": "connected credentials for",
-  "tool_app.oauth_failed": "failed to connect credentials for",
-  "tool_app.oauth_access_finalized": "finished credential access for",
-  "tool_app.finished": "finished setup for",
-  "tool_app.reconnected": "reconnected",
-  "tool_connection.created": "created",
-  "tool_connection.updated": "updated",
-  "tool_connection.archived": "removed",
-  "tool_connection.catalog_refresh": "refreshed actions for",
-  "tool_connection.installs_synced": "changed agent installs for",
-  "tool_connection.install_access_extended": "extended agent access for",
-  "tool_connection.grant_audience_replaced": "changed human access for",
-  "tool_connection.grant_added": "added credentials to",
-  "tool_connection.grant_revoked": "revoked credentials from",
-  "tool_connection.grant_delegated": "delegated credentials for",
-  "tool_connection.grant_delegation_revoked": "revoked credential delegation for",
-};
+function activityRowVerb(action: string, t: TFunction): string {
+  switch (action) {
+    case "case.created": return t("activityUi.verbs.case.created");
+    case "case.updated": return t("activityUi.verbs.case.updated");
+    case "case.fields_changed": return t("activityUi.verbs.case.fields_changed");
+    case "case.status_changed": return t("activityUi.verbs.case.status_changed");
+    case "case.issue_linked": return t("activityUi.verbs.case.issue_linked");
+    case "case.issue_unlinked": return t("activityUi.verbs.case.issue_unlinked");
+    case "case.child_linked": return t("activityUi.verbs.case.child_linked");
+    case "case.attachment_added": return t("activityUi.verbs.case.attachment_added");
+    case "case.label_added": return t("activityUi.verbs.case.label_added");
+    case "case.label_removed": return t("activityUi.verbs.case.label_removed");
+    case "case.document_revised": return t("activityUi.verbs.case.document_revised");
+    case "case.handoff_requested": return t("activityUi.verbs.case.handoff_requested");
+    case "case.handoff_applied": return t("activityUi.verbs.case.handoff_applied");
+    case "case.handoff_delivered": return t("activityUi.verbs.case.handoff_delivered");
+    case "case.handoff_retry_requested": return t("activityUi.verbs.case.handoff_retry_requested");
+    case "case.handoff_cancelled": return t("activityUi.verbs.case.handoff_cancelled");
+    case "case.handoff_completed": return t("activityUi.verbs.case.handoff_completed");
+    case "issue.created": return t("activityUi.verbs.issue.created");
+    case "issue.updated": return t("activityUi.verbs.issue.updated");
+    case "issue.read_marked": return t("activityUi.verbs.issue.read_marked");
+    case "issue.read_unmarked": return t("activityUi.verbs.issue.read_unmarked");
+    case "issue.checked_out": return t("activityUi.verbs.issue.checked_out");
+    case "issue.released": return t("activityUi.verbs.issue.released");
+    case "issue.comment_added": return t("activityUi.verbs.issue.comment_added");
+    case "issue.comment_cancelled": return t("activityUi.verbs.issue.comment_cancelled");
+    case "issue.queued_comment_edited": return t("activityUi.verbs.issue.queued_comment_edited");
+    case "issue.queued_comments_reordered": return t("activityUi.verbs.issue.queued_comments_reordered");
+    case "issue.queued_comment_discarded": return t("activityUi.verbs.issue.queued_comment_discarded");
+    case "issue.comment_deleted": return t("activityUi.verbs.issue.comment_deleted");
+    case "issue.attachment_added": return t("activityUi.verbs.issue.attachment_added");
+    case "issue.attachment_removed": return t("activityUi.verbs.issue.attachment_removed");
+    case "issue.document_created": return t("activityUi.verbs.issue.document_created");
+    case "issue.document_updated": return t("activityUi.verbs.issue.document_updated");
+    case "issue.document_locked": return t("activityUi.verbs.issue.document_locked");
+    case "issue.document_unlocked": return t("activityUi.verbs.issue.document_unlocked");
+    case "issue.document_deleted": return t("activityUi.verbs.issue.document_deleted");
+    case "issue.monitor_scheduled": return t("activityUi.verbs.issue.monitor_scheduled");
+    case "issue.monitor_triggered": return t("activityUi.verbs.issue.monitor_triggered");
+    case "issue.monitor_cleared": return t("activityUi.verbs.issue.monitor_cleared");
+    case "issue.monitor_skipped": return t("activityUi.verbs.issue.monitor_skipped");
+    case "issue.monitor_exhausted": return t("activityUi.verbs.issue.monitor_exhausted");
+    case "issue.monitor_recovery_wake_queued": return t("activityUi.verbs.issue.monitor_recovery_wake_queued");
+    case "issue.monitor_recovery_issue_created": return t("activityUi.verbs.issue.monitor_recovery_issue_created");
+    case "issue.monitor_escalated_to_board": return t("activityUi.verbs.issue.monitor_escalated_to_board");
+    case "issue.commented": return t("activityUi.verbs.issue.commented");
+    case "issue.deleted": return t("activityUi.verbs.issue.deleted");
+    case "issue.successful_run_handoff_required": return t("activityUi.verbs.issue.successful_run_handoff_required");
+    case "issue.successful_run_handoff_resolved": return t("activityUi.verbs.issue.successful_run_handoff_resolved");
+    case "issue.successful_run_handoff_escalated": return t("activityUi.verbs.issue.successful_run_handoff_escalated");
+    case "issue.accepted_plan_decomposition_updated": return t("activityUi.verbs.issue.accepted_plan_decomposition_updated");
+    case "issue.recovery_action_opened": return t("activityUi.verbs.issue.recovery_action_opened");
+    case "issue.workspace_recovered": return t("activityUi.verbs.issue.workspace_recovered");
+    case "issue.workspace_recovery_requested": return t("activityUi.verbs.issue.workspace_recovery_requested");
+    case "issue.recovery_action_resolved": return t("activityUi.verbs.issue.recovery_action_resolved");
+    case "issue.recovery_action_escalated": return t("activityUi.verbs.issue.recovery_action_escalated");
+    case "agent.created": return t("activityUi.verbs.agent.created");
+    case "agent.updated": return t("activityUi.verbs.agent.updated");
+    case "agent.paused": return t("activityUi.verbs.agent.paused");
+    case "agent.resumed": return t("activityUi.verbs.agent.resumed");
+    case "agent.error_cleared": return t("activityUi.verbs.agent.error_cleared");
+    case "agent.terminated": return t("activityUi.verbs.agent.terminated");
+    case "agent.key_created": return t("activityUi.verbs.agent.key_created");
+    case "agent.budget_updated": return t("activityUi.verbs.agent.budget_updated");
+    case "agent.runtime_session_reset": return t("activityUi.verbs.agent.runtime_session_reset");
+    case "heartbeat.invoked": return t("activityUi.verbs.heartbeat.invoked");
+    case "heartbeat.cancelled": return t("activityUi.verbs.heartbeat.cancelled");
+    case "heartbeat.output_stale_source_resolved": return t("activityUi.verbs.heartbeat.output_stale_source_resolved");
+    case "heartbeat.output_stale_recovery_recursion_refused": return t("activityUi.verbs.heartbeat.output_stale_recovery_recursion_refused");
+    case "approval.created": return t("activityUi.verbs.approval.created");
+    case "approval.approved": return t("activityUi.verbs.approval.approved");
+    case "approval.rejected": return t("activityUi.verbs.approval.rejected");
+    case "issue.thread_interaction_created": return t("activityUi.verbs.issue.thread_interaction_created");
+    case "issue.thread_interaction_accepted": return t("activityUi.verbs.issue.thread_interaction_accepted");
+    case "issue.thread_interaction_rejected": return t("activityUi.verbs.issue.thread_interaction_rejected");
+    case "issue.thread_interaction_answered": return t("activityUi.verbs.issue.thread_interaction_answered");
+    case "issue.thread_interaction_withdrawn": return t("activityUi.verbs.issue.thread_interaction_withdrawn");
+    case "issue.thread_interaction_cancelled": return t("activityUi.verbs.issue.thread_interaction_cancelled");
+    case "issue.thread_interaction_skipped": return t("activityUi.verbs.issue.thread_interaction_skipped");
+    case "issue.thread_interaction_dismissed": return t("activityUi.verbs.issue.thread_interaction_dismissed");
+    case "issue.thread_interaction_expired": return t("activityUi.verbs.issue.thread_interaction_expired");
+    case "issue.thread_interaction_item_verdicts_submitted": return t("activityUi.verbs.issue.thread_interaction_item_verdicts_submitted");
+    case "issue.stalled_review_decided": return t("activityUi.verbs.issue.stalled_review_decided");
+    case "project.created": return t("activityUi.verbs.project.created");
+    case "project.updated": return t("activityUi.verbs.project.updated");
+    case "project.deleted": return t("activityUi.verbs.project.deleted");
+    case "goal.created": return t("activityUi.verbs.goal.created");
+    case "goal.updated": return t("activityUi.verbs.goal.updated");
+    case "goal.deleted": return t("activityUi.verbs.goal.deleted");
+    case "cost.reported": return t("activityUi.verbs.cost.reported");
+    case "cost.recorded": return t("activityUi.verbs.cost.recorded");
+    case "company.created": return t("activityUi.verbs.company.created");
+    case "company.updated": return t("activityUi.verbs.company.updated");
+    case "company.archived": return t("activityUi.verbs.company.archived");
+    case "company.reactivated": return t("activityUi.verbs.company.reactivated");
+    case "company.budget_updated": return t("activityUi.verbs.company.budget_updated");
+    case "audit.exported": return t("activityUi.verbs.audit.exported");
+    case "tool_app.connected": return t("activityUi.verbs.tool_app.connected");
+    case "tool_app.oauth_connected": return t("activityUi.verbs.tool_app.oauth_connected");
+    case "tool_app.oauth_failed": return t("activityUi.verbs.tool_app.oauth_failed");
+    case "tool_app.oauth_access_finalized": return t("activityUi.verbs.tool_app.oauth_access_finalized");
+    case "tool_app.finished": return t("activityUi.verbs.tool_app.finished");
+    case "tool_app.reconnected": return t("activityUi.verbs.tool_app.reconnected");
+    case "tool_connection.created": return t("activityUi.verbs.tool_connection.created");
+    case "tool_connection.updated": return t("activityUi.verbs.tool_connection.updated");
+    case "tool_connection.archived": return t("activityUi.verbs.tool_connection.archived");
+    case "tool_connection.catalog_refresh": return t("activityUi.verbs.tool_connection.catalog_refresh");
+    case "tool_connection.installs_synced": return t("activityUi.verbs.tool_connection.installs_synced");
+    case "tool_connection.install_access_extended": return t("activityUi.verbs.tool_connection.install_access_extended");
+    case "tool_connection.grant_audience_replaced": return t("activityUi.verbs.tool_connection.grant_audience_replaced");
+    case "tool_connection.grant_added": return t("activityUi.verbs.tool_connection.grant_added");
+    case "tool_connection.grant_revoked": return t("activityUi.verbs.tool_connection.grant_revoked");
+    case "tool_connection.grant_delegated": return t("activityUi.verbs.tool_connection.grant_delegated");
+    case "tool_connection.grant_delegation_revoked": return t("activityUi.verbs.tool_connection.grant_delegation_revoked");
+    default: return action.replace(/[._]/g, " ");
+  }
+}
 
 const ISSUE_ACTIVITY_LABELS: Record<string, string> = {
   "issue.created": "created the issue",
@@ -287,27 +288,27 @@ function readIssueReferences(details: ActivityDetails, key: string): ActivityIss
   return value.filter(isActivityIssueReference);
 }
 
-function formatUserLabel(userId: string | null | undefined, options: ActivityFormatOptions = {}): string {
-  if (!userId || userId === "local-board") return "Board";
-  if (options.currentUserId && userId === options.currentUserId) return "You";
+function formatUserLabel(userId: string | null | undefined, options: ActivityFormatOptions = {}, t?: TFunction): string {
+  if (!userId || userId === "local-board") return t ? t("activityUi.actor.board") : "Board";
+  if (options.currentUserId && userId === options.currentUserId) return t ? t("activityUi.actor.you") : "You";
   const profile = options.userProfileMap?.get(userId);
   if (profile) return profile.label;
-  return `user ${userId.slice(0, 5)}`;
+  return t ? t("activityUi.actor.user", { id: userId.slice(0, 5) }) : `user ${userId.slice(0, 5)}`;
 }
 
-function formatParticipantLabel(participant: ActivityParticipant, options: ActivityFormatOptions): string {
+function formatParticipantLabel(participant: ActivityParticipant, options: ActivityFormatOptions, t?: TFunction): string {
   if (participant.type === "agent") {
     const agentId = participant.agentId ?? "";
-    return options.agentMap?.get(agentId)?.name ?? "agent";
+    return options.agentMap?.get(agentId)?.name ?? (t ? t("activityUi.actor.agent") : "agent");
   }
-  return formatUserLabel(participant.userId, options);
+  return formatUserLabel(participant.userId, options, t);
 }
 
-function formatIssueReferenceLabel(reference: ActivityIssueReference): string {
+function formatIssueReferenceLabel(reference: ActivityIssueReference, t?: TFunction): string {
   if (reference.identifier) return reference.identifier;
   if (reference.title) return reference.title;
   if (reference.id) return reference.id.slice(0, 8);
-  return "task";
+  return t ? t("activityUi.reference.task") : "task";
 }
 
 function formatChangedEntityLabel(
@@ -348,21 +349,41 @@ function formatAcceptedPlanDecompositionDetail(details: ActivityDetails): string
   return summary;
 }
 
-function formatIssueUpdatedVerb(details: ActivityDetails): string | null {
+function activityValue(value: unknown, t: TFunction): string {
+  switch (value) {
+    case "backlog": return t("statuses.backlog");
+    case "todo": return t("statuses.todo");
+    case "in_progress": return t("statuses.in_progress");
+    case "in_review": return t("statuses.in_review");
+    case "done": return t("statuses.done");
+    case "blocked": return t("statuses.blocked");
+    case "cancelled": return t("statuses.cancelled");
+    case "idle": return t("statuses.idle");
+    case "critical": return t("statuses.critical");
+    case "high": return t("statuses.high");
+    case "medium": return t("statuses.medium");
+    case "low": return t("statuses.low");
+    case null:
+    case undefined: return t("activityUi.value.none");
+    default: return humanizeValue(value);
+  }
+}
+
+function formatIssueUpdatedVerb(details: ActivityDetails, t: TFunction): string | null {
   if (!details) return null;
   const previous = asRecord(details._previous) ?? {};
   if (details.status !== undefined) {
     const from = previous.status;
-    const to = humanizeValue(details.status === "in_review" && details.externalConversationState === "waiting" ? "idle" : details.status);
+    const to = activityValue(details.status === "in_review" && details.externalConversationState === "waiting" ? "idle" : details.status, t);
     return from
-      ? `changed status from ${humanizeValue(from)} to ${to} on`
-      : `changed status to ${to} on`;
+      ? t("activityUi.status.fromTo", { from: activityValue(from, t), to })
+      : t("activityUi.status.to", { to });
   }
   if (details.priority !== undefined) {
     const from = previous.priority;
     return from
-      ? `changed priority from ${humanizeValue(from)} to ${humanizeValue(details.priority)} on`
-      : `changed priority to ${humanizeValue(details.priority)} on`;
+      ? t("activityUi.priority.fromTo", { from: activityValue(from, t), to: activityValue(details.priority, t) })
+      : t("activityUi.priority.to", { to: activityValue(details.priority, t) });
   }
   return null;
 }
@@ -422,38 +443,57 @@ function formatStructuredIssueChange(input: {
   details: ActivityDetails;
   options: ActivityFormatOptions;
   forIssueDetail: boolean;
+  t?: TFunction;
 }): string | null {
   const details = input.details;
+  const t = input.t ?? i18n.getFixedT("en");
   if (!details) return null;
 
   if (input.action === "issue.blockers_updated") {
-    const added = readIssueReferences(details, "addedBlockedByIssues").map(formatIssueReferenceLabel);
-    const removed = readIssueReferences(details, "removedBlockedByIssues").map(formatIssueReferenceLabel);
+    const added = readIssueReferences(details, "addedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, input.t));
+    const removed = readIssueReferences(details, "removedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, input.t));
     if (added.length > 0 && removed.length === 0) {
       const changed = formatChangedEntityLabel("blocker", "blockers", added);
-      return input.forIssueDetail ? `added ${changed}` : `added ${changed} to`;
+      return input.forIssueDetail ? `added ${changed}` : added.length === 1
+        ? t("activityUi.blockers.addNamed", { name: added[0] })
+        : t("activityUi.blockers.addCount", { count: added.length });
     }
     if (removed.length > 0 && added.length === 0) {
       const changed = formatChangedEntityLabel("blocker", "blockers", removed);
-      return input.forIssueDetail ? `removed ${changed}` : `removed ${changed} from`;
+      return input.forIssueDetail ? `removed ${changed}` : removed.length === 1
+        ? t("activityUi.blockers.removeNamed", { name: removed[0] })
+        : t("activityUi.blockers.removeCount", { count: removed.length });
     }
-    return input.forIssueDetail ? "updated blockers" : "updated blockers on";
+    return input.forIssueDetail ? "updated blockers" : t("activityUi.blockers.updated");
   }
 
   if (input.action === "issue.reviewers_updated" || input.action === "issue.approvers_updated") {
-    const added = readParticipants(details, "addedParticipants").map((participant) => formatParticipantLabel(participant, input.options));
-    const removed = readParticipants(details, "removedParticipants").map((participant) => formatParticipantLabel(participant, input.options));
+    const added = readParticipants(details, "addedParticipants").map((participant) => formatParticipantLabel(participant, input.options, input.t));
+    const removed = readParticipants(details, "removedParticipants").map((participant) => formatParticipantLabel(participant, input.options, input.t));
     const singular = input.action === "issue.reviewers_updated" ? "reviewer" : "approver";
     const plural = input.action === "issue.reviewers_updated" ? "reviewers" : "approvers";
     if (added.length > 0 && removed.length === 0) {
       const changed = formatChangedEntityLabel(singular, plural, added);
-      return input.forIssueDetail ? `added ${changed}` : `added ${changed} to`;
+      if (input.forIssueDetail) return `added ${changed}`;
+      if (input.action === "issue.reviewers_updated") return added.length === 1
+        ? t("activityUi.reviewers.addNamed", { name: added[0] })
+        : t("activityUi.reviewers.addCount", { count: added.length });
+      return added.length === 1
+        ? t("activityUi.approvers.addNamed", { name: added[0] })
+        : t("activityUi.approvers.addCount", { count: added.length });
     }
     if (removed.length > 0 && added.length === 0) {
       const changed = formatChangedEntityLabel(singular, plural, removed);
-      return input.forIssueDetail ? `removed ${changed}` : `removed ${changed} from`;
+      if (input.forIssueDetail) return `removed ${changed}`;
+      if (input.action === "issue.reviewers_updated") return removed.length === 1
+        ? t("activityUi.reviewers.removeNamed", { name: removed[0] })
+        : t("activityUi.reviewers.removeCount", { count: removed.length });
+      return removed.length === 1
+        ? t("activityUi.approvers.removeNamed", { name: removed[0] })
+        : t("activityUi.approvers.removeCount", { count: removed.length });
     }
-    return input.forIssueDetail ? `updated ${plural}` : `updated ${plural} on`;
+    return input.forIssueDetail ? `updated ${plural}` : input.action === "issue.reviewers_updated"
+      ? t("activityUi.reviewers.updated") : t("activityUi.approvers.updated");
   }
 
   return null;
@@ -463,47 +503,66 @@ export function formatActivityVerb(
   action: string,
   details?: Record<string, unknown> | null,
   options: ActivityFormatOptions = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   if (action.startsWith("tool_gateway.")) {
     const rawTool = typeof details?.tool === "string"
       ? details.tool
       : typeof details?.upstreamToolName === "string"
         ? details.upstreamToolName
-        : "an app action";
-    const tool = rawTool.replace(/[._-]+/g, " ");
+        : null;
+    const tool = rawTool === null ? t("activityUi.gateway.action") : rawTool.replace(/[._-]+/g, " ");
     const isTest = details?.source === "test";
-    if (action === "tool_gateway.call_completed") return `${isTest ? "tested" : "used"} ${tool} on`;
-    if (action === "tool_gateway.call_allowed") return `${isTest ? "started a test of" : "was allowed to use"} ${tool} on`;
-    if (action === "tool_gateway.call_denied") return `was blocked from using ${tool} on`;
-    if (action === "tool_gateway.approval_requested") return `asked to use ${tool} on`;
-    if (action === "tool_gateway.session_created") return "opened an app session for";
-    if (action === "tool_gateway.session_rejected") return "was blocked from opening an app session for";
-    if (action === "tool_gateway.discovery") return "discovered app actions for";
+    if (action === "tool_gateway.call_completed") return isTest ? t("activityUi.gateway.tested", { tool }) : t("activityUi.gateway.used", { tool });
+    if (action === "tool_gateway.call_allowed") return isTest ? t("activityUi.gateway.testStarted", { tool }) : t("activityUi.gateway.allowed", { tool });
+    if (action === "tool_gateway.call_denied") return t("activityUi.gateway.denied", { tool });
+    if (action === "tool_gateway.approval_requested") return t("activityUi.gateway.requested", { tool });
+    if (action === "tool_gateway.session_created") return t("activityUi.gateway.sessionCreated");
+    if (action === "tool_gateway.session_rejected") return t("activityUi.gateway.sessionRejected");
+    if (action === "tool_gateway.discovery") return t("activityUi.gateway.discovery");
   }
 
   if (action === "issue.updated") {
-    const issueUpdatedVerb = formatIssueUpdatedVerb(details);
+    const issueUpdatedVerb = formatIssueUpdatedVerb(details, t);
     if (issueUpdatedVerb) return issueUpdatedVerb;
   }
 
   if (action === "issue.stalled_review_decided") {
     const decision = typeof details?.action === "string" ? details.action : null;
-    const label = decision ? STALLED_REVIEW_DECISION_LABELS[decision] : null;
-    if (label) return `${label} on`;
+    switch (decision) {
+      case "approve": return t("activityUi.review.approve");
+      case "request_changes": return t("activityUi.review.requestChanges");
+      case "send_back": return t("activityUi.review.sendBack");
+    }
   }
 
-  const outcomeLabel = formatInteractionOutcomeLabel(action, details);
-  if (outcomeLabel) return `${outcomeLabel} on`;
+  if (action === "issue.thread_interaction_accepted") {
+    switch (details?.interactionKind) {
+      case "request_confirmation":
+      case "request_checkbox_confirmation": return t("activityUi.outcome.acceptConfirmation");
+      case "suggest_tasks": return t("activityUi.outcome.acceptSuggestions");
+      case "ask_user_questions": return t("activityUi.outcome.acceptAnswers");
+    }
+  }
+  if (action === "issue.thread_interaction_rejected") {
+    switch (details?.interactionKind) {
+      case "request_confirmation":
+      case "request_checkbox_confirmation": return t("activityUi.outcome.rejectConfirmation");
+      case "suggest_tasks": return t("activityUi.outcome.rejectSuggestions");
+      case "ask_user_questions": return t("activityUi.outcome.rejectQuestions");
+    }
+  }
 
   const structuredChange = formatStructuredIssueChange({
     action,
     details,
     options,
     forIssueDetail: false,
+    t,
   });
   if (structuredChange) return structuredChange;
 
-  return ACTIVITY_ROW_VERBS[action] ?? action.replace(/[._]/g, " ");
+  return activityRowVerb(action, t);
 }
 
 export function formatIssueActivityAction(

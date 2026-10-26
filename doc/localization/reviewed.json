@@ -33204,11 +33204,11 @@
       "reviewedAt": "2026-10-26T07:06:16.954Z"
     },
     "statuses.backlog": {
-      "sourceHash": "fa61d7846d4eb1f86de032f463f74d42e885445d883900bb628b666579d377c2",
+      "sourceHash": "2598404a6b4e838ffbfab1b7b32b45dd8fdcfdfe47c5d551b8679190adb5afd7",
       "translationHash": "de44af32035b0763082c301599bd0cda0909e70e285b5371dcc1929579216ad5",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.block": {
       "sourceHash": "f526ea6b1ca3e2b6de707adc430e8773096f9ab4c5dd424e0f5f51382ed8e7ff",
@@ -33218,18 +33218,18 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.blocked": {
-      "sourceHash": "c0990d2a5a2c76fa47ace8220d728a71b803dd46010bb9680b4a2f9fd8ea8d80",
+      "sourceHash": "eee81d7ef0b678d02b5665e3e2e4fd1d6360fbf2d9708d1e99db206f86814414",
       "translationHash": "7126cd6a7c57b8de73410a8f597eea2b3f2a619c48d9272cf0ab2d18e453922c",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.cancelled": {
-      "sourceHash": "4215f1a005a9ac259b4907c34d700749a94a0bdf20b8e38016ee89a14759e6c6",
+      "sourceHash": "a9b66dc8bf70a26139d453e1951d334f6394dbe310c958763450bbed4113aa0c",
       "translationHash": "46826c92b6807b20673b74ed41d0f4870b16587dda5902076556c2f152a9dd46",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.completed": {
       "sourceHash": "28adee27006758349373778c13fb62cdaddfaca593cbe6835d3fe59ea94e7a57",
@@ -33239,11 +33239,11 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.critical": {
-      "sourceHash": "632d72a00ed345729472750a48fcbe6c54a5798f405fa3231adba7ed6d895c78",
+      "sourceHash": "f6f6312b701fca8b0497358e754d18e2353137882e37d835f6303e3fe0977e73",
       "translationHash": "360d93cb4da0b7f1a2f6f8b375356bdeab65388d72939d9a0b73e7a6fbf04fab",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.deferred": {
       "sourceHash": "64344e58402413cf2e81525f2c00876d283f605eb79f15e4244d9d6bcef6ebea",
@@ -33260,11 +33260,11 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.done": {
-      "sourceHash": "6e508783094a8e0716a5312fc4a8edee09c691e580d2d4215680e09998a58c91",
+      "sourceHash": "0458794947ff8a5fd92c832bec589d41426d9f05b2e213ef009b0ab464c26557",
       "translationHash": "acd051c96721d31123fea0b26ce29428a90df1cbd04f2a4b6e379f7b533b4f7b",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.draft": {
       "sourceHash": "d9cf1bff488fdb397bb02dac61f7e1e5bb70acd222f52fcff3928737080fed19",
@@ -33295,32 +33295,32 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.high": {
-      "sourceHash": "db8904dd34ed328d504b2eafa7907adadf8ba1f7cdc2b0cff7f99b85c59577c5",
+      "sourceHash": "a0cc6ecd60a6354f8637ed17e7736b00584eca8e489cce262e319843af9d99aa",
       "translationHash": "a05189e804554d95fc31a9d707b32b06f799d54b3f839272f24f324089d2cd92",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.idle": {
-      "sourceHash": "421aa768b887c612a8fe2e182f51bbfe99ab544fc0a78fd09f884b404f52300c",
+      "sourceHash": "e6b0d1f2c59a3b766de60b42cd638fe0dadaa896f9155f2d8210e90d5d5f4180",
       "translationHash": "3d29dc5c972c33142cf115b610e9d61b4e63b3bfed179bf21c6ec43d31214564",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.in_progress": {
-      "sourceHash": "c4a4112cfbbcc447c489cb51a556763a13215787d0421a7b52d5d102d4be1610",
+      "sourceHash": "655837010ca06ec885777a555d12e4e723d25d716f5a46908aafd62bbc7d42d2",
       "translationHash": "2d7be4c66b137656e9f86977552f03f9a51cd0fe4d9ea8c239e23cd75d6d0c0f",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.in_review": {
-      "sourceHash": "d0b994c10ab66b3fa4a2b4d7bd705071396be713570b461d49429bdcdb471867",
+      "sourceHash": "c150c78937d013454d536f936b3e830249dcf3e049a334a2fedf984391e0c385",
       "translationHash": "37f33bd054ec748846a447034e60e5c217ee31006bb933472b2c58fd55ffa322",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.info": {
       "sourceHash": "f8cd80ff3f16a832aa92d4d73128e75b37cc2576739abb7052738b035ad3d1a9",
@@ -33330,18 +33330,18 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.low": {
-      "sourceHash": "f71e9c8ac1a08f6d2dc13ef610d4ed6fb4ca78a17c2b965d15febc9cc7f24203",
+      "sourceHash": "d736abde80ddb9550d5826e61b8bfe24014ab3beaa0254cf0ec8c0782c7c19c9",
       "translationHash": "250acb8a7dc468f01de8cbc28f1c3bfd3e60ceff5205031403259e80eb53c37b",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.medium": {
-      "sourceHash": "c74e98cd2f8883d2ca911ea11838c9386bcbe7aeea04808df48d63259f894487",
+      "sourceHash": "52bef365e437b4fc8bcbc25664ad7315fe73dda05da4151e79d4f71865542d05",
       "translationHash": "0b24e7fddc0c7b7445dda76dd19b9262a5971fe18a65046a4211835e5ea5f13a",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.ok": {
       "sourceHash": "94cc89c8af307d6371766c6067b2729f859b1d9f03c1305a2f604cc4384f25e4",
@@ -33456,11 +33456,11 @@
       "reviewedAt": "2026-10-25T22:12:18.767Z"
     },
     "statuses.todo": {
-      "sourceHash": "f752a94a8b5fdd6aa9da27e19e2a8c212006b3b4948907c175d4a339ca7bea32",
+      "sourceHash": "1b28c30fc3e05ae89794b160e121452d7530e3c03eebcc49a00e83a8bffe63e7",
       "translationHash": "4edd5661ce8226efa3b1a237cb66a55b6503a68b59e36b7fe65e85756443a564",
-      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
+      "reviewer": "Codex agent /root/translate_task_panels (existing status contexts in activityValue)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T12:46:05.608Z"
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     },
     "statuses.warning": {
       "sourceHash": "51fb5875c76905e21f92ef1c8d8e2685fbc823907174e2c113034f870500537e",
@@ -53236,6 +53236,1147 @@
       "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
       "method": "agent",
       "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "activityUi.actor.agent": {
+      "sourceHash": "63ef5fe849be8a8392004254284b35ab3e7b5b00fcced707514361ba50a4c163",
+      "translationHash": "d325e580415de9c8d16fe38da90acbbedc8c83e378d129863848b41a4c0ffcc1",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.708Z"
+    },
+    "activityUi.actor.board": {
+      "sourceHash": "3584a9e6d594bac9f712e1a0063f72b4e2e5436da3c2f4c8c7e0c85bba7d937a",
+      "translationHash": "0d1c55fa3d8752ed999a09ba503e4ef7c96c3c792aa667fd0ca56d37b40ba657",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.actor.system": {
+      "sourceHash": "d0e610d02109e7c699e289aadc0cf171976141a3f45d57efff39a66c8546035f",
+      "translationHash": "e081d1ecd10a80b7f82b6e256bb2d74e1d9556b318927cfacd0293849530e2dd",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.actor.unknown": {
+      "sourceHash": "15398a5baf5b777bdc4c17381d4773a52e2a4adc7d1b3172420a14a192e4c0d3",
+      "translationHash": "2829e262c7439675ffc7b0529bb745bec026262c54e7acd2c0f648e8e249081a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.actor.user": {
+      "sourceHash": "aec8616c35cff9a926721ba56723f3ee0c3006372061404b34e82329b88f373a",
+      "translationHash": "7e40e2752f609b6cb27345333ccd3de4911e88028e9bad6316d46ef319759be2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.actor.you": {
+      "sourceHash": "b91efe07d527e594bb73d92c0141f46577e57230323d2b98dc37f235450ce651",
+      "translationHash": "60e41ae14b5195ebada8f260446f6a54f232564f41a3f020fd95458bf560421f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.approvers.addCount": {
+      "sourceHash": "32d850e9c238a9950590b0a0a767a010004eb97ef23b6f90d579a443bdef5680",
+      "translationHash": "505bb524bf3cf10076d2149c1367328738de950ee5c66d5a55887a4f30a2ec02",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.approvers.addNamed": {
+      "sourceHash": "ee0184f8694f7115b6b8ccff3c7d9a9a904415e0f1f780670f7a33f3e6936676",
+      "translationHash": "91500405732169b8f23dc7ac41b85c8bc5b60f5573dc52af055cd3d6cbc07ee0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.approvers.removeCount": {
+      "sourceHash": "5e70c7f909ec9e389987c8bae05878fbaf620feba0704e9f523d76dffda1cc75",
+      "translationHash": "a38ee93eec231ccbd8ddd2c21613456467976dd813689ad87535b389400c6cca",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.approvers.removeNamed": {
+      "sourceHash": "e664441d440aaee36331a533be0a46158b054630c3464e6b17da771df9dd45ee",
+      "translationHash": "5f90874ce8cf5b753007568889ca9faa9dfb58c8864932b1404746055480623d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.approvers.updated": {
+      "sourceHash": "e93ddede219cb65ca831c77194a8fd7a444558f6bdfcc67870bbf37a6b0f15bf",
+      "translationHash": "055be40bbcc0f068ac103aa2b291ae4329ff016b2f3248eb114b1821118a0c21",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.blockers.addCount": {
+      "sourceHash": "c36a5196d0ee1a8a4fb74bbf7a5835182e855dd0b76b219ae8b99c88ade4c31e",
+      "translationHash": "757e98e9fc2718ee0423aa86c78da70677e643cddc43726d6460ebe6c0df0365",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.blockers.addNamed": {
+      "sourceHash": "75588301f51a681206e7f258366a155cdb19749052c5626c9860bac312173f77",
+      "translationHash": "bb1181d66f936817e9eda8203a02dc41e6fc1aebd452a04a3015f7ef9e71b1de",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.blockers.removeCount": {
+      "sourceHash": "040b90163cf6450e596e18eae9ec64b119e617a356246c08921097fa81e70f10",
+      "translationHash": "6c583022dcfae1b69d974cb0f174ff76fdde6b73eb6311f5ee6e020f57835788",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.blockers.removeNamed": {
+      "sourceHash": "9ea590ebae3208c598b3fd3c491efb8a844de42a966e2f25abb2473000d2f482",
+      "translationHash": "1604588c166e2b5b25bfe6689a7613f30b5d41c6109f8046c13b5a0ba095c9a9",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.blockers.updated": {
+      "sourceHash": "80ce5a175b9808905aba6f58ef51ff6c9271ca278dee6e16ac5efedb36f27bb9",
+      "translationHash": "94e33e0392892213966b48c22387f92d2df03952628d157ec8dcbc4a0e240501",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.action": {
+      "sourceHash": "88fd2ab37e7f96cce1104be8dabe91ccbacae44987b0d2adc15283fd9bacc53b",
+      "translationHash": "425deb8cfd98ec5d56d9bda5bce5862ab3a09f38a1bcffd935222ee46ae24d9a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.allowed": {
+      "sourceHash": "456e12e7cdd28ac2b5380f324ee569cc23ed055d6a03669fe42247a489385392",
+      "translationHash": "ab213029769507d0828cd3193804fc2c1e926368d1df4d6ac7c437975336f5eb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.denied": {
+      "sourceHash": "faf0541b52fcf06667ff025552b5030475be732af9d3a8d302dffb384ebf6648",
+      "translationHash": "58e474215b8c046f873bbe9b51e1b02c8fca052e7aa1a66ccdbf4a6a03c8ef5f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.discovery": {
+      "sourceHash": "4416710096ac64c93e1383b72249c5afd13b15b0b603bfb2b7881ea5f8a32570",
+      "translationHash": "eab86542a157ae016387357b3a5e57c73eeb22fd0e9abd19d2a9baed6da4de74",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.requested": {
+      "sourceHash": "84b25401998f5c78fa22d381f40f3f395960853f0793585f3b0a32ff055d492d",
+      "translationHash": "15494798c2c2b11ec1262c03fdd5c2684eec88a8697593b259ccc3eecde8dc58",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.sessionCreated": {
+      "sourceHash": "821685de5daab00dd829c4e4d45352ac309104427a076ece4859a2c1c4a3fcae",
+      "translationHash": "576514293254debbbc1a17f207481946a747017ca34b66f168cf6d21d1c4b2c5",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.sessionRejected": {
+      "sourceHash": "68bb8cb4cdb54109a90baa669908ba9856ab5a4ab7b34cfd4f638c77314daa11",
+      "translationHash": "d1c01698db57cdd47c6159f484a6f2d5d4c3b1c4c1a0bac534c369fb0cc91706",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.testStarted": {
+      "sourceHash": "638985524944714d9c33622c4bab17747537ccffb1efbecf2cb3c2058ec75988",
+      "translationHash": "50c45da12676d1fc0867f5c55fc7f0295463fdf22fc9349cbd87df30161311a4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.tested": {
+      "sourceHash": "c57b9c4c16249be7d4ae707d31e187d8555add2fbeeb33f70b3b9e95e3c8e42a",
+      "translationHash": "cd5fb80226669985355b81a02123d700bb1c45148162ac142efe2223ffff151c",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.gateway.used": {
+      "sourceHash": "8a4853a89dcec1c47ac5eea76bbcd7ed98e6841f98cee30663c400d1eb7929b6",
+      "translationHash": "1f32cf5acd131a42928584bf443d8738389e2ba98d8d565960824f2b7b92198f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.acceptAnswers": {
+      "sourceHash": "894291eaf788823b6365827fab2760b998ed52921580ee4ef90ed07dbaf8b8a5",
+      "translationHash": "bb944c79bf0078c336577d9d2cbe3794530fd0ae62f35e2f5cfee3a2b7a9e96f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.acceptConfirmation": {
+      "sourceHash": "2c227ff5cf97181bb225419a5da3c655fdb562c6506730df612024115de1a7aa",
+      "translationHash": "4fce969222a9def21cc2456a03f6280ef9023dc33c69e8f552b3f60d31497d3a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.acceptSuggestions": {
+      "sourceHash": "811b8262681f8551bddebb65284ea4aeb1cd2fd19d8c2e07e48031d463d28a67",
+      "translationHash": "a427d11f3fba6a1178962cb7cba43f728e678be8e41ade4d93bedbed82016a81",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.rejectConfirmation": {
+      "sourceHash": "bdca200c1906121e9cacf8a84d2bc6aae15cbaa0930f0524bd9d8c05d8e6af3b",
+      "translationHash": "8e679d43a1cbc874765e8c372ccbfc8765a37aef026a4b3a9d415fd77ff90ab0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.rejectQuestions": {
+      "sourceHash": "c8827697cd4d28bd702bcf9289d411a023b52102989dedec822dba5efbe2722e",
+      "translationHash": "94aa76e5953300a23dc203f27497e7e84b5ccf85e0f3e06ad26c9092f0b77178",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.outcome.rejectSuggestions": {
+      "sourceHash": "a7eb9462fdcdb40d4eecc65074852a2771ad9151242b6bda8e9912768ce9beab",
+      "translationHash": "fc9ec24a2dd85e423006bda45577b2facf660dd73bfe5c7c144eb63545e63f2f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.priority.fromTo": {
+      "sourceHash": "75e0e4b6dc5f139faae518578a1c99bcb22d6249d227d63785a1d91865902317",
+      "translationHash": "c5ebc75c0cdc1551e3f6fe8d9dc06b84c2ed4dd2bbd59652e832ce915400b253",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.priority.to": {
+      "sourceHash": "f247d204a19995ea17ff202e67db180ada1985edbdce7b77d6e61909c20298b7",
+      "translationHash": "63d7d392b0b6506f8e9b811ccede59639f9ce17e8090ebeccb65628049604310",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.recent": {
+      "sourceHash": "a050d55ce52e1fa0a3e84083e836da98fdb02d557cccd100baa748dccb926162",
+      "translationHash": "6f9ccfa6c6cd199f9dbec61d481f4bf255a448a414aa13a1bc3fe36c1903956a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reference.task": {
+      "sourceHash": "fa1ab8f16bfe7afc8cc892f40b42cd02104a19a724113c51f9dd2f77ee84e3d2",
+      "translationHash": "5ef5bfb1671a602e1ce827b673979cdedf5a3148d6a3389590052ae35c4dae9a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.references.added": {
+      "sourceHash": "edfd3ccb5805445a9df3d55b54b968a7c775e1d0bca7e7a233fd83ab88ddcce0",
+      "translationHash": "410f675f4502c0d42e356c24892345115554966575bc95044a70f7065d3ef25b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.references.removed": {
+      "sourceHash": "29900bec378859777eec36ffd3bb59c323de355dac7fcf85a48d7fbd58ffb88a",
+      "translationHash": "8e46a8f273efd0122b9fff3564861a410a02741b48936178e15de29516552536",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.review.approve": {
+      "sourceHash": "82aaf66c7bbbeff369368f60ff1fe051cd1c3e13680a1b24b9679549a56dc5dc",
+      "translationHash": "5ddbce500b4a4583d5a592c9e709487f51a311efc5ce1be6d9fbbff69a55c42b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.review.requestChanges": {
+      "sourceHash": "a1df558c1a3475ad100232332ab500b9245ac365f95fdd10164b9cf2e8c41e76",
+      "translationHash": "89ef16382230bce079cb581ca54bc9ec9ed4e80153f763fcc8dd43404fb49656",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.review.sendBack": {
+      "sourceHash": "bafc6bd363a0070044763dc0081b93893b338279bd337d21792ec16b191bd616",
+      "translationHash": "960d5b410fb28284b5e9927df055b80ff386352b6cfc28174d3fabc721b0c0fb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reviewers.addCount": {
+      "sourceHash": "9768249958f39ab0b435622d02b70254d46d328d639efa0062391e8eed940169",
+      "translationHash": "0b10bbc024e4d5ad949df7180b59892244dac4627e14a79401daad83a7a4dea9",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reviewers.addNamed": {
+      "sourceHash": "0c032e86cb81b9428eac1276c6b2906f6fed84437ecfb7899743c6ff10721a11",
+      "translationHash": "ac064c553f95a9fc2f6d9b5d4b1aad703e2fa0a87586cc15380605ea8ca323f0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reviewers.removeCount": {
+      "sourceHash": "839c1fee71ea982abb15e2f4dab7e1f3a1e71f61189524d32cd2ff179ad0aec8",
+      "translationHash": "4d4db46542955e4082ff83dc97693265fb762bd9026ff3e4041412a3a481e689",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reviewers.removeNamed": {
+      "sourceHash": "111780ba159c0b238636038c9df179bce8ce95a335bcdd639294d188e0f971f5",
+      "translationHash": "1e579f90924c6df76478e8ef9175d26f15d5b38256792e2b60d3378e0e629508",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.reviewers.updated": {
+      "sourceHash": "94170e352c814b04255aa819f0a8bd4df0e9232e9892605fb5e9185ce06b99da",
+      "translationHash": "ee2765d9b5a45115ae719e91321cb7f8b2680ca8e602e9acbd2ed5077a5baf2f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.status.fromTo": {
+      "sourceHash": "f35e4e564840d12b125b5f9d5fa16260c35c8ca4f2d07d943a58c38379634992",
+      "translationHash": "de7f4582e2c53c406cb0ae9b3ecf2c30fd07be65edae431f14e02da1ef7d1693",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.status.to": {
+      "sourceHash": "a080d5cafaf36dd7f9f0bc08ec847a990dcb6dfea38f069eff176ec02ca7d89e",
+      "translationHash": "f71c4dfbee645b606dff67988c42d9ad9bf02b5edf034edad6991cf00b626393",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.subject.task": {
+      "sourceHash": "7fe92e418e880eddbe7c42a7cbef86c911fd80f443411c79b7015b163870c6e7",
+      "translationHash": "3c5333a73186bdcd93350b1dae37d021f894207387aa0aa5002f807ddac38220",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.value.none": {
+      "sourceHash": "5e88d75957ab96901d200791d1963cbdeebd09465d7ef5913655ac42a52023a1",
+      "translationHash": "1a0e0d2490758b51702797f60ca5ca61bc6ac39eb606d6628f3a67aee649b440",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.budget_updated": {
+      "sourceHash": "c21c33b00f8f1c2f9e831b715eed97de6504739809708fad26a547b94ef83154",
+      "translationHash": "322a0ece9867a67896e5f52e50a6cd2e4760b1f492da69658f1fb158f7914ec6",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.created": {
+      "sourceHash": "eb4a6c42aa0996a9836b2cdcfbe1726ba10aae6c4b9da5fe833e221a6d962f8e",
+      "translationHash": "31fb3564cec8ea874adda3317f2dcce9b10cb3442935dc7b2691b5f1b33626c3",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.error_cleared": {
+      "sourceHash": "ae757b57cd01f8c2082c36810ac48e0d3b556c884eccd07c679ae31f626aca79",
+      "translationHash": "6d46d287c38aed60fd54a8c961172b7a0c0396b5f0672077142ec572af4eddba",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.key_created": {
+      "sourceHash": "b900bba184aed076d1c78b16c7ec5379a7753b0d67eccb7c2536704e892672f4",
+      "translationHash": "4e31a45c3cd1702d68d0e87860427c1ae7a0396472b2333a7be48b6dbe7c884e",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.paused": {
+      "sourceHash": "a1e8ecdd28592ba45f619798ccfe9fb021faf368941a40f35e90060296a1454d",
+      "translationHash": "8f47b9ec5a05bc28efd6f15f9018d278c6c363d818c17f5b3b9128de608a7732",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.709Z"
+    },
+    "activityUi.verbs.agent.resumed": {
+      "sourceHash": "a64d4c9f321654c2f4c7d91355d2acaa06db537c02b88ba40c2655a3a265f859",
+      "translationHash": "c0ce73f661d4a3027a4f110f135aa479c0cca6ad379713771ce88bd1a274f87f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.agent.runtime_session_reset": {
+      "sourceHash": "e5396358cbcc68c038ee62b0f3fbd27df9278757e0e7b71eb5c049d839cacd0c",
+      "translationHash": "cc08ac64f6d527fc8c0693e9d1a3052e1ddb51893d6c81a60b99178d13f5a165",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.agent.terminated": {
+      "sourceHash": "17952f023fc60bfcb0e67a04e8874e4ea5bb61408b881127be64c4fb1a15c961",
+      "translationHash": "6de9a9e28a477cdd82abfbb3dd6dfd948e3151420e7b740695c9d928797167da",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.agent.updated": {
+      "sourceHash": "d5f0a26580514496bfb3cb685013b3aa8b20e5739fa5547e780579224bfc8f60",
+      "translationHash": "0adb832f56c602c584b228292d63931889e334f2d357a0879bd06f785f6ac8e8",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.approval.approved": {
+      "sourceHash": "024797bf65ae7edb7c1bc3207cfb16f53f6b8d81a7dd3db5cc61c26c9673beb3",
+      "translationHash": "c3d5e3317f8f44d6d9bab0fece715e240b6f4d10c732758fcdc271aea5ced137",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.approval.created": {
+      "sourceHash": "b3db73ee6b5cb58dc83459256efc12acee999e3f94fd8c49b5f58efdb8ccfc3b",
+      "translationHash": "391ee3db7ea375e2fa236df633bb50358ecb73c7958440a6ec8f5a461c46b000",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.approval.rejected": {
+      "sourceHash": "83fd407c954f26a1a70cc1a291cdc57f0a48e60227d4a146929cd6729efb3acd",
+      "translationHash": "6ef904c5fb58f4762b60451e416df2c837856656457e0d2f73c3de9d481efba8",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.audit.exported": {
+      "sourceHash": "3f1b2c897babc31dd064d7e9392a7498f466bcfb51616c1783abfc6149b98e1e",
+      "translationHash": "2e297c62b8f9eb80fd3cebfc392602117451047573abfde2059a348bacfba3c6",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.attachment_added": {
+      "sourceHash": "2637f035b430778cc937d1cd51cff7ff323e27f73ed647559fb5bdf222204904",
+      "translationHash": "38c3053dda7bed614ef3539e7f04577d3d59c8c46d2293fb20ed0aadba9eb618",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.child_linked": {
+      "sourceHash": "808e8186e765b2681c2713cb235dc2e3d1e50f599e93255d75dac69dec8bf636",
+      "translationHash": "f9a318b9618cf35bb4da44b936e8193dfc771ef3438d6c84b2fd0fdbf41922d0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.created": {
+      "sourceHash": "865412e956b23a53d23e48455815201d90c40cda2df5aa7e78e75d92ddbdaa2b",
+      "translationHash": "7b160198f807409e7a3e3283c3a04ed1df9c09060ada383522280543ac1b299d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.document_revised": {
+      "sourceHash": "278055e474642ade19cceffb7efe30f6b072bde43a3b6caa2aca5a3dc163c20f",
+      "translationHash": "9f001eb8d7f1eef4ce7fbe2556eb898a6556892d8fee47f2b7defa22ecc474fa",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.fields_changed": {
+      "sourceHash": "701893fa8182ceff4d01e74a39c136003f9be0df5b92b1e5b6758f3e6470b7fb",
+      "translationHash": "60fe5eee678c743af038080ccbb86440d23dbdd00e390ec1cf56e38bdf13ccc7",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_applied": {
+      "sourceHash": "f42ead4f14108097e6b94e0a5f3f1d77d740668d45a61e95416bfed3d5f0399f",
+      "translationHash": "51a86ec222159dc68dd495030ee87cc988261b967c608b754164ee2a01bb8676",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_cancelled": {
+      "sourceHash": "e904c8767ac3049df03c7ce2b468112e1737559c8d4e4c0634b34e90721e1550",
+      "translationHash": "3c3ce78dc2ec9b5a6f9c1baa8da44b551d62c202b49fbfd3fe06e3817b31d6b5",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_completed": {
+      "sourceHash": "58bbce4b220c53621d960a08b12811899e30b8c1e81e1eca3663a8e14a4c53e3",
+      "translationHash": "0ce917372ae47da951add31482b322d948b6b03e18c0fc456973e51f6f3f5b37",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_delivered": {
+      "sourceHash": "8f84f1a65fb91344298487061a2de78aadb01b0a300577a4176e6193fc0b1b2d",
+      "translationHash": "5de1b9b9d3e98dadaa685e995b0fbdec322846e780ed82c28f98cfaf804fd570",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_requested": {
+      "sourceHash": "0dfda0ad920bece8fd509950f402b1eef41259dcf4bbaa00ca243914e216e1d0",
+      "translationHash": "c701d7ace23ac9e7d578fd48f735639104d03dee462c11694bfc2fa68120e7cc",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.handoff_retry_requested": {
+      "sourceHash": "8f47e635476bec8f7322c4eb0b30cfbb57970b6eeb347a424c7f9d5d992f5f40",
+      "translationHash": "769357231f1005b3382361a7cfcc4f6304056174dcd5492f690bf3ceba5ecbdc",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.issue_linked": {
+      "sourceHash": "1bd4ba1858ac666bbe25445127146f774482e69faacfc5330d8dee41aa2b2296",
+      "translationHash": "4e7235d276fd7df184f28f889222f26c6f0841b26b1d47c220043b7ab7129f8d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.issue_unlinked": {
+      "sourceHash": "d20f2ff96877b6c447c756aefda797cb42e0fd95163cfaa70e985ce9d5a87a52",
+      "translationHash": "a1508815adb78e3d91b78891576d731e579c2ff5d9241b0277a3141ee661b68e",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.label_added": {
+      "sourceHash": "2845d251710cffb8f3b451e56b949f0ab7ae682662ebabed3076c8c642708e70",
+      "translationHash": "5db63c6adfa6a46b7a7b2cbb233ba6260d706dbd61f968eae83a133f790f1ee4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.label_removed": {
+      "sourceHash": "57ffb725a0931e09e85b3385dd2a3c39b56dc3860e03727b558304f6e3d2aa27",
+      "translationHash": "b5810626abff52f2d179e726ca799ca0c2a0d76eff463b6cb9629b9e5e464485",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.status_changed": {
+      "sourceHash": "66b5ca9d3d6fc431677bd2cd19a591392d0bf2f1667141cb320706fe850db321",
+      "translationHash": "dc09649ca0f714df0e584369fc467707708312c18a17fa3e7397ff83fc0a5f7a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.case.updated": {
+      "sourceHash": "2ea80a631d14e98b56d5ea7544691209c23d4644b88d58be3e6abc72d93ee3d5",
+      "translationHash": "eddb7dbf102fb5b5fb3c871890ab898efa46c40923e578c91b2e299212dc357b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.company.archived": {
+      "sourceHash": "01534ec0e2e93c539ab2e9519c71cdb3b22e30c2578ef22bcba0ff0a7b6dd257",
+      "translationHash": "0b78ff3ec64bbfb0d3c3ba33a9b92703a4e183ad6c17e1d1b1bd54cc02eb5ce5",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.company.budget_updated": {
+      "sourceHash": "5d4f4885f5eb1360c9ba795b4afae8c7f3f2f4bd15cea4c8958ce0f24f6b33b7",
+      "translationHash": "50753ee24ca62105940ad887dcaabbd122a7faa07cd58c925f0f57b0e464c5a6",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.company.created": {
+      "sourceHash": "fdcc308ab0442e4ca97807abb74389e759beafd26937ffc8cca4db6228d0d5a7",
+      "translationHash": "f7af4dc47691592a65a5ac70cc4ef46271ee13e92a6dcd60e6a55d742e207ce4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.company.reactivated": {
+      "sourceHash": "40b631245499fe0e1bbb9c4c097cab6e3bd2b89cb12a6c65b51a9683153388c7",
+      "translationHash": "2d4fc0948490d1ad3010e44abfb937da9dafc809cfdabad7507b6ae969562252",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.company.updated": {
+      "sourceHash": "df345c8b4521c93e84c915223341dec8ace2c9074a9c0cb9840fdee75af5470c",
+      "translationHash": "590f4d04407797d725f3abe3691dd9bdd1adfe56f2dc10d4ab335bdfa9fe6c78",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.cost.recorded": {
+      "sourceHash": "ecae83e12e63d169cabebf060408fca733d5d6884f5d3584130519b8bcd8468c",
+      "translationHash": "fbc8e7723f35ad765dc9775415c735ad317d9f926b0ebf63b5afc7d4660e3da2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.cost.reported": {
+      "sourceHash": "fd5c729dca738d6f29194cde6e483db0e11edfbc3ad40b24312cb422596e3fce",
+      "translationHash": "cf50dab7349884742b6789f0dc5091b2a47dd36f5f9ea64fd370c96aa81000b4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.goal.created": {
+      "sourceHash": "249e1aeca7a132c97053612bcc86eb41ab570347cc0e3682c29d01c21624f95b",
+      "translationHash": "ff2f4e1bebb3b8fe7df66306fdeb7e70fb3cab1890c195f794302f9ec78abdd2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.goal.deleted": {
+      "sourceHash": "455eaff6220adc3d7e8cd247f1ddf21a8ad1591b3488d89dddc2c4d62daab373",
+      "translationHash": "3c2d1d9f684f7728534358e2286fc751114c3782893ce14e429c7ad6c8359718",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.goal.updated": {
+      "sourceHash": "613945cddbdf42bfc32c6b498b9b95557887f6f8438357ef66517a1b8268e122",
+      "translationHash": "0ff95cc1d0002cf04f6a7f41d847da052e084e4856017efa1e79bbe7f8fb69c1",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.heartbeat.cancelled": {
+      "sourceHash": "d656a36c8eb4ab109b2a7574039d451c823dec96cec817ae9c78d366b70efe93",
+      "translationHash": "694bf798363218791fd31c1a1a7a89c59699cd7359029ee9b9c190e1965731bb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.heartbeat.invoked": {
+      "sourceHash": "197a1ebb56091429cc8ad61ffb49894441b9d8f3ef2d5ebf0b967bb2c10d0a7c",
+      "translationHash": "a9b961a5d21a01f20c5af4608a048a36043359dc5778cb8469174b02859279b4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.heartbeat.output_stale_recovery_recursion_refused": {
+      "sourceHash": "93457d6859b2ac4949fcd3ed8824016040c42c62d2ca96c261b27178661a1f55",
+      "translationHash": "b98ba4c53152a6c2f262f8c339091406584b7d3fc2fb3e2abb8acb0830c8b5ac",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.heartbeat.output_stale_source_resolved": {
+      "sourceHash": "1940ec6164cea55caa26a4249da890c3dedf9e2d1c9bfc04775b956e1bf229e4",
+      "translationHash": "0ff0a3b9f833340d055686c6b9e999115d67f010a4e077019f498c9df975af9b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.accepted_plan_decomposition_updated": {
+      "sourceHash": "bc2661e7f76585964d29b1e525c826b04c0ed1e264e6fb42bb5a076d1b1f661b",
+      "translationHash": "688984e881d8f85234ecbdc3a7790133bb0dc6f61046785e01c3957bf556d39a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.attachment_added": {
+      "sourceHash": "e8424dac3fe809f1a6f2cffa0e3dfba41a7fd12222b144be07d006008c622491",
+      "translationHash": "76551524ec548747fe9d0af7c41499e4d679173ac7808ca439540887f9418ea2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.attachment_removed": {
+      "sourceHash": "904adc27c3202c8b45457423313a28f4ed2ef4556c90ec619c0c50ecffa904d6",
+      "translationHash": "cfd81c50578fcee75772fcc4238f85420b430e7eeff8d5d4d7321ace9b2748bb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.checked_out": {
+      "sourceHash": "a26486a5932da565766c7e9b63953564ca981b0ec0e69085c1fea19022ae14a6",
+      "translationHash": "798d645ae29f3c1df83480e23af4cf4cc6fb4427011403d8901c7ac41deed918",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.comment_added": {
+      "sourceHash": "49773db30ab0d21e9a2be983d25a1a701071674cc454adaa33e66be41df71163",
+      "translationHash": "c8a3614ecacbcee04116bb9d3137b80de5419e6bb819034ce3923c3ffcf93c08",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.comment_cancelled": {
+      "sourceHash": "3a9718a03140fbb56a1f089d70985a8080a48f67e6df12913bb165f44ba0efc6",
+      "translationHash": "07845298f43d9937dfd8f9c1a444470cd2d81d1aa3f1710fae02d1b3b879cc0e",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.comment_deleted": {
+      "sourceHash": "84b5f3e90771327c825d39b1477f708c2a7067195acacb76829f1fea9e4afae1",
+      "translationHash": "f599644ad1ab926f89907da83b1b460c6fc9b301fc3115b10f87e03e40464bd9",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.commented": {
+      "sourceHash": "4e0d56dcd8438df1b269d6346fd12469074b303803508ffd9d630288bdac3ab4",
+      "translationHash": "796629b640a31b2b650187e02f4b80f3723cac3bb28f89bff5002ca66b60e7d0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.created": {
+      "sourceHash": "622caa31b8f62a4abd67b04249b9ab241874517b9ccefef975e48634c5c2a063",
+      "translationHash": "c287db8accecb8db2ebee6ff22ad75571b511db5efc3e005947ad8728f565fdc",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.deleted": {
+      "sourceHash": "83838694218f55bc3dec806a46ca046e57519bcc607d5ea556d3e0f5ff541230",
+      "translationHash": "27d9ea4e441b539d066fd3225fd53b79904ca88aaae31b6cf7409fa21ba920ca",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.document_created": {
+      "sourceHash": "bf351a1681b642b589e4603f0d1608d8d237c0def9d2c7446e85256ee94c2b20",
+      "translationHash": "635f9416861d53ef8f873d239c74b9348540dba4bc69ea6a5467fb5e265eab6a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.document_deleted": {
+      "sourceHash": "d933a74ba892208b47ba1eb050a918cf30af25ff44b8449dfa8994d34423fd3a",
+      "translationHash": "70f3da77c10a1dea680e74be79bf3c60ae18075792d6e15d72967712b5687505",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.document_locked": {
+      "sourceHash": "59c828321e20ca87f9ae874ab6e0f37d96db61193e0c7ac8d0f6d7c542fe0b4c",
+      "translationHash": "3ed8c54609b0ec870af95ab546065c42b4215fd0657c219687a2d3ee5aa9fe25",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.document_unlocked": {
+      "sourceHash": "4618175fdb0c50659394a4f0cb4049debce86e9b9f38fed0d121146e099c7dbf",
+      "translationHash": "06263b7c6fefbfef413ed4bfd16a26367a8fbafdc81de003ff15c40024abd6b4",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.document_updated": {
+      "sourceHash": "19826408d22e42593094a3bb951af31f458213c1827688f2cd061a07bcc3b8e7",
+      "translationHash": "e2e7360a52865eef4b7ca8907b6cdc67c64f654e4b93e9d916677c58bea9a663",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_cleared": {
+      "sourceHash": "e30639dd932dc618c4d52a557ffa2ebbfa4d83be9428ac0612d7c48ef16f552c",
+      "translationHash": "be37a017ad55545c20f3b41ab6dce42162981aa238dae7a00e4bfb137ed697c8",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_escalated_to_board": {
+      "sourceHash": "c5f72c3c9151a9b985d559fb9a638fbebc064c71f1e92af7d0c0d6c7e4a0676a",
+      "translationHash": "fd92ad62d6119ecc675061b82d365f58fd11cd68ee1f9b2ad838bc2bf5bccc1a",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_exhausted": {
+      "sourceHash": "ac98bcb3c42a53d528795876f8301e669c3f6e147fd6ce746086698a1c78e8fe",
+      "translationHash": "b87bc43b790bc42d6cb8c182c70424866fa4ac016d3af70fb4f1469a5004be14",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_recovery_issue_created": {
+      "sourceHash": "8e8fc1729ae609d2d7f789e0d43822a5cc7eacf9086016fc7f859b561fa78621",
+      "translationHash": "0b1ec18e962dc1c2d91a0f4003ce0366189665075c67e97d15d9c32700f960a7",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_recovery_wake_queued": {
+      "sourceHash": "996137ba4dbeb6a8851af895e93de4ac9e0aa25900e8a41bc04c0a63ee7c29a4",
+      "translationHash": "34395a4054526cce5477fc554c8688d15e43a7a4adc8226be2c153b0ac39fe58",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_scheduled": {
+      "sourceHash": "fd4e8b9d1502ceec3db8a9cb752d72c21c559bbdfb148cfdc559c070849b2d95",
+      "translationHash": "55bffe6550cb0681d95f32f532c02c2748077dd4377c5a99c4741c572ee8ca01",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_skipped": {
+      "sourceHash": "ba447358ddeb71a79b6f050cae73cc83219347e89c9162edde4179b193663dc6",
+      "translationHash": "16b99beba0e40fdf31520805c93bdbaf715e2bb63a9c150d0d0b200267a423de",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.monitor_triggered": {
+      "sourceHash": "61a6861db758bd60bc54805d089aba9f2ed4681176aa7b21ac455c537cb11629",
+      "translationHash": "618f7c221fb59c56187c86732fa0be6572bb4810fcfadd2ff5e9571be5b50897",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.queued_comment_discarded": {
+      "sourceHash": "a5c69ffb6b82713ffb9007ca02a5c99b71e7004f78f6fe66325e2f98ea150861",
+      "translationHash": "6cc38c9680c7cceac175bb2cf4d8044f463e98e0fad06d78e59514186c1b6605",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.queued_comment_edited": {
+      "sourceHash": "ca2fe1ee949a8ba3b219c1c90a58e1db9b6b2e6c115dcc57c2a52ecf14f4ac3c",
+      "translationHash": "2ee4a511f615234ebaa8cd27e6f90c87e7ac179d7fdd00001df6563ded0a3c19",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.queued_comments_reordered": {
+      "sourceHash": "5b3dcfb54419039c1f857a4ef5bb41c1a5374b4fa48d623ddf5ca608697580c5",
+      "translationHash": "5fc183df7294d93a2a55e1f7f64e681905bdc36c1b4e7ee8d33350b791d94560",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.read_marked": {
+      "sourceHash": "4592d3c691ed56d34fdc23fe9610e71d947bf388d65ce794c9fb392b252c2cce",
+      "translationHash": "c87587f2ed2c4a330b2292acb61eb2d30d01ecfc4949022402cef3b7ab67383f",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.read_unmarked": {
+      "sourceHash": "7c84851ad2cfc6c779e0f43945a58318facedfcf1a631db86c6bd96cdc3b0d53",
+      "translationHash": "52a935aaadf652bb50c277d4052d87e816aea9e4d230e7180aaab0ef6c8acf9e",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.recovery_action_escalated": {
+      "sourceHash": "360ee6fb5c5709dde19d85752f180f42db9678ac967efe075c3a7221e0fc70af",
+      "translationHash": "b11742e2494a14d4d62ffc69f67e4c8eca2f8d99029ab95f376a7ca397df54d2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.recovery_action_opened": {
+      "sourceHash": "8a09764278711a8d91814cdd6a64564a2488662ceab609d5d63dc5e308fbec31",
+      "translationHash": "570903e180203093a83dd65e9c4bad0d5c42e763a94c94f6e035153fd1b311ac",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.recovery_action_resolved": {
+      "sourceHash": "6796638ea9085dae4dcc741aa263a9ee0852541b689f603b46f72d8d028a6d25",
+      "translationHash": "8971116db5bdbe7aa823964525819f477aa83fc626c5feabe7a902a5cc59be21",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.released": {
+      "sourceHash": "9cd304ee176dfafd15c46e4e036dba4341b961eb2c96ab839783a672f0a880db",
+      "translationHash": "75194db1c017431b30042a8e061e098b9be3d80533958e0d24cd08a800033d8b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.stalled_review_decided": {
+      "sourceHash": "66ee56b560e0668c7d4d94ddedbbf558c61ddee9102a6d4eaf1bdf28e66018af",
+      "translationHash": "ce13016062187b5242ee5da84f66bb6e4f62fbcb326f0ae457aae9797f9cc138",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.successful_run_handoff_escalated": {
+      "sourceHash": "f488467ba903256615c43cf020ccc18e56002493431c314f6610d4d99ff1ec91",
+      "translationHash": "c8e807719858cea1983f903cedcd147360593c18c585525de5aa670595bb898d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.successful_run_handoff_required": {
+      "sourceHash": "284fa0874c8068b549dca34ae6ba24a885d05be610daa19601c96bb009bcd018",
+      "translationHash": "9beb78632fecf9112a564d59a2cb23d5053cd7842b99ccb4b4f0269bc854db22",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.successful_run_handoff_resolved": {
+      "sourceHash": "0eca3b8459d4122efcb06f63d22d85b04d04c369a7af8b8f7fd632e57343f1a2",
+      "translationHash": "d9d7016386eb54a900ed24ac7d2d8746c7c50411e44f7a7fb24302d417f45552",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_accepted": {
+      "sourceHash": "565243caab0db444ba3aca98e15bf7fadb8605875b91f0715dbe2221b872374c",
+      "translationHash": "f5b311ee6a8a773fa67f26882d3171f4c7348fc07759970f0f227b74479a31f0",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_answered": {
+      "sourceHash": "c95238596a3e9be38ad36c5d13fdf86330af3d9c64e79dbb5e0c11cef4a08b95",
+      "translationHash": "d182d39348b44c2f9107ebe124d1f9338072a3901bef7ee8820dad01c5903bb8",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_cancelled": {
+      "sourceHash": "5edb0f8a812e80892a0476fe9df6c1839ed9209e53cf155a40f43dffca0903e1",
+      "translationHash": "4bb49e13a2ed2d757c3f26af3e89b23f5379680f0c4456292157674227bfcb25",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.710Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_created": {
+      "sourceHash": "13d6e9ab7afc2c7432e24aaac416ab4513cf658832655fab9b73af42d4f9829e",
+      "translationHash": "eede6334b6cb100596f2629b8c0b42fabde079f43a9d1020d2daf7978bfb2271",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_dismissed": {
+      "sourceHash": "480683077b2d3aa7e3f03f01167b36f2da10c8424f14e5e1aa0ad947cf4b4ff5",
+      "translationHash": "1397ffe2ed9fce62f0db24b541969d293fb8a90c462cb4bd96c1c3fd7170efd7",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_expired": {
+      "sourceHash": "45da0abef97d1ecc34200e490d301fdab346c01eae25f003cdfa197c5b07aabf",
+      "translationHash": "b0bfa31ade1d688a6c75282de2060f9afe757e72011d29fb5fc3dde0daa21b1c",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_item_verdicts_submitted": {
+      "sourceHash": "03ec36a76965e6b8f6c5d9e7873b549b15cc70af0a5cb07da607e18f0369739d",
+      "translationHash": "7dde1312913004103ae8f4e4a096318c03fa7231256ecdeefd947277006dffd1",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_rejected": {
+      "sourceHash": "25eb26dd0d3c0d3510ffbb42e7fae695dd334b27eb45578d05584ac25a70a6d2",
+      "translationHash": "6fcf721e9d2892771ddf674027fff1ed92db8306065bad3b850a95196b9da476",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_skipped": {
+      "sourceHash": "458b9a1d674e2f20bd9485f1e19ef5494bc0130b927db52c0365ce8bf57023d6",
+      "translationHash": "ebf39c774371403fd7f758cec949470203661044e93bee97d66324a701ce74b2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.thread_interaction_withdrawn": {
+      "sourceHash": "416c18c8870df81725362c092c31a83b9a84299b5f23dc0a23d045ff6e3d4471",
+      "translationHash": "77d3731af1438f17c236a3683ae16011fb641fd097790a317c4f1817718ef6fe",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.updated": {
+      "sourceHash": "22325693e9dd8491dfb63adfd424aa205927522fedeb02aaa6d8f7898dc10176",
+      "translationHash": "867ba589552f0a7c8729c4d45095ba945bc4da4be38d7020a6b744a608b9853e",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.workspace_recovered": {
+      "sourceHash": "3c1914b40c5b9e4bca7874b1bb44c5d1e3deb3e24097b0cfabdaca8b87aaedf4",
+      "translationHash": "39d8103c8e57454886c01166be4bd3fa2f2eea12c3bc10e12f146e874261645b",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.issue.workspace_recovery_requested": {
+      "sourceHash": "ff99f716f0447809a3938208b8c3e42d4b500d7d345e96d51ac56b534e466e81",
+      "translationHash": "61d3c5916c317b145e5e3e1174efa5c4d818a3fa69793aeb43d18521a1468ed5",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.project.created": {
+      "sourceHash": "f5970d717883f322ccea63615e3468bb0a8a5e8ccba522711d75892b387152ec",
+      "translationHash": "c586f4bf0f749c4c453fc72d145ceadaa7b7ed620bc29bbdf5860a6971bebfea",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.project.deleted": {
+      "sourceHash": "60cad68a565c66f6a8a7ee17d14a6b60617690b1787b8d536976026eb2e1f4e2",
+      "translationHash": "e246aefc66a1e2ef0cd101730158f2b4545efc67afd2373899118b819c91a970",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.project.updated": {
+      "sourceHash": "f405fbf20fdff7118be000346f350cb9bf4db3123dba65e7e7b098904b7ab3fb",
+      "translationHash": "9805814326fae5835a66e21c6d33764570391c350bed904f3c1f191fba50fe6d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.connected": {
+      "sourceHash": "99f422bcd6c6e0a14f03a7fe8a055501340725dd733624a03e99e3ed85d1aaa0",
+      "translationHash": "71c4e7187019e30c780347030b67a69792e5a6eba4c728e97977e0271d4e1a18",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.finished": {
+      "sourceHash": "db86921815bc7e8fb67e60eecbc045bea002da04559db40c771f55100e28e983",
+      "translationHash": "baeff24afa7d168c8a352922544c0738882a2f3a2eeb2b6096a8bcb1cf59f9eb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.oauth_access_finalized": {
+      "sourceHash": "ac4570625c56a78392cd20357fe083eada948a94900d1b10ebed5bc12bf200c7",
+      "translationHash": "9eb0864da58ab6853824bf7f22b7d3730d2e4e4966377965a71f87ae9bdb9721",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.oauth_connected": {
+      "sourceHash": "3aaf58af1524a9e2d59b48a7fa33b5464f22c94de5384d9a47884ed69ed67ba8",
+      "translationHash": "963a98f8e7a193e1490906a793062d60109679aec5d4bc28d57c81d6c8d05872",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.oauth_failed": {
+      "sourceHash": "5f388e77e311f3556183900b5058969c836c260040e8d2992bbaed010779c847",
+      "translationHash": "b30c7c3a0eb2bdc8226a6b5bdce50af2f3d6e6283bb8faabfd4b6c0dfad9d5b2",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_app.reconnected": {
+      "sourceHash": "cf166c11f50bab6aef27975aa597738d0db91baa98fd87ca280e4d778ff03ffe",
+      "translationHash": "a1eaceab7690648d3c6041927b5f55d2a0b5619afa00f876d04b04a053f0ce06",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.archived": {
+      "sourceHash": "89dcc09a882fef096e0a17339541709961c497f85ca30ee474f57ef1bb4791ad",
+      "translationHash": "c670b391c30fc2799c3b140c8082bf6a9f9e23e96d9e925d06c05c346e16b74d",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.catalog_refresh": {
+      "sourceHash": "06d2afcfd8dc69f9214854df6ef78b3a4e1de8a5f4062a99cbf2ef9b36bf73e3",
+      "translationHash": "fee3cacdfbcd0bde421a6bb1b2312cf6126a90475d43ea1a1d7ec70efee76755",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.created": {
+      "sourceHash": "f73d570444bc6924e050ee65f937e14bae12060d15c26a0fc44fe783bba813ef",
+      "translationHash": "3e213575be89260d9c8a6154bce62995e5d6ffc2efca63984cbbc213abfb1c65",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.grant_added": {
+      "sourceHash": "e0eb800446fa653fc886cb8ab57c10c9ce835e47bc9ce449d9f37d7cd313bea8",
+      "translationHash": "15921888b8fe2ed62cab7d4bf0ba1eb06e8fee45160754a14a343f9bba23e841",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.grant_audience_replaced": {
+      "sourceHash": "0728eb09442a7fd832a641744d5bd51b4e2be801d1a5ef36498f846214ac37f4",
+      "translationHash": "02f50a0be03fd60ac08e0300de02e3e0e6987c2cd8ab18c86d28a5fe472639af",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.grant_delegated": {
+      "sourceHash": "306eff03bfc0e8599a12010675f2d48bd54c22a1af9a3b7648a69052669f3979",
+      "translationHash": "f502d2b821347ec76f964d23d2d3508974ca600686d0ee9411f5f201fcf5ff66",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.grant_delegation_revoked": {
+      "sourceHash": "494e28da1803cddf7db4f79e95c4732efada710ec9587307e08fa02c2a76400b",
+      "translationHash": "552ad6f83306bdc9a3a30c427f9cdf1f0eccceaf72a91318ce54379a18149276",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.grant_revoked": {
+      "sourceHash": "2cd028ddd5c7b1fab987c7c5de954270b7a4b2bed31d6396740cd25f03f504d6",
+      "translationHash": "81d691eac685e2d5d5157d0bbf0746e28395d4e8d54ecd99ccac655cb596a165",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.install_access_extended": {
+      "sourceHash": "cf5a97e774c0d910d6099dcc30f4ad40478a7636805a73d6f2a37e874e54e6ad",
+      "translationHash": "29e43318b16c740a3eca50affea9c04985c4a886c2a913e14ddf517b11da05fb",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.installs_synced": {
+      "sourceHash": "df595b14e91a5fc3d567252e0ff236c2b06029283c017c3174b1adac9c6b5a81",
+      "translationHash": "1e24b725f57db096f8633914aeff16e16d43af3ca7b0637eb42c6da5d6a86fda",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
+    },
+    "activityUi.verbs.tool_connection.updated": {
+      "sourceHash": "d2879bb5061f45fab104ff27c0456922ef362f83f796252e139287b23c1efa31",
+      "translationHash": "6a88d2cf194f759d801a5635ab2142749564f1c363f0e1159416303a9451d872",
+      "reviewer": "Codex agent /root/chat_locale_scope (editorial and independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:17:59.711Z"
     }
   }
 }

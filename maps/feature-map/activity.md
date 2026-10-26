@@ -52,6 +52,15 @@ known daily totals, checking that only display captions/dates change. These mock
 component checks do not prove real cross-tab polling or provider health, nor do
 they cover the recent-activity feed or optional transcript child.
 
+Recent-activity localization: [both row layouts](../../ui/src/components/ActivityRow.locale.test.tsx)
+and [event formatting](../../ui/src/lib/activity-format.test.ts) cover live
+EN/RU/EN captions, unchanged actor/title text, reference IDs and links, focus,
+raw event order, known/unknown event branches and relation counts 1/2/5/21.
+The list only translates an omitted default label. The formatter's omitted
+translator remains English for [AuditFeed](../../ui/src/pages/audit/AuditFeed.test.tsx);
+its full host and IssueDetail's legacy action wording remain separate work.
+These read-only component checks do not qualify event delivery or permissions.
+
 ### `activity-audit`
 
 Automated: [activity service](../../server/src/__tests__/activity-service.test.ts), [audit runs](../../ui/src/pages/audit/AuditRuns.test.tsx), and [routine audit](../../ui/src/pages/audit/RoutineAuditActivity.test.tsx) cover these separate data/host layers.
