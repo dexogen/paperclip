@@ -37,6 +37,13 @@ export type {
 } from "./summary-slot.js";
 export type {
   AttentionDecisionVerb,
+  AttentionTitleMessage,
+  AttentionWhyNowMessage,
+  AttentionVerbLabelMessage,
+  AttentionVerbDescriptionMessage,
+  AttentionPlanTitleMessage,
+  AttentionJoinTitleMessage,
+  AttentionDisplayMessage,
   AttentionDetailImage,
   AttentionFeed,
   AttentionItem,

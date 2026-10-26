@@ -80,7 +80,7 @@ describeEmbeddedPostgres("attention service", () => {
     await db.delete(issueAttachments);
     await db.delete(issueDocuments);
     await db.delete(heartbeatRunEvents);
-    await db.delete(heartbeatRuns);
+    await db.execute(sql`truncate table ${heartbeatRuns} cascade`);
     await db.delete(budgetIncidents);
     await db.delete(budgetPolicies);
     await db.delete(joinRequests);
@@ -266,6 +266,150 @@ describeEmbeddedPostgres("attention service", () => {
     expect(feed.items.some((item) => item.subject.id === harnessIssueId)).toBe(false);
     expect(feed.countsBySourceKind.review ?? 0).toBe(0);
     expect(feed.items.flatMap((item) => item.queues).some((queue) => queue.key === "internal-review")).toBe(false);
+  });
+
+  it("attaches display provenance to confirmation defaults without reclassifying custom labels", async () => {
+    const { companyId } = await seedCompany("DSP");
+    const fixtures = [
+      { labels: {}, custom: false },
+      { labels: { acceptLabel: "  ", rejectLabel: "\n" }, custom: false },
+      { labels: { acceptLabel: "Confirm", rejectLabel: "Decline" }, custom: true },
+      { labels: { acceptLabel: "<b>Accept</b>", rejectLabel: "{{reject}}" }, custom: true },
+    ];
+    const ids: string[] = [];
+    for (const [index, fixture] of fixtures.entries()) {
+      const issueId = await insertIssue({ companyId, identifier: `DSP-${index + 1}`, title: "Literal <title>", status: "in_progress" });
+      const id = randomUUID();
+      ids.push(id);
+      await db.insert(issueThreadInteractions).values({
+        id, companyId, issueId, kind: "request_confirmation", status: "pending",
+        title: index === 0 ? null : "Confirmation requested",
+        payload: { version: 1, prompt: "Literal prompt", ...fixture.labels,
+          display: { label: { code: "verb.approve" }, title: { code: "title.join.agent" } } },
+      });
+    }
+    const feed = await attentionService(db).list(companyId, { userId: "board-user" });
+    for (const [index, fixture] of fixtures.entries()) {
+      const item = feed.items.find((entry) => entry.subject.id === ids[index])!;
+      expect(item.whyNow).toBe("Confirmation requested on an issue thread.");
+      expect(item.display?.whyNow).toEqual({ code: "why.interaction.confirmation" });
+      expect(item.subject.title).toBe("Confirmation requested");
+      expect(item.subject.display?.title).toEqual(index === 0 ? { code: "title.interaction.confirmation" } : undefined);
+      expect(item.decisionVerbs.map((verb) => [verb.id, verb.label])).toEqual([
+        ["accept", fixture.custom ? fixture.labels.acceptLabel : "Confirm"],
+        ["reject", fixture.custom ? fixture.labels.rejectLabel : "Decline"],
+      ]);
+      expect(item.decisionVerbs[0]?.display?.label).toEqual(fixture.custom ? undefined : { code: "verb.confirm" });
+      expect(item.decisionVerbs[1]?.display?.label).toEqual(fixture.custom ? undefined : { code: "verb.decline" });
+      expect(item.decisionVerbs.map((verb) => verb.display?.description)).toEqual([
+        { code: "description.confirmation.accept" }, { code: "description.confirmation.reject" },
+      ]);
+    }
+  });
+
+  it("attaches display provenance only to known approval and join title fallbacks", async () => {
+    const { companyId } = await seedCompany("DST");
+    const approvalFixtures = [
+      { type: "hire_agent", payload: {}, title: "hire agent", code: "title.approval.hireAgent" },
+      { type: "approve_ceo_strategy", payload: {}, title: "approve ceo strategy", code: "title.approval.ceoStrategy" },
+      { type: "budget_override_required", payload: {}, title: "budget override required", code: "title.approval.budgetOverride" },
+      { type: "request_board_approval", payload: {}, title: "request board approval", code: "title.approval.boardApproval" },
+      { type: "hire_agent", payload: { title: " hire agent " }, title: "hire agent" },
+      { type: "hire_agent", payload: { title: " ", summary: " hire agent " }, title: "hire agent" },
+      { type: "future_approval", payload: {}, title: "future approval" },
+    ];
+    const approvalIds = approvalFixtures.map(() => randomUUID());
+    await db.insert(approvals).values(approvalFixtures.map((fixture, index) => ({
+      id: approvalIds[index], companyId, type: fixture.type, status: "pending", payload: fixture.payload,
+    })));
+    const joinFixtures = [
+      { requestType: "agent", agentName: null, title: "Agent join request", code: "title.join.agent" },
+      { requestType: "human", agentName: null, title: "Human join request", code: "title.join.human" },
+      { requestType: "agent", agentName: "Agent join request", title: "Agent join request" },
+      { requestType: "agent", agentName: "", title: "" },
+    ];
+    const joinIds = joinFixtures.map(() => randomUUID());
+    const inviteIds = joinFixtures.map(() => randomUUID());
+    await db.insert(invites).values(inviteIds.map((id) => ({ id, companyId, tokenHash: `hash-${id}`, allowedJoinTypes: "both", expiresAt: new Date("2099-01-01T00:00:00Z") })));
+    await db.insert(joinRequests).values(joinFixtures.map((fixture, index) => ({
+      id: joinIds[index], companyId, inviteId: inviteIds[index], requestType: fixture.requestType, agentName: fixture.agentName,
+      status: "pending_approval", requestIp: "127.0.0.1",
+    })));
+    const feed = await attentionService(db).list(companyId, { userId: "board-user" });
+    for (const [index, fixture] of approvalFixtures.entries()) {
+      const item = feed.items.find((entry) => entry.subject.id === approvalIds[index])!;
+      expect(item.subject.title).toBe(fixture.title);
+      expect(item.subject.display?.title).toEqual(fixture.code ? { code: fixture.code } : undefined);
+      expect(item.decisionVerbs.map((verb) => verb.id)).toEqual(["approve", "reject", "request_revision"]);
+    }
+    for (const [index, fixture] of joinFixtures.entries()) {
+      const item = feed.items.find((entry) => entry.subject.id === joinIds[index])!;
+      expect(item.subject.title).toBe(fixture.title);
+      expect(item.subject.display?.title).toEqual(fixture.code ? { code: fixture.code } : undefined);
+      expect(item.detail?.kind).toBe("generic");
+      if (item.detail?.kind !== "generic") throw new Error("Expected generic join detail");
+      expect(item.detail.summaryExcerpt).toBe(fixture.title || null);
+      expect(item.detail.display?.summaryExcerpt).toEqual(fixture.code ? { code: fixture.code } : undefined);
+    }
+  });
+
+  it("attaches display provenance to a missing plan title while preserving a literal Plan document title", async () => {
+    const { companyId } = await seedCompany("DSPN");
+    const interactionIds: string[] = [];
+    for (const hasDocument of [false, true]) {
+      const index = Number(hasDocument);
+      const issueId = await insertIssue({ companyId, identifier: `DSPN-${index + 1}`, title: "Literal <b>Plan</b> {{title}}", status: "in_progress" });
+      if (hasDocument) {
+        const documentId = randomUUID();
+        await db.insert(documents).values({ id: documentId, companyId, title: "Plan", format: "markdown", latestBody: "Literal body", latestRevisionId: randomUUID(), latestRevisionNumber: 1 });
+        await db.insert(issueDocuments).values({ companyId, issueId, documentId, key: "plan" });
+      }
+      const id = randomUUID();
+      interactionIds.push(id);
+      await db.insert(issueThreadInteractions).values({ id, companyId, issueId, kind: "request_confirmation", status: "pending", title: "Custom interaction", payload: { version: 1, prompt: "Prompt", target: { type: "issue_document", key: "plan" } } });
+    }
+    const feed = await attentionService(db).list(companyId, { userId: "board-user" });
+    for (const [index, id] of interactionIds.entries()) {
+      const item = feed.items.find((entry) => entry.subject.id === id)!;
+      expect(item.subject.title).toBe("Plan approval - Literal <b>Plan</b> {{title}}");
+      expect(item.subject.display?.title).toEqual({ code: "title.planApproval", args: { issueTitle: "Literal <b>Plan</b> {{title}}" } });
+      expect(item.detail?.kind).toBe("plan_approval");
+      if (item.detail?.kind !== "plan_approval") throw new Error("Expected plan detail");
+      expect(item.detail.planTitle).toBe("Plan");
+      expect(item.detail.display?.planTitle).toEqual(index === 0 ? { code: "detail.plan.defaultTitle" } : undefined);
+    }
+  });
+
+  it("keeps display arguments inside the company and readable-issue boundary", async () => {
+    const { companyId } = await seedCompany("DSA");
+    const { companyId: otherCompanyId } = await seedCompany("DSB");
+    const fixtures = [
+      { companyId, identifier: "DSA-1", title: "Public <literal> plan", private: false },
+      { companyId, identifier: "DSA-2", title: "Private secret plan", private: true },
+      { companyId: otherCompanyId, identifier: "DSB-1", title: "Other company plan", private: false },
+    ];
+    const ids: string[] = [];
+    for (const fixture of fixtures) {
+      const issueId = randomUUID();
+      ids.push(issueId);
+      await insertIssue({
+        id: issueId, companyId: fixture.companyId, identifier: fixture.identifier, title: fixture.title, status: "in_progress",
+        visibility: fixture.private ? "private" : "open", privacyRootIssueId: fixture.private ? issueId : null,
+        responsibleUserId: fixture.private ? "private-owner" : null,
+      });
+      await db.insert(issueThreadInteractions).values({
+        id: randomUUID(), companyId: fixture.companyId, issueId, kind: "request_confirmation", status: "pending",
+        payload: { version: 1, prompt: "Plan", target: { type: "issue_document", key: "plan" } },
+      });
+    }
+    const actor = { type: "board" as const, source: "session" as const, userId: "non-member", companyIds: [companyId], isInstanceAdmin: false };
+    const feed = await attentionService(db).list(companyId, { userId: actor.userId, actor });
+    const publicItem = feed.items.find((item) => item.subject.metadata?.issueId === ids[0]);
+    expect(publicItem?.subject.display?.title).toEqual({ code: "title.planApproval", args: { issueTitle: fixtures[0]!.title } });
+    for (const index of [1, 2]) {
+      expect(JSON.stringify(feed)).not.toContain(ids[index]);
+      expect(JSON.stringify(feed)).not.toContain(fixtures[index]!.title);
+    }
   });
 
   it("returns ranked decision-only items for every active source and excludes non-human or transient rows", async () => {
@@ -653,6 +797,7 @@ describeEmbeddedPostgres("attention service", () => {
       expect(item.dedupKey).toBeTruthy();
       expect(item.dismissalKey).toBe(`attention:${item.dedupKey}`);
       expect(item.whyNow).toBeTruthy();
+      expect(item.display?.whyNow?.code).toBeTruthy();
       expect(item.entryRule).toBeTruthy();
       expect(item.exitRule).toBeTruthy();
       expect(item.decisionVerbs.length).toBeGreaterThan(0);
@@ -702,7 +847,17 @@ describeEmbeddedPostgres("attention service", () => {
         expect.objectContaining({ id: "choose_review_path", label: "Choose review path" }),
       ]),
     });
-    expect(feed.items.find((item) => item.sourceKind === "failed_run")?.detail).toMatchObject({
+    const failedItem = feed.items.find((item) => item.sourceKind === "failed_run");
+    expect(failedItem?.subject.display?.title).toEqual({ code: "title.run.failed", args: { agentName: "Worker" } });
+    const recoveryItem = feed.items.find((item) => item.sourceKind === "recovery_action");
+    expect(recoveryItem?.subject.display).toBeUndefined();
+    expect(recoveryItem?.detail?.kind === "generic" ? recoveryItem.detail.display : null).toBeUndefined();
+    expect(recoveryItem?.display?.whyNow).toEqual({ code: "why.recovery.escalated" });
+    expect(feed.items.find((item) => item.sourceKind === "blocker_attention")?.display?.whyNow).toMatchObject({ args: { count: 1 } });
+    for (const item of feed.items.filter((candidate) => candidate.sourceKind === "budget_alert")) {
+      expect(item.subject.display?.title).toMatchObject({ code: item.subject.metadata?.thresholdType === "hard" ? "title.budget.hardStop" : "title.budget.warning" });
+    }
+    expect(failedItem?.detail).toMatchObject({
       kind: "failed_run",
       agentName: "Worker",
       failureReasonExcerpt: "adapter failed",
@@ -1515,6 +1670,11 @@ describeEmbeddedPostgres("attention service", () => {
 
     expect(items).toHaveLength(1);
     expect(items[0]).toMatchObject({ sourceKind: "blocker_attention", whyNow: "Approve the exception" });
+    expect(items[0]?.display).toBeUndefined();
+    expect(items[0]?.decisionVerbs.find((verb) => verb.id === "unblock")).toMatchObject({
+      label: "Unblock", description: "Approve the exception", display: { label: { code: "verb.unblock" } },
+    });
+    expect(items[0]?.decisionVerbs.find((verb) => verb.id === "unblock")?.display?.description).toBeUndefined();
   });
 
   it("keeps legacy blocker attention visible for pre-rollout blocked issues", async () => {

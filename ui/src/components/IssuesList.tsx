@@ -2497,7 +2497,7 @@ function StreamlinedIssuesList({
                   if (node === null) return;
                   if (separatorField && rowPresentation === "task") {
                     const currentDateGroup = taskDateGroup(issue[separatorField], separatorNow);
-                    const separatorLabel = taskDateGroupSeparator(previousDateGroup, currentDateGroup);
+                    const separatorLabel = taskDateGroupSeparator(previousDateGroup, currentDateGroup, t);
                     if (separatorLabel) {
                       nodes.push(
                         <IssueDateSeparator

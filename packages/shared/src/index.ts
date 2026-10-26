@@ -165,6 +165,13 @@ export {
 } from "./responsible-user-denial.js";
 export type {
   AttentionDecisionVerb,
+  AttentionTitleMessage,
+  AttentionWhyNowMessage,
+  AttentionVerbLabelMessage,
+  AttentionVerbDescriptionMessage,
+  AttentionPlanTitleMessage,
+  AttentionJoinTitleMessage,
+  AttentionDisplayMessage,
   AttentionDetailImage,
   AttentionFeed,
   AttentionItem,

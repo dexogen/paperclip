@@ -1,3 +1,6 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
+import { formatAttentionDisplayText } from "./attention-display";
 import type {
   AttentionDetailImage,
   AttentionFeed,
@@ -47,23 +50,22 @@ interface SourceMeta {
   label: string;
 }
 
-const SOURCE_META: Record<AttentionSourceKind, SourceMeta> = {
-  approval: { label: "Approval" },
-  decision: { label: "Decision" },
-  issue_thread_interaction: { label: "Decision requested" },
-  join_request: { label: "Join request" },
-  recovery_action: { label: "Recovery" },
-  // Read compatibility for persisted decisions from the retired feature.
-  productivity_review: { label: "Task" },
-  blocker_attention: { label: "Blocked dependency" },
-  review: { label: "Review" },
-  failed_run: { label: "Failed run" },
-  budget_alert: { label: "Budget" },
-  agent_error_alert: { label: "Agent error" },
-};
-
-export function sourceMeta(kind: AttentionSourceKind): SourceMeta {
-  return SOURCE_META[kind] ?? { label: kind.replaceAll("_", " ") };
+export function sourceMeta(kind: AttentionSourceKind, t: TFunction = i18n.getFixedT("en")): SourceMeta {
+  switch (kind) {
+    case "approval": return { label: t("decisionsUi.source.approval") };
+    case "decision": return { label: t("decisionsUi.source.decision") };
+    case "issue_thread_interaction": return { label: t("decisionsUi.source.interaction") };
+    case "join_request": return { label: t("decisionsUi.source.join") };
+    case "recovery_action": return { label: t("decisionsUi.source.recovery") };
+    // Read compatibility for persisted decisions from the retired feature.
+    case "productivity_review": return { label: t("decisionsUi.source.task") };
+    case "blocker_attention": return { label: t("decisionsUi.source.blocker") };
+    case "review": return { label: t("decisionsUi.source.review") };
+    case "failed_run": return { label: t("decisionsUi.source.failedRun") };
+    case "budget_alert": return { label: t("decisionsUi.source.budget") };
+    case "agent_error_alert": return { label: t("decisionsUi.source.agentError") };
+    default: return { label: String(kind).replaceAll("_", " ") };
+  }
 }
 
 interface SeverityStyle {
@@ -73,15 +75,14 @@ interface SeverityStyle {
   label: string;
 }
 
-const SEVERITY_STYLE: Record<AttentionSeverity, SeverityStyle> = {
-  critical: { accent: "bg-red-500", dot: "bg-red-500", label: "Critical" },
-  high: { accent: "bg-orange-500", dot: "bg-orange-500", label: "High" },
-  medium: { accent: "bg-yellow-500", dot: "bg-yellow-500", label: "Medium" },
-  low: { accent: "bg-blue-500", dot: "bg-blue-500", label: "Low" },
-};
-
-export function severityStyle(severity: AttentionSeverity): SeverityStyle {
-  return SEVERITY_STYLE[severity] ?? SEVERITY_STYLE.low;
+export function severityStyle(severity: AttentionSeverity, t: TFunction = i18n.getFixedT("en")): SeverityStyle {
+  const styles: Record<AttentionSeverity, SeverityStyle> = {
+    critical: { accent: "bg-red-500", dot: "bg-red-500", label: t("decisionsUi.severity.critical") },
+    high: { accent: "bg-orange-500", dot: "bg-orange-500", label: t("decisionsUi.severity.high") },
+    medium: { accent: "bg-yellow-500", dot: "bg-yellow-500", label: t("decisionsUi.severity.medium") },
+    low: { accent: "bg-blue-500", dot: "bg-blue-500", label: t("decisionsUi.severity.low") },
+  };
+  return styles[severity] ?? styles.low;
 }
 
 // ---------------------------------------------------------------------------
@@ -187,10 +188,6 @@ function quote(text: string | null | undefined): string | null {
   return `“${trimmed}”`;
 }
 
-function countNoun(count: number, singular: string): string {
-  return `${count} ${count === 1 ? singular : `${singular}s`}`;
-}
-
 /**
  * A concise human-readable detail line for a row, e.g.
  *   "2 questions — “Which auth provider…”"
@@ -198,34 +195,35 @@ function countNoun(count: number, singular: string): string {
  * Returns `null` when the detail carries nothing beyond the title, so the row
  * can fall back to `whyNow`.
  */
-export function attentionDetailLine(item: AttentionItem): string | null {
+export function attentionDetailLine(item: AttentionItem, t: TFunction = i18n.getFixedT("en")): string | null {
   const detail = item.detail;
   if (!detail) return null;
   switch (detail.kind) {
     case "plan_approval":
-      return detail.planTitle?.trim() || quote(detail.summaryExcerpt);
+      return formatAttentionDisplayText("planTitle", detail.planTitle, detail.display?.planTitle, t)?.trim() || quote(detail.summaryExcerpt);
     case "approval":
       return quote(detail.summaryExcerpt);
     case "confirmation":
       return quote(detail.promptExcerpt);
     case "checkbox_confirmation": {
       const q = quote(detail.promptExcerpt);
-      return q ? `${countNoun(detail.optionCount, "option")} — ${q}` : countNoun(detail.optionCount, "option");
+      const label = t("decisionsUi.detail.options", { count: detail.optionCount });
+      return q ? t("decisionsUi.detail.withExcerpt", { label, excerpt: q }) : label;
     }
     case "questions": {
       const q = quote(detail.firstQuestionText);
-      const label = countNoun(detail.questionCount, "question");
-      return q ? `${label} — ${q}` : label;
+      const label = t("decisionsUi.detail.questions", { count: detail.questionCount });
+      return q ? t("decisionsUi.detail.withExcerpt", { label, excerpt: q }) : label;
     }
     case "suggested_tasks": {
       const q = quote(detail.firstTaskTitle);
-      const label = countNoun(detail.taskCount, "suggested task");
-      return q ? `${label} — ${q}` : label;
+      const label = t("decisionsUi.detail.tasks", { count: detail.taskCount });
+      return q ? t("decisionsUi.detail.withExcerpt", { label, excerpt: q }) : label;
     }
     case "item_verdicts": {
       const q = quote(detail.promptExcerpt);
-      const label = `${countNoun(detail.itemCount, "item")} to verdict`;
-      return q ? `${label} — ${q}` : label;
+      const label = t("decisionsUi.detail.verdicts", { count: detail.itemCount });
+      return q ? t("decisionsUi.detail.withExcerpt", { label, excerpt: q }) : label;
     }
     case "failed_run":
     case "agent_error": {
@@ -237,12 +235,12 @@ export function attentionDetailLine(item: AttentionItem): string | null {
       const b = detail.blockingIssue;
       if (!b) return null;
       const id = b.identifier ? `${b.identifier} ` : "";
-      return b.title ? `Blocked by ${id}${b.title}` : b.identifier ? `Blocked by ${b.identifier}` : null;
+      return b.title || b.identifier ? t("decisionsUi.detail.blockedBy", { target: b.title ? `${id}${b.title}` : b.identifier }) : null;
     }
     case "budget":
-      return `${Math.round(detail.observedPercent)}% of budget used ($${detail.amountObserved} / $${detail.amountLimit})`;
+      return t("decisionsUi.detail.budget", { percent: Math.round(detail.observedPercent), observed: detail.amountObserved, limit: detail.amountLimit });
     case "generic":
-      return quote(detail.summaryExcerpt);
+      return quote(formatAttentionDisplayText("summaryExcerpt", detail.summaryExcerpt, detail.display?.summaryExcerpt, t));
     default:
       return null;
   }
@@ -351,7 +349,7 @@ export interface DeskShelf {
  * A decide-now item is only ever on the "Decide now" shelf, so the three shelves
  * are disjoint and their sizes sum to `items.length`.
  */
-export function buildDeskShelves(items: AttentionItem[], now: number): DeskShelf[] {
+export function buildDeskShelves(items: AttentionItem[], now: number, t: TFunction = i18n.getFixedT("en")): DeskShelf[] {
   const decideNow = items
     .filter((item) => attentionIsDecideNow(item, now))
     .sort((a, b) => {
@@ -371,9 +369,9 @@ export function buildDeskShelves(items: AttentionItem[], now: number): DeskShelf
   const earlier = rest.filter((item) => !attentionIsNewToday(item, now));
 
   const shelves: DeskShelf[] = [];
-  if (decideNow.length > 0) shelves.push({ key: "desk:decide-now", label: "Decide now", items: decideNow });
-  if (newToday.length > 0) shelves.push({ key: "desk:new-today", label: "New today", items: newToday });
-  if (earlier.length > 0) shelves.push({ key: "desk:earlier", label: "Earlier", items: earlier });
+  if (decideNow.length > 0) shelves.push({ key: "desk:decide-now", label: t("decisionsUi.desk.decideNow"), items: decideNow });
+  if (newToday.length > 0) shelves.push({ key: "desk:new-today", label: t("decisionsUi.desk.newToday"), items: newToday });
+  if (earlier.length > 0) shelves.push({ key: "desk:earlier", label: t("decisionsUi.desk.earlier"), items: earlier });
   return shelves;
 }
 
@@ -412,22 +410,26 @@ export function attentionIdleDays(item: AttentionItem, now: number): number {
 
 export type DecideByPreset = "today" | "this_week" | "whenever";
 
-export const DECIDE_BY_OPTIONS: ReadonlyArray<[DecideByPreset, string]> = [
-  ["today", "Today"],
-  ["this_week", "This week"],
-  ["whenever", "Whenever"],
-];
+export function decideByOptions(t: TFunction = i18n.getFixedT("en")): ReadonlyArray<[DecideByPreset, string]> {
+  return [
+    ["today", t("decisionsUi.date.today")],
+    ["this_week", t("decisionsUi.date.thisWeek")],
+    ["whenever", t("decisionsUi.date.whenever")],
+  ];
+}
+
+export const DECIDE_BY_OPTIONS = decideByOptions();
 
 /** Human label for any stored `decideBy` value (preset or `YYYY-MM-DD`). */
-export function decideByLabel(decideBy: string | null): string {
-  if (!decideBy) return "Not set";
-  if (decideBy === "today") return "Today";
-  if (decideBy === "this_week") return "This week";
-  if (decideBy === "whenever") return "Whenever";
+export function decideByLabel(decideBy: string | null, t: TFunction = i18n.getFixedT("en")): string {
+  if (!decideBy) return t("decisionsUi.date.notSet");
+  if (decideBy === "today") return t("decisionsUi.date.today");
+  if (decideBy === "this_week") return t("decisionsUi.date.thisWeek");
+  if (decideBy === "whenever") return t("decisionsUi.date.whenever");
   if (/^\d{4}-\d{2}-\d{2}$/.test(decideBy)) {
     const parsed = new Date(`${decideBy}T00:00:00.000Z`);
     return Number.isFinite(parsed.getTime())
-      ? parsed.toLocaleDateString(undefined, { month: "short", day: "numeric", timeZone: "UTC" })
+      ? t("decisionsUi.date.value", { value: parsed, formatParams: { value: { month: "short", day: "numeric", timeZone: "UTC" } } })
       : decideBy;
   }
   return decideBy;
@@ -441,13 +443,17 @@ export function decideByLabel(decideBy: string | null): string {
 
 export type AttentionDateRangeId = "all" | "today" | "yesterday" | "last_7_days" | "this_month" | "custom";
 
-export const ATTENTION_DATE_RANGE_OPTIONS: ReadonlyArray<[AttentionDateRangeId, string]> = [
-  ["all", "All"],
-  ["today", "Today"],
-  ["yesterday", "Yesterday"],
-  ["last_7_days", "Last 7 days"],
-  ["this_month", "This month"],
-];
+export function attentionDateRangeOptions(t: TFunction = i18n.getFixedT("en")): ReadonlyArray<[AttentionDateRangeId, string]> {
+  return [
+    ["all", t("decisionsUi.date.all")],
+    ["today", t("decisionsUi.date.today")],
+    ["yesterday", t("decisionsUi.date.yesterday")],
+    ["last_7_days", t("decisionsUi.date.last7Days")],
+    ["this_month", t("decisionsUi.date.thisMonth")],
+  ];
+}
+
+export const ATTENTION_DATE_RANGE_OPTIONS = attentionDateRangeOptions();
 
 export interface AttentionActivityBounds {
   activitySince?: string;
@@ -521,18 +527,26 @@ export type AttentionGroupBy = "none" | "date" | "type" | "project" | "severity"
 export type AttentionSortOrder = "newest" | "oldest";
 
 /** Ordered list used to render the group-by picker (label + value). */
-export const ATTENTION_GROUP_BY_OPTIONS: ReadonlyArray<[AttentionGroupBy, string]> = [
-  ["none", "None"],
-  ["date", "Date"],
-  ["type", "Type"],
-  ["project", "Project"],
-  ["severity", "Severity"],
-];
+export function attentionGroupByOptions(t: TFunction = i18n.getFixedT("en")): ReadonlyArray<[AttentionGroupBy, string]> {
+  return [
+    ["none", t("decisionsUi.group.none")],
+    ["date", t("decisionsUi.group.date")],
+    ["type", t("decisionsUi.group.type")],
+    ["project", t("decisionsUi.group.project")],
+    ["severity", t("decisionsUi.group.severity")],
+  ];
+}
 
-export const ATTENTION_SORT_OPTIONS: ReadonlyArray<[AttentionSortOrder, string]> = [
-  ["newest", "Newest first"],
-  ["oldest", "Oldest first"],
-];
+export const ATTENTION_GROUP_BY_OPTIONS = attentionGroupByOptions();
+
+export function attentionSortOptions(t: TFunction = i18n.getFixedT("en")): ReadonlyArray<[AttentionSortOrder, string]> {
+  return [
+    ["newest", t("decisionsUi.sort.newest")],
+    ["oldest", t("decisionsUi.sort.oldest")],
+  ];
+}
+
+export const ATTENTION_SORT_OPTIONS = attentionSortOptions();
 
 /**
  * Filter selections. Empty arrays mean "no filter" (show everything). The
@@ -738,7 +752,17 @@ export function filterAttentionItems(items: AttentionItem[], filters: AttentionF
   return items.filter((item) => {
     if (!attentionItemMatchesFilters(item, filters)) return false;
     if (terms.length === 0) return true;
-    const text = [item.subject.title, item.subject.identifier, item.relatedIssue?.title,
+    const captions = ["en", "ru"].flatMap((locale) => {
+      const t = i18n.getFixedT(locale);
+      return [formatAttentionDisplayText("subjectTitle", item.subject.title, item.subject.display?.title, t),
+        formatAttentionDisplayText("whyNow", item.whyNow, item.display?.whyNow, t), attentionDetailLine(item, t),
+        sourceMeta(item.sourceKind, t).label, severityStyle(item.severity, t).label,
+        ...item.decisionVerbs.flatMap((verb) => [
+          formatAttentionDisplayText("verbLabel", verb.label, verb.display?.label, t),
+          formatAttentionDisplayText("verbDescription", verb.description ?? null, verb.display?.description, t),
+        ])];
+    });
+    const text = [...captions, item.subject.title, item.subject.identifier, item.relatedIssue?.title,
       item.relatedIssue?.identifier, item.whyNow, attentionDetailLine(item),
       item.originAgentName, item.project?.name, item.workspace?.name].filter(Boolean).join(" ").toLocaleLowerCase();
     return terms.every(term => text.includes(term));
@@ -818,12 +842,10 @@ export function planAttentionRenderRows(options: {
 const DATE_BUCKET_ORDER = ["today", "yesterday", "this_week", "earlier"] as const;
 type DateBucket = (typeof DATE_BUCKET_ORDER)[number];
 
-const DATE_BUCKET_LABELS: Record<DateBucket, string> = {
-  today: "Today",
-  yesterday: "Yesterday",
-  this_week: "This week",
-  earlier: "Earlier",
-};
+function dateBucketLabel(bucket: DateBucket, t: TFunction): string {
+  return { today: t("decisionsUi.date.today"), yesterday: t("decisionsUi.date.yesterday"),
+    this_week: t("decisionsUi.date.thisWeek"), earlier: t("decisionsUi.desk.earlier") }[bucket];
+}
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -841,12 +863,6 @@ export function attentionDateBucket(activityAt: string, now: number): DateBucket
   return "earlier";
 }
 
-const SEVERITY_LABEL: Record<AttentionSeverity, string> = {
-  critical: "Critical",
-  high: "High",
-  medium: "Medium",
-  low: "Low",
-};
 
 /**
  * Bucket items into ordered sections. Item order *within* each group is
@@ -857,9 +873,10 @@ const SEVERITY_LABEL: Record<AttentionSeverity, string> = {
 export function groupAttentionItems(
   items: AttentionItem[],
   groupBy: AttentionGroupBy,
-  options: { now?: number } = {},
+  options: { now?: number; t?: TFunction } = {},
 ): AttentionGroup[] {
   if (items.length === 0) return [];
+  const t = options.t ?? i18n.getFixedT("en");
 
   if (groupBy === "none") {
     return [{ key: "__all", label: null, items }];
@@ -876,7 +893,7 @@ export function groupAttentionItems(
     }
     return DATE_BUCKET_ORDER.filter((bucket) => buckets.has(bucket)).map((bucket) => ({
       key: `date:${bucket}`,
-      label: DATE_BUCKET_LABELS[bucket],
+      label: dateBucketLabel(bucket, t),
       items: buckets.get(bucket)!,
     }));
   }
@@ -890,28 +907,28 @@ export function groupAttentionItems(
     }
     return ALL_SEVERITIES.filter((s) => buckets.has(s)).map((severity) => ({
       key: `severity:${severity}`,
-      label: SEVERITY_LABEL[severity],
+      label: severityStyle(severity, t).label,
       items: buckets.get(severity)!,
     }));
   }
 
   // type / project: group, then order groups by most-recent activity so the
   // freshest section floats to the top (matching Inbox's issue-group ordering).
-  const groups = new Map<string, { label: string; items: AttentionItem[]; latest: number }>();
+  const groups = new Map<string, { label: string; sortLabel: string; items: AttentionItem[]; latest: number }>();
   for (const item of items) {
     const resolved =
       groupBy === "type"
-        ? { key: `type:${item.sourceKind}`, label: sourceMeta(item.sourceKind).label }
+        ? { key: `type:${item.sourceKind}`, label: sourceMeta(item.sourceKind, t).label, sortLabel: sourceMeta(item.sourceKind).label }
         : item.project
-          ? { key: `project:${item.project.id}`, label: item.project.name }
-          : { key: `project:${NO_GROUP_SENTINEL}`, label: "No project" };
+          ? { key: `project:${item.project.id}`, label: item.project.name, sortLabel: item.project.name }
+          : { key: `project:${NO_GROUP_SENTINEL}`, label: t("decisionsUi.common.noProject"), sortLabel: i18n.getFixedT("en")("decisionsUi.common.noProject") };
     const existing = groups.get(resolved.key);
     const ts = attentionActivityTimestamp(item);
     if (existing) {
       existing.items.push(item);
       existing.latest = Math.max(existing.latest, ts);
     } else {
-      groups.set(resolved.key, { label: resolved.label, items: [item], latest: ts });
+      groups.set(resolved.key, { label: resolved.label, sortLabel: resolved.sortLabel, items: [item], latest: ts });
     }
   }
 
@@ -919,7 +936,7 @@ export function groupAttentionItems(
     .sort(([, a], [, b]) => {
       const diff = b.latest - a.latest;
       if (diff !== 0) return diff;
-      return a.label.localeCompare(b.label);
+      return a.sortLabel.localeCompare(b.sortLabel);
     })
     .map(([key, value]) => ({ key, label: value.label, items: value.items }));
 }

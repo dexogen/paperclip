@@ -35,6 +35,124 @@ export type AttentionSubjectKind =
 
 export type AttentionSeverity = "critical" | "high" | "medium" | "low";
 
+type AttentionNoArgsMessage<Code extends string> = { code: Code; args?: never };
+
+export type AttentionTitleMessage =
+  | AttentionNoArgsMessage<
+      | "title.approval.hireAgent"
+      | "title.approval.ceoStrategy"
+      | "title.approval.budgetOverride"
+      | "title.approval.boardApproval"
+      | "title.interaction.confirmation"
+      | "title.interaction.checkbox"
+      | "title.interaction.questions"
+      | "title.interaction.tasks"
+      | "title.interaction.verdicts"
+      | "title.interaction.generic"
+      | "title.join.agent"
+      | "title.join.human"
+    >
+  | { code: "title.planApproval"; args: { issueTitle: string } }
+  | { code: "title.run.failed"; args: { agentName: string } }
+  | { code: "title.run.timedOut"; args: { agentName: string } }
+  | { code: "title.budget.hardStop"; args: { scopeName: string } }
+  | { code: "title.budget.warning"; args: { scopeName: string } };
+
+export type AttentionWhyNowMessage =
+  | AttentionNoArgsMessage<
+      | "why.approval.pending"
+      | "why.interaction.confirmation"
+      | "why.interaction.checkbox"
+      | "why.interaction.questions"
+      | "why.interaction.tasks"
+      | "why.interaction.verdicts"
+      | "why.interaction.generic"
+      | "why.decision.pending"
+      | "why.join.pending"
+      | "why.recovery.escalated"
+      | "why.recovery.assigned"
+      | "why.review.stalled"
+      | "why.review.approval"
+      | "why.review.participant"
+      | "why.review.assigned"
+      | "why.run.exhausted"
+      | "why.budget.hardStop"
+      | "why.budget.warning"
+      | "why.agent.error"
+    >
+  | { code: "why.blocker.needsAttention"; args: { count: number } }
+  | { code: "why.blocker.stalled"; args: { count: number } };
+
+export type AttentionVerbLabelMessage =
+  | AttentionNoArgsMessage<
+      | "verb.respond"
+      | "verb.confirm"
+      | "verb.decline"
+      | "verb.accept"
+      | "verb.reject"
+      | "verb.approve"
+      | "verb.requestRevision"
+      | "verb.review"
+      | "verb.resolve"
+      | "verb.reassign"
+      | "verb.cancel"
+      | "verb.unblock"
+      | "verb.nudge"
+      | "verb.chooseReviewPath"
+      | "verb.requestChanges"
+      | "verb.retry"
+      | "verb.dismiss"
+      | "verb.raiseBudget"
+      | "verb.keepPaused"
+      | "verb.inspect"
+    >;
+
+export type AttentionVerbDescriptionMessage =
+  | AttentionNoArgsMessage<
+      | "description.questions.respond"
+      | "description.confirmation.accept"
+      | "description.confirmation.reject"
+      | "description.interaction.accept"
+      | "description.interaction.reject"
+      | "description.approval.approve"
+      | "description.approval.reject"
+      | "description.approval.revision"
+      | "description.decision.review"
+      | "description.join.approve"
+      | "description.join.reject"
+      | "description.recovery.resolve"
+      | "description.recovery.reassign"
+      | "description.recovery.cancel"
+      | "description.blocker.route"
+      | "description.blocker.repair"
+      | "description.blocker.reassign"
+      | "description.blocker.nudge"
+      | "description.review.path"
+      | "description.review.changes"
+      | "description.review.approve"
+      | "description.run.retry"
+      | "description.run.reassign"
+      | "description.run.dismiss"
+      | "description.budget.raise"
+      | "description.budget.keepPaused"
+      | "description.agent.inspect"
+      | "description.agent.dismiss"
+    >;
+
+export type AttentionPlanTitleMessage =
+  | AttentionNoArgsMessage<
+      | "detail.plan.defaultTitle"
+    >;
+
+export type AttentionJoinTitleMessage = AttentionNoArgsMessage<"title.join.agent" | "title.join.human">;
+
+export type AttentionDisplayMessage =
+  | AttentionTitleMessage
+  | AttentionWhyNowMessage
+  | AttentionVerbLabelMessage
+  | AttentionVerbDescriptionMessage
+  | AttentionPlanTitleMessage;
+
 export interface AttentionSubject {
   kind: AttentionSubjectKind;
   id: string;
@@ -44,12 +162,14 @@ export interface AttentionSubject {
   status: string | null;
   href: string | null;
   metadata?: Record<string, unknown>;
+  display?: { title?: AttentionTitleMessage };
 }
 
 export interface AttentionDecisionVerb {
   id: string;
   label: string;
   description: string | null;
+  display?: { label?: AttentionVerbLabelMessage; description?: AttentionVerbDescriptionMessage };
 }
 
 export interface AttentionProjectRef {
@@ -116,6 +236,7 @@ export type AttentionItemDetail =
     }
   | {
       kind: "plan_approval";
+      display?: { planTitle?: AttentionPlanTitleMessage };
       issueTitle: string | null;
       planTitle: string | null;
       summaryExcerpt: string | null;
@@ -182,6 +303,7 @@ export type AttentionItemDetail =
     }
   | {
       kind: "generic";
+      display?: { summaryExcerpt?: AttentionJoinTitleMessage };
       summaryExcerpt: string | null;
       images: AttentionDetailImage[];
     };
@@ -224,6 +346,7 @@ export interface AttentionItem {
   sourceKind: AttentionSourceKind;
   subject: AttentionSubject;
   whyNow: string;
+  display?: { whyNow?: AttentionWhyNowMessage };
   decisionVerbs: AttentionDecisionVerb[];
   inlineResolvable: boolean;
   entryRule: string;

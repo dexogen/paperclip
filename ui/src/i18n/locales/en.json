@@ -3593,5 +3593,458 @@
     "recoverySuggestions": {
       "updatedWindow": "Updated window"
     }
+  },
+  "decisionsUi": {
+    "feed": {
+      "title": {
+        "approval": {
+          "hireAgent": "hire agent",
+          "ceoStrategy": "approve ceo strategy",
+          "budgetOverride": "budget override required",
+          "boardApproval": "request board approval"
+        },
+        "interaction": {
+          "confirmation": "Confirmation requested",
+          "checkbox": "Selection confirmation requested",
+          "questions": "Questions need answers",
+          "tasks": "Suggested tasks need a decision",
+          "verdicts": "Item verdicts need a decision",
+          "generic": "Interaction needs a decision"
+        },
+        "planApproval": "Plan approval - {{issueTitle}}",
+        "join": {
+          "agent": "Agent join request",
+          "human": "Human join request"
+        },
+        "run": {
+          "failed": "{{agentName}} run failed",
+          "timedOut": "{{agentName}} run timed_out"
+        },
+        "budget": {
+          "hardStop": "{{scopeName}} budget hard stop",
+          "warning": "{{scopeName}} budget warning"
+        }
+      },
+      "why": {
+        "approval": {
+          "pending": "Approval is pending a board decision."
+        },
+        "interaction": {
+          "confirmation": "Confirmation requested on an issue thread.",
+          "checkbox": "Selection confirmation requested on an issue thread.",
+          "questions": "Questions need answers on an issue thread.",
+          "tasks": "Suggested tasks need a decision on an issue thread.",
+          "verdicts": "Item verdicts need a decision on an issue thread.",
+          "generic": "Interaction needs a decision on an issue thread."
+        },
+        "decision": {
+          "pending": "An agent decision is waiting for a board response."
+        },
+        "join": {
+          "pending": "Join request is pending approval."
+        },
+        "recovery": {
+          "escalated": "Recovery action escalated to a human owner.",
+          "assigned": "Recovery action is assigned to a human owner."
+        },
+        "blocker": {
+          "needsAttention_one": "Blocks {{count}} task and needs human attention.",
+          "needsAttention_other": "Blocks {{count}} tasks and needs human attention.",
+          "stalled_one": "Blocks {{count}} task; choose the next owner or action.",
+          "stalled_other": "Blocks {{count}} tasks; choose the next owner or action."
+        },
+        "review": {
+          "stalled": "Issue is in review without a maintained reviewer, interaction, approval, monitor, run, wake, or recovery path.",
+          "approval": "Issue is in review with a linked pending approval.",
+          "participant": "Issue is in review and the current execution participant is a user.",
+          "assigned": "Issue is in review and assigned to a user."
+        },
+        "run": {
+          "exhausted": "Run failed after automatic retries were exhausted."
+        },
+        "budget": {
+          "hardStop": "Budget hard stop was reached.",
+          "warning": "Budget crossed the 85% warning threshold."
+        },
+        "agent": {
+          "error": "Agent is in error status and needs operator action or dismissal."
+        }
+      },
+      "verb": {
+        "respond": "Respond",
+        "confirm": "Confirm",
+        "decline": "Decline",
+        "accept": "Accept",
+        "reject": "Reject",
+        "approve": "Approve",
+        "requestRevision": "Request revision",
+        "review": "Review",
+        "resolve": "Resolve",
+        "reassign": "Reassign",
+        "cancel": "Cancel",
+        "unblock": "Unblock",
+        "nudge": "Nudge",
+        "chooseReviewPath": "Choose review path",
+        "requestChanges": "Request changes",
+        "retry": "Retry",
+        "dismiss": "Dismiss",
+        "raiseBudget": "Raise budget",
+        "keepPaused": "Keep paused",
+        "inspect": "Inspect"
+      },
+      "description": {
+        "questions": {
+          "respond": "Submit answers to the pending questions."
+        },
+        "confirmation": {
+          "accept": "Accept the pending confirmation.",
+          "reject": "Decline the pending confirmation."
+        },
+        "interaction": {
+          "accept": "Accept the pending interaction.",
+          "reject": "Reject the pending interaction and provide a reason when required."
+        },
+        "approval": {
+          "approve": "Approve the request.",
+          "reject": "Reject the request.",
+          "revision": "Send the request back for changes."
+        },
+        "decision": {
+          "review": "Review and choose an option."
+        },
+        "join": {
+          "approve": "Approve this join request.",
+          "reject": "Reject this join request."
+        },
+        "recovery": {
+          "resolve": "Record the recovery outcome.",
+          "reassign": "Move the recovery to another owner.",
+          "cancel": "Cancel the recovery action."
+        },
+        "blocker": {
+          "route": "Route this blocked issue to another owner.",
+          "repair": "Repair or replace the stalled blocker path.",
+          "reassign": "Assign the stalled blocker to a live owner.",
+          "nudge": "Wake or prompt the current owner."
+        },
+        "review": {
+          "path": "Add a reviewer or waiting path, return the issue to work, or accept it.",
+          "changes": "Return the issue to the assignee with changes requested.",
+          "approve": "Approve the review and advance the issue."
+        },
+        "run": {
+          "retry": "Retry the failed run or issue.",
+          "reassign": "Move the work to another owner.",
+          "dismiss": "Dismiss this failed-run attention row."
+        },
+        "budget": {
+          "raise": "Raise the budget and resume paused work.",
+          "keepPaused": "Dismiss or keep the budget stop in place."
+        },
+        "agent": {
+          "inspect": "Inspect the agent error.",
+          "dismiss": "Dismiss this alert."
+        }
+      },
+      "detail": {
+        "plan": {
+          "defaultTitle": "Plan"
+        }
+      }
+    },
+    "common": {
+      "title": "Decisions",
+      "selectOrganization": "Select an organization first.",
+      "tryAgain": "Please try again.",
+      "clear": "Clear",
+      "cancel": "Cancel",
+      "create": "Create",
+      "snooze": "Snooze",
+      "dismiss": "Dismiss",
+      "dismissed": "Dismissed",
+      "undo": "Undo",
+      "open": "Open",
+      "restore": "Restore",
+      "snoozed": "Snoozed",
+      "aging": "Aging",
+      "expired": "Expired",
+      "custom": "Custom",
+      "noProject": "No project",
+      "noWorkspace": "No workspace"
+    },
+    "source": {
+      "approval": "Approval",
+      "decision": "Decision",
+      "interaction": "Decision requested",
+      "join": "Join request",
+      "recovery": "Recovery",
+      "task": "Task",
+      "blocker": "Blocked dependency",
+      "review": "Review",
+      "failedRun": "Failed run",
+      "budget": "Budget",
+      "agentError": "Agent error"
+    },
+    "severity": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "detail": {
+      "withExcerpt": "{{label}} — {{excerpt}}",
+      "blockedBy": "Blocked by {{target}}",
+      "budget": "{{percent}}% of budget used (${{observed}} / ${{limit}})",
+      "options_one": "{{count, number}} option",
+      "options_other": "{{count, number}} options",
+      "questions_one": "{{count, number}} question",
+      "questions_other": "{{count, number}} questions",
+      "tasks_one": "{{count, number}} suggested task",
+      "tasks_other": "{{count, number}} suggested tasks",
+      "verdicts_one": "{{count, number}} item to verdict",
+      "verdicts_other": "{{count, number}} items to verdict"
+    },
+    "desk": {
+      "decideNow": "Decide now",
+      "newToday": "New today",
+      "earlier": "Earlier"
+    },
+    "date": {
+      "notSet": "Not set",
+      "today": "Today",
+      "thisWeek": "This week",
+      "whenever": "Whenever",
+      "value": "{{value, datetime}}",
+      "all": "All",
+      "yesterday": "Yesterday",
+      "last7Days": "Last 7 days",
+      "thisMonth": "This month",
+      "from": "From",
+      "to": "To"
+    },
+    "group": {
+      "none": "None",
+      "date": "Date",
+      "type": "Type",
+      "project": "Project",
+      "severity": "Severity"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first"
+    },
+    "shelf": {
+      "kept": "Kept",
+      "keep": "Keep on desk",
+      "keepSuccess": "Kept on desk",
+      "keepError": "Could not keep this decision",
+      "idle_one": "Idle {{count, number}} day",
+      "idle_other": "Idle {{count, number}} days"
+    },
+    "rail": {
+      "label": "Decision queues",
+      "recent": "Recent activity"
+    },
+    "toolbar": {
+      "label": "Decisions controls",
+      "search": "Search decisions",
+      "searchPlaceholder": "Search decisions…",
+      "filter": "Filter",
+      "group": "Group",
+      "sort": "Sort",
+      "workspace": "Workspace",
+      "count_one": "{{count, number}} decision",
+      "count_other": "{{count, number}} decisions"
+    },
+    "review": {
+      "approved": "Review approved — issue marked done.",
+      "changesRequested": "Changes requested — issue returned to the assignee.",
+      "sentBack": "Sent back to work — issue returned to the assignee.",
+      "error": "Could not record the review decision",
+      "note": "Add a note — required to request changes, optional otherwise…",
+      "sendBack": "Send back to work",
+      "noteRequired": "Add a note to request changes",
+      "requestChanges": "Request changes",
+      "approve": "Approve"
+    },
+    "snooze": {
+      "hour": "1 hour",
+      "fourHours": "4 hours",
+      "tomorrow": "Tomorrow",
+      "tomorrowMorning": "Tomorrow morning",
+      "nextWeek": "Next week",
+      "until": "Snoozed until {{date}}",
+      "custom": "Snooze until…",
+      "customDate": "Snooze date and time"
+    },
+    "triage": {
+      "expired": "Expired",
+      "expiresMinutes": "Expires in {{count, number}}m",
+      "expiresHours": "Expires in {{count, number}}h",
+      "expiresDays": "Expires in {{count, number}}d",
+      "decideByError": "Could not set when to decide",
+      "snoozeError": "Could not snooze",
+      "addQueueError": "Could not add to queue",
+      "removeQueueError": "Could not remove from queue",
+      "recommendationError": "Could not ask that agent for a recommendation",
+      "noTask": "This decision has no linked task to route from.",
+      "asked": "Asked {{name}} for a recommendation",
+      "when": "When to decide",
+      "pickDate": "Pick date",
+      "queues": "Queues",
+      "removeFrom": "Remove from {{title}}",
+      "noTaskHint": "No linked task to ask about",
+      "createQueueError": "Could not create queue",
+      "queue": "Queue",
+      "queueName": "New queue name…",
+      "noOtherQueues": "No other queues yet.",
+      "newQueue": "New queue…",
+      "askAgent": "Ask agent for recommendation"
+    },
+    "row": {
+      "collapse": "Collapse decision",
+      "expand": "Expand decision",
+      "less": "See less",
+      "more": "See more",
+      "setBy": "Set by {{name}}",
+      "setByInline": "· set by {{name}}",
+      "agent": "an agent",
+      "setByYou": "Set by you",
+      "setByYouInline": "· set by you",
+      "reappears": "Reappears {{date}}",
+      "reappearsSoon": "Reappears soon",
+      "reappearsMinutes": "Reappears in {{count, number}}m",
+      "reappearsHours": "Reappears in {{count, number}}h",
+      "reappearsDays": "Reappears in {{count, number}}d",
+      "actions": "Row actions",
+      "openSource": "Open source",
+      "missingIssue": "Missing issue reference for this decision.",
+      "detailRequired": "This decision must be completed from its detail view.",
+      "decisionActions": "Decision actions",
+      "approveError": "Could not approved",
+      "rejectError": "Could not rejected",
+      "revisionError": "Could not sent for revision",
+      "approvalApproved": "Approval approved",
+      "approvalRejected": "Approval rejected",
+      "approvalRevision": "Approval sent for revision",
+      "joinApproved": "Join request approved",
+      "joinRejected": "Join request rejected",
+      "confirmed": "Confirmation accepted",
+      "declined": "Confirmation declined",
+      "viewIssue": "View issue",
+      "note": "Optional decision note…",
+      "requestRevision": "Request revision",
+      "reject": "Reject",
+      "moreImages_one": "{{count, number}} more",
+      "moreImages_other": "{{count, number}} more"
+    },
+    "page": {
+      "dismissed": "Dismissed",
+      "decided": "Decided",
+      "loadingDecided": "Loading decided decisions…",
+      "noDecided": "No decided decisions.",
+      "loadingExpired": "Loading expired decisions…",
+      "noExpired": "No expired decisions.",
+      "noMatches": "No decisions match your search or filters.",
+      "adjustFilters": "Adjust or clear your search and filters to see the rest.",
+      "caughtUp": "You're all caught up.",
+      "caughtUpTitle": "You're all caught up",
+      "nothingNeedsDecision": "Nothing needs a decision from you right now.",
+      "agingDesk_one": "Idle past {{count, number}} day — kept off the desk. Keep any you still want surfaced.",
+      "agingDesk_other": "Idle past {{count, number}} days — kept off the desk. Keep any you still want surfaced."
+    },
+    "bundle": {
+      "agent": "An agent",
+      "from": "· from ",
+      "proposed_one": "{{name}} proposed {{count, number}} decision",
+      "proposed_other": "{{name}} proposed {{count, number}} decisions",
+      "pending_one": "· {{count, number}} pending",
+      "pending_other": "· {{count, number}} pending"
+    },
+    "queue": {
+      "seedingError": "Could not update seeding",
+      "empty": "This queue is empty.",
+      "emptyHint": "Decisions land here when they match the queue's rules or an agent adds them.",
+      "seedingOn": "Auto-seeding is on",
+      "seedingOff": "Auto-seeding is off",
+      "seedingOnHint": "This queue fills itself automatically. Decisions are added the moment they match any of its rules:",
+      "seedingOffHint": "Automatic adds are paused. These rules would add decisions to the queue when on:",
+      "disableHint": "Turning it off stops new automatic adds only — decisions already here stay, and you can still add or remove decisions by hand.",
+      "enableHint": "Adding or removing decisions by hand still works while automatic seeding is off.",
+      "disable": "Disable",
+      "enable": "Enable",
+      "removed": "Removed from queue",
+      "excludeError": "Could not exclude",
+      "exclude": "Exclude",
+      "remove": "Remove from this queue",
+      "reason": "Reason (optional)…",
+      "aging_one": "Idle past {{count, number}} day — kept off the queue. Keep any you still want surfaced.",
+      "aging_other": "Idle past {{count, number}} days — kept off the queue. Keep any you still want surfaced."
+    }
+  },
+  "approvalsUi": {
+    "heading": "Approvals",
+    "single": "Approval",
+    "pending": "Pending",
+    "all": "All",
+    "selectOrganization": "Select an organization first.",
+    "emptyPending": "No pending approvals.",
+    "empty": "No approvals yet.",
+    "approveFailed": "Failed to approve",
+    "rejectFailed": "Failed to reject",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approving": "Approving...",
+    "rejecting": "Rejecting...",
+    "requestedBy": "Requested by",
+    "createdAgo": "Approval request created {{time}}",
+    "decisionNoteLabel": "Decision note.",
+    "viewDetails": "View details",
+    "notFound": "Approval not found.",
+    "approveDetailFailed": "Approve failed",
+    "rejectDetailFailed": "Reject failed",
+    "revisionFailed": "Revision request failed",
+    "resubmitFailed": "Resubmit failed",
+    "commentFailed": "Comment failed",
+    "deleteFailed": "Delete failed",
+    "linkedTask": "Review linked task",
+    "linkedTasks": "Review linked tasks",
+    "openHiredAgent": "Open hired agent",
+    "back": "Back to approvals",
+    "confirmed": "Approval confirmed",
+    "requesterNotified": "Requesting agent was notified to review this approval and linked tasks.",
+    "agent": "Agent",
+    "board": "Board",
+    "fullRequest": "See full request",
+    "decisionNote": "Decision note: {{note}}",
+    "linkedTasksHeading": "Linked Tasks",
+    "linkedTasksHint": "Linked tasks remain open until the requesting agent follows up and closes them.",
+    "budgetHint": "Resolve this budget stop from the budget controls on <costs>/costs</costs>.",
+    "requestRevision": "Request revision",
+    "resubmit": "Mark resubmitted",
+    "deleteAgentConfirm": "Delete this disapproved agent? This cannot be undone.",
+    "deleteAgent": "Delete disapproved agent",
+    "comments_one": "Comments ({{count}})",
+    "comments_other": "Comments ({{count}})",
+    "commentPlaceholder": "Add a comment...",
+    "posting": "Posting…",
+    "postComment": "Post comment",
+    "skills": "Skills",
+    "name": "Name",
+    "role": "Role",
+    "title": "Title",
+    "icon": "Icon",
+    "capabilities": "Capabilities",
+    "adapter": "Adapter",
+    "scope": "Scope",
+    "window": "Window",
+    "metric": "Metric",
+    "budgetValues": "Limit {{limit}} · Observed {{observed}}",
+    "summary": "Summary",
+    "recommendedAction": "Recommended action",
+    "onApproval": "On approval",
+    "risks": "Risks",
+    "proposedComment": "Proposed comment",
+    "jobTitle": "Title"
   }
 }

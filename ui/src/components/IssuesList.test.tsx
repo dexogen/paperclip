@@ -2322,6 +2322,7 @@ describe("IssuesList", () => {
   });
 
   it("draws local-calendar separators between date-sorted rows", async () => {
+    const update = vi.fn();
     const now = new Date();
     const hourAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
     const threeDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 3, 12);
@@ -2338,7 +2339,7 @@ describe("IssuesList", () => {
         projects={[]}
         viewStateKey="paperclip:test-issues"
         rowPresentation="task"
-        onUpdateIssue={() => undefined}
+        onUpdateIssue={update}
       />,
       container,
     );
@@ -2355,6 +2356,19 @@ describe("IssuesList", () => {
       ))).toBe(true);
     });
 
+    const row = container.querySelector('[data-testid="issue-row"]');
+    expect(row).not.toBeNull();
+    const separators = [...container.querySelectorAll("[data-issues-date-separator]")];
+    const requests = mockIssuesApi.list.mock.calls.length;
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(separators.map((element) => element.getAttribute("aria-label"))).toEqual(["Сегодня", "Ранее"]);
+    expect(container.querySelector('[data-testid="issue-row"]')).toBe(row);
+    [...container.querySelectorAll("[data-issues-date-separator]")].forEach((node, index) => expect(node).toBe(separators[index]));
+    expect(mockIssuesApi.list).toHaveBeenCalledTimes(requests);
+    expect(update).not.toHaveBeenCalled();
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(separators.map((element) => element.getAttribute("aria-label"))).toEqual(["Today", "Earlier"]);
+    expect(update).not.toHaveBeenCalled();
     act(() => {
       root.unmount();
     });
