@@ -126,6 +126,51 @@ describe.skipIf(!support.supported)("task search relevance rubric (real PostgreS
     expect(kelvinRows.map((row) => row.id)).toEqual([kelvinId]);
   });
 
+  it.each(["full", "quick"] as const)("%s: finds short CJK substrings in titles, comments and documents", async (engine) => {
+    const isolatedCompanyId = randomUUID();
+    await db.insert(companies).values({ id: isolatedCompanyId, name: "CJK search", issuePrefix: `CJK${engine.toUpperCase()}` });
+    const examples = [
+      ["title", "验证中文任务", "中文"],
+      ["comment", "あいうえお", "いう"],
+      ["document", "カタカナテスト", "カナ"],
+      ["title", "한국어테스트", "국어"],
+      ["title", "カーテスト", "ー"],
+    ] as const;
+    for (const [source, content, term] of examples) {
+      const id = randomUUID();
+      await db.insert(issues).values({ id, companyId: isolatedCompanyId, title: source === "title" ? content : `${source} evidence` });
+      if (source === "comment") {
+        await db.insert(issueComments).values({ companyId: isolatedCompanyId, issueId: id, body: content });
+      } else if (source === "document") {
+        const documentId = randomUUID();
+        await db.insert(documents).values({ id: documentId, companyId: isolatedCompanyId, title: "Notes", latestBody: content, format: "markdown" });
+        await db.insert(issueDocuments).values({ companyId: isolatedCompanyId, issueId: id, documentId, key: "plan" });
+      }
+      for (const q of [term, `"${term}"`]) {
+        const rows = engine === "full"
+          ? (await companySearchService(db).search(isolatedCompanyId, companySearchQuerySchema.parse({ q }))).results.filter((row) => row.type === "issue")
+          : await issueService(db).list(isolatedCompanyId, { q, limit: 50 });
+        expect(rows.map((row) => row.id), `${source}: ${q}`).toEqual([id]);
+      }
+    }
+  });
+
+  it.each(["full", "quick"] as const)("%s: keeps short English queries at word starts", async (engine) => {
+    const isolatedCompanyId = randomUUID();
+    await db.insert(companies).values({ id: isolatedCompanyId, name: "Short word search", issuePrefix: `SW${engine.toUpperCase()}` });
+    for (const [q, title, decoy] of [["UI", "UI review", "Build output"], ["API", "API review", "Capistrano migration"]]) {
+      const id = randomUUID();
+      await db.insert(issues).values([
+        { id, companyId: isolatedCompanyId, title },
+        { companyId: isolatedCompanyId, title: decoy },
+      ]);
+      const rows = engine === "full"
+        ? (await companySearchService(db).search(isolatedCompanyId, companySearchQuerySchema.parse({ q }))).results.filter((row) => row.type === "issue")
+        : await issueService(db).list(isolatedCompanyId, { q, limit: 50 });
+      expect(rows.map((row) => row.id), q).toEqual([id]);
+    }
+  });
+
   it.runIf(process.env.SEARCH_EVAL_SCALE === "1")("measures 10k tasks / 30k comments", async () => {
     await db.insert(issues).values({ companyId, title: "Проверка языка", identifier: "UNICODE-1", status: "done" });
     await db.execute(sql`
