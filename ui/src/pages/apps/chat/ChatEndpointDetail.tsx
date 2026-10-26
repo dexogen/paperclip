@@ -437,7 +437,7 @@ function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
       <Button variant="outline" onClick={() => { void agents.refetch(); void connection.refetch(); }}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
     </div>
   );
-  if (agents.isPending || connection.isPending) return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("projectConfigUi.access.loading")}</p>;
+  if (agents.isPending || connection.isPending) return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullStaleReview.loadingAccess")}</p>;
   const sourceId = connection.data.config?.credentialConnectionId;
   const credentialId = typeof sourceId === "string" ? sourceId : endpoint.connectionId;
   return <section className="max-w-3xl space-y-4">
@@ -1233,7 +1233,7 @@ function Activity({
                     size="sm"
                     variant="outline"
                     onClick={() => setResolutionItem(item)}
-                  >{fullAppsT("decisionsUi.feed.verb.resolve")}</Button>
+                  >{fullAppsT("fullStaleReview.resolveDelivery")}</Button>
                 )}
               </div>
             );

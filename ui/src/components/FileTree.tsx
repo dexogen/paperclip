@@ -220,7 +220,7 @@ export function parseFrontmatter(content: string): { data: FrontmatterData; body
 export const FRONTMATTER_FIELD_LABELS: Record<string, string> = {
   get name() { return fullSharedT("fullShared.name_dcd1d5"); },
   get title() { return fullSharedT("fullShared.title_7e8cd2"); },
-  get kind() { return fullSharedT("companySettings.governance.kind"); },
+  get kind() { return fullSharedT("fullStaleReview.kind"); },
   get reportsTo() { return fullSharedT("agentConfigUi.reportsTo"); },
   get skills() { return fullSharedT("sidebar.skills"); },
   get status() { return fullSharedT("sidebar.status"); },

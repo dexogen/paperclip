@@ -250,7 +250,7 @@ export function NewGoalDialog() {
                   !appliedParentId && "bg-accent"
                 )}
                 onClick={() => { setParentId(""); setParentOpen(false); }}
-              >{fullSharedT("taskProperties.fields.noParent")}</button>
+              >{fullSharedT("fullStaleReview.noParentGoal")}</button>
               {(goals ?? []).map((g) => (
                 <button
                   key={g.id}

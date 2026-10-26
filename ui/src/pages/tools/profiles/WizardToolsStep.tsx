@@ -378,7 +378,7 @@ function AdvancedRules({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="include">{fullAppsT("projectConfigUi.properties.allow")}</SelectItem>
+              <SelectItem value="include">{fullAppsT("fullStaleReview.allowTool")}</SelectItem>
               <SelectItem value="exclude">{fullAppsT("fullApps.block_211d0b")}</SelectItem>
             </SelectContent>
           </Select>
@@ -402,7 +402,7 @@ function AdvancedRules({
               <SelectContent>
                 <SelectItem value="read">{fullAppsT("agentSkillsUi.row.readOnly")}</SelectItem>
                 <SelectItem value="write">{fullAppsT("fullApps.makes_changes_f85b60")}</SelectItem>
-                <SelectItem value="destructive">{fullAppsT("decisionForms.decision.destructive")}</SelectItem>
+                <SelectItem value="destructive">{fullAppsT("fullStaleReview.destructiveRisk")}</SelectItem>
               </SelectContent>
             </Select>
           ) : (

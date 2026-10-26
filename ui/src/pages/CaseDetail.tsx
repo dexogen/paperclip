@@ -135,7 +135,7 @@ export function CaseDetail() {
 
       {(caseData.parent || children.length > 0 || childrenQuery.isError) && <details className="space-y-3">
         <summary className="w-fit cursor-pointer text-sm font-semibold">{t("fullPages.relatedCases")}</summary>
-        {caseData.parent && <div className="space-y-1"><h3 className="text-xs text-muted-foreground">{t("taskProperties.fields.parent")}</h3><CaseRelation item={caseData.parent} search={search} /></div>}
+        {caseData.parent && <div className="space-y-1"><h3 className="text-xs text-muted-foreground">{t("fullStaleReview.parentCase")}</h3><CaseRelation item={caseData.parent} search={search} /></div>}
         {children.length > 0 && <div className="space-y-1"><h3 className="text-xs text-muted-foreground">{t("fullPages.children")}{" "}{children.length}</h3>{children.map(child => <CaseRelation key={child.id} item={child} search={search} />)}</div>}
         {childrenQuery.isError && <p role="alert" className="text-sm text-destructive">{t("fullPages.childCasesCouldnTBeLoaded")}</p>}
       </details>}

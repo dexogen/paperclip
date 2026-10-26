@@ -20,7 +20,7 @@ const visibleNames = new Set([
   "confirmLabel", "cancelLabel", "submitLabel", "badgeLabel", "buttonText", "header",
   "loadingText", "successMessage", "errorMessage", "text", "caption",
   "disabledLabel", "actionLabel", "secondaryLabel", "labelText", "body",
-  "searchPlaceholder", "loadingMessage",
+  "searchPlaceholder", "loadingMessage", "noneLabel", "mobileTitle", "triggerAriaLabel",
 ]);
 const displayMapName = /(?:_LABELS|_TITLES|_DESCRIPTIONS|_MESSAGES|_COPY|_NAMES)$|(?:Labels|Titles|Descriptions|Messages|Copy|Names)$/i;
 const scalarText = (node) => node?.type === "StringLiteral" ? node.value

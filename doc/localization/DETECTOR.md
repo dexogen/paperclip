@@ -86,6 +86,17 @@ objects, computed properties and spreads require manual inspection and rewriting
 as explicit named properties; they are not accepted as evidence that parameters
 exist. This is deliberately conservative and does not evaluate runtime values.
 
+The sink inventory includes search/loading placeholders, empty-selection labels,
+mobile selector headings, trigger accessible names, toast bodies, disabled
+and secondary action labels, named display/copy maps, copy arrays and literal
+arrays mapped directly into JSX. Comparison operands, enum lookup keys and type
+literals do not become display copy; result branches remain scanned. New sinks
+have regression fixtures, including negative discriminator cases.
+
+Catalog analysis indexes references and translations by semantic family. This
+avoids repeatedly scanning the complete catalog for each message while preserving
+context/parameter ordering and existing review fingerprints.
+
 A finding ID includes the file, enclosing named function/variable, sink kind,
 normalized text and occurrence number. Moving lines does not invalidate an ID.
 Changing text, introducing another occurrence or moving between owners does.

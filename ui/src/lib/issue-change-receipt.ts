@@ -37,7 +37,7 @@ const FIELD_LABELS: Record<string, string> = {
   get billingCode() { return fullSharedT("fullShared.billing_code_1aad3d"); },
   get checkoutRunId() { return fullSharedT("fullShared.checkout_run_d75594"); },
   get executionRunId() { return fullSharedT("fullShared.execution_run_d78fe7"); },
-  get hiddenAt() { return fullSharedT("runUi.inspector.hidden"); },
+  get hiddenAt() { return fullSharedT("fullStaleReview.issueHidden"); },
   get startedAt() { return fullSharedT("taskProperties.fields.started"); },
   get completedAt() { return fullSharedT("fullShared.completed_22a970"); },
   get cancelledAt() { return fullSharedT("fullShared.cancelled_d353a9"); },

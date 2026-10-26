@@ -403,7 +403,7 @@ export function ThreadCard(props: {
                     <RotateCcw className="h-3 w-3" />{fullSharedT("fullShared.reopen_a886d1")}</>
                 ) : (
                   <>
-                    <Check className="h-3 w-3" />{fullSharedT("decisionsUi.feed.verb.resolve")}</>
+                    <Check className="h-3 w-3" />{fullSharedT("fullStaleReview.resolveAnnotation")}</>
                 )}
               </Button>
               <Button
@@ -412,7 +412,7 @@ export function ThreadCard(props: {
                 disabled={!props.replyDraft.trim() || props.pendingReply}
                 onClick={props.onSubmitReply}
               >
-                {props.pendingReply ? fullSharedT("fullShared.sending_b8ed52") : fullSharedT("taskChatUi.classic.reply")}
+                {props.pendingReply ? fullSharedT("fullShared.sending_b8ed52") : fullSharedT("fullStaleReview.replyAction")}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

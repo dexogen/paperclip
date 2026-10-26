@@ -1362,7 +1362,7 @@ function ProviderConnectStep({
           <Button variant="ghost" className="text-muted-foreground" onClick={() => navigate("/apps")}>{fullAppsT("agentSetupUi.setup.saveExit")}</Button>
           {(!automaticSlack || endpoint.setup?.webhookVerifiedAt) && <Button disabled={pending || !endpoint.setup?.webhookVerifiedAt} onClick={() =>
             endpoint.setup?.step === "provider_setup" ? onAction("verify") : onSlackVerificationContinue()
-          }><FullAppsTrans i18nKey="fullApps.continue_bae411" components={{ part1: <>{pending && <Loader2 className="size-4 animate-spin" />}</> }} /></Button>}
+          }>{pending && <Loader2 className="size-4 animate-spin" />}{fullAppsT("onboarding.actions.continue")}</Button>}
         </div>
       </div>
     );

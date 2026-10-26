@@ -119,7 +119,7 @@ export function GitHubRepositoryAccess({
           {disableAll ? fullAppsT("fullApps.disable_all_6cb227") : fullAppsT("fullApps.enable_all_06f08e")}
         </Button>
       </div>
-      {summary && <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.of_repositories_enabled_toggle_all_applies_across_th_d41b63" components={{ part1: <>{summary.enabledCount}</>, part2: <>{summary.totalCount}</> }} /></p>}
+      {summary && <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.repositoriesEnabledSummary", { enabled: summary.enabledCount, total: summary.totalCount })}</p>}
       {list.isError && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_repositories_8d8aca")}<Button variant="link" size="sm" onClick={() => void list.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
       </p>}
       <div ref={scroller} role="region" aria-label={fullAppsT("projectConfigUi.repos.title")} tabIndex={0}

@@ -4692,6 +4692,2198 @@
     {
       "id": "c0b30b40a7cc8f8b2e5b0f0e6b57dddc6b5f78e2626833efe4f3916f15b77665",
       "reason": "ui/src/pages/AgentDetail.tsx: Backward-compatible English constant used by tests; the live confirmAgentConfigNavigation default resolves agentDetailUi.header.discardConfirm through the current translator."
+    },
+    {
+      "id": "89f1d4546863e48101bd6d4654435d832b956fb9da5c21319b5c33c4a1c88fee",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "65cde5f76e7a9f5763b4d4315eaeade15f69ac7d1c506672050fbd1a6d89311f",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "cead61515347cbf25074f0f5a91e456100e59da332f448aa1bc95ae8e5d07627",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "d328f00675abffcb4530588037297ec042c5d41dcf2fd814c43b245e299ac882",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "ef50cda186328eab435bcff0888155909770d905351afe8646a82f810a8803ed",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "363673e811f213b640371b2f4bb1e74f3e0e3462aa3fbe21631e695632956a22",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "6695a1660dddca2648267d1670efec7dad6e422206c1d2621cbe482f96d72761",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "8922e7da6ac0b6c879371cf84657e28f6cacf74881c9dc6ae0fdb0fd0caf8ccb",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "ad7df4749c13df774c25636bc12544f1e9fb4fcd05551873d9fb01e970e1908f",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "c1a2edc6b392427fedf991216885dee73fa1be5cbab97b804a5e74a45486a284",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "479c04d3c21df729a7bc3478e9e1744b424493846777d861122672e26552fd36",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "3684d5f16f41eef799c0ff068965bfdc14fc099adf03b4423f8e903bf10a69ef",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "9cce436acadbe5b3c0eb80e29c18771cd8759d954e1d625cd47a7dd73c339afc",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "4d341d7ae7d6bdbd8a61e0dc4e186368f09a5e222ea6a5daaceec2b7eb37f01c",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "6aa7a3cf9bf9443ba3e80ec9e81760e3297520f2d13b9e2d97a9de1216111c54",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "159c5c19722f1bc56ec411109ebe92d87a409c1516aeaa1c92718aa1e400ffb7",
+      "reason": "ui/src/adapters/adapter-display-registry.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "6f87d69312ba303104e68893b79f973b76e2f70306db39379f1823c91db59182",
+      "reason": "ui/src/adapters/claude-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "b14e3d0d51be3dd5c1d93c031bc32f4241700fadebacbdfcde0c6311876e6377",
+      "reason": "ui/src/adapters/claude-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "91acd59f7c482655ef78fef8aa65f69efca8da86b446b55bd66f1c0bd1192b08",
+      "reason": "ui/src/adapters/claude-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "627bb3f43df8c8e40c12a63202d559e12d45b41a8bdb66ddcd090441dc95c2d6",
+      "reason": "ui/src/adapters/claude-local/config-fields.tsx: Имя исполняемого ACP адаптера/CLI-команда для конфигурации запуска; перевод изменит выполняемую команду."
+    },
+    {
+      "id": "ec74fa86f227e18d42162aa93ee22c62944fa3d08cfee451fa24916eedb7cb4a",
+      "reason": "ui/src/adapters/claude-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "c4caa5c1df354438998192dc45ee9b5a0449853d2664f586f5f45165fde91531",
+      "reason": "ui/src/adapters/claude-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "4eb5b979a1117fe6a1bf8ff179643d7726082905036cb87fc66993e2e8b52c92",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "c971e5a983bc8d0b953d308f26c4ffecebf04280db45040d58a64008a24dca82",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "6d84fc655b9d49b55e36324f322393376e162a54fa4a57aa0645fafa79a729d4",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "e7aea47da81df72f637624944dd52e5199402e3c6df2a42da410bd34f1410b2e",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "0f0e60e8e4a9fbb2ae6b97d4fcab7551ae0f1f678b9a1a4ed316c15a0dc1e962",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "7e054a28128cdeb4eab5e08503da6e55e9c78eda602cafe0dbfeab782cddf7f5",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "796d382d3a28b2a2483da419e21ffed9c272c15df9098dd7336c51669061f037",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "bdd6312337aa228318cae28162c85fe0f88dee379869ca2c8465882161cba38e",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Пример идентификатора профиля managed/AgentCore runtime; не подпись действия и не отображаемое имя, подлежащее переводу."
+    },
+    {
+      "id": "508ff2cff75e49da8418c0cad2168655ea38f25f48e9907d8a3bee875bc69897",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Пример идентификатора профиля managed/AgentCore runtime; не подпись действия и не отображаемое имя, подлежащее переводу."
+    },
+    {
+      "id": "1a86e9ff9d6af7aede69b3ef9cc37a5a190560107d5f7e441178199c077617de",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Имя исполняемого ACP адаптера/CLI-команда для конфигурации запуска; перевод изменит выполняемую команду."
+    },
+    {
+      "id": "afbedfad132f8d1e0012c03332db5e196218092474a2c14d76377ba0d726b033",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "8903eb8c16537e8f01866aa2cd5e13999eff1dce74cd15a019b7e8c88ead6e82",
+      "reason": "ui/src/adapters/codex-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "13e2cdc6245c609180f8b2a0d82cbd49f99fa226079516be81bb0e569da5dc85",
+      "reason": "ui/src/adapters/codex-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "a574ef0f7b6462b0a495e31c27b88f80034dde4a4455d6d3afb737a9bc7fb3b6",
+      "reason": "ui/src/adapters/cursor-cloud/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "61f77d379b0db49bb99c861702143639edb48615367b84f00bc0e1b964ba621c",
+      "reason": "ui/src/adapters/cursor/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "6924b87acb64aa40b3ef14a5559f7c3521506b8c224b90fb6db3cf2ddf205832",
+      "reason": "ui/src/adapters/cursor/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "bd3afa1c2ab3ec1ff82c1a563d7d63b0f49019f1dec9b857709fae34fe4a33ef",
+      "reason": "ui/src/adapters/gemini-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "b2d7d4ad44ece89c05075b5232a47ab9679c0fa8da923f5f14068888ff7d4a51",
+      "reason": "ui/src/adapters/gemini-local/config-fields.tsx: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "15a5a28a3bdba6a2211d02fac8e87ba91fbbdf4ff4532b0c3f54f72a2fc96d44",
+      "reason": "ui/src/adapters/gemini-local/config-fields.tsx: Имя исполняемого ACP адаптера/CLI-команда для конфигурации запуска; перевод изменит выполняемую команду."
+    },
+    {
+      "id": "2f1cc0b678b0794044bf4cc23d7adbebab3686223de4c3aa441e85408de7f0e4",
+      "reason": "ui/src/adapters/gemini-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "51fd6d9f7d0787177eb531b3113c677148426a22f8440276dcee5222f699f654",
+      "reason": "ui/src/adapters/gemini-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "22429df34116ab9ab1716d218eefa260b31c1326b21d5e8cf71f80274ceda7ad",
+      "reason": "ui/src/adapters/gemini-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "e2b60789cbf6a3155b5c6946a10f9b96ab5196a645cfdc4cccc34099857195cc",
+      "reason": "ui/src/adapters/grok-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "1ae05c9205d2bd3584ad86dafd6617953ae95dd7efa3d314dc1de57add26c769",
+      "reason": "ui/src/adapters/grok-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "0c07da16f4a79173926fc184ba042fb1ea5e596d3979490bd2a159b2d1bcefed",
+      "reason": "ui/src/adapters/hermes-gateway/config-fields.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "7a65c918fcc1edc356638bf3c428d00cae6fe2278f89e03c467f25f1cad2a2b3",
+      "reason": "ui/src/adapters/hermes-gateway/config-fields.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "1ca1abfbd7dfa55150227828cf9e2bb7bb266401d7221db85b8df9e465049470",
+      "reason": "ui/src/adapters/hermes-gateway/config-fields.tsx: Пример JSON payload/headers/runtime services. Имена полей и sample values являются конфигурационными данными, не UI copy."
+    },
+    {
+      "id": "34e17e9d8c2cfb7726301420998023a6b93badaa3920f4338e82fee2630cd251",
+      "reason": "ui/src/adapters/hermes-gateway/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "9d9117dcba2c384378ec0293743dc00f8c29660de742cd186e150439e4580e0a",
+      "reason": "ui/src/adapters/hermes-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "416191bd66b27690d8ee36aa3cac0d7174c28011ca828a19ace23f2a162b7e13",
+      "reason": "ui/src/adapters/http/config-fields.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "6137841ba37c0aaae97877cf11b73d8297484bedf0552a5b15fc9cf3bd1f7188",
+      "reason": "ui/src/adapters/http/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "c68912d435c775574d07d0c420d2d3407f5566234b237fb65132affe18b2e4fd",
+      "reason": "ui/src/adapters/kimi-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "6a030a4f5c4369a4fb20caccb7b104f3648afca01f77f2a34b7754fe38d2592a",
+      "reason": "ui/src/adapters/kimi-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "9be3f07cb454ff74a800905a44f920e1cf84c1d2a7dfd3e9ec127c5015fcd928",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример JSON payload/headers/runtime services. Имена полей и sample values являются конфигурационными данными, не UI copy."
+    },
+    {
+      "id": "a74cb2b8b5ef211148f38599b1f3a7476421c641677db50bf609b5f729ca3cea",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "fc4bfdf79664081d1fa34fd3f02d5e360777a21c55a61ecee697fc96fdf675c0",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример agent ID, audience/name, OpenClaw permission scope либо пути claimed API key. Требует точного технического написания."
+    },
+    {
+      "id": "987b0d9a489b8eb00b23b1b45a74d5389d0cb2304ae039a7cfc88eb6a7bcc14a",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример agent ID, audience/name, OpenClaw permission scope либо пути claimed API key. Требует точного технического написания."
+    },
+    {
+      "id": "b6e5038578250ae7ab1da23a9636f5d9379e2b6457cce72e6c4abdd7e1ac70eb",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример agent ID, audience/name, OpenClaw permission scope либо пути claimed API key. Требует точного технического написания."
+    },
+    {
+      "id": "ffda552fb025dfc76b88863d6c56caa336c973af29e55a46720ff1cb80c49029",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "ea0af58e0d32af0da213e8988ca5dba30483435fa04e4c7e507270d6a676629b",
+      "reason": "ui/src/adapters/openclaw-gateway/config-fields.tsx: Пример agent ID, audience/name, OpenClaw permission scope либо пути claimed API key. Требует точного технического написания."
+    },
+    {
+      "id": "410b79fb4b8c0ce0cb84e054aec29b361d5057762d47bc11fa8c3a219ddacfc3",
+      "reason": "ui/src/adapters/openclaw-gateway/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "ffa9c9b8e8857c3734d260e68a3ef9fbdd805fa720f4a9c3ffd6a50dc432431b",
+      "reason": "ui/src/adapters/opencode-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "2f7265934c223ab121a69de75e44882e3b19120344ddd07b63a2069488f0c980",
+      "reason": "ui/src/adapters/opencode-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "9e203fb70d57c12bf0c47600ce221f4289fc86a81551f26fbfc825e2242302d4",
+      "reason": "ui/src/adapters/pi-local/config-fields.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "74c9046dda9e838160f58f48bf30d7d71409aa7e9ad44b93f8796a8b668b73e2",
+      "reason": "ui/src/adapters/pi-local/index.ts: Официальное имя адаптера/инструмента или транспортный протокол (значение label реестра); названия Claude, Codex, GitHub, OpenCode, Paperclip Runner и HTTP/ACP сохраняются."
+    },
+    {
+      "id": "cd2f69d76dbfe4954b0d99a55dd6a7c7a07e254c7ca149749702440feca7a6a6",
+      "reason": "ui/src/adapters/runtime-json-fields.tsx: Пример JSON payload/headers/runtime services. Имена полей и sample values являются конфигурационными данными, не UI copy."
+    },
+    {
+      "id": "dc48d41247194441b58b51f1471d62d74450e4ad17e622adef272e09f73dbb7c",
+      "reason": "ui/src/adapters/runtime-json-fields.tsx: Пример JSON payload/headers/runtime services. Имена полей и sample values являются конфигурационными данными, не UI copy."
+    },
+    {
+      "id": "08696ae52f278f33420777b7d3e0945ee9dbea1c3db4e43518891c9a185ee78f",
+      "reason": "ui/src/api/auth.ts: hint выводится только console.error в logAuthNetworkFailure; это англоязычная техническая диагностика сети, не текст интерфейса."
+    },
+    {
+      "id": "8167bd9abb57f7130d358aaa37c6996da8274085421bca15e2525a19d4c48d9e",
+      "reason": "ui/src/api/auth.ts: hint выводится только console.error в logAuthNetworkFailure; это англоязычная техническая диагностика сети, не текст интерфейса."
+    },
+    {
+      "id": "b947f8d54c77771f2087f79cbb5728899c3efd99bd9baedc836aff4c90d24f70",
+      "reason": "ui/src/api/auth.ts: hint выводится только console.error в logAuthNetworkFailure; это англоязычная техническая диагностика сети, не текст интерфейса."
+    },
+    {
+      "id": "7c90090db1b152ec7e08683a1a9fec27de42da2fc5a25490f844177832a98c5a",
+      "reason": "ui/src/api/auth.ts: hint выводится только console.error в logAuthNetworkFailure; это англоязычная техническая диагностика сети, не текст интерфейса."
+    },
+    {
+      "id": "aa2659f2a22e4d3a9d75c52a365c5ade44d3a1403bfcd109be80678eeb5af305",
+      "reason": "ui/src/components/ActiveAgentsPanel.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "51948f0c817e02a010d8284319e31c9fa315e17234f674e924c22c0bef7397c3",
+      "reason": "ui/src/components/ActivityCharts.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "be502b2667e41354ab2ca79d67806e15716916e8f4fd8d8789e980fafc37bd48",
+      "reason": "ui/src/components/ActivityFeed.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "4b1519984edfabcb0bde374f6ecf5a1202da542d7e84c47b242f977c6225dc03",
+      "reason": "ui/src/components/ActivityRow.tsx: Fallback entityType:entityId для неизвестного объекта журнала. Сохраняется исходный машинный идентификатор для диагностики."
+    },
+    {
+      "id": "f9875b1315b6135446ea4ae394e002fd65f459d21c482f95d8027ca2aeda3e1b",
+      "reason": "ui/src/components/ActivityRow.tsx: ActivityRow соединяет переведённый formatActivityVerb(..., t)/subject и исходное имя участника; эта строка содержит только placeholders и пробел."
+    },
+    {
+      "id": "197ebd4392d56c9d9dcfadad15419333e5e3daa20a7f33cba74b73f1809fbec6",
+      "reason": "ui/src/components/ActivityRow.tsx: ActivityRow соединяет переведённый formatActivityVerb(..., t)/subject и исходное имя участника; эта строка содержит только placeholders и пробел."
+    },
+    {
+      "id": "db270554e82b330e8cb517941b58f2e55c5c3e738fdea0be67832db9584feae0",
+      "reason": "ui/src/components/AdapterLoginChrome.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "30c5af1565812258dfbbb80f78e023c49ae4e3be3c302c39f7fd777fc1e5d159",
+      "reason": "ui/src/components/AdapterLoginChrome.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b59adf83ba3e02e33cf0b2e64ec8d28d2c20dc57065926ecfbb04ad0ab3dbfd3",
+      "reason": "ui/src/components/AdapterLoginChrome.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "732129dcbbff6b5fefd86f029b9b5532a1e94153afd32d85a94eb51d8fda8b34",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "f65bef56d99ee2cc21086fa2753b417cc474abe67d0b91f8605dd1fb727b8ad8",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "f7a3e42440fb33ef018abfcdd271d42fc3cf9c6ef86e2c4204c6f22a5ffbeb4d",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "7c20784cc48c4fb3c5213b871fcf3902e51be7904187ab436e3c59a7f37db441",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "724ab8a337ee41cf431624dc69dcc4278a7955a39af78d31a2608d93aff08295",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "fcf68c0c3f74bd32f2334ccd9d842fa9d10dcfe42e426f39e354c906c6281d33",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "82a128f9772009389c2e4b2e5ce736f6032f31ccaaa9acf972afcb4157fa4a3a",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "c4707b5ed1906891a2261d971d9450d27802fece5b52837c9e3a17e0724d8a4c",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "5de90a4b899b60dcda557d78d930a1b9f4d30861748b6efc2a1a1dd1b085580f",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "73c9ef5848d86f0eb66e6ff6c2e44fb14cf6c42ef2bca6ed2e0c5c4b56ecba6a",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "49504ca366a4c13689d14895534e5c76f2ccaaaacf34879dd72d286079cd9acc",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "f2ea1f39b492ed5757f1e7756d4091b1c7a6a2111e78f0384a668406df1fa38a",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "921f1b5a3601a38eb4cd79b0a4a649e2e2280fdad8876edb252b7d71e3832adf",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "84a147b1855d549df1d57d4d52a2323599dc02c362591e2a9366effc55175576",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "20a14ccfdd37964d87cdc3535622530b2e6bd61adb4f31f2864bde3faeab9c62",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "a3f98b16408c3c0282eee2c19924b1e3728bc77bb6d08ba0f95bc6ab424fb6ae",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "f67d29f01a6b9ba1c96b8fa79968c0ef4b09093247711c85a41559be4714715f",
+      "reason": "ui/src/components/AgentConversationSidebar.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "a141eda649507ba41b782c5dd6b941ef3519b4c2ec50d4bcdc706e9a18238f19",
+      "reason": "ui/src/components/AgentSecretAccessEditor.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "e8d808cdf36f0377f6c99ecfaf1020f86ae90b016f928f4458eb467fb3219525",
+      "reason": "ui/src/components/AgentSecretAccessEditor.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "03b63e0e569e8fe39379c2398d942c70ff59e34bd99b93485c1e16ed2e792c62",
+      "reason": "ui/src/components/BuiltInAgentGate.tsx: Пунктуация вокруг дат/диапазона или значения status/lifecycle, уже полученного через locale-aware formatter с t; машинные значения в payload не меняются."
+    },
+    {
+      "id": "4fd33c557c59c6d99f44783b0753557fbc261d482a00628670b9fd3ff11a37b9",
+      "reason": "ui/src/components/CaseFieldsPanel.tsx: JSON/boolean/null literal при просмотре структурированных данных. Перевод изменит представление исходного значения."
+    },
+    {
+      "id": "f9fbc80967ad4e849008d1511e3816af8221f6554978d33ceff0342f832b56af",
+      "reason": "ui/src/components/CommandPalette.tsx: Обозначение клавиши/последовательности клавиатуры (C, g f, Esc); не инструкция на английском."
+    },
+    {
+      "id": "8ddbff2b596eebddfcfb787791a4b30e952143115c26aafe2ff4ff20c9491c58",
+      "reason": "ui/src/components/CommandPalette.tsx: Обозначение клавиши/последовательности клавиатуры (C, g f, Esc); не инструкция на английском."
+    },
+    {
+      "id": "49a62cd83b94d76833af038807305d1c42e09ae196fa4ef5a5893f71ecdea5fe",
+      "reason": "ui/src/components/DecisionDateChips.tsx: Пунктуация вокруг дат/диапазона или значения status/lifecycle, уже полученного через locale-aware formatter с t; машинные значения в payload не меняются."
+    },
+    {
+      "id": "a989dc3ab1272878265e41b226b6c5eb6f9b9447a2620639042c76ee07ebb561",
+      "reason": "ui/src/components/DecisionShelf.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "1fbdbd834612091b357b59b2433b1cd9a297e04e4ba25da4362ff13c2f151f3f",
+      "reason": "ui/src/components/DevRestartBanner.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "2619aa8a8e3e6b3debe8d5aba374aea8bf9c77e3a216c8b618dbd972818573cd",
+      "reason": "ui/src/components/DocumentAnnotationLayer.tsx: Имена CSS Highlight API registrations paperclip-doc-annotation-*; изменять их при переводе нельзя."
+    },
+    {
+      "id": "83d77dd88c8e7929c4fbeea50b2ea0b5cc50b206b36bfcf59d88e6e3481605ed",
+      "reason": "ui/src/components/DocumentAnnotationLayer.tsx: Имена CSS Highlight API registrations paperclip-doc-annotation-*; изменять их при переводе нельзя."
+    },
+    {
+      "id": "9b92f3fe03191bf5c226f9ca92d12c927461ce0fec5a3eda873d0f3451ab7f69",
+      "reason": "ui/src/components/DocumentAnnotationLayer.tsx: Имена CSS Highlight API registrations paperclip-doc-annotation-*; изменять их при переводе нельзя."
+    },
+    {
+      "id": "6c02bd4ea6cac291be3b6e2f71ba4dd0e225557385bb6f3158957b931bf566dc",
+      "reason": "ui/src/components/DocumentAnnotationLayer.tsx: Имена CSS Highlight API registrations paperclip-doc-annotation-*; изменять их при переводе нельзя."
+    },
+    {
+      "id": "19faa2af1cd0e845bd3b8807db7e8363b762831e451aa8cb61e30047e32167ea",
+      "reason": "ui/src/components/EmailMessageCard.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "66d39d0e19aa2768aaf08f7a9b1c3233a249ccd1bc22e90e6d392a7f8dac4c60",
+      "reason": "ui/src/components/EmailTaskActivity.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "127e34b128cc07d54a113107ed5548b4a465485cfeec4985b40962e3e2fece4a",
+      "reason": "ui/src/components/ExternalObjectPill.tsx: ExternalObjectPill использует externalObjectDisplayStatusLabel/externalObjectLivenessLabel и provider/display key; обёртка — разделители, исходный displayTitle сохраняется."
+    },
+    {
+      "id": "a5b050f2ee895a0aa9450d39b6d0b787c7748d8179d178dc545d3f03cfa66a90",
+      "reason": "ui/src/components/ExternalObjectPill.tsx: ExternalObjectPill использует externalObjectDisplayStatusLabel/externalObjectLivenessLabel и provider/display key; обёртка — разделители, исходный displayTitle сохраняется."
+    },
+    {
+      "id": "671b29869945d6c3a7864404f4dc3d651f3ffca49e78430a2a32803a3cbc7c18",
+      "reason": "ui/src/components/FeedCard.tsx: Fallback entityType:entityId для неизвестного объекта журнала. Сохраняется исходный машинный идентификатор для диагностики."
+    },
+    {
+      "id": "a0b6447184090b1dd561ea54db7beb216d65515364b267360a5d1c114c351e21",
+      "reason": "ui/src/components/FileViewerSheet.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "30086b6783727d4ed9a13621aed1dc980ce6ecd37269d93087cad565eba6bfed",
+      "reason": "ui/src/components/FileViewerSheet.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "db840fabc5d1a874938359a312c09b5b1e95046592d4a783fbeb1eb613f29f42",
+      "reason": "ui/src/components/FinanceTimelineCard.tsx: Стрелка перед названием платёжного провайдера из providerDisplayName; бренд/имя не переводится."
+    },
+    {
+      "id": "4a3420dadb92e6f78a06959e1e7bede0c0d177143ca5cac5d5103182cb0ccd38",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: Устоявшийся технический термин Frontmatter/Worktree; здесь обозначает формат метаданных либо Git worktree, не общеязыковую команду."
+    },
+    {
+      "id": "d5ceace3901af0a453757349f53634bb8dee016b6813768eca089a5c50a254cd",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "83a1c4489c83fedcf83461a2350885d12b4f04a7da1aeef4e478410649422a6e",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: YAML frontmatter property name/description/allowed-tools/metadata и пример metadata key. Это редактируемые имена полей схемы, не их описание."
+    },
+    {
+      "id": "33a888ee958348a9d9396f731270e7fce9add83fcff2ab1602021d9215cba168",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: YAML frontmatter property name/description/allowed-tools/metadata и пример metadata key. Это редактируемые имена полей схемы, не их описание."
+    },
+    {
+      "id": "116c7842a727faaae2179aa6d5d719f07724cb8a637e193bc058cc8b6c3cd2e1",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: YAML frontmatter property name/description/allowed-tools/metadata и пример metadata key. Это редактируемые имена полей схемы, не их описание."
+    },
+    {
+      "id": "22a2c97e31d5a05234e7cad42a7dae854c7e7546b1cbcee31943f66cc971f358",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: YAML frontmatter property name/description/allowed-tools/metadata и пример metadata key. Это редактируемые имена полей схемы, не их описание."
+    },
+    {
+      "id": "647971b5b3e837cf44408f25f0a69b6e6b604eed88fa8f1a1f4cf9f332c6ace7",
+      "reason": "ui/src/components/FrontmatterPanel.tsx: YAML frontmatter property name/description/allowed-tools/metadata и пример metadata key. Это редактируемые имена полей схемы, не их описание."
+    },
+    {
+      "id": "a7617b4588ca2220515f81bb3207fa203789f8a178f20666a2feb6afc2a64934",
+      "reason": "ui/src/components/IssueBlockedNotice.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "e5438b1bd863fb7e036aaa848faf407707a37260a387f1c489afeb75084c4bec",
+      "reason": "ui/src/components/IssueChatThread.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "fc1437a0fd1fdf6d70cec35b9b11d7476d6c64bafc0f81fcee1e6d8dc5fbe9b7",
+      "reason": "ui/src/components/IssueChatThread.tsx: Исходный requestedModel и стрелка смены модели; model ID не переводится."
+    },
+    {
+      "id": "73751c15dc0887d51ffbaffd062b0d0b31923111f2e2c80da71e85d33af5458c",
+      "reason": "ui/src/components/IssueChatThread.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7fc22ec4ec213e640430b6e41224c53d3c48757d56f632debb5310c48a74f83e",
+      "reason": "ui/src/components/IssueChatThread.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "f7a91cd17aac338d912891b918c1ff2deea540df9d5a32489fe056b852e41ca6",
+      "reason": "ui/src/components/IssueRecoveryActionCard.tsx: Обозначение @ перед точным SHA ожидаемого/текущего/базового коммита; сохраняется для проверки Git состояния."
+    },
+    {
+      "id": "b3c3841ae5f40c0844b8dc3591b585617bad42d15c59150e87e2d7f32be752c8",
+      "reason": "ui/src/components/IssueRecoveryActionCard.tsx: Обозначение @ перед точным SHA ожидаемого/текущего/базового коммита; сохраняется для проверки Git состояния."
+    },
+    {
+      "id": "7e96145ee249d6e72eda77c5c7eb2acc2143102fd89eb638815e7d84c94a4e5d",
+      "reason": "ui/src/components/IssueRecoveryActionCard.tsx: Обозначение @ перед точным SHA ожидаемого/текущего/базового коммита; сохраняется для проверки Git состояния."
+    },
+    {
+      "id": "cc9e3d42292bc94ecfcfc21951aec416f7af23faa183421dac68aff73c5e9930",
+      "reason": "ui/src/components/IssueRecoveryActionCard.tsx: Маркер <timestamp> внутри пути резервной копии при восстановлении рабочего пространства; технический шаблон пути."
+    },
+    {
+      "id": "bad5a4608e8a7eff64c505f8f3f1d674589d7e701ad783da4d39761241c8ee9f",
+      "reason": "ui/src/components/IssueRecoveryActionCard.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "f803abd8eab23a88fadeda63ee9aa5368582f7e5e5680f31a714109f2cb7bf34",
+      "reason": "ui/src/components/IssueRow.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "9d192a5595d11ceb02adba1e905cd40657bbae797f54d24bd92a444e75623da6",
+      "reason": "ui/src/components/IssueRunLedger.tsx: Значение поля className/tone в таблице liveness copy: Tailwind utility classes; не видимый текст."
+    },
+    {
+      "id": "6b610bcf9aee776e4b44c57bbc68e9f6dd0d155c0f3f5ea0e186433b5640c30e",
+      "reason": "ui/src/components/IssueRunLedger.tsx: Значение поля className/tone в таблице liveness copy: Tailwind utility classes; не видимый текст."
+    },
+    {
+      "id": "4defd1b75ff3bb0ee9a58a5f9b76316ee4bc359a070e4c92b6c962bd4d5a67fa",
+      "reason": "ui/src/components/IssueRunLedger.tsx: Значение поля className/tone в таблице liveness copy: Tailwind utility classes; не видимый текст."
+    },
+    {
+      "id": "399cc61e2dbf3b8ad7fb3bdbe9335d4a459253f58a4c8670e10a304afeb72cc5",
+      "reason": "ui/src/components/IssueThreadInteractionCard.tsx: Пунктуация вокруг дат/диапазона или значения status/lifecycle, уже полученного через locale-aware formatter с t; машинные значения в payload не меняются."
+    },
+    {
+      "id": "1ae460dd9bf4ec60d99b20765e504b6cde70ab7861de42dacf8542bb8c44722a",
+      "reason": "ui/src/components/IssueThreadInteractionCard.tsx: lead и consentSentence — отдельные локализованные фразы о разрешении подключения; строка соединяет их пробелом, токены/содержимое согласия не меняет."
+    },
+    {
+      "id": "8665bace2f6d5523feb0bb357ba64414eb83f7d76f3175f0f2e938a34619ed1d",
+      "reason": "ui/src/components/IssuesList.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "474fdbb196f4feebf69edbd48ded7223135bb6707c6c6415bc6e939cd6270c94",
+      "reason": "ui/src/components/IssuesList.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "6db1c963975204fc42d6875c10d4d95ad4eeaf05e44bd7b104cacf8cc4b415a3",
+      "reason": "ui/src/components/IssuesList.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "a7182e3b9636347a951412cbfb388beaa2f4cdd266300fcfd6ddf3d958eb81fe",
+      "reason": "ui/src/components/JsonSchemaForm.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "f2d3b840f3dbb9acd745893c6ed52d162e53383754dfcf80cb839c5e47ed87b6",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "d680c3cb308d1b600416421adc4a38a2cb09703ce00a539e441e619eef83a30e",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "9be61500287161c45e77e32e99ef82cc99a52d63b5b2c8727738d84a34f46176",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "be063f87d8315c6c98961539c967824c7689a0d793e5530b87d4757ad47bec86",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "0044f3a43c489a824af872220c86c1007b9503122c8c19779f3111f023a91227",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "a1109ef7d78534c841e78543385bbbb11ab11fdb171b4446ec58d72655aa83fd",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "237314d58a4175bdf4355d330935affbee5e22e669811d4c1dfabe27e63e2927",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "741fd28575cce261042a4b9118962a70adc548fc316f7f6978237c94fb041b35",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "8eaef2c72d4ad1f1803dd4f8c3724e2266b05d4438bec8ca538c21c09e30056e",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "4befcb3d411ae0d1f3b0584fc088ac3c7e4ae0df0fa4df45ddca0540114a0f56",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "e6bf8663aff03ef961b8bd0f660b5086464ecb1b53c00ea1f7269602b52b9a72",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "e6077d7b591cb6830ec90bb03446f135d993fb8c3e023dc7102b241b3ab08f8e",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "be7be74e5f7b4a6b48229728863a79eca5d34430a814d3c25a276e2a6a3967f0",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "04ddb2105ce27d7158c8764429dcb920d60da2b8293e0e4aaf743b230420325e",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "816698df55f75392e0b5f80d07912a4e9739d6cce11a69078b8eb2518fd1fe62",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "086815ed5b513f40220fed1191b1914fd4a1f79a82b0d94b646087280bcef7f7",
+      "reason": "ui/src/components/KanbanBoard.tsx: Kanban column tone — Tailwind text/background/ring utility classes. Это CSS, а не видимые названия статусов."
+    },
+    {
+      "id": "2732a4c29b4e209a6587dad8cd1c1807cf312379acef22e2c98c58852ffd6b25",
+      "reason": "ui/src/components/KeyboardShortcutsCheatsheet.tsx: Обозначение клавиши/последовательности клавиатуры (C, g f, Esc); не инструкция на английском."
+    },
+    {
+      "id": "35da4caf2b1359ed0f8e9753acb559448ac22493f0b6a59072ac079d58230a58",
+      "reason": "ui/src/components/LegacyIssuesList.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "e6a63636ab2db20755976e8822cf6ddee6952f96459705f5cee12b48bd0a6d7a",
+      "reason": "ui/src/components/LegacyIssuesList.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "a2f07389cb73c9993243ee537b688993c68b2e5d60de0d47af77694dbe8ede8e",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "3897180f03b38d009829133fb133023b026ee0becbb68cdde245a93314c83e61",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "a52751173184ff0050ab55a03b3fb4aa4bd38d03026beeb0708c6485bdc59650",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "c0db74ba11bfb58e4b61ecd3bfc8093485ec5fb0d77e930301afe9c7156579bc",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "c52ccb7cd007898963e8242233df3bc893ee642c5f7646042767227d22b62634",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "639916236484bfb1ae69cda2f80114b33eea7a00d86dadc7151b29c9c8909b0c",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "773bd35fe17a9f06075145068828fd8bb5d7305823a3a4ccbb25985204061232",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "ea0c84b21189058bcbbf2fa7e2276473029918272526a95288aab19a04e5d0ca",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "b80e930ca57833500b26aaa19155a18188f2ef2cfb20dd230ef08e114dbd3320",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "fcbfd3c7db3c6f0e651d7c47897af8b2330d3e156317eee37b1c40d2b22b3bfd",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Первый элемент tuples MuseConnectionDetails используется как React key/id; второй содержит t(externalAgentUi.muse.rows.*), который показывается в dt."
+    },
+    {
+      "id": "1a55c0544fe404b8b3ab90649d3606c22ca9fe795e22d484978027e5c471e3dd",
+      "reason": "ui/src/components/MuseRunnerConnection.tsx: Маска ISO 8601 timestamp для подтверждения observedAt; латинские токены YYYY/MM/DD/HH и Z должны оставаться точными."
+    },
+    {
+      "id": "ad9f8f0f96ea3693580169e0fd85a55288cdcd6e9f02ccc3b64f712e8bd3af35",
+      "reason": "ui/src/components/NewIssueDialog.tsx: Fallback MIME application/octet-stream для загрузки файла; протокольное значение."
+    },
+    {
+      "id": "bcb705ae012707f219a23c89dc40a6fbff8df99886f645a414e43727c62b9a19",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "1c8e8485da2dea84ffe7ae35da498c9bfa5192f079e1ef6704674a0d24b0e537",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "acfe753bbbe37e60efe5fe7f4a881b5707805033a7a859592e94c1c20a679c5a",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b11a1c0fbad86311a53b85d87c1830a1afcae1d84fb293200276f792e06aa4de",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "265ec42bf4e8a5e803f00c73b53a7106726c5c90de042839b2aa6172c3fd1d26",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "460b81fd5c5678f7aad9dee23b437b3e6210b2fdf720687400f60465f697939a",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "4af0ac308689ebbac2ab6a80a789b1d9414867b67b924fc5e86dfb8090c44dec",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "840293f648419cc29e0f6ab766945e5301afc51c158bc5ea0d3961618702b0e8",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "915d10200368cf2fb6fd70bfea968c0cb136979884cc7d81b787d608db425f30",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "bde98ccc7177b63503e414836c6d9700ac854ab57a99366a065046fcd7b71f2c",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "5a723b64db03bd0f9bb9f7fb7f97df3bf4a3b64ade221a8f0c4b9faf4ade3a20",
+      "reason": "ui/src/components/OnboardingWizard.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "530f63e51ba733d90d22fa9eabb982606f1d08b1e3741ec627a4a5f5933ef36e",
+      "reason": "ui/src/components/OpenCodeLogoIcon.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "22b6ec87223cb47264288058f123482fa388940ce963522dbb795fb4f1fab377",
+      "reason": "ui/src/components/OpenCodeLogoIcon.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "53dfbd06c2652634237b2069a4ba30c240116a85db61eaa056b1afbe3c943130",
+      "reason": "ui/src/components/PaperclipLockup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "15be0fc46bf79f341b6af51fdb51568debf23c01fe3c3403cb752e78615f9a1d",
+      "reason": "ui/src/components/PathInstructionsModal.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "2afd5d6a309e6c6b020226a8715845526a08bc481c48394fba797b69f6036e56",
+      "reason": "ui/src/components/PathInstructionsModal.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "03264732a9412c23640e08bec7c991b2790b93c9faed7b1c9818ff1104fbaf2d",
+      "reason": "ui/src/components/PathInstructionsModal.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "130c593be31655efaca2be00c8fc2a605e23e5291f999e3821f6e2abc53503b3",
+      "reason": "ui/src/components/ProjectProperties.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "e91d537e450ff5b9f0807cad3b680067283740421659eadde4c3aad8ccc85965",
+      "reason": "ui/src/components/ProjectProperties.tsx: Git base ref origin/main, шаблон ветки {{issue.identifier}}-{{slug}} или путь .paperclip/worktrees; это сохраняемые значения конфигурации."
+    },
+    {
+      "id": "445656a5ae73c7d3bd8ac8573b955d24579664a1fae8f3e820136fd4be743cfb",
+      "reason": "ui/src/components/ProjectProperties.tsx: Git base ref origin/main, шаблон ветки {{issue.identifier}}-{{slug}} или путь .paperclip/worktrees; это сохраняемые значения конфигурации."
+    },
+    {
+      "id": "8a0d81abc2c05b9ce25a5822425b21d66abdfceef18999403ee1f03cb44e74bb",
+      "reason": "ui/src/components/ProjectProperties.tsx: Git base ref origin/main, шаблон ветки {{issue.identifier}}-{{slug}} или путь .paperclip/worktrees; это сохраняемые значения конфигурации."
+    },
+    {
+      "id": "69baf1d0c712ee4d29d03e9df025df54e1aa0ebf575010fa2b3db35336cf4ae3",
+      "reason": "ui/src/components/ProjectProperties.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "bc8f9e4e089973de7986e8c1a779cde833efcf6f739d5c854311cc68a59171dc",
+      "reason": "ui/src/components/ProjectProperties.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "2047abf14942d8c667dfe9457c16662e3b73c23437337ee52b7672ea5c35fc82",
+      "reason": "ui/src/components/ProjectProperties.tsx: Копируемая диагностическая/служебная CLI-команда. Флаги, prompt fixture \"Respond with hello.\", shell path и режим output — часть воспроизводимой проверки/конфигурации."
+    },
+    {
+      "id": "2580425a3d842ff94c60b352ea38154fa71b35f41e620486fd727eaf770ecbac",
+      "reason": "ui/src/components/QuotaBar.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "c0ab9c23f54938ff449c3f1722062a86510f678cf059187abfcf1a4d78bca9f2",
+      "reason": "ui/src/components/RunnerInspector.tsx: JSON/boolean/null literal при просмотре структурированных данных. Перевод изменит представление исходного значения."
+    },
+    {
+      "id": "90e11cc605ebded918e2dc700cf9d5eaaf5984ec84903f3808afc50c573dd826",
+      "reason": "ui/src/components/RunnerInspector.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "12c32a4cc1ed14c02a60e9c8867ddc26e50dc318749370b0c03ead09e9451c78",
+      "reason": "ui/src/components/RunnerInspector.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "62ca53f1bd055ffc07229a43f69bfe9e323b9d5e01c3b241a7938092165e1881",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "a074476da2c8956fc258e59fb31ed10350453ae23ce2a5546a0ca3aef7c09e60",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "9871b27a7295d969b55071100739c26f79d38902f6aaa13a6beb558182ef08fb",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "62dae3f5a8cc2e2565132bc34238dd045ad31f1d58585078986ebed1f119aaca",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "642510ce7e4dc7b45430df62a84ea3cb717b38dee82b952bdad2505380d64cce",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "80703581daa13622a7d915d57aeaeed1a0fb1f57fc027b6a0bc58f312db892cc",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "a819e4ddde6f5a2d2069bcb9778a12eaddbd0698aeefd04f35899f40b5012ff7",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "5d78aecee643ed995d98f76e7df823c8994e170e181957db0f90331217ea4978",
+      "reason": "ui/src/components/RunnerInspector.tsx: RunnerInspector pipeline показывает исходные canonical mapping dispositions, seq и unknown sentinel в code-полях finalization policy/reason. Это сопоставление с Runner PRP/debug wire values, не переводимый обычный статус задачи."
+    },
+    {
+      "id": "ab82cbbce4eb3bc899698906a3bfb0375f6765c865d7e0d77a77c25d841d8b60",
+      "reason": "ui/src/components/SecretBindingPicker.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "71fb489daab993caf84c2fe9660506c67fca069f42267684ac525f78419e11cc",
+      "reason": "ui/src/components/SecretBindingPicker.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "ecf12356dab8cdce157fafcaa56b9e9ccb83aa3a7e435b107d874d44aee0c20a",
+      "reason": "ui/src/components/Sidebar.production.tsx: Sidebar передаёт badgeLabel decisions, но одновременно всегда передаёт локализованный badgeText. SidebarNavItem выбирает badgeText через ?? до fallback badgeLabel."
+    },
+    {
+      "id": "dfd882d112318388f80c0921bd3b927aabb61ac2f94a43c59c5c92eb304a02e7",
+      "reason": "ui/src/components/SidebarAccountMenu.production.tsx: SHA — общепринятое обозначение Git commit digest, не английская подпись действия."
+    },
+    {
+      "id": "29145de09667dc80f6f0ac3967d8a22889b348ec3563ac087aff484163f53ab5",
+      "reason": "ui/src/components/SidebarAccountMenu.tsx: SHA — общепринятое обозначение Git commit digest, не английская подпись действия."
+    },
+    {
+      "id": "ef6a9cab557d84767ee4cc92234efd8e47238fbbc9f2dd2485c5b98fdb950cb5",
+      "reason": "ui/src/components/SidebarNavItem.production.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "7dca2d937d01e19f9e5f1be1e869894cc38ffe25e37578911204680da9410187",
+      "reason": "ui/src/components/SidebarNavItem.production.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "f5f247e9eb41d2d7e91f405cab717277341ea3f0a395478925fea57a31aa9661",
+      "reason": "ui/src/components/SidebarNavItem.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "040e02cea2470dc0e1c13e691098c4e1fdd4e3dc1981810de2b8a2c1c331eb5a",
+      "reason": "ui/src/components/SidebarNavItem.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "c5b045340df2c0a33aed12be0e5aab3ad5ebcdc5f281cec3c0ad4249de446c0f",
+      "reason": "ui/src/components/SkillSourceProvenance.tsx: Пунктуация вокруг sourceRef/версии с пользовательским label; идентификатор и название версии сохраняются."
+    },
+    {
+      "id": "42d1bd414e291a53b5d577e822a93bc3f707bc620c12d2ca497d057393439d3e",
+      "reason": "ui/src/components/SmokeLabDashboardCard.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "00ff5042235946282be35ba9cdfc91ff4667c4b67fbd1e0a2ced3f1dad9330d7",
+      "reason": "ui/src/components/StageSecretsPanel.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "83fdd53d65ba9fbcdc88c40a6d5d13bc8a058c4676a24eb2026987ac64bf3a42",
+      "reason": "ui/src/components/StandaloneBrowserControls.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "3c9009e8811c18c597b53e4bea313300402bccd95774ffc3481cb0356bfa5ba3",
+      "reason": "ui/src/components/StatusBadge.tsx: AgentStatusBadge преобразует active в canonical idle и затем вызывает statusLabel(label); literal не отображается напрямую."
+    },
+    {
+      "id": "69ffab848ef576f96bd6d266d687894e33dce7caf59f4914d55e48512bb7f322",
+      "reason": "ui/src/components/SystemNotice.tsx: TONE_TOKENS значения text-color классов SystemNotice; не видимый текст."
+    },
+    {
+      "id": "2e61afa0825f41430ed50e05746d67001d995142b45d7bad770c34a895435b57",
+      "reason": "ui/src/components/SystemNotice.tsx: TONE_TOKENS значения text-color классов SystemNotice; не видимый текст."
+    },
+    {
+      "id": "a857bf4e91b754c30845cccf2e474d0c92b72fcbc923362c1d2968fefb94a7a7",
+      "reason": "ui/src/components/SystemNotice.tsx: TONE_TOKENS значения text-color классов SystemNotice; не видимый текст."
+    },
+    {
+      "id": "daaa23c4c7f9de39b9c16a22b9298d54247540f2f21ac5175521490cb9f6f266",
+      "reason": "ui/src/components/SystemNotice.tsx: TONE_TOKENS значения text-color классов SystemNotice; не видимый текст."
+    },
+    {
+      "id": "8db738be6b6909e37509df1bbe7fd1384d3ab17b78a3b9ac5e1ba7a0c8f14daf",
+      "reason": "ui/src/components/SystemNotice.tsx: TONE_TOKENS значения text-color классов SystemNotice; не видимый текст."
+    },
+    {
+      "id": "507305036787bb88f8f94339f5098be17fc9cb0109ea81b2840512d0a20dab70",
+      "reason": "ui/src/components/WorkspaceRuntimeControls.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "8ddeb6aac64a42f6556821a999f0facd074549c552551a435fe0f3aa9d4118c2",
+      "reason": "ui/src/components/WorktreeBanner.tsx: Устоявшийся технический термин Frontmatter/Worktree; здесь обозначает формат метаданных либо Git worktree, не общеязыковую команду."
+    },
+    {
+      "id": "96a06968ec44b4e2323ffa58a773c8db743ee7bac38e0af03c8f7b246550f65d",
+      "reason": "ui/src/components/agent-config-primitives.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "8990bb0f84cbcb50cf727c88b4a45ad4b7d834556231a36ca20b42e1c443b48e",
+      "reason": "ui/src/components/agent-config-primitives.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "9c1c0e9ecacb2d8762b482c477d6f6adaab4dfb3f398b5f02886b2a04fa24c13",
+      "reason": "ui/src/components/agent-config-primitives.tsx: Пример абсолютного пути к AGENTS.md, рабочей папке или ACP state. Это вводимое filesystem-значение, сохраняются синтаксис пути и имя файла."
+    },
+    {
+      "id": "7b3b89a895b42c6445d3c09caefa17e8303f38ae4ab982aff9a44ce697fd813a",
+      "reason": "ui/src/components/agents/AgentBulkRoster.tsx: AgentBulkRoster all — значение фильтра; кнопка показывает t(agentBulkUi.roster.allHarnesses), остальные значения через bulkAgentHarnessLabel(h,t)."
+    },
+    {
+      "id": "1cca160bb60c6605c8aed901964a7026670733a8c4defae3b69748b198ed01b5",
+      "reason": "ui/src/components/ai-connections/AiConnectionAccountControls.tsx: Account label/planType приходит от провайдера или пользователя; разделитель не является английской фразой."
+    },
+    {
+      "id": "97debffd42b5d1e99470efec0c6ff8dc8d14f0d0cdb1a02d65a9170e42e46b2a",
+      "reason": "ui/src/components/ai-connections/AiConnectionCredentialStep.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "5d39b91e9c78a40a923a201cb98e875c38299215efc27da053c9366ed758aa3a",
+      "reason": "ui/src/components/ai-connections/AiConnectionIdentity.tsx: Account label/planType приходит от провайдера или пользователя; разделитель не является английской фразой."
+    },
+    {
+      "id": "78a6510389c927b42a7cdea43ee6595a1436ee6cb12530afc2e498bb56d27e4a",
+      "reason": "ui/src/components/ai-connections/AiConnectionPicker.tsx: aiMethodLabel/aiConnectionProblem дают display copy; пунктуация с accountLabel не добавляет английских слов."
+    },
+    {
+      "id": "a2e66367624fcc292baf3023ce9a9455ac7052ddb0efbd8ee80366d0bd622564",
+      "reason": "ui/src/components/ai-connections/AiConnectionPicker.tsx: Account label/planType приходит от провайдера или пользователя; разделитель не является английской фразой."
+    },
+    {
+      "id": "b543e23f0a329b4fec00dcba2668b956171fc6c01dfeb760b69f869e2d1c4736",
+      "reason": "ui/src/components/ai-connections/AiConnectionPicker.tsx: aiMethodLabel/aiConnectionProblem дают display copy; пунктуация с accountLabel не добавляет английских слов."
+    },
+    {
+      "id": "669af3ac58dea9fc85648ac284609072695de2e591a67a07df1467032acb5856",
+      "reason": "ui/src/components/ai-connections/AiConnectionUsagePanel.tsx: Account label/planType приходит от провайдера или пользователя; разделитель не является английской фразой."
+    },
+    {
+      "id": "33afab2ba332e814db18db06d085104ea4f4d5add060fb00d28750b20f739972",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "35302ff1e4ed4433a0f15dd32d950ffd96a62ce99c7595d0ed2a2eb8d587c54d",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "cc9128443d013fdd280eda5f1a2305d2a2b39080b5498c315b0dd6c216d8a54d",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "ce579653ee7c5ded2068ff514b5e2b8b6759d72686628364c9c2c029f30d9064",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "2eff0606f886f9986028c572bbf2711c2ae8f4609fcddf44d6985077c227f3dd",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "e664c258a3c5410c2641b9800f52615f9c850abba4fc026bf15bf1ead776f5c3",
+      "reason": "ui/src/components/ai-connections/AiProviderSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "ddf2f0730156fec011065dd79f2d9a412191c7906a01cc76e52d5e2698051037",
+      "reason": "ui/src/components/ai-connections/ManagedAiConnectionDetails.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "601c34a389566d6502e91a56867dd9f167ab221519eb5ec024a2b283dfdb4306",
+      "reason": "ui/src/components/ai-connections/ManagedAiConnectionDetails.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "382b59e1bab0127e129c5d39dd228aef96aac3cfc445add10ee1cd640abbdc56",
+      "reason": "ui/src/components/ai-connections/ManagedAiConnectionDetails.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "9d16267474ab6f531b283d70b6f42036c53a83821d1fbe4c8b578e696d7d3a59",
+      "reason": "ui/src/components/artifacts/RichArtifactCards.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "113a270bd2f113f7f74a877b60287482132daf213fe7ccca38306417fc270306",
+      "reason": "ui/src/components/artifacts/RichArtifactCards.tsx: Размер изображения, длительность и размер файла с разделителем; исходные значения media metadata не переводятся."
+    },
+    {
+      "id": "d3f22c769a96ed7bc568ac5a9d191e59104e72030ad70304a169352398b2f222",
+      "reason": "ui/src/components/artifacts/RichArtifactCards.tsx: Размер изображения, длительность и размер файла с разделителем; исходные значения media metadata не переводятся."
+    },
+    {
+      "id": "7edce1a984d18ab5b600f4d6b979c8cc2d1f330475347e577acd97544b890271",
+      "reason": "ui/src/components/artifacts/RichArtifactCards.tsx: Размер изображения, длительность и размер файла с разделителем; исходные значения media metadata не переводятся."
+    },
+    {
+      "id": "54eb240ab7025f94b65066bf5a7b9682633fe349df5d24f82a8318521aea3fbe",
+      "reason": "ui/src/components/artifacts/v1/ArtifactRow.tsx: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "2ea0999311f8b66271ed03b5568350d0dc058fa9ab86606ef6e5223a0034f153",
+      "reason": "ui/src/components/artifacts/v1/test-subject.ts: test-subject.ts импортируется только ArtifactTile.test.tsx/kinds.test.ts; An artifact — название тестового объекта, не production copy."
+    },
+    {
+      "id": "dc4a16cb19ed8206269cbbad5e8fec6379c6c2f5aa2ff72d791f7e316631b39a",
+      "reason": "ui/src/components/cases/CaseHandoffHistory.tsx: workflowTransition.from.phase — имя фазы из пользовательского workflow/данных handoff; показывается рядом с именами переходов, не app-owned enum label."
+    },
+    {
+      "id": "39ba4b24d824243ca53d158345b42819c0d49dd3eb5a3c021eee269e6ae35e86",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "a574d1d29861dd3f63df208e3ea40fff7efafd6db9b00108af4b5ddd2d40271a",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "d9af0050c0b76ba248a781135c8ae90f2ecdca43fd814ceb87ed4fb20e015026",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "1a9df95bbc5b186ba9f6a080e792d8c6b3266c28e9b84b55a86ff0e0395bc817",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "18de547fe4b6d7c01a89ac9a58c17b35e7e3f80f78a442dee4a04eefa0bbb102",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "4cf4bbce1c8f1136f3ab2dbc309da43ca722184437d5c66df52b48fd22fe280f",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "e1aecb2fef920ba9a373fbaa871bb934aac22f8af16aae5e238dad3c186aff48",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b91c6055b20c28252b16af3f8008b21bdb5ed593e8de61e889ef194445439970",
+      "reason": "ui/src/components/chat/ExternallyConnectedTaskBanner.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "34e8a2ded347cf5bfc35b1a6aa8043f8925259f4144a93d6fa6570af6671ce74",
+      "reason": "ui/src/components/decision-models/DecisionModelSettings.tsx: DecisionModelSettings уже выбирает connected/needsAttention через fullSharedTailT; decisionModel — исходный model ID."
+    },
+    {
+      "id": "15f691e86b2692a63ec631a2d6fdfe4af3b90b49fae84de0a25ce797072c7c90",
+      "reason": "ui/src/components/decision-models/DecisionModelSettings.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "f09334e2d8b30ddba02a77b6cf89fa7001647f118eb8deeee5150a909086b79a",
+      "reason": "ui/src/components/decision-models/DecisionModelSettings.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "3f5b9e64c9de16bdb1264a4192bf1567b5af9fdca75445f1a0965c70e4dcb8b9",
+      "reason": "ui/src/components/environment-variables-editor/CreateSecretPopover.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "ccb7fbf64354d2071fb4fbb22b3da182120a9f0876c85e6773df0cb88e8e9d6a",
+      "reason": "ui/src/components/environment-variables-editor/Row.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "69fb566986e6255750a5d4ae5ef482a59699dd241cfc33cc06154c10cb030968",
+      "reason": "ui/src/components/environment-variables-editor/Row.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "802e527ca1d22db2c35efb4a66c322173d68e13d4a33ce5d23a6a78a56f51403",
+      "reason": "ui/src/components/environment-variables-editor/Row.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "c23b528f9b28eb2a69299ff4c33252f891cf49c849984a143efe46636bdfbf13",
+      "reason": "ui/src/components/environment-variables-editor/index.tsx: EnvironmentVariablesEditor строит строку из уже показанного aria-label/textContent для определения clicked element; это служебный поиск, не новая UI-подпись."
+    },
+    {
+      "id": "c44c35e6cef65756cc4ed8e2b5b695184ba6056cd2e9fc1018294dc5f512b661",
+      "reason": "ui/src/components/issue-properties/IssueProperties.tsx: Исходный identifier/title связанной задачи в chip/confirmation label; пользовательские данные сохраняются."
+    },
+    {
+      "id": "2c9dace6aa024a572374bd795c7e67cd8c8a5c1a8f82ff031ab8bcbd9d06dded",
+      "reason": "ui/src/components/issue-properties/IssueProperties.tsx: Исходный identifier/title связанной задачи в chip/confirmation label; пользовательские данные сохраняются."
+    },
+    {
+      "id": "f906c76ff7e27b4143b919822e46dbead7eaad41aef42c6e612d0fd9d25e0f02",
+      "reason": "ui/src/components/issue-properties/IssueProperties.tsx: Исходный identifier/title связанной задачи в chip/confirmation label; пользовательские данные сохраняются."
+    },
+    {
+      "id": "604ea1bc682cd1ada7335ee7c08fdd243fc01b6234d01f13b1f20d0faea9dfdf",
+      "reason": "ui/src/components/issue-properties/relation-controls.tsx: Исходный identifier/title связанной задачи в chip/confirmation label; пользовательские данные сохраняются."
+    },
+    {
+      "id": "30cc2f36fe089e6fa87338d109e27baa7671a48cdaf55c875b215f4456747909",
+      "reason": "ui/src/components/new-agent/AgentBasicsDialog.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7ee3a84eed52b44ccdf9ebb05e4f1277c62ccdada7007b58ce364b4405e2b297",
+      "reason": "ui/src/components/new-agent/AgentBasicsDialog.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "a55d295344957a7738a59cdedfd7da0e094b43e342b5360ad15285c59f5a1d99",
+      "reason": "ui/src/components/new-agent/ExternalAgentInviteContent.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "e5299651cd324f685f0d306093ed41d018ad7384ca0bcc035a2ba1bd9548b6e6",
+      "reason": "ui/src/components/new-agent/ExternalAgentInviteContent.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "78184a6f73a5806cc164050b21769e41d757cb87e621c6bdfc295c7798c797c3",
+      "reason": "ui/src/components/new-agent/ExternalAgentInviteContent.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b92d971c2744205f76fb76ed0272ccaf580b1c7a06bf80801e65b0d0c1438bde",
+      "reason": "ui/src/components/new-agent/ExternalAgentInviteContent.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "518ae8bacb43fdf6f047aea8dad35f954138043d3640fc1ce50f5dcbfce9592b",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "32cccaa8e65cb088dc9c8060aed7fd919146bfef3a4b6c60427c780d76a3111f",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "2c64461e78ba4720adcd49d4aea75f8424b300efc6a0becf7d7ee3e2e9cdc63f",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7aa80f59e3264cba41e511ff9a4af8a08afbbe75b256154ade584851b8000728",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "8bfb230a5d9a3b6a974a515abb73e99fa0ef916a88865478452f7bbfb5d3d659",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "c1b2fbe676ff30c12ee9a1246960f8b7f1ee6959c22dc1102b89544f6c39732b",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Пример base URL Hermes Gateway; технический endpoint для подключения."
+    },
+    {
+      "id": "12fa0c3f2a1b7f7bd2727c31daa08635c9b25f311729ea2e74a96064b7a17b6f",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Значение model/provider/protocol option для настройки Kimi/Anthropic/OpenAI; сохраняется точное API имя."
+    },
+    {
+      "id": "cfed3faeeeec1391ac32308a518933b4a2a57e4faa71833d38e7fb66bf0f054b",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Значение model/provider/protocol option для настройки Kimi/Anthropic/OpenAI; сохраняется точное API имя."
+    },
+    {
+      "id": "d9560cd2c61c59e1a1fad6e42bfff2a8cc9243ac75eb1e2e7870dc54c1f44be7",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Значение model/provider/protocol option для настройки Kimi/Anthropic/OpenAI; сохраняется точное API имя."
+    },
+    {
+      "id": "52358ef157e345a6ded9480d208c7f311f813ce6c4502975c03232cbe53f59af",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Значение model/provider/protocol option для настройки Kimi/Anthropic/OpenAI; сохраняется точное API имя."
+    },
+    {
+      "id": "b4927897035c9ac0048b85c55cbb4cf582a6fead0f81ee66edeeef2ac4961167",
+      "reason": "ui/src/components/new-agent/NewAgentSetup.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "e17ea02df015c7d3882e6032eba01bc90807356456dd6db97d976a7e6cb5cb13",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: AgentObservabilityCapture config keys; видимая label функция вызывает t(companySettings.observability.capture*), а ключ сохраняется в payload."
+    },
+    {
+      "id": "23452045d62acc071a3590ea50757833ea7f12270bd989332a5b6ee75d9fb93f",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: AgentObservabilityCapture config keys; видимая label функция вызывает t(companySettings.observability.capture*), а ключ сохраняется в payload."
+    },
+    {
+      "id": "ed3b292331e8e13d926b8fc8fd72c1872244b7e0e3fb2055599e6b354399c44c",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: AgentObservabilityCapture config keys; видимая label функция вызывает t(companySettings.observability.capture*), а ключ сохраняется в payload."
+    },
+    {
+      "id": "310f8e131153c94cb22a60f72f77095aa7c68af9d2faf05331ff69b30f2fa371",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: AgentObservabilityCapture config keys; видимая label функция вызывает t(companySettings.observability.capture*), а ключ сохраняется в payload."
+    },
+    {
+      "id": "70d14225016e5f97bee1ca45a1d932cd071138db9d63667b42b6378409395b3c",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b1f866270fee43012025684fda4e88dc4c781a97d496bc91b5b29d225cd4d8fe",
+      "reason": "ui/src/components/observability/AgentObservabilitySettings.tsx: Пример URL/WebSocket endpoint или репозитория для конфигурации подключения; схема, hostname, путь и порт сохраняются."
+    },
+    {
+      "id": "08cefb2238c8bad77d34bdd3d84bbe1112bd624ec0548e2e952e1d9ea071d129",
+      "reason": "ui/src/components/onboarding/ConnectModelPreview.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "13f26030a656e6e10d3c75d56e85984e098ae005064a47a0bc8c22e1f0c47b4b",
+      "reason": "ui/src/components/onboarding/ConnectModelPreview.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "a83c99ddb797fa3e6019b55eea79f9f9b525ce8c3ca41beb4a84a10cc500c137",
+      "reason": "ui/src/components/search/MatchSourceChip.tsx: Tailwind CSS utility-class constant (цвет/скрытый label/match chip); содержимое не показывается пользователю как текст."
+    },
+    {
+      "id": "6586bd3aca10eb06702cb616d5b03c696e280084f4698c551d970658e5047a60",
+      "reason": "ui/src/components/side-panel/SidePanelFrame.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "b1c05dbdc312111689bc2b4652349b4125643f527ec5541d07c66a879b069cf3",
+      "reason": "ui/src/components/skill-studio/AgentsUsingSkillDialog.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "7b1adcf5b58f6ef1c358f9c62e10bc70cd0ce7eec948c0fc050bcaf90ed22183",
+      "reason": "ui/src/components/skill-studio/AgentsUsingSkillDialog.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "dbeb06b49a6b3737e4d0b17582c360c9f54e4852583812610fd3130f8ec2a057",
+      "reason": "ui/src/components/skill-studio/AgentsUsingSkillDialog.tsx: Пунктуация вокруг sourceRef/версии с пользовательским label; идентификатор и название версии сохраняются."
+    },
+    {
+      "id": "ad68c949aea5a35a066f8e96ad834ed6fda7d9ad5d087a616bf85b95355a9989",
+      "reason": "ui/src/components/skill-studio/AgentsUsingSkillDialog.tsx: Техническое обозначение v+номер версии, включая placeholder неизвестной версии; не английский текст."
+    },
+    {
+      "id": "2b11fffea6112ccefc33379e368a71b79131c9f0eee77b09ba3a989950d5721d",
+      "reason": "ui/src/components/skill-studio/SkillsToolbar.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "1add0a5e1c7f9250e61b5f8948aa09dffe74b00a007644e22e1c5dbe2dd02947",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "206b9f633880ee3b5e4867dc9b81abeebca01864adedd230f1e4bb27c8b90ad8",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b38a6952d09d36edebeebb2a1a8630a90ff423a1a3c9a425f7af96df1a90aaf8",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "e3012980dd2a040fcaa14e35d3ff3054005d36d39b2f631b8ff8e23de382fce1",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7d30303ddd097676ae7feb756cb4990b5bf64398b28223e2f58ffa305071b993",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "20550dd7675089d488c573b4e0630d33122b1534e607b5f8aa964d191542557d",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "090c6dd1a809a332fd6af16663feb7bea1cc1a6e3752b2c238e6886a90fe8ecd",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "ea3c0d86a070f65efac180d003f4dea0f7fd0c0c4b5540cbf37948f4838fe2f4",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7d36b8a33086a4e971fcee8e7dbe7c9b0ce60280b320c29d7d543946f515d380",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "300b1f3870d7d12d7b89b492f71b79223f696ddac78f58193257e1c759792218",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7628b8b617af6df408d1c80a3cd2267649b3d822d08913d9f7c4025ef784c803",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "64b8b1ae6e05074793e803008e3c3d426cd3e1f09a35924fc55b699021f2605e",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "7b8cbbd0c17d2f178437b80dd33f3cfc7432505aa113835b750aafbf3f952ddf",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "662ed1b1151f9c8ccc672456128419741797ab4a80906ac9aabd2b5b1fc66900",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Аргумент renderAssigneeIdentity trigger/option задаёт режим рендера; не display label и не значение пользователя."
+    },
+    {
+      "id": "9a0090b1c203b5fad1845c173b18af64badc6a43d53592ec57967708c95bb853",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Аргумент renderAssigneeIdentity trigger/option задаёт режим рендера; не display label и не значение пользователя."
+    },
+    {
+      "id": "753bade49429dfb6207c6029016111f3107822cafad2cd3f6a2c5a35ac3985bb",
+      "reason": "ui/src/components/task-chat/ComposerRunSettingsPicker.tsx: Аргумент renderAssigneeIdentity trigger/option задаёт режим рендера; не display label и не значение пользователя."
+    },
+    {
+      "id": "6e9ccbd9bd5b95dbbe3f8b6da5aa260894221097acf52b4a949bcd370ad59e21",
+      "reason": "ui/src/components/task-chat/RichWorkProductCard.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "142d4a3d86a75cfd91c4a1b529a5cca85554b6c40a0a735e85c2f6b3af68bd3a",
+      "reason": "ui/src/components/task-chat/RichWorkProductCard.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "c220362b8fddeabd020bcbbb187eadd2fedb8aba317b2f4e5735ebd332b71ece",
+      "reason": "ui/src/components/task-chat/TaskChatBlockerLinks.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "82e21f699ff048d58dd0895039e1fff767325bd330cb4f119f59600aede5ed00",
+      "reason": "ui/src/components/task-chat/TaskChatBlockerLinks.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "bc7cf0ff85f623edf7f6385e5bf42d8436dd1060b1b50536c7b029783d1da3ee",
+      "reason": "ui/src/components/task-chat/TaskChatBlockerLinks.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "75941535319648c497d2c6ad0fbe5354631ea8c7dd1c85591b5c8d711cb63d7a",
+      "reason": "ui/src/components/task-chat/TaskChatBubble.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "78b616cc7c132018744a93ce7a9d0f9e043d067b1364f77e2bce86381f35625b",
+      "reason": "ui/src/components/task-chat/TaskChatBubble.tsx: Verification caveat reasonCode из Runner/provider data, показан рядом с literal command/check; диагностический код сохраняется без попытки переводить произвольный текст."
+    },
+    {
+      "id": "4baaa22b18bc66b7a61cbc703bd5bcc8bc32cc11d2c74d2727f9627e219d1877",
+      "reason": "ui/src/components/task-chat/TaskChatCompactInteractionCard.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "26afcbca2c0559e795471f6e1971e52841694b9de831960cf02f51853aab1e4b",
+      "reason": "ui/src/components/task-chat/TaskChatCompactInteractionCard.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "3ffbe7f64d42c95574e77af3c37ef934cf1d1375d4feac9e5419159e61b9956d",
+      "reason": "ui/src/components/task-chat/TaskChatComposer.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "daa303276125472f1c8092a1b15d84ad1d39d726db66478b04522ce5cd49290c",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolActivityRow.tsx: Исходные previousPath/path с символом переименования →; имена файлов не переводятся."
+    },
+    {
+      "id": "92a8c27551ca87584452ce861f1f3b74a2d95230d06761394f1fdff028a5d0ab",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolActivityRow.tsx: Исходные previousPath/path с символом переименования →; имена файлов не переводятся."
+    },
+    {
+      "id": "a7085b638a2919c79ef80242eb6044d9261ff8a8a73e0c569cf58929aca2cf8d",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolActivityRow.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "1d23b31ed1584a025684737f2a5b3c60a02d0f8e47b059e81c3f09c11b2f9f6a",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolActivityRow.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "2fe1fbcc06708b69f62a95540c16183176a80acbdb642bbe15f7b49fe4ec6295",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolCard.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "6c5e9772395a18de7c673ee3d3688ab0b57d60c739158b38966d25e10e8659d0",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolCard.tsx: Числа, проценты, количество JSON entries либо +/− строки diff; математическое/структурное обозначение, а не английская подпись."
+    },
+    {
+      "id": "19975b9ddbb90dad73c0fe346485bcb5e64210c95b2cbe10d8cc153374742a3a",
+      "reason": "ui/src/components/task-chat/TaskChatProtocolCard.tsx: Исходные previousPath/path с символом переименования →; имена файлов не переводятся."
+    },
+    {
+      "id": "c1d00b84d496ef42c7bcf8d4eb609348e6f800357733592cb4537ff464af74fc",
+      "reason": "ui/src/components/task-chat/TaskChatRunnerActivityGroup.tsx: presentation(item,active,t) получает живой t от ActivityRow внутри TaskChatRunnerActivityGroup. Thinking — optional English fallback; видимый label использует runUi.activityGroup.thinking/runUi.thinking.settled."
+    },
+    {
+      "id": "6efb4f7ecbc86d11ff68cfad447498f1c0b468e9aa32447f2a62d26d70a5abe8",
+      "reason": "ui/src/components/task-chat/TaskChatTurn.tsx: turnSummaryText optional English Worked fallback; production TaskChatTurn использует useTranslation и t(runUi.turn.worked/stopped), метрики вызываются с t."
+    },
+    {
+      "id": "b0aecad7676c649e63b0c7a51ec4022810f998f998f8042e3ba0c284bb861b59",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "16e4cc59f97591511eaaca9c32e20ac722a2fbde61b6ca6de2abf6d2fbd76458",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "20d3c37cc22a52710f6fb33bc9e2897affdd1e55ddf3888a64aba85af825be88",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "c8d201b800a81756163fdbd04ac822e680aaefff810375d634460bade9605198",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "e7f732cb104388499e52e69dda0951f5654026d61ae51a7c6e4514987cd54883",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "cdd41b059b4c02ccff77effd771c67547bdad12ac0e278e265c3dd86b7f692e6",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "a5785b7dba96298199d1dd7906b2def153287360156c82b918e8eafa71710cab",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "1671916e2162d5b691a5e31f972ab7b2633794870ea708f27fd8d062852cb3b7",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "8705a51a023b7838ae3a6bf84b01fe98557bdc8dc82e879ddf92daa5c4a5a7e8",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "aa2b96318c9a1beaac8d78a2e4bbe21f2adcae2c6abab0b7f066a7f5149cd490",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "8710a0a622ca9f4468bafd81ff43b96a199be54fe13b33a587836ee2e258286f",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "a7debe0f87bab91fb98add3dcc5b117b16e0e57a3d5309d19804e7cad24dd644",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "3863721201a0d6289e8795663a171e68fb5c7822613a1ab3565804caa4ebbb6d",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "b01124be35703a305fcde82d2e6fd56f9b03d52f6bc4a90b450bf6a9bc5e2447",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "97f1fed5be10ab0e8bc81be6dcf17ca09e47c8f732346855536cd72050ac0bde",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "e3a6d9ba4082acd3de14f9b13273734aa18d21e6d1848101983ca0ecd681473d",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "eec46f110f7588e8929c546659702226f889b867b3bc2638be1f35656c83817c",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "6c8d6e94653f098352326df23200c12e5effb284d070c9330b7f148612fb66d3",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "c8ee111b557d6e120c8c4416ca8915700f7c0b3566cd55067752cad38a5f99a2",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "a6ff63bf35b7d60c5e8f291a9f9b0e07d35f2e7e44a420262cabda0ee14fbd75",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "ed0c3d90c8161208948bb618d8f34e54637b824edb9526ded373f95fdc36acf1",
+      "reason": "ui/src/components/task-chat/completed-activity-summary.ts: Raw completed-activity category labels сохраняются для compatibility; completedActivitySummary(...,t) маппит собственный code через summaryLabel и whole runUi.completed.more. Живой TaskChatRunnerActivityGroup:333 передаёт t."
+    },
+    {
+      "id": "dd7c58bbc26d25de14f2a65dbf6431e34b674b7b74046071762ac194fe58e886",
+      "reason": "ui/src/components/task-chat/motion-tokens.ts: Имена CSS easing presets для motion controls (ease-out, linear, house preset); обозначают конкретные кривые анимации, не обычный UI текст."
+    },
+    {
+      "id": "84cc06171ba4d7cfeaa83091c0adc5f31abc12c1134c5b5783a61d42512e512f",
+      "reason": "ui/src/components/task-chat/motion-tokens.ts: Имена CSS easing presets для motion controls (ease-out, linear, house preset); обозначают конкретные кривые анимации, не обычный UI текст."
+    },
+    {
+      "id": "e0d9ad4946391e93ccb68a7696e33fdde87f72faaa2a0b14d6db3f3102546315",
+      "reason": "ui/src/components/task-chat/motion-tokens.ts: Имена CSS easing presets для motion controls (ease-out, linear, house preset); обозначают конкретные кривые анимации, не обычный UI текст."
+    },
+    {
+      "id": "4e1fcd82adc1ccec0e53ea4f5681bb4eba48a62aa34cfcf21f24fad7e03e4763",
+      "reason": "ui/src/components/task-chat/motion-tokens.ts: Имена CSS easing presets для motion controls (ease-out, linear, house preset); обозначают конкретные кривые анимации, не обычный UI текст."
+    },
+    {
+      "id": "77dc0a6fe430c606c143e1d5cae264b549784d9c5d0af9b273f9afc657d9eee1",
+      "reason": "ui/src/components/task-chat/motion-tokens.ts: Имена CSS easing presets для motion controls (ease-out, linear, house preset); обозначают конкретные кривые анимации, не обычный UI текст."
+    },
+    {
+      "id": "58d40309b083a4b187604b5981576bf90f04e054f965cf4d3f41452c271ae390",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "11030583fd7840c5088d3ab4e149e0e8765525637fb31c4fd4917dfcab02804d",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "8dbd0714c6cd07b972c8f192166e352436f6507dca6786b6ef0668b80cf97f95",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "8fccdcf95c6588bd6278889a33fc4bc73bff6dfe0b0166f24c5a3e9b19a58198",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "d71f425bb31c74213f887163a80240434536d44d2e55df62da202d5a9b1054d8",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "73605907ee231bfc29a5b6078c6c0c521f4f7777259d1329dc1e4df65a9fbbfa",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "51910a7ece570f7799c11b833a626edf41ae9f8b8e7f385b0963b0218a61bdec",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "e3730003cfe4a49a4c9aa1b2b4cdc5a0a1e77b6a51f4c9112a7fc4b311414130",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "d0d2e92981e631202c72f8fc76609c8d634dd8eb731a91d60993807dbc7e04df",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "a08bf0a84c49fa0e31c6664cbdb5b5bf9faebbcf1b702ca9908e200e4a8edd7c",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "4315f5398ce9bace299b75436ef9e17da4c3b9612ba486aa77d929d9ea22ae70",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "7196ed20feed5c3a277e3587506cd8757a96e9c300ad86564fc1e72417fd4ca1",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "94fcc55778c898c0b036263c5bfcbc2e68280ed71f29b25b7e45b2d942db77f7",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "78683f0123b64e22e875a6c6a4da813bc8612ac49551efb9e47bcf2c543f7c8f",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "46b660dbb91490fa76fe78a98f86ea47b511e2c06fd0d0a73c3bb0765615576f",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "755e2bde3a44857a95cb13f81f2a8f70db62996474e334b1038ac70c6326e72e",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "ba2f60e88d02e2761b3bb824257e3404b63557857243a211e67039712309ea06",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "e0820ba25199446506453649ab2f4813ffe92aeca8d1461e3699df60fae3c30c",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "12047ef41283ef57222b688584adb919461de7a06f74a74ac33606d198fe73b9",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "c4008a1eb486ead110e5f835e920237654780b5a52d16eda9e2277d76fda3cca",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "b52298d4c4b3b395c50ed1900c39903d256cb06c9f0e4d38695af6a2774863e5",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "255b5bc0486440f9f9e6647a8b59d695ea44627b44c8a52b8246fbefddba80e0",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "142c430af530364cd461c9b286c9a1579267df9e65c2b66f752dec0294ba4d8d",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "cb7967c9b1e5795d937d6078d4b1d89c1c7ec7d206efe6fb172f58ec23c3dbb1",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "033379f3948b14474a61b6acef0c0297708f1d641bee3a4abd99d7d4efa61c23",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "7c76ac35211731c2a7b9459ae72b9a2a6f3d11a633cb75934a696e9eb09d7285",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "fc54bd2ba6a3ad6d4597b500c3bf2f99c5bda430e94683a0b8bbab6b20c77c41",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "3e4053752551e63b8033da20b468234b5e62f533a5b075334ecdb1d550cc57ae",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "c0e47ae64213ab45001ff2a776d74d93221f7d1c0ed5fafc417d2a9b481e3fa3",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "e0a3988d0d30e20878cc1fbc5002452c33fa1f27e5ce172a0da5cf73fe62f999",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "05ec8b07e5abac7b51821eaa99199e681af5343f5e88b2e7ffd4ed5b7e19e932",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "f6dc2b2339f1b832623602469c482d4e62bd4f2776789e8a517467029968f63f",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "1b3d74153c00f58cf8a696856eb93adf0ec053a6b1a3877a39d34aff1bf66e12",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "f18a30aad159fdf64d493bd605ac9fb2f0ec7014e86c6c6b18dcfce9a73b1107",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "9fe68e194c79c7ef91a30d9a4a8ebdbd83768df8ab1f48b999706bb28493c7c7",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "11da852647292d6383d9e2519f28f31164da38a88ecec3bf7e032ae35b5f3bd1",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "be6f4c9783c1cef8adfa3c5a689a66d974e12e01d95642ee328f1b4cdafeefd6",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "b71bef7ae4a1a9cd14b5bc4895ac76c5687ea1b67b9d4272c0e87cecd18e7952",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "1ed9890b62d56dabb1dd4cd8d585f01cb4660298e48513f8f9c8abeaa18b49fa",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "e16cea66289389c27354fb62c0cfae98f607f3d08945a0d750b572d629afd712",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "77cbc3e4a6fb5bad78b1fa1d4e8246101aaea77f9fde2e401983de2fc4e7f56c",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "6426d0debdb3932b1cb647093259552043ea6aa3f6d46a540c2755f9a662319a",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "0de2b1adee994879cb1c5fb7e2b925bccbb609b6ad28fd0f39f678a7ea8c7bb6",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "90e21328ae0d4f143b2c2d07c22f0c692ce5cce639126987ad6f9862092c64e9",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "efae692e72bf5f0b0c119a4721e20d946bb9ab1cf5ef9f8ae4ea2da1cfc2a32b",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "7bc89089d6d5062f8b223d9c93b14ba136c6bdcc00e6e49f9e18a6a140849835",
+      "reason": "ui/src/components/task-chat/task-chat-attachments.ts: KIND_BY_EXTENSION — canonical FileKind labels/форматы. localizedFileKind переводит File/Doc/Text/Sheet/Archive/Audio/Video/Code/Log/Patch; TaskChatBubble fileKindForAttachment(ref,t) и TaskChatComposer fileKindForName(name,t) передают текущий t. PDF/JSON/CSV и другие format abbreviations сохраняются."
+    },
+    {
+      "id": "efdd8321e8e52f06a8c6310450503bf86e3befaaebb72f0164d6e172d0e50e98",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: GENERIC_TOOL_NAMES — точные provider sentinel names для распознавания unnamed tool, включая ACP tool_call; не UI labels."
+    },
+    {
+      "id": "4520ae88eadc39a5e8a3de71325a611714117fbe1372aa557b38f1f71f166611",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: GENERIC_TOOL_NAMES — точные provider sentinel names для распознавания unnamed tool, включая ACP tool_call; не UI labels."
+    },
+    {
+      "id": "b750f635355d53e957b70b59303ed7d0952ac762e87de746c83a7bbccbdb6689",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: GENERIC_TOOL_NAMES — точные provider sentinel names для распознавания unnamed tool, включая ACP tool_call; не UI labels."
+    },
+    {
+      "id": "0e0f85fd36804c54d515becb8bbe039b5c86190b3ff24c810e4e4c77636c47c6",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: GENERIC_TOOL_NAMES — точные provider sentinel names для распознавания unnamed tool, включая ACP tool_call; не UI labels."
+    },
+    {
+      "id": "894e24c5fb2179d7fb174cf270439e2ac1558323f90b593b707656f02337c956",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: Raw tool taxonomy fallback применяется к canonical tool name; toolActivityPresentation(input,t) вызывает localizeToolCopy. Живые TaskChatRunnerActivityGroup/presentation и task-chat-activity-presentation передают t; provider/tool names не переводятся."
+    },
+    {
+      "id": "fc9a300ecda5738b336a84d4736084c8ebb4196b0555d3237ffc49c783a6b930",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: Raw tool taxonomy fallback применяется к canonical tool name; toolActivityPresentation(input,t) вызывает localizeToolCopy. Живые TaskChatRunnerActivityGroup/presentation и task-chat-activity-presentation передают t; provider/tool names не переводятся."
+    },
+    {
+      "id": "e9bc36e2d764462b1e6b76b6c6b1a4f6259de0ae32077ed337bcf26fb908d60f",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: Raw tool taxonomy fallback применяется к canonical tool name; toolActivityPresentation(input,t) вызывает localizeToolCopy. Живые TaskChatRunnerActivityGroup/presentation и task-chat-activity-presentation передают t; provider/tool names не переводятся."
+    },
+    {
+      "id": "a61f2b84eb13cb7c8e012e2d9fc6c4e4628466558606dd3bc15bed416cbb67c5",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: Raw tool taxonomy fallback применяется к canonical tool name; toolActivityPresentation(input,t) вызывает localizeToolCopy. Живые TaskChatRunnerActivityGroup/presentation и task-chat-activity-presentation передают t; provider/tool names не переводятся."
+    },
+    {
+      "id": "d5ee02e7be42df5fd91ae4bd66e7acf3ed70de8f659e6e16e3b36c00b9b3f611",
+      "reason": "ui/src/components/task-chat/tool-taxonomy.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "9424be77fdbaca9aef453d223c01b2c2af8e4b67a9c281ab732f9d4f2af6eab5",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Fallback Plan step/Subagent имеет явную display metadata planStep/subagent только при отсутствии provider body/role. Протокольные UI formatters используют эту provenance с t, произвольный provider label сохраняется."
+    },
+    {
+      "id": "e867d5e24d0ea558b078e0e01436b0fe0061339b81715204107fbd5a88500e86",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Fallback Plan step/Subagent имеет явную display metadata planStep/subagent только при отсутствии provider body/role. Протокольные UI formatters используют эту provenance с t, произвольный provider label сохраняется."
+    },
+    {
+      "id": "dbf7df36b2c31e1e421c2fbb580001ab1b573228359a31b9c7a363e4aeb637f7",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Name/Transport/Namespace/Operation/Target — canonical detail keys, используемые mergeProviderActivityItem/providerItemDetail для идентификации tool execution. UI отдельно форматирует providerDetail metadata; изменение этих ключей сломает merging."
+    },
+    {
+      "id": "200bb3e6f9d767f275f01b5de285f8a6b6634ecffec9f9906a0b0663100204c3",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Name/Transport/Namespace/Operation/Target — canonical detail keys, используемые mergeProviderActivityItem/providerItemDetail для идентификации tool execution. UI отдельно форматирует providerDetail metadata; изменение этих ключей сломает merging."
+    },
+    {
+      "id": "d6794e28416d2d43c57964bfacf6baffe4ff7ac6ae1aeec78d370b9a3b9e9574",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Name/Transport/Namespace/Operation/Target — canonical detail keys, используемые mergeProviderActivityItem/providerItemDetail для идентификации tool execution. UI отдельно форматирует providerDetail metadata; изменение этих ключей сломает merging."
+    },
+    {
+      "id": "1f66e3b8b605eff6c61a254fa07fe6fb15826786077d6fdb809ed0c25ea59295",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Name/Transport/Namespace/Operation/Target — canonical detail keys, используемые mergeProviderActivityItem/providerItemDetail для идентификации tool execution. UI отдельно форматирует providerDetail metadata; изменение этих ключей сломает merging."
+    },
+    {
+      "id": "3356a95ca154b3c6f570119a5f4ce25fc51c856ce3704ad1bad17eb1d81e0d52",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Name/Transport/Namespace/Operation/Target — canonical detail keys, используемые mergeProviderActivityItem/providerItemDetail для идентификации tool execution. UI отдельно форматирует providerDetail metadata; изменение этих ключей сломает merging."
+    },
+    {
+      "id": "c2a4bc76b4b7552bebdfdc425c6087b796e432b5db5c5e87d06d8d1c481be5ed",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Raw usage label несёт display.label.code providerSessionTotal. TaskChatRunnerActivityGroup вызывает formatRunDisplayText(usageLabel,...,t); накопленные provider usage данные сохраняются."
+    },
+    {
+      "id": "ee7d25be0711ba6973b23027dc4b26e35954f8069db5de4c130d71cda085b796",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "a850387709900bcfd5bac53646904fb176e5b51bdb54a994bda910ec8332536e",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "46bdcc316456e75f887087a49d91ec741b8910b8674cef2346fbad50debd3a57",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "8d4aff39cfaebccc0930cf37c85e23c7039e8d7b6968789905c8c036c26fc1de",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "c5f2b56aa7127aacd6966737eb621d34efbf950a319a4bd93b4ae8cb9b472463",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "d97be4adf3e47353cffa77ae7ca678c14a3717fcf88b67412636e8096c26fbc5",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: phaseSummary сохраняет optional English fallback; TaskChatActivityPhase:51 вызывает phaseSummary(item.items,t) для строгого display.summary.code activityPhase."
+    },
+    {
+      "id": "e4f6e6dd2ae5a007947dac5a0135ea7c740a32b8eb0bc252ea55b310cb158e18",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Canonical compact token count label; форматирование tokens вызывается с t в TaskChatTurn при наличии числовой display.tokens. Число токенов и исходное label не переписываются."
+    },
+    {
+      "id": "65f6f61442dc4606a947640c3c984fb54c707aaed2a6f1d22750b7ec881bce19",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: Canonical compact token count label; форматирование tokens вызывается с t в TaskChatTurn при наличии числовой display.tokens. Число токенов и исходное label не переписываются."
+    },
+    {
+      "id": "753321ad21fb8a01d79be6d109ca4a055e213cb3bda774989ed89235c0961f16",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: deriveRunStatusLabel создаёт display.label.code status.responding/thinking/running; TaskChatStatusPill:296 вызывает formatRunDisplayText(statusLabel,...,t). Raw English fallback сохраняет данные adapter."
+    },
+    {
+      "id": "d44f3db6d3028092ee6334b964ae04e4234d2842084276898c703eb8b8ccfb6d",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: deriveRunStatusLabel создаёт display.label.code status.responding/thinking/running; TaskChatStatusPill:296 вызывает formatRunDisplayText(statusLabel,...,t). Raw English fallback сохраняет данные adapter."
+    },
+    {
+      "id": "b2e6dce67494a75a71c83031a66baa4f02610daab00f2250cc95b716d0d6f178",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: deriveRunStatusLabel создаёт display.label.code status.responding/thinking/running; TaskChatStatusPill:296 вызывает formatRunDisplayText(statusLabel,...,t). Raw English fallback сохраняет данные adapter."
+    },
+    {
+      "id": "84216e78710026998a2b8677173f9e4c22d385e3bec20777f42a7ae36a4ab558",
+      "reason": "ui/src/components/task-chat/transcript-adapter.ts: deriveRunStatusLabel создаёт display.label.code status.responding/thinking/running; TaskChatStatusPill:296 вызывает formatRunDisplayText(statusLabel,...,t). Raw English fallback сохраняет данные adapter."
+    },
+    {
+      "id": "faf59aa46939b7c6e9fdcd3cf30ee96a5c66bf5c012191c3c0526c06164370c8",
+      "reason": "ui/src/components/task-detail/TaskDetailRelationsPanel.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "b75466bd8a88a7385fec15b971c1f83a8d0bf63aa59ce49a90ed2735e971819e",
+      "reason": "ui/src/components/transcript/RunTranscriptView.tsx: normalizeTranscript сохраняет canonical runState/disposition исходного Runner frame; это протокольные данные транскрипта для диагностики."
+    },
+    {
+      "id": "79a1662a28a5d1e306467ebb05019d11ec19fea802ef9914f004d3ca75128e90",
+      "reason": "ui/src/components/transcript/RunTranscriptView.tsx: stdout — имя стандартного потока вывода, сохраняется как техническое обозначение."
+    },
+    {
+      "id": "74c6e0d72fe49595359d8f1db2cb1f1c8497f4981d31677b089b821c642d56e4",
+      "reason": "ui/src/components/voice/SpekoIncomingCalls.tsx: Композиция уже локализованных label/status/action/submitLabel и исходных имён/ID/счётчиков. Обёртка добавляет только пробелы, скобки, двоеточие, многоточие или shortcut."
+    },
+    {
+      "id": "77eb0f58ef658b36264a57a7376c3bd11d14d4f8e8c119539122e748da5644a6",
+      "reason": "ui/src/components/voice/SpekoPhoneLine.tsx: Пунктуация перед названием телефонного номера/линии n.label, полученным от провайдера; пользовательский label сохраняется."
+    },
+    {
+      "id": "1b23100f4fbb7e1e9990f38d747950dcaa96f5f8997e5f05ab81e38e8e2da837",
+      "reason": "ui/src/components/voice/SpekoPhoneLine.tsx: Пунктуация вокруг исходного сообщения ошибки/summary/verdict/провайдера. Текст приходит из API, агента или пользователя, не переписывается переводчиком."
+    },
+    {
+      "id": "a55e126e3e475d6528e0a0f9e1686d7f2fe06950f368d673c32e4ddac8ab7603",
+      "reason": "ui/src/components/voice/SpekoProviderSetup.tsx: Пример имени env/access alias, ключа секрета, token prefix либо agent ID. Это машинное значение для ввода/копирования, не UI label."
+    },
+    {
+      "id": "84dc3b7860f8e001523660fc40bba5d77ba5558d46ab807d4f83843c31b41dd8",
+      "reason": "ui/src/components/voice/VoiceTranscript.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "d712ad0245a5d97809c8359442c518c13f3611a9b4573c4520d53e1f80e6ab52",
+      "reason": "ui/src/connect-flow-preview-main.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "194a9b7d2b0b434b5e8eaa875352999e38d09e7318af8b1d328b6edf8737316d",
+      "reason": "ui/src/connect-flow-preview-main.tsx: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b0e2b13f8ef4460d574566f5b17896c6f0836e03a19f666c17f97c1ba820dd2d",
+      "reason": "ui/src/context/LiveUpdatesProvider.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "fa604d3a29204f748f9a08b5a074b0e508c2a43f3d08ad1de30b04a1db6d201c",
+      "reason": "ui/src/lib/aggregator-app-setup.ts: Generated task instruction для подключения aggregator route: фиксирует provider/toolkit, запрет смены gateway/delegation и ожидание human authorization. Это машинные инструкции агента, не переводимый интерфейсный текст; identifiers/policy scope сохраняются."
+    },
+    {
+      "id": "f183276cacd03b1ff0df029ea38366afb4a6873a7cd9761f56939c1de98b5e8f",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "fc33751ce73387ea11f80b65a79e3c37db3cd64bf1a21683a15eb53e033dcbea",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "fa465d9f6162ae593ddfdf434ecd769dca32266ee418b18c296500bfa96813f7",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "772095843be62b2396608ba9322314e10cf5d548bba92ba3910633268874ff61",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "b2ad39adbd694f594de16153e57f83d63dda3a2555f319df6de31616f0202f1d",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "52bed3e7a3ac2ad49d9000caccb593118acbea7240628b4527cfd3cfcd0eaaed",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "2f45bd495c54b449c95f9b40e086e385fdd199cb8d1ca6eeba23b35c636b6930",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "27a3b6296edddca80e345d2fc54f8c5354efac70bd3d4b993c8814666e8851fc",
+      "reason": "ui/src/lib/external-objects.ts: Бренд, название ОС/клиента/инструмента, API-протокола или техническая комбинация совместимых продуктов; сохраняется исходное написание."
+    },
+    {
+      "id": "6e3dc80a09e8f6d5345cd17290eee0031246153c366d34f2ff211cfe1f9d3261",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "0474b4ac410f3e6d928b0d8ca4d3c0e9393b819af90b52497b5c8de3294828ec",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "8bf093d2ccb314731c12d628ae9d6876700b6bfe1671ea59d2c2ef1c8eca4e8e",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "105206c8cb1fd9e9eafe28a8a72b3e74fd9546639967149626b22225c160cdab",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "26c741a0e3407fd9791f2f463115cc2a72361718c586ac44718b43d022df952f",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "2614e01cd0f369ab3117ce60ab8f48756cf7acfca9357699237c86c221aa9682",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "ec5bbd7bf781ade3b26dc3daefec6e16e02fd2e2c2d09fd9ab0a6ddcec25dabe",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "f78b4d6562c4a6a07d1437f54e9498c419891aafdf35ee0d5c82aa8099947fa5",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "a0e6f53d04988e01af3d97e620c2987bfe44b10f18b3512ab2eb0f17397c9a57",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "efed4e1a8d83e9ec2c3777b131162c4a6e4a2a0aab053e517f72a663deac71e7",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "89c86dd94eea0504e1dbfcfb8798b88585f636028bc2a3a7e84571551be5f2c6",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "4177802539bf11278df6ea43012796442806c2dda61b7ccb14e2bc5a234af97d",
+      "reason": "ui/src/lib/issue-output.ts: Название/сокращение формата файла или код glyph (CSV, Markdown, JSON, DOC, MOV, WASM и т.п.); техническое обозначение сохраняется."
+    },
+    {
+      "id": "67868c9c6c732cfc70811c3d06d991eebb4d5f13a37263e8f336acef80460184",
+      "reason": "ui/src/lib/issue-thread-interactions.ts: Delivery text для answered questions: canonical.header и исходный prompt — содержимое запроса/ответа пользователя, не UI action label."
+    },
+    {
+      "id": "a341aefffbb46dbffa4a5053eef8958847efe5bf48955d74adcbf2bd8ffbc911",
+      "reason": "ui/src/lib/run-log-chunks.ts: TRIMMED_OUTPUT_MARKER_TEXT служит точным sentinel в isTrimmedOutputMarkerChunk (stream/system/marker comparison) и raw transcript buffer. Не переводится в данных журнала; произвольный stdout остаётся исходным."
+    },
+    {
+      "id": "649a4eb16637d3d21f180bfed426b9811954e905ab062536a6fc854be06e637e",
+      "reason": "ui/src/lib/search-query-parser.ts: Токены языка поиска assignee:me/is:open/is:closed; точный синтаксис фильтра, не подпись поля."
+    },
+    {
+      "id": "78a987be33ac873ce4f120994d9f2d78904134138992e28ccb00b8bfaf875ac7",
+      "reason": "ui/src/lib/search-query-parser.ts: Токены языка поиска assignee:me/is:open/is:closed; точный синтаксис фильтра, не подпись поля."
+    },
+    {
+      "id": "c1f382d59c524a8146bca5d37386820bf5cea9f933ce53230981ddc86fa873de",
+      "reason": "ui/src/lib/search-query-parser.ts: Токены языка поиска assignee:me/is:open/is:closed; точный синтаксис фильтра, не подпись поля."
+    },
+    {
+      "id": "30e9976e8024ef1f1434c2873ace5a796d24b63d82fd5faa35974eb7eb7c0b6b",
+      "reason": "ui/src/lib/search-query-parser.ts: Токены языка поиска assignee:me/is:open/is:closed; точный синтаксис фильтра, не подпись поля."
+    },
+    {
+      "id": "a29014d86905e08860e89e28ae89f198497d4987a9b4856a428631c2c95fadf6",
+      "reason": "ui/src/lib/status-colors.ts: Tailwind CSS utility-class constant (цвет/скрытый label/match chip); содержимое не показывается пользователю как текст."
+    },
+    {
+      "id": "cc089d759ac9e78fa38e8138a5b657ace4e11ac4c28933734852b78271c584ae",
+      "reason": "ui/src/lib/task-list.ts: Устоявшийся технический термин Frontmatter/Worktree; здесь обозначает формат метаданных либо Git worktree, не общеязыковую команду."
+    },
+    {
+      "id": "a44b49e4bc0009f5c539e4da3ee13916279e6286c50bee3c157329d70ee18ddf",
+      "reason": "ui/src/lib/utils.ts: Tailwind CSS utility-class constant (цвет/скрытый label/match chip); содержимое не показывается пользователю как текст."
+    },
+    {
+      "id": "8461decb98da88984ba2846051540a6983dc23b331fc78c72f27ccccc2d3b7f5",
+      "reason": "ui/src/lib/vite-sw-build-id.ts: Vite/service-worker compile-time replacement markers __PAPERCLIP_BUILD_ID__/__PAPERCLIP_OFFLINE_STYLES__; не UI copy."
+    },
+    {
+      "id": "31540743b96c6874447af883309f559cb9ad941a0b999a60ef80c6695b65fc2e",
+      "reason": "ui/src/lib/vite-sw-build-id.ts: Vite/service-worker compile-time replacement markers __PAPERCLIP_BUILD_ID__/__PAPERCLIP_OFFLINE_STYLES__; не UI copy."
+    },
+    {
+      "id": "32448b8b3d6e4bf87591ea9f4cf741644a821d55ce3c0880bb072517a06a1100",
+      "reason": "ui/src/plugins/launchers.tsx: Композиция пользовательского имени/заголовка задачи, агента или плагина с identifier и разделителем. Подстановки являются исходными данными, английской UI-фразы нет."
+    },
+    {
+      "id": "b9f38740a1f2aa5e0c835643930a86b1f24061878dfb8d702b014ba3a68ac175",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "c87dae50bcf255446c9704329b24295750d54691fdcefad0d33c68a97284d53a",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "b77656a7b96a006213632fff2858492a0f96467d6a94804a150b9d83ce2bb2af",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "14c01494942483b744149823e53a2df52f65bb482cbf6f03a30fa7fc0b722453",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "2ab34197f35aaf84b24ef41a8358b94cab3c37ef02a8113b432c12869d8ef378",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "89250f0d23edd95a7ebc43de187ec3604f9475622fc16f8e32ae9fca16d6dc22",
+      "reason": "ui/src/artifact-directions/shot.cjs: KIT_NAMES содержит имена дизайн-вариантов для contact sheet в standalone CLI shot.cjs. Это заголовки developer screenshot artifact, не reachable product UI; имена соответствуют исходным design kit identifiers."
+    },
+    {
+      "id": "429c15605da661f3a33d209b9935638e4f5df6aa56c75c7de1957e9b4f89fb95",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "b40205b862d04013729342069654f89376fa59bfe0a02870374e5ce2c34a7717",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "dc926c187f76745d30767da8f190b7b1edd66f5be915c50e55b6918c4ad2ba5c",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "bd81429a393fa9ad73bf7a26cca499d3917addae75e684343ca017d3cc75d965",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "21cd7a8ebe7af61bb622ac9c921feed390e490caf6e527f96442233ceed9e4d9",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "d36c1c4f4912c6e0b16fe3aa12f10229753bfa9663ca950c570e6226065791cc",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "8cfc68d54b5a49ff54e978702ca4746bdbea5a70445c2efb3ae918f2eb81d8e5",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "65d7f367ff5d404b44f6ba12292c32945c3423f38db2ff7ca4a7cd43b6dd9ec1",
+      "reason": "ui/src/components/ConfigureBuiltInAgentModal.tsx: definitionMessages содержит ключи каталога agentConfigUi; ConfigureBuiltInAgentModal:78–80 вызывает t(definitionMessage.name/purpose), компонент подписан через useTranslation. Ключ напрямую не показывается."
+    },
+    {
+      "id": "446ddc5ecec781d146366774e0bdc95ec9f3204547f8f0d3400af89d37cee470",
+      "reason": "ui/src/components/IssueReferencePill.tsx: outline передаётся как variant в badgeVariants внутри classNames; значение выбирает стиль Badge, не является видимым текстом."
+    },
+    {
+      "id": "3f2eb3c747431cb350f4b0a26f8ac49e26fc8c51e5f75506ce3a5009d03cd3bd",
+      "reason": "ui/src/components/ReusableExecutionWorkspaceSelect.tsx: workspace.status проходит locale-aware statusLabel перед композицией; строка добавляет только разделитель, canonical workspace status и option value неизменны."
+    },
+    {
+      "id": "b885a242e6816741757466129014844fabde94acb465b9576ec4125d09b6ed17",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "cb23f82a0706d7d8137af4f980fd3a305e9349df278d20dde791a5fde56f60e9",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "d0ab70d5cf476a310869c17468621073c5ae0cba38d092219abb5d8117eae05e",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "898fa7f9be311f6905604369cb693e97d511e6ffa954e23dce1e4be1eb88a606",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "e07b72cb50a0beec8306a76fa7c6cbc7bdb265708acd9ff71dce8c3490ec8fdf",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "9af0a7814dda443157c52f2a2b5c19a964c92c5e9a17766281d1ca92acc56e38",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "7bad516113bd74ed74d96621a390c80beb9cb142841eded47f524d398c20b03f",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "3a7aa501a1200bfde749eff439d703826976bf21fd790c2c646192d919f82683",
+      "reason": "ui/src/components/chat/AgentChannelsPanel.tsx: providerNames хранит точные имена сервисов и интеграций, включая GitHub Code Review Bot, iMessage Photon и AgentMail. Это узнаваемые названия подключаемых продуктов, не подписи действий."
+    },
+    {
+      "id": "35c7a7fad3546e89bf10b198c2c4d0a213443506dd26bf352fa71f6d2922c722",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "4391292aac8f16bfcb53fcf089e5af665646e08cddc2cc70ae83c534ff3c7b9d",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "fcd5bb9f9c55df8466048a693572bc93cd870639c56b40c9a8f6bf3924136acc",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "e307118f029e171994c65854fd4c85e92f75eb9b4202ac7f5490adaa5ef6c5ed",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "58e385cdef1cc120369fe202b5584fe66736cecdc4d06df7814627fe32d59639",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "b34cb89567ed9dbde2ea5423d7b0860964bab8478eae453ad3852fd7910a1e1e",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "04f1a4b80ddc498fcad62cbf1bb1fde870ee1fe9d5a35d8c76af86011c4fd1ac",
+      "reason": "ui/src/components/onboarding/Stepper.tsx: Экспортированная canonical array сохраняет compatibility/identity; Stepper:112–116 узнаёт AGENT_ARC_STEP_LABELS/ONBOARDING_STEP_LABELS и получает translatedLabels через t. Видимый aria-label:126 использует translatedLabels; OnboardingWizard передаёт саму canonical array, произвольные labels сохраняются."
+    },
+    {
+      "id": "f109f3ee323577f71eced63bd893117bf15bb1ab728101ed82c829f062d85767",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "a7fa98c059bc645f7a3a3e8c4b00611f5c067944a41e29118490bca2d8a8a96f",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "0e2cb7805e2bcd432dcc95b34b98b26050cc9d9e3ba850c8b227a18c1e1995a0",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "1f9391e18f2325606b3999ca653a0426944989dcef2558dc1e0b28d5c4528394",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "0b5175e1ab1e14846657725a2ef8e1020b425b38af87ee5a71384f22f33b9afd",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "65964c20a38ec736d0e3fb8937ec543694138f81d0b227d4376317cb4bc503ed",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "14d022ad7d88a8ed710dba9772bfa4e5363ac79ce14834bcf656d2870295feff",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "487ee3257a5f000a9152a1e209e84e1cd779ecd5d6c588f823d06e8faa6d5cb0",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "fd5555acbde8be0a5f01642444f86e7df106a25ffb68ec8d267d2df6e343b525",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "0918a8c21db0095e6eabab27b3a8f1fa4fc4e9b6e222e79d0c7d22383ef960de",
+      "reason": "ui/src/lib/onboarding-first-task-localization.ts: knownQuestionCopy — замороженный EN/RU текст точных server-owned seed versions. localizeOnboardingQuestion проверяет issue/company/originKind, idempotency и deep exact payload, затем возвращает t(onboardingGap.question.*). Изменение matcher на current translation нарушит fail-closed provenance; пользовательские изменения и raw payload/IDs не переписываются."
+    },
+    {
+      "id": "96466f9114e1486cd8fd0adf42ab7b7682d7f05c54c7fe057e4a8e6f912d535f",
+      "reason": "ui/src/lib/vite-watch.ts: TEST_DIRECTORY_NAMES используется в shouldIgnoreUiDevWatchPath для сравнения path segments с именами тестовых каталогов. Это конфигурация Vite watcher, не UI copy."
+    },
+    {
+      "id": "b1ea9f28f56ec863aab13a86b4eaff3d4276d5b6621a2a3c08aee8562afe8b01",
+      "reason": "ui/src/lib/vite-watch.ts: TEST_DIRECTORY_NAMES используется в shouldIgnoreUiDevWatchPath для сравнения path segments с именами тестовых каталогов. Это конфигурация Vite watcher, не UI copy."
+    },
+    {
+      "id": "e9e30542d51bbf6328548d35c417a6a87ff4353ce5c30ecc5eaea72e23bdc8d7",
+      "reason": "ui/src/lib/vite-watch.ts: TEST_DIRECTORY_NAMES используется в shouldIgnoreUiDevWatchPath для сравнения path segments с именами тестовых каталогов. Это конфигурация Vite watcher, не UI copy."
+    },
+    {
+      "id": "1f8d91be51be933b72473a12e627434f9ee02a0782f6601daa085781612ea107",
+      "reason": "ui/src/lib/vite-watch.ts: TEST_DIRECTORY_NAMES используется в shouldIgnoreUiDevWatchPath для сравнения path segments с именами тестовых каталогов. Это конфигурация Vite watcher, не UI copy."
+    },
+    {
+      "id": "c2b685818ed156680c17fdc1b879397516f35e0d5b97269124269d466ed65586",
+      "reason": "ui/src/components/task-chat/TaskChatRunnerActivityGroup.tsx: Thought — optional English fallback presentation(item,active,t?). Живой ActivityContent:117–118 передаёт t из useTranslation, отображает runUi.thinking.settled. Единственный вызов без t:330 фильтрует null и не показывает returned label."
+    },
+    {
+      "id": "b89460f27db2169d201d68cb06f592f22014d5ffc114b306abaa6b74a41a84d6",
+      "reason": "ui/src/components/task-chat/TaskChatRunnerActivityGroup.tsx: Token usage — optional English fallback presentation без t. ActivityContent передаёт t и выбирает formatRunDisplayText(usageLabel,...,t) либо runUi.activityGroup.tokenUsage; вызов без t используется только для фильтрации."
+    },
+    {
+      "id": "42100ec03c0382f94ac5f22565ac482f4a957d4d1e67dbeea046206324a5e819",
+      "reason": "ui/src/components/task-chat/TaskChatTurn.tsx: Stopped — optional English fallback turnSummaryText(summary,t?). Живой TaskChatTurn использует useTranslation и runUi.turn.stopped/worked; метрики форматируются с t. Canonical helper fallback не показывается в production без локализации."
+    },
+    {
+      "id": "e0e9e8493bb8110d7313d2f9534e3c000becf0a1924a6409ceb8cc2a2c3813cf",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "07ce14082eae0e3aef4e9626ccaff055d45f3d9452abbcb9f215be1612c874a5",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "c351f54ba0ce106ed50732773431f1bacb4c395e1c4520eacc07af422673fdbb",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "5083758400e8c94ea040151a764b6dc35190b1df48874d04b640d8500baab1fd",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "621b7a0cfb1c24af1e6fab27c50f638b5564f2784a9984c33badee9cf09e1b8d",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "9b4f1df57512ffc8dd906fb32e17ec4f1e445867d1c2cb96315cba82156bf4f1",
+      "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
     }
   ]
 }

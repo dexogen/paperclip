@@ -114,7 +114,7 @@ const NEUTRAL_METADATA: SystemNoticeMetadataSection[] = [
       },
       {
         kind: "agent",
-        get label() { return fullSharedT("decisionsUi.date.from"); },
+        get label() { return fullSharedT("fullStaleReview.fromActor"); },
         name: "CodexCoder",
         href: "/PAP/agents/codexcoder",
       },

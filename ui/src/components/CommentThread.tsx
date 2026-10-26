@@ -1,3 +1,4 @@
+import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AgentIdentity } from "./AgentIdentity";
 import { AgentAvatar } from "@/components/AgentAvatar";
@@ -1037,8 +1038,8 @@ export function CommentThread({
                 value={reassignTarget}
                 options={reassignOptions}
                 placeholder={fullSharedT("taskViews.column_assignee")}
-                noneLabel="No responsible"
-                searchPlaceholder="Search responsible..."
+                noneLabel={fullSharedT("taskChatUi.classic.noResponsible")}
+                searchPlaceholder={fullSharedTailT("fullSharedTail.searchResponsible")}
                 emptyMessage={fullSharedT("taskChatUi.classic.noneResponsible")}
                 onChange={selectAssignee}
                 className="text-xs h-8"

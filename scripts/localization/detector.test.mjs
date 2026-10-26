@@ -501,8 +501,8 @@ test("audits copy arrays, toast bodies and inline table headers", () => {
 
 
 test("audits search and loading copy in composed controls", () => {
-  const audit = scanSource(path, ui('<Select searchPlaceholder="Search workspaces" loadingMessage="Loading workspaces" />'));
-  assert.deepEqual(audit.literals.map(({text}) => text), ["Search workspaces", "Loading workspaces"]);
+  const audit = scanSource(path, ui('<Select searchPlaceholder="Search workspaces" loadingMessage="Loading workspaces" noneLabel="No workspace" mobileTitle="Choose a workspace" triggerAriaLabel="Workspace" />'));
+  assert.deepEqual(audit.literals.map(({text}) => text), ["Search workspaces", "Loading workspaces", "No workspace", "Choose a workspace", "Workspace"]);
 });
 
 test("catalog indexes preserve review fingerprints and isolate plural translations", () => {

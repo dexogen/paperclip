@@ -1,3 +1,4 @@
+import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 /**
  * Plugin bridge initialization.
@@ -351,8 +352,8 @@ function PluginSdkAssigneePicker({
   value,
   onChange,
   placeholder = fullSharedT("taskViews.column_assignee"),
-  noneLabel = "No responsible",
-  searchPlaceholder = "Search responsible...",
+  noneLabel = fullSharedT("taskChatUi.classic.noResponsible"),
+  searchPlaceholder = fullSharedTailT("fullSharedTail.searchResponsible"),
   emptyMessage = fullSharedT("taskChatUi.classic.noneResponsible"),
   includeUsers = true,
   includeTerminatedAgents = false,
@@ -462,8 +463,8 @@ function PluginSdkProjectPicker({
   value,
   onChange,
   placeholder = fullSharedT("newIssue.project"),
-  noneLabel = "No project",
-  searchPlaceholder = "Search projects...",
+  noneLabel = fullSharedT("newIssue.noProject"),
+  searchPlaceholder = fullSharedTailT("fullSharedTail.searchProjects"),
   emptyMessage = fullSharedT("newIssue.noProjectsFound"),
   includeArchived = false,
   className,

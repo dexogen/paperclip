@@ -394,7 +394,7 @@ function NewToolsReviewDialog({
                       name={`review-${tool.catalogEntryId}`}
                       checked={(decisions[tool.catalogEntryId] ?? "keep_blocked") === "allow"}
                       onChange={() => onDecision(tool.catalogEntryId, "allow")}
-                    />{fullAppsT("projectConfigUi.properties.allow")}</label>
+                    />{fullAppsT("fullStaleReview.allowTool")}</label>
                   <label className="inline-flex items-center gap-1.5 text-sm">
                     <input
                       type="radio"

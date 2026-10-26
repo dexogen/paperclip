@@ -1,3 +1,4 @@
+import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { GitBranch, LoaderCircle } from 'lucide-react';
 import { SearchableSelect, type SearchableSelectGroup, type SearchableSelectOption } from '@/components/SearchableSelect';
@@ -32,8 +33,8 @@ export function RepositoryBranchSelect({ value, branches, loading, error, disabl
   ];
   return <div className="flex min-w-0 flex-col gap-2">
     <SearchableSelect<string, BranchOption>
-      value={value} groups={groups} disabled={disabled} triggerAriaLabel="Branch" mobileTitle="Choose a branch"
-      placeholder={fullSharedT("fullShared.choose_a_branch_16a1b6")} searchPlaceholder="Search or enter a branch name…"
+      value={value} groups={groups} disabled={disabled} triggerAriaLabel={fullSharedT("taskProperties.fields.branch")} mobileTitle={fullSharedT("fullShared.choose_a_branch_16a1b6")}
+      placeholder={fullSharedT("fullShared.choose_a_branch_16a1b6")} searchPlaceholder={fullSharedTailT("fullSharedTail.searchBranch")}
       emptyMessage={loading ? fullSharedT("fullShared.branches_are_loading_you_can_still_enter_a_name_0f26f9") : fullSharedT("fullShared.no_matching_branches_enter_a_branch_name_to_use_it_b68a24")}
       onValueChange={branch => onChange(branch)}
       deriveGroups={(query, current) => {

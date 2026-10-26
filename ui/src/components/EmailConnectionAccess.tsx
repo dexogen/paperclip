@@ -36,7 +36,7 @@ export function EmailConnectionAccess({
     },
   });
   if (grants.isLoading || installs.isLoading)
-    return <p className="text-sm text-muted-foreground">{fullSharedT("projectConfigUi.access.loading")}</p>;
+    return <p className="text-sm text-muted-foreground">{fullSharedT("fullStaleReview.loadingAccess")}</p>;
   if (grants.error || installs.error)
     return (
       <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.connection_access_could_not_be_loaded_953390")}</p>

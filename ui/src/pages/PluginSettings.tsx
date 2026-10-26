@@ -211,7 +211,7 @@ export function PluginSettings() {
                 </div>
                 <div className="space-y-4 text-sm">
                   <div className="space-y-1.5">
-                    <h3 className="font-medium text-muted-foreground">{t("skillsGap.author")}</h3>
+                    <h3 className="font-medium text-muted-foreground">{t("fullStaleReview.pluginAuthor")}</h3>
                     <p className="text-foreground">{plugin.manifestJson.author}</p>
                   </div>
                   <div className="space-y-2">

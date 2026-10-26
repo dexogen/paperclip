@@ -594,7 +594,7 @@ export function RequiredSkillsList({ skills }: { skills: CatalogTeamSkillRequire
             {skill.type}
           </Badge>
           {skill.resolved ? (
-            <Badge variant="outline" className="text-(length:--text-nano) text-emerald-600 dark:text-emerald-300 border-emerald-500/30">{t("taskChatUi.protocol.status.resolved")}</Badge>
+            <Badge variant="outline" className="text-(length:--text-nano) text-emerald-600 dark:text-emerald-300 border-emerald-500/30">{t("fullStaleReview.resolvedSkill")}</Badge>
           ) : (
             <Badge variant="outline" className="text-(length:--text-nano) text-amber-600 dark:text-amber-300 border-amber-500/30">{t("fullPages.external_59d8f3")}</Badge>
           )}
@@ -2411,7 +2411,7 @@ export function TeamCatalog() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <DropdownMenuLabel>{t("companySettings.governance.kind")}</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("fullStaleReview.kind")}</DropdownMenuLabel>
             <DropdownMenuRadioGroup value={kindFilter} onValueChange={(v) => setFilterParam("kind", v)}>
               <DropdownMenuRadioItem value="all">{t("fullPages.allKinds")}</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="bundled">{t("skillsGap.bundled")}</DropdownMenuRadioItem>
