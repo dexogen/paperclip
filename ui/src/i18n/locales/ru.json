@@ -121,7 +121,10 @@
     "signingOut": "Выход…",
     "signOut": "Выйти",
     "shareFeedback": "Оставить отзыв",
-    "account": "Учётная запись"
+    "account": "Учётная запись",
+    "inviteDescription": "Пригласить людей в вашу организацию.",
+    "documentationDescription": "Открыть документацию Paperclip в новой вкладке.",
+    "signOutDescription": "Завершить сеанс в этом браузере."
   },
   "agents": {
     "filterAll": "Все",
@@ -2297,10 +2300,10 @@
       "willRestore_other": "Будет восстановлено {{count}} задачи.",
       "willRestore_few": "Будут восстановлены {{count}} задачи.",
       "willRestore_many": "Будет восстановлено {{count}} задач.",
-      "willResume_one": "Будет возобновлена {{count}} задача.",
-      "willResume_other": "Будет возобновлено {{count}} задачи.",
-      "willResume_few": "Будут возобновлены {{count}} задачи.",
-      "willResume_many": "Будет возобновлено {{count}} задач.",
+      "willResume_one": "Пауза будет снята с {{count}} задачи.",
+      "willResume_other": "Пауза будет снята с {{count}} задачи.",
+      "willResume_few": "Пауза будет снята с {{count}} задач.",
+      "willResume_many": "Пауза будет снята с {{count}} задач.",
       "cancelTasks_one": "Отменить {{count}} задачу",
       "cancelTasks_other": "Отменить {{count}} задачи",
       "cancelTasks_few": "Отменить {{count}} задачи",
@@ -2312,7 +2315,15 @@
       "wakeAgents_one": "Запустить затронутых агентов ({{count}})",
       "wakeAgents_other": "Запустить затронутых агентов ({{count}})",
       "wakeAgents_few": "Запустить затронутых агентов ({{count}})",
-      "wakeAgents_many": "Запустить затронутых агентов ({{count}})"
+      "wakeAgents_many": "Запустить затронутых агентов ({{count}})",
+      "warnings": {
+        "noAffectedIssues": "В этой ветке нет задач, к которым применимо выбранное действие.",
+        "runningRuns": "У некоторых затронутых задач есть активные запуски агентов.",
+        "queuedRuns": "У некоторых затронутых задач есть запуски агентов в очереди.",
+        "noPauseHolds": "В этой ветке нет активных пауз.",
+        "remainIdle": "С заблокированных задач, задач в статусе «В планах» и задач без назначенного агента будет снята пауза, но их выполнение не начнётся.",
+        "restoreConflicts": "Некоторые задачи изменились после отмены ветки и будут пропущены."
+      }
     },
     "fields": {
       "copied": "Скопировано",

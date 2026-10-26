@@ -68,6 +68,82 @@
     {
       "id": "da06d1581df0ed57107275876f74bf78955f488856eca274dcda561e0a3b346a",
       "reason": "TaskDetailSurface compares the canonical workMode against ask to select a translated mode tooltip. The mode identifier is not rendered."
+    },
+    {
+      "id": "d7efb15dd038742f93a76f2941188d8ef55c47d1353776d2a6e9de94ec2ffc18",
+      "reason": "CsvPreview compares the parser diagnostic against its existing canonical incomplete-quoted-field message. The matching branch renders taskPanels.csv.incomplete; unknown diagnostic text remains literal. The comparison operand is not displayed."
+    },
+    {
+      "id": "e0a5d92936bf84f3357d043090174aa959cba77f076fcb782dfa67c6f9037cd3",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum text to select taskPanels.viewer.kind.text. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "d659823a649d4ebe6490971564ec48bd9a277dce26cf3c52a2c9ea955d856950",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum image to select taskPanels.viewer.kind.image. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "650957df488fa2997040565bca01dd38c1490cd939bec40080cb53b0de46c0fb",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum video to select taskPanels.viewer.kind.video. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "608b95a07433e17802d13e10ee0049e0384319cc8e26c8c1e590236c134e930c",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum unsupported to select taskPanels.viewer.kind.unsupported. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "4ffd6d1af3a6eaa984917e6c8fb8db883b8af254e731d6e15b894870f157728b",
+      "reason": "FileViewerSheet.handleCopyContent stores the CopyFeedback code dataCopied for a base64 payload. copyMessages resolves it to taskPanels.viewer.copy.dataCopied during render; storing the code preserves live locale changes without repeating clipboard work."
+    },
+    {
+      "id": "53fff63b13fa84421fa644ab935e657279fe47a66085e14fb44a6dd45954393a",
+      "reason": "FileViewerSheet.handleCopyContent stores the CopyFeedback code contentsCopied for a text payload. copyMessages resolves it to taskPanels.viewer.copy.contentsCopied during render; the code is not user-visible copy."
+    },
+    {
+      "id": "a1f91eb4efc9ae65722589b30dfb9fcb30537614d493dee237c45a43fcaf5bbc",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind copy to select the translated copyMessages entry. The discriminator itself is never rendered."
+    },
+    {
+      "id": "80c56531f7cbf5b6a44b8aa2c759f139122636eec8abc3f8fc5ce2c88061703f",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind loaded. That branch renders the current load message supplied by FileContentViewer, not this technical discriminator."
+    },
+    {
+      "id": "4ad890ba7495fe4b0be1ebab6a3aef65535cd35858344142dabbdb9d520bef59",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind error before resolving a local translated fallback or preserving a raw diagnostic. The discriminator is not display text."
+    },
+    {
+      "id": "c44ed418380f9a46960a1ea99531a1b7f4c13b20eca6cce15f10137925f39c38",
+      "reason": "IssueDocumentsSection.errorMessage uses the property-presence guard message in error to distinguish a raw server diagnostic from a local error code. It renders error.message or the translated errorMessages entry; the property name is not shown."
+    },
+    {
+      "id": "91aaa8effdc6ee1e7869a501e68230f23df5cb44c08050ef47560d5d8050ff91",
+      "reason": "DocumentCard displays Markdown as the technical format name when no revision is supplied. It is intentionally unchanged in Russian; the revision-bearing sentence uses taskPanels.card.markdownRevision."
+    },
+    {
+      "id": "839e78a553b2d0371434d797f02ed8a23a82bad6b7b7720528687015dc1e0c1f",
+      "reason": "SidePanelTabs compares its live-announcement kind moved and renders taskPanels.tabs.moved with the current tab label and position. This internal discriminator is not displayed or persisted as a translated label."
+    },
+    {
+      "id": "880303def534eee96eaccd4e33b23fbdaa62e204278469d13a7c3b5f3ad7c5be",
+      "reason": "SidePanelTabs compares its live-announcement kind closed and renders taskPanels.tabs.closed. The state code itself is not user-facing text."
+    },
+    {
+      "id": "26a549c63950dd7ab52c49c1f9dc72aa9cddc5637f41c2b17d3637880544bf98",
+      "reason": "SidePanelTabs compares its live-announcement kind lastClosed and renders taskPanels.tabs.lastClosed. The state code preserves the last-tab focus behavior independently of language."
+    },
+    {
+      "id": "ba37794c5ea19961b03e3d5cb0a913e6389b94c50a5e0e48b0de4407ed97121a",
+      "reason": "TaskBrowserPanel.load stores the local failure code disconnected rather than translated prose. The message expression renders taskPanels.browser.disconnected; retaining the code lets language changes update the error without another viewer request."
+    },
+    {
+      "id": "72eee3275856289d40938340f30f7fa635f39793c6cec5d0cbffa3fc4be5a7a9",
+      "reason": "TaskBrowserPanel.action stores the local failure code actionFailed. The message expression renders taskPanels.browser.actionFailed without repeating the browser control mutation."
+    },
+    {
+      "id": "eb3e396473554428f664d9c9316de5a469f517ce6b88a69a579d2e14f0f599d3",
+      "reason": "TaskBrowserPanel.message compares the local error code disconnected to select taskPanels.browser.disconnected. The comparison operand is not rendered; raw browser.error remains literal."
+    },
+    {
+      "id": "5b85ec3ae9dd9d1dd5812c254469cacbb74a1a13f23a01f47bbb097d68a7b301",
+      "reason": "TaskBrowserPanel.message compares the local error code actionFailed to select taskPanels.browser.actionFailed. The comparison operand is not rendered; raw browser.error remains literal."
     }
   ]
 }

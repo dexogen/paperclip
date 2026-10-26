@@ -119,7 +119,10 @@
     "signingOut": "Signing out...",
     "signOut": "Sign out",
     "shareFeedback": "Share feedback",
-    "account": "Account"
+    "account": "Account",
+    "inviteDescription": "Invite people to your organization.",
+    "documentationDescription": "Open Paperclip docs in a new tab.",
+    "signOutDescription": "End this browser session."
   },
   "agents": {
     "filterAll": "All",
@@ -2205,14 +2208,22 @@
       "willCancel_other": "{{count}} tasks will be cancelled.",
       "willRestore_one": "{{count}} task will be restored.",
       "willRestore_other": "{{count}} tasks will be restored.",
-      "willResume_one": "{{count}} task will resume.",
-      "willResume_other": "{{count}} tasks will resume.",
+      "willResume_one": "The pause will be removed from {{count}} task.",
+      "willResume_other": "The pause will be removed from {{count}} tasks.",
       "cancelTasks_one": "Cancel {{count}} task",
       "cancelTasks_other": "Cancel {{count}} tasks",
       "restoreTasks_one": "Restore {{count}} task",
       "restoreTasks_other": "Restore {{count}} tasks",
       "wakeAgents_one": "Wake affected agents ({{count}})",
-      "wakeAgents_other": "Wake affected agents ({{count}})"
+      "wakeAgents_other": "Wake affected agents ({{count}})",
+      "warnings": {
+        "noAffectedIssues": "No issues in this subtree match the requested control action.",
+        "runningRuns": "Some affected issues have running heartbeat runs.",
+        "queuedRuns": "Some affected issues have queued heartbeat runs.",
+        "noPauseHolds": "No active pause holds were found in this subtree.",
+        "remainIdle": "Blocked, backlog, and unassigned tasks will be unpaused but will not start.",
+        "restoreConflicts": "Some issues changed after subtree cancellation and will be skipped."
+      }
     },
     "fields": {
       "copied": "Copied",

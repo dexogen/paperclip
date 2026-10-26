@@ -1,5 +1,7 @@
 import { useTranslation } from "@/i18n";
 import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
+import type { IssueTreePreviewWarning } from "@paperclipai/shared";
 import { cn } from "@/lib/utils";
 import { PauseCircle, PlayCircle, Repeat, XCircle } from "lucide-react";
 import { Button } from "./ui/button";
@@ -73,6 +75,18 @@ export function TaskTreeControlMenuItems({
   );
 }
 
+function taskTreeWarningLabel(warning: IssueTreePreviewWarning, t: TFunction): string {
+  switch (warning.code) {
+    case "no_affected_issues": return t("taskProperties.tree.warnings.noAffectedIssues");
+    case "running_runs_present": return t("taskProperties.tree.warnings.runningRuns");
+    case "queued_runs_present": return t("taskProperties.tree.warnings.queuedRuns");
+    case "no_active_pause_holds": return t("taskProperties.tree.warnings.noPauseHolds");
+    case "resume_tasks_remain_idle": return t("taskProperties.tree.warnings.remainIdle");
+    case "restore_conflicts_present": return t("taskProperties.tree.warnings.restoreConflicts");
+    default: return warning.message;
+  }
+}
+
 export function TaskTreeControlDialog({
   open,
   onOpenChange,
@@ -80,6 +94,7 @@ export function TaskTreeControlDialog({
   scope,
   affectedCount,
   affectedAgentCount,
+  warnings = [],
   loading,
   error,
   pending,
@@ -95,6 +110,7 @@ export function TaskTreeControlDialog({
   scope: "leaf" | "subtree";
   affectedCount: number;
   affectedAgentCount: number;
+  warnings?: IssueTreePreviewWarning[];
   loading: boolean;
   error?: string | null;
   pending: boolean;
@@ -153,13 +169,16 @@ export function TaskTreeControlDialog({
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
-              checked={wakeAgents}
+              checked={wakeAgents && affectedAgentCount > 0}
               disabled={pending || loading || affectedAgentCount === 0}
               onChange={(event) => onWakeAgentsChange(event.target.checked)}
             />
             {t("taskProperties.tree.wakeAgents", { count: affectedAgentCount })}
           </label>
         ) : null}
+        {!loading ? warnings.map((warning) => (
+          <p key={warning.code} className="text-sm text-muted-foreground">{taskTreeWarningLabel(warning, t)}</p>
+        )) : null}
         <DialogFooter>
           <Button
             variant="outline"

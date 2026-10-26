@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current catalog has 1,306 reviewed semantic families, 1,333 English forms, and
-1,387 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 20,068.
+The current combined catalog has 2,431 reviewed semantic families, 2,490 English
+forms, and 2,608 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,990.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -351,12 +351,11 @@ The search repair is published separately in
 tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
 comparisons passed. Unicode capability selection preserves existing databases.
 The recorded 10k-task timing run missed the 250 ms target; query plans and the
-limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The new real
-browser acceptance is still pending; the original failed result is retained.
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The original failed result is retained.
 
 The task-detail/properties and common-editor slice adds 650 reviewed families.
-The combined catalog has 1,956 families, 2,000 English forms and 2,088 Russian
-forms. The baseline removes 563 resolved occurrences and retains 19,505; twelve
+The combined catalog has 1,959 families, 2,003 English forms and 2,091 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,491; twelve
 exact technical exceptions describe enum guards and currency formatting.
 Independent agent reviews found and corrected terminology and two missing
 accessible labels. The actual installed MDXEditor regression first reproduced
@@ -365,8 +364,34 @@ its edited content, DOM and selection. UI typecheck, token gates, focused task,
 sharing, editor and composer tests passed. Combined Linux and browser acceptance
 of this expanded slice remains pending.
 
-Document/artifact side panels are prepared as the next isolated slice. Full
-chat/composer, Activity, and remaining view branches still require separate work.
+A separate search correction at `cd50089b9c09276506293ee75e82e03a7f20746f`
+passed frozen installation, full Russian-default build and workspace typecheck on
+Linux. The real browser retry found Cyrillic titles and applied status filters in
+both active renderers. It then stopped at the language controls: a visible
+announcement covered the standard account menu, and the legacy menu had no
+language selector. No task writes or browser exceptions occurred; owned services
+stopped. The legacy menu now shares the real locale control and translated account
+labels. Its complete component suite passes 37 tests, including a regression that
+first failed with the missing selector. A revised browser recipe dismisses the
+announcement through its ordinary button and records the successful response.
+The complete browser retry on the combined source remains pending.
+
+The document/artifact side-panel slice covers 49 production files and adds 466
+reviewed semantic families (481 English forms and 511 Russian forms). Independent
+agent review corrected two count families for 21/101. Integration verified the
+exact reviewed catalog and source digests, re-examined seven existing drag
+announcements in their tab context, and made six file-link interpolation contracts
+explicit. Nineteen exact exceptions identify technical discriminators, a diagnostic
+comparison and the Markdown format name. The baseline removes 501 resolved
+occurrences and retains 18,990; no new debt is accepted.
+
+The combined catalog has 2,425 families with no actionable localization findings.
+Focused component checks cover stored tabs, browser request counts, pending uploads,
+file selection/copy/media state, and a dirty document conflict across EN/RU without
+replaying mutations. These are fixture-based checks; combined Linux verification
+and real browser acceptance of this expanded slice remain pending. Full
+chat/composer, Activity, advanced annotation tools, and remaining rich-card/viewer
+branches still require separate work.
 
 The detector and sync regressions pass all 47 cases, including conflict cleanup,
 manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition
@@ -374,6 +399,41 @@ coverage. Typed translator helpers now use lexical bindings, preserve namespace
 boundaries and fail on unsupported prefixes. Token gates and map checks pass.
 Static analysis and API-fixture browser
 tests have their documented limits and do not replace real user journeys.
+
+### Upstream refresh through 6336c3404
+
+The next combined candidate includes upstream master through
+`6336c340411809b3a94af1f4a911b30c0275447c`. Two commits narrow bound-conversation
+authorization reads and correct eligible wake targets when resuming tasks. A
+normal merge retains both upstream gates: no selected wake checkbox for zero
+eligible agents, and no wake request for that preview. Resume removes the pause;
+it does not promise that blocked, backlog or unassigned tasks start execution.
+
+The original-upstream detector reports three added source findings and one removed
+finding: separate restore/pause-removal phrases and a technical restore discriminator.
+The existing restore translation, updated resume family and exact enum exception
+address those findings without adding baseline debt. Manual source review also
+identified the server-owned warnings newly exposed by the UI; they are outside the
+configured client source roots. The tracking pin is prospective until the reviewed
+stack reaches the fork default branch.
+
+The dialog receives structured warning codes and translates six known app-owned
+warnings. Unknown warning text remains literal and React-escaped. The existing
+resume count family now describes pause removal in both languages. Independent
+agent review checked the upstream authority/locking changes, all new EN/RU pairs,
+plural case, both wake gates and the unknown fallback. Two complete task-tree
+component tests passed, including the zero-target and live-warning regression.
+A fresh-worktree UI typecheck first stopped on missing generated plugin SDK types;
+the normal SDK prerequisite build resolved that setup error, and UI typecheck and
+token gates passed without a source workaround.
+
+The source is being frozen for full Linux build/typecheck, the complete UI project,
+seven affected backend files, fresh Russian list/detail journeys and the six
+shipped paused/composer-stop E2E cases. These checks remain pending. The Stop cases
+must use the deterministic fake provider and real runner binaries; a skipped native
+case does not satisfy the matrix. English E2E builds must follow Russian browser
+proof because they replace generated static UI assets. Recheck upstream before
+actual deployment; this recorded candidate is not production acceptance.
 
 ### Workflow activation
 
