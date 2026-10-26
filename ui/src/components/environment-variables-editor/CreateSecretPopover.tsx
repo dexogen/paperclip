@@ -21,6 +21,7 @@ export interface SecretPopoverFormProps {
   onCancel: () => void;
   /** Resolves once the secret is created + the row is bound; rejects with a message. */
   onSubmit: (name: string, value: string) => Promise<void>;
+  renderCreateSecretError?: (error: unknown) => string;
 }
 
 /**
@@ -35,6 +36,7 @@ export function SecretPopoverForm({
   existingSecretNames,
   onCancel,
   onSubmit,
+  renderCreateSecretError,
 }: SecretPopoverFormProps) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialName);
@@ -131,7 +133,7 @@ export function SecretPopoverForm({
         {valueError ? <span className="block text-(length:--text-micro) text-destructive">{valueError}</span> : null}
       </label>
 
-      {error ? <p className="text-(length:--text-micro) text-destructive">{error.cause instanceof Error ? error.cause.message : t("formsUi.secret.createFailed")}</p> : null}
+      {error ? <p className="text-(length:--text-micro) text-destructive">{renderCreateSecretError ? renderCreateSecretError(error.cause) : error.cause instanceof Error ? error.cause.message : t("formsUi.secret.createFailed")}</p> : null}
 
       <div className="flex items-center justify-end gap-2 pt-0.5">
         <Button type="button" variant="ghost" size="sm" onClick={onCancel} disabled={submitting}>

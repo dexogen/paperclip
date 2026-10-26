@@ -54,7 +54,21 @@ Automated: [repository persistence](../../server/src/__tests__/project-repositor
 
 Manual: Attach a small repository, save, and create a project task. Inspect the actual checkout/revision used by its run. Test an invalid repository and missing credentials without treating a saved URL as a working workspace.
 
+Automated: [project locale controls](../../ui/src/components/ProjectConfigControls.locale.test.tsx),
+[repository drafts](../../ui/src/components/ProjectRepositories.locale.test.tsx),
+[project-owned secret errors](../../ui/src/components/ProjectProperties.secret-errors.test.tsx)
+and [membership errors](../../ui/src/hooks/useResourceMemberships.locale.test.tsx)
+cover language changes with dirty fields, canonical selections and pending writes.
+These component checks do not prove live repository or secret operations.
+
+Manual: Switch English/Russian while a project name, repository selection or
+workspace policy is unsaved. Confirm the draft and selected tab stay in place,
+then save once and reload. Repeat with an open icon picker and a failed secret
+write; changing language must not repeat the operation.
+
 ### `project-access`
+
+Automated: [access locale controls](../../ui/src/components/ProjectAccessMembers.locale.test.tsx) cover literal names, owner/removal guards and stable member IDs across languages with mocked APIs.
 
 Automated: [Privacy production review](../../server/src/__tests__/privacy-production-review.test.ts) covers persisted project audience changes, task inheritance, and actor intersections. [Privacy controls](../../ui/src/components/PrivateTaskPrivacyControls.test.tsx) covers UI controls and task-cache invalidation after membership removal. These tests do not prove both people’s live navigation.
 

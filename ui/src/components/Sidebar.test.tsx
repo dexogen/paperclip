@@ -6,6 +6,8 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Sidebar } from "./Sidebar";
+import { Sidebar as ProductionSidebar } from "./Sidebar.production";
+import { setLocale } from "@/i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const mockHeartbeatsApi = vi.hoisted(() => ({
@@ -96,6 +98,9 @@ vi.mock("@/plugins/launchers", () => ({
   ),
 }));
 
+vi.mock("./SidebarCompanyMenu.production", () => ({ SidebarCompanyMenu: () => <div>Company menu</div> }));
+vi.mock("./SidebarAgents.production", () => ({ SidebarAgents: () => <div>Active agents</div> }));
+vi.mock("./SidebarStarredProjects.production", () => ({ SidebarStarredProjects: () => <div data-testid="sidebar-starred-projects" /> }));
 vi.mock("./SidebarCompanyMenu", () => ({
   SidebarCompanyMenu: () => <div>Company menu</div>,
 }));
@@ -134,7 +139,7 @@ async function flushReact() {
 describe("Sidebar", () => {
   let container: HTMLDivElement;
 
-  async function renderSidebar() {
+  async function renderSidebar(Component = Sidebar) {
     const root = createRoot(container);
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
@@ -144,7 +149,7 @@ describe("Sidebar", () => {
       root.render(
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
-            <Sidebar />
+            <Component />
           </TooltipProvider>
         </QueryClientProvider>,
       );
@@ -171,6 +176,30 @@ describe("Sidebar", () => {
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
+  });
+
+  it.each([["modern", Sidebar, true], ["production", ProductionSidebar, true], ["modern classic", Sidebar, false]] as const)("keeps %s navigation mounted while count phrases and section controls change locale", async (_name, Component, streamlined) => {
+    mockSidebar.collapsed = true;
+    mockInstanceSettingsApi.getExperimental.mockResolvedValue({ enableDecisions: true, enableApps: true, enableStreamlinedUi: streamlined });
+    mockInboxBadge.inbox = 21;
+    mockHeartbeatsApi.liveRunsForCompany.mockResolvedValue([{ id: "live:1" }]);
+    const root = await renderSidebar(Component);
+    const inbox = container.querySelector('a[href="/inbox"]')!;
+    const dashboard = container.querySelector('a[href="/dashboard"]')!;
+    const reads = [mockHeartbeatsApi.liveRunsForCompany.mock.calls.length, mockAttentionApi.list.mock.calls.length, mockInstanceSettingsApi.getExperimental.mock.calls.length];
+    try {
+      await setLocale("ru"); await flushReact();
+      expect(container.querySelector('a[href="/inbox"]')).toBe(inbox);
+      expect(inbox.getAttribute("aria-label")).toBe("Входящие, 21 непрочитанный элемент");
+      expect(dashboard.getAttribute("aria-label")).toBe("Обзор, 1 активный запуск");
+      if (Component === ProductionSidebar || !streamlined) expect(container.querySelector('a[href="/activity/commentary"]')?.textContent).toBe("Комментарии");
+      if (Component === ProductionSidebar || streamlined) expect(container.querySelector('a[href="/projects"]')?.textContent).toBe("Проекты");
+      expect(container.querySelector('button[aria-label="Новая задача"]')).not.toBeNull();
+      await setLocale("en"); await flushReact();
+      expect(container.querySelector('a[href="/inbox"]')).toBe(inbox);
+      expect(inbox.getAttribute("aria-label")).toBe("Inbox, 21 unread");
+      expect([mockHeartbeatsApi.liveRunsForCompany.mock.calls.length, mockAttentionApi.list.mock.calls.length, mockInstanceSettingsApi.getExperimental.mock.calls.length]).toEqual(reads);
+    } finally { await setLocale("en"); flushSync(() => root.unmount()); }
   });
 
   it("keeps the default sidebar edge borderless", async () => {

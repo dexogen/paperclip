@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, useState } from "react";
-import { setLocale } from "@/i18n";
+import { setLocale, useTranslation } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -638,6 +638,36 @@ describe("EnvironmentVariablesEditor", () => {
     const valueCell = valueInput.closest<HTMLDivElement>(".relative.flex");
     expect(valueInput.value).toBe("new");
     expect(valueCell?.className).toContain("border-amber-500/70");
+  });
+
+  it("passes a late error formatter through the editor and row without rewriting the failed secret", async () => {
+    class ProjectCompanyMissing extends Error {}
+    const create = vi.fn().mockRejectedValueOnce(new ProjectCompanyMissing("Select an organization to create secrets"));
+    const changed = vi.fn();
+    function Fixture() {
+      const { t } = useTranslation();
+      return <EnvironmentVariablesEditor value={{ STRIPE_API_KEY:{type:"plain",value:"raw<&>"} }} secrets={secrets} onChange={changed} onCreateSecret={create}
+        renderCreateSecretError={error=>error instanceof ProjectCompanyMissing ? t("projectConfigUi.properties.secretCompany") : (error as Error).message} />;
+    }
+    render(<Fixture />);
+    container.querySelector<HTMLButtonElement>('button[title^="This value looks sensitive"]')!.click();await flush();
+    const action=[...document.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent?.trim()==="Store & bind")!;
+    action.click();await flush();
+    expect(create).toHaveBeenCalledExactlyOnceWith("stripe_api_key","raw<&>");
+    expect(document.body.textContent).toContain("Select an organization to create secrets");
+    const name=document.querySelector<HTMLInputElement>('[aria-label="Secret name"]')!;
+    name.focus();name.setSelectionRange(1,5);
+    try {
+      await act(async()=>setLocale("ru"));
+      expect(document.body.textContent).toContain("Выберите организацию, чтобы создавать секреты");
+      expect(document.querySelector('[aria-label="Имя секрета"]')).toBe(name);
+      expect(document.activeElement).toBe(name);
+      expect([name.selectionStart,name.selectionEnd]).toEqual([1,5]);
+      expect(document.querySelector<HTMLInputElement>('[aria-label="Значение секрета"]')?.value).toBe("raw<&>");
+      await act(async()=>setLocale("en"));
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(changed).not.toHaveBeenCalled();
+    } finally {await act(async()=>setLocale("en"));}
   });
 
   it("auto-detects a sensitive value and offers a value-preserving Store-as-secret popover", async () => {

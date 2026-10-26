@@ -124,6 +124,7 @@ export interface EnvironmentVariablesEditorProps {
    */
   userSecretDefinitions?: readonly UserSecretDefinition[];
   onCreateSecret: (name: string, value: string) => Promise<CompanySecret>;
+  renderCreateSecretError?: (error: unknown) => string;
   /** Optional "Recently used" picker group + quick-bind chips. */
   recentlyUsedSecrets?: readonly CompanySecret[];
   /** Read-only rendering. */
@@ -152,6 +153,7 @@ export const EnvironmentVariablesEditor = forwardRef<EnvironmentVariablesEditorH
   secrets,
   userSecretDefinitions,
   onCreateSecret,
+  renderCreateSecretError,
   recentlyUsedSecrets,
   disabled,
   reservedPrefixes = DEFAULT_RESERVED_PREFIXES,
@@ -476,6 +478,7 @@ export const EnvironmentVariablesEditor = forwardRef<EnvironmentVariablesEditorH
                 onNamePaste={(text) => bulkImport(text, row.id)}
                 onEnterInValueLast={addRow}
                 onCreateSecret={onCreateSecret}
+                renderCreateSecretError={renderCreateSecretError}
                 onToast={(message) => toast?.pushToast({ title: message, tone: "success" })}
                 focusRequest={pendingFocus?.rowId === row.id ? pendingFocus.field : null}
                 onFocusConsumed={() => setPendingFocus(null)}

@@ -762,8 +762,26 @@ invalid messages, new findings or source errors. Stored content, provider errors
 credential and runner payloads remain literal. Live provisioning and external
 invitation acceptance remain outstanding.
 
-After chat, the remaining major packages are agent detail controls and invitations,
-project details/environments, dashboard/activity/costs, member access/secrets,
+The project-configuration slice adds 300 reviewed message families (305 English
+and 315 Russian forms). Root reviewed every form and eight editorial corrections;
+an independent agent reviewed sidebar, membership and icon-picker boundaries.
+Twenty-four existing message contexts were examined and their review records
+refreshed. Seven precise technical exceptions were accepted; only 278 resolved
+baseline entries were removed. The source remains separate from nested workspace,
+environment, connection-setup and summary-card internals.
+
+The latest complete result for each of 19 standalone related suites totals 153
+passes. After integration with agent configuration and CI repairs, one complete
+25-file run passed 387 tests with no skips on `d0f0329718d83ff5ee860796d4dd40e53aaa83b2`.
+UI typecheck, build, token gates and map checks passed. The strict integrated
+audit reports 6,442 reviewed families and 16,140 existing debt findings, with no
+pending/missing/invalid messages, new findings or source errors. The three JSON
+append conflicts were resolved by preserving both reviewed namespaces and the
+exact union of review records and exceptions. Component tests use mocked APIs;
+no live project or secret-write acceptance is claimed.
+
+The remaining major packages are agent detail controls and invitations,
+project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
 components cover every host. Use the source audit and actual imports to set each
@@ -804,3 +822,32 @@ its unguarded default-branch run failed on unavailable upstream configuration.
 Re-enable it after its owner guard lands; fork verification remains enabled.
 Activation, stack merge order, exact-SHA verification, and recovery are documented
 in [the fork runbook](../localization/UPSTREAM.md).
+
+
+## Native preparer cleanup candidate
+
+The native Stop qualification at `47fbbda95919a7d28e4220d4be6c134aa255094b`
+failed during owned-company archive cleanup. Copy-only database inspection found
+cancelled parent/child runs with process-stop receipts, released environment
+leases and terminal native finalization, but still-live legacy preparer leases.
+The source database remained unchanged. The failed qualification remains failed.
+
+A separate candidate keeps the preparer lease through execution and awaited
+cleanup. It clears only the exact current boot's terminal native run lease after
+environment and process cleanup are confirmed. Failed, pending or unknown
+cleanup, foreign ownership, scheduled resume and finalization retain the lease.
+Existing Stop guards and deadlines remain unchanged. Recovery callers retain
+their prior await-only contract.
+
+The existing assembled cancellation case failed before the fix and passed after
+it. Fourteen assembled cases pass, including real PostgreSQL records and process
+settlement with a controlled executor and an absent PID. Six complete owner
+suites pass 221 tests with no skips. Scoped server typecheck passes. Two agents
+reviewed the four changed source/test files. This is not live Runner proof or a
+full repository verification.
+
+Dispatched work whose process identity was already cleared returns `skipped`
+and conservatively retains the preparer lease. A real native qualification must
+establish whether the candidate resolves the observed parent/child cleanup path.
+Fresh immutable-source build, types, owner suites, fixtures and native E2E remain
+pending. Original failure and forensic evidence are retained through verification.

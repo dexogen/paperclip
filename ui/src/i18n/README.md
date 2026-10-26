@@ -219,7 +219,21 @@ the enabled plugins' message keys and defaults and exercise their controls in
 both languages. The source detector does not scan `node_modules`; catalog parity
 cannot prove that a newer library has no additional labels.
 
-Unconverted task-detail child panels, agent/project detail pages, additional agent
+The project-configuration slice covers creation, the active detail page, project
+properties and access, repository selectors, scoped budget controls and both
+sidebar implementations. Icon searches accept canonical IDs and English/Russian
+labels. Counts use whole plural messages. Project names, paths, plugin/provider
+labels, repository IDs and custom captions remain literal.
+
+Switching language preserves dirty fields, selections, focus, budgets and secret
+write receipts. An optional `renderCreateSecretError` passes the host-owned error
+formatter through the environment editor; other hosts retain their prior behavior.
+Membership error toasts resolve in the language current at completion, while
+backend error bodies remain literal. Component checks use mocked APIs; browser
+acceptance, nested workspace/environment flows, connection setup and summary-card
+internals remain separate work.
+
+Unconverted task-detail child panels, agent detail pages, additional agent
 controls, dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
 pages. Shared child components may contain untranslated copy; the source audit

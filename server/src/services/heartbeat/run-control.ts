@@ -26,6 +26,7 @@ import {
   readRunCancellation,
   requestedRunCancellation,
 } from "../run-cancellation.js";
+import { hasStopOnlyCleanup } from "../sandbox-stop-and-retain.js";
 import { settleSlackConversation } from "../slack-conversation-lifecycle.js";
 import { readQueuedInteractionResponse } from "../queued-interaction-response.js";
 import {
@@ -361,13 +362,13 @@ export function createHeartbeatRunControl(db: Db, dependencies: HeartbeatRunCont
       lifecycleMode: "per_turn" | "warm";
       sandboxResource: "keep_running" | "stop_and_reuse" | "destroy_after_turn";
     };
-  }) {
+  }): Promise<boolean> {
     let leaseOwnerRun = await getRunCleanupState(input.runId);
-    if (leaseOwnerRun && isNativeRunnerOwnershipHeld(leaseOwnerRun)) return;
+    if (leaseOwnerRun && isNativeRunnerOwnershipHeld(leaseOwnerRun)) return false;
     const cancelledRun = leaseOwnerRun?.runtimeMode === "native" && leaseOwnerRun.status === "cancelled"
       ? await getRun(input.runId) : null;
     if (cancelledRun) leaseOwnerRun = cancelledRun;
-    if (leaseOwnerRun && isNativeRunnerOwnershipHeld(leaseOwnerRun)) return;
+    if (leaseOwnerRun && isNativeRunnerOwnershipHeld(leaseOwnerRun)) return false;
     // Recovery can finish workspace copy-back outside the executor's finally.
     // Successful copy-back does not earn warm retention for a failed turn.
     const status = leaseOwnerRun?.status ?? input.status;
@@ -380,12 +381,12 @@ export function createHeartbeatRunControl(db: Db, dependencies: HeartbeatRunCont
       && !nativeRunHasNoWorkspaceAccess(cancelledRun)) {
       try {
         const preserved = await preserveNativeFailedWorkspace(db, cancelledRun, { allowPreterminal: true });
-        if (!preserved || !hasRequiredWorkspaceRecovery(preserved.resultJson)) return;
+        if (!preserved || !hasRequiredWorkspaceRecovery(preserved.resultJson)) return false;
       } catch {
         // Keep the active source eligible for the bounded retention sweep.
         // Teardown must not release it after retention lost a lock or DB write.
         logger.warn({ runId: input.runId }, "Deferred cancelled workspace teardown until file retention is recorded");
-        return;
+        return false;
       }
       providerResourceDisposition = "stop_and_retain";
     }
@@ -449,7 +450,7 @@ export function createHeartbeatRunControl(db: Db, dependencies: HeartbeatRunCont
           { runId: input.runId, warmNativeSessions: closeResult },
           "deferred environment lease destruction until warm native sessions close",
         );
-        return;
+        return false;
       }
     }
     const releaseResult = await envOrchestrator
@@ -480,6 +481,32 @@ export function createHeartbeatRunControl(db: Db, dependencies: HeartbeatRunCont
       );
     }
     await acknowledgeRemoteStop(input.runId, input.companyId);
+    if (!releaseResult || releaseResult.errors.length > 0) return false;
+    if (!leaseOwnerRun || leaseOwnerRun.id !== input.runId || leaseOwnerRun.companyId !== input.companyId ||
+        leaseOwnerRun.agentId !== input.agentId) return false;
+    const leases = await db.select({ status: environmentLeases.status, cleanupStatus: environmentLeases.cleanupStatus,
+      leasePolicy: environmentLeases.leasePolicy, releasedAt: environmentLeases.releasedAt,
+      metadata: environmentLeases.metadata, provider: environmentLeases.provider, providerLeaseId: environmentLeases.providerLeaseId }).from(environmentLeases).where(and(
+      eq(environmentLeases.companyId, input.companyId), eq(environmentLeases.heartbeatRunId, input.runId),
+    )).catch(err => {
+      logger.warn({ err, runId: input.runId }, "Could not verify environment lease cleanup");
+      return null;
+    });
+    return leases !== null && leases.every(lease => {
+      if (lease.status === "active" || lease.status === "pending_cleanup" || lease.cleanupStatus === "failed" ||
+          (lease.metadata?.pendingCleanupInFlight != null && lease.metadata.pendingCleanupInFlight !== false) ||
+          hasStopOnlyCleanup(lease)) return false;
+      if (lease.status === "retained") {
+        return lease.leasePolicy === "reuse_by_environment" && lease.cleanupStatus === "success";
+      }
+      if (lease.releasedAt === null) return false;
+      if (leaseOwnerRun.runtimeMode !== "native") return true;
+      const legacyReleaseReceipt = lease.cleanupStatus === null &&
+        ((lease.provider === "local" && lease.providerLeaseId === null) ||
+          (lease.provider === "ssh" && lease.metadata?.driver === "ssh" && lease.providerLeaseId?.startsWith("ssh://")));
+      return ["released", "expired", "failed"].includes(lease.status) &&
+        (lease.cleanupStatus === "success" || legacyReleaseReceipt);
+    });
   }
 
   async function acknowledgeRemoteStop(runId: string, companyId: string) {

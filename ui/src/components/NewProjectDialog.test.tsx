@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { setLocale } from "@/i18n";
 import { act, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -69,4 +70,39 @@ describe("new project colors", () => {
     expect(getLastProjectId("company-1")).toBe("project-created");
     expect(onClose).toHaveBeenCalledOnce();
   });
+});
+
+it("retains the dirty creation form and one pending request through language changes", async () => {
+  let finish!: () => void;
+  vi.mocked(projectsApi.create).mockImplementationOnce(() => new Promise(resolve => { finish = () => resolve({ id: "created-once" } as Awaited<ReturnType<typeof projectsApi.create>>); }));
+  const close = vi.fn();
+  try {
+    await setLocale("en");
+    await act(async () => root.render(<QueryClientProvider client={new QueryClient({ defaultOptions: { mutations: { retry: false } } })}><NewProjectForm companyId="company-1" onClose={close} /></QueryClientProvider>));
+    const input = container.querySelector<HTMLInputElement>('[aria-label="Project name"]')!;
+    const color = container.querySelector<HTMLElement>('span[style]')!.style.backgroundColor;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "  Project <b>& literal</b>  ");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    input.focus(); input.setSelectionRange(2, 9);
+    await act(async () => setLocale("ru"));
+    expect(container.querySelector('h2')?.textContent).toBe("Создать проект");
+    expect(container.querySelector('[aria-label="Название проекта"]')).toBe(input);
+    expect(input.value).toBe("  Project <b>& literal</b>  ");
+    expect(document.activeElement).toBe(input);
+    expect([input.selectionStart,input.selectionEnd]).toEqual([2,9]);
+    expect(projectsApi.create).not.toHaveBeenCalled();
+    await act(async () => container.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));
+    await settle();
+    await act(async () => setLocale("en"));
+    await act(async () => setLocale("ru"));
+    expect(projectsApi.create).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(projectsApi.create).mock.calls[0]).toEqual(["company-1",{name:"Project <b>& literal</b>",color:expect.any(String),status:"planned",repositoryIds:[]}]);
+    expect(container.querySelector<HTMLElement>('span[style]')!.style.backgroundColor).toBe(color);
+    expect(close).not.toHaveBeenCalled();
+    await act(async () => finish());
+    await settle();
+    expect(close).toHaveBeenCalledTimes(1);
+  } finally { await act(async () => setLocale("en")); }
 });
