@@ -962,7 +962,19 @@ findings from Dashboard.tsx, with no new exceptions. The one English budget-
 override phrase now uses its singular form when the count is one.
 UI typecheck, token gates and map checks pass. The strict audit passes with
 7,486 reviewed families, 15,218 remaining findings and no actionable findings.
-A full build and browser acceptance of the integrated candidate remain pending.
+A build of the integrated candidate is covered below; browser acceptance remains
+pending.
+
+The combined workspace, environment-settings and dashboard candidate at
+`1c0f188febcefa89a57dd3822220e0513a572b12` passes all 265 tests in 12 complete UI
+files, UI typecheck, UI build, token gates and map checks. The strict localization
+audit passes with 8,050 reviewed families and 14,746 remaining source findings.
+Pending/missing/invalid messages, new findings, source errors and resolved-debt
+residue are zero. This adds 501 reviewed families to the agent-journey candidate
+and removes 407 resolved source findings. The build retains existing chunk-size
+and MarkdownEditor import warnings. Full hosted CI and live browser acceptance
+of this combined candidate remain pending; earlier server checks apply only to
+the unchanged workspace-close source they tested.
 
 The remaining major packages are remaining provider setup, global execution-
 workspace pages, environment backend/schema copy, live dashboards/activity/costs,
@@ -1011,6 +1023,11 @@ the localization gate. The later agent-detail slice is published in
 [PR #24](https://github.com/dexogen/paperclip/pull/24). Its separate
 [exact-SHA run](https://github.com/dexogen/paperclip/actions/runs/40307651568)
 also passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`.
+The agent-skills integration in [PR #27](https://github.com/dexogen/paperclip/pull/27)
+also [passed all nine jobs](https://github.com/dexogen/paperclip/actions/runs/40312816178)
+on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`. The next agent-journey candidate in
+[PR #28](https://github.com/dexogen/paperclip/pull/28) is being checked separately
+at `42b699cb093a3817a1ff4cd1674637e7d9644169`.
 Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
