@@ -2,10 +2,10 @@ name: Fork verification
 
 on:
   pull_request:
-    branches: [master, 'codex/**']
+    branches: [russian]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [master]
+    branches: [russian]
   workflow_dispatch:
     inputs:
       expected_sha:

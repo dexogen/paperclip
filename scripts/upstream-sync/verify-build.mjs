@@ -8,11 +8,11 @@ import { readState } from './prepare.mjs';
 export function selectVerifiedRun(runs, sha) {
   assertSha(sha);
   const matching = runs.filter((run) => run.head_sha === sha && run.event === 'push' &&
-    run.head_branch === 'master' && run.head_repository?.full_name === FORK &&
+    run.head_branch === 'russian' && run.head_repository?.full_name === FORK &&
     run.path === '.github/workflows/localization-check.yml')
     .sort((a, b) => b.id - a.id);
   if (!matching[0] || matching[0].status !== 'completed' || matching[0].conclusion !== 'success') {
-    throw new Error('The latest master verification for this exact SHA has not succeeded');
+    throw new Error('The latest russian verification for this exact SHA has not succeeded');
   }
   return matching[0];
 }
@@ -21,11 +21,11 @@ export async function verifyBuild() {
   if (process.env.GITHUB_REPOSITORY !== FORK) throw new Error('Unexpected publication repository');
   const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
   const sha = assertSha(process.env.SOURCE_SHA, 'build source');
-  if (event.workflow_run && (event.workflow_run.event !== 'push' || event.workflow_run.head_branch !== 'master')) {
-    throw new Error('Only a verified master push may publish an image');
+  if (event.workflow_run && (event.workflow_run.event !== 'push' || event.workflow_run.head_branch !== 'russian')) {
+    throw new Error('Only a verified russian push may publish an image');
   }
-  const branch = await request(`/repos/${FORK}/branches/master`);
-  if (branch.commit.sha !== sha) throw new Error('A newer master exists; this build will not replace the accepted image');
+  const branch = await request(`/repos/${FORK}/branches/russian`);
+  if (branch.commit.sha !== sha) throw new Error('A newer russian exists; this build will not replace the accepted image');
   const runs = await request(`/repos/${FORK}/actions/workflows/localization-check.yml/runs?event=push&head_sha=${sha}&per_page=100`);
   const run = selectVerifiedRun(runs.workflow_runs, sha);
   if (event.workflow_run && event.workflow_run.id !== run.id) throw new Error('A newer verification run superseded this event');

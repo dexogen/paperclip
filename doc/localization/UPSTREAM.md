@@ -1,6 +1,6 @@
 # Maintaining the Russian fork
 
-The maintained branch is `dexogen/paperclip:master`. Source integrations track
+The maintained branch is `dexogen/paperclip:russian`. Source integrations track
 `paperclipai/paperclip:master`; they are integration builds, not official stable
 releases. `upstream.json` records the last accepted upstream commit on the maintained
 branch. The same field in a draft sync PR is prospective until that PR is merged.
@@ -8,14 +8,14 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
 ## Workflows
 
 - **Upstream localization sync** runs daily at 04:23 UTC (07:23 Moscow) and by manual
-  dispatch from `master`. GitHub schedules may run late. It fetches immutable source
+  dispatch from `russian`. GitHub schedules may run late. It fetches immutable source
   SHAs, audits the upstream source delta, and prepares one draft PR on
   `codex/upstream-sync`. No automatic merge or deployment occurs.
-- **Fork verification** runs on every PR into `master` or `codex/**`, every `master` push, and an
+- **Fork verification** runs on every PR into `russian`, every `russian` push, and an
   explicit dispatch bound to an expected full SHA. There are no workflow-level path
   filters. Require its **Fork integration verified** check on the maintained branch.
 - **Russian edition image** publishes `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>`
-  only after the latest successful `master` push verification of that exact SHA.
+  only after the latest successful `russian` push verification of that exact SHA.
   Its verifier executes from the accepted default-branch revision, never an unchecked
   manual input. Its artifact records the image digest, upstream revision, catalog hash, and CI run.
   It builds `linux/amd64` with Docker target `production`. It does not deploy or move
@@ -30,21 +30,25 @@ this fork runs its own checks instead of mutable upstream reusable workflows.
 
 ## One-time activation
 
-During the initial fork PR, inherited `pull_request_target` workflows still use the
-unguarded definition on `master`. If `commitperclip PR Review` fails because the
+Before migration to `russian`, inherited `pull_request_target` workflows can use
+the old unguarded definition on `master`. If `commitperclip PR Review` fails because the
 fork lacks upstream Dependency Review or bot configuration, disable that inherited
 workflow in the fork's Actions settings while the foundation is under review. Keep
 the failed run as evidence; disabling a workflow does not make that run pass. The
 fork-owned verification must still pass on the actual candidate commit. After the
-owner guard has landed on `master`, the inherited workflow can be enabled again;
+owner guard has landed on `russian`, the inherited workflow can be enabled again;
 its jobs will skip this fork. Do not disable the fork's verification to bypass a
 code or test failure.
 
-1. Merge the foundation and workflow changes into the fork's default `master` branch.
-   The workflow definitions must exist there for schedules and manual dispatch.
+1. Publish the verified integration history as `russian` and make it the fork's
+   default branch. It is the only permanent fork branch. Keep the upstream
+   source branch `paperclipai/paperclip:master` unchanged. The workflow definitions
+   must exist on `russian` for schedules and manual dispatch.
 2. Enable GitHub Actions for the fork. Allow Actions to create PRs if using the default
    repository token. Grant the job permissions declared in the workflows. Configure
    branch protection/rulesets to require `Fork integration verified` and review.
+   Enable **Automatically delete head branches** (`delete_branch_on_merge`) so
+   temporary PR branches, including `codex/upstream-sync`, are deleted after merge.
 3. Prefer a GitHub App installed only on `dexogen/paperclip`. Give it repository
    **Contents: write**, **Pull requests: write**, **Actions: write**, and
    **Workflows: write**. Save its App ID as the Actions variable
@@ -74,13 +78,12 @@ when changing authentication or scheduling.
 
 ## Review and merge an update
 
-During bootstrap, a stacked sync PR may target its parent `codex/**` branch so the
-upstream delta can be reviewed and tested before the foundation lands. Verification
-keeps read-only repository permissions; branch pushes alone do not publish an image.
-Merge the parent PR first, then change the sync PR base to `master`. A base edit alone
-does not trigger the configured PR events: dispatch **Fork verification** on the
-current sync branch with its exact head SHA after retargeting. Keep both PRs separate
-and accept the upstream tracking state only when the sync PR lands on `master`.
+All new update PRs target `russian`. The `codex/upstream-sync` branch is temporary;
+it exists only while an update is being reviewed. Historical stacked PRs remain
+review evidence, not permanent maintenance branches. If an existing PR is retargeted
+to `russian`, dispatch **Fork verification** on its exact head SHA: a base edit alone
+does not trigger the configured PR events. Accept the upstream tracking state only
+when the reviewed integration lands on `russian`.
 
 The report contains both the original upstream delta and the candidate-tree audit.
 The former remains available when merging conflicts. The trusted scanner comes from
@@ -93,14 +96,16 @@ An open sync PR freezes its source revision and branch. The scheduler never rese
 or force-pushes it, including after a person edits translations. New upstream commits
 wait for the next batch. Complete translation and code review, run the required
 checks, then merge with **Create a merge commit**. Do not squash or rebase a sync PR:
-future integrations verify that the recorded upstream SHA is an ancestor of master.
+future integrations verify that the recorded upstream SHA is an ancestor of `russian`.
 
-The existing sync branch can be reused with a normal fast-forward push after all its
-commits are included in master. A closed unmerged branch is preserved and blocks
-reuse. Resolve or retain that work before restarting; the bot will not delete it.
-The tracking state advances on master only when the reviewed candidate lands.
+After a merge commit includes the sync head in `russian`, GitHub deletes the
+temporary head branch through the repository setting above. The next update creates
+`codex/upstream-sync` again. If automatic deletion did not occur, remove the merged
+head only after verifying its ancestry and that it has no unmerged work. A closed
+unmerged branch is preserved and blocks reuse; the bot never deletes unmerged work.
+The tracking state advances on `russian` only when the reviewed candidate lands.
 
-An initial merge conflict aborts only the disposable candidate worktree. Master and
+An initial merge conflict aborts only the disposable candidate worktree. The maintained and
 remote branches remain unchanged. The failed run's summary names the conflicting
 files and its artifact holds the upstream source delta. Resolve the merge in a
 separate reviewed branch, preserve upstream ancestry, update `upstream.json` to the

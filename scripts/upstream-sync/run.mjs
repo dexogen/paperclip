@@ -133,23 +133,23 @@ export async function ensureVerification(branch, sha, api = request) {
 }
 
 export async function runSync() {
-  if (process.env.GITHUB_REPOSITORY !== FORK || process.env.GITHUB_REF !== 'refs/heads/master') {
-    throw new Error('Upstream synchronization runs only from dexogen/paperclip master');
+  if (process.env.GITHUB_REPOSITORY !== FORK || process.env.GITHUB_REF !== 'refs/heads/russian') {
+    throw new Error('Upstream synchronization runs only from dexogen/paperclip russian');
   }
   const directory = resolve(process.env.SYNC_REPORT_DIR || join(tmpdir(), 'paperclip-sync-reports'));
   mkdirSync(directory, { recursive: true });
   output('reports', directory);
   const runUrl = `https://github.com/${FORK}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-  git(controlRoot, ['fetch', '--no-tags', `https://github.com/${FORK}.git`, 'refs/heads/master:refs/remotes/fork-sync/master']);
-  const baseSha = assertSha(git(controlRoot, ['rev-parse', 'refs/remotes/fork-sync/master']).stdout);
+  git(controlRoot, ['fetch', '--no-tags', `https://github.com/${FORK}.git`, 'refs/heads/russian:refs/remotes/fork-sync/russian']);
+  const baseSha = assertSha(git(controlRoot, ['rev-parse', 'refs/remotes/fork-sync/russian']).stdout);
   if (git(controlRoot, ['rev-parse', 'HEAD']).stdout !== baseSha) {
-    throw new Error('master moved after this workflow started; run synchronization again on the current master');
+    throw new Error('russian moved after this workflow started; run synchronization again on the current russian');
   }
   const state = readState(controlRoot, baseSha);
   git(controlRoot, ['fetch', '--no-tags', `https://github.com/${state.upstreamRepository}.git`,
     `refs/heads/${state.upstreamBranch}:refs/remotes/fork-sync/upstream`]);
   const upstreamSha = assertSha(git(controlRoot, ['rev-parse', 'refs/remotes/fork-sync/upstream']).stdout);
-  const prs = await request(`/repos/${FORK}/pulls?state=open&head=dexogen:${encodeURIComponent(state.syncBranch)}&base=master`);
+  const prs = await request(`/repos/${FORK}/pulls?state=open&head=dexogen:${encodeURIComponent(state.syncBranch)}&base=russian`);
   if (prs.length) {
     await ensureVerification(state.syncBranch, prs[0].head.sha);
     output('status', 'frozen');

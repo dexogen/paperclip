@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   prepare:
-    if: github.repository == 'dexogen/paperclip' && github.ref == 'refs/heads/master'
+    if: github.repository == 'dexogen/paperclip' && github.ref == 'refs/heads/russian'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

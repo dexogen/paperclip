@@ -15,14 +15,14 @@ function fixture(t, { conflict = false } = {}) {
   const temporary = mkdtempSync(join(tmpdir(), 'paperclip-sync-test-'));
   const cwd = join(temporary, 'repo');
   mkdirSync(cwd);
-  git(cwd, ['init', '-q', '--initial-branch=master']);
+  git(cwd, ['init', '-q', '--initial-branch=russian']);
   git(cwd, ['config', 'user.name', 'Test']);
   git(cwd, ['config', 'user.email', 'test@example.invalid']);
   writeFileSync(join(cwd, 'message.txt'), 'Original\n');
   git(cwd, ['add', '.']); git(cwd, ['commit', '-qm', 'Original']);
   const originalSha = git(cwd, ['rev-parse', 'HEAD']).stdout;
   const state = { schemaVersion: 1, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
-    forkBranch: 'master', syncBranch: 'codex/upstream-sync', lastAcceptedUpstreamSha: originalSha };
+    forkBranch: 'russian', syncBranch: 'codex/upstream-sync', lastAcceptedUpstreamSha: originalSha };
   mkdirSync(join(cwd, 'doc/localization'), { recursive: true });
   writeFileSync(join(cwd, STATE_PATH), JSON.stringify(state));
   if (conflict) writeFileSync(join(cwd, 'message.txt'), 'Русский текст\n');
@@ -32,7 +32,7 @@ function fixture(t, { conflict = false } = {}) {
   writeFileSync(join(cwd, conflict ? 'message.txt' : 'new.txt'), 'Upstream change\n');
   git(cwd, ['add', '.']); git(cwd, ['commit', '-qm', 'Upstream']);
   const upstreamSha = git(cwd, ['rev-parse', 'HEAD']).stdout;
-  git(cwd, ['switch', 'master']);
+  git(cwd, ['switch', 'russian']);
   const directory = join(temporary, 'candidate');
   t.after(() => { removeCandidate(cwd, directory); rmSync(temporary, { recursive: true, force: true }); });
   return { cwd, directory, baseSha, upstreamSha, originalSha, state };
@@ -47,6 +47,16 @@ test('preparation preserves both parents and advances state only in the candidat
   assert.equal(readState(f.directory, result.candidateSha).lastAcceptedUpstreamSha, f.upstreamSha);
   assert.equal(git(f.cwd, ['rev-parse', 'HEAD']).stdout, f.baseSha);
   assert.equal(readFileSync(join(f.directory, 'new.txt'), 'utf8'), 'Upstream change\n');
+});
+
+test('tracking configuration rejects the retired fork target without changing upstream', (t) => {
+  const f = fixture(t);
+  assert.equal(readState(f.cwd, f.baseSha).forkBranch, 'russian');
+  assert.equal(readState(f.cwd, f.baseSha).upstreamBranch, 'master');
+  writeFileSync(join(f.cwd, STATE_PATH), JSON.stringify({ ...f.state, forkBranch: 'master' }));
+  git(f.cwd, ['add', '--', STATE_PATH]);
+  git(f.cwd, ['commit', '-qm', 'Retired fork target']);
+  assert.throws(() => readState(f.cwd, git(f.cwd, ['rev-parse', 'HEAD']).stdout), /Unsupported upstream tracking configuration/);
 });
 
 test('preparation uses the bot identity without changing an unconfigured repository', (t) => {
@@ -103,13 +113,16 @@ test('dispatch binds an exact SHA and a frozen candidate is not repeatedly dispa
   const alreadyDispatched = async () => ({ workflow_runs: [{ head_sha: sha, head_branch: 'codex/upstream-sync' }] });
   assert.equal(await ensureVerification('codex/upstream-sync', sha, alreadyDispatched), false);
   await assert.rejects(ensureVerification('master', sha, api), /Unexpected verification branch/);
+  await assert.rejects(ensureVerification('russian', sha, api), /Unexpected verification branch/);
 });
 
 test('image publication requires the latest successful push verification of the exact fork SHA', () => {
   const sha = 'a'.repeat(40);
-  const run = { id: 10, head_sha: sha, event: 'push', head_branch: 'master', head_repository: { full_name: FORK },
+  const run = { id: 10, head_sha: sha, event: 'push', head_branch: 'russian', head_repository: { full_name: FORK },
     path: '.github/workflows/localization-check.yml', status: 'completed', conclusion: 'success' };
   assert.equal(selectVerifiedRun([run], sha).id, 10);
+  assert.throws(() => selectVerifiedRun([{ ...run, head_branch: 'master' }], sha), /has not succeeded/);
+  assert.throws(() => selectVerifiedRun([{ ...run, head_branch: 'codex/upstream-sync' }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([{ ...run, head_sha: 'b'.repeat(40) }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([run, { ...run, id: 11, conclusion: 'failure' }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([{ ...run, event: 'pull_request' }], sha), /has not succeeded/);
@@ -148,15 +161,23 @@ test('sync PR explains pending checks rather than claiming acceptance', () => {
   assert.match(body, /Merge with a merge commit/);
 });
 
-test('fork verification covers stacked PRs while push verification stays on master', () => {
+test('fork verification and publication target russian while upstream stays on master', () => {
   const root = resolve(import.meta.dirname, '../..');
   const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
   const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
   const workflow = load(readFileSync(join(root, '.github/workflows/localization-check.yml'), 'utf8'));
-  assert.deepEqual(workflow.on.pull_request.branches, ['master', 'codex/**']);
-  assert.deepEqual(workflow.on.push.branches, ['master']);
+  assert.deepEqual(workflow.on.pull_request.branches, ['russian']);
+  assert.deepEqual(workflow.on.push.branches, ['russian']);
   assert.equal(Object.hasOwn(workflow.on, 'pull_request_target'), false);
   assert.deepEqual(workflow.permissions, { contents: 'read' });
+  const image = load(readFileSync(join(root, '.github/workflows/fork-build.yml'), 'utf8'));
+  const sync = load(readFileSync(join(root, '.github/workflows/upstream-sync.yml'), 'utf8'));
+  assert.deepEqual(image.on.workflow_run.branches, ['russian']);
+  assert.match(image.jobs.image.if, /github\.ref == 'refs\/heads\/russian'/);
+  assert.match(sync.jobs.prepare.if, /github\.ref == 'refs\/heads\/russian'/);
+  const state = JSON.parse(readFileSync(join(root, STATE_PATH), 'utf8'));
+  assert.equal(state.forkBranch, 'russian');
+  assert.equal(state.upstreamBranch, 'master');
 });
 
 test('fork CI partitions the full test inventory without omissions or duplicate suites', () => {

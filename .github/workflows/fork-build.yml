@@ -4,11 +4,11 @@ on:
   workflow_run:
     workflows: [Fork verification]
     types: [completed]
-    branches: [master]
+    branches: [russian]
   workflow_dispatch:
     inputs:
       source_sha:
-        description: Verified current master SHA to rebuild
+        description: Verified current russian SHA to rebuild
         required: true
         type: string
 
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   image:
-    if: github.repository == 'dexogen/paperclip' && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'))
+    if: github.repository == 'dexogen/paperclip' && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/russian'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
-      - name: Require latest successful verification of current master
+      - name: Require latest successful verification of current russian
         id: source
         env:
           GH_TOKEN: ${{ github.token }}

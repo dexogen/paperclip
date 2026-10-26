@@ -8,7 +8,7 @@ export function readState(cwd, commit) {
   const state = JSON.parse(git(cwd, ['show', `${assertSha(commit)}:${STATE_PATH}`]).stdout);
   assertSha(state.lastAcceptedUpstreamSha, 'lastAcceptedUpstreamSha');
   if (state.schemaVersion !== 1 || state.upstreamRepository !== 'paperclipai/paperclip' ||
-      state.upstreamBranch !== 'master' || state.forkBranch !== 'master' ||
+      state.upstreamBranch !== 'master' || state.forkBranch !== 'russian' ||
       state.syncBranch !== 'codex/upstream-sync') {
     throw new Error('Unsupported upstream tracking configuration; review it before synchronizing');
   }
