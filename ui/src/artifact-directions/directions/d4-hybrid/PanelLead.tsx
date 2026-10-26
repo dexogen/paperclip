@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -61,6 +62,7 @@ export function namedFacts(a: LabArtifact): string[] {
 
 /** The paper at the left of the well, its foot clipped by the well's edge; the first lines, centred, beside it. */
 export function PanelPaper({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <div data-lead="paper-well" className={WELL}>
       <PaperSheet artifact={artifact} size="panel" className={cn(COLUMN, "mt-2 self-start")} />
@@ -79,6 +81,7 @@ export function PanelPaper({ artifact }: { artifact: LabArtifact }) {
 
 /** The glyph (the one curl left) centred in the paper's column, and the file's facts beside it; `children` lie over the well (a play button). */
 export function PanelNamed({ artifact, children }: { artifact: LabArtifact; children?: ReactNode }) {
+  useFullSharedTranslation();
   const [headline, size] = namedFacts(artifact);
   return (
     <div data-lead="well" className={cn(WELL, "items-center")}>
@@ -110,6 +113,7 @@ function pictureBox(aspect: number | undefined): string {
 }
 
 export function PanelPicture({ artifact, onError }: { artifact: LabArtifact; onError: () => void }) {
+  useFullSharedTranslation();
   return <Picture artifact={artifact} label="lg" fit="contain" play={false} className={cn("w-full", pictureBox(artifact.aspect))} onError={onError} />;
 }
 
@@ -118,8 +122,9 @@ const DURATION = "absolute bottom-2 right-2 rounded-(--rad-4) bg-(--hy-scrim) px
 
 /** The play button over a lead, above the card's stretched action. The disc is its visible state: it darkens under the pointer and grows while pressed. */
 function PlayButton({ artifact, duration, onPlay, className }: { artifact: LabArtifact; duration: boolean; onPlay: () => void; className: string }) {
+  useFullSharedTranslation();
   return (
-    <button type="button" aria-label={`Play video: ${artifact.title}`} onClick={onPlay} className={cn("group/play absolute z-10 cursor-pointer", PLAY_RING, className)}>
+    <button type="button" aria-label={fullSharedT("fullShared.play_video_3cbb68", { value1: artifact.title })} onClick={onPlay} className={cn("group/play absolute z-10 cursor-pointer", PLAY_RING, className)}>
       <PlayMark size="lg" className={cn("group-hover/play:bg-(--hy-scrim-strong) group-active/play:scale-95", MOTION)} />
       {duration && artifact.durationLabel ? <span className={DURATION}>{artifact.durationLabel}</span> : null}
     </button>
@@ -128,6 +133,7 @@ function PlayButton({ artifact, duration, onPlay, className }: { artifact: LabAr
 
 /** A video plays in place: over its poster, or over the glyph's column of the named well when the poster is missing or failed (the well's headline already says the duration). */
 export function PanelVideo({ artifact, failed, onError }: { artifact: LabArtifact; failed: boolean; onError: () => void }) {
+  useFullSharedTranslation();
   const [playing, setPlaying] = useState(false);
   const poster = artifact.thumbnailUrl && !failed ? artifact.thumbnailUrl : undefined;
   const box = cn("w-full", pictureBox(artifact.aspect));

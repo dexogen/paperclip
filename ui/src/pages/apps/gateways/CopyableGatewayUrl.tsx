@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { Copy } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { copyTextToClipboard } from "@/lib/clipboard";
@@ -19,17 +20,18 @@ export function CopyableGatewayUrl({
   endpointPath: string;
   className?: string;
 }) {
+  useFullAppsTranslation();
   const { pushToast } = useToast();
   const url = gatewayEndpointUrl(endpointPath);
 
   async function copy() {
     try {
       await copyTextToClipboard(url);
-      pushToast({ title: "Gateway URL copied", tone: "success" });
+      pushToast({ title: fullAppsT("fullApps.gateway_url_copied_f0e942"), tone: "success" });
     } catch {
       pushToast({
-        title: "Copy failed",
-        body: "Clipboard access is unavailable.",
+        title: fullAppsT("taskPanels.viewer.copy.failed"),
+        body: fullAppsT("fullApps.clipboard_access_is_unavailable_0899c2"),
         tone: "error",
       });
     }
@@ -46,8 +48,8 @@ export function CopyableGatewayUrl({
         "flex min-w-0 max-w-full items-center gap-1 text-left font-mono text-xs text-muted-foreground hover:text-foreground",
         className,
       )}
-      title={`${url} — click to copy`}
-      aria-label="Copy gateway URL"
+      title={fullAppsT("fullApps.click_to_copy_c022cd", { value1: url })}
+      aria-label={fullAppsT("fullApps.copy_gateway_url_4af934")}
     >
       <span className="min-w-0 truncate">{url}</span>
       <Copy className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

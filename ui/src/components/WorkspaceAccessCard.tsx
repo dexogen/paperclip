@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { ExternalLink, Loader2, Play, ScrollText, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,12 +32,12 @@ const STATE_BADGE_CLASSES: Record<ActiveWorkspaceAccessState, string> = {
 };
 
 const STATE_LABELS: Record<ActiveWorkspaceAccessState, string> = {
-  provisioning: "Provisioning",
-  validating: "Validating clone",
-  ready: "Ready",
-  degraded: "Degraded",
-  repairing: "Repairing",
-  failed: "Failed",
+  get provisioning() { return fullSharedT("fullShared.provisioning_c2b1b8"); },
+  get validating() { return fullSharedT("fullShared.validating_clone_d86d50"); },
+  get ready() { return fullSharedT("instanceGeneral.ready"); },
+  get degraded() { return fullSharedT("fullShared.degraded_a8494c"); },
+  get repairing() { return fullSharedT("fullShared.repairing_e2c520"); },
+  get failed() { return fullSharedT("fullShared.failed_031a8f"); },
 };
 
 const ACTION_ICONS = {
@@ -64,6 +65,7 @@ export function WorkspaceAccessCard({
   onViewLogs: () => void;
   errorMessage?: string | null;
 }) {
+  useFullSharedTranslation();
   const Icon = ACTION_ICONS[access.action.kind];
   const isWaiting = access.action.kind === "wait";
   const handlers: Record<WorkspaceAccessState["action"]["kind"], () => void> = {
@@ -115,14 +117,10 @@ export function WorkspaceAccessCard({
             {access.action.label}
           </Button>
           {access.state === "ready" && !access.handoffAvailable ? (
-            <span className="text-xs text-muted-foreground">
-              Signs in with the snapshot-local credentials captured when this clone was made.
-            </span>
+            <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.signs_in_with_the_snapshot_local_credentials_capture_96e10c")}</span>
           ) : null}
           {access.state === "ready" && access.handoffAvailable ? (
-            <span className="text-xs text-muted-foreground">
-              Uses a single-use login handoff — no password needed.
-            </span>
+            <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.uses_a_single_use_login_handoff_no_password_needed_8df066")}</span>
           ) : null}
         </div>
         {errorMessage ? (

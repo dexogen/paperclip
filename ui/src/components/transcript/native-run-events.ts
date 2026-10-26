@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { HeartbeatRunEvent } from "@paperclipai/shared";
 import type { TranscriptEntry } from "@/adapters";
 import { isRunLogOnlyProviderEvent } from "./run-log-only-events";
@@ -199,7 +200,7 @@ function runtimeRequestEntry(input: {
     .map(record)
     .flatMap((field, index) => {
       const name = text(field?.name) ?? `answer_${index + 1}`;
-      const label = text(field?.label) ?? text(field?.name) ?? `Answer ${index + 1}`;
+      const label = text(field?.label) ?? text(field?.name) ?? fullSharedT("fullShared.answer_3d0bab", { value1: index + 1 });
       return name && label
         ? [{ name: name.slice(0, 160), label: label.slice(0, 240), placeholder: text(field?.placeholder)?.slice(0, 500) ?? null }]
         : [];
@@ -832,7 +833,7 @@ export function nativeRunEventsToTranscript(events: readonly HeartbeatRunEvent[]
         family: "provider_notice",
         eventType: event.eventType,
         status: payload.severity === "error" ? "failed" : "informational",
-        title: "Provider notice",
+        title: fullSharedT("runUi.activity.notice.running"),
         summary: text(payload.summary)?.trim() || text(payload.message)?.trim() || "Provider notice",
         payload,
       });
@@ -1062,7 +1063,7 @@ export function nativeRunEventsToTranscript(events: readonly HeartbeatRunEvent[]
     entries.push({
       kind: "result",
       ...cumulativeUsageSummary,
-      text: "Provider-reported session-cumulative usage; a per-run delta was unavailable.",
+      text: fullSharedT("fullShared.provider_reported_session_cumulative_usage_a_per_run_356cb2"),
       subtype: "paperclip_runner_session_usage",
       isError: false,
       errors: [],

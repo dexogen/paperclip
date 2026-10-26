@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 /**
  * Synthetic fixtures for the Task Chat Redesign dev harness. No live agent is
  * required: every state in the inventory maps to a deterministic scenario the
@@ -66,7 +68,7 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             kind: "turn",
             settled: false,
             summary: { toolCount: 1, added: 0, removed: 0 },
-            liveStatus: { id: "st-thinking", kind: "status", status: "running", label: "Thinking", startedAtMs: Date.now() - 6100, tokens: { used: 18240, size: 200000 } },
+            liveStatus: { id: "st-thinking", kind: "status", status: "running", label: t("fullDiagnostics.thinking"), startedAtMs: Date.now() - 6100, tokens: { used: 18240, size: 200000 } },
             items: [
               { id: "th-grep", kind: "tool", name: "Grep", target: "rateLimit", toolKind: "search", status: "completed" },
             ],
@@ -89,7 +91,7 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             settled: false,
             summary: { toolCount: 1, added: 0, removed: 0 },
             liveStatus: {
-              id: "st-responding", kind: "status", status: "running", label: "Responding", startedAtMs: Date.now() - 9300, tokens: { used: 18240, size: 200000 },
+              id: "st-responding", kind: "status", status: "running", label: fullSharedT("runUi.status.responding"), startedAtMs: Date.now() - 9300, tokens: { used: 18240, size: 200000 },
               selfTalk:
                 "I found an existing ipRateLimit helper, so I'll extend it with a per-account token bucket keyed on the email address instead of adding a second limiter. The bucket refills at six requests a minute, matching the lockout policy the auth spec documents, and failed attempts drain it twice as fast so brute-force runs hit the ceiling quickly while a fat-fingered password barely registers.",
             },
@@ -115,7 +117,7 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             settled: false,
             summary: { toolCount: 2, added: 0, removed: 0 },
             liveStatus: {
-              id: "st-responding-burst", kind: "status", status: "running", label: "Responding", startedAtMs: Date.now() - 21400, tokens: { used: 18240, size: 200000 },
+              id: "st-responding-burst", kind: "status", status: "running", label: fullSharedT("runUi.status.responding"), startedAtMs: Date.now() - 21400, tokens: { used: 18240, size: 200000 },
               selfTalk:
                 "Found the existing ipRateLimit helper — extending it beats adding a second limiter.\n\n" +
                 "Wiring a per-account token bucket keyed on the email address, refilling at six requests a minute per the auth spec.\n\n" +
@@ -167,7 +169,7 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             kind: "turn",
             settled: false,
             summary: { toolCount: 2, added: 0, removed: 0 },
-            liveStatus: { id: "st-working", kind: "status", status: "working", label: "Editing files", detail: "Edit · server/src/routes/auth.ts", toolName: "Edit", startedAtMs: Date.now() - 4200 },
+            liveStatus: { id: "st-working", kind: "status", status: "working", label: fullSharedT("runUi.activity.editing"), detail: "Edit · server/src/routes/auth.ts", toolName: "Edit", startedAtMs: Date.now() - 4200 },
             items: [
               { id: "w-read", kind: "tool", name: "Read", target: "server/src/routes/auth.ts", toolKind: "read", status: "completed" },
               { id: "w-edit", kind: "tool", name: "Edit", target: "server/src/routes/auth.ts", toolKind: "edit", status: "in_progress" },
@@ -186,7 +188,7 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             kind: "turn",
             settled: false,
             summary: { toolCount: 1, added: 0, removed: 0 },
-            liveStatus: { id: "st-running", kind: "status", status: "running", label: "Running", detail: "no output for 3s — still running", startedAtMs: Date.now() - 12000, tokens: { used: 18240, size: 200000 } },
+            liveStatus: { id: "st-running", kind: "status", status: "running", label: fullSharedT("fullShared.running_f4ccae"), detail: "no output for 3s — still running", startedAtMs: Date.now() - 12000, tokens: { used: 18240, size: 200000 } },
             items: [
               { id: "r-grep", kind: "tool", name: "Grep", target: "rateLimit", toolKind: "search", status: "completed" },
             ],
@@ -234,9 +236,9 @@ export function buildScenario(id: TaskChatStateId): TaskChatScenario {
             approval: {
               toolName: "execute",
               options: [
-                { id: "reject", label: "Deny", kind: "reject_once" },
-                { id: "allow-always", label: "Always allow", kind: "allow_always" },
-                { id: "allow", label: "Allow once", kind: "allow_once" },
+                { id: "reject", label: fullSharedT("taskChatUi.protocol.deny"), kind: "reject_once" },
+                { id: "allow-always", label: fullSharedT("instanceGeneral.sharingAllowed"), kind: "allow_always" },
+                { id: "allow", label: t("fullDiagnostics.allowOnce"), kind: "allow_once" },
               ],
             },
           },

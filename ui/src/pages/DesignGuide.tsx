@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { SpekoPhoneLineForm } from "@/components/voice/SpekoPhoneLine";
 import { SpekoIncomingCallCard } from "@/components/voice/SpekoIncomingCalls";
 import { SpekoCallHistoryView, SpekoCallActivityItem, SpekoUnapprovedCallActivityItem } from "@/components/voice/SpekoCallHistory";
@@ -299,6 +301,7 @@ const DESIGN_GUIDE_TASK = {
 /* ------------------------------------------------------------------ */
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  useFullSharedTranslation();
   return (
     <section className="space-y-4">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
@@ -311,6 +314,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-3">
       <h4 className="text-sm font-medium">{title}</h4>
@@ -322,6 +326,7 @@ function SubSection({ title, children }: { title: string; children: React.ReactN
 // Onboarding seam (design §6 + §12.5): the TeamCard tile in its "Pick a starter
 // team" 3-col grid, with the first defaultInstall tile selected.
 function TeamCardShowcase() {
+  useFullSharedTranslation();
   const [selectedId, setSelectedId] = useState(onboardingTeams[0]?.id ?? null);
   return (
     <div className="grid max-w-2xl gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -391,6 +396,7 @@ const DESIGN_GUIDE_SECRETS: CompanySecret[] = [
 ];
 
 function EnvironmentVariablesEditorShowcase() {
+  useFullSharedTranslation();
   const [env, setEnv] = useState<Record<string, EnvBinding>>({
     NODE_ENV: { type: "plain", value: "production" },
     GH_TOKEN: { type: "secret_ref", secretId: "dg-github", version: "latest" },
@@ -420,6 +426,7 @@ function EnvironmentVariablesEditorShowcase() {
 /* ------------------------------------------------------------------ */
 
 function Swatch({ name, cssVar }: { name: string; cssVar: string }) {
+  useFullSharedTranslation();
   return (
     <div className="flex items-center gap-3">
       <div
@@ -439,6 +446,7 @@ function Swatch({ name, cssVar }: { name: string; cssVar: string }) {
 /* ------------------------------------------------------------------ */
 
 function TaskExecutionControlsExample() {
+  useFullSharedTranslation();
   const [running, setRunning] = useState(true);
   const [dialogMode, setDialogMode] = useState<"resume" | "cancel" | "restore" | null>(null);
   const [wake, setWake] = useState(true);
@@ -448,9 +456,9 @@ function TaskExecutionControlsExample() {
         onPause={() => setRunning(false)} onResume={() => setDialogMode("resume")}
         onCancel={() => setDialogMode("cancel")} onRestore={() => setDialogMode("restore")} />
     </div>
-    <p className="text-sm text-muted-foreground">{running ? "Running: type to switch Stop to Send." : "Paused: resume from the menu."}</p>
+    <p className="text-sm text-muted-foreground">{running ? t("fullDiagnostics.runningTypeToSwitchStopToSend") : t("fullDiagnostics.pausedResumeFromTheMenu")}</p>
     <TaskChatProjectCreatedCard item={{ id: "design-project", kind: "project_created", projectId: "example-project", name: "Onboarding improvements", description: "Help new teams reach their first useful result.", timestamp: "2026-09-11T00:00:00Z", repositories: [{ id: "1", name: "paperclipai/paperclip", url: "https://github.com/paperclipai/paperclip" }] }} />
-    {!running ? <TaskChatMarker item={{ id: "design-cancelled", kind: "marker", variant: "interrupted", tone: "neutral", label: "Run cancelled", detail: "The run was cancelled before returning an answer.", collapsible: true }} /> : null}
+    {!running ? <TaskChatMarker item={{ id: "design-cancelled", kind: "marker", variant: "interrupted", tone: "neutral", label: fullSharedT("taskChatUi.classicDisplay.cancelled"), detail: "The run was cancelled before returning an answer.", collapsible: true }} /> : null}
     <TaskChatComposer pause={!running ? { scope: "subtree", onResume: () => setDialogMode("resume") } : null} onAdd={async () => {}} workMode="standard" stopScope="subtree" onStop={running ? async () => setRunning(false) : undefined} />
     <TaskTreeControlDialog open={dialogMode !== null} onOpenChange={(open) => { if (!open) setDialogMode(null); }}
       mode={dialogMode ?? "cancel"} scope="subtree" affectedCount={3} affectedAgentCount={2} loading={false} pending={false} valid
@@ -460,6 +468,7 @@ function TaskExecutionControlsExample() {
 }
 
 function TaskPendingInputExample() {
+  useFullSharedTranslation();
   const [open, setOpen] = useState(true);
   const [pending, setPending] = useState(true);
   return <div className="max-w-xl">
@@ -468,7 +477,7 @@ function TaskPendingInputExample() {
       workMode="standard"
       takeover={pending && open ? {
         id: "design-question",
-        label: "Question",
+        label: fullSharedT("taskChatUi.interaction.question"),
         pendingCount: 1,
         content: <div className="space-y-3 text-sm">
           <p>Should the agent use the existing draft?</p>
@@ -480,32 +489,35 @@ function TaskPendingInputExample() {
         onDismiss: () => setOpen(false),
         onSkip: () => setPending(false),
       } : null}
-      pendingTakeover={pending ? { count: 1, label: "Question", onOpen: () => setOpen(true) } : null}
+      pendingTakeover={pending ? { count: 1, label: fullSharedT("taskChatUi.interaction.question"), onOpen: () => setOpen(true) } : null}
     />
   </div>;
 }
 
 function AgentChatPickerExample() {
+  useFullSharedTranslation();
   const [state, setState] = useState<"closed" | "empty" | "loading" | "error">("closed");
   return <div className="flex flex-wrap gap-2">
-    <Button variant="outline" onClick={() => setState("empty")}>Empty picker</Button>
-    <Button variant="outline" onClick={() => setState("loading")}>Loading picker</Button>
-    <Button variant="outline" onClick={() => setState("error")}>Failed picker</Button>
+    <Button variant="outline" onClick={() => setState("empty")}>{t("fullDiagnostics.emptyPicker")}</Button>
+    <Button variant="outline" onClick={() => setState("loading")}>{t("fullDiagnostics.loadingPicker")}</Button>
+    <Button variant="outline" onClick={() => setState("error")}>{t("fullDiagnostics.failedPicker")}</Button>
     <AgentChatPicker agents={[]} open={state !== "closed"} onOpenChange={(open) => { if (!open) setState("closed"); }} onSelect={() => {}}
       loading={state === "loading"} error={state === "error" ? new Error("Unavailable") : null} onRetry={() => setState("empty")} />
   </div>;
 }
 
 function ComposerActionsExample() {
+  useFullSharedTranslation();
   const [mode, setMode] = useState<IssueWorkMode>("standard");
   return <div className="flex max-w-xl items-center gap-2 rounded-xl border border-border bg-card p-3">
     <ComposerAddMenu mode={mode} onModeChange={setMode} onAttachFile={() => {}} onGoal={() => {}} />
     <ComposerModeChip mode={mode} onRemove={() => setMode("standard")} />
-    <span className="ml-auto text-xs text-muted-foreground">Plus menu · removable mode chip</span>
+    <span className="ml-auto text-xs text-muted-foreground">{t("fullDiagnostics.plusMenuRemovableModeChip")}</span>
   </div>;
 }
 
 export function DesignGuide() {
+  useFullSharedTranslation();
   const [agentmailDemoKey, setAgentmailDemoKey] = useState("");
   const [wizardStep, setWizardStep] = useState(0);
   const [status, setStatus] = useState("todo");
@@ -519,10 +531,10 @@ export function DesignGuide() {
     "This is an editable description. Click to edit it — the textarea auto-sizes to fit the content without layout shift."
   );
   const [filters, setFilters] = useState<FilterValue[]>([
-    { key: "status", label: "Status", value: "Active" },
+    { key: "status", label: fullSharedT("sidebar.status"), value: "Active" },
     // PAP-411: priority filter demo row suppressed while SHOW_TASK_PRIORITY_UI is off.
     ...(SHOW_TASK_PRIORITY_UI
-      ? [{ key: "priority", label: "Priority", value: "High" } as FilterValue]
+      ? [{ key: "priority", label: fullSharedT("fullShared.priority_d60dbb"), value: "High" } as FilterValue]
       : []),
   ]);
   const [allowExternal, setAllowExternal] = useState(false);
@@ -533,21 +545,17 @@ export function DesignGuide() {
     <div className="space-y-10 max-w-4xl">
       {/* Page header */}
       <div>
-        <h2 className="text-xl font-bold">Design Guide</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Every component, style, and pattern used across Paperclip.
-        </p>
+        <h2 className="text-xl font-bold">{t("fullDiagnostics.designGuide")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t("fullDiagnostics.everyComponentStyleAndPatternUsedAcross")}</p>
       </div>
 
       {/* ============================================================ */}
       {/*  COVERAGE                                                     */}
       {/* ============================================================ */}
-      <Section title="Component Coverage">
-        <p className="text-sm text-muted-foreground">
-          This page should be updated when new UI primitives or app-level patterns ship.
-        </p>
+      <Section title={t("fullDiagnostics.componentCoverage")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.thisPageShouldBeUpdatedWhenNew")}</p>
         <div className="grid gap-6 md:grid-cols-2">
-          <SubSection title="UI primitives">
+          <SubSection title={t("fullDiagnostics.uiPrimitives")}>
             <div className="flex flex-wrap gap-2">
               {[
                 "avatar", "badge", "breadcrumb", "button", "card", "checkbox", "collapsible",
@@ -560,7 +568,7 @@ export function DesignGuide() {
               ))}
             </div>
           </SubSection>
-          <SubSection title="App components">
+          <SubSection title={t("fullDiagnostics.appComponents")}>
             <div className="flex flex-wrap gap-2">
               {[
                 "StatusBadge", "StatusIcon", "PriorityIcon", "EntityRow", "EmptyState", "MetricCard",
@@ -578,7 +586,7 @@ export function DesignGuide() {
         </div>
       </Section>
 
-      <Section title="Announcements">
+      <Section title={t("fullDiagnostics.announcements")}>
         <div className="grid gap-4 md:grid-cols-2">
           <AnnouncementCard announcement={announcementAnimationPreview} imageSrc="/announcement-preview.svg" animationSrc={announcementAnimationPreviewSrc} onDismiss={() => {}} />
           <AnnouncementCard announcement={announcementPreview} imageSrc="/announcement-preview.svg" onDismiss={() => {}} />
@@ -586,40 +594,36 @@ export function DesignGuide() {
         </div>
       </Section>
 
-      <Section title="Task Execution Controls">
+      <Section title={t("fullDiagnostics.taskExecutionControls")}>
         <TaskExecutionControlsExample />
       </Section>
 
-      <Section title="Composer actions">
+      <Section title={t("fullDiagnostics.composerActions")}>
         <ComposerActionsExample />
       </Section>
 
-      <Section title="Task Collection">
-        <p className="max-w-prose text-sm text-muted-foreground">
-          CollectionToolbar owns shared geometry while each page owns its state and behavior.
-          The canonical task row is opt-in during migration: status leads, unread work uses
-          title emphasis, metadata remains stable, and the task identifier trails.
-        </p>
+      <Section title={t("fullDiagnostics.taskCollection")}>
+        <p className="max-w-prose text-sm text-muted-foreground">{t("fullDiagnostics.collectiontoolbarOwnsSharedGeometryWhileEachPage")}</p>
         <CollectionToolbar
-          context={<span className="text-sm font-medium">Recent tasks</span>}
-          search={<Input aria-label="Search task collection example" placeholder="Search tasks..." />}
-          controls={<Button variant="outline" size="sm">Filter</Button>}
-          actions={<Button size="sm">New task</Button>}
-          feedback={<span className="text-xs text-muted-foreground">1 task · Updated newest first</span>}
+          context={<span className="text-sm font-medium">{fullSharedT("fullShared.recent_tasks_7b940d")}</span>}
+          search={<Input aria-label={t("fullDiagnostics.searchTaskCollectionExample")} placeholder={fullSharedT("tasks.searchPlaceholder")} />}
+          controls={<Button variant="outline" size="sm">{fullSharedT("issueFilters.filter")}</Button>}
+          actions={<Button size="sm">{fullSharedT("newIssue.newTask")}</Button>}
+          feedback={<span className="text-xs text-muted-foreground">{t("fullDiagnostics.1TaskUpdatedNewestFirst")}</span>}
         />
         <div className="overflow-hidden rounded-lg border border-border">
           <IssueRow
             issue={DESIGN_GUIDE_TASK}
             presentation="task"
             unreadState="visible"
-            metadata={<span className="text-xs text-muted-foreground">Updated 12m ago</span>}
-            actions={<Button variant="ghost" size="xs">More</Button>}
+            metadata={<span className="text-xs text-muted-foreground">{t("fullDiagnostics.updated12mAgo")}</span>}
+            actions={<Button variant="ghost" size="xs">{fullSharedT("fullShared.more_d47d7c")}</Button>}
           />
         </div>
       </Section>
 
-      <Section title="Theme Toggle">
-        <SubSection title="Variants">
+      <Section title={t("fullDiagnostics.themeToggle")}>
+        <SubSection title={t("fullDiagnostics.variants")}>
           <div className="flex max-w-sm flex-col items-start gap-3">
             <ThemeToggle />
             <ThemeToggle variant="menu-action" />
@@ -631,8 +635,8 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  COLORS                                                       */}
       {/* ============================================================ */}
-      <Section title="Colors">
-        <SubSection title="Core">
+      <Section title={t("fullDiagnostics.colors")}>
+        <SubSection title={t("fullDiagnostics.core")}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <Swatch name="Background" cssVar="--background" />
             <Swatch name="Foreground" cssVar="--foreground" />
@@ -649,14 +653,14 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Sidebar">
+        <SubSection title={t("fullDiagnostics.sidebar")}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <Swatch name="Sidebar" cssVar="--sidebar" />
             <Swatch name="Sidebar border" cssVar="--sidebar-border" />
           </div>
         </SubSection>
 
-        <SubSection title="Chart">
+        <SubSection title={t("fullDiagnostics.chart")}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <Swatch name="Chart 1" cssVar="--chart-1" />
             <Swatch name="Chart 2" cssVar="--chart-2" />
@@ -670,7 +674,7 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  TYPOGRAPHY                                                   */}
       {/* ============================================================ */}
-      <Section title="Runner activity">
+      <Section title={fullSharedT("runUi.phase.runner")}>
         <TaskChatRunnerActivityGroup item={{ id: "design-runner-activity", kind: "activity_phase", active: true, summary: "", interstitial: { id: "design-runner-commentary", kind: "message", author: "agent", text: "I’ll inspect the activity feed and check the layout.", interstitial: true }, items: [
           { id: "design-runner-read", kind: "tool", name: "read", target: "TaskChatRunnerTurn.tsx", status: "completed", detail: "Found the activity groups." },
           { id: "design-runner-check", kind: "tool", name: "exec_command", target: "pnpm check:token-gates", status: "in_progress" },
@@ -681,34 +685,26 @@ export function DesignGuide() {
         ] }} />
       </Section>
 
-      <Section title="Typography">
+      <Section title={t("fullDiagnostics.typography")}>
         <div className="space-y-3">
-          <h2 className="text-xl font-bold">Page Title — text-xl font-bold</h2>
-          <h2 className="text-lg font-semibold">Section Title — text-lg font-semibold</h2>
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Section Heading — text-sm font-semibold uppercase tracking-wide
-          </h3>
-          <p className="text-sm font-medium">Card Title — text-sm font-medium</p>
-          <p className="text-sm font-semibold">Card Title Alt — text-sm font-semibold</p>
-          <p className="text-sm">Body text — text-sm</p>
-          <p className="text-sm text-muted-foreground">
-            Muted description — text-sm text-muted-foreground
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Tiny label — text-xs text-muted-foreground
-          </p>
-          <p className="text-sm font-mono text-muted-foreground">
-            Mono identifier — text-sm font-mono text-muted-foreground
-          </p>
-          <p className="text-2xl font-bold">Large stat — text-2xl font-bold</p>
-          <p className="font-mono text-xs">Log/code text — font-mono text-xs</p>
+          <h2 className="text-xl font-bold">{t("fullDiagnostics.pageTitleTextXlFontBold")}</h2>
+          <h2 className="text-lg font-semibold">{t("fullDiagnostics.sectionTitleTextLgFontSemibold")}</h2>
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t("fullDiagnostics.sectionHeadingTextSmFontSemiboldUppercase")}</h3>
+          <p className="text-sm font-medium">{t("fullDiagnostics.cardTitleTextSmFontMedium")}</p>
+          <p className="text-sm font-semibold">{t("fullDiagnostics.cardTitleAltTextSmFontSemibold")}</p>
+          <p className="text-sm">{t("fullDiagnostics.bodyTextTextSm")}</p>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.mutedDescriptionTextSmTextMutedForeground")}</p>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.tinyLabelTextXsTextMutedForeground")}</p>
+          <p className="text-sm font-mono text-muted-foreground">{t("fullDiagnostics.monoIdentifierTextSmFontMonoText")}</p>
+          <p className="text-2xl font-bold">{t("fullDiagnostics.largeStatText2xlFontBold")}</p>
+          <p className="font-mono text-xs">{t("fullDiagnostics.logCodeTextFontMonoTextXs")}</p>
         </div>
       </Section>
 
       {/* ============================================================ */}
       {/*  SPACING & RADIUS                                             */}
       {/* ============================================================ */}
-      <Section title="Radius">
+      <Section title={t("fullDiagnostics.radius")}>
         <div className="flex items-end gap-4 flex-wrap">
           {[
             ["sm", "var(--radius-sm)"],
@@ -731,28 +727,28 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  BUTTONS                                                      */}
       {/* ============================================================ */}
-      <Section title="Buttons">
-        <SubSection title="Variants">
+      <Section title={t("fullDiagnostics.buttons")}>
+        <SubSection title={t("fullDiagnostics.variants")}>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button variant="default">Default</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="destructive">Destructive</Button>
-            <Button variant="link">Link</Button>
+            <Button variant="default">{fullSharedT("providerSetup.model.default")}</Button>
+            <Button variant="secondary">{t("fullDiagnostics.secondary")}</Button>
+            <Button variant="outline">{t("fullDiagnostics.outline")}</Button>
+            <Button variant="ghost">{t("fullDiagnostics.ghost")}</Button>
+            <Button variant="destructive">{fullSharedT("decisionForms.decision.destructive")}</Button>
+            <Button variant="link">{t("fullDiagnostics.link")}</Button>
           </div>
         </SubSection>
 
-        <SubSection title="Sizes">
+        <SubSection title={t("fullDiagnostics.sizes")}>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button size="xs">Extra Small</Button>
-            <Button size="sm">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">Large</Button>
+            <Button size="xs">{t("fullDiagnostics.extraSmall")}</Button>
+            <Button size="sm">{t("fullDiagnostics.small")}</Button>
+            <Button size="default">{fullSharedT("providerSetup.model.default")}</Button>
+            <Button size="lg">{t("fullDiagnostics.large")}</Button>
           </div>
         </SubSection>
 
-        <SubSection title="Icon buttons">
+        <SubSection title={t("fullDiagnostics.iconButtons")}>
           <div className="flex items-center gap-2 flex-wrap">
             <Button variant="ghost" size="icon-xs"><Search /></Button>
             <Button variant="ghost" size="icon-sm"><Search /></Button>
@@ -761,19 +757,19 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="With icons">
+        <SubSection title={t("fullDiagnostics.withIcons")}>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button><Plus /> New Issue</Button>
-            <Button variant="outline"><Upload /> Upload</Button>
-            <Button variant="destructive"><Trash2 /> Delete</Button>
-            <Button size="sm"><Plus /> Add</Button>
+            <Button><Plus />{" "}{t("fullDiagnostics.newIssue")}</Button>
+            <Button variant="outline"><Upload />{fullSharedT("taskDetail.copy.upload")}</Button>
+            <Button variant="destructive"><Trash2 />{fullSharedT("taskPanels.delete")}</Button>
+            <Button size="sm"><Plus />{fullSharedT("taskProperties.share.add")}</Button>
           </div>
         </SubSection>
 
-        <SubSection title="States">
+        <SubSection title={t("fullDiagnostics.states")}>
           <div className="flex items-center gap-2 flex-wrap">
-            <Button disabled>Disabled</Button>
-            <Button variant="outline" disabled>Disabled Outline</Button>
+            <Button disabled>{t("fullDiagnostics.disabled")}</Button>
+            <Button variant="outline" disabled>{t("fullDiagnostics.disabledOutline")}</Button>
           </div>
         </SubSection>
       </Section>
@@ -781,14 +777,14 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  BADGES                                                       */}
       {/* ============================================================ */}
-      <Section title="Badges">
-        <SubSection title="Variants">
+      <Section title={t("fullDiagnostics.badges")}>
+        <SubSection title={t("fullDiagnostics.variants")}>
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="default">Default</Badge>
-            <Badge variant="secondary">Secondary</Badge>
-            <Badge variant="outline">Outline</Badge>
-            <Badge variant="destructive">Destructive</Badge>
-            <Badge variant="ghost">Ghost</Badge>
+            <Badge variant="default">{fullSharedT("providerSetup.model.default")}</Badge>
+            <Badge variant="secondary">{t("fullDiagnostics.secondary")}</Badge>
+            <Badge variant="outline">{t("fullDiagnostics.outline")}</Badge>
+            <Badge variant="destructive">{fullSharedT("decisionForms.decision.destructive")}</Badge>
+            <Badge variant="ghost">{t("fullDiagnostics.ghost")}</Badge>
           </div>
         </SubSection>
       </Section>
@@ -796,8 +792,8 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  STATUS BADGES & ICONS                                        */}
       {/* ============================================================ */}
-      <Section title="Status System">
-        <SubSection title="StatusBadge (all statuses)">
+      <Section title={t("fullDiagnostics.statusSystem")}>
+        <SubSection title={t("fullDiagnostics.statusbadgeAllStatuses")}>
           <div className="flex items-center gap-2 flex-wrap">
             {[
               "active", "running", "paused", "idle", "archived", "planned",
@@ -811,7 +807,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="IssueStatusBadge (brand chip + glyph — PAP-75)">
+        <SubSection title={t("fullDiagnostics.issuestatusbadgeBrandChipGlyphPap75")}>
           <div className="flex items-center gap-2 flex-wrap">
             {["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"].map(
               (s) => (
@@ -821,11 +817,11 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Idle Slack conversation">
+        <SubSection title={t("fullDiagnostics.idleSlackConversation")}>
           <StatusIcon status="in_review" externalConversationState="waiting" showLabel />
           <IssueStatusBadge status="in_review" externalConversationState="waiting" />
         </SubSection>
-        <SubSection title="StatusIcon (interactive)">
+        <SubSection title={t("fullDiagnostics.statusiconInteractive")}>
           <div className="flex items-center gap-3 flex-wrap">
             {["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"].map(
               (s) => (
@@ -838,13 +834,13 @@ export function DesignGuide() {
           </div>
           <div className="flex items-center gap-2 mt-2">
             <StatusIcon status={status} onChange={setStatus} />
-            <span className="text-sm">Click the icon to change status (current: {status})</span>
+            <span className="text-sm">{t("fullDiagnostics.clickTheIconToChangeStatusCurrent")}{" "}{status})</span>
           </div>
         </SubSection>
 
         {/* PAP-411: PriorityIcon showcase gated behind SHOW_TASK_PRIORITY_UI per board decision. */}
         {SHOW_TASK_PRIORITY_UI && (
-        <SubSection title="PriorityIcon (interactive)">
+        <SubSection title={t("fullDiagnostics.priorityiconInteractive")}>
           <div className="flex items-center gap-3 flex-wrap">
             {["critical", "high", "medium", "low"].map((p) => (
               <div key={p} className="flex items-center gap-1.5">
@@ -855,12 +851,12 @@ export function DesignGuide() {
           </div>
           <div className="flex items-center gap-2 mt-2">
             <PriorityIcon priority={priority} onChange={setPriority} />
-            <span className="text-sm">Click the icon to change (current: {priority})</span>
+            <span className="text-sm">{t("fullDiagnostics.clickTheIconToChangeCurrent")}{" "}{priority})</span>
           </div>
         </SubSection>
         )}
 
-        <SubSection title="Agent status dots">
+        <SubSection title={t("fullDiagnostics.agentStatusDots")}>
           <div className="flex items-center gap-4 flex-wrap">
             {(["running", "active", "paused", "error", "archived"] as const).map((label) => (
               <div key={label} className="flex items-center gap-2">
@@ -873,7 +869,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Run invocation badges">
+        <SubSection title={t("fullDiagnostics.runInvocationBadges")}>
           <div className="flex items-center gap-2 flex-wrap">
             {[
               ["timer", "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"],
@@ -889,30 +885,20 @@ export function DesignGuide() {
         </SubSection>
 
         <SubSection title="IssueReferencePill">
-          <p className="text-xs text-muted-foreground">
-            Used wherever a task is referenced — in markdown, the Related Work tab, and activity summaries.
-            Pass <code className="font-mono">status</code> to show the target issue&apos;s state at a glance.
-            Use <code className="font-mono">variant="property"</code> for compact badges with direct navigation.
-            Pass <code className="font-mono">onRemove</code> for a separate blocker removal control with reserved space.
-            Use <code className="font-mono">strikethrough</code> for &quot;removed&quot; contexts.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.usedWhereverATaskIsReferencedIn")}{" "}<code className="font-mono">{t("fullPages.changeStatus")}</code>{" "}{t("fullDiagnostics.toShowTheTargetIssueSState")}{" "}<code className="font-mono">variant="property"</code>{" "}{t("fullDiagnostics.forCompactBadgesWithDirectNavigationPass")}{" "}<code className="font-mono">onRemove</code>{" "}{t("fullDiagnostics.forASeparateBlockerRemovalControlWith")}{" "}<code className="font-mono">strikethrough</code>{" "}{t("fullDiagnostics.forRemovedContexts")}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            <IssueReferencePill issue={{ id: "demo-1", identifier: "PAP-123", title: "Identifier only — no status yet" }} />
-            <IssueReferencePill issue={{ id: "demo-2", identifier: "PAP-456", title: "With in_progress status", status: "in_progress" }} />
-            <IssueReferencePill issue={{ id: "demo-3", identifier: "PAP-789", title: "Done status", status: "done" }} />
-            <IssueReferencePill issue={{ id: "demo-4", identifier: "PAP-101", title: "Blocked status", status: "blocked" }} />
-            <IssueReferencePill onRemove={() => window.alert("Blocker removed")} issue={{ id: "demo-blocker", identifier: "PAP-303", title: "Hover or focus to remove blocker", status: "in_review" }} />
-            <IssueReferencePill strikethrough issue={{ id: "demo-5", identifier: "PAP-202", title: "Removed (strikethrough)", status: "todo" }} />
+            <IssueReferencePill issue={{ id: "demo-1", identifier: "PAP-123", title: t("fullDiagnostics.identifierOnlyNoStatusYet") }} />
+            <IssueReferencePill issue={{ id: "demo-2", identifier: "PAP-456", title: t("fullDiagnostics.withInProgressStatus"), status: "in_progress" }} />
+            <IssueReferencePill issue={{ id: "demo-3", identifier: "PAP-789", title: t("fullDiagnostics.doneStatus"), status: "done" }} />
+            <IssueReferencePill issue={{ id: "demo-4", identifier: "PAP-101", title: t("fullDiagnostics.blockedStatus"), status: "blocked" }} />
+            <IssueReferencePill onRemove={() => window.alert(t("fullDiagnostics.blockerRemoved"))} issue={{ id: "demo-blocker", identifier: "PAP-303", title: t("fullDiagnostics.hoverOrFocusToRemoveBlocker"), status: "in_review" }} />
+            <IssueReferencePill strikethrough issue={{ id: "demo-5", identifier: "PAP-202", title: t("fullDiagnostics.removedStrikethrough"), status: "todo" }} />
           </div>
         </SubSection>
 
         <SubSection title="LockedIssueChip">
-          <p className="text-xs text-muted-foreground">
-            Existence-only reference to a private task shown from a surface the viewer can see
-            (a blocker edge, a mention). Mono id + lock, dashed muted border,{" "}
-            <strong>no title, never a link</strong>. Falls back to &quot;Private&quot; when even the
-            identifier is withheld.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.existenceOnlyReferenceToAPrivateTask")}{" "}
+            <strong>{t("fullDiagnostics.noTitleNeverALink")}</strong>{t("fullDiagnostics.fallsBackToPrivateWhenEvenThe")}</p>
           <div className="flex items-center gap-2 flex-wrap">
             <LockedIssueChip identifier="PAP-1234" />
             <LockedIssueChip identifier={null} />
@@ -923,35 +909,30 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  AGENT CAPSULE                                                */}
       {/* ============================================================ */}
-      <Section title="Agent Capsule">
-        <p className="text-sm text-muted-foreground max-w-prose">
-          The brand &quot;capsule is the agent&quot; motif. A single agent reads as a tall
-          pill that moves through three states as it comes to life. The online fill uses
-          the live brand agent-gradient tokens (<code className="font-mono">--agent-Na</code> →{" "}
-          <code className="font-mono">--agent-Nb</code>); <code className="font-mono">prefers-reduced-motion</code>{" "}
-          skips the liquid rise and pulses and renders the final state.
-        </p>
-        <SubSection title="States">
+      <Section title={t("fullDiagnostics.agentCapsule")}>
+        <p className="text-sm text-muted-foreground max-w-prose">{t("fullDiagnostics.theBrandCapsuleIsTheAgentMotif")}<code className="font-mono">--agent-Na</code> →{" "}
+          <code className="font-mono">--agent-Nb</code>); <code className="font-mono">prefers-reduced-motion</code>{" "}{t("fullDiagnostics.skipsTheLiquidRiseAndPulsesAnd")}</p>
+        <SubSection title={t("fullDiagnostics.states")}>
           <div className="flex items-end gap-10">
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="slot" />
-              <span className="text-xs text-muted-foreground">slot</span>
+              <span className="text-xs text-muted-foreground">{t("fullDiagnostics.slot")}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="configured" />
-              <span className="text-xs text-muted-foreground">configured</span>
+              <span className="text-xs text-muted-foreground">{t("fullDiagnostics.configured")}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="online" gradient={5} />
-              <span className="text-xs text-muted-foreground">online</span>
+              <span className="text-xs text-muted-foreground">{t("fullDiagnostics.online")}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="online" gradient={5} glow="blue" />
-              <span className="text-xs text-muted-foreground">online · blue glow</span>
+              <span className="text-xs text-muted-foreground">{t("fullDiagnostics.onlineBlueGlow")}</span>
             </div>
           </div>
         </SubSection>
-        <SubSection title="Sizes">
+        <SubSection title={t("fullDiagnostics.sizes")}>
           <div className="flex items-end gap-8">
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="online" size="sm" gradient={1} />
@@ -967,11 +948,11 @@ export function DesignGuide() {
             </div>
             <div className="flex flex-col items-center gap-2">
               <AgentCapsule state="online" size={{ width: 28, height: 96 }} gradient={6} />
-              <span className="text-xs text-muted-foreground">custom px</span>
+              <span className="text-xs text-muted-foreground">{t("fullDiagnostics.customPx")}</span>
             </div>
           </div>
         </SubSection>
-        <SubSection title="Gradients">
+        <SubSection title={t("fullDiagnostics.gradients")}>
           <div className="flex items-end gap-3 flex-wrap">
             {Array.from({ length: AGENT_GRADIENT_COUNT }, (_, i) => (
               <div key={i} className="flex flex-col items-center gap-1.5">
@@ -986,38 +967,38 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  FORM ELEMENTS                                                */}
       {/* ============================================================ */}
-      <Section title="Form Elements">
+      <Section title={t("fullDiagnostics.formElements")}>
         <div className="grid gap-6 md:grid-cols-2">
-          <SubSection title="Input">
-            <Input placeholder="Default input" />
-            <Input placeholder="Disabled input" disabled className="mt-2" />
+          <SubSection title={fullSharedT("fullShared.input_36ecb4")}>
+            <Input placeholder={t("fullDiagnostics.defaultInput")} />
+            <Input placeholder={t("fullDiagnostics.disabledInput")} disabled className="mt-2" />
           </SubSection>
 
-          <SubSection title="Textarea">
-            <Textarea placeholder="Write something..." />
+          <SubSection title={t("fullDiagnostics.textarea")}>
+            <Textarea placeholder={t("fullDiagnostics.writeSomething")} />
           </SubSection>
 
-          <SubSection title="Checkbox & Label">
+          <SubSection title={t("fullDiagnostics.checkboxLabel")}>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Checkbox id="check1" defaultChecked />
-                <Label htmlFor="check1">Checked item</Label>
+                <Label htmlFor="check1">{t("fullDiagnostics.checkedItem")}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Checkbox id="check2" />
-                <Label htmlFor="check2">Unchecked item</Label>
+                <Label htmlFor="check2">{t("fullDiagnostics.uncheckedItem")}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Checkbox id="check3" disabled />
-                <Label htmlFor="check3">Disabled item</Label>
+                <Label htmlFor="check3">{t("fullDiagnostics.disabledItem")}</Label>
               </div>
             </div>
           </SubSection>
 
-          <SubSection title="Inline Editor">
+          <SubSection title={t("fullDiagnostics.inlineEditor")}>
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Title (single-line)</p>
+                <p className="text-xs text-muted-foreground mb-1">{t("fullDiagnostics.titleSingleLine")}</p>
                 <InlineEditor
                   value={inlineTitle}
                   onSave={setInlineTitle}
@@ -1026,7 +1007,7 @@ export function DesignGuide() {
                 />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Body text (single-line)</p>
+                <p className="text-xs text-muted-foreground mb-1">{t("fullDiagnostics.bodyTextSingleLine")}</p>
                 <InlineEditor
                   value={inlineText}
                   onSave={setInlineText}
@@ -1035,13 +1016,13 @@ export function DesignGuide() {
                 />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Description (multiline, auto-sizing)</p>
+                <p className="text-xs text-muted-foreground mb-1">{t("fullDiagnostics.descriptionMultilineAutoSizing")}</p>
                 <InlineEditor
                   value={inlineDesc}
                   onSave={setInlineDesc}
                   as="p"
                   className="text-sm text-muted-foreground"
-                  placeholder="Add a description..."
+                  placeholder={fullSharedT("taskDetail.copy.addDescription")}
                   multiline
                 />
               </div>
@@ -1053,34 +1034,34 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  SELECT                                                       */}
       {/* ============================================================ */}
-      <Section title="Select">
-        <p className="mb-4 text-sm text-muted-foreground">Native single-value dropdowns share an inset, theme-aware caret and reserve room for it in the base stylesheet. Multiple-selection lists and controls with a custom icon keep their own appearance.</p>
+      <Section title={fullSharedT("skillsGap.select_859822")}>
+        <p className="mb-4 text-sm text-muted-foreground">{t("fullDiagnostics.nativeSingleValueDropdownsShareAnInset")}</p>
         <div className="grid gap-6 md:grid-cols-2">
-          <SubSection title="Default size">
+          <SubSection title={t("fullDiagnostics.defaultSize")}>
             <Select value={selectValue} onValueChange={setSelectValue}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder={t("fullDiagnostics.selectStatus")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="backlog">Backlog</SelectItem>
-                <SelectItem value="todo">Todo</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="in_review">In Review</SelectItem>
-                <SelectItem value="done">Done</SelectItem>
+                <SelectItem value="backlog">{fullSharedT("taskViews.backlog")}</SelectItem>
+                <SelectItem value="todo">{t("fullDiagnostics.todo")}</SelectItem>
+                <SelectItem value="in_progress">{fullSharedT("liveDashboardUi.chart.in_progress")}</SelectItem>
+                <SelectItem value="in_review">{fullSharedT("liveDashboardUi.chart.in_review")}</SelectItem>
+                <SelectItem value="done">{fullSharedT("fullShared.done_11a676")}</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">Current value: {selectValue}</p>
+            <p className="text-xs text-muted-foreground">{t("fullDiagnostics.currentValue")}{" "}{selectValue}</p>
           </SubSection>
-          <SubSection title="Small trigger">
+          <SubSection title={t("fullDiagnostics.smallTrigger")}>
             <Select defaultValue="high">
               <SelectTrigger size="sm" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="critical">Critical</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="critical">{fullSharedT("decisionsUi.severity.critical")}</SelectItem>
+                <SelectItem value="high">{fullSharedT("fullShared.high_c4ebc6")}</SelectItem>
+                <SelectItem value="medium">{fullSharedT("fullShared.medium_8e588c")}</SelectItem>
+                <SelectItem value="low">{fullSharedT("fullShared.low_f793de")}</SelectItem>
               </SelectContent>
             </Select>
           </SubSection>
@@ -1090,35 +1071,25 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  DROPDOWN MENU                                                */}
       {/* ============================================================ */}
-      <Section title="Dropdown Menu">
+      <Section title={t("fullDiagnostics.dropdownMenu")}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              Quick Actions
-              <ChevronDown className="h-4 w-4" />
+            <Button variant="outline" size="sm">{t("fullDiagnostics.quickActions")}<ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuItem>
-              <Check className="h-4 w-4" />
-              Mark as done
-              <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+              <Check className="h-4 w-4" />{t("fullDiagnostics.markAsDone")}<DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <BookOpen className="h-4 w-4" />
-              Open docs
-            </DropdownMenuItem>
+              <BookOpen className="h-4 w-4" />{t("fullDiagnostics.openDocs")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={menuChecked}
               onCheckedChange={(value) => setMenuChecked(value === true)}
-            >
-              Watch issue
-            </DropdownMenuCheckboxItem>
+            >{t("fullDiagnostics.watchIssue")}</DropdownMenuCheckboxItem>
             <DropdownMenuItem variant="destructive">
-              <Trash2 className="h-4 w-4" />
-              Delete issue
-            </DropdownMenuItem>
+              <Trash2 className="h-4 w-4" />{t("fullDiagnostics.deleteIssue")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </Section>
@@ -1126,17 +1097,15 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  POPOVER                                                      */}
       {/* ============================================================ */}
-      <Section title="Popover">
+      <Section title={t("fullDiagnostics.popover")}>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm">Open Popover</Button>
+            <Button variant="outline" size="sm">{t("fullDiagnostics.openPopover")}</Button>
           </PopoverTrigger>
           <PopoverContent className="space-y-2">
-            <p className="text-sm font-medium">Agent heartbeat</p>
-            <p className="text-xs text-muted-foreground">
-              Last run succeeded 24s ago. Next timer run in 9m.
-            </p>
-            <Button size="xs">Wake now</Button>
+            <p className="text-sm font-medium">{t("fullDiagnostics.agentHeartbeat")}</p>
+            <p className="text-xs text-muted-foreground">{t("fullDiagnostics.lastRunSucceeded24sAgoNextTimer")}</p>
+            <Button size="xs">{t("fullDiagnostics.wakeNow")}</Button>
           </PopoverContent>
         </Popover>
       </Section>
@@ -1144,17 +1113,16 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  COLLAPSIBLE                                                  */}
       {/* ============================================================ */}
-      <Section title="Collapsible">
+      <Section title={t("fullDiagnostics.collapsible")}>
         <Collapsible open={collapsibleOpen} onOpenChange={setCollapsibleOpen} className="space-y-2">
           <CollapsibleTrigger asChild>
             <Button variant="outline" size="sm">
-              {collapsibleOpen ? "Hide" : "Show"} advanced filters
-            </Button>
+              {collapsibleOpen ? t("agentDetailUi.keys.hide") : t("agentDetailUi.keys.show")}{" "}{t("fullDiagnostics.advancedFilters")}</Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="rounded-md border border-border p-3">
             <div className="space-y-2">
-              <Label htmlFor="owner-filter">Owner</Label>
-              <Input id="owner-filter" placeholder="Filter by agent name" />
+              <Label htmlFor="owner-filter">{fullSharedT("fullShared.owner_4b1b8a")}</Label>
+              <Input id="owner-filter" placeholder={t("fullDiagnostics.filterByAgentName")} />
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -1163,29 +1131,29 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  SHEET                                                        */}
       {/* ============================================================ */}
-      <Section title="Sheet">
+      <Section title={fullSharedT("taskChatUi.attachment.sheet")}>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="sm">Open Side Panel</Button>
+            <Button variant="outline" size="sm">{t("fullDiagnostics.openSidePanel")}</Button>
           </SheetTrigger>
           <SheetContent side="right">
             <SheetHeader>
-              <SheetTitle>Issue Properties</SheetTitle>
-              <SheetDescription>Edit metadata without leaving the current page.</SheetDescription>
+              <SheetTitle>{t("fullDiagnostics.issueProperties")}</SheetTitle>
+              <SheetDescription>{t("fullDiagnostics.editMetadataWithoutLeavingTheCurrentPage")}</SheetDescription>
             </SheetHeader>
             <div className="space-y-4 px-4">
               <div className="space-y-1">
-                <Label htmlFor="sheet-title">Title</Label>
+                <Label htmlFor="sheet-title">{fullSharedT("fullShared.title_7e8cd2")}</Label>
                 <Input id="sheet-title" defaultValue="Improve onboarding docs" />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="sheet-description">Description</Label>
+                <Label htmlFor="sheet-description">{fullSharedT("companySettings.description")}</Label>
                 <Textarea id="sheet-description" defaultValue="Capture setup pitfalls and screenshots." />
               </div>
             </div>
             <SheetFooter>
-              <Button variant="outline">Cancel</Button>
-              <Button>Save</Button>
+              <Button variant="outline">{fullSharedT("fullShared.cancel_19766e")}</Button>
+              <Button>{fullSharedT("inboxPolicy.save")}</Button>
             </SheetFooter>
           </SheetContent>
         </Sheet>
@@ -1194,13 +1162,11 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  SCROLL AREA                                                  */}
       {/* ============================================================ */}
-      <Section title="Scroll Area">
+      <Section title={t("fullDiagnostics.scrollArea")}>
         <ScrollArea className="h-36 rounded-md border border-border">
           <div className="space-y-2 p-3">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="rounded-md border border-border p-2 text-sm">
-                Heartbeat run #{i + 1}: completed successfully
-              </div>
+              <div key={i} className="rounded-md border border-border p-2 text-sm">{t("fullDiagnostics.heartbeatRun")}{i + 1}{t("fullDiagnostics.completedSuccessfully")}</div>
             ))}
           </div>
         </ScrollArea>
@@ -1209,32 +1175,24 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  COMMAND                                                      */}
       {/* ============================================================ */}
-      <Section title="Command (CMDK)">
+      <Section title={t("fullDiagnostics.commandCmdk")}>
         <div className="rounded-md border border-border">
           <Command>
-            <CommandInput placeholder="Type a command or search..." />
+            <CommandInput placeholder={t("fullDiagnostics.typeACommandOrSearch")} />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>{fullSharedT("searchUi.palette.noResults")}</CommandEmpty>
               <CommandGroup heading="Pages">
                 <CommandItem>
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                </CommandItem>
+                  <LayoutDashboard className="h-4 w-4" />{fullSharedT("sidebar.dashboard")}</CommandItem>
                 <CommandItem>
-                  <CircleDot className="h-4 w-4" />
-                  Issues
-                </CommandItem>
+                  <CircleDot className="h-4 w-4" />{t("fullDiagnostics.issues")}</CommandItem>
               </CommandGroup>
               <CommandSeparator />
               <CommandGroup heading="Actions">
                 <CommandItem>
-                  <CommandIcon className="h-4 w-4" />
-                  Open command palette
-                </CommandItem>
+                  <CommandIcon className="h-4 w-4" />{t("fullDiagnostics.openCommandPalette")}</CommandItem>
                 <CommandItem>
-                  <Plus className="h-4 w-4" />
-                  Create new issue
-                </CommandItem>
+                  <Plus className="h-4 w-4" />{t("fullDiagnostics.createNewIssue")}</CommandItem>
               </CommandGroup>
             </CommandList>
           </Command>
@@ -1244,19 +1202,19 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  BREADCRUMB                                                   */}
       {/* ============================================================ */}
-      <Section title="Breadcrumb">
+      <Section title={t("fullRoutinesSecrets.breadcrumb")}>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">Projects</BreadcrumbLink>
+              <BreadcrumbLink href="#">{fullSharedT("sidebar.projects")}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">Paperclip App</BreadcrumbLink>
+              <BreadcrumbLink href="#">{t("fullDiagnostics.paperclipApp")}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Issue List</BreadcrumbPage>
+              <BreadcrumbPage>{t("fullDiagnostics.issueList")}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -1265,8 +1223,8 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  CARDS                                                        */}
       {/* ============================================================ */}
-      <Section title="Cards">
-        <SubSection title="Dashboard agent runs">
+      <Section title={t("fullDiagnostics.cards")}>
+        <SubSection title={t("fullDiagnostics.dashboardAgentRuns")}>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {["running", "queued", "succeeded", "failed", "timed_out", "cancelled", "interrupted"].map((status) => (
               <AgentRunCard
@@ -1281,30 +1239,30 @@ export function DesignGuide() {
               />
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">The dashboard and Live runs page use the same compact cards. In-progress task icons animate across the app, including between runs, to represent task workflow status. Live indicators report active execution. Open a run to view its status and transcript.</p>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.theDashboardAndLiveRunsPageUse")}</p>
         </SubSection>
-        <SubSection title="Standard Card">
+        <SubSection title={t("fullDiagnostics.standardCard")}>
           <Card>
             <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card description with supporting text.</CardDescription>
+              <CardTitle>{t("fullDiagnostics.cardTitle")}</CardTitle>
+              <CardDescription>{t("fullDiagnostics.cardDescriptionWithSupportingText")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">Card content goes here. This is the main body area.</p>
+              <p className="text-sm">{t("fullDiagnostics.cardContentGoesHereThisIsThe")}</p>
             </CardContent>
             <CardFooter className="gap-2">
-              <Button size="sm">Action</Button>
-              <Button variant="outline" size="sm">Cancel</Button>
+              <Button size="sm">{fullSharedT("runUi.inspector.action")}</Button>
+              <Button variant="outline" size="sm">{fullSharedT("fullShared.cancel_19766e")}</Button>
             </CardFooter>
           </Card>
         </SubSection>
 
-        <SubSection title="Metric Cards">
+        <SubSection title={t("fullDiagnostics.metricCards")}>
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-            <MetricCard icon={Bot} value={12} label="Active Agents" description="+3 this week" />
-            <MetricCard icon={CircleDot} value={48} label="Open Issues" />
-            <MetricCard icon={DollarSign} value="$1,234" label="Monthly Cost" description="Under budget" />
-            <MetricCard icon={Zap} value="99.9%" label="Uptime" />
+            <MetricCard icon={Bot} value={12} label={t("fullDiagnostics.activeAgents")} description={t("fullDiagnostics.3ThisWeek")} />
+            <MetricCard icon={CircleDot} value={48} label={t("fullDiagnostics.openIssues")} />
+            <MetricCard icon={DollarSign} value="$1,234" label={t("fullDiagnostics.monthlyCost")} description={t("fullDiagnostics.underBudget")} />
+            <MetricCard icon={Zap} value="99.9%" label={t("fullPages.uptime")} />
           </div>
         </SubSection>
       </Section>
@@ -1312,45 +1270,45 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  TABS                                                         */}
       {/* ============================================================ */}
-      <Section title="Tabs">
-        <SubSection title="Default (pill) variant">
+      <Section title={t("fullDiagnostics.tabs")}>
+        <SubSection title={t("fullDiagnostics.defaultPillVariant")}>
           <Tabs defaultValue="overview">
             <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="runs">Runs</TabsTrigger>
-              <TabsTrigger value="config">Config</TabsTrigger>
-              <TabsTrigger value="costs">Costs</TabsTrigger>
+              <TabsTrigger value="overview">{fullSharedT("runUi.inspector.overview")}</TabsTrigger>
+              <TabsTrigger value="runs">{fullSharedT("agentDetailUi.nav.auditRuns")}</TabsTrigger>
+              <TabsTrigger value="config">{t("fullRoutinesSecrets.config")}</TabsTrigger>
+              <TabsTrigger value="costs">{fullSharedT("sidebar.costs")}</TabsTrigger>
             </TabsList>
             <TabsContent value="overview">
-              <p className="text-sm text-muted-foreground py-4">Overview tab content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.overviewTabContent")}</p>
             </TabsContent>
             <TabsContent value="runs">
-              <p className="text-sm text-muted-foreground py-4">Runs tab content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.runsTabContent")}</p>
             </TabsContent>
             <TabsContent value="config">
-              <p className="text-sm text-muted-foreground py-4">Config tab content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.configTabContent")}</p>
             </TabsContent>
             <TabsContent value="costs">
-              <p className="text-sm text-muted-foreground py-4">Costs tab content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.costsTabContent")}</p>
             </TabsContent>
           </Tabs>
         </SubSection>
 
-        <SubSection title="Line variant">
+        <SubSection title={t("fullDiagnostics.lineVariant")}>
           <Tabs defaultValue="summary">
             <TabsList variant="line">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="details">Details</TabsTrigger>
-              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="summary">{fullSharedT("approvalsUi.summary")}</TabsTrigger>
+              <TabsTrigger value="details">{t("fullDiagnostics.details")}</TabsTrigger>
+              <TabsTrigger value="comments">{fullSharedT("searchUi.scope.comments")}</TabsTrigger>
             </TabsList>
             <TabsContent value="summary">
-              <p className="text-sm text-muted-foreground py-4">Summary content with underline tabs.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.summaryContentWithUnderlineTabs")}</p>
             </TabsContent>
             <TabsContent value="details">
-              <p className="text-sm text-muted-foreground py-4">Details content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.detailsContent")}</p>
             </TabsContent>
             <TabsContent value="comments">
-              <p className="text-sm text-muted-foreground py-4">Comments content.</p>
+              <p className="text-sm text-muted-foreground py-4">{t("fullDiagnostics.commentsContent")}</p>
             </TabsContent>
           </Tabs>
         </SubSection>
@@ -1359,7 +1317,7 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  ENTITY ROWS                                                  */}
       {/* ============================================================ */}
-      <Section title="Entity Rows">
+      <Section title={t("fullDiagnostics.entityRows")}>
         <div className="border border-border rounded-md">
           <EntityRow
             leading={
@@ -1371,7 +1329,7 @@ export function DesignGuide() {
             }
             identifier="PAP-001"
             title="Implement authentication flow"
-            subtitle="Responsible: Agent Alpha"
+            subtitle={t("fullDiagnostics.responsibleExample")}
             trailing={<IssueStatusBadge status="in_progress" />}
             onClick={() => {}}
           />
@@ -1384,7 +1342,7 @@ export function DesignGuide() {
             }
             identifier="PAP-002"
             title="Set up CI/CD pipeline"
-            subtitle="Completed 2 days ago"
+            subtitle={t("fullDiagnostics.completedExample")}
             trailing={<IssueStatusBadge status="done" />}
             onClick={() => {}}
           />
@@ -1409,16 +1367,16 @@ export function DesignGuide() {
             }
             identifier="PAP-004"
             title="Deploy to production"
-            subtitle="Blocked by PAP-001"
+            subtitle={t("fullDiagnostics.blockedExample")}
             trailing={<IssueStatusBadge status="blocked" />}
             selected
           />
         </div>
-        <SubSection title="Membership action">
+        <SubSection title={t("fullDiagnostics.membershipAction")}>
           <div className="border border-border rounded-md">
             <EntityRow
-              title="Joined resource"
-              subtitle="Hover or focus the row to reveal the reserved action slot."
+              title={t("fullDiagnostics.joinedResource")}
+              subtitle={t("fullDiagnostics.rowActionHint")}
               className="group"
               trailing={
                 <MembershipAction
@@ -1430,8 +1388,8 @@ export function DesignGuide() {
               }
             />
             <EntityRow
-              title="Left resource"
-              subtitle="Persistent action with dimmed row content."
+              title={t("fullDiagnostics.leftResource")}
+              subtitle={t("fullDiagnostics.dimmedActionHint")}
               className="group text-foreground/55"
               trailing={
                 <MembershipAction
@@ -1443,8 +1401,8 @@ export function DesignGuide() {
               }
             />
             <EntityRow
-              title="Leaving resource"
-              subtitle="Disabled while the optimistic mutation is pending."
+              title={t("fullDiagnostics.leavingResource")}
+              subtitle={t("fullDiagnostics.pendingActionHint")}
               className="group text-foreground/55"
               trailing={
                 <MembershipAction
@@ -1458,8 +1416,8 @@ export function DesignGuide() {
               }
             />
             <EntityRow
-              title="Joining resource"
-              subtitle="The target state is visible immediately while the server confirms."
+              title={t("fullDiagnostics.joiningResource")}
+              subtitle={t("fullDiagnostics.optimisticActionHint")}
               className="group"
               trailing={
                 <MembershipAction
@@ -1479,7 +1437,7 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  FILTER BAR                                                   */}
       {/* ============================================================ */}
-      <Section title="Filter Bar">
+      <Section title={t("fullDiagnostics.filterBar")}>
         <FilterBar
           filters={filters}
           onRemove={(key) => setFilters((f) => f.filter((x) => x.key !== key))}
@@ -1491,24 +1449,22 @@ export function DesignGuide() {
             size="sm"
             onClick={() =>
               setFilters([
-                { key: "status", label: "Status", value: "Active" },
+                { key: "status", label: fullSharedT("sidebar.status"), value: "Active" },
                 // PAP-411: priority filter demo row suppressed while SHOW_TASK_PRIORITY_UI is off.
                 ...(SHOW_TASK_PRIORITY_UI
-                  ? [{ key: "priority", label: "Priority", value: "High" } as FilterValue]
+                  ? [{ key: "priority", label: fullSharedT("fullShared.priority_d60dbb"), value: "High" } as FilterValue]
                   : []),
               ])
             }
-          >
-            Reset filters
-          </Button>
+          >{t("fullPages.resetFilters")}</Button>
         )}
       </Section>
 
       {/* ============================================================ */}
       {/*  AVATARS                                                      */}
       {/* ============================================================ */}
-      <Section title="Avatars">
-        <SubSection title="Sizes">
+      <Section title={t("fullDiagnostics.avatars")}>
+        <SubSection title={t("fullDiagnostics.sizes")}>
           <div className="flex items-center gap-3">
             <Avatar size="sm"><AvatarFallback>SM</AvatarFallback></Avatar>
             <Avatar><AvatarFallback>DF</AvatarFallback></Avatar>
@@ -1516,7 +1472,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Group">
+        <SubSection title={fullSharedT("tasks.group")}>
           <AvatarGroup>
             <Avatar><AvatarFallback>A1</AvatarFallback></Avatar>
             <Avatar><AvatarFallback>A2</AvatarFallback></Avatar>
@@ -1526,8 +1482,8 @@ export function DesignGuide() {
         </SubSection>
       </Section>
 
-      <Section title="App logos">
-        <SubSection title="Official marks and runtime fallback">
+      <Section title={t("fullDiagnostics.appLogos")}>
+        <SubSection title={t("fullDiagnostics.officialMarksAndRuntimeFallback")}>
           <div className="flex items-center gap-3">
             <AppLogo
               name="Notion"
@@ -1544,17 +1500,17 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  IDENTITY                                                     */}
       {/* ============================================================ */}
-      <Section title="Agent personas">
-        <SubSection title="Stable palette identities">
+      <Section title={t("fullDiagnostics.agentPersonas")}>
+        <SubSection title={t("fullDiagnostics.stablePaletteIdentities")}>
           <div className="flex flex-wrap gap-3">{AGENT_PALETTE_IDS.map(palette => <AgentAvatar key={palette} appearance={appearanceForPalette(palette)} size={48} label={palette} />)}</div>
         </SubSection>
-        <SubSection title="Onboarding and live character">
-          <p className="text-sm text-muted-foreground">Place one live character beside the agent name. Onboarding uses a larger padded frame. Onboarding and agent headers follow the pointer across the page; other placements track within their region. Full-page examples are in Storybook under Agents / Personas / Full pages.</p>
+        <SubSection title={t("fullDiagnostics.onboardingAndLiveCharacter")}>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.placeOneLiveCharacterBesideTheAgent")}</p>
           <div className="flex gap-4"><AgentCharacter muted state="sleepy" motion="still" size={128} /><AgentCharacter size={128} /></div>
         </SubSection>
       </Section>
-      <Section title="Human identity">
-        <SubSection title="Sizes">
+      <Section title={t("fullDiagnostics.humanIdentity")}>
+        <SubSection title={t("fullDiagnostics.sizes")}>
           <div className="flex items-center gap-6">
             <Identity name="Alex Morgan" size="sm" />
             <Identity name="Alex Morgan" />
@@ -1562,7 +1518,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Initials derivation">
+        <SubSection title={t("fullDiagnostics.initialsDerivation")}>
           <div className="flex flex-col gap-2">
             <Identity name="Casey Jordan" size="sm" />
             <Identity name="Alpha" size="sm" />
@@ -1570,7 +1526,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Custom initials">
+        <SubSection title={t("fullDiagnostics.customInitials")}>
           <Identity name="Backend Service" initials="BS" size="sm" />
         </SubSection>
       </Section>
@@ -1578,19 +1534,19 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  TOOLTIPS                                                     */}
       {/* ============================================================ */}
-      <Section title="Tooltips">
+      <Section title={t("fullDiagnostics.tooltips")}>
         <div className="flex items-center gap-4">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="sm">Hover me</Button>
+              <Button variant="outline" size="sm">{t("fullDiagnostics.hoverMe")}</Button>
             </TooltipTrigger>
-            <TooltipContent>This is a tooltip</TooltipContent>
+            <TooltipContent>{t("fullDiagnostics.thisIsATooltip")}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon-sm"><Settings /></Button>
             </TooltipTrigger>
-            <TooltipContent>Settings</TooltipContent>
+            <TooltipContent>{fullSharedT("companySwitcher.settings")}</TooltipContent>
           </Tooltip>
         </div>
       </Section>
@@ -1598,31 +1554,29 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  DIALOG                                                       */}
       {/* ============================================================ */}
-      <Section title="Dialog">
+      <Section title={t("fullDiagnostics.dialog")}>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Open Dialog</Button>
+            <Button variant="outline">{t("fullDiagnostics.openDialog")}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Dialog Title</DialogTitle>
-              <DialogDescription>
-                This is a sample dialog showing the standard layout with header, content, and footer.
-              </DialogDescription>
+              <DialogTitle>{t("fullDiagnostics.dialogTitle")}</DialogTitle>
+              <DialogDescription>{t("fullDiagnostics.thisIsASampleDialogShowingThe")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-3">
               <div>
-                <Label>Name</Label>
-                <Input placeholder="Enter a name" className="mt-1.5" />
+                <Label>{fullSharedT("fullShared.name_dcd1d5")}</Label>
+                <Input placeholder={t("fullDiagnostics.enterAName")} className="mt-1.5" />
               </div>
               <div>
-                <Label>Description</Label>
-                <Textarea placeholder="Describe..." className="mt-1.5" />
+                <Label>{fullSharedT("companySettings.description")}</Label>
+                <Textarea placeholder={t("fullDiagnostics.describe")} className="mt-1.5" />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline">Cancel</Button>
-              <Button>Save</Button>
+              <Button variant="outline">{fullSharedT("fullShared.cancel_19766e")}</Button>
+              <Button>{fullSharedT("inboxPolicy.save")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -1631,11 +1585,11 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  EMPTY STATE                                                  */}
       {/* ============================================================ */}
-      <Section title="Empty State">
+      <Section title={t("fullDiagnostics.emptyState")}>
         <div className="border border-border rounded-md">
           <EmptyState
             icon={Inbox}
-            message="No items to show. Create your first one to get started."
+            message={t("fullDiagnostics.noItemsToShowCreateYourFirst")}
             action="Create Item"
             onAction={() => {}}
           />
@@ -1645,12 +1599,12 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  PROGRESS BARS                                                */}
       {/* ============================================================ */}
-      <Section title="Progress Bars (Budget)">
+      <Section title={t("fullDiagnostics.progressBarsBudget")}>
         <div className="space-y-3">
           {[
-            { label: "Under budget (40%)", pct: 40, color: "bg-green-400" },
-            { label: "Warning (75%)", pct: 75, color: "bg-yellow-400" },
-            { label: "Over budget (95%)", pct: 95, color: "bg-red-400" },
+            { label: t("fullDiagnostics.underBudget40"), pct: 40, color: "bg-green-400" },
+            { label: t("fullDiagnostics.warning75"), pct: 75, color: "bg-yellow-400" },
+            { label: t("fullDiagnostics.overBudget95"), pct: 95, color: "bg-red-400" },
           ].map(({ label, pct, color }) => (
             <div key={label} className="space-y-1">
               <div className="flex items-center justify-between">
@@ -1671,7 +1625,7 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  LOG VIEWER                                                   */}
       {/* ============================================================ */}
-      <Section title="Log Viewer">
+      <Section title={t("fullDiagnostics.logViewer")}>
         <div className="bg-neutral-950 rounded-lg p-3 font-mono text-xs max-h-80 overflow-y-auto">
           <div className="text-foreground">[12:00:01] INFO  Agent started successfully</div>
           <div className="text-foreground">[12:00:02] INFO  Processing task PAP-001</div>
@@ -1685,7 +1639,7 @@ export function DesignGuide() {
               <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 animate-pulse" />
               <span className="inline-flex h-full w-full rounded-full bg-blue-500" />
             </span>
-            <span className="text-blue-600 dark:text-blue-400">Live</span>
+            <span className="text-blue-600 dark:text-blue-400">{t("fullDiagnostics.live")}</span>
           </div>
         </div>
       </Section>
@@ -1693,28 +1647,28 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  PROPERTY ROW PATTERN                                         */}
       {/* ============================================================ */}
-      <Section title="Property Row Pattern">
+      <Section title={t("fullDiagnostics.propertyRowPattern")}>
         <div className="border border-border rounded-md p-4 space-y-1 max-w-sm">
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs text-muted-foreground">Status</span>
+            <span className="text-xs text-muted-foreground">{fullSharedT("sidebar.status")}</span>
             <StatusBadge status="active" />
           </div>
           {/* PAP-411: priority metadata row hidden behind SHOW_TASK_PRIORITY_UI. */}
           {SHOW_TASK_PRIORITY_UI && (
             <div className="flex items-center justify-between py-1.5">
-              <span className="text-xs text-muted-foreground">Priority</span>
+              <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.priority_d60dbb")}</span>
               <PriorityIcon priority="high" />
             </div>
           )}
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs text-muted-foreground">Responsible</span>
+            <span className="text-xs text-muted-foreground">{fullSharedT("taskViews.column_assignee")}</span>
             <div className="flex items-center gap-1.5">
               <Avatar size="sm"><AvatarFallback>A</AvatarFallback></Avatar>
               <span className="text-xs">Agent Alpha</span>
             </div>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-xs text-muted-foreground">Created</span>
+            <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.created_d70b9e")}</span>
             <span className="text-xs">Jan 15, 2025</span>
           </div>
         </div>
@@ -1723,21 +1677,21 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  NAVIGATION PATTERNS                                          */}
       {/* ============================================================ */}
-      <Section title="Navigation Patterns">
-        <SubSection title="Independent MCP connections">
-          <p className="text-sm text-muted-foreground">Zapier, Arcade, Composio and Executor each own a connection. Their controlled setup views share Access → Connect. Tool discovery completes setup. Saved connections reuse the standard Permissions action list and per-action Test dialog. Storybook’s Apps / Connections groups use in-memory provider fixtures.</p>
+      <Section title={t("fullDiagnostics.navigationPatterns")}>
+        <SubSection title={t("fullDiagnostics.independentMcpConnections")}>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.zapierArcadeComposioAndExecutorEachOwn")}</p>
           <RemoteMcpDesignExample />
         </SubSection>
-        <SubSection title="Setup wizard">
-          <p className="text-sm text-muted-foreground">Shared by connection setup and trigger previews. Setup navigation takes over the section sidebar; each step owns a single footer.</p>
+        <SubSection title={t("fullDiagnostics.setupWizard")}>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.sharedByConnectionSetupAndTriggerPreviews")}</p>
           <div className="max-w-sm space-y-6">
             <SetupWizardNavigation inline labels={["Choose trigger", "Configure", "Review"]} step={wizardStep} availableStep={2} onSelect={setWizardStep} />
-            <SetupWizardFooter onSaveExit={() => setWizardStep(0)}><Button onClick={() => setWizardStep((wizardStep + 1) % 3)}>Continue</Button></SetupWizardFooter>
+            <SetupWizardFooter onSaveExit={() => setWizardStep(0)}><Button onClick={() => setWizardStep((wizardStep + 1) % 3)}>{fullSharedT("onboarding.actions.continue")}</Button></SetupWizardFooter>
           </div>
         </SubSection>
-        <SubSection title="Agent chat picker">
+        <SubSection title={t("fullDiagnostics.agentChatPicker")}>
           <AgentChatPickerExample />
-          <SubSection title="Agent conversation sidebar">
+          <SubSection title={t("fullDiagnostics.agentConversationSidebar")}>
             <div className="flex flex-wrap gap-4">
               <div className="h-96 w-60"><AgentConversationSidebar agents={[]} onSelect={() => {}} onBrowse={() => {}} /></div>
               <div className="h-96 w-60"><AgentConversationSidebar agents={[]} loading /></div>
@@ -1745,45 +1699,29 @@ export function DesignGuide() {
             </div>
           </SubSection>
         </SubSection>
-        <SubSection title="Sidebar nav items">
-          <p className="text-sm text-muted-foreground">
-            Layout accepts sidebarSections to compose additional SidebarSection groups inside the shared sidebar.
-            Use SidebarNavItem for each row, with sibling action buttons for starring or menus.
-            The Chats section shows starred agents, the earliest-created agent when unstarred, then four recent agents without duplicates. Compose and star controls share a vertical column. Compose appears on hover or keyboard focus and remains visible on touch; starred icons remain visible. The picker searches all company agents by name or role without a subtitle, count, continuation labels, or footer. Task breadcrumbs support leading identity and trailing actions beside the label, including single-item task headers; see the Agent chat Storybook.
-          </p>
+        <SubSection title={t("fullDiagnostics.sidebarNavItems")}>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.layoutAcceptsSidebarsectionsToComposeAdditionalSidebarsection")}</p>
           <Card className="block w-60 p-3 space-y-0.5">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-accent text-accent-foreground">
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </div>
+              <LayoutDashboard className="h-4 w-4" />{fullSharedT("sidebar.dashboard")}</div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <CircleDot className="h-4 w-4" />
-              Issues
-              <Badge variant="ghost" className="ml-auto bg-primary text-primary-foreground px-1.5">
+              <CircleDot className="h-4 w-4" />{t("fullDiagnostics.issues")}<Badge variant="ghost" className="ml-auto bg-primary text-primary-foreground px-1.5">
                 12
               </Badge>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <Bot className="h-4 w-4" />
-              Agents
-            </div>
+              <Bot className="h-4 w-4" />{fullSharedT("sidebar.agents")}</div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <Hexagon className="h-4 w-4" />
-              Projects
-            </div>
+              <Hexagon className="h-4 w-4" />{fullSharedT("sidebar.projects")}</div>
           </Card>
         </SubSection>
 
-        <SubSection title="View toggle">
+        <SubSection title={t("fullDiagnostics.viewToggle")}>
           <div className="flex items-center border border-border rounded-md w-fit">
             <button className="px-3 py-1.5 text-xs font-medium bg-accent text-foreground rounded-l-md">
-              <ListTodo className="h-3.5 w-3.5 inline mr-1" />
-              List
-            </button>
+              <ListTodo className="h-3.5 w-3.5 inline mr-1" />{t("fullDiagnostics.list")}</button>
             <button className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent/50 rounded-r-md">
-              <Target className="h-3.5 w-3.5 inline mr-1" />
-              Org
-            </button>
+              <Target className="h-3.5 w-3.5 inline mr-1" />{fullSharedT("sidebar.org")}</button>
           </div>
         </SubSection>
       </Section>
@@ -1791,11 +1729,11 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  GROUPED LIST (Issues pattern)                                */}
       {/* ============================================================ */}
-      <Section title="Grouped List (Issues pattern)">
+      <Section title={t("fullDiagnostics.groupedListIssuesPattern")}>
         <div>
           <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-t-md">
             <StatusIcon status="in_progress" />
-            <span className="text-sm font-medium">In Progress</span>
+            <span className="text-sm font-medium">{fullSharedT("liveDashboardUi.chart.in_progress")}</span>
             <span className="text-xs text-muted-foreground ml-1">2</span>
           </div>
           <div className="border border-border rounded-b-md">
@@ -1819,28 +1757,28 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  COMMENT THREAD PATTERN                                       */}
       {/* ============================================================ */}
-      <Section title="Comment Thread Pattern">
+      <Section title={t("fullDiagnostics.commentThreadPattern")}>
         <div className="space-y-3 max-w-2xl">
-          <h3 className="text-sm font-semibold">Comments (2)</h3>
+          <h3 className="text-sm font-semibold">{t("fullDiagnostics.comments2")}</h3>
           <div className="space-y-3">
             <div className="rounded-md border border-border p-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-muted-foreground">Agent</span>
+                <span className="text-xs font-medium text-muted-foreground">{fullSharedT("taskProperties.fields.agent")}</span>
                 <span className="text-xs text-muted-foreground">Jan 15, 2025</span>
               </div>
               <p className="text-sm">Started working on the authentication module. Will need API keys configured.</p>
             </div>
             <div className="rounded-md border border-border p-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-muted-foreground">Human</span>
+                <span className="text-xs font-medium text-muted-foreground">{t("fullPages.human")}</span>
                 <span className="text-xs text-muted-foreground">Jan 16, 2025</span>
               </div>
               <p className="text-sm">API keys have been added to the vault. Please proceed.</p>
             </div>
           </div>
           <div className="space-y-2">
-            <Textarea placeholder="Leave a comment..." rows={3} />
-            <Button size="sm">Comment</Button>
+            <Textarea placeholder={fullSharedT("fullShared.leave_a_comment_4dff58")} rows={3} />
+            <Button size="sm">{fullSharedT("searchUi.result.comment")}</Button>
           </div>
         </div>
       </Section>
@@ -1848,14 +1786,14 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  COST TABLE PATTERN                                           */}
       {/* ============================================================ */}
-      <Section title="Cost Table Pattern">
+      <Section title={t("fullDiagnostics.costTablePattern")}>
         <div className="border border-border rounded-lg overflow-hidden">
           <table className="w-full text-xs">
             <thead className="border-b border-border bg-accent/20">
               <tr>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Model</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Tokens</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Cost</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{fullSharedT("onboarding.model.label")}</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t("fullPages.tokens")}</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t("fullDiagnostics.cost")}</th>
               </tr>
             </thead>
             <tbody>
@@ -1870,7 +1808,7 @@ export function DesignGuide() {
                 <td className="px-3 py-2 font-mono">$1.25</td>
               </tr>
               <tr>
-                <td className="px-3 py-2 font-medium">Total</td>
+                <td className="px-3 py-2 font-medium">{t("fullDiagnostics.total")}</td>
                 <td className="px-3 py-2 font-mono">1.7M</td>
                 <td className="px-3 py-2 font-mono font-medium">$19.25</td>
               </tr>
@@ -1882,8 +1820,8 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  SKELETONS                                                    */}
       {/* ============================================================ */}
-      <Section title="Skeletons">
-        <SubSection title="Individual">
+      <Section title={t("fullDiagnostics.skeletons")}>
+        <SubSection title={t("fullDiagnostics.individual")}>
           <div className="space-y-2">
             <Skeleton className="h-4 w-48" />
             <Skeleton className="h-8 w-full max-w-sm" />
@@ -1891,13 +1829,13 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Page Skeleton (list)">
+        <SubSection title={t("fullDiagnostics.pageSkeletonList")}>
           <div className="border border-border rounded-md p-4">
             <PageSkeleton variant="list" />
           </div>
         </SubSection>
 
-        <SubSection title="Page Skeleton (detail)">
+        <SubSection title={t("fullDiagnostics.pageSkeletonDetail")}>
           <div className="border border-border rounded-md p-4">
             <PageSkeleton variant="detail" />
           </div>
@@ -1907,14 +1845,14 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  SEPARATOR                                                    */}
       {/* ============================================================ */}
-      <Section title="Separator">
+      <Section title={t("fullDiagnostics.separator")}>
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">Horizontal</p>
+          <p className="text-sm text-muted-foreground">{t("fullDiagnostics.horizontal")}</p>
           <Separator />
           <div className="flex items-center gap-4 h-8">
-            <span className="text-sm">Left</span>
+            <span className="text-sm">{t("fullDiagnostics.left")}</span>
             <Separator orientation="vertical" />
-            <span className="text-sm">Right</span>
+            <span className="text-sm">{t("fullDiagnostics.right")}</span>
           </div>
         </div>
       </Section>
@@ -1924,41 +1862,26 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  TEAM CATALOG                                                 */}
       {/* ============================================================ */}
-      <Section title="Team Catalog">
-        <p className="text-sm text-muted-foreground">
-          Components from the Team Catalog browse/install surface (<code className="font-mono text-xs">/teams-catalog</code>).
-          Fixtures are shared with the Storybook stories.
-        </p>
+      <Section title={t("fullDiagnostics.teamCatalog")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.componentsFromTheTeamCatalogBrowseInstall")}<code className="font-mono text-xs">/teams-catalog</code>{t("fullDiagnostics.fixturesAreSharedWithTheStorybookStories")}</p>
 
-        <SubSection title="TeamRow (browse list)">
+        <SubSection title={t("fullDiagnostics.teamrowBrowseList")}>
           <div className="w-(--sz-28rem) rounded-md border border-border">
-            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">
-              Bundled · 1
-            </div>
+            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">{t("fullDiagnostics.bundled1")}</div>
             <TeamRow team={sampleTeam} selected onSelect={() => {}} />
-            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">
-              Optional · 2
-            </div>
+            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">{t("fullDiagnostics.optional2")}</div>
             <TeamRow team={optionalTeam} selected={false} onSelect={() => {}} />
-            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">
-              Installed · 2
-            </div>
+            <div className="px-3 py-2 text-(length:--text-micro) font-semibold uppercase tracking-wide text-muted-foreground">{t("fullDiagnostics.installed2")}</div>
             <TeamRow team={sampleTeam} selected={false} onSelect={() => {}} installed={outOfDateInstalledState} />
             <TeamRow team={warnTeam} selected={false} onSelect={() => {}} installed={currentInstalledState} />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Installed teams collapse under <code className="font-mono">INSTALLED · N</code>; an out-of-date
-            install (server <code className="font-mono">originHash</code> ≠ catalog <code className="font-mono">contentHash</code>)
-            shows the amber <code className="font-mono">↑</code> badge (PAP-10256).
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.installedTeamsCollapseUnder")}{" "}<code className="font-mono">{t("fullDiagnostics.installedN")}</code>{t("fullDiagnostics.anOutOfDateInstallServer")}{" "}<code className="font-mono">originHash</code>{" "}{t("fullDiagnostics.catalog")}{" "}<code className="font-mono">contentHash</code>{t("fullDiagnostics.showsTheAmber")}{" "}<code className="font-mono">↑</code>{" "}{t("fullDiagnostics.badgePap10256")}</p>
         </SubSection>
 
-        <SubSection title="TeamCard (onboarding grid)">
-          <p className="text-xs text-muted-foreground">
-            Square tile for the onboarding &ldquo;Pick a starter team&rdquo; grid. Selected tile gets{" "}
-            <code className="font-mono">ring-2 ring-ring</code>. Drives the{" "}
-            <code className="font-mono">useInstallTeamCatalogEntry</code> simplified flow.
-          </p>
+        <SubSection title={t("fullDiagnostics.teamcardOnboardingGrid")}>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.squareTileForTheOnboardingPickA")}{" "}
+            <code className="font-mono">ring-2 ring-ring</code>{t("fullDiagnostics.drivesThe")}{" "}
+            <code className="font-mono">useInstallTeamCatalogEntry</code>{" "}{t("fullDiagnostics.simplifiedFlow")}</p>
           <TeamCardShowcase />
         </SubSection>
 
@@ -1986,7 +1909,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Source policy step (StepSourcePolicy)">
+        <SubSection title={t("fullDiagnostics.sourcePolicyStepStepsourcepolicy")}>
           <div className="max-w-xl rounded-md border border-border p-4">
             <StepSourcePolicy
               team={warnTeam}
@@ -2002,7 +1925,7 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
-        <SubSection title="Skill plan step (StepSkillPlan)">
+        <SubSection title={t("fullDiagnostics.skillPlanStepStepskillplan")}>
           <div className="max-w-xl rounded-md border border-border p-4">
             <StepSkillPlan team={sampleTeam} preparations={sampleSkillPreparations} />
           </div>
@@ -2010,7 +1933,7 @@ export function DesignGuide() {
       </Section>
 
       {/* ============================================================ */}
-      <Section title="Common Icons (Lucide)">
+      <Section title={t("fullDiagnostics.commonIconsLucide")}>
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
           {[
             ["Inbox", Inbox],
@@ -2045,15 +1968,15 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  KEYBOARD SHORTCUTS                                           */}
       {/* ============================================================ */}
-      <Section title="Keyboard Shortcuts">
+      <Section title={t("fullDiagnostics.keyboardShortcuts")}>
         <div className="border border-border rounded-md divide-y divide-border text-sm">
           {[
-            ["Cmd+K / Ctrl+K", "Open Command Palette"],
-            ["C", "New Issue (outside inputs)"],
-            ["[", "Toggle Sidebar"],
-            ["]", "Toggle Properties Panel"],
+            ["Cmd+K / Ctrl+K", t("fullDiagnostics.shortcutPalette")],
+            ["C", t("fullDiagnostics.shortcutIssue")],
+            ["[", t("fullDiagnostics.shortcutSidebar")],
+            ["]", t("fullDiagnostics.shortcutProperties")],
 
-            ["Cmd+Enter / Ctrl+Enter", "Submit markdown comment"],
+            ["Cmd+Enter / Ctrl+Enter", t("fullDiagnostics.shortcutComment")],
           ].map(([key, desc]) => (
             <div key={key} className="flex items-center justify-between px-4 py-2">
               <span className="text-muted-foreground">{desc}</span>
@@ -2065,63 +1988,54 @@ export function DesignGuide() {
         </div>
       </Section>
 
-      <Section title="Issue Output Surface">
-        <SubSection title="Multiple outputs (primary video + 'Also produced')">
+      <Section title={t("fullDiagnostics.issueOutputSurface")}>
+        <SubSection title={t("fullDiagnostics.multipleOutputsPrimaryVideoAlsoProduced")}>
           <IssueOutputSection workProducts={DESIGN_GUIDE_OUTPUTS} />
         </SubSection>
-        <SubSection title="Degraded output (invalid / failed attachment metadata)">
+        <SubSection title={t("fullDiagnostics.degradedOutputInvalidFailedAttachmentMetadata")}>
           <IssueOutputSection workProducts={DESIGN_GUIDE_DEGRADED_OUTPUTS} />
         </SubSection>
-        <SubSection title="Empty state">
-          <p className="text-xs text-muted-foreground">
-            When an issue has produced no artifact work products, the Output section renders nothing
-            at all (no placeholder card).
-          </p>
+        <SubSection title={t("fullDiagnostics.emptyState_41dac3")}>
+          <p className="text-xs text-muted-foreground">{t("fullDiagnostics.whenAnIssueHasProducedNoArtifact")}</p>
         </SubSection>
       </Section>
 
       {/* ============================================================ */}
       {/*  TOOLS & ACCESS (PAP-10389)                                   */}
       {/* ============================================================ */}
-      <Section title="Tools & Access">
-        <SubSection title="EnforcementBanner — default / denied-detected">
+      <Section title={t("fullDiagnostics.toolsAccess")}>
+        <SubSection title={t("fullDiagnostics.enforcementbannerDefaultDeniedDetected")}>
           <div className="space-y-3">
             <EnforcementBanner companyId="" forceVariant="default" recentDenialCount={0} />
             <EnforcementBanner companyId="" forceVariant="denied-detected" recentDenialCount={3} />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Persistent at the top of the Tools &amp; Access surface. Tints to <code>denied-detected</code> when
-            governed tool calls were denied or failed in the last hour. Observability only — enforcement lives
-            in the tool gateway.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.persistentAtTheTopOfTheTools")}{" "}<code>denied-detected</code>{" "}{t("fullDiagnostics.whenGovernedToolCallsWereDeniedOr")}</p>
         </SubSection>
 
-        <SubSection title="EnforcementBanner — presentational tones (info / warning / error)">
+        <SubSection title={t("fullDiagnostics.enforcementbannerPresentationalTonesInfoWarningError")}>
           <div className="space-y-3">
             <EnforcementBanner
               tone="info"
-              title="Effective access — server resolved."
-              body="This is exactly what the tool gateway will accept. Profile and policy edits reflect within ~5s; the prompt cannot expand it."
+              title={t("fullDiagnostics.effectiveAccessServerResolved")}
+              body={t("fullDiagnostics.gatewayBoundary")}
             />
             <EnforcementBanner
               tone="warning"
-              title="Local stdio is local code execution, not a security sandbox."
-              body="A local-stdio slot runs with the orchestrator's privileges. Only bind trusted commands; quarantine anything you would not run yourself."
+              title={t("fullDiagnostics.localStdioIsLocalCodeExecutionNot")}
+              body={t("fullDiagnostics.localStdioWarning")}
             />
             <EnforcementBanner
               tone="error"
-              title="Runtime failed closed."
-              body="The supervisor is restarting (attempt 2/3). The gateway returns runtime-error and the agent does not see partial output."
+              title={t("fullDiagnostics.runtimeFailedClosed")}
+              body={t("fullDiagnostics.supervisorRestart")}
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Static governance copy with a tone. Used for the PAP-10400 trust-tier banner on Runtime and the
-            effective-access banner on Agent → Tools. Pass <code>title</code>/<code>body</code> and an optional{" "}
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.staticGovernanceCopyWithAToneUsed")}{" "}<code>title</code>/<code>body</code>{" "}{t("fullDiagnostics.andAnOptional")}{" "}
             <code>icon</code>.
           </p>
         </SubSection>
 
-        <SubSection title="Action approval card — pending / stale (surfaces 11/12)">
+        <SubSection title={t("fullDiagnostics.actionApprovalCardPendingStaleSurfaces11")}>
           <div className="grid gap-4 lg:grid-cols-2">
             <ActionCard
               toolName="slack.post_message"
@@ -2158,15 +2072,11 @@ export function DesignGuide() {
               expiresInLabel="expires in 18h 02m"
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Signed payload sha256 + expiry surface on every variant (PAP-10400). The{" "}
-            <code>stale</code> variant tints the border amber, banners the catalog-hash mismatch, strikes through
-            the previous hash next to the current one, and renders <code>Approve</code> disabled until the request
-            is re-issued.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.signedPayloadSha256ExpirySurfaceOnEvery")}{" "}
+            <code>stale</code>{" "}{t("fullDiagnostics.variantTintsTheBorderAmberBannersThe")}{" "}<code>{t("fullDiagnostics.approve")}</code>{" "}{t("fullDiagnostics.disabledUntilTheRequestIsReIssued")}</p>
         </SubSection>
 
-        <SubSection title="Action approval card — mobile (390×844, surface 99)">
+        <SubSection title={t("fullDiagnostics.actionApprovalCardMobile390844Surface")}>
           <div className="w-(--sz-390px) max-w-full rounded-xl border border-border bg-background p-3">
             <ActionCardMobile
               toolName="slack.post_message"
@@ -2185,28 +2095,22 @@ export function DesignGuide() {
               expiresInLabel="expires in 23h 51m"
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Identical content; the three buttons stack full-width in the order Approve / Deny / Edit &amp; re-sign,
-            and the bindings table uses a 70px label column.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.identicalContentTheThreeButtonsStackFull")}</p>
         </SubSection>
 
-        <SubSection title="BindingsTable (reused in the audit row drilldown)">
+        <SubSection title={t("fullDiagnostics.bindingstableReusedInTheAuditRowDrilldown")}>
           <BindingsTable
             rows={[
-              { label: "Application", value: "Slack · manifest v2.4.1" },
-              { label: "Connection", value: "https://slack.com/api · acme-workspace", mono: true },
-              { label: "Catalog", value: "sha256:9f86d081…f00a08", mono: true },
-              { label: "Payload", value: "sha256:2c26b46b…66e7ae", mono: true },
+              { label: fullSharedT("fullShared.application_e7ad52"), value: "Slack · manifest v2.4.1" },
+              { label: fullSharedT("providerSetup.select.connection"), value: "https://slack.com/api · acme-workspace", mono: true },
+              { label: fullSharedT("agentSkillsUi.source.catalog"), value: "sha256:9f86d081…f00a08", mono: true },
+              { label: fullSharedT("fullShared.payload_997333"), value: "sha256:2c26b46b…66e7ae", mono: true },
             ]}
           />
-          <p className="mt-2 text-xs text-muted-foreground">
-            Two-column key/value block with mono values. Lives inside <code>ActionCard</code> and is reused
-            standalone in the audit row drilldown.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.twoColumnKeyValueBlockWithMono")}{" "}<code>ActionCard</code>{" "}{t("fullDiagnostics.andIsReusedStandaloneInTheAudit")}</p>
         </SubSection>
 
-        <SubSection title="Tool-access status keys (StatusBadge)">
+        <SubSection title={t("fullDiagnostics.toolAccessStatusKeysStatusbadge")}>
           <div className="flex flex-wrap items-center gap-2">
             {[
               "allowed", "denied", "block", "require-approval", "redacted", "rate-limit",
@@ -2215,54 +2119,47 @@ export function DesignGuide() {
               <StatusBadge key={s} status={s} />
             ))}
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Policy decisions, connection/runtime health, and catalog quarantine all route through the canonical{" "}
-            <code>StatusBadge</code> keys defined in <code>lib/status-colors</code>.
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.policyDecisionsConnectionRuntimeHealthAndCatalog")}{" "}
+            <code>StatusBadge</code>{" "}{t("fullDiagnostics.keysDefinedIn")}{" "}<code>lib/status-colors</code>.
           </p>
         </SubSection>
 
-        <SubSection title="EmptyState (canonical, with description + action)">
+        <SubSection title={t("fullDiagnostics.emptystateCanonicalWithDescriptionAction")}>
           <EmptyState
             icon={Inbox}
-            message="No connections yet"
-            description="Add a connection to an application to configure credentials and discover its tools."
+            message={t("fullDiagnostics.noConnectionsYet")}
+            description={t("fullDiagnostics.addAConnectionToAnApplicationTo")}
             action="New connection"
             onAction={() => {}}
           />
         </SubSection>
       </Section>
 
-      <Section title="GitHub skill sources">
-        <p className="text-sm text-muted-foreground">The shared FileTree explorer layout puts disclosure controls beside selection, with compact folder chains, equal-height rows, inline skill descriptions, and trailing status badges. Folders select descendant packages; package checkboxes select only that package, independently of nested skills. Included files use aligned rows without individual checkboxes (`getCheckboxState` returns null); package rows use `renderNodeExtra` for file counts and inspection. Use arrow keys to navigate and Space to select.</p>
+      <Section title={t("fullDiagnostics.githubSkillSources")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.theSharedFiletreeExplorerLayoutPutsDisclosure")}</p>
         <SkillSourceTreeShowcase />
         <SkillBinaryFile file={{ skillId: "example", path: "assets/example.bin", kind: "asset", content: "AAECAw==", encoding: "base64", language: null, markdown: false, editable: false }} />
       </Section>
 
-      <Section title="Source Repositories">
-        <SubSection title="Empty and disconnected">
+      <Section title={t("fullDiagnostics.sourceRepositories")}>
+        <SubSection title={t("fullDiagnostics.emptyAndDisconnected")}>
           <RepositoryEditor selected={[]} onChange={() => {}} state="disconnected" onConnect={() => {}} onRetry={() => {}} />
         </SubSection>
-        <SubSection title="Selected and searchable">
+        <SubSection title={t("fullDiagnostics.selectedAndSearchable")}>
           <RepositoryEditor selected={[{ id: "1", fullName: "paperclipai/paperclip", url: "https://github.com/paperclipai/paperclip", connections: ["Your GitHub"] }]}
             available={[{ id: "2", fullName: "paperclipai/docs", url: "https://github.com/paperclipai/docs", connections: ["Company GitHub"] }]}
             onChange={() => {}} onConnect={() => {}} onRetry={() => {}} />
         </SubSection>
-        <p className="text-sm text-muted-foreground">Loading, errors, empty search, mobile, and short viewports are covered in the Project repos Storybook stories.</p>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.loadingErrorsEmptySearchMobileAndShort")}</p>
       </Section>
 
-      <Section title="Environment Variables Editor">
-        <p className="text-sm text-muted-foreground">
-          Reusable env-var editor (agents, projects, environments, routines). One shared grid, an
-          in-field Text/Secret source switch, a fuzzy secret picker with a pinned “Create secret”
-          item, automatic sensitive-value detection, and inline secret-health warnings. See the
-          Storybook <span className="font-mono">Product/Environment Variables Editor</span> stories
-          for all 10 states.
-        </p>
+      <Section title={t("fullDiagnostics.environmentVariablesEditor")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.reusableEnvVarEditorAgentsProjectsEnvironments")}{" "}<span className="font-mono">Product/Environment Variables Editor</span>{" "}{t("fullDiagnostics.storiesForAll10States")}</p>
         <EnvironmentVariablesEditorShowcase />
       </Section>
 
-      <Section title="Tasks created from a task">
-        <SubSection title="Subtasks and created work are independent">
+      <Section title={t("fullDiagnostics.tasksCreatedFromATask")}>
+        <SubSection title={t("fullDiagnostics.subtasksAndCreatedWorkAreIndependent")}>
           <div className="max-w-xl">
             <TaskDetailTasksPanel
               subtasks={[DESIGN_GUIDE_TASK]}
@@ -2274,45 +2171,40 @@ export function DesignGuide() {
             />
           </div>
         </SubSection>
-        <SubSection title="Empty, loading and failed">
+        <SubSection title={t("fullDiagnostics.emptyLoadingAndFailed")}>
           <TaskDetailTasksPanel subtasks={[]} createdTasks={[]} projects={[]} />
           <TaskDetailTasksPanel subtasks={[]} createdTasks={[]} projects={[]} isLoading />
           <TaskDetailTasksPanel subtasks={[]} createdTasks={[]} projects={[]} hasError onRetry={() => {}} />
         </SubSection>
       </Section>
 
-      <Section title="Disposition recovery notice">
-        <SubSection title="Needs attention, with inspectable details">
+      <Section title={t("fullDiagnostics.dispositionRecoveryNotice")}>
+        <SubSection title={t("fullDiagnostics.needsAttentionWithInspectableDetails")}>
           <DispositionRecoveryNotice snapshot={{ kind: "disposition_repair_escalated", actionId: "design-recovery", attemptCount: 2, maxAttempts: 2, reason: "unchanged_source_state_exhausted", assigneeAgentId: null }} defaultExpanded />
         </SubSection>
-        <p className="text-sm text-muted-foreground">Storybook’s Recovery notice stories show the actionable, pending, acknowledged, unavailable, failed, and mobile states using this production component.</p>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.storybookSRecoveryNoticeStoriesShowThe")}</p>
       </Section>
 
-      <Section title="Pending task input above composer">
-        <p className="mb-3 text-sm text-muted-foreground">A decision card sits above the ordinary message composer. Dismiss the card to keep a reopen control, or resolve it to clear the pending state.</p>
+      <Section title={t("fullDiagnostics.pendingTaskInputAboveComposer")}>
+        <p className="mb-3 text-sm text-muted-foreground">{t("fullDiagnostics.aDecisionCardSitsAboveTheOrdinary")}</p>
         <TaskPendingInputExample />
       </Section>
 
-      <Section title="Execution recovery">
-        <p className="text-sm text-muted-foreground">
-          Recovery runs in the background. Task lists keep their ordinary status without
-          execution badges. Active transcript headers keep saying Working during automatic
-          recovery. Recovery decisions and attempts belong in the run log;
-          there is no execution status card or reconciliation form.
-        </p>
+      <Section title={t("fullDiagnostics.executionRecovery")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.recoveryRunsInTheBackgroundTaskLists")}</p>
       </Section>
 
-      <Section title="Cloud sign-in unavailable">
+      <Section title={t("fullDiagnostics.cloudSignInUnavailable")}>
         <CloudSignIn cloud={{ managed: true, managedBy: "paperclip-cloud", cloudBaseUrl: null, stackSlug: null }} returnTo="/" />
       </Section>
 
-      <Section title="Saved provider API keys">
-        <SavedProviderKeySelect options={[{ id: "example", label: "Claude API key (Your key)", binding: { type: "user_secret_ref", key: "ANTHROPIC_API_KEY", version: "latest" } }]} value="example" onChange={() => {}} loading={false} error={false} />
+      <Section title={t("fullDiagnostics.savedProviderApiKeys")}>
+        <SavedProviderKeySelect options={[{ id: "example", label: t("fullDiagnostics.claudeApiKeyYourKey"), binding: { type: "user_secret_ref", key: "ANTHROPIC_API_KEY", version: "latest" } }]} value="example" onChange={() => {}} loading={false} error={false} />
         <SavedProviderKeySelect options={[]} value="" onChange={() => {}} loading error={false} />
         <SavedProviderKeySelect options={[]} value="" onChange={() => {}} loading={false} error />
       </Section>
 
-      <Section title="Voice conversations">
+      <Section title={t("fullDiagnostics.voiceConversations")}>
         <div className="flex flex-col gap-6">
           <VoiceControls state="working" agentName="Company Phone Agent" onStart={() => {}} onMute={() => {}} onEnd={() => {}} onResumeAudio={() => {}} />
           <VoiceControls state="failed" agentName="Company Phone Agent" error="Microphone access was denied. Allow access in your browser, then try again." onStart={() => {}} onMute={() => {}} onEnd={() => {}} onResumeAudio={() => {}} />
@@ -2323,7 +2215,7 @@ export function DesignGuide() {
         </div>
       </Section>
 
-      <Section title="Speko provider setup">
+      <Section title={t("fullDiagnostics.spekoProviderSetup")}>
         <SpekoPhoneCallbackForm onSave={() => {}} />
         <SpekoCallHistoryView onRetry={() => {}} />
         <div className="divide-y divide-border border-y border-border">
@@ -2335,8 +2227,8 @@ export function DesignGuide() {
         <SpekoProviderSetup agentName="Company Phone Agent" callbackUrl="https://paperclip.example/api/voice-webhooks/example/tools" credentials={{}} onChange={() => {}} onConnect={() => {}} />
       </Section>
 
-      <Section title="External agent invitation">
-        <p className="text-sm text-muted-foreground">Match the harness picker with provider cards. Connection checks reflect confirmed server evidence. AnimatedDialogContent resizes to its content using motion tokens and respects reduced motion.</p>
+      <Section title={t("fullDiagnostics.externalAgentInvitation")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.matchTheHarnessPickerWithProviderCards")}</p>
         <ExternalAgentPresetPicker onSelect={() => {}} />
         <DotConnectionChecks state={{ phase: "testing" }} />
         <ExternalAgentPresetPicker museEnabled onSelect={() => {}} />
@@ -2344,28 +2236,20 @@ export function DesignGuide() {
         <MuseConnectionChecks state={{ paired: true, receiverDetected: true, backgroundReplyVerified: true, ready: false, problem: "agent_unavailable" }} />
         <MuseConnectionChecks state={{ paired: true, receiverDetected: true, backgroundReplyVerified: true, ready: true }} />
         <MuseConnectionDetails connection={{ enabled: false, publicOrigin: null, agentStatus: "idle", agentLifecycleState: "ready", canConfigureConnection: true, binding: null, usage: null, cost: null }} onTest={() => {}} onRepair={() => {}} onPause={() => {}} onDisconnect={() => {}} onRefresh={() => {}} onAttest={() => {}} />
-        <Dialog><DialogTrigger asChild><Button variant="outline">Preview invitation modal</Button></DialogTrigger>
-          <AnimatedDialogContent><div className="space-y-4 p-6"><DialogTitle>Invite an external agent</DialogTitle><DialogDescription>Choose an agent you already use.</DialogDescription><ExternalAgentPresetPicker onSelect={() => {}} /></div></AnimatedDialogContent>
+        <Dialog><DialogTrigger asChild><Button variant="outline">{t("fullDiagnostics.previewInvitationModal")}</Button></DialogTrigger>
+          <AnimatedDialogContent><div className="space-y-4 p-6"><DialogTitle>{fullSharedT("agentSetupUi.basics.invite")}</DialogTitle><DialogDescription>{t("fullDiagnostics.chooseAnAgentYouAlreadyUse")}</DialogDescription><ExternalAgentPresetPicker onSelect={() => {}} /></div></AnimatedDialogContent>
         </Dialog>
       </Section>
 
-      <Section title="Browser setup prompt">
-        <p className="text-sm text-muted-foreground">Use AgentSetupPrompt for prompts handed to an external agent: connections, webhook setup, onboarding, and task handoffs. One click copies the complete prompt, opens its preview, and confirms success inline; clipboard failures offer selectable text.</p>
+      <Section title={t("fullDiagnostics.browserSetupPrompt")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.useAgentsetuppromptForPromptsHandedToAn")}</p>
         <SetupPrompt prompt="Design guide example. This is a preview, not a real provider setup request." />
-        <p className="text-sm text-muted-foreground">For a named recipient, pass the optional agent name and logo. The same copy feedback, preview, and manual clipboard recovery apply.</p>
-        <SetupPrompt prompt="Design guide example for Dot. No live pairing code." label="Copy setup prompt" title="Connect your Dot" agent={{ name: "Dot", src: "/brands/adapters/openai-dot.svg" }} />
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.forANamedRecipientPassTheOptional")}</p>
+        <SetupPrompt prompt="Design guide example for Dot. No live pairing code." label={fullSharedT("externalAgentUi.common.copySetup")} title={fullSharedT("externalAgentUi.dot.title")} agent={{ name: "Dot", src: "/brands/adapters/openai-dot.svg" }} />
       </Section>
 
-      <Section title="Connection Intent">
-        <p className="text-sm text-muted-foreground">
-          The task card is the dialog host for the shared connection setup flow. Provider forms,
-          validation, OAuth, access selection, and completion come from the same feature module as
-          the full-page Apps setup; this card owns only audience, dialog, and task refresh behavior.
-          Pending connections stay in the timeline beside a usable composer. The independently
-          addressable Connections/In-task connections stories cover access, OAuth recovery, narrow
-          layouts, completion, and historical outcomes. AgentMail uses an inline API-key field
-          with fixed access defaults; its field and direct key-page link are shared with Apps setup.
-        </p>
+      <Section title={t("fullDiagnostics.connectionIntent")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.theTaskCardIsTheDialogHost")}</p>
         <div className="grid gap-4 xl:grid-cols-3">
           <IssueThreadInteractionCard
             interaction={pendingConnectionIntentInteraction}
@@ -2382,39 +2266,28 @@ export function DesignGuide() {
         </div>
       </Section>
 
-      <Section title="AgentMail API key">
-        <p className="text-sm text-muted-foreground">AgentMail setup has two steps: pick an agent, then pick an email address. Ask for the API key alongside the agent only when needed. Keep address errors beside the field and additional settings under Advanced options.</p>
-        <p className="text-sm text-muted-foreground">Preview only. This field does not save or submit a credential.</p>
+      <Section title={t("fullDiagnostics.agentmailApiKey")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.agentmailSetupHasTwoStepsPickAn")}</p>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.previewOnlyThisFieldDoesNotSave")}</p>
         <div className="max-w-md">
           <AgentMailApiKeyField value={agentmailDemoKey} onChange={setAgentmailDemoKey} />
         </div>
       </Section>
 
-      <Section title="Resizable Panels">
-        <p className="text-sm text-muted-foreground">
-          Design-system wrapper over <span className="font-mono">react-resizable-panels</span>{" "}
-          (Skill Studio D2). Drag a handle to resize; panels accept percentage or pixel
-          (<span className="font-mono">minSize="240px"</span>) constraints and the middle panel is
-          collapsible. Use anywhere a split view is needed.
-        </p>
+      <Section title={t("fullDiagnostics.resizablePanels")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.designSystemWrapperOver")}{" "}<span className="font-mono">react-resizable-panels</span>{" "}{t("fullDiagnostics.skillStudioD2DragAHandleTo")}<span className="font-mono">minSize="240px"</span>{t("fullDiagnostics.constraintsAndTheMiddlePanelIsCollapsible")}</p>
         <div className="h-48 max-w-2xl overflow-hidden rounded-md border border-border">
           <ResizablePanelGroup>
             <ResizablePanel id="a" minSize="120px" className="bg-muted/30">
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                Panel A
-              </div>
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">{t("fullDiagnostics.panelA")}</div>
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel id="b" minSize="120px" collapsible collapsedSize="40px" className="bg-muted/10">
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                Panel B (collapsible)
-              </div>
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">{t("fullDiagnostics.panelBCollapsible")}</div>
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel id="c" minSize="120px" className="bg-muted/30">
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                Panel C
-              </div>
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">{t("fullDiagnostics.panelC")}</div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
@@ -2423,78 +2296,66 @@ export function DesignGuide() {
       {/* ============================================================ */}
       {/*  INLINE BANNER + BUILT-IN AGENTS                              */}
       {/* ============================================================ */}
-      <Section title="Webhook URL warnings">
+      <Section title={t("fullDiagnostics.webhookUrlWarnings")}>
         <div className="space-y-3">
           {["http://localhost:3100", "https://paperclip.internal", "https://paperclip.example-tailnet.ts.net", "http://paperclip.example.com", "not-a-url"].map((url) => <WebhookUrlWarning key={url} url={url} />)}
         </div>
       </Section>
 
-      <Section title="Inline Banner">
-        <p className="text-sm text-muted-foreground">
-          Token-backed full-width notice (<span className="font-mono">brandBanner</span> tones). Use{" "}
-          <span className="font-mono">info</span> for provenance/context and{" "}
-          <span className="font-mono">warning</span> for paused/attention. Supports an optional bold
-          title and a trailing actions slot. Replaces hand-rolled{" "}
-          <span className="font-mono">bg-yellow-*</span>/<span className="font-mono">bg-blue-*</span>{" "}
-          banners.
-        </p>
+      <Section title={t("fullDiagnostics.inlineBanner")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.tokenBackedFullWidthNotice")}<span className="font-mono">brandBanner</span>{" "}{t("fullDiagnostics.tonesUse")}{" "}
+          <span className="font-mono">info</span>{" "}{t("fullDiagnostics.forProvenanceContextAnd")}{" "}
+          <span className="font-mono">warning</span>{" "}{t("fullDiagnostics.forPausedAttentionSupportsAnOptionalBold")}{" "}
+          <span className="font-mono">bg-yellow-*</span>/<span className="font-mono">bg-blue-*</span>{" "}{t("fullDiagnostics.banners")}</p>
         <div className="space-y-3">
           <InlineBanner
             tone="info"
-            title="Built-in agent"
-            actions={<Button variant="outline" size="sm">Reset to defaults</Button>}
-          >
-            Ships with Paperclip and powers <strong>Briefs</strong>. It can be paused but not deleted.
-          </InlineBanner>
+            title={fullSharedT("agentDetailUi.header.builtIn")}
+            actions={<Button variant="outline" size="sm">{fullSharedT("agentDetailUi.header.reset")}</Button>}
+          >{t("fullPages.shipsWithPaperclipAndPowers")}{" "}<strong>{t("agentDetailUi.header.featureBriefs")}</strong>{t("fullDiagnostics.itCanBePausedButNotDeleted")}</InlineBanner>
           <InlineBanner
             tone="warning"
-            title="Briefs is paused."
+            title={t("fullDiagnostics.briefsIsPaused")}
             actions={
               <>
-                <Button variant="ghost" size="sm">View agent</Button>
-                <Button size="sm">Resume agent</Button>
+                <Button variant="ghost" size="sm">{fullSharedT("fullShared.view_agent_7ce783")}</Button>
+                <Button size="sm">{fullSharedT("fullShared.resume_agent_0bb60c")}</Button>
               </>
             }
-          >
-            Its built-in agent was paused 2 days ago, so new briefs aren't being generated.
-          </InlineBanner>
+          >{t("fullDiagnostics.itsBuiltInAgentWasPaused2")}</InlineBanner>
           <InlineBanner
             tone="danger"
-            title="Summary generation failed."
-            actions={<Button size="sm">Retry</Button>}
-          >
-            The linked issue reached a terminal state before a summary was written.
-          </InlineBanner>
-          <InlineBanner tone="info" compact>
-            Compact variant for embedding inside dialogs and modals.
-          </InlineBanner>
+            title={t("fullDiagnostics.summaryGenerationFailed")}
+            actions={<Button size="sm">{fullSharedT("newIssue.retry")}</Button>}
+          >{t("fullDiagnostics.theLinkedIssueReachedATerminalState")}</InlineBanner>
+          <InlineBanner tone="info" compact>{t("fullDiagnostics.compactVariantForEmbeddingInsideDialogsAnd")}</InlineBanner>
         </div>
       </Section>
 
-      <Section title="Text attachment tabs">
-        <p className="text-sm text-muted-foreground">Uploaded text opens in a named task tab. Markdown offers Rendered and Raw icon controls; every text file has a download action.</p>
+      <Section title={t("fullDiagnostics.textAttachmentTabs")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.uploadedTextOpensInANamedTask")}</p>
         <div className="grid gap-4 md:grid-cols-2">
           <TextAttachmentPreview title="README.md" text={"# Project notes\n\nReview the **original** file."} markdown downloadUrl="data:text/markdown,%23%20Project%20notes" />
           <TextAttachmentPreview title="notes.txt" text="Plain text stays literal: <example>" markdown={false} downloadUrl="data:text/plain,Plain%20text" />
         </div>
       </Section>
 
-      <Section title="Connection recovery">
-        <SubSection title="Waiting for server">
+      <Section title={t("fullDiagnostics.connectionRecovery")}>
+        <SubSection title={t("fullDiagnostics.waitingForServer")}>
           <CloudAccessError temporary retrying={false} onRetry={() => undefined} />
         </SubSection>
-        <SubSection title="Checking connection">
+        <SubSection title={t("fullDiagnostics.checkingConnection")}>
           <CloudAccessError temporary retrying onRetry={() => undefined} />
         </SubSection>
-        <SubSection title="Access check failed">
+        <SubSection title={t("fullDiagnostics.accessCheckFailed")}>
           <CloudAccessError temporary={false} retrying={false} onRetry={() => undefined} />
         </SubSection>
       </Section>
 
-      <Section title="Browser session footer">
-        <p className="text-sm text-muted-foreground">Fit to pane follows the visible panel. Fixed viewport presets and session actions live in the footer menu. Costs stay in task reporting. The idle countdown appears only in the final five minutes. Full panel, activity, and settings states are in Storybook under Browser Use.</p>
+      <Section title={t("fullDiagnostics.browserSessionFooter")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.fitToPaneFollowsTheVisiblePanel")}</p>
         {(["running", "idle", "closing-soon", "closed"] as const).map((state) => (
-          <SubSection key={state} title={state === "closing-soon" ? "Closing soon" : state}>
+          <SubSection key={state} title={state === "closing-soon" ? t("fullDiagnostics.closingSoon") : state}>
             <TaskBrowserFooter
               browser={{
                 id: "design-browser", sessionId: "design-session", issueId: "design-task",
@@ -2512,8 +2373,8 @@ export function DesignGuide() {
         ))}
       </Section>
 
-      <Section title="Browser activity in the task feed">
-        <p className="text-sm text-muted-foreground">Each browser appears once at its opening time among the task messages. Its status updates in place; the action opens its side-panel tab.</p>
+      <Section title={t("fullDiagnostics.browserActivityInTheTaskFeed")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.eachBrowserAppearsOnceAtItsOpening")}</p>
         {(["starting", "running", "idle", "closed", "failed"] as const).map((status) => (
           <SubSection key={status} title={status}>
             <TaskBrowserActivity browser={{
@@ -2525,22 +2386,20 @@ export function DesignGuide() {
         ))}
       </Section>
 
-      <Section title="Media artifacts">
-        <p className="text-sm text-muted-foreground">Images and videos use gallery tiles. The whole tile opens the task gallery; files and links keep compact, fully clickable rows. Task/Artifact Gallery in Storybook covers playable videos, mixed files, narrow panels, and unavailable previews.</p>
+      <Section title={t("fullDiagnostics.mediaArtifacts")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.imagesAndVideosUseGalleryTilesThe")}</p>
         <div className="grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
-          <MediaArtifactCard id="design-image" title="Launch artwork" contentPath="/announcement-preview.svg" contentType="image/svg+xml" originalFilename="launch.svg" detail="Image" />
-          <MediaArtifactCard id="design-video" title="Video preview unavailable" contentPath="" contentType="video/mp4" originalFilename="preview.mp4" detail="Video" />
+          <MediaArtifactCard id="design-image" title={t("fullDiagnostics.launchArtwork")} contentPath="/announcement-preview.svg" contentType="image/svg+xml" originalFilename="launch.svg" detail="Image" />
+          <MediaArtifactCard id="design-video" title={fullSharedT("taskPanels.viewer.videoUnavailable")} contentPath="" contentType="video/mp4" originalFilename="preview.mp4" detail="Video" />
         </div>
       </Section>
 
-      <Section title="AI Connections">
+      <Section title={t("fullDiagnostics.aiConnections")}>
         <AiConnectionDesignExamples />
       </Section>
 
-      <Section title="Built-in Agent Lifecycle Chips">
-        <p className="text-sm text-muted-foreground">
-          A derived lifecycle chip (amber) for attention states. The lifecycle chip is separate from
-          the agent status vocabulary and only shows for{" "}
+      <Section title={t("fullDiagnostics.builtInAgentLifecycleChips")}>
+        <p className="text-sm text-muted-foreground">{t("fullDiagnostics.aDerivedLifecycleChipAmberForAttention")}{" "}
           <span className="font-mono">needs_setup</span> / <span className="font-mono">pending_approval</span>.
         </p>
         <div className="flex flex-wrap items-center gap-4">
@@ -2549,17 +2408,16 @@ export function DesignGuide() {
           <BuiltInLifecycleChip status="needs_setup" compact />
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
-          <span className="font-mono">&lt;BuiltInAgentGate agentKey&gt;</span> composes{" "}
+          <span className="font-mono">&lt;BuiltInAgentGate agentKey&gt;</span>{" "}{t("fullDiagnostics.composes")}{" "}
           <span className="font-mono">PageSkeleton</span> + <span className="font-mono">EmptyState</span>{" "}
-          + <span className="font-mono">InlineBanner</span> to render the loading / setup /
-          pending-approval / paused / ready states of a feature that depends on a built-in agent.
-        </p>
+          + <span className="font-mono">InlineBanner</span>{" "}{t("fullDiagnostics.toRenderTheLoadingSetupPendingApproval")}</p>
       </Section>
     </div>
   );
 }
 
 function SkillSourceTreeShowcase() {
+  useFullSharedTranslation();
   const candidates = [
     { path: ".agents/review/SKILL.md", name: "Review", description: "Review changes before release.", error: null, inspection: { requirements: null, references: [], warnings: [], files: [
       { path: "SKILL.md", kind: "skill", sizeBytes: 120, encoding: "utf8" as const, executable: false },

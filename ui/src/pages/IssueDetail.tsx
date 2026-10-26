@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { localizeOnboardingTaskTitle, OnboardingTaskProvider, type OnboardingTaskContext } from "@/lib/onboarding-first-task-localization";
 import { useTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
@@ -879,6 +880,7 @@ function IssueSectionSkeleton({
   titleWidth?: string;
   rows?: number;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-3 rounded-lg border border-border p-3">
       <Skeleton className={cn("h-4", titleWidth)} />
@@ -904,6 +906,7 @@ function ChatBubbleSkeleton({
   side: "agent" | "human";
   className?: string;
 }) {
+  useFullSharedTranslation();
   const isHuman = side === "human";
   return (
     <div
@@ -935,6 +938,7 @@ function ChatBubbleSkeleton({
  * foot of the loading state matches the real chat shell.
  */
 function IssueChatComposerSkeleton({ className }: { className?: string }) {
+  useFullSharedTranslation();
   return (
     <div
       className={cn("rounded-xl border border-input bg-card p-2", className)}
@@ -960,6 +964,7 @@ function IssueChatComposerSkeleton({ className }: { className?: string }) {
  * rather than the pre-chat bordered card it replaced.
  */
 function IssueChatSkeleton() {
+  useFullSharedTranslation();
   return (
     <div className="flex flex-col gap-3" data-testid="issue-chat-skeleton">
       <ChatBubbleSkeleton side="agent" className="h-16 w-3/4" />
@@ -2237,8 +2242,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
       pendingComments,
       fallbackProtocol,
     });
-  }, [
-    authoritativeQueuedCommentQueue,
+  }, [authoritativeQueuedCommentQueue,
     commentsWithRunMeta,
     consumedQueuedCommentIds,
     discardedQueuedCommentIds,
@@ -2269,8 +2273,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
           },
         ];
       }),
-    [
-      commentsWithRunMeta,
+    [commentsWithRunMeta,
       consumedQueuedCommentIds,
       discardedQueuedCommentIds,
       localInterruptPlacements,
@@ -2464,8 +2467,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
         await refreshQueueAfterConflict(error);
       }
     },
-    [
-      effectiveQueuedCommentQueue,
+    [effectiveQueuedCommentQueue,
       commentsWithRunMeta,
       onInterruptQueued,
       refreshQueueAfterConflict,
@@ -3088,7 +3090,7 @@ function IssueDetailActivityTab({
                       agentMap,
                       userProfileMap,
                       currentUserId,
-                    })}
+                    }, t)}
                   </span>
                   <span className="ml-auto shrink-0">
                     {relativeTime(evt.createdAt)}
@@ -3170,7 +3172,8 @@ function IssueDetailActivityTab({
   );
 }
 
-export function IssueDetail({ tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"] }) { return <TaskDetailSurface tasksTab={tasksTab} />; }
+export function IssueDetail({ tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"] }) {
+  useFullSharedTranslation(); return <TaskDetailSurface tasksTab={tasksTab} />; }
 
 /** One controller and surface for both task URLs and agent conversations. */
 export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"]; conversation?: {
@@ -3457,8 +3460,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         olderPageLoading: commentsLoadingOlder,
         autoLoadLimit: ISSUE_COMMENT_AUTOLOAD_LIMIT,
       }),
-    [
-      comments.length,
+    [comments.length,
       commentsLoading,
       commentsLoadingOlder,
       historyExpanded,
@@ -3897,8 +3899,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         />
       ),
     };
-  }, [
-    tasksTab,
+  }, [tasksTab,
     issue?.ancestors,
     issue?.createdFrom,
     resolvedIssueDetailState,
@@ -4011,8 +4012,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       return;
     }
     setPanelVisible(false);
-  }, [
-    openTaskSidePanel,
+  }, [openTaskSidePanel,
     panelVisible,
     setPanelVisible,
     suppressPanelUntilPlan,
@@ -4029,8 +4029,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       !siblingIssuesError
         ? buildIssueSiblingNavigation(issue, rawSiblingIssues, childIssues)
         : null,
-    [
-      childIssues,
+    [childIssues,
       childIssuesLoading,
       issue,
       rawSiblingIssues,
@@ -4810,8 +4809,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
           onUpdateIssue={handleChildIssueUpdate}
         />
       ) : null,
-    [
-      taskChatShellEnabled,
+    [taskChatShellEnabled,
       streamlinedTaskDetailEnabled,
       issue,
       showRichSubIssuesSection,
@@ -6358,8 +6356,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       }));
       return true;
     },
-    [
-      taskInterfaceSettingsLoaded,
+    [taskInterfaceSettingsLoaded,
       isMobile,
       issue?.id,
       issueId,
@@ -6946,7 +6943,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       request: import("../components/IssueRecoveryActionCard").RecoveryReissueRequest,
     ) => {
       if (!issue) throw new Error(t("taskDetail.copy.taskNotLoaded"));
-      const sourceLabel = issue.identifier ?? "the stalled task";
+      const sourceLabel = issue.identifier ?? fullSharedT("fullShared.the_stalled_task_701f1d");
       const descriptionLines = [
         `Re-issued from ${sourceLabel} on an isolated git worktree after a workspace branch divergence.`,
         "",
@@ -6960,7 +6957,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         issue.description ?? "",
       ];
       return issuesApi.create(issue.companyId, {
-        title: `Re-issue (isolated): ${issue.title ?? sourceLabel}`,
+        title: fullSharedT("fullShared.re_issue_isolated_329af4", { value1: issue.title ?? sourceLabel }),
         description: descriptionLines.join("\n"),
         priority: issue.priority,
         projectId: issue.projectId ?? null,
@@ -7700,9 +7697,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
                       setMoreOpen(false);
                     }}
                   >
-                    <ActivityIcon className="h-3 w-3" />
-                    Show task activity
-                  </button>
+                    <ActivityIcon className="h-3 w-3" />{fullSharedT("fullShared.show_task_activity_ba901d")}</button>
                 ) : null}
                 {streamlinedTaskDetailEnabled ? (
                   <>
@@ -8846,6 +8841,7 @@ function IssueFileViewer({
   onPromptOpenChange: (next: boolean) => void;
   useSidePanel?: boolean;
 }) {
+  useFullSharedTranslation();
   const viewer = useRequiredFileViewer();
 
   useEffect(() => {

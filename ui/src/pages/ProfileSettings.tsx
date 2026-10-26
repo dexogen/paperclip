@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, LoaderCircle, Save, Trash2, UserRoundPen } from "lucide-react";
@@ -46,7 +47,7 @@ export function ProfileSettings() {
       { label: t("profile.settings"), href: "/company/settings" },
       { label: t("profile.title") },
     ]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   useEffect(() => {
     const session = sessionQuery.data;

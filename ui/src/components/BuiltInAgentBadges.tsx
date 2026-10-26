@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { brandChipBadge } from "@/lib/status-colors";
@@ -17,6 +18,7 @@ export function BuiltInLifecycleChip({
   compact?: boolean;
   className?: string;
 }) {
+  useFullSharedTranslation();
   if (status !== "needs_setup" && status !== "pending_approval") return null;
   const isPendingApproval = status === "pending_approval";
   return (
@@ -29,11 +31,11 @@ export function BuiltInLifecycleChip({
       )}
       title={
         isPendingApproval
-          ? "Waiting on board hire approval before the feature can run"
-          : "Needs adapter/model setup before the feature can run"
+          ? fullSharedT("fullShared.waiting_on_board_hire_approval_before_the_feature_ca_b63833")
+          : fullSharedT("fullShared.needs_adapter_model_setup_before_the_feature_can_run_7a0680")
       }
     >
-      {isPendingApproval ? (compact ? "Approval" : "Pending approval") : compact ? "Setup" : "Needs setup"}
+      {isPendingApproval ? (compact ? fullSharedT("taskProperties.fields.approval") : fullSharedT("agentDetailUi.resource.approval")) : compact ? fullSharedT("onboarding.setup") : fullSharedT("fullShared.needs_setup_b6df24")}
     </Badge>
   );
 }

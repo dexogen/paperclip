@@ -57,3 +57,21 @@ function localizedStatus(value: string): string {
     default: return value.replace(/[_-]/g, " ");
   }
 }
+
+export function roleLabel(role: string): string {
+  switch (role) {
+    case "ceo": return t("searchUi.palette.roles.ceo");
+    case "cto": return t("searchUi.palette.roles.cto");
+    case "cmo": return t("searchUi.palette.roles.cmo");
+    case "cfo": return t("searchUi.palette.roles.cfo");
+    case "security": return t("searchUi.palette.roles.security");
+    case "engineer": return t("searchUi.palette.roles.engineer");
+    case "designer": return t("searchUi.palette.roles.designer");
+    case "pm": return t("searchUi.palette.roles.pm");
+    case "qa": return t("searchUi.palette.roles.qa");
+    case "devops": return t("searchUi.palette.roles.devops");
+    case "researcher": return t("searchUi.palette.roles.researcher");
+    case "general": return t("searchUi.palette.roles.general");
+    default: return role;
+  }
+}

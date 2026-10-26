@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
 import { Counts } from "./Counts";
@@ -27,12 +28,13 @@ import { FOCUS, SLAB, SLAB_HOVER } from "./slab";
  */
 
 function AttachmentSlab({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   const name = fileName(artifact);
   const picture = hasThumbnail(artifact);
   const opensGallery = artifact.kind === "image" || artifact.kind === "video";
   const shared = {
     // The name replaces the slab's content for assistive tech, so the state is part of it.
-    "aria-label": [`Open ${name}`, artifact.review ? STATE[artifact.review].label : null].filter(Boolean).join(", "),
+    "aria-label": [fullSharedT("fullShared.open_839d6d", { value1: name }), artifact.review ? STATE[artifact.review].label : null].filter(Boolean).join(", "),
     title: [name, artifact.title === name ? null : artifact.title].filter(Boolean).join(" — "),
     className: cn(
       "group/slab flex size-full min-w-0 cursor-pointer gap-2.5 p-2 pr-3 text-left focus-visible:bg-(--solid-slab-hover)",
@@ -77,6 +79,7 @@ function AttachmentSlab({ artifact }: { artifact: LabArtifact }) {
 }
 
 export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   if (artifacts.length === 0) return null;
   const images = artifacts.filter((a) => a.kind === "image");
   const files = artifacts.filter((a) => a.kind !== "image");
@@ -86,7 +89,7 @@ export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
   // Whatever has a picture goes first, so the two-row slabs start the grid and the files pack beside them.
   const ordered = [...artifacts.filter(hasThumbnail), ...artifacts.filter((a) => !hasThumbnail(a))];
   return (
-    <section data-solid="thread-attachments" aria-label="Attachments" className="flex w-full flex-col gap-2 py-1">
+    <section data-solid="thread-attachments" aria-label={fullSharedT("newIssue.attachments")} className="flex w-full flex-col gap-2 py-1">
       <p className={cn(META_TEXT, "px-1 text-muted-foreground")}>
         <Counts lead={plural(artifacts.length, "attachment")} parts={counts} of={artifacts} />
       </p>

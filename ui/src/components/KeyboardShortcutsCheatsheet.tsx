@@ -1,3 +1,5 @@
+import { Trans as FullSharedTailTrans } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ShortcutEntry {
@@ -15,53 +17,54 @@ interface ShortcutSection {
 
 const sections: ShortcutSection[] = [
   {
-    title: "Inbox",
+    get title() { return fullSharedT("sidebar.inbox"); },
     shortcuts: [
-      { keys: ["j"], label: "Move down" },
-      { keys: ["↓"], label: "Move down" },
-      { keys: ["k"], label: "Move up" },
-      { keys: ["↑"], label: "Move up" },
-      { keys: ["←"], label: "Collapse selected group" },
-      { keys: ["→"], label: "Expand selected group" },
-      { keys: ["Enter"], label: "Open selected item" },
-      { keys: ["a"], label: "Archive item" },
-      { keys: ["y"], label: "Archive item" },
-      { keys: ["r"], label: "Mark as read" },
-      { keys: ["U"], label: "Mark as unread" },
+      { keys: ["j"], get label() { return fullSharedT("fullShared.move_down_40bb50"); } },
+      { keys: ["↓"], get label() { return fullSharedT("fullShared.move_down_40bb50"); } },
+      { keys: ["k"], get label() { return fullSharedT("fullShared.move_up_c66feb"); } },
+      { keys: ["↑"], get label() { return fullSharedT("fullShared.move_up_c66feb"); } },
+      { keys: ["←"], get label() { return fullSharedT("fullShared.collapse_selected_group_933a60"); } },
+      { keys: ["→"], get label() { return fullSharedT("fullShared.expand_selected_group_6ecae6"); } },
+      { keys: ["Enter"], get label() { return fullSharedT("fullShared.open_selected_item_948dbc"); } },
+      { keys: ["a"], get label() { return fullSharedT("fullShared.archive_item_0fd57c"); } },
+      { keys: ["y"], get label() { return fullSharedT("fullShared.archive_item_0fd57c"); } },
+      { keys: ["r"], get label() { return fullSharedT("fullShared.mark_as_read_50c8b8"); } },
+      { keys: ["U"], get label() { return fullSharedT("fullShared.mark_as_unread_2c19d5"); } },
     ],
   },
   {
-    title: "Task detail",
+    get title() { return fullSharedT("fullShared.task_detail_be4654"); },
     shortcuts: [
-      { keys: ["y"], label: "Quick-archive back to inbox" },
-      { keys: ["g", "i"], label: "Go to inbox" },
-      { keys: ["g", "c"], label: "Focus comment composer" },
+      { keys: ["y"], get label() { return fullSharedT("fullShared.quick_archive_back_to_inbox_630428"); } },
+      { keys: ["g", "i"], get label() { return fullSharedT("fullShared.go_to_inbox_cde5be"); } },
+      { keys: ["g", "c"], get label() { return fullSharedT("fullShared.focus_comment_composer_a0f6da"); } },
     ],
   },
   {
-    title: "Decisions",
+    get title() { return fullSharedT("sidebar.decisions"); },
     shortcuts: [
-      { keys: ["j"], label: "Move down" },
-      { keys: ["↓"], label: "Move down" },
-      { keys: ["k"], label: "Move up" },
-      { keys: ["↑"], label: "Move up" },
-      { keys: ["Enter"], label: "Open or close selected decision" },
-      { keys: ["x"], label: "Dismiss selected decision" },
+      { keys: ["j"], get label() { return fullSharedT("fullShared.move_down_40bb50"); } },
+      { keys: ["↓"], get label() { return fullSharedT("fullShared.move_down_40bb50"); } },
+      { keys: ["k"], get label() { return fullSharedT("fullShared.move_up_c66feb"); } },
+      { keys: ["↑"], get label() { return fullSharedT("fullShared.move_up_c66feb"); } },
+      { keys: ["Enter"], get label() { return fullSharedT("fullShared.open_or_close_selected_decision_54d2ae"); } },
+      { keys: ["x"], get label() { return fullSharedT("fullShared.dismiss_selected_decision_371158"); } },
     ],
   },
   {
-    title: "Global",
+    get title() { return fullSharedT("fullShared.global_a258b3"); },
     shortcuts: [
-      { keys: ["/"], label: "Search current page or quick search" },
-      { keys: ["c"], label: "New task" },
-      { keys: ["["], label: "Toggle sidebar" },
-      { keys: ["]"], label: "Toggle panel" },
-      { keys: ["?"], label: "Show keyboard shortcuts" },
+      { keys: ["/"], get label() { return fullSharedT("fullShared.search_current_page_or_quick_search_4dac6e"); } },
+      { keys: ["c"], get label() { return fullSharedT("newIssue.newTask"); } },
+      { keys: ["["], get label() { return fullSharedT("fullShared.toggle_sidebar_041aef"); } },
+      { keys: ["]"], get label() { return fullSharedT("fullShared.toggle_panel_ed9885"); } },
+      { keys: ["?"], get label() { return fullSharedT("fullShared.show_keyboard_shortcuts_3d0ced"); } },
     ],
   },
 ];
 
 function KeyCap({ children }: { children: string }) {
+  useFullSharedTranslation();
   return (
     <kbd className="inline-flex h-6 min-w-6 items-center justify-center rounded border border-border bg-muted px-1.5 font-mono text-xs font-medium text-foreground shadow-(--shadow-extract-10)">
       {children}
@@ -70,6 +73,7 @@ function KeyCap({ children }: { children: string }) {
 }
 
 export function KeyboardShortcutsCheatsheetContent() {
+  useFullSharedTranslation();
   return (
     <>
       <div className="divide-y divide-border border-t border-border">
@@ -90,7 +94,7 @@ export function KeyboardShortcutsCheatsheetContent() {
                       <span key={key} className="flex items-center gap-1">
                         {i > 0 && (
                           <span className="text-xs text-muted-foreground">
-                            {shortcut.combo ? "+" : "then"}
+                            {shortcut.combo ? "+" : fullSharedT("fullShared.then_21af6f")}
                           </span>
                         )}
                         <KeyCap>{key}</KeyCap>
@@ -105,7 +109,7 @@ export function KeyboardShortcutsCheatsheetContent() {
       </div>
       <div className="border-t border-border px-5 py-3">
         <p className="text-xs text-muted-foreground">
-          Press <KeyCap>Esc</KeyCap> to close &middot; Shortcuts are disabled in text fields
+          <FullSharedTailTrans i18nKey="fullSharedTail.shortcutHint" components={{ key: <KeyCap>{"Esc"}</KeyCap> }} />
         </p>
       </div>
     </>
@@ -119,11 +123,12 @@ export function KeyboardShortcutsCheatsheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  useFullSharedTranslation();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md gap-0 p-0 overflow-hidden" showCloseButton={false}>
         <DialogHeader className="px-5 pt-5 pb-3">
-          <DialogTitle className="text-base">Keyboard shortcuts</DialogTitle>
+          <DialogTitle className="text-base">{fullSharedT("fullShared.keyboard_shortcuts_e9bef0")}</DialogTitle>
         </DialogHeader>
         <KeyboardShortcutsCheatsheetContent />
       </DialogContent>

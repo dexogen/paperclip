@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import * as React from "react"
 import { ChevronRight, MoreHorizontal } from "lucide-react"
 import { Slot } from "radix-ui"
@@ -5,10 +6,12 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 function Breadcrumb({ ...props }: React.ComponentProps<"nav">) {
-  return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />
+  useFullSharedTranslation();
+  return <nav aria-label={fullSharedT("fullShared.breadcrumb_d6dc6b")} data-slot="breadcrumb" {...props} />
 }
 
 function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
+  useFullSharedTranslation();
   return (
     <ol
       data-slot="breadcrumb-list"
@@ -22,6 +25,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
 }
 
 function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
+  useFullSharedTranslation();
   return (
     <li
       data-slot="breadcrumb-item"
@@ -38,6 +42,7 @@ function BreadcrumbLink({
 }: React.ComponentProps<"a"> & {
   asChild?: boolean
 }) {
+  useFullSharedTranslation();
   const Comp = asChild ? Slot.Root : "a"
 
   return (
@@ -50,6 +55,7 @@ function BreadcrumbLink({
 }
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+  useFullSharedTranslation();
   return (
     <span
       data-slot="breadcrumb-page"
@@ -67,6 +73,7 @@ function BreadcrumbSeparator({
   className,
   ...props
 }: React.ComponentProps<"li">) {
+  useFullSharedTranslation();
   return (
     <li
       data-slot="breadcrumb-separator"
@@ -84,6 +91,7 @@ function BreadcrumbEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
+  useFullSharedTranslation();
   return (
     <span
       data-slot="breadcrumb-ellipsis"
@@ -93,7 +101,7 @@ function BreadcrumbEllipsis({
       {...props}
     >
       <MoreHorizontal className="size-4" />
-      <span className="sr-only">More</span>
+      <span className="sr-only">{fullSharedT("fullShared.more_d47d7c")}</span>
     </span>
   )
 }

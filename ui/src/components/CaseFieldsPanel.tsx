@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 /** A muted em-dash for null / empty / missing values. */
 function EmptyValue() {
+  useFullSharedTranslation();
   return <span className="text-muted-foreground">—</span>;
 }
 
@@ -58,6 +60,7 @@ function extractIssueIdentifiers(value: unknown, fieldKey?: string): string[] {
 }
 
 function IssueIdentifierValue({ identifiers }: { identifiers: string[] }) {
+  useFullSharedTranslation();
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-1.5">
       {identifiers.map((identifier) => (
@@ -79,6 +82,7 @@ function CopyableCompactValue({
   children: ReactNode;
   className?: string;
 }) {
+  useFullSharedTranslation();
   const text = stringifyCopyValue(value);
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -109,15 +113,14 @@ function CopyableCompactValue({
           aria-live="polite"
           className="pointer-events-none absolute bottom-full left-1/2 mb-1.5 inline-flex -translate-x-1/2 items-center gap-1 rounded-md bg-foreground px-2 py-1 text-xs whitespace-nowrap text-background"
         >
-          <Check className="h-3 w-3 shrink-0" />
-          Copied
-        </span>
+          <Check className="h-3 w-3 shrink-0" />{fullSharedT("taskPanels.preview.copied")}</span>
       ) : null}
     </span>
   );
 }
 
 function StringValue({ value, variant }: { value: string; variant: "compact" | "full" }) {
+  useFullSharedTranslation();
   const caseHref = useCaseHref();
   const trimmed = value.trim();
   if (trimmed === "") return <EmptyValue />;
@@ -164,6 +167,7 @@ export function CaseFieldValue({
   fieldKey?: string;
   variant?: "compact" | "full";
 }) {
+  useFullSharedTranslation();
   if (value === null || value === undefined) return <EmptyValue />;
 
   const issueIdentifiers = extractIssueIdentifiers(value, fieldKey);
@@ -275,6 +279,7 @@ function TableStringValue({
   fieldKey: string;
   quoted?: boolean;
 }) {
+  useFullSharedTranslation();
   const caseHref = useCaseHref();
   const trimmed = value.trim();
   const text = quoted ? JSON.stringify(value).slice(1, -1) : value;
@@ -301,6 +306,7 @@ function TableStringValue({
 }
 
 function TableFieldValue({ value, fieldKey }: { value: unknown; fieldKey: string }) {
+  useFullSharedTranslation();
   if (value === null || value === undefined) return <EmptyValue />;
   if (typeof value === "string") return <TableStringValue value={value} fieldKey={fieldKey} />;
   if (Array.isArray(value)) {
@@ -325,12 +331,13 @@ function TableFieldValue({ value, fieldKey }: { value: unknown; fieldKey: string
 
 /** Compact read-only field rows for case detail, including nested JSON paths. */
 export function CaseFieldsTable({ fields }: { fields: Record<string, unknown> }) {
+  useFullSharedTranslation();
   const rows = flattenCaseFields(fields);
   if (rows.length === 0) {
-    return <p className="text-sm text-muted-foreground">No fields set</p>;
+    return <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.no_fields_set_602596")}</p>;
   }
   return (
-    <table aria-label="Case fields" className="w-full table-fixed border-collapse font-mono text-xs leading-5">
+    <table aria-label={fullSharedT("fullShared.case_fields_c96e58")} className="w-full table-fixed border-collapse font-mono text-xs leading-5">
       <tbody>
         {rows.map(({ id, path, value }) => (
           <tr key={id} className="even:bg-muted/50">
@@ -348,17 +355,18 @@ export function CaseFieldsTable({ fields }: { fields: Record<string, unknown> })
 }
 
 export function CaseFieldsPanel({ fields }: { fields: Record<string, unknown> }) {
+  useFullSharedTranslation();
   const entries = Object.entries(fields ?? {});
 
   return (
     <section className="space-y-2">
       <div className="flex items-baseline gap-2">
-        <h2 className="text-sm font-semibold">Fields</h2>
-        <span className="text-xs text-muted-foreground">from the skill&apos;s schema — rendered generically</span>
+        <h2 className="text-sm font-semibold">{fullSharedT("fullShared.fields_616f48")}</h2>
+        <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.from_the_skill_s_schema_rendered_generically_cb31f7")}</span>
       </div>
       <Card className="gap-0 py-0">
         {entries.length === 0 ? (
-          <div className="px-4 py-3 text-sm text-muted-foreground">No fields set</div>
+          <div className="px-4 py-3 text-sm text-muted-foreground">{fullSharedT("fullShared.no_fields_set_602596")}</div>
         ) : (
           <dl className="divide-y divide-border">
             {entries.map(([key, value]) => (

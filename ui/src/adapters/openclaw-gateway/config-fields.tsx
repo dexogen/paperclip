@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { configFieldsForSection } from "../config-sections";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -30,6 +31,7 @@ function HeadersJsonTextarea({
   onEditCommit: (next: string) => void;
   inputClass: string;
 }) {
+  useFullSharedTranslation();
   const [editDraft, setEditDraft] = useState<string>(editStringified);
   const [lastSyncedFromConfig, setLastSyncedFromConfig] = useState<string>(editStringified);
   useEffect(() => {
@@ -70,6 +72,7 @@ function SecretField({
   onCommit: (v: string) => void;
   placeholder?: string;
 }) {
+  useFullSharedTranslation();
   const [visible, setVisible] = useState(false);
   return (
     <Field label={label}>
@@ -110,6 +113,7 @@ export function OpenClawGatewayConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  useFullSharedTranslation();
   const configuredHeaders =
     config.headers && typeof config.headers === "object" && !Array.isArray(config.headers)
       ? (config.headers as Record<string, unknown>)
@@ -144,7 +148,7 @@ export function OpenClawGatewayConfigFields({
 
   return configFieldsForSection(section, (
     <>
-      <Field label="Gateway URL" hint={help.webhookUrl}>
+      <Field label={fullSharedT("onboarding.model.gatewayUrl")} hint={help.webhookUrl}>
         <DraftInput
           value={
             isCreate
@@ -172,7 +176,7 @@ export function OpenClawGatewayConfigFields({
 
       {/* Auth and Identity - available in both create and edit modes */}
       <SecretField
-        label="Gateway auth token"
+        label={fullSharedT("fullShared.gateway_auth_token_a31b5b")}
         value={
           isCreate
             ? values!.authToken ?? ""
@@ -183,10 +187,10 @@ export function OpenClawGatewayConfigFields({
             ? set!({ authToken: v })
             : commitGatewayToken(v)
         }
-        placeholder="OpenClaw gateway token"
+        placeholder={fullSharedT("fullShared.openclaw_gateway_token_dbcf48")}
       />
 
-      <Field label="Agent ID">
+      <Field label={fullSharedT("fullShared.agent_id_510bce")}>
         <DraftInput
           value={
             isCreate
@@ -204,7 +208,7 @@ export function OpenClawGatewayConfigFields({
         />
       </Field>
 
-      <Field label="Session strategy">
+      <Field label={fullSharedT("fullShared.session_strategy_174723")}>
         <select
           value={
             isCreate
@@ -218,14 +222,14 @@ export function OpenClawGatewayConfigFields({
           }
           className={inputClass}
         >
-          <option value="fixed">Fixed</option>
-          <option value="issue">Per issue</option>
-          <option value="run">Per run</option>
+          <option value="fixed">{fullSharedT("costsUi.billingFixed")}</option>
+          <option value="issue">{fullSharedT("fullShared.per_issue_a1ce76")}</option>
+          <option value="run">{fullSharedT("fullShared.per_run_97bc74")}</option>
         </select>
       </Field>
 
       {(isCreate ? values!.sessionKeyStrategy ?? "fixed" : sessionStrategy) === "fixed" && (
-        <Field label="Session key">
+        <Field label={fullSharedT("fullShared.session_key_2319ec")}>
           <DraftInput
             value={
               isCreate
@@ -245,7 +249,7 @@ export function OpenClawGatewayConfigFields({
       )}
 
       <SecretField
-        label="Password (alternative auth)"
+        label={fullSharedT("fullShared.password_alternative_auth_a0623d")}
         value={
           isCreate
             ? values!.password ?? ""
@@ -256,10 +260,10 @@ export function OpenClawGatewayConfigFields({
             ? set!({ password: v })
             : mark("adapterConfig", "password", v || undefined)
         }
-        placeholder="Gateway shared password"
+        placeholder={fullSharedT("fullShared.gateway_shared_password_6a063d")}
       />
 
-      <Field label="Role">
+      <Field label={fullSharedT("approvalsUi.role")}>
         <DraftInput
           value={
             isCreate
@@ -273,11 +277,11 @@ export function OpenClawGatewayConfigFields({
           }
           immediate
           className={inputClass}
-          placeholder="operator"
+          placeholder={fullSharedT("instanceAccess.roleOperator")}
         />
       </Field>
 
-      <Field label="Scopes (comma-separated)">
+      <Field label={fullSharedT("fullShared.scopes_comma_separated_79d74b")}>
         <DraftInput
           value={
             isCreate
@@ -309,7 +313,7 @@ export function OpenClawGatewayConfigFields({
         mark={mark}
       />
 
-      <Field label="Paperclip API URL override">
+      <Field label={fullSharedT("fullShared.paperclip_api_url_override_5462f7")}>
         <DraftInput
           value={
             isCreate
@@ -327,7 +331,7 @@ export function OpenClawGatewayConfigFields({
         />
       </Field>
 
-      <Field configSection="runPolicy" label="Timeout (seconds)">
+      <Field configSection="runPolicy" label={fullSharedT("fullShared.timeout_seconds_1f9660")}>
         <DraftInput
           value={
             isCreate
@@ -349,7 +353,7 @@ export function OpenClawGatewayConfigFields({
         />
       </Field>
 
-      <Field label="Headers JSON">
+      <Field label={fullSharedT("fullShared.headers_json_2899a8")}>
         <HeadersJsonTextarea
           isCreate={isCreate}
           createDraft={isCreate ? values!.headersJson ?? "" : ""}
@@ -375,7 +379,7 @@ export function OpenClawGatewayConfigFields({
       </Field>
 
       {!isCreate && (
-        <Field label="Claimed API key path">
+        <Field label={fullSharedT("fullShared.claimed_api_key_path_be223b")}>
           <DraftInput
             value={eff("adapterConfig", "claimedApiKeyPath", String(config.claimedApiKeyPath ?? ""))}
             onCommit={(v) => mark("adapterConfig", "claimedApiKeyPath", v || undefined)}
@@ -386,7 +390,7 @@ export function OpenClawGatewayConfigFields({
         </Field>
       )}
 
-      <Field configSection="runPolicy" label="Wait timeout (ms)">
+      <Field configSection="runPolicy" label={fullSharedT("fullShared.wait_timeout_ms_9e6598")}>
         <DraftInput
           value={
             isCreate
@@ -410,7 +414,7 @@ export function OpenClawGatewayConfigFields({
         />
       </Field>
 
-      <Field label="Disable device auth">
+      <Field label={fullSharedT("fullShared.disable_device_auth_9ce197")}>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -424,12 +428,10 @@ export function OpenClawGatewayConfigFields({
                 ? set!({ disableDeviceAuth: e.target.checked })
                 : mark("adapterConfig", "disableDeviceAuth", e.target.checked || undefined)
             }
-          />
-          Skip device key authentication
-        </label>
+          />{fullSharedT("fullShared.skip_device_key_authentication_4ca952")}</label>
       </Field>
 
-      <Field label="Auto-pair on first connect">
+      <Field label={fullSharedT("fullShared.auto_pair_on_first_connect_7d491d")}>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -443,16 +445,11 @@ export function OpenClawGatewayConfigFields({
                 ? set!({ autoPairOnFirstConnect: e.target.checked })
                 : mark("adapterConfig", "autoPairOnFirstConnect", e.target.checked)
             }
-          />
-          Automatically approve device pairing
-        </label>
+          />{fullSharedT("fullShared.automatically_approve_device_pairing_55fd68")}</label>
       </Field>
 
-      <Field label="Device auth">
-        <div className="text-xs text-muted-foreground leading-relaxed">
-          When enabled, Paperclip persists a device key during onboarding so pairing approvals
-          remain stable across runs.
-        </div>
+      <Field label={fullSharedT("fullShared.device_auth_6fc25a")}>
+        <div className="text-xs text-muted-foreground leading-relaxed">{fullSharedT("fullShared.when_enabled_paperclip_persists_a_device_key_during__cf3f00")}</div>
       </Field>
     </>
   ));

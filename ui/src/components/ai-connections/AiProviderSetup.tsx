@@ -1,3 +1,4 @@
+import { t as fullSharedTailT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -129,7 +130,7 @@ export function AiProviderSetup({
     queryKey: ["agents", companyId, "provider-access"],
     queryFn: () => agentsApi.list(companyId),
   });
-  const label = providerLabel ?? providers.find((p) => p.id === provider)?.name ?? (provider === "github" ? "GitHub Copilot" : "provider");
+  const label = providerLabel ?? providers.find((p) => p.id === provider)?.name ?? (provider === "github" ? "GitHub Copilot" : fullSharedTailT("fullSharedTail.provider"));
   const displayLabel = providerLabel ?? (provider === "gateway" ? t("providerSetup.setup.gateway") : provider === "local" ? t("providerSetup.setup.local") : label);
   const advanced = reconnect ? Boolean(reconnect.routing) : ["openrouter", "bedrock", "gateway", "local"].includes(provider ?? "");
   const nativeProvider: AiProvider =

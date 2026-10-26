@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS } from "@/lib/copilot-task-model-catalog";
 import { ExternalAgentInviteDialog } from "./ExternalAgentInviteDialog";
@@ -874,7 +875,7 @@ function Setup({
                   ·{" "}
                   {runnerProvider === "codex"
                     ? t("agentSetupUi.setup.nativeRunner")
-                    : "Paperclip Runner"}
+                    : fullSharedT("runtimeSelect.paperclip")}
                 </span>
               )}
             </div>

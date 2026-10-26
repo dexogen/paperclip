@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -35,6 +36,7 @@ export function Counts({
   of?: LabArtifact[];
   leadClassName?: string;
 }) {
+  useTranslation();
   const review = of ? reviewCount(of) : 0;
   const changes = of ? changesCount(of) : 0;
   return (
@@ -51,14 +53,12 @@ export function Counts({
       {review > 0 ? (
         <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
           <StateDot state="needs_review" />
-          {review} to review
-        </span>
+          {review}{" "}{t("fullDiagnostics.toReview")}</span>
       ) : null}
       {changes > 0 ? (
         <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
           <StateDot state="changes_requested" />
-          {changes} {changes === 1 ? "change" : "changes"} requested
-        </span>
+          {t("fullDiagnostics.changesRequestedCount", { count: changes })}</span>
       ) : null}
     </span>
   );

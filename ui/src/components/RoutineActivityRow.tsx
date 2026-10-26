@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import type { ActivityEvent } from "@paperclipai/shared";
 import { cn } from "@/lib/utils";
+import { routineRunStatusLabel } from "@/lib/routine-display-labels";
 
 export type RoutineActivityEvent = Pick<ActivityEvent, "id" | "action" | "details" | "createdAt">;
 
@@ -22,7 +23,7 @@ function summarizeEvent(event: RoutineActivityEvent): string {
   if (event.action === "routine.webhook_rejected") return t("surfacesGap.routine.checkKey");
   if (!details) return "";
   if (typeof details.changeSummary === "string") return details.changeSummary;
-  if (event.action === "routine.run_triggered") return `${details.source === "webhook" ? t("surfacesGap.routine.webhook") : details.source === "schedule" ? t("surfacesGap.routine.schedule") : t("surfacesGap.routine.manual")} · ${details.status === "issue_created" ? t("surfacesGap.routine.taskCreated") : String(details.status ?? "").replaceAll("_", " ")}`;
+  if (event.action === "routine.run_triggered") return `${details.source === "webhook" ? t("surfacesGap.routine.webhook") : details.source === "schedule" ? t("surfacesGap.routine.schedule") : t("surfacesGap.routine.manual")} · ${details.status === "issue_created" ? t("surfacesGap.routine.taskCreated") : routineRunStatusLabel(String(details.status ?? "")).replaceAll("_", " ")}`;
   return Object.entries(details).filter(([key]) => !/id$/i.test(key)).slice(0, 3)
     .map(([key, value]) => `${key.replace(/([a-z])([A-Z])/g, "$1 $2").replaceAll("_", " ").toLowerCase()}: ${formatDetailValue(value)}`)
     .join(" · ");

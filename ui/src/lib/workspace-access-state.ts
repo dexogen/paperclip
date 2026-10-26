@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import type {
   WorkspaceOperation,
   WorkspaceReadiness,
@@ -75,11 +77,11 @@ function timestampMs(value: Date | string | null | undefined): number | null {
 function failedRepairNotice(repair: WorkspaceOperation): WorkspaceAccessNotice {
   const phase = typeof repair.metadata?.repairPhase === "string" ? repair.metadata.repairPhase : null;
   return {
-    title: "Repair failed",
+    title: fullSharedT("taskDetail.copy.repairFailed"),
     description: phase
-      ? `The repair stopped during ${phase}. The pre-repair backup was kept.`
-      : "The repair stopped before the workspace became usable. The pre-repair backup was kept.",
-    action: { kind: "view_logs", label: "View repair log" },
+      ? fullSharedT("fullShared.the_repair_stopped_during_the_pre_repair_backup_was__8f8545", { value1: phase })
+      : fullSharedT("fullShared.the_repair_stopped_before_the_workspace_became_usabl_0f1157"),
+    action: { kind: "view_logs", label: fullSharedT("fullShared.view_repair_log_bb0e22") },
   };
 }
 
@@ -88,32 +90,30 @@ function failedProvisionNotice(provision: WorkspaceOperation): WorkspaceAccessNo
     ? provision.metadata.seedFailurePhase
     : null;
   return {
-    title: "Database provisioning failed",
+    title: fullSharedT("fullShared.database_provisioning_failed_7774e3"),
     description: phase
-      ? `The earlier clone attempt failed during ${phase}. The workspace later became usable.`
-      : "An earlier clone attempt failed, but the workspace later became usable.",
-    action: { kind: "view_logs", label: "View provisioning log" },
+      ? fullSharedT("fullShared.the_earlier_clone_attempt_failed_during_the_workspac_072cd0", { value1: phase })
+      : fullSharedT("fullShared.an_earlier_clone_attempt_failed_but_the_workspace_la_704021"),
+    action: { kind: "view_logs", label: fullSharedT("fullShared.view_provisioning_log_0b151b") },
   };
 }
 
 const HANDOFF_REASON_COPY: Record<string, string> = {
-  handoff_not_configured:
-    "This instance has no workspace login handoff configured, so opening the board falls back to snapshot-local credentials.",
-  no_board_identity:
-    "Your session has no cloned user to sign in as, so opening the board falls back to snapshot-local credentials.",
-  runtime_not_running: "No healthy runtime service is publishing a URL for this workspace yet.",
-  runtime_url_unusable: "The runtime row is publishing a URL Paperclip cannot open.",
-  workspace_not_ready: "The cloned database is not ready to accept a login yet.",
+  get handoff_not_configured() { return fullSharedTailT("fullSharedTail.workspace_handoff_not_configured"); },
+  get no_board_identity() { return fullSharedTailT("fullSharedTail.workspace_no_board_identity"); },
+  get runtime_not_running() { return fullSharedTailT("fullSharedTail.workspace_runtime_not_running"); },
+  get runtime_url_unusable() { return fullSharedTailT("fullSharedTail.workspace_runtime_url_unusable"); },
+  get workspace_not_ready() { return fullSharedTailT("fullSharedTail.workspace_workspace_not_ready"); },
 };
 
 const READINESS_FAILURE_COPY: Record<string, string> = {
-  database_unreachable: "The isolated database is not answering.",
-  clone_data_missing: "The clone restored no organization or issue rows.",
-  clone_data_unreadable: "The cloned product tables could not be read.",
-  cloned_membership_missing: "No cloned user has an active organization membership.",
-  cloned_identity_unreadable: "The cloned identity tables could not be read.",
-  auth_handoff_not_configured: "The workspace was started without a login handoff key.",
-  seed_manifest_unreadable: "The seed manifest is unreadable, so the restore cannot be trusted.",
+  get database_unreachable() { return fullSharedTailT("fullSharedTail.workspace_database_unreachable"); },
+  get clone_data_missing() { return fullSharedTailT("fullSharedTail.workspace_clone_data_missing"); },
+  get clone_data_unreadable() { return fullSharedTailT("fullSharedTail.workspace_clone_data_unreadable"); },
+  get cloned_membership_missing() { return fullSharedTailT("fullSharedTail.workspace_cloned_membership_missing"); },
+  get cloned_identity_unreadable() { return fullSharedTailT("fullSharedTail.workspace_cloned_identity_unreadable"); },
+  get auth_handoff_not_configured() { return fullSharedTailT("fullSharedTail.workspace_auth_handoff_not_configured"); },
+  get seed_manifest_unreadable() { return fullSharedTailT("fullSharedTail.workspace_seed_manifest_unreadable"); },
 };
 
 /**
@@ -126,7 +126,7 @@ export function describeWorkspaceReadinessCause(
   if (!failure) return null;
   const phase = describeSeedPhase(failure.readiness);
   if (phase && READINESS_FAILURE_COPY[phase]) return READINESS_FAILURE_COPY[phase];
-  if (phase) return `Last recorded phase: ${phase}.`;
+  if (phase) return fullSharedTailT("fullSharedTail.lastPhase", { phase });
   if (failure.detail && READINESS_FAILURE_COPY[failure.detail]) return READINESS_FAILURE_COPY[failure.detail];
   return HANDOFF_REASON_COPY[failure.reason] ?? null;
 }
@@ -187,11 +187,11 @@ export function resolveWorkspaceAccessState(input: {
     const phase = typeof repair.metadata?.repairPhase === "string" ? repair.metadata.repairPhase : null;
     return {
       state: "repairing",
-      title: "Repairing workspace database",
+      title: fullSharedT("fullShared.repairing_workspace_database_a27574"),
       description: phase
-        ? `Only the isolated database is replaced; the git worktree and your files are preserved. Current phase: ${phase}.`
-        : "Only the isolated database is replaced; the git worktree and your files are preserved.",
-      action: { kind: "wait", label: "Repair in progress" },
+        ? fullSharedT("fullShared.only_the_isolated_database_is_replaced_the_git_workt_16b832", { value1: phase })
+        : fullSharedT("fullShared.only_the_isolated_database_is_replaced_the_git_workt_f9d0a2"),
+      action: { kind: "wait", label: fullSharedT("fullShared.repair_in_progress_4b2595") },
       handoffAvailable,
     };
   }
@@ -207,9 +207,9 @@ export function resolveWorkspaceAccessState(input: {
   if (provision?.status === "running") {
     return {
       state: "provisioning",
-      title: "Provisioning database",
-      description: "Restoring the isolated database clone for this workspace. This runs once before the first start.",
-      action: { kind: "wait", label: "Provisioning" },
+      title: fullSharedT("fullShared.provisioning_database_1eb904"),
+      description: fullSharedT("fullShared.restoring_the_isolated_database_clone_for_this_works_c34f6e"),
+      action: { kind: "wait", label: fullSharedT("fullShared.provisioning_c2b1b8") },
       handoffAvailable,
     };
   }
@@ -219,11 +219,11 @@ export function resolveWorkspaceAccessState(input: {
       : null;
     return {
       state: "failed",
-      title: "Database provisioning failed",
+      title: fullSharedT("fullShared.database_provisioning_failed_7774e3"),
       description: seedPhase
-        ? `The clone failed during ${seedPhase}. Repairing replaces only the isolated database.`
-        : "The clone did not finish, so this workspace has no usable database yet.",
-      action: { kind: "repair", label: "Repair workspace" },
+        ? fullSharedT("fullShared.the_clone_failed_during_repairing_replaces_only_the__88e6ef", { value1: seedPhase })
+        : fullSharedT("fullShared.the_clone_did_not_finish_so_this_workspace_has_no_us_82d05f"),
+      action: { kind: "repair", label: fullSharedT("runUi.recovery.repairTitle") },
       handoffAvailable,
     };
   }
@@ -235,9 +235,9 @@ export function resolveWorkspaceAccessState(input: {
     if (failure.reason === "runtime_not_running" && !servingService && !startingService) {
       return {
         state: "stopped",
-        title: "Workspace is not running",
-        description: "Start the workspace runtime to publish its board.",
-        action: { kind: "start", label: "Start workspace" },
+        title: fullSharedT("fullShared.workspace_is_not_running_992fec"),
+        description: fullSharedT("fullShared.start_the_workspace_runtime_to_publish_its_board_904641"),
+        action: { kind: "start", label: fullSharedT("fullShared.start_workspace_0e6b0b") },
         handoffAvailable,
       };
     }
@@ -246,25 +246,25 @@ export function resolveWorkspaceAccessState(input: {
       const validating = readinessState === "validating" || readinessState === "provisioning";
       return {
         state: validating ? "validating" : "degraded",
-        title: validating ? "Validating clone" : "Workspace is degraded",
+        title: validating ? fullSharedT("fullShared.validating_clone_d86d50") : fullSharedT("fullShared.workspace_is_degraded_f238ba"),
         description: [
-          cause ?? "The workspace is serving, but its clone did not pass the readiness contract.",
-          validating ? "Paperclip is still confirming the clone." : "One bounded repair replaces the isolated database.",
+          cause ?? fullSharedT("fullShared.the_workspace_is_serving_but_its_clone_did_not_pass__835a6b"),
+          validating ? fullSharedT("fullShared.paperclip_is_still_confirming_the_clone_540116") : fullSharedT("fullShared.one_bounded_repair_replaces_the_isolated_database_5ccf3f"),
         ].join(" "),
         action: validating
-          ? { kind: "wait", label: "Validating" }
-          : { kind: "repair", label: "Repair workspace" },
+          ? { kind: "wait", label: fullSharedT("fullShared.validating_5a1a16") }
+          : { kind: "repair", label: fullSharedT("runUi.recovery.repairTitle") },
         handoffAvailable,
       };
     }
     if (!handoffAvailable) {
       return {
         state: servingService ? "ready" : "degraded",
-        title: servingService ? "Ready — snapshot-local sign-in" : "Workspace is degraded",
-        description: cause ?? "Opening the board will ask for the credentials captured in this snapshot.",
+        title: servingService ? fullSharedT("fullShared.ready_snapshot_local_sign_in_3eea98") : fullSharedT("fullShared.workspace_is_degraded_f238ba"),
+        description: cause ?? fullSharedT("fullShared.opening_the_board_will_ask_for_the_credentials_captu_f2195e"),
         action: servingService
-          ? { kind: "open", label: "Open workspace" }
-          : { kind: "start", label: "Start workspace" },
+          ? { kind: "open", label: fullSharedT("fullShared.open_workspace_b3e34b") }
+          : { kind: "start", label: fullSharedT("fullShared.start_workspace_0e6b0b") },
         handoffAvailable: false,
         secondaryNotice,
       };
@@ -274,9 +274,9 @@ export function resolveWorkspaceAccessState(input: {
   if (startingService) {
     return {
       state: "provisioning",
-      title: "Workspace is starting",
-      description: "Paperclip is starting the workspace runtime and waiting for its board URL.",
-      action: { kind: "wait", label: "Starting workspace" },
+      title: fullSharedT("fullShared.workspace_is_starting_456567"),
+      description: fullSharedT("fullShared.paperclip_is_starting_the_workspace_runtime_and_wait_eef837"),
+      action: { kind: "wait", label: fullSharedT("fullShared.starting_workspace_7212fa") },
       handoffAvailable,
     };
   }
@@ -284,9 +284,9 @@ export function resolveWorkspaceAccessState(input: {
   if (servingService) {
     return {
       state: "ready",
-      title: "Ready",
-      description: "Opening the workspace signs you in to the cloned board without a password.",
-      action: { kind: "open", label: "Open workspace" },
+      title: fullSharedT("instanceGeneral.ready"),
+      description: fullSharedT("fullShared.opening_the_workspace_signs_you_in_to_the_cloned_boa_b73224"),
+      action: { kind: "open", label: fullSharedT("fullShared.open_workspace_b3e34b") },
       handoffAvailable,
       secondaryNotice,
     };
@@ -298,19 +298,19 @@ export function resolveWorkspaceAccessState(input: {
   if (unhealthyService) {
     return {
       state: "degraded",
-      title: "Workspace is degraded",
+      title: fullSharedT("fullShared.workspace_is_degraded_f238ba"),
       description: cause
-        ?? "The runtime is up but did not report a usable database, so Paperclip will not publish it as ready.",
-      action: { kind: "repair", label: "Repair workspace" },
+        ?? fullSharedT("fullShared.the_runtime_is_up_but_did_not_report_a_usable_databa_059c98"),
+      action: { kind: "repair", label: fullSharedT("runUi.recovery.repairTitle") },
       handoffAvailable,
     };
   }
 
   return {
     state: "stopped",
-    title: "Workspace is not running",
-    description: "Start the workspace runtime to publish its board.",
-    action: { kind: "start", label: "Start workspace" },
+    title: fullSharedT("fullShared.workspace_is_not_running_992fec"),
+    description: fullSharedT("fullShared.start_the_workspace_runtime_to_publish_its_board_904641"),
+    action: { kind: "start", label: fullSharedT("fullShared.start_workspace_0e6b0b") },
     handoffAvailable,
   };
 }

@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ShieldAlert } from "lucide-react";
@@ -13,6 +14,7 @@ import { useCompany } from "@/context/CompanyContext";
  * authoritative. Shared so the profiles index and create wizard guard identically.
  */
 export function ToolsAdminGate({ children }: { children: ReactNode }) {
+  useFullAppsTranslation();
   const { selectedCompanyId } = useCompany();
   const boardAccess = useQuery({
     queryKey: queryKeys.access.currentBoardAccess,
@@ -21,7 +23,7 @@ export function ToolsAdminGate({ children }: { children: ReactNode }) {
   });
 
   if (boardAccess.isLoading) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading…</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{fullAppsT("taskPanels.loading")}</div>;
   }
 
   const data = boardAccess.data;
@@ -40,14 +42,10 @@ export function ToolsAdminGate({ children }: { children: ReactNode }) {
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">
             <ShieldAlert className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-lg font-semibold">Access profiles require editing access</h1>
+            <h1 className="text-lg font-semibold">{fullAppsT("fullApps.access_profiles_require_editing_access_0057f2")}</h1>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Access profiles decide which tools your agents can use. Ask a company editor to set these up, or
-            head back to{" "}
-            <Link to="/apps" className="font-medium text-primary hover:underline">
-              your apps
-            </Link>
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.access_profiles_decide_which_tools_your_agents_can_u_ed7340")}{" "}
+            <Link to="/apps" className="font-medium text-primary hover:underline">{fullAppsT("fullApps.your_apps_d37a3c")}</Link>
             .
           </p>
         </div>

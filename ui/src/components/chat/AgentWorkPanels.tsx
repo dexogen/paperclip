@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpDown, File, FileText, Image, Search, Video } from "lucide-react";
@@ -62,6 +63,7 @@ export function sortAgentTasks(
 }
 
 function PanelMessage({ children, tone = "muted" }: { children: React.ReactNode; tone?: "muted" | "error" }) {
+  useFullSharedTranslation();
   return (
     <p className={cn("px-1 py-6 text-center text-sm", tone === "error" ? "text-destructive" : "text-muted-foreground")}>
       {children}
@@ -73,6 +75,7 @@ const cardClassName =
   "flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors hover:border-foreground/20 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function AgentTaskCard({ task }: { task: Issue }) {
+  useFullSharedTranslation();
   return (
     <Link
       // design-allow(card-pattern): navigation <Link> card; Card renders a div and would break anchor semantics
@@ -114,6 +117,7 @@ export function AgentTasksPanel({
   /** The conversation issue itself, which is not one of the agent's tasks. */
   excludeIssueId?: string;
 }) {
+  useFullSharedTranslation();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<IssueFilterState>(defaultIssueFilterState);
   const [sortField, setSortField] = useState<AgentTaskSortField>("updated");
@@ -150,15 +154,15 @@ export function AgentTasksPanel({
   const capped = (tasksQuery.data?.length ?? 0) >= AGENT_TASK_LIMIT;
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Agent tasks">
+    <section className="flex flex-col gap-3" aria-label={fullSharedT("fullShared.agent_tasks_07fdbc")}>
       <div className="flex items-center gap-1">
         <div className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search tasks"
-            aria-label="Search tasks"
+            placeholder={fullSharedT("tasks.search")}
+            aria-label={fullSharedT("tasks.search")}
             className="h-8 pl-7 text-sm"
           />
         </div>
@@ -174,7 +178,7 @@ export function AgentTasksPanel({
         />
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Sort" aria-label="Sort tasks">
+            <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title={fullSharedT("projects.sortTitle")} aria-label={fullSharedT("fullShared.sort_tasks_952f38")}>
               <ArrowUpDown className="h-3.5 w-3.5" />
             </Button>
           </PopoverTrigger>
@@ -208,24 +212,22 @@ export function AgentTasksPanel({
       </div>
 
       {tasksQuery.isPending ? (
-        <PanelMessage>Loading tasks…</PanelMessage>
+        <PanelMessage>{fullSharedT("taskProperties.taskPanel.loading")}</PanelMessage>
       ) : tasksQuery.isError ? (
-        <PanelMessage tone="error">Could not load this agent's tasks.</PanelMessage>
+        <PanelMessage tone="error">{fullSharedT("fullShared.could_not_load_this_agent_s_tasks_1ef2b2")}</PanelMessage>
       ) : total === 0 ? (
-        <PanelMessage>This agent hasn't worked on any tasks yet.</PanelMessage>
+        <PanelMessage>{fullSharedT("fullShared.this_agent_hasn_t_worked_on_any_tasks_yet_7960d2")}</PanelMessage>
       ) : visible.length === 0 ? (
         <PanelMessage>
           {capped
-            ? `No tasks match these filters among the ${AGENT_TASK_LIMIT} most recently updated.`
-            : "No tasks match these filters."}
+            ? fullSharedT("fullShared.no_tasks_match_these_filters_among_the_most_recently_727a60", { value1: AGENT_TASK_LIMIT })
+            : fullSharedT("fullShared.no_tasks_match_these_filters_277217")}
         </PanelMessage>
       ) : (
         <div className="flex flex-col gap-2">
           {visible.map((task) => <AgentTaskCard key={task.id} task={task} />)}
           {capped ? (
-            <p className="px-1 text-xs text-muted-foreground">
-              Showing the {AGENT_TASK_LIMIT} most recently updated tasks.
-            </p>
+            <p className="px-1 text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.showing_the_most_recently_updated_tasks_303cbc" components={{ part1: <>{AGENT_TASK_LIMIT}</> }} /></p>
           ) : null}
         </div>
       )}
@@ -234,6 +236,7 @@ export function AgentTasksPanel({
 }
 
 function ArtifactKindIcon({ artifact }: { artifact: CompanyArtifact }) {
+  useFullSharedTranslation();
   const className = "mt-0.5 h-4 w-4 shrink-0 text-muted-foreground";
   switch (artifact.mediaKind) {
     case "image": return <Image className={className} aria-hidden />;
@@ -245,6 +248,7 @@ function ArtifactKindIcon({ artifact }: { artifact: CompanyArtifact }) {
 }
 
 export function AgentArtifactCard({ artifact }: { artifact: CompanyArtifact }) {
+  useFullSharedTranslation();
   return (
     <Link
       // design-allow(card-pattern): navigation <Link> card; Card renders a div and would break anchor semantics
@@ -262,7 +266,7 @@ export function AgentArtifactCard({ artifact }: { artifact: CompanyArtifact }) {
         </span>
       </div>
       <div className="flex items-center gap-1.5 pl-6 text-xs text-muted-foreground">
-        <span>Updated {formatDate(artifact.updatedAt)}</span>
+        <span><FullSharedTrans i18nKey="fullShared.updated_44d29d" components={{ part1: <>{formatDate(artifact.updatedAt)}</> }} /></span>
         <span aria-hidden>·</span>
         <span className="font-mono">{artifact.issue.identifier}</span>
       </div>
@@ -288,20 +292,21 @@ async function listAgentArtifacts(companyId: string, agentId: string) {
 }
 
 export function AgentArtifactsPanel({ companyId, agentId }: { companyId: string; agentId: string }) {
+  useFullSharedTranslation();
   const artifactsQuery = useQuery({
     queryKey: queryKeys.artifacts.byAgent(companyId, agentId),
     queryFn: () => listAgentArtifacts(companyId, agentId),
   });
 
-  if (artifactsQuery.isPending) return <PanelMessage>Loading artifacts…</PanelMessage>;
-  if (artifactsQuery.isError) return <PanelMessage tone="error">Could not load this agent's artifacts.</PanelMessage>;
+  if (artifactsQuery.isPending) return <PanelMessage>{fullSharedT("taskPanels.artifacts.loading")}</PanelMessage>;
+  if (artifactsQuery.isError) return <PanelMessage tone="error">{fullSharedT("fullShared.could_not_load_this_agent_s_artifacts_9202bb")}</PanelMessage>;
   const { artifacts, truncated } = artifactsQuery.data;
-  if (artifacts.length === 0) return <PanelMessage>This agent hasn't produced any artifacts yet.</PanelMessage>;
+  if (artifacts.length === 0) return <PanelMessage>{fullSharedT("fullShared.this_agent_hasn_t_produced_any_artifacts_yet_fd7148")}</PanelMessage>;
   return (
-    <section className="flex flex-col gap-2" aria-label="Agent artifacts">
+    <section className="flex flex-col gap-2" aria-label={fullSharedT("fullShared.agent_artifacts_1e85a3")}>
       {artifacts.map((artifact) => <AgentArtifactCard key={artifact.id} artifact={artifact} />)}
       {truncated ? (
-        <p className="px-1 text-xs text-muted-foreground">Showing this agent's {artifacts.length} most recent artifacts.</p>
+        <p className="px-1 text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.showing_this_agent_s_most_recent_artifacts_1e1a64" components={{ part1: <>{artifacts.length}</> }} /></p>
       ) : null}
     </section>
   );

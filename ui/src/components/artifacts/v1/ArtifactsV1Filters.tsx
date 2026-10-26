@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { t, useTranslation } from "@/i18n";
 import type { ArtifactGroupBy, ArtifactKindFilter } from "@/api/artifacts";
 import { TabFilters, type TabBarItem } from "@/components/TabBar";
@@ -10,13 +11,13 @@ import { TabFilters, type TabBarItem } from "@/components/TabBar";
 export type ArtifactsV1View = "tasks" | Exclude<ArtifactKindFilter, never>;
 
 export const ARTIFACTS_V1_VIEWS: TabBarItem<ArtifactsV1View>[] = [
-  { value: "tasks", label: "Tasks" },
-  { value: "all", label: "All files" },
-  { value: "image", label: "Images" },
-  { value: "video", label: "Videos" },
-  { value: "document", label: "Documents" },
-  { value: "text", label: "Text" },
-  { value: "file", label: "Files" },
+  { value: "tasks", get label() { return fullSharedT("sidebar.tasks"); } },
+  { value: "all", get label() { return fullSharedT("surfacesGap.artifacts.allFiles"); } },
+  { value: "image", get label() { return fullSharedT("surfacesGap.artifacts.images"); } },
+  { value: "video", get label() { return fullSharedT("surfacesGap.artifacts.videos"); } },
+  { value: "document", get label() { return fullSharedT("newIssue.documents"); } },
+  { value: "text", get label() { return fullSharedT("taskChatUi.attachment.text"); } },
+  { value: "file", get label() { return fullSharedT("taskPanels.tabs.files"); } },
 ];
 
 function artifactViews(): TabBarItem<ArtifactsV1View>[] {

@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { emailApi } from "@/api/email";
@@ -13,6 +14,7 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
   onChange(value: string): void;
   disabled?: boolean;
 }) {
+  useFullAppsTranslation();
   const saved = useQuery({ queryKey: ["email-credentials", companyId],
     queryFn: () => emailApi.credentials(companyId), staleTime: 60_000, retry: false });
   useEffect(() => {
@@ -24,7 +26,7 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
   }, [connectionId, value, saved.isSuccess, saved.data, onConnectionChange]);
   return <ApiKeyCredentialField providerName="AgentMail" keysUrl={AGENTMAIL_API_KEYS_URL}
     options={(saved.data ?? []).map(option => ({ id: option.id, disabled: option.scope === "unavailable",
-      label: `${option.label} · saved ${formatDateTime(option.createdAt)}` }))}
+      label: fullAppsT("fullApps.saved_d4024e", { value1: option.label, value2: formatDateTime(option.createdAt) }) }))}
     connectionId={connectionId} onConnectionChange={onConnectionChange} value={value} onChange={onChange}
     disabled={disabled} loading={saved.isFetching} error={saved.error?.message} />;
 }

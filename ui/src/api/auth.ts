@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import {
   authSessionSchema,
   currentUserProfileSchema,
@@ -63,7 +64,7 @@ function extractAuthError(payload: AuthErrorBody, status: number) {
         ? payload.message
         : typeof payload?.error === "string" && payload.error.trim().length > 0
           ? payload.error
-          : `Request failed: ${status}`;
+          : fullSharedT("fullShared.request_failed_6f8d55", { value1: status });
 
   return new AuthApiError(message, status, payload, code);
 }

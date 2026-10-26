@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useId } from "react";
 import type { LabGroup } from "../../kit";
 import { GalleryTile } from "./GalleryTile";
@@ -22,6 +23,7 @@ import { countReview } from "./panel-model";
  */
 
 function Caption({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   return (
     <div data-stack-caption className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-2 px-1">
       <KindTally artifacts={group.artifacts} named />
@@ -32,6 +34,7 @@ function Caption({ group }: { group: LabGroup }) {
 }
 
 function Section({ section }: { section: StackSection }) {
+  useFullSharedTranslation();
   const headingId = useId();
   return (
     <section data-section={section.spansDays ? "days" : "day"} aria-labelledby={headingId} className="flex flex-col gap-3">
@@ -51,9 +54,10 @@ function Section({ section }: { section: StackSection }) {
 }
 
 export function GalleryStack({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   if (group.artifacts.length === 0) {
     // The shipped empty state's copy.
-    return <p className="py-16 text-center text-sm font-medium text-foreground">No artifacts in this stack match the current filters.</p>;
+    return <p className="py-16 text-center text-sm font-medium text-foreground">{fullSharedT("surfacesGap.artifacts.noStackMatch")}</p>;
   }
   return (
     <div data-surface="gallery-stack" className="flex flex-col gap-6">

@@ -1,3 +1,4 @@
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import {
   useCallback,
   useEffect,
@@ -318,7 +319,7 @@ function buildOperations(
     groupEvents.forEach((event) => claimedEvents.add(event.id));
     const methods = unique(groupFrames.map(frameMethod));
     const itemTypes = unique(groupFrames.map(frameItemType));
-    const title = itemTypes.at(-1) || methods.at(-1) || text(groupFrames[0]?.direction) || "Provider frame";
+    const title = itemTypes.at(-1) || methods.at(-1) || text(groupFrames[0]?.direction) || fullSharedT("runUi.inspector.providerFrame");
     const firstFrame = groupFrames[0];
     const lastFrame = groupFrames.at(-1);
     const range = firstFrame === lastFrame
@@ -405,6 +406,7 @@ function jsonMatches(value: unknown, query: string): boolean {
 }
 
 function JsonPrimitive({ value }: { value: unknown }) {
+  useFullSharedTranslation();
   if (typeof value === "string") return <span className="text-primary">&quot;{value}&quot;</span>;
   if (typeof value === "number") return <span className="text-muted-foreground">{value}</span>;
   if (typeof value === "boolean") return <span className="text-secondary-foreground">{String(value)}</span>;
@@ -659,6 +661,7 @@ function ProductionSurfacePreview({ event, runId }: { event: HeartbeatRunEvent; 
 }
 
 function StatCard({ label, value, detail }: { label: string; value: string | number; detail?: string }) {
+  useFullSharedTranslation();
   return (
     <div className="rounded-lg border border-border bg-card px-4 py-3">
       <p className="text-(length:--text-nano) font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -836,7 +839,7 @@ export function RunnerInspector({
   const capturedProviders = unique(frames.map((frame) => text(frame.provider)));
   const operations = useMemo(
     () => buildOperations(frames, interpretations, events),
-    [events, frames, interpretations],
+    [fullSharedI18n.language, events, frames, interpretations],
   );
   const filteredOperations = useMemo(
     () => operations.filter((operation) => {

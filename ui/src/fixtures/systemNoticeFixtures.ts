@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import type {
   SystemNoticeMetadataSection,
   SystemNoticeProps,
@@ -10,48 +12,48 @@ export type SystemNoticeFixture = {
 
 const HANDOFF_METADATA: SystemNoticeMetadataSection[] = [
   {
-    title: "Recovery owner",
+    get title() { return fullSharedT("runUi.recovery.recoveryOwner"); },
     rows: [
       {
         kind: "issue",
-        label: "Recovery issue",
+        get label() { return t("fullDiagnostics.recoveryIssue"); },
         identifier: "PAP-3440",
         href: "/PAP/issues/PAP-3440",
-        title: "Successful run handoff missing disposition",
+        get title() { return t("fullDiagnostics.successfulRunHandoffMissingDisposition"); },
       },
       {
         kind: "agent",
-        label: "Owner",
+        get label() { return fullSharedT("fullShared.owner_4b1b8a"); },
         name: "CTO",
         href: "/PAP/agents/cto",
       },
       {
         kind: "text",
-        label: "Suggested action",
+        get label() { return t("fullDiagnostics.suggestedAction"); },
         value: "Reassign to a recovery agent and pick a disposition.",
       },
     ],
   },
   {
-    title: "Run evidence",
+    get title() { return t("fullDiagnostics.runEvidence"); },
     rows: [
       {
         kind: "run",
-        label: "Source run",
+        get label() { return fullSharedT("runUi.recovery.sourceRun"); },
         runId: "9cdba892-c7ca-4d93-8604-4843873b127c",
         href: "/PAP/agents/codexcoder/runs/9cdba892-c7ca-4d93-8604-4843873b127c",
         status: "succeeded",
       },
       {
         kind: "run",
-        label: "Recovery run",
+        get label() { return t("fullDiagnostics.recoveryRun"); },
         runId: "61fdb79b-8012-4676-ac71-2971830e126a",
         href: "/PAP/agents/codexcoder/runs/61fdb79b-8012-4676-ac71-2971830e126a",
         status: "failed",
       },
       {
         kind: "text",
-        label: "Normalized cause",
+        get label() { return t("fullDiagnostics.normalizedCause"); },
         value: "Run completed without issuing a disposition for an in_progress task.",
       },
     ],
@@ -60,41 +62,41 @@ const HANDOFF_METADATA: SystemNoticeMetadataSection[] = [
 
 const REQUIRED_METADATA: SystemNoticeMetadataSection[] = [
   {
-    title: "Required action",
+    get title() { return t("fullDiagnostics.requiredAction"); },
     rows: [
       {
         kind: "issue",
-        label: "Source issue",
+        get label() { return t("fullDiagnostics.sourceIssue"); },
         identifier: "PAP-3440",
         href: "/PAP/issues/PAP-3440",
-        title: "Successful run handoff missing disposition",
+        get title() { return t("fullDiagnostics.successfulRunHandoffMissingDisposition"); },
       },
       {
         kind: "agent",
-        label: "Responsible",
+        get label() { return fullSharedT("taskViews.column_assignee"); },
         name: "CodexCoder",
         href: "/PAP/agents/codexcoder",
       },
       {
         kind: "text",
-        label: "Next step",
+        get label() { return fullSharedT("taskViews.nextStep"); },
         value: "Pick done, blocked, or in_review and post a one-line rationale.",
       },
     ],
   },
   {
-    title: "Run context",
+    get title() { return t("fullDiagnostics.runContext"); },
     rows: [
       {
         kind: "run",
-        label: "Successful run",
+        get label() { return t("fullDiagnostics.successfulRun"); },
         runId: "9cdba892-c7ca-4d93-8604-4843873b127c",
         href: "/PAP/agents/codexcoder/runs/9cdba892-c7ca-4d93-8604-4843873b127c",
         status: "succeeded",
       },
       {
         kind: "code",
-        label: "Status before",
+        get label() { return t("fullDiagnostics.statusBefore"); },
         value: "in_progress",
       },
     ],
@@ -106,19 +108,19 @@ const NEUTRAL_METADATA: SystemNoticeMetadataSection[] = [
     rows: [
       {
         kind: "agent",
-        label: "Reassigned to",
+        get label() { return t("fullDiagnostics.reassignedTo"); },
         name: "ClaudeFixer",
         href: "/PAP/agents/claudefixer",
       },
       {
         kind: "agent",
-        label: "From",
+        get label() { return fullSharedT("decisionsUi.date.from"); },
         name: "CodexCoder",
         href: "/PAP/agents/codexcoder",
       },
       {
         kind: "text",
-        label: "Reason",
+        get label() { return fullSharedT("taskProperties.fields.reason"); },
         value: "Manual reassignment requested by Board.",
       },
     ],
@@ -128,9 +130,9 @@ const NEUTRAL_METADATA: SystemNoticeMetadataSection[] = [
 export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   {
     id: "warning-collapsed",
-    caption: "Warning · collapsed (default)",
+    get caption() { return t("fullDiagnostics.warningCollapsedDefault"); },
     tone: "warning",
-    label: "System warning",
+    get label() { return fullSharedT("runUi.system.warning"); },
     source: { label: "Paperclip", href: "/PAP/agents" },
     timestamp: "2026-05-04T16:32:00.000Z",
     body: "Paperclip needs a disposition before this issue can continue.",
@@ -139,9 +141,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "warning-expanded",
-    caption: "Warning · expanded",
+    get caption() { return t("fullDiagnostics.warningExpanded"); },
     tone: "warning",
-    label: "System warning",
+    get label() { return fullSharedT("runUi.system.warning"); },
     source: { label: "Paperclip", href: "/PAP/agents" },
     timestamp: "2026-05-04T16:32:00.000Z",
     body: "Paperclip needs a disposition before this issue can continue.",
@@ -150,9 +152,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "danger-collapsed",
-    caption: "Danger · collapsed (default)",
+    get caption() { return t("fullDiagnostics.dangerCollapsedDefault"); },
     tone: "danger",
-    label: "System alert",
+    get label() { return fullSharedT("runUi.system.alert"); },
     source: { label: "Paperclip", href: "/PAP/agents" },
     timestamp: "2026-05-04T16:48:00.000Z",
     body: "Paperclip could not resolve this issue's missing disposition automatically. The source assignment is unchanged and a board decision is required.",
@@ -161,9 +163,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "danger-expanded",
-    caption: "Danger · expanded",
+    get caption() { return t("fullDiagnostics.dangerExpanded"); },
     tone: "danger",
-    label: "System alert",
+    get label() { return fullSharedT("runUi.system.alert"); },
     source: { label: "Paperclip", href: "/PAP/agents" },
     timestamp: "2026-05-04T16:48:00.000Z",
     body: "Paperclip could not resolve this issue's missing disposition automatically. The source assignment is unchanged and a board decision is required.",
@@ -172,9 +174,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "neutral-collapsed",
-    caption: "Neutral · collapsed (default)",
+    get caption() { return t("fullDiagnostics.neutralCollapsedDefault"); },
     tone: "neutral",
-    label: "System notice",
+    get label() { return fullSharedT("runUi.system.notice"); },
     source: { label: "Paperclip" },
     timestamp: "2026-05-04T15:10:00.000Z",
     body: "Reassigned to ClaudeFixer.",
@@ -183,9 +185,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "neutral-expanded",
-    caption: "Neutral · expanded",
+    get caption() { return t("fullDiagnostics.neutralExpanded"); },
     tone: "neutral",
-    label: "System notice",
+    get label() { return fullSharedT("runUi.system.notice"); },
     source: { label: "Paperclip" },
     timestamp: "2026-05-04T15:10:00.000Z",
     body: "Reassigned to ClaudeFixer.",
@@ -194,9 +196,9 @@ export const systemNoticeFixtures: readonly SystemNoticeFixture[] = [
   },
   {
     id: "warning-no-details",
-    caption: "Warning · no metadata (Details affordance hidden)",
+    get caption() { return t("fullDiagnostics.warningNoMetadataDetailsAffordanceHidden"); },
     tone: "warning",
-    label: "System warning",
+    get label() { return fullSharedT("runUi.system.warning"); },
     source: { label: "Paperclip" },
     timestamp: "2026-05-04T17:02:00.000Z",
     body: "This run paused while waiting on board approval.",

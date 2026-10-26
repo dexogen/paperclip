@@ -1,3 +1,6 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay, AppDisplayError } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -37,15 +40,15 @@ const SAMPLE_CONFIG = `{
 /** Turn an env/header key (e.g. `GITHUB_TOKEN`) into a friendly field label. */
 function humanizeKey(raw: string): string {
   const cleaned = raw.replace(/[_-]+/g, " ").trim().toLowerCase();
-  if (!cleaned) return "Key";
+  if (!cleaned) return fullAppsT("fullApps.caption_99a52df3ff");
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
 function draftSummary(draft: McpJsonImportDraft): string {
   const keyCount = draft.credentialFields.length || draft.credentialRefs.length;
-  const where = draft.transport === "local_stdio" ? "Runs in your workspace" : "Connects over the web";
-  if (keyCount === 0) return `${where}  ·  no keys needed`;
-  return `${where}  ·  needs ${keyCount} ${keyCount === 1 ? "key" : "keys"}`;
+  const where = draft.transport === "local_stdio" ? fullAppsT("fullApps.runs_in_your_workspace_188afb") : fullAppsT("fullApps.connects_over_the_web_f1b4d1");
+  if (keyCount === 0) return fullAppsT("fullApps.message_f2dd79fac966", { value1: where });
+  return fullAppsT("fullApps.configKeys", { where, count: keyCount });
 }
 
 /**
@@ -101,6 +104,7 @@ function askFirstLevelsFrom(result: ConnectToolAppResult): string[] {
  * of the two M8 screens where "MCP" vocabulary is allowed (PAP-10827 vocab map).
  */
 export function PasteConfigTab({ companyId }: { companyId: string }) {
+  useFullAppsTranslation();
   const navigate = useNavigate();
   const [draftText, setDraftText] = useState("");
   const [preview, setPreview] = useState<McpJsonImportPreview | null>(null);
@@ -110,7 +114,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
   const [enabled, setEnabled] = useState<Record<string, boolean>>({});
   const [activatedName, setActivatedName] = useState<string | null>(null);
   const [oauthPhase, setOAuthPhase] = useState<OAuthConnectPhase>("entry");
-  const [oauthError, setOAuthError] = useState<string | null>(null);
+  const [oauthError, setOAuthError] = useState<AppDisplayText | null>(null);
   const [authorizationHost, setAuthorizationHost] = useState<string | null>(null);
 
   const importMutation = useMutation({
@@ -137,7 +141,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
       navigateTopLevel(target.url);
     } catch (error) {
       setOAuthPhase("error");
-      setOAuthError(error instanceof Error ? error.message : "Paperclip couldn’t start secure sign-in. Try again.");
+      setOAuthError(error instanceof Error ? appErrorDisplay(error) : ownAppDisplayText("fullApps.paperclip_couldn_t_start_secure_sign_in_try_again_479282"));
     }
   };
 
@@ -148,8 +152,8 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
       setOAuthPhase("error");
       setOAuthError(
         error instanceof Error
-          ? error.message
-          : "Paperclip couldn’t start secure sign-in. Try again.",
+          ? appErrorDisplay(error)
+          : ownAppDisplayText("fullApps.paperclip_couldn_t_start_secure_sign_in_try_again_479282"),
       );
     },
   });
@@ -157,7 +161,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
   const connectMutation = useMutation({
     mutationFn: (draft: McpJsonImportDraft) => {
       const url = draftConnectUrl(draft);
-      if (!url) throw new Error("Only remote HTTP drafts can be checked and activated from pasted config.");
+      if (!url) throw new AppDisplayError("fullApps.only_remote_http_drafts_can_be_checked_and_activated_d983b9");
       return toolsApi.connectApp(companyId, {
         link: url,
         name: connectionNames[draft.name]?.trim() || draft.name,
@@ -173,7 +177,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         if (result.auth.manualClientRequired) {
           setOAuthPhase("error");
           setOAuthError(
-            "This server requires OAuth client details from its provider settings. Continue in setup to add them.",
+            ownAppDisplayText("fullApps.this_server_requires_oauth_client_details_from_its_p_b794cd"),
           );
           return;
         }
@@ -220,9 +224,9 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
       JSON.parse(trimmed);
       return null;
     } catch {
-      return "That doesn't look like valid JSON yet — paste the whole snippet, including the outer braces.";
+      return fullAppsT("fullApps.that_doesn_t_look_like_valid_json_yet_paste_the_whol_6c94d4");
     }
-  }, [draftText]);
+  }, [draftText, fullAppsI18n.resolvedLanguage]);
 
   if (connectResult?.auth?.kind === "oauth") {
     const connectionUrl = typeof connectResult.connection.config?.url === "string"
@@ -237,7 +241,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
           unverifiedHost: endpointHost(connectionUrl),
         }}
         phase={oauthPhase}
-        error={oauthError}
+        error={renderAppDisplayText(oauthError)}
         authorizationHost={authorizationHost}
         onRetry={() => {
           setOAuthError(null);
@@ -254,18 +258,11 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
   return (
     <div className="space-y-5">
       <div className="flex max-w-2xl items-start gap-1.5">
-        <p className="text-sm text-muted-foreground">
-          Paste the MCP config snippet from the tool's README and we'll turn it into a friendly setup.
-        </p>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.paste_the_mcp_config_snippet_from_the_tool_s_readme__1f218f")}</p>
         <McpConfigHelpDialog />
       </div>
-      <p className="text-xs text-muted-foreground">
-        Just a URL?{" "}
-        <Link to="/apps" className="text-primary hover:underline">
-          Browse planned app connections
-        </Link>{" "}
-        instead.
-      </p>
+      <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.just_a_url_88de1f")}{" "}
+        <Link to="/apps" className="text-primary hover:underline">{fullAppsT("fullApps.browse_planned_app_connections_342995")}</Link>{" "}{fullAppsT("fullApps.instead_90b5d1")}</p>
 
       <div className="space-y-2">
         <Textarea
@@ -284,9 +281,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         {localParseError ? (
           <p className="text-xs text-amber-600">{localParseError}</p>
         ) : (
-          <p className="text-xs text-muted-foreground">
-            Paste an MCP config — the snippet a README tells you to copy.
-          </p>
+          <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.paste_an_mcp_config_the_snippet_a_readme_tells_you_t_59ed50")}</p>
         )}
       </div>
 
@@ -295,26 +290,20 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
           onClick={() => importMutation.mutate(draftText)}
           disabled={!canSubmit || Boolean(localParseError)}
         >
-          {importMutation.isPending ? "Checking…" : "Check config"}
+          {importMutation.isPending ? fullAppsT("taskProperties.fields.checking") : fullAppsT("fullApps.check_config_9f23db")}
         </Button>
-        <span className="text-xs text-muted-foreground">
-          We'll read it and show what we found before anything is saved.
-        </span>
+        <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.we_ll_read_it_and_show_what_we_found_before_anything_e36240")}</span>
       </div>
 
-      {importMutation.isError ? <ErrorState error={importMutation.error} /> : null}
+      {importMutation.isError ? <ErrorState t={fullAppsI18n.t} error={importMutation.error} /> : null}
 
       {preview ? (
         drafts.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-            We couldn't find an app in that config. Double-check you pasted the whole snippet.
-          </div>
+          <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">{fullAppsT("fullApps.we_couldn_t_find_an_app_in_that_config_double_check__e68580")}</div>
         ) : (
           <div className="space-y-3">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              We found {drafts.length} {drafts.length === 1 ? "app" : "apps"} in that config
-            </h3>
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />{fullAppsT("fullApps.configAppCount", { count: drafts.length })}</h3>
             {drafts.map((draft, index) => {
               const url = draftConnectUrl(draft);
               const missingFields = missingCredentialFields(draft, credentialValues);
@@ -337,21 +326,15 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
               );
             })}
             {drafts.some((d) => draftConnectUrl(d)) ? (
-              <p className="text-xs text-muted-foreground">
-                Checking a remote app creates a draft connection, stores any header replacements as Paperclip secrets,
-                and runs health/catalog discovery before activation.
-              </p>
+              <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.checking_a_remote_app_creates_a_draft_connection_sto_00667e")}</p>
             ) : (
-              <p className="text-xs text-muted-foreground">
-                We humanized the field names from the config. These run-in-your-workspace tools stay as drafts until an
-                admin maps them to an approved template.
-              </p>
+              <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.we_humanized_the_field_names_from_the_config_these_r_af267d")}</p>
             )}
           </div>
         )
       ) : null}
 
-      {connectMutation.isError ? <ErrorState error={connectMutation.error} /> : null}
+      {connectMutation.isError ? <ErrorState t={fullAppsI18n.t} error={connectMutation.error} /> : null}
       {connectResult ? (
         <CatalogReview
           result={connectResult}
@@ -369,7 +352,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
           onFinish={() => finishMutation.mutate()}
         />
       ) : null}
-      {finishMutation.isError ? <ErrorState error={finishMutation.error} /> : null}
+      {finishMutation.isError ? <ErrorState t={fullAppsI18n.t} error={finishMutation.error} /> : null}
     </div>
   );
 }
@@ -393,6 +376,7 @@ function DraftCard({
   canCheck: boolean;
   onCheck?: () => void;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-center justify-between gap-3">
@@ -401,17 +385,12 @@ function DraftCard({
           <div className="text-xs text-muted-foreground">{draftSummary(draft)}</div>
         </div>
         {onCheck ? (
-          <Button size="sm" className="shrink-0" onClick={onCheck} disabled={checking || !canCheck}>
-            {checking ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-            Check actions
-          </Button>
+          <Button size="sm" className="shrink-0" onClick={onCheck} disabled={checking || !canCheck}><FullAppsTrans i18nKey="fullApps.check_actions_19f644" components={{ part1: <>{checking ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}</> }} /></Button>
         ) : null}
       </div>
 
       {onCheck ? (
-        <label className="mt-4 block max-w-sm space-y-1 text-xs font-medium text-foreground">
-          Connection name
-          <Input
+        <label className="mt-4 block max-w-sm space-y-1 text-xs font-medium text-foreground">{fullAppsT("providerSetup.credentials.name")}<Input
             value={connectionName}
             onChange={(event) => onConnectionNameChange(event.target.value)}
             placeholder={draft.name}
@@ -436,7 +415,7 @@ function DraftCard({
                   type="password"
                   value={credentialValues[credentialValueKey(draft, field.configPath)] ?? ""}
                   onChange={(event) => onCredentialChange(field.configPath, event.target.value)}
-                  placeholder="Paste replacement value"
+                  placeholder={fullAppsT("fullApps.paste_replacement_value_297ff2")}
                   className="h-8 max-w-sm text-xs"
                 />
               </div>
@@ -444,11 +423,9 @@ function DraftCard({
           ))}
         </div>
       ) : draft.credentialRefs.length > 0 ? (
-        <p className="mt-3 text-xs text-muted-foreground">
-          Keys from this config stay draft-only until an admin maps them to an approved template.
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">{fullAppsT("fullApps.keys_from_this_config_stay_draft_only_until_an_admin_c7c738")}</p>
       ) : (
-        <p className="mt-3 text-xs text-muted-foreground">No keys needed for this one.</p>
+        <p className="mt-3 text-xs text-muted-foreground">{fullAppsT("fullApps.no_keys_needed_for_this_one_0f5035")}</p>
       )}
 
       {draft.warnings.length > 0 ? (
@@ -481,6 +458,7 @@ function CatalogReview({
   activatedName: string | null;
   onFinish: () => void;
 }) {
+  useFullAppsTranslation();
   const askFirstLevels = askFirstLevelsFrom(result);
   const enabledCount = Object.values(enabled).filter(Boolean).length;
   const total = result.actions.readOnly.length + result.actions.canMakeChanges.length;
@@ -489,20 +467,14 @@ function CatalogReview({
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            Review actions for {result.application.name}
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />{fullAppsT("fullApps.reviewAppActions", { name: result.application.name })}
           </h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Health and catalog checks passed. Every discovered action starts allowed; you can narrow access after activation.
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{fullAppsT("fullApps.health_and_catalog_checks_passed_every_discovered_ac_cd29bd")}</p>
         </div>
-        <Button size="sm" onClick={onFinish} disabled={finishing || enabledCount === 0 || Boolean(activatedName)}>
-          {finishing ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-          Activate {enabledCount} of {total}
-        </Button>
+        <Button size="sm" onClick={onFinish} disabled={finishing || enabledCount === 0 || Boolean(activatedName)}><FullAppsTrans i18nKey="fullApps.activate_of_d0dbf5" components={{ part1: <>{finishing ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}</>, part2: <>{enabledCount}</>, part3: <>{total}</> }} /></Button>
       </div>
       <ActionGroup
-        title="Read-only"
+        title={fullAppsT("agentSkillsUi.row.readOnly")}
         actions={result.actions.readOnly}
         enabled={enabled}
         onToggle={onToggle}
@@ -510,7 +482,7 @@ function CatalogReview({
         askFirstLevels={askFirstLevels}
       />
       <ActionGroup
-        title="Can make changes"
+        title={fullAppsT("fullApps.can_make_changes_0bf247")}
         actions={result.actions.canMakeChanges}
         enabled={enabled}
         onToggle={onToggle}
@@ -518,7 +490,7 @@ function CatalogReview({
         askFirstLevels={askFirstLevels}
       />
       {activatedName ? (
-        <p className="text-xs font-medium text-emerald-700">{activatedName} is active for all agents.</p>
+        <p className="text-xs font-medium text-emerald-700"><FullAppsTrans i18nKey="fullApps.is_active_for_all_agents_bbcdfd" components={{ part1: <>{activatedName}</> }} /></p>
       ) : null}
     </div>
   );
@@ -539,18 +511,15 @@ function ActionGroup({
   onBulk: (on: boolean) => void;
   askFirstLevels: string[];
 }) {
+  useFullAppsTranslation();
   if (actions.length === 0) return null;
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-3">
         <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</div>
         <div className="flex gap-2">
-          <Button type="button" size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => onBulk(true)}>
-            Turn all on
-          </Button>
-          <Button type="button" size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => onBulk(false)}>
-            Turn all off
-          </Button>
+          <Button type="button" size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => onBulk(true)}>{fullAppsT("fullApps.turn_all_on_08f6d3")}</Button>
+          <Button type="button" size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => onBulk(false)}>{fullAppsT("fullApps.turn_all_off_59d74f")}</Button>
         </div>
       </div>
       <div className="divide-y divide-border rounded-lg border border-border">
@@ -561,7 +530,7 @@ function ActionGroup({
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium text-foreground">{action.title || action.toolName}</div>
                 <div className="truncate text-xs text-muted-foreground">
-                  {askFirstLevels.includes(action.riskLevel) ? "Ask first when enabled" : action.riskLevel}
+                  {askFirstLevels.includes(action.riskLevel) ? fullAppsT("fullApps.ask_first_when_enabled_68872e") : action.riskLevel}
                 </div>
               </div>
               <ToggleSwitch checked={on} onCheckedChange={(next) => onToggle(action.catalogEntryId, next)} />

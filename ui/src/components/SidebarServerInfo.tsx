@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Clock3, FileDiff, GitCommit, type LucideIcon } from "lucide-react";
 import { healthApi, type HealthStatus } from "@/api/health";
@@ -58,6 +59,7 @@ function ServerInfoRow({
   value: string;
   dateTime?: string | null;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left">
       <span className="mt-0.5 rounded-lg border border-border bg-background/70 p-2 text-muted-foreground">
@@ -78,6 +80,7 @@ function ServerInfoRow({
 }
 
 export function SidebarServerInfo() {
+  useFullSharedTranslation();
   const experimentalQuery = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
     queryFn: () => instanceSettingsApi.getExperimental(),
@@ -106,9 +109,9 @@ export function SidebarServerInfo() {
   const restartedAt = restartTimestamp(health);
   const restartedAtIsValid = isValidTimestamp(restartedAt);
   const lastRestartedLabel = healthUnavailable
-    ? "Health unavailable"
+    ? fullSharedT("fullShared.health_unavailable_ea4edd")
     : isWaitingForHealth
-      ? "Loading..."
+      ? fullSharedT("formsUi.search.loading")
       : formatTimestamp(restartedAt);
   const commit = healthUnavailable
     ? "Health unavailable"
@@ -123,17 +126,15 @@ export function SidebarServerInfo() {
 
   return (
     <div className="mt-2 border-t border-border pt-2">
-      <p className="px-3 pb-1 pt-1 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-        Server
-      </p>
+      <p className="px-3 pb-1 pt-1 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{fullSharedT("fullShared.server_aef7de")}</p>
       <ServerInfoRow
         icon={Clock3}
-        label="Last restarted"
+        label={fullSharedT("fullShared.last_restarted_865e87")}
         value={lastRestartedLabel}
         dateTime={!healthUnavailable && !isWaitingForHealth && restartedAtIsValid ? restartedAt : null}
       />
-      <ServerInfoRow icon={GitCommit} label="Running commit" value={commit} />
-      <ServerInfoRow icon={FileDiff} label="Checkout state" value={localChanges} />
+      <ServerInfoRow icon={GitCommit} label={fullSharedT("fullShared.running_commit_ac4553")} value={commit} />
+      <ServerInfoRow icon={FileDiff} label={fullSharedT("fullShared.checkout_state_938962")} value={localChanges} />
     </div>
   );
 }

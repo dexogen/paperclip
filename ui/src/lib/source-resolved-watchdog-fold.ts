@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { HeartbeatRun } from "@paperclipai/shared";
 
 export type SourceResolvedFoldCleanupOutcome =
@@ -105,12 +106,12 @@ export function readSourceResolvedWatchdogFold(
 }
 
 const CLEANUP_OUTCOME_LABELS: Record<string, string> = {
-  terminated: "terminated",
-  termination_sent_still_running: "termination sent (still running)",
-  failed: "failed",
-  not_running: "not running",
-  no_process_metadata: "no process metadata",
-  skipped_non_local_adapter: "skipped (non-local adapter)",
+  get terminated() { return fullSharedT("fullShared.terminated_e8c95a"); },
+  get termination_sent_still_running() { return fullSharedT("fullShared.termination_sent_still_running_ee9871"); },
+  get failed() { return fullSharedT("fullShared.failed_5d28a9"); },
+  get not_running() { return fullSharedT("fullShared.not_running_415ed7"); },
+  get no_process_metadata() { return fullSharedT("fullShared.no_process_metadata_eabfb8"); },
+  get skipped_non_local_adapter() { return fullSharedT("fullShared.skipped_non_local_adapter_a01b45"); },
 };
 
 export function formatCleanupOutcome(outcome: string): string {
@@ -120,12 +121,12 @@ export function formatCleanupOutcome(outcome: string): string {
 export function formatSilenceAgeMs(ms: number | null | undefined): string | null {
   if (!ms || ms <= 0) return null;
   const totalMinutes = Math.floor(ms / 60_000);
-  if (totalMinutes < 1) return "under 1 minute";
-  if (totalMinutes < 60) return `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"}`;
+  if (totalMinutes < 1) return fullSharedT("fullActivity.underMinute");
+  if (totalMinutes < 60) return fullSharedT("fullActivity.silenceMinutes", { count: totalMinutes });
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
-  if (minutes === 0) return `${hours} hour${hours === 1 ? "" : "s"}`;
-  return `${hours}h ${minutes}m`;
+  if (minutes === 0) return fullSharedT("fullActivity.silenceHours", { count: hours });
+  return fullSharedT("fullActivity.silenceHoursMinutes", { hours, minutes });
 }
 
 export function shortenEvidenceId(id: string): string {

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 import { formatFileSize } from "./task-chat-attachments";
@@ -76,7 +77,7 @@ export function commentsToTaskChatItems(
   for (const comment of comments) {
     if (comment.deletedAt) continue;
     if (comment.conversationSessionGeneration != null) {
-      items.push({ id: comment.id, kind: "marker", variant: "session_start", label: "New session",
+      items.push({ id: comment.id, kind: "marker", variant: "session_start", label: fullSharedT("taskChatUi.composer.newSession"),
         detail: "Earlier messages and files are still available.",
         display: { label: { code: "marker.newSession" }, detail: { code: "detail.sessionHistory" } },
         retryKind: null, createdAtIso: new Date(comment.createdAt).toISOString() });

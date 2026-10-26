@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { ToolbarSearch } from "@/components/ToolbarSearch";
 import { CatalogSourceFilters, type CatalogSource } from "./CatalogSourceFilters";
 
@@ -8,9 +9,10 @@ export function ConnectorsToolbar({ query, onQueryChange, source, onSourceChange
   source: CatalogSource;
   onSourceChange: (value: CatalogSource) => void;
 }) {
-  return <header data-canonical-toolbar="connectors" role="toolbar" aria-label="Connectors controls" className="flex flex-wrap items-center gap-3">
+  useFullAppsTranslation();
+  return <header data-canonical-toolbar="connectors" role="toolbar" aria-label={fullAppsT("fullApps.connectors_controls_8b98f2")} className="flex flex-wrap items-center gap-3">
     <div className="w-full">
-      <ToolbarSearch query={query} onQueryChange={onQueryChange} label="Search connectors" placeholder="Search connectors…" inputType="search" />
+      <ToolbarSearch query={query} onQueryChange={onQueryChange} label={fullAppsT("fullApps.search_connectors_706a60")} placeholder={fullAppsT("fullApps.search_connectors_fad7e4")} inputType="search" />
     </div>
     <CatalogSourceFilters source={source} onChange={onSourceChange} />
   </header>;

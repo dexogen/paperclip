@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { Component, StrictMode, useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
@@ -42,6 +43,7 @@ applyAnim(initial.anim);
 
 /** Keeps `useTheme()` consumers in step after a toolbar toggle. */
 function ThemeSync({ theme }: { theme: LabTheme }) {
+  useTranslation();
   const { theme: current, setTheme } = useTheme();
   useEffect(() => {
     if (current !== theme) setTheme(theme);
@@ -54,9 +56,10 @@ function isTyping(target: EventTarget | null): boolean {
 }
 
 function KitProblem({ id, error }: { id: DirectionId; error: unknown }) {
+  useTranslation();
   return (
     <div role="alert" data-kit-error={id} className="m-6 rounded-md bg-destructive/10 p-4 font-mono text-xs text-destructive">
-      {KIT_META[id].name} failed: {error instanceof Error ? error.message : String(error)}
+      {KIT_META[id].name}{" "}{t("fullPages.failed")}{" "}{error instanceof Error ? error.message : String(error)}
     </div>
   );
 }
@@ -130,6 +133,7 @@ function useScrollKeeper(deps: unknown[]) {
 }
 
 function Lab() {
+  useTranslation();
   const [state, setState] = useState<LabState>(initial);
   const kitId = kitIdOf(state);
   const { id: shownKitId, kit, error } = useKit(kitId);

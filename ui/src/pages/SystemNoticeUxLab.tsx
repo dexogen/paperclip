@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 // token-extraction: allowlisted — intentional one-off decoration (DECISION-SHEET.md B1
 // user ruling). The bg-[...gradient...] / shadow-[...] literals in this demo/UX-lab page
 // are deliberate one-off decoration, reverted from --gradient-extract-*/--shadow-extract-*
@@ -32,6 +34,7 @@ function LabSection({
   accentClassName?: string;
   children: ReactNode;
 }) {
+  useFullSharedTranslation();
   return (
     <section
       id={id}
@@ -55,6 +58,7 @@ function LabSection({
 }
 
 function FixtureFrame({ caption, children }: { caption: string; children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
@@ -75,6 +79,7 @@ function MockUserBubble({
   body: string;
   alignEnd?: boolean;
 }) {
+  useFullSharedTranslation();
   return (
     <div className={cn("flex items-start gap-2.5", alignEnd && "justify-end")}>
       {!alignEnd ? (
@@ -105,6 +110,7 @@ function MockUserBubble({
 }
 
 function MockAgentBubble({ agentName, body }: { agentName: string; body: string }) {
+  useFullSharedTranslation();
   return (
     <div className="flex items-start gap-2.5">
       <Avatar size="sm" className="shrink-0">
@@ -129,6 +135,7 @@ const checklist = [
 ];
 
 export function SystemNoticeUxLab() {
+  useFullSharedTranslation();
   const fixtureById = new Map(systemNoticeFixtures.map((f) => [f.id, f] as const));
 
   const warningCollapsed = fixtureById.get("warning-collapsed")!;
@@ -145,36 +152,22 @@ export function SystemNoticeUxLab() {
         <div className="grid gap-6 lg:grid-cols-(--gtc-39)">
           <div className="p-6 sm:p-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/[0.08] px-3 py-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-caps) text-amber-700 dark:text-amber-300">
-              <FlaskConical className="h-3.5 w-3.5" />
-              System Notice Lab
-            </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-              First-class system notice treatment
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              Replaces the current pattern where a Paperclip-authored warning renders inside a user-style
-              chat bubble. The notice is one container, system-styled, with hidden-by-default operational
-              metadata. Tone is conveyed by icon, label, and color together so it stays accessible.
-            </p>
+              <FlaskConical className="h-3.5 w-3.5" />{t("fullDiagnostics.systemNoticeLab")}</div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight">{t("fullDiagnostics.firstClassSystemNoticeTreatment")}</h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">{t("fullDiagnostics.replacesTheCurrentPatternWhereAPaperclip")}</p>
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
                 PAP-3525 plan
               </Badge>
-              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
-                phase 1 — UX
-              </Badge>
-              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
-                tones: warning · danger · neutral
-              </Badge>
+              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">{t("fullDiagnostics.phase1Ux")}</Badge>
+              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">{t("fullDiagnostics.tonesWarningDangerNeutral")}</Badge>
             </div>
           </div>
 
           <aside className="border-t border-border/60 bg-background/70 p-6 lg:border-l lg:border-t-0">
             <div className="mb-4 flex items-center gap-2 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-              <ListChecks className="h-4 w-4 text-amber-700 dark:text-amber-300" />
-              What this lab proves
-            </div>
+              <ListChecks className="h-4 w-4 text-amber-700 dark:text-amber-300" />{t("fullDiagnostics.whatThisLabProves")}</div>
             <div className="space-y-3">
               {checklist.map((line) => (
                 <div
@@ -191,9 +184,9 @@ export function SystemNoticeUxLab() {
 
       <LabSection
         id="tones"
-        eyebrow="Tone matrix"
-        title="Three tones, two states"
-        description="Each tone pairs a unique icon and tone label so the notice is recognizable without color. Collapsed is the default; the Details affordance reveals operational metadata only when reviewers ask for it."
+        eyebrow={t("fullDiagnostics.toneMatrix")}
+        title={t("fullDiagnostics.threeTonesTwoStates")}
+        description={t("fullDiagnostics.eachTonePairsAUniqueIconAnd")}
         accentClassName="bg-[linear-gradient(180deg,rgba(245,158,11,0.05),transparent_28%),var(--background)]"
       >
         <div className="space-y-5">
@@ -223,9 +216,9 @@ export function SystemNoticeUxLab() {
 
       <LabSection
         id="hierarchy"
-        eyebrow="Hierarchy in thread"
-        title="Distinct from user and agent comments"
-        description="Side-by-side with adjacent comment types so reviewers can confirm the system row reads as a system row — full width, no avatar gutter, no chat bubble — while user and agent comments keep their existing rounded bubbles."
+        eyebrow={t("fullDiagnostics.threadHierarchy")}
+        title={t("fullDiagnostics.distinctFromUserAndAgentComments")}
+        description={t("fullDiagnostics.sideBySideWithAdjacentCommentTypes")}
         accentClassName="bg-[linear-gradient(180deg,rgba(8,145,178,0.05),transparent_28%),var(--background)]"
       >
         <div className="space-y-4 rounded-2xl border border-border/70 bg-background/70 p-4">
@@ -240,35 +233,35 @@ export function SystemNoticeUxLab() {
           />
           <SystemNotice
             tone="danger"
-            label="System alert"
+            label={fullSharedT("runUi.system.alert")}
             source={{ label: "Paperclip", href: "/PAP/agents" }}
             timestamp="2026-05-04T16:48:00.000Z"
             body="Paperclip could not resolve this issue's missing disposition automatically. The source assignment is unchanged and a board decision is required."
             metadata={[
               {
-                title: "Recovery owner",
+                title: fullSharedT("runUi.recovery.recoveryOwner"),
                 rows: [
                   {
                     kind: "issue",
-                    label: "Recovery issue",
+                    label: t("fullDiagnostics.recoveryIssue"),
                     identifier: "PAP-3440",
                     href: "/PAP/issues/PAP-3440",
-                    title: "Successful run handoff missing disposition",
+                    title: t("fullDiagnostics.successfulRunHandoffMissingDisposition"),
                   },
                   {
                     kind: "agent",
-                    label: "Owner",
+                    label: fullSharedT("fullShared.owner_4b1b8a"),
                     name: "CTO",
                     href: "/PAP/agents/cto",
                   },
                 ],
               },
               {
-                title: "Run evidence",
+                title: t("fullDiagnostics.runEvidence"),
                 rows: [
                   {
                     kind: "run",
-                    label: "Source run",
+                    label: fullSharedT("runUi.recovery.sourceRun"),
                     runId: "9cdba892-c7ca-4d93-8604-4843873b127c",
                     href: "/PAP/agents/codexcoder/runs/9cdba892-c7ca-4d93-8604-4843873b127c",
                     status: "succeeded",
@@ -287,9 +280,9 @@ export function SystemNoticeUxLab() {
 
       <div className="grid gap-5 xl:grid-cols-2">
         <LabSection
-          eyebrow="Before"
-          title="Today's nested treatment"
-          description="The same content rendered through the existing user-bubble + warning-callout path. Two containers, same gray background as user comments, and the warning icon is forced inside a chat row."
+          eyebrow={t("fullDiagnostics.before")}
+          title={t("fullDiagnostics.todaySNestedTreatment")}
+          description={t("fullDiagnostics.theSameContentRenderedThroughTheExisting")}
           accentClassName="bg-[linear-gradient(180deg,rgba(244,63,94,0.05),transparent_28%),var(--background)]"
         >
           <div className="space-y-3 rounded-2xl border border-border/70 bg-background/70 p-4">
@@ -298,21 +291,21 @@ export function SystemNoticeUxLab() {
                 <AvatarFallback>YO</AvatarFallback>
               </Avatar>
               <div className="flex min-w-0 max-w-(--pct-85) flex-col">
-                <div className="mb-1 px-1 text-sm font-medium text-foreground">You</div>
+                <div className="mb-1 px-1 text-sm font-medium text-foreground">{fullSharedT("taskDisplay.assignees.you")}</div>
                 <div className="min-w-0 max-w-full rounded-2xl bg-muted px-4 py-2.5 text-sm leading-6 text-foreground">
                   <div className="rounded-md border border-red-500/35 bg-red-500/10 px-3 py-2.5 text-sm text-red-950 dark:text-red-100">
                     <div className="flex items-start gap-2">
                       <Sparkles className="mt-1 h-4 w-4 shrink-0 text-red-600 dark:text-red-300" />
                       <div className="min-w-0">
-                        <p className="m-0 font-semibold">Successful run handoff missing</p>
+                        <p className="m-0 font-semibold">{t("fullDiagnostics.successfulRunHandoffMissing")}</p>
                         <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-(length:--text-compact) leading-5">
-                          <li>Source issue: PAP-3440</li>
-                          <li>Source run: 9cdba892-c7ca-4d93-8604-4843873b127c</li>
-                          <li>Recovery run: 61fdb79b-8012-4676-ac71-2971830e126a</li>
-                          <li>Status before: in_progress</li>
-                          <li>Normalized cause: Run completed without disposition</li>
-                          <li>Recovery owner: CTO</li>
-                          <li>Suggested action: Reassign to recovery agent</li>
+                          <li>{t("fullDiagnostics.sourceIssuePap3440")}</li>
+                          <li>{t("fullDiagnostics.sourceRun9cdba892C7ca4d9386044843873b127c")}</li>
+                          <li>{t("fullDiagnostics.recoveryRun61fdb79b80124676Ac712971830e126a")}</li>
+                          <li>{t("fullDiagnostics.statusBeforeInProgress")}</li>
+                          <li>{t("fullDiagnostics.normalizedCauseRunCompletedWithoutDisposition")}</li>
+                          <li>{t("fullDiagnostics.recoveryOwnerCto")}</li>
+                          <li>{t("fullDiagnostics.suggestedActionReassignToRecoveryAgent")}</li>
                         </ul>
                       </div>
                     </div>
@@ -320,28 +313,20 @@ export function SystemNoticeUxLab() {
                 </div>
               </div>
             </div>
-            <p className="px-1 text-xs text-muted-foreground">
-              Author reads as <span className="font-medium text-foreground">You</span> even though the
-              author is the Paperclip system. Two containers stack the warning inside a user-style
-              bubble, and operational evidence is always visible.
-            </p>
+            <p className="px-1 text-xs text-muted-foreground">{t("fullDiagnostics.authorReadsAs")}{" "}<span className="font-medium text-foreground">{t("runUi.author.you")}</span>{" "}{t("fullDiagnostics.evenThoughTheAuthorIsThePaperclip")}</p>
           </div>
         </LabSection>
 
         <LabSection
-          eyebrow="After"
-          title="System notice replacement"
-          description="One container, system-authored label, hidden details. The chat surface keeps user and agent bubbles unchanged."
+          eyebrow={t("fullDiagnostics.after")}
+          title={t("fullDiagnostics.systemNoticeReplacement")}
+          description={t("fullDiagnostics.oneContainerSystemAuthoredLabelHiddenDetails")}
           accentClassName="bg-[linear-gradient(180deg,rgba(16,185,129,0.05),transparent_28%),var(--background)]"
         >
           <div className="space-y-3 rounded-2xl border border-border/70 bg-background/70 p-4">
             <SystemNotice {...dangerCollapsed} />
-            <p className="px-1 text-xs text-muted-foreground">
-              Same content. The visible body is one short system sentence; reviewers expand{" "}
-              <span className="font-medium text-foreground">Details</span> only when they need run
-              evidence. Tone is reinforced by the octagon icon and the &quot;System alert&quot; label,
-              not just red.
-            </p>
+            <p className="px-1 text-xs text-muted-foreground">{t("fullDiagnostics.sameContentTheVisibleBodyIsOne")}{" "}
+              <span className="font-medium text-foreground">{t("fullDiagnostics.details")}</span>{" "}{t("fullDiagnostics.onlyWhenTheyNeedRunEvidenceTone")}</p>
           </div>
         </LabSection>
       </div>
@@ -349,55 +334,33 @@ export function SystemNoticeUxLab() {
       <Card className="gap-4 border-border/70 bg-background/85 py-0">
         <CardHeader className="px-5 pt-5 pb-0">
           <div className="flex items-center gap-2 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-            <Layers className="h-4 w-4 text-amber-700 dark:text-amber-300" />
-            Implementation notes
-          </div>
-          <CardTitle className="text-lg">Handoff to engineering</CardTitle>
-          <CardDescription>
-            What the Phase 4 UI implementation should preserve from this design.
-          </CardDescription>
+            <Layers className="h-4 w-4 text-amber-700 dark:text-amber-300" />{t("fullDiagnostics.implementationNotes")}</div>
+          <CardTitle className="text-lg">{t("fullDiagnostics.handoffToEngineering")}</CardTitle>
+          <CardDescription>{t("fullDiagnostics.whatThePhase4UiImplementationShould")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 px-5 pb-5 pt-0 text-sm text-muted-foreground">
           <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-            <div className="mb-1 font-medium text-foreground">Component</div>
-            Use <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{`<SystemNotice />`}</code>{" "}
-            from <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">@/components/SystemNotice</code>.
-            It accepts <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">tone</code>,{" "}
+            <div className="mb-1 font-medium text-foreground">{t("fullDiagnostics.component")}</div>{t("fullDiagnostics.use")}{" "}<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{`<SystemNotice />`}</code>{" "}{t("fullDiagnostics.fromModule")}{" "}<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">@/components/SystemNotice</code>{t("fullDiagnostics.itAccepts")}{" "}<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">tone</code>,{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">label</code>,{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">body</code>,{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">metadata</code>, and{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">metadata</code>{t("fullPages.and")}{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">detailsDefaultOpen</code>.
           </div>
           <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-            <div className="mb-1 font-medium text-foreground">Routing in IssueChatThread</div>
-            Comments where{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">authorType === &quot;system&quot;</code>{" "}
-            or{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">presentation.kind === &quot;system_notice&quot;</code>{" "}
-            should render as a SystemNotice row at full content width — never inside an{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">IssueChatUserMessage</code>{" "}
-            or assistant bubble.
-          </div>
+            <div className="mb-1 font-medium text-foreground">{t("fullDiagnostics.routingInIssuechatthread")}</div>{t("fullDiagnostics.commentsWhere")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">authorType === &quot;system&quot;</code>{" "}{t("fullDiagnostics.or")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">presentation.kind === &quot;system_notice&quot;</code>{" "}{t("fullDiagnostics.shouldRenderAsASystemnoticeRowAt")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">IssueChatUserMessage</code>{" "}{t("fullDiagnostics.orAssistantBubble")}</div>
           <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-            <div className="mb-1 font-medium text-foreground">Accessibility</div>
-            The Details button has{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-expanded</code>{" "}
-            and{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-controls</code>{" "}
-            wired to the panel id. The container exposes{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">role=&quot;status&quot;</code>{" "}
-            and an{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-label</code>{" "}
-            equal to the visible tone label so screen readers announce tone with text.
-          </div>
+            <div className="mb-1 font-medium text-foreground">{t("fullDiagnostics.accessibility")}</div>{t("fullDiagnostics.theDetailsButtonHas")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-expanded</code>{" "}{fullSharedT("skillsGap.and")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-controls</code>{" "}{t("fullDiagnostics.wiredToThePanelIdTheContainer")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">role=&quot;status&quot;</code>{" "}{t("fullDiagnostics.andAn")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">aria-label</code>{" "}{t("fullDiagnostics.equalToTheVisibleToneLabelSo")}</div>
           <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-            <div className="mb-1 font-medium text-foreground">Legacy fallback</div>
-            Existing comments without{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">presentation</code>{" "}
-            keep rendering through the current{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">SuccessfulRunHandoffCommentCallout</code>{" "}
-            string-detector. The new contract is opt-in for the system generators in Phase 5.
-          </div>
+            <div className="mb-1 font-medium text-foreground">{t("fullDiagnostics.legacyFallback")}</div>{t("fullDiagnostics.existingCommentsWithout")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">presentation</code>{" "}{t("fullDiagnostics.keepRenderingThroughTheCurrent")}{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">SuccessfulRunHandoffCommentCallout</code>{" "}{t("fullDiagnostics.stringDetectorTheNewContractIsOpt")}</div>
         </CardContent>
       </Card>
     </div>

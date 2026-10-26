@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useWorkspaceIsolationControls } from "@/hooks/useWorkspaceIsolationControls";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/lib/router";
@@ -28,9 +30,9 @@ import { Badge } from "@/components/ui/badge";
 /* -------------------------------------------------------------------------- */
 
 const EXECUTION_WORKSPACE_OPTIONS = [
-  { value: "shared_workspace", label: "Project default" },
-  { value: "isolated_workspace", label: "New isolated workspace" },
-  { value: "reuse_existing", label: "Reuse existing workspace" },
+  { value: "shared_workspace", get label() { return fullSharedT("taskChatUi.worktree.projectDefault"); } },
+  { value: "isolated_workspace", get label() { return fullSharedT("taskProperties.fields.newIsolatedWorkspace"); } },
+  { value: "reuse_existing", get label() { return fullSharedT("taskProperties.fields.reuseWorkspace"); } },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -38,6 +40,7 @@ const EXECUTION_WORKSPACE_OPTIONS = [
 /* -------------------------------------------------------------------------- */
 
 function BreakablePath({ text }: { text: string }) {
+  useFullSharedTranslation();
   const parts: React.ReactNode[] = [];
   const segments = text.split(/(?<=[\/-])/);
   for (let i = 0; i < segments.length; i++) {
@@ -48,6 +51,7 @@ function BreakablePath({ text }: { text: string }) {
 }
 
 function CopyableInline({ value, label, mono }: { value: string; label?: string; mono?: boolean }) {
+  useFullSharedTranslation();
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -72,8 +76,8 @@ function CopyableInline({ value, label, mono }: { value: string; label?: string;
         type="button"
         className="shrink-0 p-0.5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground opacity-0 group-hover/copy:opacity-100 focus:opacity-100"
         onClick={handleCopy}
-        title={copied ? "Copied!" : "Copy"}
-        aria-label={copied ? "Copied to clipboard" : `Copy ${label ?? "value"}`}
+        title={copied ? fullSharedT("providerSetup.login.copied") : fullSharedT("taskDetailCommon.markdown.copy")}
+        aria-label={copied ? fullSharedT("taskDetail.copy.copied") : fullSharedT("fullShared.copy_9776ba", { value1: label ?? "value" })}
       >
         {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
       </button>
@@ -194,6 +198,7 @@ export function IssueWorkspaceCard({
   onBrowseFiles,
   onOpenFileByPath,
 }: IssueWorkspaceCardProps) {
+  useFullSharedTranslation();
   const { visible: workspaceIsolationControlsVisible } = useWorkspaceIsolationControls();
   const { selectedCompanyId } = useCompany();
   const companyId = issue.companyId ?? selectedCompanyId;
@@ -301,8 +306,7 @@ export function IssueWorkspaceCard({
     draftSelection,
     draftExecutionWorkspaceId || null,
     configuredReusableWorkspace?.mode,
-  ), [
-    configuredReusableWorkspace?.mode,
+  ), [configuredReusableWorkspace?.mode,
     draftExecutionWorkspaceId,
     draftSelection,
   ]);
@@ -321,8 +325,7 @@ export function IssueWorkspaceCard({
     if (!update) return;
     onUpdate(update);
     setEditing(false);
-  }, [
-    buildWorkspaceDraftUpdate,
+  }, [buildWorkspaceDraftUpdate,
     canSaveWorkspaceConfig,
     workspaceIsolationControlsVisible,
     onUpdate,
@@ -359,16 +362,13 @@ export function IssueWorkspaceCard({
                   className="h-6 px-2 text-xs text-muted-foreground"
                   onClick={handleCancel}
                 >
-                  <X className="h-3 w-3 mr-1" />Cancel
-                </Button>
+                  <X className="h-3 w-3 mr-1" />{fullSharedT("fullShared.cancel_19766e")}</Button>
                 <Button
                   size="sm"
                   className="h-6 px-2 text-xs"
                   onClick={handleSave}
                   disabled={!canSaveWorkspaceConfig}
-                >
-                  Save
-                </Button>
+                >{fullSharedT("inboxPolicy.save")}</Button>
               </>
             ) : (
               <Button
@@ -377,8 +377,7 @@ export function IssueWorkspaceCard({
                 className="h-6 px-2 text-xs text-muted-foreground"
                 onClick={() => setEditing(true)}
               >
-                <Pencil className="h-3 w-3 mr-1" />Edit
-              </Button>
+                <Pencil className="h-3 w-3 mr-1" />{fullSharedT("fullShared.edit_464c4f")}</Button>
             )}
           </div>
         )}
@@ -401,33 +400,28 @@ export function IssueWorkspaceCard({
           )}
           {workspace?.repoUrl && (
             <div className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="text-(length:--text-micro)">Repo:</span>
+              <span className="text-(length:--text-micro)">{fullSharedT("fullShared.repo_8d01a9")}</span>
               <CopyableInline value={workspace.repoUrl} mono />
             </div>
           )}
           {environmentsEnabled && currentEnvironmentId && (
-            <div className="text-muted-foreground" style={{ overflowWrap: "anywhere" }}>
-              Environment: <span className="text-foreground">{currentEnvironment?.name ?? currentEnvironmentId}</span>
-              {currentSelection === "reuse_existing" && currentReusableEnvironmentId === currentEnvironmentId
-                ? " · reused workspace"
+            <div className="text-muted-foreground" style={{ overflowWrap: "anywhere" }}><FullSharedTrans i18nKey="fullShared.environment_2a80bc" components={{ part1: <span className="text-foreground">{currentEnvironment?.name ?? currentEnvironmentId}</span>, part2: <>{currentSelection === "reuse_existing" && currentReusableEnvironmentId === currentEnvironmentId
+                ? fullSharedTailT("fullSharedTail.reusedWorkspace")
                 : !issue.executionWorkspaceSettings?.environmentId && projectEnvironmentId === currentEnvironmentId
-                ? " · project default"
-                : null}
-            </div>
+                ? fullSharedTailT("fullSharedTail.projectDefault")
+                : null}</> }} /></div>
           )}
           {!workspace && (
             <div className="text-muted-foreground">
               {currentSelection === "isolated_workspace"
-                ? "A fresh isolated workspace will be created when this task runs."
+                ? fullSharedT("fullShared.a_fresh_isolated_workspace_will_be_created_when_this_65c789")
                 : currentSelection === "reuse_existing"
-                  ? "This task will reuse an existing workspace when it runs."
-                  : "This task will use the project default workspace configuration when it runs."}
+                  ? fullSharedT("fullShared.this_task_will_reuse_an_existing_workspace_when_it_r_624327")
+                  : fullSharedT("fullShared.this_task_will_use_the_project_default_workspace_con_263f49")}
             </div>
           )}
           {currentSelection === "reuse_existing" && selectedReusableExecutionWorkspace && (
-            <div className="text-muted-foreground" style={{ overflowWrap: "anywhere" }}>
-              Reusing:{" "}
-              {selectedReusableWorkspaceLink ? (
+            <div className="text-muted-foreground" style={{ overflowWrap: "anywhere" }}><FullSharedTrans i18nKey="fullShared.reusing_bc92f5" components={{ part1: <>{" "}</>, part2: <>{selectedReusableWorkspaceLink ? (
                 <Link
                   to={selectedReusableWorkspaceLink}
                   className="hover:text-foreground hover:underline"
@@ -436,17 +430,14 @@ export function IssueWorkspaceCard({
                 </Link>
               ) : (
                 <BreakablePath text={selectedReusableExecutionWorkspace.name} />
-              )}
-            </div>
+              )}</> }} /></div>
           )}
           {workspace && currentWorkspaceLink && (
             <div className="pt-0.5">
               <Link
                 to={currentWorkspaceLink}
                 className="text-(length:--text-micro) text-muted-foreground hover:text-foreground hover:underline"
-              >
-                View workspace details →
-              </Link>
+              >{fullSharedT("fullShared.view_workspace_details_2e9561")}</Link>
             </div>
           )}
         </div>
@@ -471,7 +462,7 @@ export function IssueWorkspaceCard({
             {EXECUTION_WORKSPACE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.value === "reuse_existing" && configuredReusableWorkspace?.mode === "isolated_workspace"
-                  ? "Existing isolated workspace"
+                  ? fullSharedT("fullShared.existing_isolated_workspace_cb171f")
                   : option.label}
               </option>
             ))}
@@ -490,9 +481,7 @@ export function IssueWorkspaceCard({
           {/* Current workspace summary when editing */}
           {workspace && (
             <div className="text-(length:--text-micro) text-muted-foreground space-y-0.5 pt-1 border-t border-border/50">
-              <div style={{ overflowWrap: "anywhere" }}>
-                Current:{" "}
-                {currentWorkspaceLink ? (
+              <div style={{ overflowWrap: "anywhere" }}><FullSharedTrans i18nKey="fullShared.current_9ace22" components={{ part1: <>{" "}</>, part2: <>{currentWorkspaceLink ? (
                   <Link
                     to={currentWorkspaceLink}
                     className="hover:text-foreground hover:underline"
@@ -501,10 +490,7 @@ export function IssueWorkspaceCard({
                   </Link>
                 ) : (
                   <BreakablePath text={workspace.name} />
-                )}
-                {" · "}
-                {workspace.status}
-              </div>
+                )}</>, part3: <>{" · "}</>, part4: <>{workspace.status}</> }} /></div>
             </div>
           )}
         </div>
@@ -518,17 +504,13 @@ export function IssueWorkspaceCard({
             onClick={onBrowseFiles}
             className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
           >
-            <FolderSearch className="h-3.5 w-3.5 shrink-0" />
-            Browse files…
-          </button>
+            <FolderSearch className="h-3.5 w-3.5 shrink-0" />{fullSharedT("fullShared.browse_files_62f9b0")}</button>
           <button
             type="button"
             onClick={onOpenFileByPath ?? onBrowseFiles}
             className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
           >
-            <FileSearch className="h-3.5 w-3.5 shrink-0" />
-            Open file by path…
-          </button>
+            <FileSearch className="h-3.5 w-3.5 shrink-0" />{fullSharedT("fullShared.open_file_by_path_1f9a7f")}</button>
         </div>
       )}
     </div>

@@ -1,3 +1,5 @@
+import { renderAppError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toolsApi } from "@/api/tools";
@@ -10,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import type { ToolConnection } from "@paperclipai/shared";
 
 export function ArcadeDiscoverySetup({ connection, onClose }: { connection: ToolConnection; onClose: () => void }) {
+  useFullAppsTranslation();
   const [apiKey, setApiKey] = useState("");
   const [userId, setUserId] = useState("");
   const queries = useQueryClient();
@@ -21,21 +24,21 @@ export function ArcadeDiscoverySetup({ connection, onClose }: { connection: Tool
     onSuccess: onClose,
   });
   return <Dialog open onOpenChange={open => { if (!open && !save.isPending) onClose(); }}><DialogContent>
-    <DialogHeader><DialogTitle>Sync Arcade accounts</DialogTitle>
-      <DialogDescription>See apps available through “{connection.name}”. Your gateway works without account sync.</DialogDescription>
+    <DialogHeader><DialogTitle>{fullAppsT("fullApps.sync_arcade_accounts_23ac5c")}</DialogTitle>
+      <DialogDescription><FullAppsTrans i18nKey="fullApps.see_apps_available_through_your_gateway_works_withou_24ced0" components={{ part1: <>{connection.name}</> }} /></DialogDescription>
     </DialogHeader>
     <form className="space-y-4" onSubmit={event => { event.preventDefault(); save.mutate(); }}>
-      <div className="space-y-2"><Label htmlFor="arcade-discovery-key">Project API key</Label>
-        <p className="text-xs text-muted-foreground">Create a key in <a className="underline" href="https://app.arcade.dev" target="_blank" rel="noopener noreferrer">Arcade</a> for the same project as this gateway. The key is stored securely and used only for account sync.</p>
+      <div className="space-y-2"><Label htmlFor="arcade-discovery-key">{fullAppsT("fullApps.project_api_key_6bfda6")}</Label>
+        <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.create_a_key_in_for_the_same_project_as_this_gateway_f441d8" components={{ part1: <a className="underline" href="https://app.arcade.dev" target="_blank" rel="noopener noreferrer">Arcade</a> }} /></p>
         <Input id="arcade-discovery-key" type="password" autoComplete="off" required value={apiKey} onChange={event => setApiKey(event.target.value)} />
       </div>
-      <div className="space-y-2"><Label htmlFor="arcade-discovery-user">Arcade user ID</Label>
-        <p className="text-xs text-muted-foreground">Use the end-user ID configured for this gateway’s sign-in. This may differ from your email address.</p>
+      <div className="space-y-2"><Label htmlFor="arcade-discovery-user">{fullAppsT("fullApps.arcade_user_id_d06ee4")}</Label>
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.use_the_end_user_id_configured_for_this_gateway_s_si_40f288")}</p>
         <Input id="arcade-discovery-user" autoComplete="off" required value={userId} onChange={event => setUserId(event.target.value)} />
       </div>
-      {save.isError ? <p role="alert" className="text-sm text-destructive">{save.error instanceof Error ? save.error.message : "Couldn’t save account sync. Try again."}</p> : null}
-      <DialogFooter className="sm:justify-between"><Button type="button" variant="ghost" disabled={save.isPending} onClick={onClose}>Cancel</Button>
-        <Button type="submit" disabled={!settled || save.isPending || !apiKey.trim() || !userId.trim()}>{save.isPending ? "Saving…" : "Save and sync"}</Button>
+      {save.isError ? <p role="alert" className="text-sm text-destructive">{save.error instanceof Error ? renderAppError(save.error) : fullAppsT("fullApps.couldn_t_save_account_sync_try_again_a3341a")}</p> : null}
+      <DialogFooter className="sm:justify-between"><Button type="button" variant="ghost" disabled={save.isPending} onClick={onClose}>{fullAppsT("fullApps.cancel_19766e")}</Button>
+        <Button type="submit" disabled={!settled || save.isPending || !apiKey.trim() || !userId.trim()}>{save.isPending ? fullAppsT("fullApps.saving_23e392") : fullAppsT("fullApps.save_and_sync_61cc38")}</Button>
       </DialogFooter>
     </form>
   </DialogContent></Dialog>;

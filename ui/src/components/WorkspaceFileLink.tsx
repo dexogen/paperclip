@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { MouseEvent, ReactNode } from "react";
 import { FileCode2, FolderOpen } from "lucide-react";
 import { useLocation } from "@/lib/router";
@@ -29,6 +30,7 @@ export function WorkspaceFileLink({
   showIcon = true,
   title,
 }: WorkspaceFileLinkProps) {
+  useFullSharedTranslation();
   const viewer = useFileViewer();
   const location = useLocation();
   const display = typeof label !== "undefined" ? label : formatWorkspaceFileRefDisplay(workspaceFileRef);
@@ -38,8 +40,8 @@ export function WorkspaceFileLink({
     ? ` line ${workspaceFileRef.line}${workspaceFileRef.column ? ` column ${workspaceFileRef.column}` : ""}`
     : "";
   const ariaLabel = canOpen
-    ? `Open ${workspaceFileRef.path}${lineSuffix} in the ${isDirectory ? "workspace browser" : "file viewer"}`
-    : `Workspace ${isDirectory ? "folder" : "file"} ${workspaceFileRef.path}${lineSuffix}`;
+    ? fullSharedT("fullShared.open_in_the_881e24", { value1: workspaceFileRef.path, value2: lineSuffix, value3: isDirectory ? "workspace browser" : "file viewer" })
+    : fullSharedT("fullShared.workspace_67427d", { value1: isDirectory ? "folder" : "file", value2: workspaceFileRef.path, value3: lineSuffix });
   const tooltip = title ?? (canOpen
     ? `Open ${workspaceFileRef.path}${lineSuffix} in the ${isDirectory ? "workspace browser" : "file viewer"}`
     : `Workspace ${isDirectory ? "folder" : "file"} ${workspaceFileRef.path}${lineSuffix}`);

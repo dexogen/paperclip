@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import {
   useCallback,
   useEffect,
@@ -102,6 +103,7 @@ export function SidebarShell({
   onPanelFocusCapture,
   onPanelBlurCapture,
 }: SidebarShellProps) {
+  useFullSharedTranslation();
   const [width, setWidth] = useState(() => readStoredSidebarWidth(storageKey));
   const [isResizing, setIsResizing] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
@@ -233,7 +235,7 @@ export function SidebarShell({
       {canResize ? (
         <div
           role="separator"
-          aria-label="Resize sidebar"
+          aria-label={fullSharedT("fullShared.resize_sidebar_243854")}
           aria-orientation="vertical"
           aria-valuemin={MIN_SIDEBAR_WIDTH}
           aria-valuemax={MAX_SIDEBAR_WIDTH}

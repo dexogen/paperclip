@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useMemo } from "react";
 import {
   humanizeConnectionDisplayName,
@@ -13,6 +14,7 @@ import { appTabHref } from "../app-tabs";
 import type { ActivityPanelProps } from "./types";
 
 export function ActivityPanel(props: ActivityPanelProps) {
+  useFullAppsTranslation();
   return <RecentActivity {...props} />;
 }
 
@@ -38,6 +40,7 @@ function RecentActivity({
   appName,
   userLabelById,
 }: ActivityPanelProps) {
+  useFullAppsTranslation();
   const nameById = useMemo(() => new Map(agents.map((a) => [a.id, a.name])), [agents]);
 
   const rows = useMemo<TimelineRow[]>(() => {
@@ -76,7 +79,7 @@ function RecentActivity({
   return (
     <section className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Recent activity</h2>
+        <h2 className="text-lg font-semibold text-foreground">{fullAppsT("fullApps.recent_activity_6cb44b")}</h2>
       </div>
       {loading ? (
         <div className="space-y-2 py-4">
@@ -84,7 +87,7 @@ function RecentActivity({
           <Skeleton className="h-4 w-2/3" />
         </div>
       ) : rows.length === 0 ? (
-        <p className="py-5 text-sm text-muted-foreground">No activity yet.</p>
+        <p className="py-5 text-sm text-muted-foreground">{fullAppsT("fullApps.no_activity_yet_a288d2")}</p>
       ) : (
         <ul className="divide-y divide-border">
           {rows.map((row) => (
@@ -94,8 +97,7 @@ function RecentActivity({
                 <span className="block text-foreground">{row.primary}</span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {row.issue ? (
-                    <>
-                      while working on{" "}
+                    <>{fullAppsT("fullApps.while_working_on_74d62b")}{" "}
                       <Link
                         to={`/issues/${row.issue.identifier}`}
                         className="font-medium text-muted-foreground hover:text-foreground hover:underline"
@@ -151,9 +153,9 @@ export function resolveActorLabel(
   if (actorId) {
     const label = userLabelById?.get(actorId);
     if (label) return label;
-    if (actorId === "local-board") return "Board";
+    if (actorId === "local-board") return fullAppsT("fullApps.copy_4816cbfd74aa");
   }
-  return "Someone";
+  return fullAppsT("fullApps.copy_864c855e3d64");
 }
 
 export function humanizeEvent(
@@ -166,32 +168,32 @@ export function humanizeEvent(
   // For Test-tab calls, surface "<User> tested as <Agent>" so prosumer test runs are
   // distinguishable from real heartbeat agent activity in the audit trail (PAP-11415).
   const who = testRunnerLabel
-    ? `${testRunnerLabel} tested as ${agentName ?? "an agent"}`
-    : agentName ?? "An agent";
+    ? fullAppsT("fullApps.message_ae2ef5f7320b", { value1: testRunnerLabel, value2: agentName ?? fullAppsT("fullApps.copy_647936ec3e40") })
+    : agentName ?? fullAppsT("fullApps.copy_ea6a03636c62");
   // The raw gateway tool name is prefixed (e.g. `mcp.app-gallery-link-…:kv-set`);
   // humanize it to "Kv Set" to match the cross-app Activity view (PAP-11105).
-  const action = event.toolName ? humanizeConnectionDisplayName(event.toolName) : "an action";
+  const action = event.toolName ? humanizeConnectionDisplayName(event.toolName) : fullAppsT("fullApps.copy_a1d98dfadc18");
   switch (event.eventType) {
     case "call_completed":
       return {
         primary: event.outcome === "success"
-          ? `${who} used ${action}`
-          : `${who} ran ${action}, but it didn't finish`,
+          ? fullAppsT("fullApps.message_b3fa3ce10c3d", { value1: who, value2: action })
+          : fullAppsT("fullApps.message_b0e5a4cf2d14", { value1: who, value2: action }),
       };
     case "call_failed":
-      return { primary: `${action} didn't work for ${lower(who)}` };
+      return { primary: fullAppsT("fullApps.message_6ec27974bfe6", { value1: action, value2: lower(who) }) };
     case "call_denied":
       return {
         primary: testRunnerLabel
-          ? `${who} - ${action} is turned off`
-          : `Blocked ${action} - it isn't turned on`,
+          ? fullAppsT("fullApps.message_667e1a8a5a20", { value1: who, value2: action })
+          : fullAppsT("fullApps.message_4f9d5a58b264", { value1: action }),
       };
     case "approval_requested":
-      return { primary: `${who} asked before running ${action}` };
+      return { primary: fullAppsT("fullApps.message_bde577a9fa6f", { value1: who, value2: action }) };
     case "approval_resolved":
       return { primary: humanizeApprovalResolved(action, actionRequest) };
     default:
-      return { primary: `${who} used ${action}` };
+      return { primary: fullAppsT("fullApps.message_b3fa3ce10c3d", { value1: who, value2: action }) };
   }
 }
 
@@ -199,10 +201,10 @@ function humanizeApprovalResolved(
   action: string,
   actionRequest?: ActivityPanelProps["actionRequests"][string],
 ): string {
-  const resolver = actionRequest?.resolverDisplayName ?? "Someone";
-  if (actionRequest?.status === "approved") return `${resolver} approved ${action}`;
-  if (actionRequest?.status === "rejected") return `${resolver} said no to ${action}`;
-  return `${resolver} reviewed ${action}`;
+  const resolver = actionRequest?.resolverDisplayName ?? fullAppsT("fullApps.copy_864c855e3d64");
+  if (actionRequest?.status === "approved") return fullAppsT("fullApps.message_a316f47347e3", { value1: resolver, value2: action });
+  if (actionRequest?.status === "rejected") return fullAppsT("fullApps.message_13ffdc15ad9f", { value1: resolver, value2: action });
+  return fullAppsT("fullApps.message_47f20d29d5fb", { value1: resolver, value2: action });
 }
 
 /** Humanize a connection lifecycle event into a prosumer sentence (PAP-11284). */
@@ -211,26 +213,26 @@ function humanizeLifecycleEvent(
   appName: string,
   agentName: string | null,
 ): string {
-  const who = event.actorDisplayName ?? agentName ?? "Someone";
+  const who = event.actorDisplayName ?? agentName ?? fullAppsT("fullApps.copy_864c855e3d64");
   switch (event.type) {
     case "app_connected":
-      return `${who} connected ${appName}`;
+      return fullAppsT("fullApps.message_74f4fe5f0718", { value1: who, value2: appName });
     case "app_paused":
-      return `${who} paused this app`;
+      return fullAppsT("fullApps.message_84ea7221e811", { value1: who });
     case "app_resumed":
-      return `${who} resumed this app`;
+      return fullAppsT("fullApps.message_e3988187437d", { value1: who });
     case "reconnected":
-      return `${who} reconnected ${appName}`;
+      return fullAppsT("fullApps.message_30736f0bba26", { value1: who, value2: appName });
     case "disconnected":
-      return `${who} disconnected ${appName}`;
+      return fullAppsT("fullApps.message_40b873f4d024", { value1: who, value2: appName });
     case "allowlist_changed":
       return humanizeAllowlistChange(who, event.details);
     case "actions_quarantined": {
       const count = numberFrom(event.details?.count);
-      return `${count} new ${count === 1 ? "action" : "actions"} need review`;
+      return fullAppsT("fullApps.actionsNeedReview", { count });
     }
     default:
-      return `${who} updated this app`;
+      return fullAppsT("fullApps.message_45070a53078d", { value1: who });
   }
 }
 
@@ -238,19 +240,19 @@ function humanizeAllowlistChange(who: string, details: Record<string, unknown> |
   const added = numberFrom(details?.added);
   const removed = numberFrom(details?.removed);
   if (added > 0 && removed === 0) {
-    return `${who} added ${added} ${added === 1 ? "sheet" : "sheets"} to the allowlist`;
+    return fullAppsT("fullApps.sheetsAdded", { name: who, count: added });
   }
   if (removed > 0 && added === 0) {
-    return `${who} removed ${removed} ${removed === 1 ? "sheet" : "sheets"} from the allowlist`;
+    return fullAppsT("fullApps.sheetsRemoved", { name: who, count: removed });
   }
   if (added > 0 && removed > 0) {
-    return `${who} updated the allowlist (added ${added}, removed ${removed})`;
+    return fullAppsT("fullApps.message_4537da05ef5d", { value1: who, value2: added, value3: removed });
   }
-  return `${who} updated the allowlist`;
+  return fullAppsT("fullApps.message_9eb832c794ef", { value1: who });
 }
 
 function lifecycleLinkLabel(event: ToolConnectionLifecycleEvent): string {
-  return event.type === "actions_quarantined" ? "Review permissions" : "View permissions";
+  return event.type === "actions_quarantined" ? fullAppsT("fullApps.review_permissions_5b9f70") : fullAppsT("fullApps.view_permissions_92f9bd");
 }
 
 function numberFrom(value: unknown): number {

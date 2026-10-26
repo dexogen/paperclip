@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { i18n, useTranslation } from "@/i18n";
 import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -143,7 +144,7 @@ export function RunWorkspaceRecoverySurface({ run }: { run: HeartbeatRun }) {
   const reissue = useMutation({
     mutationFn: async (request: RecoveryReissueRequest) => {
       if (!issue) throw new RecoverySurfaceError("task_missing");
-      const sourceLabel = issue.identifier ?? "the stalled task";
+      const sourceLabel = issue.identifier ?? fullSharedT("fullShared.the_stalled_task_701f1d");
       const descriptionLines = [
         `Re-issued from ${sourceLabel} on an isolated git worktree after a workspace branch divergence.`,
         "",
@@ -155,7 +156,7 @@ export function RunWorkspaceRecoverySurface({ run }: { run: HeartbeatRun }) {
         issue.description ?? "",
       ];
       return issuesApi.create(issue.companyId, {
-        title: `Re-issue (isolated): ${issue.title ?? sourceLabel}`,
+        title: fullSharedT("fullShared.re_issue_isolated_329af4", { value1: issue.title ?? sourceLabel }),
         description: descriptionLines.join("\n"),
         priority: issue.priority,
         projectId: issue.projectId ?? null,

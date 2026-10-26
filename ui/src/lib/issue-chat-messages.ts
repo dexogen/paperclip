@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 import type { ExecutionProjection } from "@paperclipai/shared";
@@ -925,7 +926,7 @@ function createHistoricalRunMessage(run: IssueChatLinkedRun, agentMap?: Map<stri
     id: `run:${run.runId}`,
     role: "system",
     createdAt: toDate(runTimestamp(run)),
-    content: [{ type: "text", text: `${agentName} run ${run.runId.slice(0, 8)} ${formatStatusLabel(run.status)}` }],
+    content: [{ type: "text", text: fullSharedT("fullShared.run_7de901", { value1: agentName, value2: run.runId.slice(0, 8), value3: formatStatusLabel(run.status) }) }],
     metadata: {
       custom: {
         kind: "run",
@@ -952,7 +953,7 @@ function createHistoricalTranscriptMessage(args: {
   const agentName = run.agentName ?? agentMap?.get(run.agentId)?.name ?? run.agentId.slice(0, 8);
   const compactedTranscript = compactIssueChatTranscript(transcript, issueChatTranscriptMaxVisibleEntries(run.adapterType));
   const { parts, notices, segments } = buildAssistantPartsFromTranscript(compactedTranscript);
-  const waitingText = hasOutput ? "" : "Run finished";
+  const waitingText = hasOutput ? "" : fullSharedT("taskChatUi.classicDisplay.runFinished");
   const content = parts.length > 0
     ? parts
     : waitingText
@@ -1030,7 +1031,7 @@ export function buildAssistantPartsFromTranscript(entries: readonly IssueChatTra
         family: entry.family ?? "provider_notice",
         eventType: entry.eventType ?? "provider.notice.recorded",
         status: entry.status ?? "informational",
-        title: entry.title ?? "Provider activity",
+        title: entry.title ?? fullSharedT("taskChatUi.classic.providerActivity"),
         summary: entry.summary ?? "",
         payload: entry.payload ?? {},
       });
@@ -1205,10 +1206,10 @@ function createLiveRunMessage(args: {
   const { parts, notices, segments } = buildAssistantPartsFromTranscript(compactedTranscript);
   const waitingText =
     run.status === "queued"
-      ? "Queued..."
+      ? fullSharedT("taskChatUi.classicDisplay.queuedWaiting")
       : parts.length > 0
         ? ""
-        : "Working...";
+        : fullSharedT("taskChatUi.classicDisplay.workingWaiting");
 
   const content = parts;
 

@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type { FC } from "react";
 
 /**
@@ -141,12 +142,12 @@ export const KIT_KEYS: Record<DirectionId, string> = {
 
 /** Labels for the lab's own chrome. A kit's `name`/`tagline` should say the same. */
 export const KIT_META: Record<DirectionId, { name: string; tagline: string }> = {
-  today: { name: "0.Today", tagline: "What ships now — outlined cards on the page fill" },
-  "d1-solid": { name: "1.Solid", tagline: "Flat, filled, mostly monochrome" },
-  "d2-tint": { name: "2.Tint", tagline: "Filled cards with colour used sparingly" },
-  "d3-tactile": { name: "3.Tactile", tagline: "Paper, prints and folders" },
-  "d4-hybrid": { name: "4.Hybrid", tagline: "Tint's containers and colour, Tactile's paper" },
-  "d5-v1-mvp": { name: "5.MVP V1", tagline: "From the PCLP-Core mocks, one section at a time" },
+  today: { get name() { return t("fullDiagnostics.kitName_today"); }, tagline: "What ships now — outlined cards on the page fill" },
+  "d1-solid": { get name() { return t("fullDiagnostics.kitName_solid"); }, get tagline() { return t("fullDiagnostics.kitTag_solid"); } },
+  "d2-tint": { get name() { return t("fullDiagnostics.kitName_tint"); }, get tagline() { return t("fullDiagnostics.kitTag_tint"); } },
+  "d3-tactile": { get name() { return t("fullDiagnostics.kitName_tactile"); }, get tagline() { return t("fullDiagnostics.kitTag_tactile"); } },
+  "d4-hybrid": { get name() { return t("fullDiagnostics.kitName_hybrid"); }, get tagline() { return t("fullDiagnostics.kitTag_hybrid"); } },
+  "d5-v1-mvp": { get name() { return t("fullDiagnostics.kitName_mvp"); }, get tagline() { return t("fullDiagnostics.kitTag_mvp"); } },
 };
 
 /**

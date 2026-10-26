@@ -1,3 +1,6 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, renderAppError } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { SpekoPhoneLine } from "@/components/voice/SpekoPhoneLine";
 import { SpekoIncomingCalls } from "@/components/voice/SpekoIncomingCalls";
 import { SpekoCallActivityItem, SpekoUnapprovedCallActivityItem, useSpekoCallHistory } from "@/components/voice/SpekoCallHistory";
@@ -91,52 +94,42 @@ const providerLifecycleGuidance: Record<
   { reconnect: string; remove: string }
 > = {
   speko: {
-    reconnect: "Reverify this voice persona and update its signed session tools. Existing task assignments stay attached to their history.",
-    remove: "Stop this connection from accepting voice requests. Accepted work and task history remain in Paperclip.",
+    get reconnect() { return fullAppsT("fullApps.reverify_this_voice_persona_and_update_its_signed_se_e0ea2d"); },
+    get remove() { return fullAppsT("fullApps.stop_this_connection_from_accepting_voice_requests_a_169924"); },
   },
-  agentmail: { reconnect: "Reconnect the same email inbox.", remove: "Disconnect email and retain task history." },
+  agentmail: { get reconnect() { return fullAppsT("fullApps.reconnect_the_same_email_inbox_1b5cb9"); }, get remove() { return fullAppsT("fullApps.disconnect_email_and_retain_task_history_e12c70"); } },
   slack: {
-    reconnect:
-      "Reconnect verifies or replaces credentials for this same Slack app. It does not reinstall the app or change its workspace or channel membership.",
-    remove:
-      "Paperclip archives the endpoint, stops new ingress, and retires its saved Slack credentials. It does not uninstall the Slack app: the app remains installed, and its bot remains in channels, until you remove them in Slack.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_or_replaces_credentials_for_this__60f6b3"); },
+    get remove() { return fullAppsT("fullApps.paperclip_archives_the_endpoint_stops_new_ingress_an_ce21d4"); },
   },
   github: {
-    reconnect:
-      "Reconnect verifies this same App and installation, then updates its webhook URL, secret, and secure delivery settings. It does not reinstall the App or change repository access.",
-    remove:
-      "Paperclip archives the endpoint, stops new ingress, and retires its saved App key and webhook secret. It does not uninstall the GitHub App: the App, its installations, and its webhook settings remain until you remove or update them on GitHub.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_this_same_app_and_installation_th_8855f9"); },
+    get remove() { return fullAppsT("fullApps.paperclip_archives_the_endpoint_stops_new_ingress_an_cbccc0"); },
   },
   discord: {
-    reconnect:
-      "Reconnect verifies this same Discord application and server installation. It does not add or remove the bot from the server.",
-    remove:
-      "Paperclip archives the endpoint, stops its Paperclip Gateway connection, and retires its saved bot token. It does not uninstall the bot: the bot remains in the Discord server, and the application remains in the Developer Portal, until you remove them there.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_this_same_discord_application_and_3d62ed"); },
+    get remove() { return fullAppsT("fullApps.paperclip_archives_the_endpoint_stops_its_paperclip__1dd664"); },
   },
   "microsoft-teams": {
-    reconnect:
-      "Reconnect verifies this same Microsoft app, tenant, and bot identity. It does not upload or reinstall the Teams app.",
-    remove:
-      "Paperclip archives the endpoint, stops new ingress, and retires its saved client secret. It does not uninstall the Teams app: the Entra app registration, Azure Bot, custom Teams app, and Teams installations remain until you remove them in Microsoft.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_this_same_microsoft_app_tenant_an_9b637a"); },
+    get remove() { return fullAppsT("fullApps.paperclip_archives_the_endpoint_stops_new_ingress_an_080f28"); },
   },
   "imessage-photon": {
-    reconnect: "Reconnect verifies the same Photon project and line allocation, then recovers eligible missed messages.",
-    remove: "Disconnect archives this channel and removes its saved secret. Your Photon project, number, subscription, and Messages history remain in Photon.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_the_same_photon_project_and_line__e16085"); },
+    get remove() { return fullAppsT("fullApps.disconnect_archives_this_channel_and_removes_its_sav_08283d"); },
   },
   telegram: {
-    reconnect:
-      "Reconnect verifies this same BotFather bot and automatically refreshes its Paperclip webhook and command menu.",
-    remove:
-      "Paperclip archives the endpoint and queues durable removal of its Telegram webhook and command menu. After Telegram confirms that cleanup, Paperclip retires the saved token. The BotFather bot and its chat memberships remain until you remove them in Telegram.",
+    get reconnect() { return fullAppsT("fullApps.reconnect_verifies_this_same_botfather_bot_and_autom_e3463e"); },
+    get remove() { return fullAppsT("fullApps.paperclip_archives_the_endpoint_and_queues_durable_r_ad5c6e"); },
   },
 };
 
 const activityKindLabels: Record<ChatActivityItem["kind"], string> = {
-  delivery: "Inbound delivery",
-  publication: "Outbound publication",
-  action: "Provider action",
-  health: "Connection health",
-  repair: "Connection repair",
+  get delivery() { return fullAppsT("fullApps.inbound_delivery_9ac4ff"); },
+  get publication() { return fullAppsT("fullApps.outbound_publication_8dcc69"); },
+  get action() { return fullAppsT("fullApps.provider_action_58176e"); },
+  get health() { return fullAppsT("fullApps.connection_health_883d0e"); },
+  get repair() { return fullAppsT("fullApps.connection_repair_2c777c"); },
 };
 
 const replayableFailureStates = new Set(["failed"]);
@@ -188,12 +181,12 @@ export function activityResolutionActions(item: ChatActivityItem) {
 export function activityResolutionDescription(item: ChatActivityItem): string {
   const phase = item.fileTransfer?.phase;
   if (phase === "file_info_unknown")
-    return "The file upload was confirmed, but its Teams notification was not. Check Teams first. Retrying sends only that notification, not the file bytes, and may create a duplicate card.";
+    return fullAppsT("fullApps.the_file_upload_was_confirmed_but_its_teams_notifica_cf8db3");
   if (phase === "consent_unknown")
-    return "The consent card may have reached Teams. File delivery is not confirmed. Cancelling here does not remove any card already sent.";
+    return fullAppsT("fullApps.the_consent_card_may_have_reached_teams_file_deliver_267408");
   if (phase)
-    return "The file may already exist in OneDrive. Cancelling stops this Paperclip transfer; it does not delete remote bytes. Uploads cannot be marked delivered or retried from this uncertain state.";
-  return "Paperclip lost confirmation after sending. Check the provider conversation first. Retrying can create a duplicate message.";
+    return fullAppsT("fullApps.the_file_may_already_exist_in_onedrive_cancelling_st_b4025b");
+  return fullAppsT("fullApps.paperclip_lost_confirmation_after_sending_check_the__1a7e11");
 }
 
 export function isResolutionEligible(item: ChatActivityItem): boolean {
@@ -215,7 +208,7 @@ export function isIndividuallyToggleableResource(
 }
 
 function activityDetailLabel(item: ChatActivityItem): string {
-  return replayableFailureStates.has(item.status) ? "Reason" : "Details";
+  return replayableFailureStates.has(item.status) ? fullAppsT("fullApps.caption_f81ab834de") : fullAppsT("fullApps.caption_45989de49f");
 }
 
 export function connectionHealthPresentation(
@@ -223,12 +216,12 @@ export function connectionHealthPresentation(
 ) {
   // Health events outlive pause/removal. They are history, not lifecycle state.
   const lifecycleMessages = {
-    draft: "Connection setup is incomplete.",
-    verifying: "Connection verification is in progress.",
-    paused: "Connection is paused. Resume it to receive new messages.",
-    attention: "Connection needs attention.",
-    revoked: "Connection access is revoked. Reconnect to verify access.",
-    archived: "Connection has been removed from Paperclip.",
+    draft: fullAppsT("fullApps.connection_setup_is_incomplete_59e83b"),
+    verifying: fullAppsT("fullApps.connection_verification_is_in_progress_7e9914"),
+    paused: fullAppsT("fullApps.connection_is_paused_resume_it_to_receive_new_messag_7f7bd7"),
+    attention: fullAppsT("fullApps.connection_needs_attention_642533"),
+    revoked: fullAppsT("fullApps.connection_access_is_revoked_reconnect_to_verify_acc_a03c45"),
+    archived: fullAppsT("fullApps.connection_has_been_removed_from_paperclip_6a5560"),
   };
   const lifecycleMessage =
     endpoint.status === "active" ? null : lifecycleMessages[endpoint.status];
@@ -237,12 +230,13 @@ export function connectionHealthPresentation(
     previousHealth: lifecycleMessage ? (endpoint.healthMessage ?? null) : null,
     error: endpoint.lastError ?? null,
     errorLabel: ["active", "attention", "revoked"].includes(endpoint.status)
-      ? "Reason"
-      : "Last reported error",
+      ? fullAppsT("fullApps.caption_f81ab834de")
+      : fullAppsT("fullApps.last_reported_error_cded00"),
   };
 }
 
 export function ChatEndpointDetail() {
+  useFullAppsTranslation();
   const { endpointId = "", tab: routeTab, reviewId } = useParams<{
     endpointId: string;
     tab?: string;
@@ -271,7 +265,7 @@ export function ChatEndpointDetail() {
     queryFn: () => agentsApi.get(endpoint!.assignedAgentId),
     enabled: endpoint?.provider === "github",
   });
-  const [copyStatus, setCopyStatus] = useState<string | null>(null);
+  const [copyStatus, setCopyStatus] = useState<AppDisplayText | null>(null);
   const agentQuery = useQuery({
     queryKey: queryKeys.agents.detail(endpoint?.assignedAgentId ?? ""),
     queryFn: () => agentsApi.get(endpoint!.assignedAgentId, endpoint!.companyId),
@@ -281,38 +275,32 @@ export function ChatEndpointDetail() {
   useEffect(() => {
     if (!endpoint || !activeTab) return;
     setBreadcrumbs([
-      { label: "Connectors", href: "/apps" },
+      { label: fullAppsT("sidebar.connectors"), href: "/apps" },
       {
         label: `${endpoint.assignedAgentName} · ${providerNames[endpoint.provider]}`,
         href: `/apps/chat/${endpoint.id}/settings`,
       },
-      ...(reviewId ? [{ label: "Reviews", href: `/apps/chat/${endpoint.id}/reviews` }, { label: "Review" }] : [{
+      ...(reviewId ? [{ label: fullAppsT("fullApps.reviews_84cb78"), href: `/apps/chat/${endpoint.id}/reviews` }, { label: fullAppsT("fullApps.review_aff076") }] : [{
         label:
           tabItems.find((item) => item.value === activeTab)?.label ??
-          "Settings",
+          fullAppsT("companySwitcher.settings"),
       }]),
     ]);
     return () => setBreadcrumbs([]);
-  }, [activeTab, endpoint, reviewId, setBreadcrumbs]);
+  }, [activeTab, endpoint, reviewId, setBreadcrumbs, fullAppsI18n.resolvedLanguage]);
 
   if (!activeTab)
     return <Navigate replace to={`/apps/chat/${endpointId}/settings`} />;
   if (endpointQuery.isLoading)
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Loading connection…
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("grokSetupUi.connection.loading")}</div>
     );
   if (endpointQuery.isError || !endpoint)
     return (
       <div className="space-y-3">
-        <p className="text-sm text-destructive">
-          This chat connection could not be loaded.
-        </p>
-        <Button variant="outline" onClick={() => endpointQuery.refetch()}>
-          Try again
-        </Button>
+        <p className="text-sm text-destructive">{fullAppsT("fullApps.this_chat_connection_could_not_be_loaded_89a518")}</p>
+        <Button variant="outline" onClick={() => endpointQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
       </div>
     );
   if (endpoint.provider === "agentmail" && activeTab === "settings")
@@ -334,10 +322,10 @@ export function ChatEndpointDetail() {
           <div className="min-w-0">
           <h1 ref={heading} tabIndex={-1} className={endpoint.provider === "speko" ? "flex items-center gap-3 text-xl font-bold" : "text-xl font-bold"}>
             {endpoint.provider === "speko" && <AppLogo name="Speko" brandKey="speko" size={36} />}
-            {endpoint.provider === "github" ? (endpoint.botLabel ?? endpoint.assignedAgentName) : endpoint.assignedAgentName}{endpoint.provider === "speko" ? " in Speko" : ""}
+            {endpoint.provider === "github" ? (endpoint.botLabel ?? endpoint.assignedAgentName) : endpoint.assignedAgentName}{endpoint.provider === "speko" ? fullAppsT("fullApps.in_speko_07cc45") : ""}
           </h1>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            {endpoint.provider === "github" ? <><AppLogo name="GitHub" brandKey="github" compact className="size-4! rounded-sm bg-transparent" /><Link to={`/agents/${endpoint.assignedAgentId}`} className="hover:underline">{endpoint.assignedAgentName}</Link>{endpoint.providerAccountLabel && <span>· {endpoint.providerAccountLabel}</span>}</> : endpoint.providerAccountLabel ?? (endpoint.provider === "agentmail" ? endpoint.botExternalId ?? "Email connection" : "Chat connection")}
+            {endpoint.provider === "github" ? <><AppLogo name="GitHub" brandKey="github" compact className="size-4! rounded-sm bg-transparent" /><Link to={`/agents/${endpoint.assignedAgentId}`} className="hover:underline">{endpoint.assignedAgentName}</Link>{endpoint.providerAccountLabel && <span>· {endpoint.providerAccountLabel}</span>}</> : endpoint.providerAccountLabel ?? (endpoint.provider === "agentmail" ? endpoint.botExternalId ?? fullAppsT("fullApps.email_connection_7033ce") : fullAppsT("fullApps.chat_connection_c3b314"))}
           </p>
           {endpoint.provider === "github" && <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
             <GitHubBotMention endpoint={endpoint} />
@@ -346,18 +334,18 @@ export function ChatEndpointDetail() {
           {endpoint.provider === "imessage-photon" && endpoint.botExternalId && endpoint.photonAllocation !== "shared" && (
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
               <span>{endpoint.botExternalId}</span>
-              <Button variant="ghost" size="sm" aria-label="Copy dedicated number" onClick={async () => {
-                try { await copyTextToClipboard(endpoint.botExternalId!); setCopyStatus("Number copied"); }
-                catch { setCopyStatus("Could not copy the number. Select and copy it manually."); }
-              }}><Copy className="size-4" />Copy number</Button>
-              <span role="status" className="text-muted-foreground">{copyStatus}</span>
+              <Button variant="ghost" size="sm" aria-label={fullAppsT("fullApps.copy_dedicated_number_0a559c")} onClick={async () => {
+                try { await copyTextToClipboard(endpoint.botExternalId!); setCopyStatus(ownAppDisplayText("fullApps.number_copied_4bf3f0")); }
+                catch { setCopyStatus(ownAppDisplayText("fullApps.could_not_copy_the_number_select_and_copy_it_manuall_89546d")); }
+              }}><Copy className="size-4" />{fullAppsT("fullApps.copy_number_f35c40")}</Button>
+              <span role="status" className="text-muted-foreground">{renderAppDisplayText(copyStatus)}</span>
             </div>
           )}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {endpoint.provider === "speko" && <a href="https://platform.speko.ai/agents" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary underline">Open Speko<ExternalLink className="size-3.5" aria-hidden="true" /></a>}
-          {slackUrl && <Button asChild variant="outline"><a href={slackUrl} target="_blank" rel="noopener noreferrer">Open Slack configuration <ExternalLink className="size-4" /></a></Button>}
+          {endpoint.provider === "speko" && <a href="https://platform.speko.ai/agents" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary underline">{fullAppsT("fullApps.open_speko_4f1e19")}<ExternalLink className="size-3.5" aria-hidden="true" /></a>}
+          {slackUrl && <Button asChild variant="outline"><a href={slackUrl} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_configuration_a2dfb2")}<ExternalLink className="size-4" /></a></Button>}
           {setupIncomplete ? (
             <Button
               variant="outline"
@@ -366,9 +354,7 @@ export function ChatEndpointDetail() {
                   `/apps/chat/connect?provider=${endpoint.provider}&purpose=chat&resume=${endpoint.id}`,
                 )
               }
-            >
-              Continue setup
-            </Button>
+            >{fullAppsT("fullApps.continue_setup_c5702c")}</Button>
           ) : null}
           {endpoint.status !== "active" && <StatusBadge status={endpoint.status} className={endpoint.provider === "speko" ? "text-foreground" : undefined} />}
         </div>
@@ -384,9 +370,9 @@ export function ChatEndpointDetail() {
       {activeTab === "reviews" && endpoint.provider === "github" && <GitHubReviews endpointId={endpoint.id} reviewId={reviewId} />}
       {activeTab === "access" && endpoint.provider === "speko" && (
         <section className="max-w-3xl space-y-3">
-          <h2 className="text-lg font-semibold">Private voice access</h2>
-          <p className="text-sm text-muted-foreground">Browser calls use the signed-in Paperclip user’s current company access. Each call stays bound to its selected agent and task.</p>
-          <p className="text-sm text-muted-foreground">Outgoing calls use your saved callback number and opt-in. For a private incoming call, enter the code spoken on the phone in signed-in Paperclip and select a task to approve that live call. Incoming calls can start a new conversation task without sign-in, under a task-scoped low-trust policy. Private mode is optional and requires approval before accessing existing tasks.</p>
+          <h2 className="text-lg font-semibold">{fullAppsT("fullApps.private_voice_access_771c1d")}</h2>
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.browser_calls_use_the_signed_in_paperclip_user_s_cur_76d6fa")}</p>
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.outgoing_calls_use_your_saved_callback_number_and_op_c159d3")}</p>
         </section>
       )}
 {activeTab === "access" && endpoint.provider === "agentmail" && <EmailAccess endpoint={endpoint} />}
@@ -421,6 +407,7 @@ export function ChatEndpointDetail() {
 }
 
 function EndpointExecutionDefaults({ endpoint }: { endpoint: ChatEndpoint }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   return <section className="max-w-3xl py-5"><ChatExecutionDefaults
     key={endpoint.id}
@@ -434,6 +421,7 @@ function EndpointExecutionDefaults({ endpoint }: { endpoint: ChatEndpoint }) {
 }
 
 function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
+  useFullAppsTranslation();
   const connection = useQuery({
     queryKey: queryKeys.tools.connection(endpoint.connectionId ?? ""),
     queryFn: () => toolsApi.getConnection(endpoint.connectionId!),
@@ -445,16 +433,16 @@ function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
   });
   if (!endpoint.connectionId || agents.isError || connection.isError) return (
     <div className="space-y-3">
-      <p role="alert" className="text-sm text-destructive">Connection access could not be loaded.</p>
-      <Button variant="outline" onClick={() => { void agents.refetch(); void connection.refetch(); }}>Try again</Button>
+      <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.connection_access_could_not_be_loaded_953390")}</p>
+      <Button variant="outline" onClick={() => { void agents.refetch(); void connection.refetch(); }}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
     </div>
   );
-  if (agents.isPending || connection.isPending) return <p role="status" className="text-sm text-muted-foreground">Loading access…</p>;
+  if (agents.isPending || connection.isPending) return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("projectConfigUi.access.loading")}</p>;
   const sourceId = connection.data.config?.credentialConnectionId;
   const credentialId = typeof sourceId === "string" ? sourceId : endpoint.connectionId;
   return <section className="max-w-3xl space-y-4">
-    <h2 className="text-lg font-semibold">Access</h2>
-    {credentialId !== endpoint.connectionId && <p className="text-sm text-muted-foreground">These settings apply to the saved AgentMail account and all inboxes using it.</p>}
+    <h2 className="text-lg font-semibold">{fullAppsT("instanceAccess.access")}</h2>
+    {credentialId !== endpoint.connectionId && <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.these_settings_apply_to_the_saved_agentmail_account__ccb5f8")}</p>}
     <EmailConnectionAccess key={credentialId} companyId={endpoint.companyId} connectionId={credentialId} agents={agents.data} />
   </section>;
 }
@@ -466,6 +454,7 @@ function Settings({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const resourcesQuery = useQuery({
@@ -484,8 +473,8 @@ function Settings({
       ),
     onError: (error) =>
       pushToast({
-        title: "Couldn't update destination",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_update_destination_f23b38"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -498,8 +487,8 @@ function Settings({
       ),
     onError: (error) =>
       pushToast({
-        title: "Couldn't update settings",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_update_settings_522457"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -513,32 +502,26 @@ function Settings({
     saveResources.mutate({ id: resource.id, enabled });
   return (
     <section className="max-w-3xl space-y-7">
-      {endpoint.provider === "imessage-photon" && <p className="text-sm text-muted-foreground">{endpoint.photonAllocation === "shared" ? "Shared Photon project · direct messages only. Enroll senders in Photon and link their Messages identities in Access. Groups cannot be enabled." : "Enable each group individually. Agent replies are visible to everyone in that group; only authorized senders can start work."}</p>}
+      {endpoint.provider === "imessage-photon" && <p className="text-sm text-muted-foreground">{endpoint.photonAllocation === "shared" ? fullAppsT("fullApps.shared_photon_project_direct_messages_only_enroll_se_bdbec1") : fullAppsT("fullApps.enable_each_group_individually_agent_replies_are_vis_ade429")}</p>}
       {endpoint.provider === "telegram" && (
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold">Telegram group command</h2>
+          <h2 className="text-lg font-semibold">{fullAppsT("fullApps.telegram_group_command_a2c515")}</h2>
           <div className="rounded-lg border border-border p-3 text-sm">
             <code>
               /task@
               {endpoint.botUsername?.replace(/^@/, "") ?? "bot_username"}{" "}
               &lt;request&gt;
             </code>
-            <p className="mt-2 text-muted-foreground">
-              Telegram&apos;s default privacy mode does not deliver ordinary
-              mentions to bots. Use this command to start or continue group
-              work, or reply directly to a message from the bot.
-            </p>
+            <p className="mt-2 text-muted-foreground">{fullAppsT("fullApps.telegram_s_default_privacy_mode_does_not_deliver_ord_20d8b8")}</p>
           </div>
         </div>
       )}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold">{endpoint.provider === "slack" ? "Allowed Channels" : "Destinations"}</h3>
-        {resourcesQuery.isError ? <p role="alert" className="text-sm text-destructive">Couldn't load channels. <button className="underline" onClick={() => void resourcesQuery.refetch()}>Try again</button></p> : resourcesQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading destinations…</p>
+        <h3 className="text-sm font-semibold">{endpoint.provider === "slack" ? fullAppsT("fullApps.allowed_channels_e57f04") : fullAppsT("fullApps.destinations_72eb63")}</h3>
+        {resourcesQuery.isError ? <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_channels_b48a52")}<button className="underline" onClick={() => void resourcesQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</button></p> : resourcesQuery.isLoading ? (
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_destinations_b78eda")}</p>
         ) : destinationResources.length === 0 && endpoint.provider !== "slack" ? (
-          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-            No destinations yet.
-          </p>
+          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_destinations_yet_42dc9c")}</p>
         ) : (
           <div className={endpoint.provider === "slack" ? "space-y-1" : "divide-y divide-border border-y border-border"}>
             {destinationResources.map((resource) => (
@@ -551,12 +534,12 @@ function Settings({
                   {(resource.availability !== "available" || resource.detail) && <p className="text-xs text-muted-foreground">
                     {resource.availability === "available"
                       ? resource.detail
-                      : "Unavailable at the provider"}
+                      : fullAppsT("fullApps.unavailable_at_the_provider_b0c0c1")}
                   </p>}
-                  {resource.participants?.length ? <p className="mt-1 break-words text-xs text-muted-foreground">Participants: {resource.participants.join(", ")}</p> : null}
+                  {resource.participants?.length ? <p className="mt-1 break-words text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.participants_4ad7a2" components={{ part1: <>{resource.participants.join(", ")}</> }} /></p> : null}
                 </div>
                 <ToggleSwitch
-                  aria-label={`Enable ${resource.label}`}
+                  aria-label={fullAppsT("fullApps.enable_cca71c", { value1: resource.label })}
                   checked={resource.enabled}
                   disabled={
                     endpoint.photonAllocation === "shared" ||
@@ -569,7 +552,7 @@ function Settings({
                 />
               </div>
               <details className="text-sm">
-                <summary className="cursor-pointer text-muted-foreground">Task defaults</summary>
+                <summary className="cursor-pointer text-muted-foreground">{fullAppsT("fullApps.task_defaults_1aa47f")}</summary>
                 <div className="pt-3"><ChatExecutionDefaults
                   companyId={endpoint.companyId}
                   value={resource.executionDefaults}
@@ -583,9 +566,7 @@ function Settings({
               </div>
             ))}
             {endpoint.provider === "slack" && (
-              <p className="py-3 text-sm text-muted-foreground">
-                Invite {endpoint.assignedAgentName} to a channel to add it
-              </p>
+              <p className="py-3 text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.invite_to_a_channel_to_add_it_13a8ab" components={{ part1: <>{endpoint.assignedAgentName}</> }} /></p>
             )}
           </div>
         )}
@@ -593,10 +574,10 @@ function Settings({
       {endpoint.provider !== "github" && (
         <div className="space-y-3">
           <SettingToggle
-            label="Allow direct messages"
+            label={fullAppsT("fullApps.allow_direct_messages_e2f7f1")}
             detail={
               endpoint.provider === "discord"
-                ? "People must also enable Direct Messages in their shared Discord server’s Privacy Settings."
+                ? fullAppsT("fullApps.people_must_also_enable_direct_messages_in_their_sha_f78465")
                 : undefined
             }
             checked={endpoint.allowDirectMessages ?? false}
@@ -607,8 +588,8 @@ function Settings({
           />
           {endpoint.provider === "slack" && (
             <SettingToggle
-              label="Require at-mention"
-              detail="In channels, only respond to messages that @mention this bot, including thread replies. Direct messages never require an @mention and must be allowed above."
+              label={fullAppsT("fullApps.require_at_mention_814963")}
+              detail={fullAppsT("fullApps.in_channels_only_respond_to_messages_that_mention_th_26953d")}
               checked={endpoint.requireAtMention ?? false}
               pending={updateEndpoint.isPending}
               onChange={(requireAtMention) =>
@@ -618,8 +599,8 @@ function Settings({
           )}
           {endpoint.provider === "microsoft-teams" && (
             <SettingToggle
-              label="Allow group chats"
-              detail="The bot may participate in group chats where it is installed."
+              label={fullAppsT("fullApps.allow_group_chats_5fabb0")}
+              detail={fullAppsT("fullApps.the_bot_may_participate_in_group_chats_where_it_is_i_a815e4")}
               checked={endpoint.allowGroupChats ?? false}
               pending={updateEndpoint.isPending}
               onChange={(allowGroupChats) =>
@@ -637,7 +618,7 @@ function Settings({
           queryClient.setQueryData(queryKeys.chatEndpoints.detail(endpointId), next);
         }}
       />}
-      {endpoint.provider === "slack" && <SlackSetupAdvanced label="Slack tools"><SlackToolsSettings companyId={endpoint.companyId} endpointId={endpointId} /></SlackSetupAdvanced>}
+      {endpoint.provider === "slack" && <SlackSetupAdvanced label={fullAppsT("fullApps.slack_tools_192c25")}><SlackToolsSettings companyId={endpoint.companyId} endpointId={endpointId} /></SlackSetupAdvanced>}
     </section>
   );
 }
@@ -655,6 +636,7 @@ function SettingToggle({
   pending: boolean;
   onChange: (value: boolean) => void;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="flex items-center gap-3 py-3">
       <div className="min-w-0 flex-1">
@@ -680,6 +662,7 @@ function Access({
   allowUnlinked: boolean;
   endpoint: ChatEndpoint;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const [confirmationUrl, setConfirmationUrl] = useState<string | null>(null);
@@ -700,7 +683,7 @@ function Access({
         queryKeys.chatEndpoints.detail(endpointId),
         next,
       ),
-    onError: (error) => pushToast({ title: "Couldn’t update access", body: error instanceof Error ? error.message : "Try again.", tone: "error" }),
+    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_update_access_147970"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"), tone: "error" }),
   });
   const createIntent = useMutation({
     mutationFn: (principalId: string) =>
@@ -713,8 +696,8 @@ function Access({
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't create identity link",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_create_identity_link_619b3f"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -722,45 +705,45 @@ function Access({
     mutationFn: (principalId: string) =>
       chatEndpointsApi.revokeLink(endpointId, principalId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.chatEndpoints.principals(endpointId) }),
-    onError: (error) => pushToast({ title: "Couldn't disconnect account", body: error instanceof Error ? error.message : "Try again.", tone: "error" }),
+    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_disconnect_account_3bb513"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"), tone: "error" }),
   });
   const links = linksQuery.data ?? [];
   return (
     <section className="max-w-3xl space-y-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">People</h2>
+        <h2 className="text-lg font-semibold">{fullAppsT("taskProperties.share.people")}</h2>
         {endpoint.provider === "slack" && <Dialog>
-          <DialogTrigger asChild><Button>Invite people</Button></DialogTrigger>
+          <DialogTrigger asChild><Button>{fullAppsT("fullApps.invite_people_27bf0f")}</Button></DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Invite people to talk to {endpoint.assignedAgentName}</DialogTitle>
-              <DialogDescription>Share these instructions with someone in your Slack workspace.</DialogDescription>
+              <DialogTitle><FullAppsTrans i18nKey="fullApps.invite_people_to_talk_to_85ae8b" components={{ part1: <>{endpoint.assignedAgentName}</> }} /></DialogTitle>
+              <DialogDescription>{fullAppsT("fullApps.share_these_instructions_with_someone_in_your_slack__8e287a")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 text-sm">
               <ol className="list-decimal space-y-3 pl-5">
-                <li>Send <code className="font-mono">{joinCommand}</code> in Slack.</li>
-                <li>Open the bot’s private link and sign in to Paperclip to confirm your Slack account.</li>
-                <li>If you’re new to this organization, request access and wait for an admin to approve.</li>
+                <li><FullAppsTrans i18nKey="fullApps.send_in_slack_fb1b0c" components={{ part1: <code className="font-mono">{joinCommand}</code> }} /></li>
+                <li>{fullAppsT("fullApps.open_the_bot_s_private_link_and_sign_in_to_paperclip_070eb4")}</li>
+                <li>{fullAppsT("fullApps.if_you_re_new_to_this_organization_request_access_an_2bb42e")}</li>
               </ol>
-              <p className="text-muted-foreground">The confirmation link is personal and expires after 15 minutes.</p>
+              <p className="text-muted-foreground">{fullAppsT("fullApps.the_confirmation_link_is_personal_and_expires_after__dc6c66")}</p>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <Button variant="ghost" onClick={() => {
-                  void copyTextToClipboard(joinCommand).then(() => setJoinCommandCopied(true), () => pushToast({ title: "Couldn't copy the command", tone: "error" }));
-                }}>{joinCommandCopied ? <Check className="size-4" /> : <Copy className="size-4" />}{joinCommandCopied ? "Copied" : "Copy command"}</Button>
+                  void copyTextToClipboard(joinCommand).then(() => setJoinCommandCopied(true), () => pushToast({ title: fullAppsT("fullApps.couldn_t_copy_the_command_f3a00b"), tone: "error" }));
+                }}>{joinCommandCopied ? <Check className="size-4" /> : <Copy className="size-4" />}{joinCommandCopied ? fullAppsT("taskPanels.preview.copied") : fullAppsT("fullApps.copy_command_9a01fe")}</Button>
                 <Button onClick={() => {
                   const workspace = endpoint.providerAccountId ? `https://app.slack.com/client/${encodeURIComponent(endpoint.providerAccountId)}` : "https://app.slack.com/";
-                  void copyTextToClipboard(`Talk to ${endpoint.assignedAgentName} in Slack: ${workspace}\nSend ${joinCommand}, then open the bot’s private link and sign in to Paperclip to confirm your account. If you’re new to the organization, request access for an admin to approve.`).then(() => setInviteCopied(true), () => pushToast({ title: "Couldn't copy invitation", tone: "error" }));
-                }}>{inviteCopied ? <Check className="size-4" /> : <Copy className="size-4" />}{inviteCopied ? "Invitation copied" : "Copy invitation"}</Button>
+                  void copyTextToClipboard(fullAppsT("fullApps.clipboardSlackInvite", { name: endpoint.assignedAgentName, workspace: workspace, command: joinCommand })).then(() => setInviteCopied(true), () => pushToast({ title: fullAppsT("fullApps.couldn_t_copy_invitation_7994c1"), tone: "error" }));
+                }}>{inviteCopied ? <Check className="size-4" /> : <Copy className="size-4" />}{inviteCopied ? fullAppsT("fullApps.invitation_copied_a4c64c") : fullAppsT("fullApps.copy_invitation_74554e")}</Button>
               </div>
             </div>
           </DialogContent>
         </Dialog>}
       </div>
-      <p className="text-sm text-muted-foreground">People with linked accounts use their own Paperclip permissions. <Link className="underline underline-offset-4" to="/company/settings/members">Manage members</Link></p>
+      <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.people_with_linked_accounts_use_their_own_paperclip__2d60bb")}<Link className="underline underline-offset-4" to="/company/settings/members">{fullAppsT("fullApps.manage_members_7ce24d")}</Link></p>
       {confirmationUrl && (
         <div className="space-y-2 border-y border-border py-3">
-          <p className="text-sm font-medium">Confirm {confirmationFor ?? "this account"}</p>
-          <p className="text-xs text-muted-foreground">Share only with this person. They must sign in and confirm their own account.</p>
+          <p className="text-sm font-medium">{confirmationFor ? <FullAppsTrans i18nKey="fullApps.confirm_119e2e" components={{ part1: <>{confirmationFor}</> }} /> : fullAppsT("fullApps.confirmAccountGeneric")}</p>
+          <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.share_only_with_this_person_they_must_sign_in_and_co_f90c6d")}</p>
           <p className="break-all text-xs text-muted-foreground">
             {confirmationUrl}
           </p>
@@ -771,30 +754,26 @@ function Access({
               void copyTextToClipboard(confirmationUrl).then(
                 () =>
                   pushToast({
-                    title: "Confirmation link copied",
+                    title: fullAppsT("fullApps.confirmation_link_copied_715f61"),
                     tone: "success",
                   }),
                 () =>
                   pushToast({
-                    title: "Couldn't copy the link",
-                    body: "Select and copy it manually.",
+                    title: fullAppsT("fullApps.couldn_t_copy_the_link_6bad7b"),
+                    body: fullAppsT("fullApps.select_and_copy_it_manually_0edc1f"),
                     tone: "error",
                   }),
               );
             }}
           >
-            <Copy />
-            Copy link
-          </Button>
+            <Copy />{fullAppsT("fullApps.copy_link_dbf362")}</Button>
         </div>
       )}
       <div className="space-y-2">
-        {linksQuery.isPending ? <p role="status" className="text-sm text-muted-foreground">Loading people…</p> : linksQuery.isError ? <p role="alert" className="text-sm text-destructive">Couldn't load people. <button className="underline" onClick={() => void linksQuery.refetch()}>Try again</button></p> : links.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-            No linked accounts yet. Invite someone to connect.
-          </p>
+        {linksQuery.isPending ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_people_af6fe5")}</p> : linksQuery.isError ? <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_people_199d60")}<button className="underline" onClick={() => void linksQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</button></p> : links.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_linked_accounts_yet_invite_someone_to_connect_922a59")}</p>
         ) : (
-          <div role="list" aria-label="People" className="divide-y divide-border border-y border-border">
+          <div role="list" aria-label={fullAppsT("taskProperties.share.people")} className="divide-y divide-border border-y border-border">
             {links.map((link) => (
               <div
                 key={link.id}
@@ -809,9 +788,9 @@ function Access({
                   <div className="min-w-0">
                     <p className="truncate text-sm" title={link.paperclipUserLabel ?? link.externalLabel}>{link.paperclipUserLabel ?? link.externalLabel}</p>
                     {(link.status !== "linked" || link.externalLabel !== link.paperclipUserLabel) && <p className="text-xs text-muted-foreground">
-                      {link.status === "revoked" ? "Disconnected" : link.status === "linked"
+                      {link.status === "revoked" ? fullAppsT("skillsGap.disconnected") : link.status === "linked"
                         ? link.externalLabel
-                        : "Waiting for account confirmation"}
+                        : fullAppsT("fullApps.waiting_for_account_confirmation_fb53a6")}
                     </p>}
                   </div>
                 </div>
@@ -822,30 +801,26 @@ function Access({
                     disabled={revoke.isPending}
                     onClick={() => revoke.mutate(link.principalId)}
                   >
-                    <Unlink />
-                    Disconnect
-                  </Button>
+                    <Unlink />{fullAppsT("externalAgentUi.muse.disconnect")}</Button>
                 ) : (
                   <Button
                     size="sm"
                     variant="outline"
                     disabled={createIntent.isPending}
                     onClick={() => { setConfirmationUrl(null); setConfirmationFor(link.externalLabel); createIntent.mutate(link.principalId); }}
-                  >
-                    Create confirmation link
-                  </Button>
+                  >{fullAppsT("fullApps.create_confirmation_link_5ce43a")}</Button>
                 )}
               </div>
             ))}
           </div>
         )}
       </div>
-      <SlackSetupAdvanced label="Guest access">
-        <SettingToggle label="Allow unlinked people"
-          detail="People without linked accounts can start isolated tasks. They cannot approve actions, spend, or manage access. Requests are refused when isolation is unavailable."
+      <SlackSetupAdvanced label={fullAppsT("fullApps.guest_access_a96229")}>
+        <SettingToggle label={fullAppsT("fullApps.allow_unlinked_people_b61e32")}
+          detail={fullAppsT("fullApps.people_without_linked_accounts_can_start_isolated_ta_b1f38e")}
           checked={allowUnlinked} pending={updatePolicy.isPending} onChange={value => updatePolicy.mutate(value)} />
       </SlackSetupAdvanced>
-      {endpoint.provider === "slack" && <SlackSetupAdvanced label="Personal Slack search"><SlackSearchAccess companyId={endpoint.companyId} endpointId={endpointId} /></SlackSetupAdvanced>}
+      {endpoint.provider === "slack" && <SlackSetupAdvanced label={fullAppsT("fullApps.personal_slack_search_b9be0d")}><SlackSearchAccess companyId={endpoint.companyId} endpointId={endpointId} /></SlackSetupAdvanced>}
     </section>
   );
 }
@@ -857,6 +832,7 @@ function Conversations({
   endpointId: string;
   provider: ChatProvider;
 }) {
+  useFullAppsTranslation();
   const query = useQuery({
     queryKey: queryKeys.chatEndpoints.conversations(endpointId),
     queryFn: () => chatEndpointsApi.listConversations(endpointId),
@@ -864,10 +840,10 @@ function Conversations({
   });
   return (
     <section className="space-y-4">
-      {query.isPending ? <p role="status" className="text-sm text-muted-foreground">Loading conversations…</p> : query.isError ? (
+      {query.isPending ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_conversations_1eec1d")}</p> : query.isError ? (
         <div className="space-y-3">
-          <p role="alert" className="text-sm text-destructive">Conversations could not be loaded.</p>
-          <Button variant="outline" onClick={() => void query.refetch()}>Try again</Button>
+          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.conversations_could_not_be_loaded_c96fc9")}</p>
+          <Button variant="outline" onClick={() => void query.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
         </div>
       ) : <ChatConversationList rows={query.data ?? []} provider={provider} />}
     </section>
@@ -881,6 +857,7 @@ function Activity({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pushToast } = useToast();
@@ -908,14 +885,14 @@ function Activity({
         queryKey: queryKeys.chatEndpoints.activity(endpointId),
       });
       pushToast({
-        title: `${item.kind === "publication" ? "Publication" : "Delivery"} queued for replay`,
+        title: fullAppsT("fullApps.queued_for_replay_b5d032", { value1: item.kind === "publication" ? fullAppsT("fullApps.caption_15fc65b693") : fullAppsT("fullApps.caption_52bfe584a5") }),
         tone: "success",
       });
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't replay activity",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_replay_activity_e3eb4a"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -952,29 +929,29 @@ function Activity({
         title:
           input.item.actionType === "slash_task_start" &&
           input.action === "retry_anyway"
-            ? "Task start retried"
+            ? fullAppsT("fullApps.task_start_retried_bd8d39")
             : input.item.actionType === "slash_task_start"
-              ? "Task start cancelled"
+              ? fullAppsT("fullApps.task_start_cancelled_7153d3")
               : input.item.actionType === "provider_effect" &&
                   input.action === "mark_delivered"
-                ? "Provider reply marked delivered"
+                ? fullAppsT("fullApps.provider_reply_marked_delivered_44de89")
                 : input.item.actionType === "provider_effect" &&
                     input.action === "retry_anyway"
-                  ? "Provider reply retried"
+                  ? fullAppsT("fullApps.provider_reply_retried_989eb2")
                   : input.item.actionType === "provider_effect"
-                    ? "Provider reply cancelled"
+                    ? fullAppsT("fullApps.provider_reply_cancelled_91ea1f")
                     : input.action === "mark_delivered"
-                      ? "Publication marked delivered"
+                      ? fullAppsT("fullApps.publication_marked_delivered_ac3242")
                       : input.action === "retry_anyway"
-                        ? "Publication queued for retry"
-                        : "Publication cancelled",
+                        ? fullAppsT("fullApps.publication_queued_for_retry_f9100c")
+                        : fullAppsT("fullApps.publication_cancelled_67f02b"),
         tone: "success",
       });
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't resolve activity",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_resolve_activity_fce6f0"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -999,14 +976,14 @@ function Activity({
       }
       if (endpoint.provider !== "agentmail") queryClient.setQueryData(queryKeys.chatEndpoints.detail(endpointId), next);
       pushToast({
-        title: action === "pause" ? "Connection paused" : "Connection resumed",
+        title: action === "pause" ? fullAppsT("fullApps.connection_paused_8870a3") : fullAppsT("fullApps.connection_resumed_e10324"),
         tone: "success",
       });
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't update connection",
-        body: error instanceof Error ? error.message : "Try again.",
+        title: fullAppsT("fullApps.couldn_t_update_connection_a99084"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
         tone: "error",
       }),
   });
@@ -1025,13 +1002,13 @@ function Activity({
   const callbackSurfaceRows = endpoint.setup?.callbackSurfaces
     ? ([
         ["Events API", endpoint.setup.callbackSurfaces.events],
-        ["Interactivity", endpoint.setup.callbackSurfaces.interactivity],
-        ["Slash command", endpoint.setup.callbackSurfaces.slashCommands],
+        [fullAppsT("fullApps.caption_1d49a1c3bb"), endpoint.setup.callbackSurfaces.interactivity],
+        [fullAppsT("fullApps.slash_command_85dec3"), endpoint.setup.callbackSurfaces.slashCommands],
       ] as const)
     : [];
   return (
-    <section className="space-y-5" aria-label="Connection activity">
-      <h2 className="text-lg font-semibold">Connection activity</h2>
+    <section className="space-y-5" aria-label={fullAppsT("fullApps.connection_activity_52520f")}>
+      <h2 className="text-lg font-semibold">{fullAppsT("fullApps.connection_activity_52520f")}</h2>
       {((status !== "active" && health.message) || health.error) && (
         <div
           className={`flex items-start gap-2 rounded-lg border p-3 text-sm ${status === "attention" || status === "revoked" ? "border-destructive/40 bg-destructive/5 text-destructive" : "border-border bg-muted/30 text-foreground"}`}
@@ -1043,7 +1020,7 @@ function Activity({
             {health.message && <p>{health.message}</p>}
             {health.previousHealth && (
               <p className="mt-1 text-xs opacity-80">
-                <span className="font-medium">Last reported health:</span>{" "}
+                <span className="font-medium">{fullAppsT("fullApps.last_reported_health_1b2bf6")}</span>{" "}
                 {health.previousHealth}
               </p>
             )}
@@ -1058,9 +1035,9 @@ function Activity({
       )}
       <details className="group rounded-lg border border-border">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-medium chat-connection-health-summary">
-          <span>Connection health and controls</span>
+          <span>{fullAppsT("fullApps.connection_health_and_controls_de3243")}</span>
           <span className="flex items-center gap-2">
-            {endpoint.setup?.callbacksNeedUpdate && <span className="text-xs text-(--status-task-blocked)">Callback URLs need attention</span>}
+            {endpoint.setup?.callbacksNeedUpdate && <span className="text-xs text-(--status-task-blocked)">{fullAppsT("fullApps.callback_urls_need_attention_081c6a")}</span>}
             <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
           </span>
         </summary>
@@ -1069,11 +1046,11 @@ function Activity({
         <div
           className="space-y-3 text-sm"
         >
-          <p className="font-medium">Slack callback health</p>
+          <p className="font-medium">{fullAppsT("fullApps.slack_callback_health_035e2b")}</p>
           <p className="text-xs text-muted-foreground">
             {endpoint.setup?.callbacksNeedUpdate
-              ? "Slack callback URLs need an update. Save the current App Manifest, then exercise Events, Interactivity, and the registered command again."
-              : "Paperclip records each callback surface independently after Slack successfully calls it."}
+              ? fullAppsT("fullApps.slack_callback_urls_need_an_update_save_the_current__05d99d")
+              : fullAppsT("fullApps.paperclip_records_each_callback_surface_independentl_b49180")}
           </p>
           <div className="divide-y divide-border border-y border-border">
             {callbackSurfaceRows.map(([label, surface]) => (
@@ -1081,14 +1058,13 @@ function Activity({
                 <p className="text-xs font-medium">{label}</p>
                 <p className="text-xs text-muted-foreground">
                   {surface.status === "current"
-                    ? "Current"
+                    ? fullAppsT("fullApps.current_e0d1b6")
                     : surface.status === "stale"
-                      ? "Stale URL"
-                      : "Not observed"}
+                      ? fullAppsT("fullApps.stale_url_b095f4")
+                      : fullAppsT("externalAgentUi.muse.notObserved")}
                 </p>
                 {surface.observedAt && (
-                  <p className="text-xs text-muted-foreground">
-                    Last observed{" "}
+                  <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.last_observed_ff4188")}{" "}
                     <time
                       dateTime={surface.observedAt}
                       title={surface.observedAt}
@@ -1113,28 +1089,22 @@ function Activity({
                 variant="outline"
                 disabled={lifecycle.isPending}
                 onClick={() => lifecycle.mutate("pause")}
-              >
-                {lifecycle.isPending && lifecycleAction === "pause" ? (
+              ><FullAppsTrans i18nKey="fullApps.pause_e4efb9" components={{ part1: <>{lifecycle.isPending && lifecycleAction === "pause" ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   <Pause />
-                )}
-                Pause
-              </Button>
+                )}</> }} /></Button>
             )}
             {status === "paused" && (
               <Button
                 variant="outline"
                 disabled={lifecycle.isPending}
                 onClick={() => lifecycle.mutate("resume")}
-              >
-                {lifecycle.isPending && lifecycleAction === "resume" ? (
+              ><FullAppsTrans i18nKey="fullApps.resume_78de64" components={{ part1: <>{lifecycle.isPending && lifecycleAction === "resume" ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   <Play />
-                )}
-                Resume
-              </Button>
+                )}</> }} /></Button>
             )}
             {[
               "active",
@@ -1157,8 +1127,8 @@ function Activity({
               >
                 <RefreshCw />
                 {status === "draft" || status === "verifying"
-                  ? "Finish setup"
-                  : "Reconnect"}
+                  ? fullAppsT("agentSetupUi.setup.finish")
+                  : fullAppsT("fullApps.reconnect_bf8a9e")}
               </Button>
             )}
             <Button
@@ -1167,9 +1137,7 @@ function Activity({
               disabled={lifecycle.isPending}
               onClick={() => setRemoveOpen(true)}
             >
-              <Trash2 />
-              Remove connection
-            </Button>
+              <Trash2 />{fullAppsT("fullApps.remove_connection_e9e9e2")}</Button>
           </div>
           {status !== "draft" && status !== "verifying" && (
             <p className="text-xs text-muted-foreground">
@@ -1182,41 +1150,34 @@ function Activity({
       </details>
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold">Recent activity</h3>
-          {endpoint.provider === "speko" && !cursor && <Button size="sm" variant="ghost" onClick={() => { void query.refetch(); calls.onRetry(); }} disabled={query.isFetching || calls.loading}>Refresh</Button>}
+          <h3 className="text-sm font-semibold">{fullAppsT("fullApps.recent_activity_6cb44b")}</h3>
+          {endpoint.provider === "speko" && !cursor && <Button size="sm" variant="ghost" onClick={() => { void query.refetch(); calls.onRetry(); }} disabled={query.isFetching || calls.loading}>{fullAppsT("externalAgentUi.common.refresh")}</Button>}
         </div>
         {endpoint.provider === "agentmail" && rows.some((item) => item.kind === "publication" && item.status === "delivery_unknown") && (
-          <p className="text-sm text-muted-foreground">
-            Review unconfirmed email delivery in the{" "}
-            <Link to={`/apps/chat/${endpointId}/conversations`} className="underline underline-offset-4">conversation’s task</Link>.
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.review_unconfirmed_email_delivery_in_the_04b5b7")}{" "}
+            <Link to={`/apps/chat/${endpointId}/conversations`} className="underline underline-offset-4">{fullAppsT("fullApps.conversation_s_task_2d8821")}</Link>.
           </p>
         )}
         <div className="divide-y divide-border border-y border-border">
           {(query.isLoading || calls.loading) && (
             <div className="flex items-center gap-2 py-5 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading activity…
-            </div>
+              <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_activity_a389c3")}</div>
           )}
           {query.isError && (
             <div className="flex flex-wrap items-center justify-between gap-3 py-4">
-              <p className="text-sm text-destructive" role="alert">
-                Connection activity could not be loaded.
-              </p>
+              <p className="text-sm text-destructive" role="alert">{fullAppsT("fullApps.connection_activity_could_not_be_loaded_65047e")}</p>
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => query.refetch()}
-              >
-                Try again
-              </Button>
+              >{fullAppsT("fullApps.try_again_d8b839")}</Button>
             </div>
           )}
           {endpoint.provider === "speko" && !cursor && [
-            calls.error && `Call activity could not be loaded. ${calls.error}`,
-            calls.incomingError && `Unapproved calls could not be loaded. ${calls.incomingError}`,
-            calls.endError && `The call could not be ended. ${calls.endError}`,
-          ].filter(Boolean).map((message) => <div key={String(message)} className="flex flex-wrap items-center justify-between gap-3 py-4"><p role="alert" className="text-sm text-destructive">{message}</p><Button size="sm" variant="outline" onClick={calls.onRetry}>Retry calls</Button></div>)}
+            calls.error && fullAppsT("fullApps.message_7dbbac8ded6f", { value1: calls.error }),
+            calls.incomingError && fullAppsT("fullApps.message_765a35fe21d0", { value1: calls.incomingError }),
+            calls.endError && fullAppsT("fullApps.message_c0e954d7093e", { value1: calls.endError }),
+          ].filter(Boolean).map((message) => <div key={String(message)} className="flex flex-wrap items-center justify-between gap-3 py-4"><p role="alert" className="text-sm text-destructive">{message}</p><Button size="sm" variant="outline" onClick={calls.onRetry}>{fullAppsT("fullApps.retry_calls_86c003")}</Button></div>)}
           {activityEntries.map(entry => {
             if (entry.kind === "call") return <SpekoCallActivityItem key={entry.id} entry={entry.entry} presentation="activity" onEnd={calls.onEnd} ending={calls.endingSessionId === entry.entry.session.id} />;
             if (entry.kind === "unapproved_call") return <SpekoUnapprovedCallActivityItem key={entry.id} call={entry.call} presentation="activity" />;
@@ -1258,42 +1219,35 @@ function Activity({
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label={`Replay failed ${item.kind}`}
+                    aria-label={fullAppsT("fullApps.replay_failed_ba20b0", { value1: item.kind })}
                     disabled={replay.isPending}
                     onClick={() => replay.mutate(item)}
-                  >
-                    {replay.isPending && replay.variables?.id === item.id ? (
+                  ><FullAppsTrans i18nKey="fullApps.replay_573457" components={{ part1: <>{replay.isPending && replay.variables?.id === item.id ? (
                       <Loader2 className="animate-spin" />
                     ) : (
                       <RefreshCw />
-                    )}
-                    Replay
-                  </Button>
+                    )}</> }} /></Button>
                 )}
                 {endpoint.provider !== "agentmail" && isResolutionEligible(item) && (
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setResolutionItem(item)}
-                  >
-                    Resolve
-                  </Button>
+                  >{fullAppsT("decisionsUi.feed.verb.resolve")}</Button>
                 )}
               </div>
             );
           })}
           {!query.isLoading && !query.isError && !calls.loading && !calls.error && !calls.incomingError && activityEntries.length === 0 && (
-            <p className="py-5 text-sm text-muted-foreground">
-              No connection activity yet.
-            </p>
+            <p className="py-5 text-sm text-muted-foreground">{fullAppsT("fullApps.no_connection_activity_yet_3ba50f")}</p>
           )}
         </div>
       </div>
-      <nav aria-label="Activity pagination" className="flex items-center justify-between gap-3">
-        <span className="text-xs text-muted-foreground">Page {cursors.length}</span>
+      <nav aria-label={fullAppsT("fullApps.activity_pagination_027564")} className="flex items-center justify-between gap-3">
+        <span className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.page_c170ca" components={{ part1: <>{cursors.length}</> }} /></span>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" disabled={cursors.length === 1 || query.isFetching} onClick={() => setCursors((pages) => pages.slice(0, -1))}>Previous</Button>
-          <Button size="sm" variant="outline" disabled={!query.data?.nextCursor || query.isFetching || query.isError} onClick={() => { if (query.data?.nextCursor) setCursors((pages) => [...pages, query.data.nextCursor!]); }}>Next</Button>
+          <Button size="sm" variant="outline" disabled={cursors.length === 1 || query.isFetching} onClick={() => setCursors((pages) => pages.slice(0, -1))}>{fullAppsT("fullApps.previous_a57b08")}</Button>
+          <Button size="sm" variant="outline" disabled={!query.data?.nextCursor || query.isFetching || query.isError} onClick={() => { if (query.data?.nextCursor) setCursors((pages) => [...pages, query.data.nextCursor!]); }}>{fullAppsT("fullApps.next_1ff57a")}</Button>
         </div>
       </nav>
       <AlertDialog
@@ -1304,25 +1258,23 @@ function Activity({
           <AlertDialogHeader>
             <AlertDialogTitle>
               {resolutionItem?.actionType === "slash_task_start"
-                ? "Resolve unconfirmed task start"
+                ? fullAppsT("fullApps.resolve_unconfirmed_task_start_24ac2c")
                 : resolutionItem?.actionType === "provider_effect"
-                  ? "Resolve unconfirmed provider reply"
-                  : "Resolve unconfirmed delivery"}
+                  ? fullAppsT("fullApps.resolve_unconfirmed_provider_reply_51da03")
+                  : fullAppsT("fullApps.resolve_unconfirmed_delivery_a1666e")}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {resolutionItem?.actionType === "slash_task_start"
-                ? "Paperclip lost confirmation after asking Slack to start the task. Check Slack first. Retrying can create a duplicate starter message and task."
+                ? fullAppsT("fullApps.paperclip_lost_confirmation_after_asking_slack_to_st_b30cde")
                 : resolutionItem?.actionType === "provider_effect"
-                  ? "Paperclip lost confirmation after sending this provider reply. Check the provider first. Marking it delivered applies any pending Paperclip state change; retrying can create a duplicate message."
+                  ? fullAppsT("fullApps.paperclip_lost_confirmation_after_sending_this_provi_cfdcf6")
                   : resolutionItem
                     ? activityResolutionDescription(resolutionItem)
                     : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:flex-wrap">
-            <AlertDialogCancel disabled={resolveActivity.isPending}>
-              Keep unresolved
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={resolveActivity.isPending}>{fullAppsT("fullApps.keep_unresolved_0de107")}</AlertDialogCancel>
             {resolutionItem &&
               activityResolutionActions(resolutionItem).includes("cancel") && (
                 <Button
@@ -1337,12 +1289,12 @@ function Activity({
                   }
                 >
                   {resolutionItem.actionType === "slash_task_start"
-                    ? "Cancel task start"
+                    ? fullAppsT("fullApps.cancel_task_start_a2029d")
                     : resolutionItem.actionType === "provider_effect"
-                      ? "Cancel provider reply"
+                      ? fullAppsT("fullApps.cancel_provider_reply_7cb71e")
                       : resolutionItem.fileTransfer
-                        ? "Cancel file transfer"
-                        : "Cancel publication"}
+                        ? fullAppsT("fullApps.cancel_file_transfer_ad463f")
+                        : fullAppsT("fullApps.cancel_publication_43d329")}
                 </Button>
               )}
             {resolutionItem &&
@@ -1361,8 +1313,8 @@ function Activity({
                   }
                 >
                   {resolutionItem.fileTransfer
-                    ? "Retry file notification"
-                    : "Retry anyway"}
+                    ? fullAppsT("fullApps.retry_file_notification_a2a166")
+                    : fullAppsT("fullApps.retry_anyway_de4695")}
                 </Button>
               )}
             {resolutionItem &&
@@ -1380,9 +1332,7 @@ function Activity({
                       });
                     }
                   }}
-                >
-                  Mark delivered
-                </AlertDialogAction>
+                >{fullAppsT("fullApps.mark_delivered_3a4765")}</AlertDialogAction>
               )}
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1390,34 +1340,25 @@ function Activity({
       <AlertDialog open={removeOpen} onOpenChange={setRemoveOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove this connection?</AlertDialogTitle>
-            <AlertDialogDescription>
-              {endpoint.assignedAgentName} will stop receiving new work from
-              {` ${providerNames[endpoint.provider]}`}. Existing Paperclip tasks
-              remain available.{" "}
-              {providerLifecycleGuidance[endpoint.provider].remove}
-              {endpoint.provider === "slack" && (
+            <AlertDialogTitle>{fullAppsT("fullApps.remove_this_connection_e91e08")}</AlertDialogTitle>
+            <AlertDialogDescription><FullAppsTrans i18nKey="fullApps.will_stop_receiving_new_work_from_existing_paperclip_ba1e02" components={{ part1: <>{endpoint.assignedAgentName}</>, part2: <>{` ${providerNames[endpoint.provider]}`}</>, part3: <>{" "}</>, part4: <>{providerLifecycleGuidance[endpoint.provider].remove}</>, part5: <>{endpoint.provider === "slack" && (
                 <> <a
                   href={endpoint.setup?.slackRegistration?.managementUrl ?? "https://api.slack.com/apps"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-4"
-                >Open Slack app settings</a> to manage or delete the Slack app.</>
-              )}
-            </AlertDialogDescription>
+                >{fullAppsT("fullApps.open_slack_app_settings_9d209c")}</a>{fullAppsT("fullApps.to_manage_or_delete_the_slack_app_9069ef")}</>
+              )}</> }} /></AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{fullAppsT("fullApps.cancel_19766e")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={lifecycle.isPending}
               onClick={() => lifecycle.mutate("remove")}
-            >
-              {lifecycle.isPending && (
+            ><FullAppsTrans i18nKey="fullApps.remove_connection_790209" components={{ part1: <>{lifecycle.isPending && (
                 <Loader2 className="h-4 w-4 animate-spin" />
-              )}
-              Remove connection
-            </AlertDialogAction>
+              )}</> }} /></AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

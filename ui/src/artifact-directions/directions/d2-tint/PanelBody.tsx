@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import type { LabArtifact } from "../../kit";
 import { PanelIndex } from "./PanelIndex";
@@ -22,12 +23,13 @@ import { buildSections, type PanelFilter } from "./panel-model";
  * the list scrolls.
  */
 export function PanelBody({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   const [filter, setFilter] = useState<PanelFilter>("all");
   const sections = useMemo(() => buildSections(artifacts, filter), [artifacts, filter]);
 
   if (artifacts.length === 0) {
     // The shipped empty state, word for word.
-    return <p className="px-1 py-6 text-sm text-(--tint-ink-2)">No artifacts yet. Work products, documents, and agent-produced files will appear here.</p>;
+    return <p className="px-1 py-6 text-sm text-(--tint-ink-2)">{fullSharedT("taskPanels.artifacts.empty")}</p>;
   }
 
   return (

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import type { WorkspaceFileSelector } from "@paperclipai/shared";
 import type { SidePanelTabRecord, SidePanelTabsState } from "@/components/side-panel";
@@ -221,20 +222,20 @@ export function writeTaskSidePanelState(
 }
 
 export function taskPanelPropertiesTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "properties", type: "properties", label: "Properties", closable: true, contentMode: "padded", payload: { kind: "properties" } };
+  return { id: "properties", type: "properties", label: fullSharedT("taskPanels.tabs.properties"), closable: true, contentMode: "padded", payload: { kind: "properties" } };
 }
 
 export function taskPanelSubtasksTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "subtasks", type: "subtasks", label: "Subtasks", closable: true, contentMode: "padded", payload: { kind: "subtasks" } };
+  return { id: "subtasks", type: "subtasks", label: fullSharedT("taskPanels.tabs.subtasks"), closable: true, contentMode: "padded", payload: { kind: "subtasks" } };
 }
 
 /** Agent chats only: every task the conversation's agent has worked on. */
 export function taskPanelAgentTasksTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "agent-tasks", type: "agent-tasks", label: "Tasks", closable: true, contentMode: "padded", payload: { kind: "agent-tasks" } };
+  return { id: "agent-tasks", type: "agent-tasks", label: fullSharedT("sidebar.tasks"), closable: true, contentMode: "padded", payload: { kind: "agent-tasks" } };
 }
 
 export function taskPanelArtifactsTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "artifacts", type: "artifacts", label: "Artifacts", closable: true, contentMode: "padded", payload: { kind: "artifacts" } };
+  return { id: "artifacts", type: "artifacts", label: fullSharedT("sidebar.artifacts"), closable: true, contentMode: "padded", payload: { kind: "artifacts" } };
 }
 
 export function taskPanelSkillTab(skillId: string, label = "Skill"): SidePanelTabRecord<TaskSidePanelTabPayload> {
@@ -256,7 +257,7 @@ export function taskPanelFilesTab(): SidePanelTabRecord<TaskSidePanelTabPayload>
   return {
     id: "files",
     type: "files-browser",
-    label: "Files",
+    label: fullSharedT("taskPanels.tabs.files"),
     closable: true,
     contentMode: "full-bleed",
     payload: { kind: "files-browser", query: null, folderPath: null, projectId: null, workspaceId: null },
@@ -298,7 +299,7 @@ export function taskPanelAttachmentTab(attachmentId: string, title: string): Sid
 }
 
 export function taskPanelBrowserTab(browserId: string): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: `browser:${browserId}`, type: "browser", label: "Browser", closable: true, contentMode: "full-bleed", payload: { kind: "browser", browserId } };
+  return { id: `browser:${browserId}`, type: "browser", label: fullSharedT("taskPanels.tabs.browser"), closable: true, contentMode: "full-bleed", payload: { kind: "browser", browserId } };
 }
 
 export function taskPanelDisplayLabel(tab: SidePanelTabRecord<TaskSidePanelTabPayload>, t: TFunction): string {

@@ -1,3 +1,4 @@
+import { t as fullAppsT } from "@/i18n";
 import {
   SMOKE_RUN_STEP_PATHS,
   type SmokeRun,
@@ -19,13 +20,13 @@ import {
  */
 
 export const SMOKE_PATH_LABELS: Record<SmokeRunStepPath, { title: string; detail: string }> = {
-  P1: { title: "Remote HTTP · OAuth", detail: "HTTP MCP fixture behind the fake OAuth provider" },
-  P2: { title: "Remote HTTP · API key", detail: "HTTP MCP fixture with a static bearer key" },
-  P3: { title: "Local stdio (template)", detail: "stdio fixture via the runtime supervisor" },
-  P4: { title: "Plugin integration", detail: "plugin-provided catalog entry + install flow" },
-  P5: { title: "Paste-a-config import", detail: "prosumer import via Advanced setup" },
-  P6: { title: "Token broker / gateway", detail: "run-scoped connection token, TTL + scope checks" },
-  P7: { title: "Governance surfaces", detail: "profiles, ask-first rules, quarantine" },
+  P1: { get title() { return fullAppsT("fullApps.remote_http_oauth_d454ee"); }, get detail() { return fullAppsT("fullApps.http_mcp_fixture_behind_the_fake_oauth_provider_aa7e88"); } },
+  P2: { get title() { return fullAppsT("fullApps.remote_http_api_key_8f973a"); }, get detail() { return fullAppsT("fullApps.http_mcp_fixture_with_a_static_bearer_key_920c34"); } },
+  P3: { get title() { return fullAppsT("fullApps.local_stdio_template_6c513e"); }, get detail() { return fullAppsT("fullApps.stdio_fixture_via_the_runtime_supervisor_5fde46"); } },
+  P4: { get title() { return fullAppsT("fullApps.plugin_integration_d16a5e"); }, get detail() { return fullAppsT("fullApps.plugin_provided_catalog_entry_install_flow_0c29bc"); } },
+  P5: { get title() { return fullAppsT("fullApps.paste_a_config_import_6c5d14"); }, get detail() { return fullAppsT("fullApps.prosumer_import_via_advanced_setup_5d868f"); } },
+  P6: { get title() { return fullAppsT("fullApps.token_broker_gateway_956ed6"); }, get detail() { return fullAppsT("fullApps.run_scoped_connection_token_ttl_scope_checks_1eb1ef"); } },
+  P7: { get title() { return fullAppsT("fullApps.governance_surfaces_d4f862"); }, get detail() { return fullAppsT("fullApps.profiles_ask_first_rules_quarantine_3958b9"); } },
 };
 
 export interface LifecycleStage {
@@ -37,14 +38,14 @@ export interface LifecycleStage {
 
 /** The PAP-12373 governed lifecycle, in order (plan §3). */
 export const LIFECYCLE_STAGES: LifecycleStage[] = [
-  { key: "connect", label: "Connect", match: ["connect", "oauth", "login", "auth"] },
-  { key: "discover", label: "Discover catalog", match: ["discover", "catalog", "list-tools"] },
-  { key: "read", label: "Allowed read", match: ["read", "allowed"] },
-  { key: "write", label: "Ask-first write", match: ["write", "approve", "ask-first", "askfirst", "review"] },
-  { key: "deny", label: "Denied call", match: ["deny", "denied", "block", "forbidden"] },
-  { key: "quarantine", label: "Schema-change quarantine", match: ["quarantine", "schema"] },
-  { key: "revoke", label: "Revoke", match: ["revoke"] },
-  { key: "audit", label: "Audit evidence", match: ["audit", "activity", "evidence"] },
+  { key: "connect", get label() { return fullAppsT("fullApps.connect_1a2303"); }, match: ["connect", "oauth", "login", "auth"] },
+  { key: "discover", get label() { return fullAppsT("fullApps.discover_catalog_816990"); }, match: ["discover", "catalog", "list-tools"] },
+  { key: "read", get label() { return fullAppsT("fullApps.allowed_read_c4e65f"); }, match: ["read", "allowed"] },
+  { key: "write", get label() { return fullAppsT("fullApps.ask_first_write_5fe97d"); }, match: ["write", "approve", "ask-first", "askfirst", "review"] },
+  { key: "deny", get label() { return fullAppsT("fullApps.denied_call_a60746"); }, match: ["deny", "denied", "block", "forbidden"] },
+  { key: "quarantine", get label() { return fullAppsT("fullApps.schema_change_quarantine_679816"); }, match: ["quarantine", "schema"] },
+  { key: "revoke", get label() { return fullAppsT("taskProperties.share.revoke"); }, match: ["revoke"] },
+  { key: "audit", get label() { return fullAppsT("fullApps.audit_evidence_74dbcf"); }, match: ["audit", "activity", "evidence"] },
 ];
 
 /** Fold a free-form scenario step onto a canonical lifecycle stage, or null. */

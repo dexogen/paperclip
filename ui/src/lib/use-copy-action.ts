@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { copyTextToClipboard } from "./clipboard";
@@ -17,6 +19,7 @@ const RESET_MS = 1500;
  * line `AdapterLoginChrome.test.tsx` already holds for its own copy button.
  */
 export function useCopyAction(resetMs: number = RESET_MS) {
+  useFullSharedTranslation();
   const [status, setStatus] = useState<CopyStatus>("idle");
   const timerRef = useRef<number | null>(null);
   /**
@@ -74,6 +77,7 @@ export function useCopyAction(resetMs: number = RESET_MS) {
  * the success toast waits for the write to resolve.
  */
 export function useCopyToast() {
+  useFullSharedTranslation();
   const toastActions = useOptionalToastActions();
   const pushToast = toastActions?.pushToast;
 
@@ -89,14 +93,14 @@ export function useCopyToast() {
         return true;
       } catch {
         pushToast?.({
-          title: "Couldn’t copy to clipboard",
-          body: "Select and copy the value manually.",
+          title: fullSharedT("fullShared.couldn_t_copy_to_clipboard_27990e"),
+          body: fullSharedTailT("fullSharedTail.copyManually"),
           tone: "error",
           dedupeKey: "copy-failed",
         });
         return false;
       }
     },
-    [pushToast],
+    [fullSharedI18n.language, pushToast],
   );
 }

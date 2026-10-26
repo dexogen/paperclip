@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 // token-extraction: allowlisted — intentional one-off decoration (DECISION-SHEET.md B1
 // user ruling). The bg-[...gradient...] / shadow-[...] literals in this demo/UX-lab page
 // are deliberate one-off decoration, reverted from --gradient-extract-*/--shadow-extract-*
@@ -26,26 +28,26 @@ import {
 const inviteRoleOptions = [
   {
     value: "viewer",
-    label: "Viewer",
-    description: "Can view organization work and follow along.",
+    get label() { return fullSharedT("authGap.roleViewer"); },
+    get description() { return fullSharedT("fullShared.can_view_organization_work_and_follow_along_c0074e"); },
     gets: "View-only organization membership.",
   },
   {
     value: "operator",
-    label: "Operator",
-    description: "Can edit organization work and invite people.",
+    get label() { return fullSharedT("authGap.roleOperator"); },
+    get description() { return fullSharedT("fullShared.can_edit_organization_work_and_invite_people_ae45d4"); },
     gets: "Full editing and audit access. Cannot approve join requests or manage member permissions.",
   },
   {
     value: "admin",
-    label: "Admin",
-    description: "Recommended for operators who need to invite people, create agents, and approve joins.",
+    get label() { return fullSharedT("authGap.roleAdmin"); },
+    get description() { return fullSharedT("fullShared.recommended_for_operators_who_need_to_invite_people__508b27"); },
     gets: "Can create agents, invite users, assign tasks, and approve join requests.",
   },
   {
     value: "owner",
-    label: "Owner",
-    description: "Full organization access, including membership management.",
+    get label() { return fullSharedT("fullShared.owner_4b1b8a"); },
+    get description() { return fullSharedT("fullShared.full_organization_access_including_membership_manage_050eac"); },
     gets: "Everything in Admin, plus managing members.",
   },
 ] as const;
@@ -110,6 +112,7 @@ function LabSection({
   accentClassName?: string;
   children: ReactNode;
 }) {
+  useFullSharedTranslation();
   return (
     <section
       className={cn(
@@ -142,6 +145,7 @@ function StatusCard({
   body: string;
   tone?: "default" | "warn" | "success" | "error";
 }) {
+  useFullSharedTranslation();
   const toneClassName = {
     default: "border-border/70 bg-background/85",
     warn: "border-amber-400/40 bg-amber-500/[0.08]",
@@ -171,6 +175,7 @@ function InviteLandingShell({
   left: ReactNode;
   right: ReactNode;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="overflow-hidden rounded-(--rad-28) border border-zinc-800 bg-zinc-950 shadow-[0_30px_80px_rgba(2,6,23,0.55)]">
       <div className="grid gap-px bg-zinc-800 lg:grid-cols-(--gtc-37)">
@@ -194,6 +199,7 @@ function InviteSummaryPanel({
   requestedAccess: string;
   signedInLabel?: string;
 }) {
+  useFullSharedTranslation();
   return (
     <>
       <div className="flex items-start gap-4">
@@ -203,29 +209,28 @@ function InviteSummaryPanel({
           className="h-16 w-16 rounded-none border border-zinc-800"
         />
         <div className="min-w-0">
-          <p className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">You&apos;ve been invited to join Paperclip</p>
+          <p className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{fullSharedT("authGap.invitedToPaperclip")}</p>
           <h3 className="mt-2 text-2xl font-semibold text-zinc-100">{title}</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">{description}</p>
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <MetaCard label="Organization" value="Acme Robotics" />
-        <MetaCard label="Invited by" value="Board User" />
-        <MetaCard label="Requested access" value={requestedAccess} />
-        <MetaCard label="Invite expires" value="Mar 7, 2027" />
+        <MetaCard label={fullSharedT("sidebar.organization")} value="Acme Robotics" />
+        <MetaCard label={fullSharedT("authGap.invitedBy")} value="Board User" />
+        <MetaCard label={fullSharedT("authGap.requestedAccess")} value={requestedAccess} />
+        <MetaCard label={fullSharedT("authGap.inviteExpires")} value="Mar 7, 2027" />
       </div>
 
       {inviteMessage ? (
         <div className="border border-amber-500/40 bg-amber-500/10 p-4">
-          <div className="text-xs uppercase tracking-(--tracking-caps) text-amber-200/80">Message from inviter</div>
+          <div className="text-xs uppercase tracking-(--tracking-caps) text-amber-200/80">{fullSharedT("authGap.inviterMessage")}</div>
           <p className="mt-2 text-sm leading-6 text-amber-50">{inviteMessage}</p>
         </div>
       ) : null}
 
       {signedInLabel ? (
-        <div className="border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">
-          Signed in as <span className="font-medium">{signedInLabel}</span>.
+        <div className="border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">{t("fullDiagnostics.signedInAs")}{" "}<span className="font-medium">{signedInLabel}</span>.
         </div>
       ) : null}
     </>
@@ -233,6 +238,7 @@ function InviteSummaryPanel({
 }
 
 function MetaCard({ label, value }: { label: string; value: string }) {
+  useFullSharedTranslation();
   return (
     <div className="border border-zinc-800 p-3">
       <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{label}</div>
@@ -250,16 +256,17 @@ function InlineAuthPreview({
   feedback?: { tone: "info" | "error"; text: string };
   working?: boolean;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-5">
       <div>
         <h3 className="text-lg font-semibold text-zinc-100">
-          {mode === "sign_up" ? "Create your account" : "Sign in to continue"}
+          {mode === "sign_up" ? fullSharedT("authGap.createYourAccount") : fullSharedT("authGap.signInToContinue")}
         </h3>
         <p className="mt-1 text-sm text-zinc-400">
           {mode === "sign_up"
-            ? "Start with a Paperclip account. After that, you'll come right back here to accept the invite for Acme Robotics."
-            : "Use the Paperclip account that already matches this invite. If you do not have one yet, switch back to create account."}
+            ? t("fullDiagnostics.startWithAPaperclipAccountAfterThat")
+            : fullSharedT("authGap.existingAccountIntro")}
         </p>
       </div>
 
@@ -272,9 +279,7 @@ function InlineAuthPreview({
               ? "border-zinc-100 bg-zinc-100 text-zinc-950"
               : "border-zinc-800 text-zinc-300 hover:border-zinc-600",
           )}
-        >
-          Create account
-        </button>
+        >{fullSharedT("authGap.createAccount")}</button>
         <button
           type="button"
           className={cn(
@@ -283,24 +288,22 @@ function InlineAuthPreview({
               ? "border-zinc-100 bg-zinc-100 text-zinc-950"
               : "border-zinc-800 text-zinc-300 hover:border-zinc-600",
           )}
-        >
-          I already have an account
-        </button>
+        >{fullSharedT("authGap.alreadyHaveAccount")}</button>
       </div>
 
       <form className="space-y-4">
         {mode === "sign_up" ? (
           <label className="block text-sm">
-            <span className="mb-1 block text-zinc-400">Name</span>
+            <span className="mb-1 block text-zinc-400">{fullSharedT("fullShared.name_dcd1d5")}</span>
             <input name="name" className={fieldClassName} defaultValue="Jane Example" readOnly />
           </label>
         ) : null}
         <label className="block text-sm">
-          <span className="mb-1 block text-zinc-400">Email</span>
+          <span className="mb-1 block text-zinc-400">{fullSharedT("auth.email")}</span>
           <input name="email" type="email" className={fieldClassName} defaultValue="jane@example.com" readOnly />
         </label>
         <label className="block text-sm">
-          <span className="mb-1 block text-zinc-400">Password</span>
+          <span className="mb-1 block text-zinc-400">{fullSharedT("auth.password")}</span>
           <input name="password" type="password" className={fieldClassName} defaultValue="supersecret" readOnly />
         </label>
         {feedback ? (
@@ -309,34 +312,33 @@ function InlineAuthPreview({
           </p>
         ) : null}
         <Button type="button" className="w-full rounded-none" disabled={working}>
-          {working ? "Working..." : mode === "sign_in" ? "Sign in and continue" : "Create account and continue"}
+          {working ? fullSharedT("taskChatUi.classicDisplay.workingWaiting") : mode === "sign_in" ? fullSharedT("authGap.signInContinue") : fullSharedT("authGap.createContinue")}
         </Button>
       </form>
 
       <p className="text-xs leading-5 text-zinc-500">
         {mode === "sign_up"
-          ? "Already signed up before? Use the existing-account option instead so the invite lands on the right Paperclip user."
-          : "No account yet? Switch back to create account so you can accept the invite with a new login."}
+          ? fullSharedT("authGap.existingAccountHint")
+          : fullSharedT("authGap.newAccountHint")}
       </p>
     </div>
   );
 }
 
 function AgentRequestPreview() {
+  useFullSharedTranslation();
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-zinc-100">Submit agent details</h3>
-        <p className="mt-1 text-sm text-zinc-400">
-          This invite will create an approval request for a new agent in Acme Robotics.
-        </p>
+        <h3 className="text-lg font-semibold text-zinc-100">{fullSharedT("authGap.agentDetails")}</h3>
+        <p className="mt-1 text-sm text-zinc-400">{t("fullDiagnostics.thisInviteWillCreateAnApprovalRequest")}</p>
       </div>
       <label className="block text-sm">
-        <span className="mb-1 block text-zinc-400">Agent name</span>
+        <span className="mb-1 block text-zinc-400">{fullSharedT("onboarding.agent.name")}</span>
         <input className={fieldClassName} defaultValue="Acme Ops Agent" readOnly />
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block text-zinc-400">Adapter type</span>
+        <span className="mb-1 block text-zinc-400">{fullSharedT("authGap.adapterType")}</span>
         <select className={fieldClassName} defaultValue="codex_local" disabled>
           <option value="codex_local">Codex</option>
           <option value="claude_local">Claude Code</option>
@@ -344,7 +346,7 @@ function AgentRequestPreview() {
         </select>
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block text-zinc-400">Capabilities</span>
+        <span className="mb-1 block text-zinc-400">{fullSharedT("approvalsUi.capabilities")}</span>
         <textarea
           className={fieldClassName}
           rows={4}
@@ -352,9 +354,7 @@ function AgentRequestPreview() {
           readOnly
         />
       </label>
-      <Button type="button" className="w-full rounded-none">
-        Submit request
-      </Button>
+      <Button type="button" className="w-full rounded-none">{fullSharedT("authGap.submitRequest")}</Button>
     </div>
   );
 }
@@ -368,25 +368,24 @@ function AcceptInvitePreview({
   isCurrentMember?: boolean;
   error?: string;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-zinc-100">Accept organization invite</h3>
+        <h3 className="text-lg font-semibold text-zinc-100">{fullSharedT("authGap.acceptOrganization")}</h3>
         <p className="mt-1 text-sm text-zinc-400">
           {autoAccept
-            ? "Granting your access to Acme Robotics."
+            ? t("fullDiagnostics.grantingYourAccessToAcmeRobotics")
             : isCurrentMember
-              ? "This account already belongs to Acme Robotics."
-              : "This will grant or complete your access to Acme Robotics."}
+              ? t("fullDiagnostics.thisAccountAlreadyBelongsToAcmeRobotics")
+              : t("fullDiagnostics.thisWillGrantOrCompleteYourAccess")}
         </p>
       </div>
       {error ? <p className="text-xs text-red-400">{error}</p> : null}
       {autoAccept ? (
-        <div className="text-sm text-zinc-400">Submitting request...</div>
+        <div className="text-sm text-zinc-400">{fullSharedT("authGap.submittingRequest")}</div>
       ) : (
-        <Button type="button" className="w-full rounded-none" disabled={isCurrentMember}>
-          Accept invite
-        </Button>
+        <Button type="button" className="w-full rounded-none" disabled={isCurrentMember}>{fullSharedT("authGap.acceptInvite")}</Button>
       )}
     </div>
   );
@@ -405,6 +404,7 @@ function InviteResultPreview({
   onboardingTextUrl?: string;
   joinedNow?: boolean;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="mx-auto max-w-md border border-zinc-800 bg-zinc-950 p-6 text-zinc-100">
       <div className="flex items-center gap-3">
@@ -418,32 +418,25 @@ function InviteResultPreview({
       <div className="mt-4 space-y-3">
         <p className="text-sm text-zinc-400">{description}</p>
         {joinedNow ? (
-          <Button type="button" className="w-full rounded-none">
-            Open board
-          </Button>
+          <Button type="button" className="w-full rounded-none">{fullSharedT("boardClaim.open")}</Button>
         ) : (
           <>
             <div className="border border-zinc-800 p-3">
-              <p className="mb-1 text-xs text-zinc-500">Approval page</p>
-              <a className="text-sm text-zinc-200 underline underline-offset-2" href="/company/settings/members">
-                Settings → Members
-              </a>
+              <p className="mb-1 text-xs text-zinc-500">{fullSharedT("authGap.approvalPage")}</p>
+              <a className="text-sm text-zinc-200 underline underline-offset-2" href="/company/settings/members">{fullSharedT("authGap.settingsMembers")}</a>
             </div>
-            <p className="text-xs text-zinc-500">
-              Refresh this page after you&apos;ve been approved — you&apos;ll be redirected automatically.
-            </p>
+            <p className="text-xs text-zinc-500">{fullSharedT("authGap.refreshAfterApproval")}</p>
           </>
         )}
         {claimSecret ? (
           <div className="space-y-1 border border-zinc-800 p-3 text-xs text-zinc-400">
-            <div className="text-zinc-200">Claim secret</div>
+            <div className="text-zinc-200">{fullSharedT("authGap.claimSecret")}</div>
             <div className="font-mono break-all">{claimSecret}</div>
             <div className="font-mono break-all">POST /api/agents/claim-api-key</div>
           </div>
         ) : null}
         {onboardingTextUrl ? (
-          <div className="text-xs text-zinc-400">
-            Onboarding: <span className="font-mono break-all">{onboardingTextUrl}</span>
+          <div className="text-xs text-zinc-400">{t("fullDiagnostics.onboarding")}{" "}<span className="font-mono break-all">{onboardingTextUrl}</span>
           </div>
         ) : null}
       </div>
@@ -452,6 +445,7 @@ function InviteResultPreview({
 }
 
 function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error?: string }) {
+  useFullSharedTranslation();
   return (
     <div className="overflow-hidden rounded-(--rad-28) border border-border/70 bg-background shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
       <div className="grid gap-px bg-border/60 md:grid-cols-2">
@@ -462,17 +456,17 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
               <span className="text-sm font-medium">Paperclip</span>
             </div>
             <h3 className="text-xl font-semibold">
-              {mode === "sign_in" ? "Sign in to Paperclip" : "Create your Paperclip account"}
+              {mode === "sign_in" ? fullSharedT("auth.signInHeading") : fullSharedT("auth.signUpHeading")}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {mode === "sign_in"
-                ? "Use your email and password to access this instance."
-                : "Create an account for this instance. Email confirmation is not required in v1."}
+                ? fullSharedT("auth.signInDescription")
+                : fullSharedT("auth.signUpDescription")}
             </p>
             <div className="mt-6 space-y-4">
               {mode === "sign_up" ? (
                 <label className="block">
-                  <span className="mb-1 block text-xs text-muted-foreground">Name</span>
+                  <span className="mb-1 block text-xs text-muted-foreground">{fullSharedT("fullShared.name_dcd1d5")}</span>
                   <input
                     className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm"
                     defaultValue="Jane Example"
@@ -481,7 +475,7 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
                 </label>
               ) : null}
               <label className="block">
-                <span className="mb-1 block text-xs text-muted-foreground">Email</span>
+                <span className="mb-1 block text-xs text-muted-foreground">{fullSharedT("auth.email")}</span>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm"
                   defaultValue="jane@example.com"
@@ -489,7 +483,7 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-muted-foreground">Password</span>
+                <span className="mb-1 block text-xs text-muted-foreground">{fullSharedT("auth.password")}</span>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm"
                   defaultValue="supersecret"
@@ -498,26 +492,22 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
               </label>
               {error ? <p className="text-xs text-destructive">{error}</p> : null}
               <Button type="button" className="w-full">
-                {mode === "sign_in" ? "Sign In" : "Create Account"}
+                {mode === "sign_in" ? fullSharedT("auth.signIn") : fullSharedT("auth.createAccount")}
               </Button>
             </div>
             <div className="mt-5 text-sm text-muted-foreground">
-              {mode === "sign_in" ? "Need an account?" : "Already have an account?"}{" "}
+              {mode === "sign_in" ? fullSharedT("auth.needAccount") : fullSharedT("auth.haveAccount")}{" "}
               <span className="font-medium text-foreground underline underline-offset-2">
-                {mode === "sign_in" ? "Create one" : "Sign in"}
+                {mode === "sign_in" ? fullSharedT("auth.createOne") : fullSharedT("fullShared.sign_in_bfd402")}
               </span>
             </div>
           </div>
         </div>
         <div className="hidden min-h-(--sz-420px) items-center justify-center bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.18),transparent_48%),linear-gradient(180deg,rgba(15,23,42,0.96),rgba(2,6,23,1))] px-8 py-10 md:flex">
           <div className="max-w-sm space-y-4 text-zinc-200">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/[0.08] px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps) text-cyan-200">
-              Auth preview
-            </div>
-            <div className="text-2xl font-semibold">Side-by-side signup styling review</div>
-            <p className="text-sm leading-6 text-zinc-400">
-              This frame mirrors the production auth surface so spacing, label density, button treatments, and desktop composition are easy to compare.
-            </p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/[0.08] px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps) text-cyan-200">{t("fullDiagnostics.authPreview")}</div>
+            <div className="text-2xl font-semibold">{t("fullDiagnostics.sideBySideSignupStylingReview")}</div>
+            <p className="text-sm leading-6 text-zinc-400">{t("fullDiagnostics.thisFrameMirrorsTheProductionAuthSurface")}</p>
           </div>
         </div>
       </div>
@@ -526,24 +516,21 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
 }
 
 function CompanyInvitesPreview() {
+  useFullSharedTranslation();
   return (
     <div className="grid gap-5 xl:grid-cols-(--gtc-38)">
       <Card className="rounded-(--rad-28) shadow-none">
         <CardHeader className="space-y-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MailPlus className="h-4 w-4" />
-            Organization Invites
-          </div>
+            <MailPlus className="h-4 w-4" />{t("fullDiagnostics.organizationInvites")}</div>
           <div>
-            <CardTitle>Create invite</CardTitle>
-            <CardDescription className="mt-2">
-              Generate a human invite link and choose the default access it should request.
-            </CardDescription>
+            <CardTitle>{fullSharedT("fullShared.create_invite_9f395b")}</CardTitle>
+            <CardDescription className="mt-2">{fullSharedT("fullShared.generate_a_human_invite_link_and_choose_the_default__dd31c5")}</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <fieldset className="space-y-3">
-            <legend className="text-sm font-medium">Choose a role</legend>
+            <legend className="text-sm font-medium">{fullSharedT("fullShared.choose_a_role_a49c49")}</legend>
             <div className="rounded-2xl border border-border">
               {inviteRoleOptions.map((option, index) => (
                 <label
@@ -560,9 +547,7 @@ function CompanyInvitesPreview() {
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-medium">{option.label}</span>
                       {option.value === "operator" ? (
-                        <Badge variant="outline" className="border-border text-muted-foreground">
-                          Default
-                        </Badge>
+                        <Badge variant="outline" className="border-border text-muted-foreground">{fullSharedT("providerSetup.model.default")}</Badge>
                       ) : null}
                     </span>
                     <span className="block max-w-2xl text-sm text-muted-foreground">{option.description}</span>
@@ -573,27 +558,21 @@ function CompanyInvitesPreview() {
             </div>
           </fieldset>
 
-          <div className="rounded-xl border border-border px-4 py-3 text-sm text-muted-foreground">
-            Each invite link is single-use. Human invitees get the selected role immediately after sign-in; agent invites still create a join request for approval.
-          </div>
+          <div className="rounded-xl border border-border px-4 py-3 text-sm text-muted-foreground">{fullSharedT("fullShared.each_invite_link_is_single_use_human_invitees_get_th_879640")}</div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Button type="button">Create invite</Button>
-            <span className="text-sm text-muted-foreground">Invite history below keeps the audit trail.</span>
+            <Button type="button">{fullSharedT("fullShared.create_invite_9f395b")}</Button>
+            <span className="text-sm text-muted-foreground">{fullSharedT("fullShared.invite_history_below_keeps_the_audit_trail_030769")}</span>
           </div>
 
           <div className="space-y-3 rounded-2xl border border-border px-4 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-medium">Latest invite link</div>
-                <div className="text-sm text-muted-foreground">
-                  This URL includes the current Paperclip domain returned by the server.
-                </div>
+                <div className="text-sm font-medium">{fullSharedT("fullShared.latest_invite_link_ee47fa")}</div>
+                <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.this_url_includes_the_current_paperclip_domain_retur_3bad03")}</div>
               </div>
               <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
-                <Check className="h-3.5 w-3.5" />
-                Copied
-              </div>
+                <Check className="h-3.5 w-3.5" />{fullSharedT("taskPanels.preview.copied")}</div>
             </div>
             <button
               type="button"
@@ -603,9 +582,7 @@ function CompanyInvitesPreview() {
             </button>
             <div className="flex flex-wrap gap-2">
               <Button type="button" size="sm" variant="outline">
-                <ExternalLink className="h-4 w-4" />
-                Open invite
-              </Button>
+                <ExternalLink className="h-4 w-4" />{t("fullDiagnostics.openInvite")}</Button>
             </div>
           </div>
         </CardContent>
@@ -615,14 +592,10 @@ function CompanyInvitesPreview() {
         <CardHeader className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <CardTitle>Invite history</CardTitle>
-              <CardDescription className="mt-2">
-                Review invite status, role, inviter, and any linked join request.
-              </CardDescription>
+              <CardTitle>{fullSharedT("fullShared.invite_history_0269fe")}</CardTitle>
+              <CardDescription className="mt-2">{t("fullDiagnostics.reviewInviteStatusRoleInviterAndAny")}</CardDescription>
             </div>
-            <a href="/inbox/requests" className="text-sm underline underline-offset-4">
-              Open join request queue
-            </a>
+            <a href="/inbox/requests" className="text-sm underline underline-offset-4">{fullSharedT("fullShared.open_join_request_queue_3f3aa6")}</a>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -630,12 +603,12 @@ function CompanyInvitesPreview() {
             <table className="min-w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-5 py-3 font-medium text-muted-foreground">State</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Role</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Invited by</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Created</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Join request</th>
-                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">Action</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("runUi.inspector.state")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("approvalsUi.role")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("authGap.invitedBy")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("fullShared.created_d70b9e")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("decisionsUi.source.join")}</th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">{fullSharedT("runUi.inspector.action")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -663,11 +636,9 @@ function CompanyInvitesPreview() {
                     </td>
                     <td className="px-5 py-3 text-right align-top">
                       {invite.action === "Revoke" ? (
-                        <Button type="button" size="sm" variant="outline">
-                          Revoke
-                        </Button>
+                        <Button type="button" size="sm" variant="outline">{fullSharedT("taskProperties.share.revoke")}</Button>
                       ) : (
-                        <span className="text-xs text-muted-foreground">Inactive</span>
+                        <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.inactive_ac7c94")}</span>
                       )}
                     </td>
                   </tr>
@@ -678,16 +649,12 @@ function CompanyInvitesPreview() {
 
           <div className="grid gap-3 md:grid-cols-2">
             <div className="rounded-2xl border border-border p-4">
-              <div className="text-sm font-medium">Empty history state</div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                No invites have been created for this organization yet.
-              </div>
+              <div className="text-sm font-medium">{t("fullDiagnostics.emptyHistoryState")}</div>
+              <div className="mt-2 text-sm text-muted-foreground">{fullSharedT("fullShared.no_invites_have_been_created_for_this_organization_y_c20447")}</div>
             </div>
             <div className="rounded-2xl border border-rose-400/40 bg-rose-500/[0.07] p-4">
-              <div className="text-sm font-medium text-foreground">Permission error</div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                You do not have permission to manage organization invites.
-              </div>
+              <div className="text-sm font-medium text-foreground">{t("fullDiagnostics.permissionError")}</div>
+              <div className="mt-2 text-sm text-muted-foreground">{fullSharedT("fullShared.you_do_not_have_permission_to_manage_organization_in_e61b97")}</div>
             </div>
           </div>
         </CardContent>
@@ -697,44 +664,35 @@ function CompanyInvitesPreview() {
 }
 
 export function InviteUxLab() {
+  useFullSharedTranslation();
   return (
     <div className="space-y-6">
       <div className="overflow-hidden rounded-(--rad-32) border border-border/70 bg-[linear-gradient(135deg,rgba(8,145,178,0.10),transparent_28%),linear-gradient(180deg,rgba(245,158,11,0.10),transparent_44%),var(--background)] shadow-[0_30px_80px_rgba(15,23,42,0.10)]">
         <div className="grid gap-6 lg:grid-cols-(--gtc-39)">
           <div className="p-6 sm:p-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-caps) text-cyan-700 dark:text-cyan-300">
-              <FlaskConical className="h-3.5 w-3.5" />
-              Invite UX Lab
-            </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight">Invite and signup UX review surface</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              This page collects the current invite landing, signup, approval-result, and organization invite-management states in one place so styling changes can be reviewed without recreating each backend condition by hand.
-            </p>
+              <FlaskConical className="h-3.5 w-3.5" />{t("fullDiagnostics.inviteUxLab")}</div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight">{t("fullDiagnostics.inviteAndSignupUxReviewSurface")}</h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">{t("fullDiagnostics.thisPageCollectsTheCurrentInviteLanding")}</p>
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
                 /tests/ux/invites
               </Badge>
-              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
-                signup + invite states
-              </Badge>
-              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">
-                fixture-backed preview
-              </Badge>
+              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">{t("fullDiagnostics.signupInviteStates")}</Badge>
+              <Badge variant="outline" className="rounded-full px-3 py-1 text-(length:--text-nano) uppercase tracking-(--tracking-caps)">{t("fullDiagnostics.fixtureBackedPreview")}</Badge>
             </div>
           </div>
 
           <aside className="border-t border-border/60 bg-background/70 p-6 lg:border-l lg:border-t-0">
-            <div className="mb-4 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-              Covered states
-            </div>
+            <div className="mb-4 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullDiagnostics.coveredStates")}</div>
             <div className="space-y-3">
               {[
-                "Invite loading, access-check, missing-token, and unavailable states",
-                "Inline account creation and sign-in variants, including feedback/error copy",
-                "Human accept, agent request, and auto-accept transitions",
-                "Pending approval, joined-now, claim secret, and onboarding result screens",
-                "Organization invite creation, copied-link, history, empty, and permission-error states",
+                t("fullDiagnostics.inviteStates"),
+                t("fullDiagnostics.authVariants"),
+                t("fullDiagnostics.acceptTransitions"),
+                t("fullDiagnostics.resultStatesDescription"),
+                t("fullDiagnostics.orgInviteStates"),
               ].map((highlight) => (
                 <div
                   key={highlight}
@@ -749,71 +707,71 @@ export function InviteUxLab() {
       </div>
 
       <LabSection
-        eyebrow="Top-level states"
-        title="Landing state coverage"
-        description="Small cards for the fast-return invite states that do not render the full split-screen layout."
+        eyebrow={t("fullDiagnostics.topLevelStates")}
+        title={t("fullDiagnostics.landingStateCoverage")}
+        description={t("fullDiagnostics.smallCardsForTheFastReturnInvite")}
         accentClassName="bg-[linear-gradient(180deg,rgba(59,130,246,0.05),transparent_30%),var(--background)]"
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <StatusCard
             icon={<Loader2 className="h-4 w-4 animate-spin" />}
-            title="Loading invite"
-            body="Shown while invite summary, deployment mode, or auth session data is still loading."
+            title={t("fullDiagnostics.loadingInvite")}
+            body={t("fullDiagnostics.loadingInviteDescription")}
           />
           <StatusCard
             icon={<Clock3 className="h-4 w-4" />}
-            title="Checking your access"
-            body="Shown after sign-in while the app verifies whether the current user already belongs to the invited organization."
+            title={t("fullDiagnostics.checkingYourAccess")}
+            body={t("fullDiagnostics.checkingAccessDescription")}
           />
           <StatusCard
             icon={<KeyRound className="h-4 w-4" />}
-            title="Invalid invite token"
-            body="The token is missing entirely, so the page short-circuits before any invite lookup."
+            title={t("fullDiagnostics.invalidInviteToken")}
+            body={t("fullDiagnostics.missingTokenDescription")}
             tone="error"
           />
           <StatusCard
             icon={<Link2 className="h-4 w-4" />}
-            title="Invite not available"
-            body="Used for expired, revoked, already-consumed, or otherwise missing invites."
+            title={fullSharedT("authGap.inviteUnavailable")}
+            body={t("fullDiagnostics.unavailableInviteDescription")}
             tone="warn"
           />
           <StatusCard
             icon={<ShieldCheck className="h-4 w-4" />}
-            title="Bootstrap complete"
-            body="Result screen for bootstrap CEO invites after setup has been accepted successfully."
+            title={fullSharedT("authGap.bootstrapComplete")}
+            body={t("fullDiagnostics.bootstrapResultDescription")}
             tone="success"
           />
           <StatusCard
             icon={<ArrowRight className="h-4 w-4" />}
-            title="Auto-accept in progress"
-            body="Signed-in human users skip the extra button click and move straight into join submission."
+            title={t("fullDiagnostics.autoAcceptInProgress")}
+            body={t("fullDiagnostics.autoAcceptDescription")}
           />
           <StatusCard
             icon={<Users className="h-4 w-4" />}
-            title="Already a member"
-            body="Acceptance stays disabled and the page redirects into the organization once membership is confirmed."
+            title={t("fullDiagnostics.alreadyAMember")}
+            body={t("fullDiagnostics.alreadyMemberDescription")}
           />
           <StatusCard
             icon={<UserPlus className="h-4 w-4" />}
-            title="Invite result surfaces"
-            body="Both pending-approval and joined-now confirmations are included below with claim and onboarding extras."
+            title={t("fullDiagnostics.inviteResultSurfaces")}
+            body={t("fullDiagnostics.resultVariantsDescription")}
             tone="success"
           />
         </div>
       </LabSection>
 
       <LabSection
-        eyebrow="Invite landing"
-        title="Split-screen invite flows"
-        description="These frames mirror the production invite surface closely enough to review spacing, hierarchy, and control states while keeping data fixture-driven."
+        eyebrow={t("fullDiagnostics.inviteLanding")}
+        title={t("fullDiagnostics.splitScreenInviteFlows")}
+        description={t("fullDiagnostics.theseFramesMirrorTheProductionInviteSurface")}
         accentClassName="bg-[linear-gradient(180deg,rgba(234,179,8,0.06),transparent_28%),var(--background)]"
       >
         <div className="space-y-5">
           <InviteLandingShell
             left={
               <InviteSummaryPanel
-                title="Join Acme Robotics"
-                description="Create your Paperclip account first. If you already have one, switch to sign in and continue the invite with the same email."
+                title={t("fullDiagnostics.joinAcmeRobotics")}
+                description={fullSharedT("authGap.accountIntro")}
                 inviteMessage="Welcome aboard."
                 requestedAccess="Operator"
               />
@@ -824,8 +782,8 @@ export function InviteUxLab() {
           <InviteLandingShell
             left={
               <InviteSummaryPanel
-                title="Join Acme Robotics"
-                description="Create your Paperclip account first. If you already have one, switch to sign in and continue the invite with the same email."
+                title={t("fullDiagnostics.joinAcmeRobotics")}
+                description={fullSharedT("authGap.accountIntro")}
                 inviteMessage="Welcome aboard."
                 requestedAccess="Operator"
               />
@@ -835,7 +793,7 @@ export function InviteUxLab() {
                 mode="sign_in"
                 feedback={{
                   tone: "info",
-                  text: "An account already exists for jane@example.com. Sign in below to continue with this invite.",
+                  text: t("fullDiagnostics.anAccountAlreadyExistsForJaneExample"),
                 }}
               />
             }
@@ -844,8 +802,8 @@ export function InviteUxLab() {
           <InviteLandingShell
             left={
               <InviteSummaryPanel
-                title="Join Acme Robotics"
-                description="Your account is ready. Review the invite details, then accept it to continue."
+                title={t("fullDiagnostics.joinAcmeRobotics")}
+                description={fullSharedT("authGap.readyIntro")}
                 inviteMessage="Welcome aboard."
                 requestedAccess="Operator"
                 signedInLabel="Jane Example"
@@ -857,8 +815,8 @@ export function InviteUxLab() {
           <InviteLandingShell
             left={
               <InviteSummaryPanel
-                title="Join Acme Robotics"
-                description="Review the invite details, then submit the agent information below to start the join request."
+                title={t("fullDiagnostics.joinAcmeRobotics")}
+                description={fullSharedT("authGap.agentIntro")}
                 requestedAccess="Agent join request"
               />
             }
@@ -868,8 +826,8 @@ export function InviteUxLab() {
           <InviteLandingShell
             left={
               <InviteSummaryPanel
-                title="Join Acme Robotics"
-                description="Your account is ready. Review the invite details, then accept it to continue."
+                title={t("fullDiagnostics.joinAcmeRobotics")}
+                description={fullSharedT("authGap.readyIntro")}
                 requestedAccess="Operator"
                 signedInLabel="Jane Example"
               />
@@ -880,34 +838,34 @@ export function InviteUxLab() {
       </LabSection>
 
       <LabSection
-        eyebrow="Result states"
-        title="Approval and completion screens"
-        description="These are the post-submit states returned from invite acceptance, including optional claim and onboarding metadata."
+        eyebrow={t("fullDiagnostics.resultStates")}
+        title={t("fullDiagnostics.approvalAndCompletionScreens")}
+        description={t("fullDiagnostics.theseAreThePostSubmitStatesReturned")}
         accentClassName="bg-[linear-gradient(180deg,rgba(16,185,129,0.06),transparent_30%),var(--background)]"
       >
         <div className="grid gap-5 xl:grid-cols-3">
           <InviteResultPreview
-            title="Request to join Acme Robotics"
-            description="Board User must approve your request to join."
+            title={t("fullDiagnostics.requestToJoinAcmeRobotics")}
+            description={t("fullDiagnostics.boardUserMustApproveYourRequestTo")}
             claimSecret="pcp_claim_secret_demo"
             onboardingTextUrl="/api/invites/pcp_invite_test/onboarding.txt"
           />
           <InviteResultPreview
-            title="You joined the organization"
-            description="Your account already matched the approved invite, so the board can be opened immediately."
+            title={fullSharedT("authGap.joinedOrganization")}
+            description={t("fullDiagnostics.yourAccountAlreadyMatchedTheApprovedInvite")}
             joinedNow
           />
           <InviteResultPreview
-            title="Request to join Acme Robotics"
-            description="Ask them to visit Settings → Members to approve your request."
+            title={t("fullDiagnostics.requestToJoinAcmeRobotics")}
+            description={t("fullDiagnostics.askThemToVisitSettingsMembersTo")}
           />
         </div>
       </LabSection>
 
       <LabSection
-        eyebrow="Standalone auth"
-        title="Auth page states"
-        description="The general `/auth` page uses a different composition from invite landing. These previews keep both sign-in and sign-up variants visible."
+        eyebrow={t("fullDiagnostics.standaloneAuth")}
+        title={t("fullDiagnostics.authPageStates")}
+        description={t("fullDiagnostics.theGeneralAuthPageUsesADifferent")}
         accentClassName="bg-[linear-gradient(180deg,rgba(168,85,247,0.06),transparent_28%),var(--background)]"
       >
         <div className="space-y-5">
@@ -917,9 +875,9 @@ export function InviteUxLab() {
       </LabSection>
 
       <LabSection
-        eyebrow="Settings"
-        title="Organization invite management"
-        description="This section captures the board-side invite creation flow, copied-link state, audit table, and the edge states that are otherwise tedious to stage."
+        eyebrow={t("fullDiagnostics.settingsHeading")}
+        title={t("fullDiagnostics.organizationInviteManagement")}
+        description={t("fullDiagnostics.thisSectionCapturesTheBoardSideInvite")}
         accentClassName="bg-[linear-gradient(180deg,rgba(244,114,182,0.06),transparent_28%),var(--background)]"
       >
         <CompanyInvitesPreview />

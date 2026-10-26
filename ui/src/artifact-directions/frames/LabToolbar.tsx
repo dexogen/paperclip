@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { DIRECTION_IDS, KIT_KEYS, KIT_META, type DirectionId } from "../kit";
 import { LAB_VIEWS, type LabState, type LabTheme, type LabView } from "../lab-state";
@@ -24,6 +26,7 @@ function Segmented<T extends string>({
   value: T;
   onChange: (value: T) => void;
 }) {
+  useFullSharedTranslation();
   return (
     <div role="radiogroup" aria-label={label} className="flex items-center gap-0.5 rounded-md bg-muted p-0.5">
       {options.map((option) => (
@@ -50,24 +53,24 @@ function Segmented<T extends string>({
 // The kit set has no "All": the every-kit contact sheet is URL-only (`?d=all`).
 const KIT_OPTIONS: Option<DirectionId | "all">[] = DIRECTION_IDS.map((id) => ({
   value: id,
-  label: KIT_META[id].name,
-  hint: `${KIT_META[id].tagline} (${KIT_KEYS[id]})`,
+  get label() { return KIT_META[id].name; },
+  get hint() { return `${KIT_META[id].tagline} (${KIT_KEYS[id]})`; },
 }));
 // Overview first; the vocabulary sheet (`s=kinds`) is URL-only.
 const VIEW_OPTIONS: Option<LabView>[] = [
-  { value: "board", label: "Overview", hint: "The kit's four surfaces on one sheet" },
-  { value: "thread", label: "Task-thread" },
-  { value: "panel", label: "Right-panel" },
-  { value: "gallery", label: "Tab-gallery" },
-  { value: "stack", label: "Tab-closeup" },
+  { value: "board", get label() { return fullSharedT("runUi.inspector.overview"); }, get hint() { return t("fullDiagnostics.theKitSFourSurfacesOnOne"); } },
+  { value: "thread", get label() { return t("fullDiagnostics.taskThread"); } },
+  { value: "panel", get label() { return t("fullDiagnostics.rightPanel"); } },
+  { value: "gallery", get label() { return t("fullDiagnostics.tabGallery"); } },
+  { value: "stack", get label() { return t("fullDiagnostics.tabCloseup"); } },
 ];
 const THEME_OPTIONS: Option<LabTheme>[] = [
-  { value: "dark", label: "dark", hint: "Toggle with t" },
-  { value: "light", label: "light", hint: "Toggle with t" },
+  { value: "dark", get label() { return t("fullDiagnostics.dark"); }, get hint() { return t("fullDiagnostics.toggleWithT"); } },
+  { value: "light", get label() { return t("fullDiagnostics.light"); }, get hint() { return t("fullDiagnostics.toggleWithT"); } },
 ];
 const ANIM_OPTIONS: Option<"off" | "on">[] = [
-  { value: "off", label: "off", hint: "Hover animations off (toggle with a)" },
-  { value: "on", label: "on", hint: "Hover animations on: MVP V1 artwork rises, stack pages turn (toggle with a)" },
+  { value: "off", get label() { return t("fullDiagnostics.off"); }, get hint() { return t("fullDiagnostics.hoverAnimationsOffToggleWithA"); } },
+  { value: "on", get label() { return t("fullRoutinesSecrets.on256"); }, get hint() { return t("fullDiagnostics.hoverAnimationsOnMvpV1ArtworkRises"); } },
 ];
 
 const TITLE = "font-medium uppercase tracking-(--tracking-label) text-foreground";
@@ -78,26 +81,27 @@ const TITLE = "font-medium uppercase tracking-(--tracking-label) text-foreground
  * column. Theme and animation keep to the first row's right edge.
  */
 export function LabToolbar({ state, onChange }: { state: LabState; onChange: (patch: Partial<LabState>) => void }) {
+  useFullSharedTranslation();
   return (
     <div
       className="sticky top-0 z-50 grid items-center gap-x-4 gap-y-2 border-b border-border bg-background px-4 py-2 font-mono text-(length:--text-micro) text-muted-foreground"
       style={{ gridTemplateColumns: "max-content 1fr" }}
     >
-      <span className={TITLE}>Artifact directions</span>
+      <span className={TITLE}>{t("fullDiagnostics.artifactDirections")}</span>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Segmented label="Kit" options={KIT_OPTIONS} value={state.direction} onChange={(direction) => onChange({ direction })} />
+        <Segmented label={t("fullDiagnostics.kit")} options={KIT_OPTIONS} value={state.direction} onChange={(direction) => onChange({ direction })} />
         <div className="ml-auto flex items-center gap-4">
-          <Segmented label="Theme" options={THEME_OPTIONS} value={state.theme} onChange={(theme) => onChange({ theme })} />
+          <Segmented label={t("fullDiagnostics.theme")} options={THEME_OPTIONS} value={state.theme} onChange={(theme) => onChange({ theme })} />
           <span className="flex items-center gap-1.5">
-            <span>animation</span>
-            <Segmented label="Animation" options={ANIM_OPTIONS} value={state.anim ? "on" : "off"} onChange={(value) => onChange({ anim: value === "on" })} />
+            <span>{t("fullDiagnostics.animation")}</span>
+            <Segmented label={t("fullDiagnostics.animation_62afd2")} options={ANIM_OPTIONS} value={state.anim ? "on" : "off"} onChange={(value) => onChange({ anim: value === "on" })} />
           </span>
         </div>
       </div>
-      <span className={TITLE}>Artifact surfaces</span>
+      <span className={TITLE}>{t("fullDiagnostics.artifactSurfaces")}</span>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Segmented label="Surface" options={VIEW_OPTIONS} value={state.view} onChange={(view) => onChange({ view })} />
-        <span className="ml-auto hidden lg:inline">0–5 kit · t theme · a animation</span>
+        <Segmented label={fullSharedT("runUi.inspector.surface")} options={VIEW_OPTIONS} value={state.view} onChange={(view) => onChange({ view })} />
+        <span className="ml-auto hidden lg:inline">{t("fullDiagnostics.05KitTThemeAAnimation")}</span>
       </div>
     </div>
   );

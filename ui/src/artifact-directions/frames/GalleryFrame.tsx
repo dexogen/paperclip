@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { ArrowLeft, Layers, Search } from "lucide-react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,7 @@ const KIND_TABS = ["All", "Images", "Videos", "Documents", "Text", "Files"];
 
 /** BreadcrumbBar.tsx:193-214 (single crumb) and :128-189 (trail); crumbs from Artifacts.tsx:218-227. */
 function TopBar({ open }: { open: LabGroup | null }) {
+  useFullSharedTranslation();
   return (
     <div className="relative h-(--sz-60px) shrink-0 flex items-center border-b border-border px-4 md:px-6">
       <div className="min-w-0 overflow-hidden flex-1">
@@ -25,7 +28,7 @@ function TopBar({ open }: { open: LabGroup | null }) {
           <Breadcrumb className="min-w-0 overflow-hidden">
             <BreadcrumbList className="flex-nowrap">
               <BreadcrumbItem className="shrink-0">
-                <span className="min-w-0 truncate font-semibold uppercase tracking-wider text-muted-foreground">Artifacts</span>
+                <span className="min-w-0 truncate font-semibold uppercase tracking-wider text-muted-foreground">{fullSharedT("sidebar.artifacts")}</span>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem className="min-w-0">
@@ -36,7 +39,7 @@ function TopBar({ open }: { open: LabGroup | null }) {
             </BreadcrumbList>
           </Breadcrumb>
         ) : (
-          <h1 className="text-sm font-semibold uppercase tracking-wider truncate">Artifacts</h1>
+          <h1 className="text-sm font-semibold uppercase tracking-wider truncate">{fullSharedT("sidebar.artifacts")}</h1>
         )}
       </div>
       <SupportButton />
@@ -46,17 +49,18 @@ function TopBar({ open }: { open: LabGroup | null }) {
 
 /** pages/Artifacts.tsx:250-325. Grouping is on (Task, the default) and "All" is selected, as in the screenshots. */
 function Toolbar() {
+  useFullSharedTranslation();
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="relative w-full sm:max-w-sm">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input readOnly className="h-9 pl-9 pr-9 text-sm" placeholder="Search artifacts..." aria-label="Search artifacts" />
+        <Input readOnly className="h-9 pl-9 pr-9 text-sm" placeholder={t("fullDiagnostics.searchArtifacts")} aria-label={fullSharedT("surfacesGap.artifacts.search")} />
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
-        <Button variant="outline" size="icon" className="h-8 w-8 shrink-0 bg-accent" title="Group artifacts" aria-label="Group artifacts (currently Task)">
+        <Button variant="outline" size="icon" className="h-8 w-8 shrink-0 bg-accent" title={fullSharedT("surfacesGap.artifacts.group")} aria-label={t("fullDiagnostics.groupArtifactsCurrentlyTask")}>
           <Layers className="h-3.5 w-3.5" />
         </Button>
-        <div role="tablist" aria-label="Filter artifacts by type" className="flex flex-wrap items-center gap-1.5">
+        <div role="tablist" aria-label={fullSharedT("surfacesGap.artifacts.filter")} className="flex flex-wrap items-center gap-1.5">
           {KIND_TABS.map((label, index) => (
             <button
               key={label}
@@ -79,12 +83,11 @@ function Toolbar() {
 
 /** pages/Artifacts.tsx:327-344. */
 function StackHeader({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   return (
     <div className="flex flex-wrap items-center gap-2 text-sm">
       <span className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground">
-        <ArrowLeft className="h-3.5 w-3.5" />
-        All stacks
-      </span>
+        <ArrowLeft className="h-3.5 w-3.5" />{fullSharedT("surfacesGap.artifacts.allStacks")}</span>
       <span className="truncate text-muted-foreground">
         <span className="text-foreground/80">{group.taskIdentifier}</span> {group.title}
       </span>
@@ -93,6 +96,7 @@ function StackHeader({ group }: { group: LabGroup }) {
 }
 
 export function GalleryFrame({ kit, groups, open }: { kit: DirectionKit; groups: LabGroup[]; open: LabGroup | null }) {
+  useFullSharedTranslation();
   return (
     <>
       <TopBar open={open} />

@@ -1,3 +1,4 @@
+import { t as fullAppsT } from "@/i18n";
 import type {
   ToolCatalogEntry,
   ToolProfileDefaultAction,
@@ -31,9 +32,9 @@ export function toolCapability(tool: ToolCatalogEntry): ToolCapability {
 }
 
 export const CAPABILITY_LABEL: Record<ToolCapability, string> = {
-  read: "Read-only",
-  write: "Makes changes",
-  destructive: "Destructive",
+  get read() { return fullAppsT("fullApps.caption_72bb90897a"); },
+  get write() { return fullAppsT("fullApps.makes_changes_f85b60"); },
+  get destructive() { return fullAppsT("fullApps.caption_c3e58a7360"); },
 };
 
 // --- App grouping ----------------------------------------------------------
@@ -66,7 +67,7 @@ export function groupCatalogByApp(
       const name =
         (tool.applicationId ? applicationsById.get(tool.applicationId) : null) ??
         connectionsById.get(tool.connectionId) ??
-        "Tools";
+        fullAppsT("fullApps.caption_ea93d6a262");
       group = {
         appKey,
         applicationId: tool.applicationId,
@@ -131,16 +132,16 @@ export function appCheckState(group: AppGroup, selection: AppSelection | undefin
 export function appSelectionLabel(group: AppGroup, selection: AppSelection | undefined): string {
   const total = group.tools.length;
   const state = appCheckState(group, selection);
-  if (state === "unchecked") return "None selected";
+  if (state === "unchecked") return fullAppsT("fullApps.none_selected_557832");
   if (selection?.kind === "all" || (selection?.kind === "all_except" && selection.excluded.length === 0)) {
-    return `All ${group.name} tools (${total})`;
+    return fullAppsT("fullApps.message_46d3d2196ad5", { value1: group.name, value2: total });
   }
   if (selection?.kind === "all_except") {
     const n = selection.excluded.length;
-    return `All ${group.name} except ${n}`;
+    return fullAppsT("fullApps.message_8fcde86ff61f", { value1: group.name, value2: n });
   }
   const n = selectedToolIds(group, selection).size;
-  return `${n} of ${total} ${group.name} tools`;
+  return fullAppsT("fullApps.message_7089e1dbc106", { value1: n, value2: total, value3: group.name });
 }
 
 // --- Checkbox reducers -----------------------------------------------------
@@ -368,11 +369,11 @@ export interface TemplateDef {
 }
 
 export const TEMPLATES: TemplateDef[] = [
-  { key: "read_only", title: "Read-only", description: "See and fetch, but never change anything." },
-  { key: "everyday", title: "Everyday work", description: "Read and make routine changes — no destructive tools." },
-  { key: "full_access", title: "Full access", description: "Everything every connected app offers." },
-  { key: "scratch", title: "Start from scratch", description: "An empty profile you build up tool by tool." },
-  { key: "copy", title: "Copy an existing profile", description: "Start from a profile you already have." },
+  { key: "read_only", get title() { return fullAppsT("agentSkillsUi.row.readOnly"); }, get description() { return fullAppsT("fullApps.see_and_fetch_but_never_change_anything_d1bebc"); } },
+  { key: "everyday", get title() { return fullAppsT("fullApps.everyday_work_0460cf"); }, get description() { return fullAppsT("fullApps.read_and_make_routine_changes_no_destructive_tools_06bd9d"); } },
+  { key: "full_access", get title() { return fullAppsT("fullApps.full_access_f19611"); }, get description() { return fullAppsT("fullApps.everything_every_connected_app_offers_057eec"); } },
+  { key: "scratch", get title() { return fullAppsT("fullApps.start_from_scratch_a4822f"); }, get description() { return fullAppsT("fullApps.an_empty_profile_you_build_up_tool_by_tool_5f36b6"); } },
+  { key: "copy", get title() { return fullAppsT("fullApps.copy_an_existing_profile_5bfbef"); }, get description() { return fullAppsT("fullApps.start_from_a_profile_you_already_have_3100ce"); } },
 ];
 
 function capabilityPredicate(key: TemplateKey): (tool: ToolCatalogEntry) => boolean {

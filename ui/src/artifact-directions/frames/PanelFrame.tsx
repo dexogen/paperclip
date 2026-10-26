@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidePanelFrame, SidePanelWindowControls } from "@/components/side-panel/SidePanelFrame";
@@ -20,14 +21,15 @@ export const TASK_DETAIL_PANE_WIDTH = 434;
 
 // TaskSidePanel.tsx:280,562 — every tab is closable, Properties included.
 const TABS: SidePanelTabItem[] = [
-  { id: "properties", type: "properties", label: "Properties", closable: true },
-  { id: "subtasks", type: "subtasks", label: "Tasks", closable: true },
-  { id: "artifacts", type: "artifacts", label: "Artifacts", closable: true },
+  { id: "properties", type: "properties", get label() { return fullSharedT("taskPanels.tabs.properties"); }, closable: true },
+  { id: "subtasks", type: "subtasks", get label() { return fullSharedT("sidebar.tasks"); }, closable: true },
+  { id: "artifacts", type: "artifacts", get label() { return fullSharedT("sidebar.artifacts"); }, closable: true },
 ];
 
 const noop = () => {};
 
 export function PanelFrame({ kit, artifacts, width = TASK_DETAIL_PANE_WIDTH }: { kit: DirectionKit; artifacts: LabArtifact[]; width?: number }) {
+  useFullSharedTranslation();
   return (
     <aside className="flex bg-card flex-col border-l border-border relative shrink-0" style={{ width }}>
       <SidePanelFrame
@@ -49,7 +51,7 @@ export function PanelFrame({ kit, artifacts, width = TASK_DETAIL_PANE_WIDTH }: {
                   variant="ghost"
                   size="icon-sm"
                   className="shrink-0 text-muted-foreground hover:text-foreground focus-visible:text-foreground h-(--side-panel-tab-height) w-(--side-panel-tab-height) rounded-md"
-                  aria-label="Open a new tab"
+                  aria-label={fullSharedT("taskPanels.tabs.new")}
                 >
                   <Plus aria-hidden />
                 </Button>

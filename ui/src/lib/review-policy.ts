@@ -49,11 +49,11 @@ function reviewPolicyBadges(t: TFunction): Partial<Record<IssueReviewPolicy, Iss
 }
 
 /** Mid-sentence wording for activity lines and field-change receipts. */
-const VALUE_LABELS: Record<IssueReviewPolicy, string> = {
-  anyone: "anyone",
-  not_creator: "anyone else",
-  human_only: "human only",
-};
+function reviewPolicyValues(t: TFunction): Record<IssueReviewPolicy, string> { return {
+  get anyone() { return t("fullShared.anyone_12ed8d"); },
+  get not_creator() { return t("fullShared.anyone_else_cbe914"); },
+  get human_only() { return t("fullShared.human_only_dd610b"); },
+}; }
 
 /**
  * The badge for a policy, or `null` when there is nothing to show — which is the
@@ -71,7 +71,8 @@ export function issueReviewPolicyBadge(
  * Mid-sentence wording for an activity line or a field-change receipt, where a
  * cleared column must read "anyone" rather than "none".
  */
-export function formatReviewPolicyValue(value: unknown): string {
+export function formatReviewPolicyValue(value: unknown, t: TFunction = i18n.t): string {
+  const VALUE_LABELS = reviewPolicyValues(t);
   if (value === null || value === undefined) return VALUE_LABELS.anyone;
   if (typeof value !== "string") return VALUE_LABELS.anyone;
   // Forward-compatible: a policy this build does not know reads as itself.

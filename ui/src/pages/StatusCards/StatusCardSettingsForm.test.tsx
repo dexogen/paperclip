@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act, useState } from "react";
+import { setLocale } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -70,5 +72,34 @@ describe("StatusCardSettingsForm advanced group", () => {
     // The disclosure trigger is present; its contents stay collapsed until opened.
     expect(container.textContent).toContain("Advanced");
     expect(container.textContent).not.toContain("Count as a change");
+  });
+});
+
+
+describe("StatusCardSettingsForm locale changes", () => {
+  it("updates labels and token formatting without losing a controlled policy draft", async () => {
+    function Draft() {
+      const [value, setValue] = useState<StatusCardSettingsValue>({
+        ...defaultSettingsValue(),
+        refreshPolicy: { ...defaultSettingsValue().refreshPolicy, mode: "reactive", maxUpdatesPerHour: 17 },
+      });
+      return <TooltipProvider><StatusCardSettingsForm value={value} onChange={setValue} /></TooltipProvider>;
+    }
+    try {
+      await act(async () => { await setLocale("en"); root.render(<Draft />); });
+      const field = container.querySelector<HTMLInputElement>('input[aria-label="Max updates per hour"]');
+      expect(field?.value).toBe("17");
+      await act(async () => { await setLocale("ru"); });
+      expect(container.textContent).not.toContain("Estimated cost");
+      expect(container.querySelector('input')).toBe(field);
+      expect(field?.value).toBe("17");
+      expect(field?.getAttribute("aria-label")).not.toBe("Max updates per hour");
+      await act(async () => { await setLocale("en"); });
+      expect(container.textContent).toContain("Estimated cost");
+      expect(field?.getAttribute("aria-label")).toBe("Max updates per hour");
+      expect(field?.value).toBe("17");
+    } finally {
+      await act(async () => { await setLocale("en"); });
+    }
   });
 });

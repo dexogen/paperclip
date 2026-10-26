@@ -1,3 +1,6 @@
+import { i18n } from "@/i18n";
+import { statusLabel } from "@/i18n/ui-labels";
+import { t as fullSharedT } from "@/i18n";
 import type { IssueChangeReceiptEntry } from "@paperclipai/shared";
 import { formatReviewPolicyValue } from "./review-policy";
 
@@ -17,28 +20,32 @@ import { formatReviewPolicyValue } from "./review-policy";
 
 /** Field names whose raw ids carry no meaning in a scannable summary. */
 const FIELD_LABELS: Record<string, string> = {
-  assigneeAgentId: "Assignee",
-  assigneeUserId: "Assignee (user)",
-  responsibleUserId: "Responsible user",
-  blockedByIssueIds: "Blockers",
-  labelIds: "Labels",
-  parentId: "Parent",
-  projectId: "Project",
-  goalId: "Goal",
-  workMode: "Work mode",
-  reviewPolicy: "Who can approve",
-  billingCode: "Billing code",
-  checkoutRunId: "Checkout run",
-  executionRunId: "Execution run",
-  hiddenAt: "Hidden",
-  startedAt: "Started",
-  completedAt: "Completed",
-  cancelledAt: "Cancelled",
-  requestDepth: "Request depth",
-  sourceTrust: "Source trust",
-  executionPolicy: "Execution policy",
-  executionWorkspaceId: "Execution workspace",
-  projectWorkspaceId: "Project workspace",
+  get priority() { return fullSharedT("fullActivity.fieldPriority"); },
+  get status() { return fullSharedT("fullActivity.fieldStatus"); },
+  get description() { return fullSharedT("fullActivity.fieldDescription"); },
+  get title() { return fullSharedT("fullActivity.fieldTitle"); },
+  get assigneeAgentId() { return fullSharedT("fullShared.assignee_5e20d2"); },
+  get assigneeUserId() { return fullSharedT("fullShared.assignee_user_aab320"); },
+  get responsibleUserId() { return fullSharedT("surfacesGap.audit.responsible"); },
+  get blockedByIssueIds() { return fullSharedT("fullShared.blockers_cb9b9d"); },
+  get labelIds() { return fullSharedT("issueFilters.labels"); },
+  get parentId() { return fullSharedT("taskProperties.fields.parent"); },
+  get projectId() { return fullSharedT("newIssue.project"); },
+  get goalId() { return fullSharedT("taskChatUi.add.goal"); },
+  get workMode() { return fullSharedT("fullShared.work_mode_b4c4ae"); },
+  get reviewPolicy() { return fullSharedT("fullShared.who_can_approve_933be0"); },
+  get billingCode() { return fullSharedT("fullShared.billing_code_1aad3d"); },
+  get checkoutRunId() { return fullSharedT("fullShared.checkout_run_d75594"); },
+  get executionRunId() { return fullSharedT("fullShared.execution_run_d78fe7"); },
+  get hiddenAt() { return fullSharedT("runUi.inspector.hidden"); },
+  get startedAt() { return fullSharedT("taskProperties.fields.started"); },
+  get completedAt() { return fullSharedT("fullShared.completed_22a970"); },
+  get cancelledAt() { return fullSharedT("fullShared.cancelled_d353a9"); },
+  get requestDepth() { return fullSharedT("fullShared.request_depth_bdf641"); },
+  get sourceTrust() { return fullSharedT("fullShared.source_trust_5894ec"); },
+  get executionPolicy() { return fullSharedT("taskProperties.fields.executionPolicy"); },
+  get executionWorkspaceId() { return fullSharedT("projectWorkspacesUi.kind.execution"); },
+  get projectWorkspaceId() { return fullSharedT("taskChatUi.worktree.shared"); },
 };
 
 /** Human label for a changed field, e.g. `assigneeAgentId` → "Assignee". */
@@ -69,24 +76,24 @@ export function formatIssueChangeValue(
   // `reviewPolicy` is nullable-by-default: a cleared column means "anyone can
   // approve", not "no value" (PAP-16506), so it resolves before the null branch.
   if (options.field === "reviewPolicy") return formatReviewPolicyValue(value);
-  if (value === null || value === undefined || value === "") return "none";
-  if (typeof value === "boolean") return value ? "yes" : "no";
+  if (value === null || value === undefined || value === "") return fullSharedT("fullActivity.none");
+  if (typeof value === "boolean") return value ? fullSharedT("fullActivity.yes") : fullSharedT("fullActivity.no");
   if (typeof value === "number") return String(value);
 
   if (Array.isArray(value)) {
-    if (value.length === 0) return "none";
+    if (value.length === 0) return fullSharedT("fullActivity.none");
     const strings = value.filter((entry): entry is string => typeof entry === "string");
-    if (strings.length !== value.length) return `${value.length} items`;
+    if (strings.length !== value.length) return fullSharedT("fullActivity.itemCount", { count: value.length });
     return strings.length <= 3
       ? strings.map((id) => shortenId(id)).join(", ")
-      : `${strings.length} items`;
+      : fullSharedT("fullActivity.itemCount", { count: strings.length });
   }
 
-  if (value instanceof Date) return value.toLocaleString();
+  if (value instanceof Date) return value.toLocaleString(i18n.resolvedLanguage);
 
   if (typeof value === "string") {
     const trimmed = value.trim();
-    if (!trimmed) return "none";
+    if (!trimmed) return fullSharedT("fullActivity.none");
     // Ids resolve to names when the directory is loaded; otherwise they shorten.
     const resolved = options.field?.toLowerCase().includes("agent")
       ? options.resolveAgentLabel?.(trimmed)
@@ -94,15 +101,16 @@ export function formatIssueChangeValue(
         ? options.resolveUserLabel?.(trimmed)
         : null;
     if (resolved) return resolved;
-    if (isIsoTimestamp(trimmed)) return new Date(trimmed).toLocaleString();
+    if (isIsoTimestamp(trimmed)) return new Date(trimmed).toLocaleString(i18n.resolvedLanguage);
     if (looksLikeId(trimmed)) return shortenId(trimmed);
+    if (options.field === "status" || options.field === "priority") return truncate(statusLabel(trimmed));
     const humanized = trimmed.includes(" ") ? trimmed : trimmed.replace(/_/g, " ");
     return truncate(humanized);
   }
 
   // Objects (execution policy, workspace settings) are structural — the receipt
   // records that they moved, and the audit log holds the full value.
-  return "updated";
+  return fullSharedT("fullActivity.updated");
 }
 
 function truncate(value: string): string {
@@ -165,17 +173,17 @@ export function readIssueChangeReceipt(
 
 /** Authorization reasons, as recorded by the server's write-policy decision. */
 const AUTHORIZATION_REASON_LABELS: Record<string, string> = {
-  allow_visible_issue_write: "default-open write on a visible task",
-  allow_scoped_agent_write: "scoped agent write",
-  allow_board_actor: "board actor",
-  allow_self: "own task",
-  allow_issue_mention_grant: "mention grant",
-  allow_direct_parent_report: "direct parent report",
-  allow_low_trust_boundary: "low-trust boundary allowance",
-  allow_explicit_grant: "explicit permission grant",
-  allow_instance_admin: "instance admin",
-  allow_local_board: "local board",
-  internal_agent_write: "internal agent write",
+  get allow_visible_issue_write() { return fullSharedT("fullShared.default_open_write_on_a_visible_task_b8bfd7"); },
+  get allow_scoped_agent_write() { return fullSharedT("fullShared.scoped_agent_write_bc00f9"); },
+  get allow_board_actor() { return fullSharedT("fullShared.board_actor_cf2ed1"); },
+  get allow_self() { return fullSharedT("fullShared.own_task_d37df8"); },
+  get allow_issue_mention_grant() { return fullSharedT("fullShared.mention_grant_982e0e"); },
+  get allow_direct_parent_report() { return fullSharedT("fullShared.direct_parent_report_0141a9"); },
+  get allow_low_trust_boundary() { return fullSharedT("fullShared.low_trust_boundary_allowance_c03a45"); },
+  get allow_explicit_grant() { return fullSharedT("fullShared.explicit_permission_grant_af5e90"); },
+  get allow_instance_admin() { return fullSharedT("fullShared.instance_admin_6eabc9"); },
+  get allow_local_board() { return fullSharedT("fullShared.local_board_59e8df"); },
+  get internal_agent_write() { return fullSharedT("fullShared.internal_agent_write_1a965c"); },
 };
 
 /**

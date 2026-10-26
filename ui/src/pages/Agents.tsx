@@ -1,3 +1,5 @@
+import { roleLabel } from "@/i18n/ui-labels";
+import { i18n } from "@/i18n";
 import { PrimaryAgentIndicator } from "@/components/primary-agent/PrimaryAgentPresentation";
 import { AgentBulkRoster } from "@/components/agents/AgentBulkRoster";
 import { AgentAvatar } from "@/components/AgentAvatar";
@@ -80,7 +82,7 @@ function matchesFilter(status: string, tab: FilterTab): boolean {
 
 function matchesSearch(agent: Pick<Agent, "name" | "role" | "title">, query: string): boolean {
   const words = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const text = [agent.name, agent.role, roleLabels[agent.role], agent.title].filter(Boolean).join(" ").toLocaleLowerCase();
+  const text = [agent.name, agent.role, roleLabels[agent.role], roleLabel(agent.role), agent.title].filter(Boolean).join(" ").toLocaleLowerCase();
   return words.every(word => text.includes(word));
 }
 
@@ -308,7 +310,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("agents.title") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   useEffect(() => {
     if (requestedTab !== "all") {
@@ -369,7 +371,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
         titleClassName="flex-1"
         titleTextClassName="truncate"
         subtitleClassName="truncate"
-        subtitle={`${roleLabels[agent.role] ?? agent.role}${agent.title ? ` - ${agent.title}` : ""}`}
+        subtitle={`${roleLabel(agent.role)}${agent.title ? ` - ${agent.title}` : ""}`}
         to={agentUrl(agent)}
         className="group py-3"
         leading={hasInvalidOrgChain ? (
@@ -516,7 +518,7 @@ function OrgTreeNode({
           <div className="min-w-(--sz-7rem) truncate">
             <span className="text-sm font-medium">{node.name}</span>
             <span className="text-xs text-muted-foreground ml-2">
-              {roleLabels[node.role] ?? node.role}
+              {roleLabel(node.role)}
               {agent?.title ? ` - ${agent.title}` : ""}
             </span>
           </div>

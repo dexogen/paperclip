@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import {
   Attachment,
   AttachmentContent,
@@ -22,6 +24,7 @@ import { toAttachmentRef } from "./adapters";
  * the real ones.
  */
 export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   const refs = artifacts.filter((a) => a.kind !== "link").map(toAttachmentRef);
   const imageRefs = refs.filter((ref) => isImageAttachment({ contentType: ref.contentType ?? "", originalFilename: ref.name }));
   const attachmentRefs = refs.filter((ref) => !imageRefs.includes(ref));
@@ -29,14 +32,14 @@ export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
     <>
       {imageRefs.length > 0 ? (
         <div className="flex max-w-(--pct-85) flex-col gap-2" data-testid="task-chat-bubble-media">
-          <span className="text-xs text-muted-foreground">Images · {imageRefs.length}</span>
+          <span className="text-xs text-muted-foreground">{t("fullDiagnostics.images")}{" "}{imageRefs.length}</span>
           <div className="grid grid-cols-4 gap-2">
             {imageRefs.slice(0, imageRefs.length > 4 ? 3 : 4).map((ref, index) => (
               <button
                 key={ref.url}
                 type="button"
                 className="group aspect-video min-w-0 overflow-hidden rounded-md bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={`Open ${ref.name || `image ${index + 1}`}`}
+                aria-label={fullSharedT("fullShared.open_839d6d", { value1: ref.name || `image ${index + 1}` })}
               >
                 <img
                   src={ref.openPath ?? ref.url}
@@ -50,20 +53,20 @@ export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
               <button
                 type="button"
                 className="aspect-video min-w-0 rounded-md bg-muted text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={`Open ${imageRefs.length - 3} more screenshots`}
+                aria-label={t("fullDiagnostics.openMoreScreenshots", { value1: imageRefs.length - 3 })}
               >
                 +{imageRefs.length - 3}
               </button>
             ) : null}
           </div>
           <span className="truncate text-xs text-muted-foreground">
-            {imageRefs.map((ref) => ref.name || "image").join(" · ")}
+            {imageRefs.map((ref) => ref.name || t("fullDiagnostics.kindImage")).join(" · ")}
           </span>
         </div>
       ) : null}
       {attachmentRefs.length > 0 ? (
         <div className="flex max-w-(--pct-85) flex-col gap-2">
-          <span className="text-xs text-muted-foreground">Files · {attachmentRefs.length}</span>
+          <span className="text-xs text-muted-foreground">{t("fullDiagnostics.files")}{" "}{attachmentRefs.length}</span>
           <AttachmentGroup data-testid="task-chat-bubble-attachments">
             {attachmentRefs.map((ref) => {
               const kind = fileKindForAttachment(ref);
@@ -82,7 +85,7 @@ export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
                     </AttachmentDescription>
                   </AttachmentContent>
                   <AttachmentTrigger
-                    aria-label={`Open ${ref.name}`}
+                    aria-label={fullSharedT("fullShared.open_839d6d", { value1: ref.name })}
                     render={video ? <button type="button" /> : <a href={ref.openPath ?? ref.url} target="_blank" rel="noreferrer" />}
                   />
                 </Attachment>

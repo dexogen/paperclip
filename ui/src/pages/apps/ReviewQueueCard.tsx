@@ -1,3 +1,5 @@
+import { renderAppError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Loader2, ShieldQuestion, X } from "lucide-react";
@@ -27,7 +29,7 @@ import { MarkdownBody } from "@/components/MarkdownBody";
 export function ReviewQueueCard({
   connectionId,
   emptyState = "hidden",
-  heading = "Waiting for your OK",
+  heading = fullAppsT("fullApps.waiting_for_your_ok_2c9582"),
   plain = false,
 }: {
   connectionId?: string;
@@ -35,6 +37,7 @@ export function ReviewQueueCard({
   heading?: string;
   plain?: boolean;
 }) {
+  useFullAppsTranslation();
   const { selectedCompanyId } = useCompany();
 
   const query = useQuery({
@@ -51,14 +54,12 @@ export function ReviewQueueCard({
 
   if (!selectedCompanyId) return null;
   if (query.isLoading) return null;
-  if (query.isError) return <p role="alert" className="text-sm text-destructive">Could not load connection reviews. Please refresh to try again.</p>;
+  if (query.isError) return <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_connection_reviews_please_refresh_to__c6c01a")}</p>;
 
   if (items.length === 0) {
     if (emptyState === "hidden") return null;
     return (
-      <div className={plain ? "py-5 text-sm text-muted-foreground" : "rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground"}>
-        Nothing is waiting for your OK right now.
-      </div>
+      <div className={plain ? "py-5 text-sm text-muted-foreground" : "rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground"}>{fullAppsT("fullApps.nothing_is_waiting_for_your_ok_right_now_635a90")}</div>
     );
   }
 
@@ -89,6 +90,7 @@ function ReviewRow({
   item: ToolActionRequestListItem;
   plain: boolean;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const [resolving, setResolving] = useState<null | "allow" | "always" | "decline">(null);
@@ -111,7 +113,7 @@ function ReviewRow({
     mutationFn: () => toolsApi.approveActionRequest(companyId, item.request.id),
     onMutate: () => setResolving("allow"),
     onSuccess: () => {
-      pushToast({ title: "Allowed once", body: `${actionLabel(item)} can run this time.`, tone: "success" });
+      pushToast({ title: fullAppsT("fullApps.allowed_once_c9b702"), body: fullAppsT("fullApps.message_a82d411a63ba", { value1: actionLabel(item) }), tone: "success" });
       invalidate();
     },
     onError: (error) => {
@@ -128,8 +130,8 @@ function ReviewRow({
     onMutate: () => setResolving("always"),
     onSuccess: () => {
       pushToast({
-        title: "Always allowed",
-        body: `${actionLabel(item)} won’t ask again.`,
+        title: fullAppsT("fullApps.always_allowed_943877"),
+        body: fullAppsT("fullApps.message_6d0b8b9f2e61", { value1: actionLabel(item) }),
         tone: "success",
       });
       invalidate();
@@ -146,7 +148,7 @@ function ReviewRow({
     mutationFn: () => toolsApi.declineActionRequest(companyId, item.request.id),
     onMutate: () => setResolving("decline"),
     onSuccess: () => {
-      pushToast({ title: "Declined", body: `${actionLabel(item)} won’t run.`, tone: "info" });
+      pushToast({ title: fullAppsT("decisionForms.common.declined"), body: fullAppsT("fullApps.message_1442e84de7b8", { value1: actionLabel(item) }), tone: "info" });
       invalidate();
     },
     onError: (error) => {
@@ -176,11 +178,9 @@ function ReviewRow({
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
         <span className="font-bold text-foreground">{actionLabel(item)}</span>
         {item.applicationName && (
-          <span className="text-muted-foreground">
-            in {humanizeConnectionDisplayName(item.applicationName)}
-          </span>
+          <span className="text-muted-foreground"><FullAppsTrans i18nKey="fullApps.in_5e4e3d" components={{ part1: <>{humanizeConnectionDisplayName(item.applicationName)}</> }} /></span>
         )}
-        <span className="text-xs text-muted-foreground">· asked {timeAgo(item.request.createdAt)}</span>
+        <span className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.asked_cf6dc9" components={{ part1: <>{timeAgo(item.request.createdAt)}</> }} /></span>
       </div>
 
       {preview ? (
@@ -188,32 +188,21 @@ function ReviewRow({
           <MarkdownBody>{preview}</MarkdownBody>
         </div>
       ) : (
-        <p className="mt-1 text-sm text-muted-foreground">
-          An agent wants to run this action. Your connection policy requires approval first.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.an_agent_wants_to_run_this_action_your_connection_po_397162")}</p>
       )}
 
-      {item.requestedByAgentId && item.connectionId && !item.request.approvalId ? <p className="mt-2 text-xs text-muted-foreground">Always allow lets this agent use this action with different arguments on this connection, within the current project when present.</p> : null}
+      {item.requestedByAgentId && item.connectionId && !item.request.approvalId ? <p className="mt-2 text-xs text-muted-foreground">{fullAppsT("fullApps.always_allow_lets_this_agent_use_this_action_with_di_597607")}</p> : null}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Button size="sm" onClick={() => allowOnce.mutate()} disabled={busy}>
-          {resolving === "allow" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Check className="mr-1.5 h-3.5 w-3.5" />}
-          Allow once
-        </Button>
-        {item.requestedByAgentId && item.connectionId && !item.request.approvalId ? <Button size="sm" variant="outline" onClick={() => alwaysAllow.mutate()} disabled={busy}>
-          {resolving === "always" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-          Always allow
-        </Button> : null}
-        <Button size="sm" variant="ghost" onClick={() => decline.mutate()} disabled={busy}>
-          {resolving === "decline" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <X className="mr-1.5 h-3.5 w-3.5" />}
-          Decline
-        </Button>
+        <Button size="sm" onClick={() => allowOnce.mutate()} disabled={busy}><FullAppsTrans i18nKey="fullApps.allow_once_00ab4d" components={{ part1: <>{resolving === "allow" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Check className="mr-1.5 h-3.5 w-3.5" />}</> }} /></Button>
+        {item.requestedByAgentId && item.connectionId && !item.request.approvalId ? <Button size="sm" variant="outline" onClick={() => alwaysAllow.mutate()} disabled={busy}><FullAppsTrans i18nKey="fullApps.always_allow_27ea76" components={{ part1: <>{resolving === "always" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}</> }} /></Button> : null}
+        <Button size="sm" variant="ghost" onClick={() => decline.mutate()} disabled={busy}><FullAppsTrans i18nKey="fullApps.decline_f328dd" components={{ part1: <>{resolving === "decline" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <X className="mr-1.5 h-3.5 w-3.5" />}</> }} /></Button>
       </div>
     </div>
   );
 }
 
 function actionLabel(item: ToolActionRequestListItem): string {
-  if (!item.toolTitle && !item.toolName) return "This action";
+  if (!item.toolTitle && !item.toolName) return fullAppsT("fullApps.copy_0df9a15574c4");
   return humanizeConnectionDisplayName(item.toolName ?? "", { title: item.toolTitle });
 }
 
@@ -222,8 +211,8 @@ function failToast(
   error: unknown,
 ) {
   pushToast({
-    title: "Couldn’t save that",
-    body: error instanceof Error ? error.message : "Please try again.",
+    title: fullAppsT("fullApps.couldn_t_save_that_a735a2"),
+    body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
     tone: "error",
   });
 }

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { t, useTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { Check, Layers } from "lucide-react";
@@ -9,18 +10,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { cn } from "@/lib/utils";
 
 export const ARTIFACT_KIND_FILTERS: { value: ArtifactKindFilter; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "image", label: "Images" },
-  { value: "video", label: "Videos" },
-  { value: "document", label: "Documents" },
-  { value: "text", label: "Text" },
-  { value: "file", label: "Files" },
+  { value: "all", get label() { return fullSharedT("agents.filterAll"); } },
+  { value: "image", get label() { return fullSharedT("surfacesGap.artifacts.images"); } },
+  { value: "video", get label() { return fullSharedT("surfacesGap.artifacts.videos"); } },
+  { value: "document", get label() { return fullSharedT("newIssue.documents"); } },
+  { value: "text", get label() { return fullSharedT("taskChatUi.attachment.text"); } },
+  { value: "file", get label() { return fullSharedT("taskPanels.tabs.files"); } },
 ];
 
 export const ARTIFACT_GROUP_OPTIONS: { value: ArtifactGroupBy; label: string }[] = [
-  { value: "none", label: "None" },
-  { value: "task", label: "Task" },
-  { value: "parent_task", label: "Parent task" },
+  { value: "none", get label() { return fullSharedT("fullShared.none_dc937b"); } },
+  { value: "task", get label() { return fullSharedT("taskDetailCommon.editor.task"); } },
+  { value: "parent_task", get label() { return fullSharedT("taskViews.column_parent"); } },
 ];
 
 export function artifactGroupByLabel(value: ArtifactGroupBy): string {

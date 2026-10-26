@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { t, useTranslation } from "../i18n";
 import { statusLabel } from "../i18n/ui-labels";
 import { useShowAgentCreatedTasks } from "../hooks/useShowAgentCreatedTasks";
@@ -336,6 +338,7 @@ export function issueAgeBucketsCrossed(
 }
 
 function IssueDateSeparator({ label }: { label: string }) {
+  useFullSharedTranslation();
   return (
     <div
       className="flex items-center gap-3 px-3 py-1.5 sm:pl-0 sm:pr-4"
@@ -510,6 +513,7 @@ interface IssuesListProps {
 }
 
 function LegacyIssuesToolbar({ context, search, controls }: CollectionToolbarProps) {
+  useFullSharedTranslation();
   return (
     <div className="flex items-center justify-between gap-2 sm:gap-3">
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
@@ -703,6 +707,7 @@ function SubIssueProgressSummaryStrip({
 const MOBILE_TREE_INDENT = ["", "pl-4 sm:pl-0", "pl-8 sm:pl-0", "pl-12 sm:pl-0", "pl-16 sm:pl-0"];
 
 export function IssuesList(props: IssuesListProps) {
+  useFullSharedTranslation();
   const { enabled: streamlinedUiEnabled } = useStreamlinedUiEnabled();
   return streamlinedUiEnabled ? <StreamlinedIssuesList {...props} /> : <LegacyIssuesList {...props} />;
 }
@@ -879,8 +884,7 @@ function StreamlinedIssuesList({
       });
       return next;
     });
-  }, [
-    preferenceLocation.companyId,
+  }, [preferenceLocation.companyId,
     preferenceLocation.collectionKey,
     preferenceLocation.legacyColumnsStorageKey,
     preferenceLocation.legacyViewStorageKey,
@@ -1212,8 +1216,7 @@ function StreamlinedIssuesList({
       issueFilterContext,
     );
     return sortIssues(filteredByControls, viewState);
-  }, [
-    searchScopedIssues,
+  }, [searchScopedIssues,
     viewState,
     currentUserId,
     enableAgentCreatedVisibilityFilter,
@@ -1378,7 +1381,7 @@ function StreamlinedIssuesList({
             : (agentName(key) ?? key.slice(0, 8)),
       items: groups[key]!,
     }));
-  }, [
+  }, [fullSharedI18n.language,
     filtered,
     issueFilterWorkspaceContext,
     viewState.groupBy,
@@ -1433,8 +1436,7 @@ function StreamlinedIssuesList({
       for (const root of roots) walk(root);
     }
     return out;
-  }, [
-    groupedContent,
+  }, [groupedContent,
     viewState.viewMode,
     viewState.collapsedGroups,
     viewState.collapsedParents,
@@ -1617,8 +1619,7 @@ function StreamlinedIssuesList({
     if (hasMoreIssues && !isLoadingMoreIssues) {
       onLoadMoreIssues?.();
     }
-  }, [
-    visibleListRowCount,
+  }, [visibleListRowCount,
     hasMoreIssues,
     hasMoreRenderedRows,
     hasMoreHierarchyRows,
@@ -1715,8 +1716,7 @@ function StreamlinedIssuesList({
       }
     }
     return defaults;
-  }, [
-    baseCreateIssueDefaults,
+  }, [baseCreateIssueDefaults,
     currentUserId,
     executionWorkspaceById,
     issueById,
@@ -1742,8 +1742,7 @@ function StreamlinedIssuesList({
       viewState,
       columns: normalized,
     });
-  }, [
-    preferenceLocation.companyId,
+  }, [preferenceLocation.companyId,
     preferenceLocation.collectionKey,
     preferenceLocation.legacyColumnsStorageKey,
     preferenceLocation.legacyViewStorageKey,
@@ -2180,7 +2179,7 @@ function StreamlinedIssuesList({
                   const firstVisibleBlockerChip = visibleBlockerChips[0] ?? null;
                   const additionalVisibleBlockerCount = Math.max(visibleBlockerChips.length - 1, 0);
                   const additionalVisibleBlockerLabel = additionalVisibleBlockerCount > 0
-                    ? ` ... and ${additionalVisibleBlockerCount} more`
+                    ? fullSharedT("fullShared.and_more_eb6251", { value1: additionalVisibleBlockerCount })
                     : "";
                   const firstVisibleBlockerDisplayLabel = firstVisibleBlockerChip
                     ? `${firstVisibleBlockerChip.chipLabel}${additionalVisibleBlockerLabel}`
@@ -2244,7 +2243,7 @@ function StreamlinedIssuesList({
                           <>
                             {hasChildren && !isExpanded ? (
                               <span className="ml-1.5 text-xs text-muted-foreground">
-                                ({totalDescendants} sub-task{totalDescendants !== 1 ? "s" : ""})
+                                {fullSharedTailT("fullSharedTail.subTasks", { count: totalDescendants })}
                               </span>
                             ) : null}
                             {issueBadge ? (

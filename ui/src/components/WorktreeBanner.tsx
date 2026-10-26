@@ -1,8 +1,10 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback } from "react";
 import { getWorktreeUiBranding } from "../lib/worktree-branding";
 import { useCopyAction } from "../lib/use-copy-action";
 
 export function WorktreeBanner() {
+  useFullSharedTranslation();
   const branding = getWorktreeUiBranding();
   const { copied, failed, copy } = useCopyAction();
 
@@ -30,10 +32,10 @@ export function WorktreeBanner() {
         <button
           type="button"
           onClick={handleCopyName}
-          title="Click to copy worktree name"
+          title={fullSharedT("fullShared.click_to_copy_worktree_name_d75060")}
           className="truncate font-semibold tracking-(--tracking-eyebrow) cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none p-0 text-current uppercase text-(length:--text-micro)"
         >
-          {copied ? "Copied!" : failed ? "Copy failed" : branding.name}
+          {copied ? fullSharedT("providerSetup.login.copied") : failed ? fullSharedT("taskPanels.viewer.copy.failed") : branding.name}
         </button>
       </div>
     </div>

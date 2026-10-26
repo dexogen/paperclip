@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { CSSProperties } from "react";
 import type { LabArtifact } from "../../kit";
 import { glyphOf, isAudio, labelOf, treatmentOf } from "./kinds";
@@ -26,6 +27,7 @@ import { panelDateLabel } from "./when";
 const ICON_LABEL: CSSProperties = { left: 5, top: 22, fontSize: 11, lineHeight: "15px", color: "var(--v1-row-ink)" };
 
 function Bars() {
+  useFullSharedTranslation();
   return (
     <span aria-hidden className="absolute flex flex-col gap-[3px]" style={{ left: 5, top: 5, width: 14, height: 14 }}>
       {[7, 14, 14].map((width, i) => (
@@ -36,6 +38,7 @@ function Bars() {
 }
 
 function IconGlyph({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   if (isAudio(artifact)) return <img src={panelGlyphAudio} alt="" width={14} height={14} className="absolute" style={{ left: 5, top: 5 }} />;
   if (artifact.kind === "slides") return <img src={panelGlyphSlides} alt="" width={14} height={12.667} className="absolute" style={{ left: 5, top: 5.67 }} />;
   const glyph = glyphOf(artifact);
@@ -48,6 +51,7 @@ function IconGlyph({ artifact }: { artifact: LabArtifact }) {
 const iconLabel = (artifact: LabArtifact) => (artifact.kind === "document" ? "DOC" : labelOf(artifact));
 
 function DocIcon({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <span className="relative block shrink-0" style={{ width: 40.002, height: 40 }}>
       <img src={panelDoc} alt="" width={40.002} height={40} className="absolute left-0 top-0 block max-w-none" />
@@ -61,6 +65,7 @@ function DocIcon({ artifact }: { artifact: LabArtifact }) {
 }
 
 function Thumbnail({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <span className="relative block size-10 shrink-0 overflow-hidden rounded-[4px]">
       <img src={artifact.thumbnailUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -81,13 +86,14 @@ function splitName(name: string): [string, string] {
 
 /** The row on its own: a button the caller places in a list item or an inline group. */
 export function ArtifactRow({ artifact, className, style }: { artifact: LabArtifact; className?: string; style?: CSSProperties }) {
+  useFullSharedTranslation();
   const name = artifact.filename ?? artifact.title;
   const [stem, ext] = splitName(name);
   const facts = [artifact.sizeLabel, panelDateLabel(artifact.updatedAt)].filter((fact): fact is string => Boolean(fact));
   return (
     <button
       type="button"
-      aria-label={`Open ${name}`}
+      aria-label={fullSharedT("fullShared.open_839d6d", { value1: name })}
       className={`flex w-full items-center gap-2 rounded-(--v1-row-radius) bg-(--v1-row) py-2 pl-2 pr-3 text-left outline-none transition-colors hover:bg-(--v1-row-hover) focus-visible:ring-2 focus-visible:ring-ring${className ? ` ${className}` : ""}`}
       style={style}
     >
@@ -111,6 +117,7 @@ export function ArtifactRow({ artifact, className, style }: { artifact: LabArtif
 }
 
 export function PanelRow({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <li>
       <ArtifactRow artifact={artifact} />

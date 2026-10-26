@@ -1376,7 +1376,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     if (mode === "create") crumbs.push({ label: t("environmentsUi.common.add") });
     if (mode === "edit") crumbs.push({ label: t("environmentsUi.common.edit") });
     setBreadcrumbs(crumbs);
-  }, [isEnvironmentFormPage, mode, setBreadcrumbs, t]);
+  }, [isEnvironmentFormPage, mode, setBreadcrumbs, t, i18n.language]);
 
   const { data: instanceSettings } = useQuery({
     queryKey: queryKeys.instance.settings,

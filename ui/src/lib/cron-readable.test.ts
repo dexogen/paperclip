@@ -1,5 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { describeCron } from "./cron-readable";
+import { i18n } from "@/i18n";
+
+afterEach(async () => { await i18n.changeLanguage("en"); });
 
 describe("describeCron", () => {
   it("describes a daily time", () => {
@@ -27,5 +30,19 @@ describe("describeCron", () => {
     expect(describeCron(undefined)).toBeNull();
     expect(describeCron("not a cron")).toBeNull();
     expect(describeCron("1 2 3")).toBeNull();
+  });
+
+  it("uses Russian minute forms without changing cron input or falling back to English", async () => {
+    await i18n.changeLanguage("ru");
+    for (const [count, expected] of [
+      [0, "Каждые 0 минут"], [1, "Каждую 1 минуту"], [2, "Каждые 2 минуты"],
+      [5, "Каждые 5 минут"], [11, "Каждые 11 минут"], [21, "Каждую 21 минуту"],
+      [22, "Каждые 22 минуты"], [25, "Каждые 25 минут"], [1.5, "Каждые 1.5 минуты"],
+    ] as const) {
+      expect(i18n.t("fullRoutinesSecrets.everyMinutes", { count })).toBe(expected);
+    }
+    expect(describeCron("*/22 * * * *")).toBe("Каждые 22 минуты");
+    await i18n.changeLanguage("en");
+    expect(describeCron("*/22 * * * *")).toBe("Every 22 minutes");
   });
 });

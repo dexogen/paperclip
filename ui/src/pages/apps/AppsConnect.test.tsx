@@ -4737,4 +4737,39 @@ describe("AppsConnect — guided generic MCP flow (PAP-17087)", () => {
       expect(container.textContent, jargon).not.toContain(jargon);
     }
   });
+
+  it("preserves a custom-header draft and one pending request across a locale roundtrip", async () => {
+    let rejectConnect!: (cause: unknown) => void;
+    connectAppMock.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectConnect = reject; }));
+    await render();
+    await gotoLinkFrame(container, "https://mcp.example.test/mcp");
+    await openAdvanced();
+    await act(async () => buttonByText("Custom headers")!.click());
+    await flushReact();
+    const name = Array.from(container.querySelectorAll<HTMLInputElement>("input"))
+      .find(input => input.getAttribute("aria-label") === "Header name")!;
+    const value = Array.from(container.querySelectorAll<HTMLInputElement>("input"))
+      .find(input => input.type === "password")!;
+    await act(async () => { setInputValue(name, "X-Fixture-Key"); setInputValue(value, "fixture-value"); });
+    await act(async () => buttonByText("Check link")!.click());
+    await flushReact();
+    expect(connectAppMock).toHaveBeenCalledTimes(1);
+    const submitted = structuredClone(connectAppMock.mock.calls[0]);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Произвольные заголовки");
+    expect(name.isConnected).toBe(true);
+    expect(value.isConnected).toBe(true);
+    expect(name.value).toBe("X-Fixture-Key");
+    expect(value.value).toBe("fixture-value");
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    await act(async () => rejectConnect(new Error("Provider <literal> denied fixture")));
+    await flushReact();
+    expect(container.textContent).toContain("Provider <literal> denied fixture");
+    expect(container.querySelector("literal")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Custom headers");
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    expect(navigateTopLevelMock).not.toHaveBeenCalled();
+  });
+
 });

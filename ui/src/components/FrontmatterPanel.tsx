@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useMemo, useState } from "react";
 import {
   analyzeFrontmatterBlock,
@@ -199,15 +201,15 @@ function collectValidation(form: FormModel, isSkillFile: boolean): ValidationIss
   const issues: ValidationIssue[] = [];
   const name = form.name.trim();
   const description = form.description.trim();
-  if (isSkillFile && !name) issues.push({ field: "name", message: "SKILL.md needs a name." });
+  if (isSkillFile && !name) issues.push({ field: "name", message: fullSharedT("fullShared.skill_md_needs_a_name_a73282") });
   if (name && !SLUG_RE.test(name)) {
-    issues.push({ field: "name", message: "Use lowercase letters, numbers and hyphens." });
+    issues.push({ field: "name", message: fullSharedT("fullShared.use_lowercase_letters_numbers_and_hyphens_b42ce9") });
   }
   if (isSkillFile && !description) {
-    issues.push({ field: "description", message: "SKILL.md needs a description." });
+    issues.push({ field: "description", message: fullSharedT("fullShared.skill_md_needs_a_description_2b9040") });
   }
   if (form.allowedToolsPresent && form.allowedTools === null) {
-    issues.push({ field: "allowed-tools", message: "Expected a list — edit in YAML." });
+    issues.push({ field: "allowed-tools", message: fullSharedT("fullShared.expected_a_list_edit_in_yaml_9a1833") });
   }
   return issues;
 }
@@ -225,6 +227,7 @@ export function FrontmatterPanel({
   onChange,
   className,
 }: FrontmatterPanelProps) {
+  useFullSharedTranslation();
   const isSkillFile = isSkillMarkdown(fileName);
 
   // `yamlText` is the canonical raw block — always equal to whatever we've last
@@ -245,7 +248,7 @@ export function FrontmatterPanel({
 
   const validation = useMemo(
     () => (effectiveMode === "fields" ? collectValidation(form, isSkillFile) : []),
-    [effectiveMode, form, isSkillFile],
+    [fullSharedI18n.language, effectiveMode, form, isSkillFile],
   );
 
   const emit = useCallback(
@@ -344,7 +347,7 @@ export function FrontmatterPanel({
               <span className="truncate text-xs text-muted-foreground">{summary}</span>
             ) : null}
             {!open && !present ? (
-              <span className="text-xs text-muted-foreground">None</span>
+              <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.none_dc937b")}</span>
             ) : null}
           </button>
 
@@ -355,9 +358,7 @@ export function FrontmatterPanel({
             >
               <TabsList variant="line" className="h-7">
                 {canUseFields ? (
-                  <TabsTrigger value="fields" className="px-2 py-0.5 text-xs">
-                    Fields
-                  </TabsTrigger>
+                  <TabsTrigger value="fields" className="px-2 py-0.5 text-xs">{fullSharedT("fullShared.fields_616f48")}</TabsTrigger>
                 ) : (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -367,16 +368,10 @@ export function FrontmatterPanel({
                           disabled
                           aria-disabled="true"
                           className="px-2 py-0.5 text-xs opacity-50"
-                        >
-                          Fields
-                        </TabsTrigger>
+                        >{fullSharedT("fullShared.fields_616f48")}</TabsTrigger>
                       </span>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-60">
-                      Switch to YAML to edit. This frontmatter uses YAML features the form can't safely
-                      round-trip (e.g. comments, anchors, or custom ordering). Editing here keeps it
-                      byte-for-byte.
-                    </TooltipContent>
+                    <TooltipContent className="max-w-60">{fullSharedT("fullShared.switch_to_yaml_to_edit_this_frontmatter_uses_yaml_fe_6a7af0")}</TooltipContent>
                   </Tooltip>
                 )}
                 <TabsTrigger value="yaml" className="px-2 py-0.5 text-xs">
@@ -386,15 +381,13 @@ export function FrontmatterPanel({
             </Tabs>
           ) : !readOnly ? (
             <Button variant="ghost" size="sm" onClick={addFrontmatter} data-testid="add-frontmatter">
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Add frontmatter
-            </Button>
+              <Plus className="mr-1 h-3.5 w-3.5" />{fullSharedT("fullShared.add_frontmatter_d3629d")}</Button>
           ) : null}
 
           {present && effectiveMode === "fields" && warningCount > 0 ? (
             <Badge variant="outline" className="gap-1 text-amber-500" data-testid="frontmatter-warning-chip">
               <AlertTriangle className="h-3.5 w-3.5" />
-              {warningCount} {warningCount === 1 ? "issue" : "issues"}
+              {warningCount} {warningCount === 1 ? fullSharedT("taskDisplay.external.type.issue") : fullSharedT("fullShared.issues_02e3fe")}
             </Badge>
           ) : null}
         </div>
@@ -420,9 +413,7 @@ export function FrontmatterPanel({
               )}
             </div>
           ) : (
-            <div className="px-3 pb-2 text-xs text-muted-foreground">
-              This file has no frontmatter.
-            </div>
+            <div className="px-3 pb-2 text-xs text-muted-foreground">{fullSharedT("fullShared.this_file_has_no_frontmatter_e9f9a8")}</div>
           )}
         </CollapsibleContent>
       </Collapsible>
@@ -447,6 +438,7 @@ function fieldWarning(validation: ValidationIssue[], field: string): string | nu
 }
 
 function FieldWarning({ message }: { message: string }) {
+  useFullSharedTranslation();
   return (
     <p className="mt-1 flex items-center gap-1 text-xs text-amber-500">
       <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
@@ -466,6 +458,7 @@ function FieldsForm({
   readOnly: boolean;
   onCommit: (form: FormModel) => void;
 }) {
+  useFullSharedTranslation();
   const nameWarning = fieldWarning(validation, "name");
   const descriptionWarning = fieldWarning(validation, "description");
   const toolsWarning = fieldWarning(validation, "allowed-tools");
@@ -511,13 +504,13 @@ function FieldsForm({
           <Label className="text-xs text-muted-foreground">allowed-tools</Label>
           {form.allowedTools === null ? (
             <p className="mt-1 text-xs text-amber-500">
-              {toolsWarning ?? "Expected a list — edit in YAML."}
+              {toolsWarning ?? fullSharedT("fullShared.expected_a_list_edit_in_yaml_9a1833")}
             </p>
           ) : (
             <ChipInput
               values={form.allowedTools}
               readOnly={readOnly}
-              placeholder="Add a tool…"
+              placeholder={fullSharedT("fullShared.add_a_tool_b04887")}
               onChange={(next) => onCommit({ ...form, allowedTools: next })}
             />
           )}
@@ -528,7 +521,7 @@ function FieldsForm({
         <div>
           <Label className="text-xs text-muted-foreground">metadata</Label>
           {form.metadataComplex !== null ? (
-            <p className="mt-1 text-xs text-muted-foreground">Complex value — edit in YAML.</p>
+            <p className="mt-1 text-xs text-muted-foreground">{fullSharedT("fullShared.complex_value_edit_in_yaml_122b74")}</p>
           ) : (
             <MetadataRows
               rows={form.metaRows}
@@ -560,7 +553,7 @@ function FieldsForm({
         ) : (
           <div key={row.id}>
             <Label className="text-xs text-muted-foreground">{row.key}</Label>
-            <p className="mt-1 text-xs text-muted-foreground">Complex value — edit in YAML.</p>
+            <p className="mt-1 text-xs text-muted-foreground">{fullSharedT("fullShared.complex_value_edit_in_yaml_122b74")}</p>
           </div>
         ),
       )}
@@ -577,6 +570,7 @@ function MetadataRows({
   readOnly: boolean;
   onChange: (rows: ScalarRow[]) => void;
 }) {
+  useFullSharedTranslation();
   const update = (index: number, patch: Partial<ScalarRow>) => {
     const next = rows.slice();
     next[index] = { ...next[index]!, ...patch, edited: true };
@@ -597,7 +591,7 @@ function MetadataRows({
       {rows.map((row, index) => (
         <div key={row.id} className="flex items-center gap-1.5">
           <Input
-            aria-label={`Metadata key ${index + 1}`}
+            aria-label={fullSharedT("fullShared.metadata_key_62df6a", { value1: index + 1 })}
             value={row.key}
             readOnly={readOnly}
             placeholder="key"
@@ -605,10 +599,10 @@ function MetadataRows({
             className="h-8 flex-1 font-mono text-xs"
           />
           <Input
-            aria-label={`Value for ${row.key || `field ${index + 1}`}`}
+            aria-label={fullSharedT("fullShared.value_for_3c97e1", { value1: row.key || fullSharedTailT("fullSharedTail.metadataField", { number: index + 1 }) })}
             value={row.text}
             readOnly={readOnly}
-            placeholder="value"
+            placeholder={fullSharedT("formsUi.secret.valuePlaceholder")}
             onChange={(event) => update(index, { text: event.target.value })}
             className="h-8 flex-1 text-xs"
           />
@@ -617,7 +611,7 @@ function MetadataRows({
               variant="ghost"
               size="icon"
               className="h-8 w-8 shrink-0"
-              aria-label={`Remove ${row.key || `field ${index + 1}`}`}
+              aria-label={fullSharedT("fullShared.remove_d2f6b9", { value1: row.key || fullSharedTailT("fullSharedTail.metadataField", { number: index + 1 }) })}
               onClick={() => remove(index)}
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -627,9 +621,7 @@ function MetadataRows({
       ))}
       {!readOnly ? (
         <Button variant="ghost" size="sm" onClick={add} className="text-xs">
-          <Plus className="mr-1 h-3.5 w-3.5" />
-          add field
-        </Button>
+          <Plus className="mr-1 h-3.5 w-3.5" />{fullSharedT("fullShared.add_field_2af202")}</Button>
       ) : null}
     </div>
   );
@@ -646,6 +638,7 @@ function ChipInput({
   placeholder?: string;
   onChange: (values: string[]) => void;
 }) {
+  useFullSharedTranslation();
   const [draft, setDraft] = useState("");
 
   const commit = () => {
@@ -663,7 +656,7 @@ function ChipInput({
           {!readOnly ? (
             <button
               type="button"
-              aria-label={`Remove ${value}`}
+              aria-label={fullSharedT("fullShared.remove_d2f6b9", { value1: value })}
               onClick={() => onChange(values.filter((_, i) => i !== index))}
               className="hover:text-foreground"
             >
@@ -686,7 +679,7 @@ function ChipInput({
             }
           }}
           onBlur={commit}
-          aria-label="Add tool"
+          aria-label={fullSharedT("fullShared.add_tool_307680")}
           className="min-w-24 flex-1 bg-transparent text-xs outline-none"
         />
       ) : null}
@@ -707,12 +700,13 @@ function YamlEditor({
   parseError: boolean;
   onChange: (value: string) => void;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="pt-1">
       {!canReturnToFields && !parseError ? (
         <div className="mb-1.5 flex items-start gap-2 rounded-md bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          <span>Editing raw YAML to preserve formatting the form can't reconstruct.</span>
+          <span>{fullSharedT("fullShared.editing_raw_yaml_to_preserve_formatting_the_form_can_995aee")}</span>
         </div>
       ) : null}
       <Textarea
@@ -722,11 +716,9 @@ function YamlEditor({
         rows={Math.min(12, Math.max(3, value.split("\n").length))}
         onChange={(event) => onChange(event.target.value)}
         className="font-mono text-xs"
-        aria-label="Frontmatter YAML"
+        aria-label={fullSharedT("fullShared.frontmatter_yaml_ed16c7")}
       />
-      <p className="mt-1 text-xs text-muted-foreground">
-        Raw YAML is the source of truth in this mode.
-      </p>
+      <p className="mt-1 text-xs text-muted-foreground">{fullSharedT("fullShared.raw_yaml_is_the_source_of_truth_in_this_mode_2b3b3f")}</p>
     </div>
   );
 }

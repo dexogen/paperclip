@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
+import { formatSilenceAgeMs } from "./source-resolved-watchdog-fold";
+import { buildBuiltInAgentPausedToast } from "./built-in-agent-toast";
+
+afterEach(async () => { await i18n.changeLanguage("en"); });
 
 import {
   formatIssueChangeValue,
@@ -23,6 +28,25 @@ describe("issueChangeFieldLabel", () => {
 });
 
 describe("formatIssueChangeValue", () => {
+  it("translates only field-aware status values and follows locale changes without mutating receipts", async () => {
+    const details = { changes: { status: { from: "todo", to: "in_progress" }, title: { from: "high", to: "done" } } };
+    const snapshot = JSON.stringify(details);
+    await i18n.changeLanguage("ru");
+    const rows = readIssueChangeReceipt(details);
+    expect(rows.find((row) => row.field === "status")).toMatchObject({ label: "Статус", from: "К выполнению", to: "В работе" });
+    expect(rows.find((row) => row.field === "title")).toMatchObject({ label: "Название", from: "high", to: "done" });
+    expect(formatIssueChangeValue([{ a: 1 }, { b: 2 }])).toBe("2 элемента");
+    expect(formatIssueChangeValue(null)).toBe("нет");
+    expect(JSON.stringify(details)).toBe(snapshot);
+    expect(formatSilenceAgeMs(59_000)).toBe("менее 1 минуты");
+    expect(formatSilenceAgeMs(60_000)).toBe("1 минута");
+    expect(formatSilenceAgeMs(22 * 60_000)).toBe("22 минуты");
+    expect(formatSilenceAgeMs(61 * 60_000)).toBe("1 ч 1 мин");
+    expect(buildBuiltInAgentPausedToast({ displayName: "Agent literal", agentHref: "/agents/raw", featureNoun: "brief" })).toMatchObject({ body: "Возобновите работу агента для создания: brief.", action: { href: "/agents/raw" } });
+    await i18n.changeLanguage("en");
+    expect(readIssueChangeReceipt(details).find((row) => row.field === "status")).toMatchObject({ label: "Status", from: "todo", to: "in progress" });
+    expect(formatSilenceAgeMs(60_000)).toBe("1 minute");
+  });
   it("renders empty values as 'none' rather than blank", () => {
     expect(formatIssueChangeValue(null)).toBe("none");
     expect(formatIssueChangeValue(undefined)).toBe("none");

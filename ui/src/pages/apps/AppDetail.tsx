@@ -1,3 +1,6 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, renderAppError, AppDisplayError, appErrorDisplay } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { AiConnectionPoolConnector } from "@/components/ai-connections/AiConnectionPoolConnector";
 import { aiConnectionRouterPluginKey } from "@paperclipai/shared";
 import { ConnectionInstructionsSettings } from "@/features/connections/ConnectionInstructions";
@@ -77,9 +80,10 @@ import {
 export { connectionAddress, connectionTransportLabel };
 
 export function AppDetail(props: { renderActions?: (connection: ToolConnection) => ReactNode; renderAgentSettings?: (connection: ToolConnection) => ReactNode; renderConnectionSettings?: (connection: ToolConnection) => ReactNode; onReconnect?: (connection: ToolConnection) => void } = {}) {
+  useFullAppsTranslation();
   const { connectionId = "" } = useParams<{ connectionId: string }>();
   const connection = useQuery({ queryKey: queryKeys.tools.connection(connectionId), queryFn: () => toolsApi.getConnection(connectionId), enabled: !!connectionId });
-  if (connection.isPending) return <p role="status">Loading connection…</p>;
+  if (connection.isPending) return <p role="status">{fullAppsT("grokSetupUi.connection.loading")}</p>;
   if (connection.error) return <p role="alert">{connection.error.message}</p>;
   const pluginKey = connection.data && aiConnectionRouterPluginKey(connection.data);
   return pluginKey ? <AiConnectionPoolConnector pluginKey={pluginKey} connection={connection.data} /> : <StandardAppDetail {...props} />;
@@ -93,6 +97,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   renderConnectionSettings?: (connection: ToolConnection) => ReactNode;
   onReconnect?: (connection: ToolConnection) => void;
 } = {}) {
+  useFullAppsTranslation();
   const { connectionId = "", tab } = useParams<{ connectionId: string; tab?: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -200,13 +205,13 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
     )
     : grantsQuery.data?.capabilities.canConfigure === true;
   const reconnectUnavailableMessage = grantsQuery.isLoading
-    ? "Checking who can reconnect this identity…"
+    ? fullAppsT("fullApps.checking_who_can_reconnect_this_identity_6e1a0d")
     : grantsQuery.isError
-      ? "We couldn't verify who can reconnect this identity. Reload the page to try again."
+      ? fullAppsT("fullApps.we_couldn_t_verify_who_can_reconnect_this_identity_r_3dca45")
       : managedIdentityGrant?.kind === "user"
         && managedPersonalUserId !== grantsQuery.data?.currentUserId
-        ? "The person this connection belongs to must reconnect it."
-        : "You don't have permission to reconnect this identity.";
+        ? fullAppsT("fullApps.the_person_this_connection_belongs_to_must_reconnect_f6a7ad")
+        : fullAppsT("fullApps.you_don_t_have_permission_to_reconnect_this_identity_b611d4");
   const logoEntry = useMemo(
     () => galleryEntryFor((galleryQuery.data?.apps ?? []) as AppGalleryDisplayEntry[], connection, application),
     [galleryQuery.data, connection, application],
@@ -221,10 +226,10 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   const owner = connection ? connectionOwnerProfile(connection, userProfileById) : null;
   const baseAppName = connection
     ? logoEntry ? appDefinitionName(logoEntry) : humanizeConnectionDisplayName(connection)
-    : "App";
+    : fullAppsT("fullApps.caption_0d04bfeb7d");
   const appName = connection
     ? connectionDisplayNameForOwner(connection, baseAppName, owner)
-    : "App";
+    : fullAppsT("fullApps.caption_0d04bfeb7d");
   const successNoticeShownFor = useRef<string | null>(null);
 
   useEffect(() => {
@@ -241,8 +246,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
       ? consumeSkillSourceReturn(connection.companyId)
       : null;
     pushToast({
-      title: `${appName} connected`,
-      body: skillSourcePath ? "Choose a repository to import your skills." : "The connection is ready. Review permissions or test an action below.",
+      title: fullAppsT("fullApps.connected_166733", { value1: appName }),
+      body: skillSourcePath ? fullAppsT("fullApps.choose_a_repository_to_import_your_skills_97993e") : fullAppsT("fullApps.the_connection_is_ready_review_permissions_or_test_a_887119"),
       tone: "success",
     });
     navigate(skillSourcePath ?? appTabHref(connection.id, "permissions"), { replace: true });
@@ -251,12 +256,12 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   useEffect(() => {
     if (!activeTab) return;
     setBreadcrumbs([
-      { label: "Connectors", href: "/apps" },
+      { label: fullAppsT("sidebar.connectors"), href: "/apps" },
       { label: appName, href: appTabHref(connectionId, "permissions") },
       { label: appTabLabel(activeTab) },
     ]);
     return () => setBreadcrumbs([]);
-  }, [setBreadcrumbs, appName, connectionId, activeTab]);
+  }, [setBreadcrumbs, appName, connectionId, activeTab, fullAppsI18n.resolvedLanguage]);
 
   const catalog = catalogQuery.data?.catalog ?? [];
   const profile = useMemo(
@@ -284,7 +289,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
       queryClient.invalidateQueries({ queryKey: queryKeys.apps.attention(selectedCompanyId!) });
       navigate("/apps");
     },
-    onError: (error) => pushToast({ title: "Couldn't disconnect", body: error instanceof Error ? error.message : "Please try again.", tone: "error" }),
+    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_disconnect_a5ff5c"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"), tone: "error" }),
   });
   const [pending, setPending] = useState(false);
   const persist = useMutation({
@@ -316,8 +321,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't save that",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: fullAppsT("fullApps.couldn_t_save_that_4ee3e1"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
         tone: "error",
       }),
     onSettled: () => setPending(false),
@@ -335,8 +340,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't rename the app",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: fullAppsT("fullApps.couldn_t_rename_the_app_dba458"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
         tone: "error",
       }),
   });
@@ -352,16 +357,16 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
         navigateTopLevel(target.url);
       } catch (error) {
         pushToast({
-          title: "Couldn't start sign-in",
-          body: error instanceof Error ? error.message : "Please try again.",
+          title: fullAppsT("fullApps.couldn_t_start_sign_in_3f9bac"),
+          body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
           tone: "error",
         });
       }
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't start sign-in",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: fullAppsT("fullApps.couldn_t_start_sign_in_3f9bac"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
         tone: "error",
       }),
   });
@@ -379,7 +384,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   const startPersonalAuth = useMutation({
     mutationFn: () => {
       const subjectUserId = grantsQuery.data?.currentUserId;
-      if (!subjectUserId) throw new Error("Sign in again to connect your own account.");
+      if (!subjectUserId) throw new AppDisplayError("fullApps.sign_in_again_to_connect_your_own_account_9aef4f");
       return toolsApi.startPersonalAuthorization(selectedCompanyId!, connectionId, {
         subjectUserId,
         returnTo: appTabHref(connectionId, "permissions"),
@@ -394,23 +399,23 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
         navigateTopLevel(target.url);
       } catch (error) {
         pushToast({
-          title: "Couldn't start sign-in",
-          body: error instanceof Error ? error.message : "Please try again.",
+          title: fullAppsT("fullApps.couldn_t_start_sign_in_3f9bac"),
+          body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
           tone: "error",
         });
       }
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't start sign-in",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: fullAppsT("fullApps.couldn_t_start_sign_in_3f9bac"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
         tone: "error",
       }),
   });
 
   // A denied or conflicting audience save keeps the dialog open with the
   // selection intact, so the error is surfaced inline rather than as a toast.
-  const [audienceError, setAudienceError] = useState<string | null>(null);
+  const [audienceError, setAudienceError] = useState<AppDisplayText | null>(null);
   const [audienceOpenGrantId, setAudienceOpenGrantId] = useState<string | null>(null);
   const replaceAudience = useMutation({
     mutationFn: ({ grantId, memberUserIds }: { grantId: string; memberUserIds: string[] }) =>
@@ -420,15 +425,15 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
       invalidateGrants();
       setAudienceOpenGrantId(null);
       pushToast({
-        title: "Audience saved",
+        title: fullAppsT("fullApps.audience_saved_b7ee24"),
         body: (grant.members?.length ?? 0) === 0
-          ? "Every organization member can use this identity."
-          : `${grant.members?.length} ${grant.members?.length === 1 ? "member" : "members"} can use this identity.`,
+          ? fullAppsT("fullApps.every_organization_member_can_use_this_identity_5c8fd9")
+          : fullAppsT("fullApps.identityMembers", { count: grant.members?.length ?? 0 }),
         tone: "success",
       });
     },
     onError: (error) =>
-      setAudienceError(error instanceof Error ? error.message : "We couldn't save that audience."),
+      setAudienceError(error instanceof Error ? appErrorDisplay(error) : ownAppDisplayText("fullApps.we_couldn_t_save_that_audience_cc1aaa")),
   });
 
   const refreshTools = useMutation({
@@ -443,17 +448,17 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
       queryClient.invalidateQueries({ queryKey: queryKeys.tools.connections(selectedCompanyId!) });
       queryClient.invalidateQueries({ queryKey: queryKeys.apps.attention(selectedCompanyId!) });
       pushToast({
-        title: `Found ${result.discoveredCount} ${result.discoveredCount === 1 ? "action" : "actions"}`,
+        title: fullAppsT("fullApps.actionsFound", { count: result.discoveredCount }),
         body: result.quarantinedCount > 0
-          ? `${result.quarantinedCount} new ${result.quarantinedCount === 1 ? "action needs" : "actions need"} your OK.`
+          ? fullAppsT("fullApps.actionsNeedApproval", { count: result.quarantinedCount })
           : undefined,
         tone: "success",
       });
     },
     onError: (error) =>
       pushToast({
-        title: "Couldn't refresh actions",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: fullAppsT("fullApps.couldn_t_refresh_actions_17b391"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
         tone: "error",
       }),
   });
@@ -464,14 +469,14 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
       queryClient.invalidateQueries({ queryKey: queryKeys.tools.connectionGrants(connectionId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.apps.attention(selectedCompanyId!) });
       pushToast({
-        title: "GitHub access refreshed",
-        body: "Account, installation, and repository access are current.",
+        title: fullAppsT("fullApps.github_access_refreshed_477eae"),
+        body: fullAppsT("fullApps.account_installation_and_repository_access_are_curre_6baf51"),
         tone: "success",
       });
     },
     onError: (error) => pushToast({
-      title: "Couldn't refresh GitHub access",
-      body: error instanceof Error ? error.message : "Please try again.",
+      title: fullAppsT("fullApps.couldn_t_refresh_github_access_f01f0f"),
+      body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.please_try_again_eea4fb"),
       tone: "error",
     }),
   });
@@ -511,7 +516,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   }
 
   if (!selectedCompanyId) {
-    return <div className="p-6 text-sm text-muted-foreground">Select an organization to manage apps.</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{fullAppsT("fullApps.select_an_organization_to_manage_apps_c62bf6")}</div>;
   }
   if (connectionQuery.isLoading) {
     return (
@@ -525,10 +530,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
   if (!connection) {
     return (
       <div className="max-w-3xl p-6">
-        <p className="text-sm text-muted-foreground">We couldn't find that app.</p>
-        <Button className="mt-4" variant="outline" onClick={() => navigate("/apps")}>
-          Back to connectors
-        </Button>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.we_couldn_t_find_that_app_3dffbb")}</p>
+        <Button className="mt-4" variant="outline" onClick={() => navigate("/apps")}>{fullAppsT("fullApps.back_to_connectors_4bb96f")}</Button>
       </div>
     );
   }
@@ -537,10 +540,10 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
     return <div className="max-w-4xl space-y-6 pb-12">
       <h1 className="text-xl font-semibold">{appName}</h1>
       <section role="status" className="space-y-3 rounded-lg border border-border bg-muted p-4">
-        <h2 className="text-sm font-semibold">Connection retired</h2>
+        <h2 className="text-sm font-semibold">{fullAppsT("fullApps.connection_retired_3e3a44")}</h2>
         <p className="text-sm text-muted-foreground">{RETIRED_COMPOSIO_MESSAGE}</p>
-        <p className="text-sm text-muted-foreground">Remove each obsolete connection separately. Removing this one does not remove other connections.</p>
-        <Button variant="outline" onClick={() => navigate("/apps/connect?source=composio")}>Add Composio MCP connection</Button>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.remove_each_obsolete_connection_separately_removing__885886")}</p>
+        <Button variant="outline" onClick={() => navigate("/apps/connect?source=composio")}>{fullAppsT("fullApps.add_composio_mcp_connection_bbc2fe")}</Button>
       </section>
       {grantsQuery.data?.capabilities.canConfigure === true && <DangerZone
         appName={appName}
@@ -552,7 +555,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
 
   const aiGrantRevoked = connection.connectionPurpose === "ai"
     && grantRows.length > 0 && grantRows.every((grant) => grant.status === "revoked");
-  const status: StatusInfo = aiGrantRevoked ? { label: "Revoked", tone: "attention" } : statusFor(connection);
+  const status: StatusInfo = aiGrantRevoked ? { label: fullAppsT("fullApps.revoked_f6f738"), tone: "attention" } : statusFor(connection);
   const needsReconnect = connection.requiresReauthorization
     ?? (status.tone === "attention" && connection.healthStatus !== "unknown");
   const quarantined = catalog.filter((e) => e.status === "quarantined");
@@ -593,10 +596,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
 
       {status.tone === "attention" && connection.requiresReauthorization === false && (
         <div role="status">
-          <p>{connection.healthMessage || "GitHub access could not be checked. Try again."}</p>
-          <Button variant="outline" disabled={refreshGitHubAccess.isPending} onClick={() => refreshGitHubAccess.mutate()}>
-            Retry access
-          </Button>
+          <p>{connection.healthMessage || fullAppsT("fullApps.github_access_could_not_be_checked_try_again_688543")}</p>
+          <Button variant="outline" disabled={refreshGitHubAccess.isPending} onClick={() => refreshGitHubAccess.mutate()}>{fullAppsT("fullApps.retry_access_e52222")}</Button>
         </div>
       )}
       {needsReconnect && (
@@ -663,7 +664,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
                 error={grantsQuery.isError}
                 connectPending={startPersonalAuth.isPending || startOAuth.isPending}
                 audiencePending={replaceAudience.isPending}
-                audienceError={audienceError}
+                audienceError={renderAppDisplayText(audienceError)}
                 audienceGrantId={audienceOpenGrantId}
                 onOpenAudience={(grantId) => {
                   setAudienceError(null);
@@ -681,10 +682,8 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
                 onReplaceAudience={(grant, memberUserIds) =>
                   replaceAudience.mutate({ grantId: grant.id, memberUserIds })}
               />
-              {connection.config?.sourceTemplateKey === "composio" ? <p className="text-sm text-muted-foreground">
-                These permissions apply to all apps available through this Composio connection. Manage app accounts and sign-in in Composio.
-              </p> : null}
-              {connection.config?.sourceTemplateKey !== "composio" && isRemoteMcpConnectorMethod(connection.config?.sourceTemplateKey, connection.config?.connectionMethodKey) && <p className="text-sm text-muted-foreground">Paperclip controls access to the tools listed here. App and action permissions inside these tools are managed in {baseAppName}.</p>}
+              {connection.config?.sourceTemplateKey === "composio" ? <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.these_permissions_apply_to_all_apps_available_throug_0c37f1")}</p> : null}
+              {connection.config?.sourceTemplateKey !== "composio" && isRemoteMcpConnectorMethod(connection.config?.sourceTemplateKey, connection.config?.connectionMethodKey) && <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.paperclip_controls_access_to_the_tools_listed_here_a_0d6c10" components={{ part1: <>{baseAppName}</> }} /></p>}
               <PermissionsPanel
                 afterAgentAccess={<>{logoEntry?.agentInstructions && <ConnectionInstructionsSettings key={connection.id} connection={connection} provider={logoEntry.name} template={logoEntry.agentInstructions} canConfigure={grantsQuery.data?.capabilities?.canConfigure ?? false} />}{renderAgentSettings?.(connection)}</>}
                 actions={actionsContent}
@@ -703,7 +702,7 @@ function StandardAppDetail({ renderActions, renderAgentSettings, renderConnectio
                 refreshPending={refreshTools.isPending}
                 permissionChangeWarning={
                   connection.credentialPolicy === "per_agent" && managedIdentityGrant?.providerTenant?.github
-                    ? "Shell Git and gh use this account for the run and are not constrained by per-tool Ask-first controls."
+                    ? fullAppsT("fullApps.shell_git_and_gh_use_this_account_for_the_run_and_ar_f58f75")
                     : undefined
                 }
                 onSaveAccess={(next) => apply({ access: connection.connectionPurpose === "ai" || managesRemoteMcpAccess ? next : accessIncludingInstalls(next, install) })}
@@ -771,6 +770,7 @@ export function AppDetailHeader({
   onRenameCancel: () => void;
   onRenameSubmit: (value: string) => void;
 }) {
+  useFullAppsTranslation();
   const unverifiedHost = unverifiedRemoteHost(connection);
   return (
     <header>
@@ -793,18 +793,16 @@ export function AppDetailHeader({
               }}
             >
               <Input
-                aria-label="App name"
+                aria-label={fullAppsT("fullApps.app_name_e6ad39")}
                 value={nameDraft}
                 onChange={(event) => onNameDraftChange(event.target.value)}
                 className="h-9 w-64 text-lg font-bold"
                 autoFocus
               />
               <Button type="submit" size="sm" disabled={renamePending || !nameDraft.trim()}>
-                {renamePending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save"}
+                {renamePending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : fullAppsT("inboxPolicy.save")}
               </Button>
-              <Button type="button" size="sm" variant="ghost" onClick={onRenameCancel} disabled={renamePending}>
-                Cancel
-              </Button>
+              <Button type="button" size="sm" variant="ghost" onClick={onRenameCancel} disabled={renamePending}>{fullAppsT("fullApps.cancel_19766e")}</Button>
             </form>
           ) : (
             <div className="flex items-center gap-1.5">
@@ -813,7 +811,7 @@ export function AppDetailHeader({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7 text-muted-foreground"
-                aria-label="Rename app"
+                aria-label={fullAppsT("fullApps.rename_app_568921")}
                 disabled={!canRename}
                 onClick={onRenameStart}
               >
@@ -824,9 +822,7 @@ export function AppDetailHeader({
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
             {connection.config?.provider !== "agentmail" && actionCount !== null && (
-              <span className="text-xs text-muted-foreground">
-                {actionCount} {actionCount === 1 ? "action" : "actions"} available
-              </span>
+              <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.actionsAvailable", { count: actionCount })}</span>
             )}
             {connectionDisplaySecondaryHint(connection) ? (
               <span className="text-xs text-muted-foreground">
@@ -843,19 +839,21 @@ export function AppDetailHeader({
 }
 
 function ToolsLoading({ mcpActions = false }: { mcpActions?: boolean }) {
+  useFullAppsTranslation();
   return (
     <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground" role="status">
       <Loader2 className="h-4 w-4 animate-spin" />
-      {mcpActions ? "Loading MCP actions, this may take a minute." : "Loading tools…"}
+      {mcpActions ? fullAppsT("fullApps.loading_mcp_actions_this_may_take_a_minute_43a98d") : fullAppsT("fullApps.loading_tools_ff2097")}
     </div>
   );
 }
 
 function ToolsLoadError({ onRetry }: { onRetry: () => void }) {
+  useFullAppsTranslation();
   return (
     <div className="space-y-3 py-8">
-      <p className="text-sm text-destructive">Couldn’t load tools for this app.</p>
-      <Button size="sm" variant="outline" onClick={onRetry}>Try again</Button>
+      <p className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_tools_for_this_app_6564a3")}</p>
+      <Button size="sm" variant="outline" onClick={onRetry}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
     </div>
   );
 }
@@ -886,15 +884,16 @@ type StatusInfo = { label: string; tone: "connected" | "attention" | "paused" };
 
 function statusFor(connection: ToolConnection): StatusInfo {
   if (connection.enabled === false || connection.status === "disabled") {
-    return { label: "Paused", tone: "paused" };
+    return { label: fullAppsT("fullApps.paused_e159b0"), tone: "paused" };
   }
   if (isAttentionHealthStatus(connection.healthStatus) || (connection.connectionPurpose === "ai" && (connection.healthStatus !== "ok" || aiSubscriptionNeedsIsolatedLogin(connection.config)))) {
-    return { label: "Needs attention", tone: "attention" };
+    return { label: fullAppsT("inboxUi.blocked.variant.needs_attention"), tone: "attention" };
   }
-  return { label: "Connected", tone: "connected" };
+  return { label: fullAppsT("environmentsUi.terminal.connected"), tone: "connected" };
 }
 
 function StatusBadge({ status }: { status: StatusInfo }) {
+  useFullAppsTranslation();
   const klass: Record<StatusInfo["tone"], string> = {
     connected: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
     attention: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",

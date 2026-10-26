@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { EmailMessageCard } from "./EmailMessageCard";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ export function EmailTaskActivity({
   companyId: string;
   issueId: string;
 }) {
+  useFullSharedTranslation();
   const cache = useQueryClient();
   const threadKey = ["email-thread", companyId, issueId];
   const queryEnabled = Boolean(companyId && issueId) && !issueId.startsWith("chat:");
@@ -68,6 +70,7 @@ function EmailDelivery({
   publication: EmailPublicationSummary;
   onResolved: () => void;
 }) {
+  useFullSharedTranslation();
   const [messageId, setMessageId] = useState("");
   const resolve = useMutation({
     mutationFn: (outcome: "sent" | "failed") =>
@@ -78,35 +81,27 @@ function EmailDelivery({
     <div className="space-y-2 text-xs text-muted-foreground">
       {p.request && !p.providerMessageId && (
         <article
-          aria-label="Email send intent"
+          aria-label={fullSharedT("fullShared.email_send_intent_5cd558")}
           className="task-context-notice space-y-3"
         >
-          <p className="font-semibold">{p.request.subject ?? "Email reply"}</p>
-          {p.request.to && <p>To: {p.request.to.join(", ")}</p>}
+          <p className="font-semibold">{p.request.subject ?? fullSharedT("fullShared.email_reply_ef902e")}</p>
+          {p.request.to && <p><FullSharedTrans i18nKey="fullShared.to_bdc0ca" components={{ part1: <>{p.request.to.join(", ")}</> }} /></p>}
           <div className="whitespace-pre-wrap break-words text-sm text-foreground">
             {p.request.text}
           </div>
         </article>
       )}
-      <p>
-        Email {p.outcome}
-        {p.error ? ` — ${p.error}` : ""}
-      </p>
+      <p><FullSharedTrans i18nKey="fullShared.email_d33502" components={{ part1: <>{p.outcome}</>, part2: <>{p.error ? ` — ${p.error}` : ""}</> }} /></p>
       {p.outcome === "uncertain" && (
         <details>
-          <summary className="cursor-pointer">
-            Resolve delivery after checking AgentMail
-          </summary>
+          <summary className="cursor-pointer">{fullSharedT("fullShared.resolve_delivery_after_checking_agentmail_457318")}</summary>
           <div className="space-y-2 py-2">
-            <p>
-              Confirm the outcome in AgentMail before resolving. This action
-              does not resend.
-            </p>
+            <p>{fullSharedT("fullShared.confirm_the_outcome_in_agentmail_before_resolving_th_0e8704")}</p>
             <Input
-              aria-label="Provider message ID"
+              aria-label={fullSharedT("fullShared.provider_message_id_c250cf")}
               value={messageId}
               onChange={(e) => setMessageId(e.target.value)}
-              placeholder="Provider message ID"
+              placeholder={fullSharedT("fullShared.provider_message_id_c250cf")}
             />
             <div className="flex gap-2">
               <Button
@@ -114,17 +109,13 @@ function EmailDelivery({
                 variant="outline"
                 disabled={!messageId || resolve.isPending}
                 onClick={() => resolve.mutate("sent")}
-              >
-                Confirm sent
-              </Button>
+              >{fullSharedT("fullShared.confirm_sent_a1913b")}</Button>
               <Button
                 size="sm"
                 variant="outline"
                 disabled={resolve.isPending}
                 onClick={() => resolve.mutate("failed")}
-              >
-                Confirm not sent
-              </Button>
+              >{fullSharedT("fullShared.confirm_not_sent_e948b4")}</Button>
             </div>
             {resolve.error && (
               <p role="alert" className="text-destructive">

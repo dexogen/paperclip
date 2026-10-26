@@ -764,7 +764,7 @@ export function Inbox() {
         `${location.pathname}${location.search}${location.hash}`,
         "inbox",
       ),
-    [location.pathname, location.search, location.hash, t],
+    [location.pathname, location.search, location.hash, t, i18n.language],
   );
 
   const { data: session } = useQuery({
@@ -800,7 +800,7 @@ export function Inbox() {
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("inboxUi.title") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   useEffect(() => {
     saveLastInboxTab(tab);
@@ -1119,7 +1119,7 @@ export function Inbox() {
       if (a.kind !== b.kind) return a.kind === "user" ? -1 : 1;
       return a.label.localeCompare(b.label);
     });
-  }, [agents, currentUserId, displayCompanyUserLabelMap, mineIssues, touchedIssues, t]);
+  }, [agents, currentUserId, displayCompanyUserLabelMap, mineIssues, touchedIssues, t, i18n.language]);
   const issuesToRender = useMemo(
     () => {
       if (tab === "mine") return visibleMineIssues;

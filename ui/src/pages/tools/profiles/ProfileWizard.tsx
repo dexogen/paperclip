@@ -1,3 +1,5 @@
+import { AppDisplayError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronDown, Loader2 } from "lucide-react";
@@ -38,9 +40,9 @@ function slugifyProfileKey(name: string): string {
 }
 
 const STEP_LABELS: Array<{ step: WizardStep; label: string }> = [
-  { step: 1, label: "Name" },
-  { step: 2, label: "Choose tools" },
-  { step: 3, label: "Assign" },
+  { step: 1, get label() { return fullAppsT("fullApps.name_dcd1d5"); } },
+  { step: 2, get label() { return fullAppsT("fullApps.choose_tools_4e3af1"); } },
+  { step: 3, get label() { return fullAppsT("fullApps.assign_8ece89"); } },
 ];
 
 export function ProfileWizard({
@@ -54,6 +56,7 @@ export function ProfileWizard({
   initialTemplate?: TemplateKey;
   initialStep?: WizardStep;
 }) {
+  useFullAppsTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
@@ -179,12 +182,12 @@ export function ProfileWizard({
       invalidate();
     },
     onError: (error: unknown) =>
-      pushToast({ title: "Could not save", body: String((error as Error)?.message ?? error), tone: "error" }),
+      pushToast({ title: fullAppsT("taskPanels.documents.cannotSave"), body: String((error as Error)?.message ?? error), tone: "error" }),
   });
 
   const finish = useMutation({
     mutationFn: async () => {
-      if (!draftId) throw new Error("No draft to finish");
+      if (!draftId) throw new AppDisplayError("fullApps.no_draft_to_finish_1591d8");
       const entries = buildEntries(appGroups, selections, advancedRules, newToolsAction);
       const profile = await toolsApi.updateProfile(draftId, {
         defaultAction: newToolsAction,
@@ -200,12 +203,12 @@ export function ProfileWizard({
       return toolsApi.updateProfile(draftId, { status: "active" });
     },
     onSuccess: (profile) => {
-      pushToast({ title: "Profile saved", tone: "success" });
+      pushToast({ title: fullAppsT("fullApps.profile_saved_ea278d"), tone: "success" });
       invalidate();
       navigate(`/apps/advanced/profiles/${profile.id}${selectedAgentIds.size === 0 && !companyDefault ? "?created=1" : ""}`);
     },
     onError: (error: unknown) =>
-      pushToast({ title: "Could not save profile", body: String((error as Error)?.message ?? error), tone: "error" }),
+      pushToast({ title: fullAppsT("fullApps.could_not_save_profile_bfe28c"), body: String((error as Error)?.message ?? error), tone: "error" }),
   });
 
   const saveAndExit = () => {
@@ -214,7 +217,7 @@ export function ProfileWizard({
       { goToStep: step, completedStep: completed },
       {
         onSuccess: () => {
-          pushToast({ title: "Draft saved", body: "Pick it back up from the profiles list.", tone: "success" });
+          pushToast({ title: fullAppsT("fullApps.draft_saved_5ccb8c"), body: fullAppsT("fullApps.pick_it_back_up_from_the_profiles_list_a521c6"), tone: "success" });
           navigate("/apps/advanced/profiles");
         },
       },
@@ -224,7 +227,7 @@ export function ProfileWizard({
   const busy = saveDraft.isPending || finish.isPending;
   const step1Valid = name.trim().length > 0 && (template !== "copy" || Boolean(copyFromId));
 
-  if (profileId && profiles.isLoading) return <LoadingState label="Loading draft…" />;
+  if (profileId && profiles.isLoading) return <LoadingState label={fullAppsT("fullApps.loading_draft_5bb36e")} />;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-24">
@@ -286,10 +289,7 @@ export function ProfileWizard({
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             {step >= 2 ? (
-              <span>
-                Allows <span className="font-medium text-foreground">{live.allowed}</span> of {live.total}{" "}
-                tools
-              </span>
+              <span><FullAppsTrans i18nKey="fullApps.allows_of_tools_306df8" components={{ part1: <span className="font-medium text-foreground">{live.allowed}</span>, part2: <>{live.total}</>, part3: <>{" "}</> }} /></span>
             ) : null}
             {draftId ? (
               <button
@@ -297,21 +297,15 @@ export function ProfileWizard({
                 onClick={saveAndExit}
                 disabled={busy}
                 className="font-medium text-primary hover:underline disabled:opacity-50"
-              >
-                Save &amp; finish later
-              </button>
+              >{fullAppsT("fullApps.save_finish_later_f87588")}</button>
             ) : null}
           </div>
 
           <div className="flex items-center gap-2">
             {step > 1 ? (
-              <Button variant="outline" disabled={busy} onClick={() => setStep((s) => (s - 1) as WizardStep)}>
-                Back
-              </Button>
+              <Button variant="outline" disabled={busy} onClick={() => setStep((s) => (s - 1) as WizardStep)}>{fullAppsT("onboarding.actions.back")}</Button>
             ) : (
-              <Button variant="ghost" disabled={busy} onClick={() => navigate("/apps/advanced/profiles")}>
-                Cancel
-              </Button>
+              <Button variant="ghost" disabled={busy} onClick={() => navigate("/apps/advanced/profiles")}>{fullAppsT("fullApps.cancel_19766e")}</Button>
             )}
 
             {step === 1 ? (
@@ -320,27 +314,18 @@ export function ProfileWizard({
                 onClick={() =>
                   saveDraft.mutate({ goToStep: 2, completedStep: 1, seed: seedSelections() })
                 }
-              >
-                {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
-                Continue
-              </Button>
+              ><FullAppsTrans i18nKey="fullApps.continue_bae411" components={{ part1: <>{busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}</> }} /></Button>
             ) : null}
 
             {step === 2 ? (
               <Button
                 disabled={busy}
                 onClick={() => saveDraft.mutate({ goToStep: 3, completedStep: 2 })}
-              >
-                {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
-                Continue
-              </Button>
+              ><FullAppsTrans i18nKey="fullApps.continue_bae411" components={{ part1: <>{busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}</> }} /></Button>
             ) : null}
 
             {step === 3 ? (
-              <Button disabled={busy} onClick={() => finish.mutate()}>
-                {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
-                Save profile
-              </Button>
+              <Button disabled={busy} onClick={() => finish.mutate()}><FullAppsTrans i18nKey="fullApps.save_profile_a8a776" components={{ part1: <>{busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}</> }} /></Button>
             ) : null}
           </div>
         </div>
@@ -393,13 +378,15 @@ async function reconcileBindings(
     } catch (error) {
       const rollbacks = await Promise.allSettled(completed.reverse().map((done) => done.rollback()));
       const rollbackFailures = rollbacks.filter((result) => result.status === "rejected").length;
-      const suffix = rollbackFailures > 0 ? `; ${rollbackFailures} rollback operation(s) also failed` : "";
-      throw new Error(`Could not update assignment ${operation.key}${suffix}`, { cause: error });
+      throw rollbackFailures > 0
+        ? new AppDisplayError("fullApps.assignmentRollbackFailed", { operation: operation.key, rollbackCount: rollbackFailures }, { cause: error })
+        : new AppDisplayError("fullApps.assignmentFailed", { operation: operation.key }, { cause: error });
     }
   }
 }
 
 function Stepper({ current }: { current: WizardStep }) {
+  useFullAppsTranslation();
   return (
     <ol className="flex items-center gap-2 text-sm">
       {STEP_LABELS.map(({ step, label }, idx) => {
@@ -453,11 +440,12 @@ export function StepName({
   profileKey: string;
   onProfileKey: (v: string) => void;
 }) {
+  useFullAppsTranslation();
   const [advancedOpen, setAdvancedOpen] = useState(false);
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-foreground">Start from</h3>
+        <h3 className="text-sm font-medium text-foreground">{fullAppsT("fullApps.start_from_eb3f51")}</h3>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {TEMPLATES.map((t) => (
             <button
@@ -480,9 +468,9 @@ export function StepName({
 
       {template === "copy" ? (
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-foreground">Which profile?</h3>
+          <h3 className="text-sm font-medium text-foreground">{fullAppsT("fullApps.which_profile_2582f4")}</h3>
           {copyOptions.length === 0 ? (
-            <p className="text-sm text-muted-foreground">You don't have another profile to copy yet.</p>
+            <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.you_don_t_have_another_profile_to_copy_yet_17721a")}</p>
           ) : (
             <div className="space-y-1.5">
               {copyOptions.map((p) => (
@@ -506,21 +494,21 @@ export function StepName({
 
       <div className="space-y-3">
         <div className="space-y-1.5">
-          <Label htmlFor="profile-name">Name</Label>
+          <Label htmlFor="profile-name">{fullAppsT("fullApps.name_dcd1d5")}</Label>
           <Input
             id="profile-name"
             value={name}
             onChange={(e) => onName(e.target.value)}
-            placeholder="e.g. Everyday work"
+            placeholder={fullAppsT("fullApps.e_g_everyday_work_4bb335")}
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="profile-description">Description (optional)</Label>
+          <Label htmlFor="profile-description">{fullAppsT("fullApps.description_optional_f6cbe2")}</Label>
           <Textarea
             id="profile-description"
             value={description}
             onChange={(e) => onDescription(e.target.value)}
-            placeholder="What is this profile for?"
+            placeholder={fullAppsT("fullApps.what_is_this_profile_for_73f941")}
             rows={2}
           />
         </div>
@@ -528,21 +516,17 @@ export function StepName({
 
       <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
         <CollapsibleTrigger className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-          <ChevronDown className={cn("h-4 w-4 transition-transform", advancedOpen && "rotate-180")} />
-          Advanced
-        </CollapsibleTrigger>
+          <ChevronDown className={cn("h-4 w-4 transition-transform", advancedOpen && "rotate-180")} />{fullAppsT("fullApps.advanced_9f088d")}</CollapsibleTrigger>
         <CollapsibleContent className="pt-2">
           <div className="space-y-1.5">
-            <Label htmlFor="profile-key">Identifier</Label>
+            <Label htmlFor="profile-key">{fullAppsT("searchUi.result.identifier")}</Label>
             <Input
               id="profile-key"
               value={profileKey}
               onChange={(e) => onProfileKey(e.target.value)}
               className="font-mono text-xs"
             />
-            <p className="text-xs text-muted-foreground">
-              Used in exports and the API. Auto-filled from the name.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.used_in_exports_and_the_api_auto_filled_from_the_nam_1245c6")}</p>
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -582,6 +566,7 @@ export function StepAssign({
   companyDefault: boolean;
   onCompanyDefault: (v: boolean) => void;
 }) {
+  useFullAppsTranslation();
   const [moreOpen, setMoreOpen] = useState(false);
   // Per-agent overlap context from already-loaded bindings — no extra fetch.
   const contextByAgent = useMemo(() => {
@@ -610,16 +595,13 @@ export function StepAssign({
           onChange={(e) => onCompanyDefault(e.target.checked)}
         />
         <span className="flex flex-col gap-0.5">
-          <span className="text-sm font-medium text-foreground">Make this the organization default</span>
-          <span className="text-xs text-muted-foreground">
-            Every agent without its own profile uses this one.
-            {defaultProfileName ? ` Replaces “${defaultProfileName}”.` : ""}
-          </span>
+          <span className="text-sm font-medium text-foreground">{fullAppsT("fullApps.make_this_the_organization_default_12c00b")}</span>
+          <span className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.every_agent_without_its_own_profile_uses_this_one_9960ef" components={{ part1: <>{defaultProfileName ? fullAppsT("fullApps.replaces_46699a", { value1: defaultProfileName }) : ""}</> }} /></span>
         </span>
       </label>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-foreground">Assign to agents</h3>
+        <h3 className="text-sm font-medium text-foreground">{fullAppsT("fullApps.assign_to_agents_06d88b")}</h3>
         <AgentMultiSelect
           agents={agents}
           selectedAgentIds={selectedAgentIds}
@@ -631,34 +613,29 @@ export function StepAssign({
           getDescription={(agent) => {
             const context = contextByAgent.get(agent.id) ?? [];
             const bits = [...context];
-            if (defaultProfileName) bits.push("organization default");
-            return bits.length > 0 ? `already has: ${bits.join(" · ")}` : "no profiles yet";
+            if (defaultProfileName) bits.push(fullAppsT("fullApps.organization_default_fb3f6d"));
+            return bits.length > 0 ? fullAppsT("fullApps.message_26eba92262f6", { value1: bits.join(" · ") }) : fullAppsT("fullApps.no_profiles_yet_09bc1d");
           }}
         />
-        <p className="text-xs text-muted-foreground">
-          If an agent has several profiles, it can use anything any of them allows.
-        </p>
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.if_an_agent_has_several_profiles_it_can_use_anything_b6dd41")}</p>
       </div>
 
       {(projects.length > 0 || routines.length > 0) && onToggleProject && onToggleRoutine ? (
         <Collapsible open={moreOpen} onOpenChange={setMoreOpen} className="rounded-lg border border-border">
           <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-left">
-            <span className="text-sm font-medium text-foreground">More targets</span>
+            <span className="text-sm font-medium text-foreground">{fullAppsT("fullApps.more_targets_ce9b6d")}</span>
             <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", moreOpen && "rotate-180")} />
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-4 border-t border-border px-4 py-3">
-            <p className="text-xs text-muted-foreground">
-              Assign this profile to a whole project or a scheduled routine instead of (or as well as)
-              individual agents.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.assign_this_profile_to_a_whole_project_or_a_schedule_9bc8b6")}</p>
             <TargetChecklist
-              label="Projects"
+              label={fullAppsT("sidebar.projects")}
               options={projects}
               selected={selectedProjectIds ?? new Set()}
               onToggle={onToggleProject}
             />
             <TargetChecklist
-              label="Routines"
+              label={fullAppsT("sidebar.routines")}
               options={routines}
               selected={selectedRoutineIds ?? new Set()}
               onToggle={onToggleRoutine}
@@ -681,6 +658,7 @@ function TargetChecklist({
   selected: Set<string>;
   onToggle: (id: string) => void;
 }) {
+  useFullAppsTranslation();
   if (options.length === 0) return null;
   return (
     <div className="space-y-1.5">

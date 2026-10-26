@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 export type AuditSection = "activity" | "runs" | "costs" | "budgets" | "timeline" | "commentary";
 
 export const AUDIT_SECTIONS: ReadonlyArray<{
@@ -5,12 +6,12 @@ export const AUDIT_SECTIONS: ReadonlyArray<{
   label: string;
   href: string;
 }> = [
-  { value: "activity", label: "Activity", href: "/activity" },
-  { value: "runs", label: "Runs", href: "/activity/runs" },
-  { value: "commentary", label: "Commentary", href: "/activity/commentary" },
-  { value: "costs", label: "Costs", href: "/activity/costs" },
-  { value: "budgets", label: "Budgets", href: "/activity/budgets" },
-  { value: "timeline", label: "Timeline", href: "/activity/timeline" },
+  { value: "activity", get label() { return t("fullPages.activity"); }, href: "/activity" },
+  { value: "runs", get label() { return t("skillsGap.runs"); }, href: "/activity/runs" },
+  { value: "commentary", get label() { return t("fullPages.commentary"); }, href: "/activity/commentary" },
+  { value: "costs", get label() { return t("sidebar.costs"); }, href: "/activity/costs" },
+  { value: "budgets", get label() { return t("costsUi.budgets"); }, href: "/activity/budgets" },
+  { value: "timeline", get label() { return t("sidebar.timeline"); }, href: "/activity/timeline" },
 ];
 
 export interface AuditLinkScope {

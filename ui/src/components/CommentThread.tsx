@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AgentIdentity } from "./AgentIdentity";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
@@ -141,6 +142,7 @@ function clearDraft(draftKey: string) {
 }
 
 function BreakablePath({ text }: { text: string }) {
+  useFullSharedTranslation();
   const parts: React.ReactNode[] = [];
   const segments = text.split(/(?<=[\/-])/);
   for (let i = 0; i < segments.length; i++) {
@@ -247,6 +249,7 @@ function runStatusClass(status: string) {
 }
 
 function CopyMarkdownButton({ text }: { text: string }) {
+  useFullSharedTranslation();
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -256,7 +259,7 @@ function CopyMarkdownButton({ text }: { text: string }) {
     }
   }, []);
 
-  const label = status === "copied" ? "Copied" : status === "failed" ? "Copy failed" : "Copy";
+  const label = status === "copied" ? fullSharedT("taskPanels.preview.copied") : status === "failed" ? fullSharedT("taskPanels.viewer.copy.failed") : fullSharedT("taskDetailCommon.markdown.copy");
 
   return (
     <button
@@ -270,7 +273,7 @@ function CopyMarkdownButton({ text }: { text: string }) {
             : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
       )}
       title={label}
-      aria-label="Copy comment as markdown"
+      aria-label={fullSharedT("fullShared.copy_comment_as_markdown_35d333")}
       onClick={() => {
         void copyTextToClipboard(text)
           .then(() => setStatus("copied"))
@@ -324,6 +327,7 @@ function CommentCard({
   queued?: boolean;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  useFullSharedTranslation();
   const isHighlighted = highlightCommentId === comment.id;
   const isPending = comment.clientStatus === "pending";
   const isQueued = queued || comment.queueState === "queued" || comment.clientStatus === "queued";
@@ -355,14 +359,10 @@ function CommentCard({
         )}
         <span className="flex items-center gap-1.5">
           {isQueued ? (
-            <Badge variant="outline" className="border-amber-400/60 bg-amber-100/70 text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow) text-amber-800 dark:border-amber-400/40 dark:bg-amber-500/20 dark:text-amber-200">
-              Queued
-            </Badge>
+            <Badge variant="outline" className="border-amber-400/60 bg-amber-100/70 text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow) text-amber-800 dark:border-amber-400/40 dark:bg-amber-500/20 dark:text-amber-200">{fullSharedT("taskChatUi.bubble.queued")}</Badge>
           ) : null}
           {followUpRequested ? (
-            <Badge variant="outline" className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow)">
-              Follow-up
-            </Badge>
+            <Badge variant="outline" className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow)">{fullSharedT("taskChatUi.classic.followup")}</Badge>
           ) : null}
           {companyId && !isPending && !isDeleted ? (
             <PluginSlotOutlet
@@ -381,7 +381,7 @@ function CommentCard({
             />
           ) : null}
           {isPending ? (
-            <span className="text-xs text-muted-foreground">{isQueued ? "Queueing..." : "Sending..."}</span>
+            <span className="text-xs text-muted-foreground">{isQueued ? fullSharedT("fullShared.queueing_d6e3ff") : fullSharedT("taskChatUi.classic.sending")}</span>
           ) : (
             <a
               href={`#comment-${comment.id}`}
@@ -394,7 +394,7 @@ function CommentCard({
         </span>
       </div>
       {isDeleted ? (
-        <div className="text-sm italic text-muted-foreground">Comment deleted</div>
+        <div className="text-sm italic text-muted-foreground">{fullSharedT("taskDetail.copy.commentDeleted")}</div>
       ) : (
         <MarkdownBody className="text-sm" softBreaks externalReferences={externalReferences}>{comment.body}</MarkdownBody>
       )}
@@ -428,13 +428,9 @@ function CommentCard({
               <Link
                 to={`/agents/${comment.runAgentId}/runs/${comment.runId}`}
                 className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-              >
-                run {comment.runId.slice(0, 8)}
-              </Link>
+              ><FullSharedTrans i18nKey="fullShared.run_ae3de5" components={{ part1: <>{comment.runId.slice(0, 8)}</> }} /></Link>
             ) : (
-              <span className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground">
-                run {comment.runId.slice(0, 8)}
-              </span>
+              <span className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground"><FullSharedTrans i18nKey="fullShared.run_ae3de5" components={{ part1: <>{comment.runId.slice(0, 8)}</> }} /></span>
             )
           ) : undefined}
         />
@@ -445,13 +441,9 @@ function CommentCard({
             <Link
               to={`/agents/${comment.runAgentId}/runs/${comment.runId}`}
               className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-            >
-              run {comment.runId.slice(0, 8)}
-            </Link>
+            ><FullSharedTrans i18nKey="fullShared.run_ae3de5" components={{ part1: <>{comment.runId.slice(0, 8)}</> }} /></Link>
           ) : (
-            <span className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground">
-              run {comment.runId.slice(0, 8)}
-            </span>
+            <span className="inline-flex items-center rounded-md border border-border bg-accent/30 px-2 py-1 text-(length:--text-nano) font-mono text-muted-foreground"><FullSharedTrans i18nKey="fullShared.run_ae3de5" components={{ part1: <>{comment.runId.slice(0, 8)}</> }} /></span>
           )}
         </div>
       ) : null}
@@ -474,8 +466,9 @@ function TimelineEventCard({
   agentMap?: Map<string, Agent>;
   currentUserId?: string | null;
 }) {
+  useFullSharedTranslation();
   const actorName = formatTimelineActorName(event.actorType, event.actorId, agentMap, currentUserId);
-  const actionLabel = event.followUpRequested ? "requested follow-up" : "updated this task";
+  const actionLabel = event.followUpRequested ? fullSharedT("taskChatUi.classic.requestedFollowup") : fullSharedT("taskChatUi.classic.updatedTask");
 
   return (
     <div id={`activity-${event.id}`} className="flex items-start gap-2.5 py-1.5">
@@ -497,9 +490,7 @@ function TimelineEventCard({
 
         {event.statusChange ? (
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-              Status
-            </span>
+            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">{fullSharedT("sidebar.status")}</span>
             <span className="text-muted-foreground">
               {humanizeValue(event.statusChange.from)}
             </span>
@@ -512,9 +503,7 @@ function TimelineEventCard({
 
         {event.assigneeChange ? (
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-              Assignee
-            </span>
+            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">{fullSharedT("fullShared.assignee_5e20d2")}</span>
             <span className="text-muted-foreground">
               {formatTimelineAssigneeLabel(event.assigneeChange.from, agentMap, currentUserId)}
             </span>
@@ -527,9 +516,7 @@ function TimelineEventCard({
 
         {event.workspaceChange ? (
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-              Workspace
-            </span>
+            <span className="w-14 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">{fullSharedT("taskViews.column_workspace")}</span>
             <span className="text-muted-foreground">
               {formatTimelineWorkspaceLabel(event.workspaceChange.from)}
             </span>
@@ -584,8 +571,9 @@ const TimelineList = memo(function TimelineList({
   highlightCommentId?: string | null;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  useFullSharedTranslation();
   if (timeline.length === 0) {
-    return <p className="text-sm text-muted-foreground">No timeline entries yet.</p>;
+    return <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.no_timeline_entries_yet_a3f327")}</p>;
   }
 
   return (
@@ -632,7 +620,7 @@ const TimelineList = memo(function TimelineList({
                   <Link to={`/agents/${run.agentId}`} className="font-medium text-foreground transition-colors hover:underline">
                     {actorName}
                   </Link>
-                  <span className="text-muted-foreground">run</span>
+                  <span className="text-muted-foreground">{fullSharedT("taskChatUi.classic.run")}</span>
                   <Link
                     to={`/agents/${run.agentId}/runs/${run.runId}`}
                     className="inline-flex items-center rounded-md border border-border bg-accent/40 px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
@@ -653,8 +641,7 @@ const TimelineList = memo(function TimelineList({
               {run.environment || run.environmentLease ? (
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-(length:--text-micro) text-muted-foreground">
                   {run.environment ? (
-                    <span>
-                      Environment <span className="text-foreground">{run.environment.name}</span>
+                    <span>{fullSharedT("fullShared.environment_9e4719")}<span className="text-foreground">{run.environment.name}</span>
                       {/* The raw "sandbox" driver key stays off run details — the
                           environment's name and the Provider entry below already
                           identify it; other drivers (ssh, local) remain useful. */}
@@ -664,18 +651,12 @@ const TimelineList = memo(function TimelineList({
                     </span>
                   ) : null}
                   {run.environmentLease?.provider ? (
-                    <span>
-                      Provider <span className="text-foreground">{run.environmentLease.provider}</span>
-                    </span>
+                    <span><FullSharedTrans i18nKey="fullShared.provider_04b48c" components={{ part1: <span className="text-foreground">{run.environmentLease.provider}</span> }} /></span>
                   ) : null}
                   {run.environmentLease ? (
-                    <span>
-                      Lease{" "}
-                      <span className="font-mono text-foreground">
+                    <span><FullSharedTrans i18nKey="fullShared.lease_25a63f" components={{ part1: <>{" "}</>, part2: <span className="font-mono text-foreground">
                         {run.environmentLease.id.slice(0, 8)}
-                      </span>
-                      <span> · {run.environmentLease.status}</span>
-                    </span>
+                      </span>, part3: <span> · {run.environmentLease.status}</span> }} /></span>
                   ) : null}
                   {run.environmentLease?.workspacePath ? (
                     <span className="min-w-0 font-mono" style={{ overflowWrap: "anywhere" }}>
@@ -683,9 +664,7 @@ const TimelineList = memo(function TimelineList({
                     </span>
                   ) : null}
                   {run.environmentLease?.failureReason ? (
-                    <span className="text-destructive">
-                      Failure: {run.environmentLease.failureReason}
-                    </span>
+                    <span className="text-destructive"><FullSharedTrans i18nKey="fullShared.failure_8eb141" components={{ part1: <>{run.environmentLease.failureReason}</> }} /></span>
                   ) : null}
                 </div>
               ) : null}
@@ -748,6 +727,7 @@ export function CommentThread({
   composerDisabledReason = null,
   externalReferences,
 }: CommentThreadProps) {
+  useFullSharedTranslation();
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [attaching, setAttaching] = useState(false);
@@ -960,7 +940,7 @@ export function CommentThread({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold">Timeline ({timeline.length + queuedComments.length})</h3>
+      <h3 className="text-sm font-semibold"><FullSharedTrans i18nKey="fullShared.timeline_b83bf9" components={{ part1: <>{timeline.length + queuedComments.length}</> }} /></h3>
 
       <TimelineList
         timeline={timeline}
@@ -985,9 +965,7 @@ export function CommentThread({
       {queuedComments.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h4 className="text-xs font-semibold uppercase tracking-(--tracking-eyebrow) text-amber-700 dark:text-amber-300">
-              Queued Comments ({queuedComments.length})
-            </h4>
+            <h4 className="text-xs font-semibold uppercase tracking-(--tracking-eyebrow) text-amber-700 dark:text-amber-300"><FullSharedTrans i18nKey="fullShared.queued_comments_09330e" components={{ part1: <>{queuedComments.length}</> }} /></h4>
             {onInterruptQueued && queuedComments[0]?.queueTargetRunId ? (
               <Button
                 size="sm"
@@ -996,7 +974,7 @@ export function CommentThread({
                 disabled={interruptingQueuedRunId === queuedComments[0].queueTargetRunId}
                 onClick={() => void onInterruptQueued(queuedComments[0]!.queueTargetRunId!)}
               >
-                {interruptingQueuedRunId === queuedComments[0].queueTargetRunId ? "Interrupting..." : "Interrupt"}
+                {interruptingQueuedRunId === queuedComments[0].queueTargetRunId ? fullSharedT("taskChatUi.classic.interrupting") : fullSharedT("taskChatUi.queue.interrupt")}
               </Button>
             ) : null}
           </div>
@@ -1027,7 +1005,7 @@ export function CommentThread({
             ref={editorRef}
             value={body}
             onChange={setBody}
-            placeholder="Leave a comment..."
+            placeholder={fullSharedT("fullShared.leave_a_comment_4dff58")}
             mentions={mentions}
             onSubmit={handleSubmit}
             imageUploadHandler={imageUploadHandler}
@@ -1048,7 +1026,7 @@ export function CommentThread({
                   size="icon-sm"
                   onClick={() => attachInputRef.current?.click()}
                   disabled={attaching}
-                  title="Attach image"
+                  title={fullSharedT("decisionForms.richInput.attach")}
                 >
                   <Paperclip className="h-4 w-4" />
                 </Button>
@@ -1058,14 +1036,14 @@ export function CommentThread({
               <InlineEntitySelector
                 value={reassignTarget}
                 options={reassignOptions}
-                placeholder="Responsible"
+                placeholder={fullSharedT("taskViews.column_assignee")}
                 noneLabel="No responsible"
                 searchPlaceholder="Search responsible..."
-                emptyMessage="No responsible found."
+                emptyMessage={fullSharedT("taskChatUi.classic.noneResponsible")}
                 onChange={selectAssignee}
                 className="text-xs h-8"
                 renderTriggerValue={(option) => {
-                  if (!option) return <span className="text-muted-foreground">Responsible</span>;
+                  if (!option) return <span className="text-muted-foreground">{fullSharedT("taskViews.column_assignee")}</span>;
                   const agentId = option.id.startsWith("agent:") ? option.id.slice("agent:".length) : null;
                   const agent = agentId ? agentMap?.get(agentId) : null;
                   return (
@@ -1093,7 +1071,7 @@ export function CommentThread({
               />
             )}
             <Button size="sm" disabled={!canSubmit} onClick={handleSubmit}>
-              {submitting ? "Posting..." : "Comment"}
+              {submitting ? fullSharedT("taskChatUi.classic.posting") : fullSharedT("searchUi.result.comment")}
             </Button>
           </div>
         </div>

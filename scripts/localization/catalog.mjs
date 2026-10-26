@@ -27,15 +27,31 @@ export function messageFamilies(source) {
   return result;
 }
 
-function targetMessages(family, target) {
-  return Object.fromEntries(Object.entries(target).filter(([key]) => family.plural
-    ? key.match(pluralSuffix)?.[1] === family.id : key === family.id));
-}
-
 export function analyzeCatalog({ source, target, locale, references = [], dynamicManifests = [], reviewed = {} }) {
   const sourceFlat = flatten(source), targetFlat = flatten(target), families = messageFamilies(source);
   const knownKeys = new Set([...Object.keys(sourceFlat), ...families.keys()]);
   const allReferences = [...references, ...dynamicManifests.flatMap((manifest) => manifest.keys.map((key) => ({ key, file: manifest.file, owner: manifest.owner ?? "<dynamic manifest>" })))];
+  // Index once: source families can number in the tens of thousands. Keep
+  // insertion order so review hashes remain identical to the filtered arrays.
+  const familyForKey = new Map();
+  for (const family of families.values()) {
+    for (const key of Object.keys(family.messages)) familyForKey.set(key, family);
+  }
+  const referencesByFamily = new Map();
+  for (const reference of allReferences) {
+    const family = families.get(reference.key) ?? familyForKey.get(reference.key);
+    if (!family) continue;
+    if (!referencesByFamily.has(family.id)) referencesByFamily.set(family.id, []);
+    referencesByFamily.get(family.id).push(reference);
+  }
+  const translationsByFamily = new Map();
+  for (const [key, value] of Object.entries(targetFlat)) {
+    const base = key.match(pluralSuffix)?.[1];
+    const family = base && families.get(base)?.plural ? families.get(base) : families.get(key);
+    if (!family || family.plural && base !== family.id) continue;
+    if (!translationsByFamily.has(family.id)) translationsByFamily.set(family.id, []);
+    translationsByFamily.get(family.id).push([key, value]);
+  }
   const missingKeys = allReferences.filter(({ key }) => !knownKeys.has(key));
   const invalid = [
     ...validateLocaleMessages(source, source, { locale: "en" }).map((message) => ({ locale: "en", message })),
@@ -45,7 +61,7 @@ export function analyzeCatalog({ source, target, locale, references = [], dynami
     if (!reference.parameters || !knownKeys.has(reference.key)) continue;
     const { provided, hasCount, dynamic } = reference.parameters;
     const family = families.get(reference.key);
-    const messageId = family?.id ?? [...families.values()].find((entry) => Object.hasOwn(entry.messages, reference.key))?.id ?? reference.key;
+    const messageId = family?.id ?? familyForKey.get(reference.key)?.id ?? reference.key;
     const texts = family ? Object.values(family.messages) : [sourceFlat[reference.key]];
     const required = new Set(texts.flatMap((text) => Array.from(
       text.matchAll(/{{\s*-?\s*([A-Za-z0-9_.-]+)(?:\s*,[^{}]*)?\s*}}/g), (match) => match[1],
@@ -63,10 +79,11 @@ export function analyzeCatalog({ source, target, locale, references = [], dynami
     }
   }
   const messages = [...families.values()].map((family) => {
-    const translations = targetMessages(family, targetFlat);
-    const contexts = [...new Set(allReferences.filter(({ key }) => key === family.id || Object.hasOwn(family.messages, key))
+    const translations = Object.fromEntries(translationsByFamily.get(family.id) ?? []);
+    const familyReferences = referencesByFamily.get(family.id) ?? [];
+    const contexts = [...new Set(familyReferences
       .map(({ file, owner }) => `${file}#${owner}`))].sort();
-    const parameterContracts = [...new Set(allReferences.filter(({ key }) => key === family.id || Object.hasOwn(family.messages, key))
+    const parameterContracts = [...new Set(familyReferences
       .filter(({ parameters }) => parameters)
       .map(({ file, owner, key, parameters }) => JSON.stringify({ file, owner, key, parameters })))].sort();
     const sourceHash = hash({ messages: family.messages, plural: family.plural, contexts, parameterContracts });

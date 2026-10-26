@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { VOICE_RESULT_NOTIFICATION, VOICE_REPEAT_NOTIFICATION } from "@paperclipai/shared";
 export { VOICE_RESULT_NOTIFICATION, VOICE_REPEAT_NOTIFICATION } from "@paperclipai/shared";
 import type { VoiceControlState } from "../components/voice/VoiceControls";
@@ -183,7 +184,7 @@ export function createVoiceSessionController(dependencies: VoiceSessionDependenc
       await media.sendChatMessage(VOICE_RESULT_NOTIFICATION);
       if (epoch !== ownedEpoch) return false;
       change({ canRepeat: true });
-      if (!snapshot.transcript.some((entry) => entry.id === `publication:${input.publicationId}`)) change({ transcript: [...snapshot.transcript, { id: `publication:${input.publicationId}`, source: "application", text: "A task update is available.", final: true }] });
+      if (!snapshot.transcript.some((entry) => entry.id === `publication:${input.publicationId}`)) change({ transcript: [...snapshot.transcript, { id: `publication:${input.publicationId}`, source: "application", text: fullSharedT("fullShared.a_task_update_is_available_a8342f"), final: true }] });
       return true;
     } catch { if (epoch === ownedEpoch) change({ error: "A task update could not be delivered to voice. Open the task to read it." }); return false; }
     finally { if (epoch === ownedEpoch) { hintSending = false; scheduleNotifications(); } }

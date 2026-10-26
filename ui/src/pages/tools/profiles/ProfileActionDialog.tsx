@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { AlertTriangle } from "lucide-react";
 import type { ToolProfileWithDetails } from "@paperclipai/shared";
 import { Button } from "@/components/ui/button";
@@ -29,28 +30,29 @@ export function ProfileActionDialog({
   onRestore: () => void;
   onDelete: () => void;
 }) {
+  useFullAppsTranslation();
   if (!kind || !profile) return null;
 
   const defaultDeleteBlocked = kind === "delete" && profile.summary.isCompanyDefault;
   const copy = {
     archive: {
-      title: "Archive profile",
-      body: `This profile stops applying to ${profile.summary.appliesToAgentCount} ${profile.summary.appliesToAgentCount === 1 ? "agent" : "agents"}. You can restore it later.`,
-      confirm: "Archive",
+      title: fullAppsT("fullApps.archive_profile_2962d8"),
+      body: fullAppsT("fullApps.archiveProfileAgents", { count: profile.summary.appliesToAgentCount }),
+      confirm: fullAppsT("fullApps.copy_66f4804ee23d"),
       action: onArchive,
     },
     restore: {
-      title: "Restore profile",
-      body: "This profile will be active again and can be assigned to agents.",
-      confirm: "Restore",
+      title: fullAppsT("fullApps.restore_profile_ec01a8"),
+      body: fullAppsT("fullApps.this_profile_will_be_active_again_and_can_be_assigne_945f98"),
+      confirm: fullAppsT("fullApps.copy_a76e13b98392"),
       action: onRestore,
     },
     delete: {
-      title: "Delete profile",
+      title: fullAppsT("fullApps.delete_profile_47311a"),
       body: defaultDeleteBlocked
-        ? "This profile is the organization default. Reassign the organization default to another profile before deleting it."
-        : `This permanently deletes the profile and removes ${profile.summary.assignmentCount} ${profile.summary.assignmentCount === 1 ? "assignment" : "assignments"}.`,
-      confirm: "Delete",
+        ? fullAppsT("fullApps.this_profile_is_the_organization_default_reassign_th_b0c43e")
+        : fullAppsT("fullApps.deleteProfileAssignments", { count: profile.summary.assignmentCount }),
+      confirm: fullAppsT("fullApps.copy_e2d0a54968ea"),
       action: onDelete,
     },
   }[kind];
@@ -65,11 +67,11 @@ export function ProfileActionDialog({
         {defaultDeleteBlocked ? (
           <div className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>Choose another access profile and make it the organization default first.</span>
+            <span>{fullAppsT("fullApps.choose_another_access_profile_and_make_it_the_organi_29f96b")}</span>
           </div>
         ) : null}
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button variant="ghost" onClick={onClose}>{fullAppsT("fullApps.cancel_19766e")}</Button>
           <Button
             variant={kind === "delete" ? "destructive" : "default"}
             disabled={pending || defaultDeleteBlocked}

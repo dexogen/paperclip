@@ -1,10 +1,11 @@
+import { t as fullSharedT } from "@/i18n";
 import type { Issue } from "@paperclipai/shared";
 
 export const taskListViews = [
-  { value: "inbox", label: "Inbox" },
-  { value: "unread", label: "Unread" },
-  { value: "blocked", label: "Needs attention" },
-  { value: "all", label: "All tasks" },
+  { value: "inbox", get label() { return fullSharedT("sidebar.inbox"); } },
+  { value: "unread", get label() { return fullSharedT("taskViews.unread"); } },
+  { value: "blocked", get label() { return fullSharedT("inboxUi.blocked.variant.needs_attention"); } },
+  { value: "all", get label() { return fullSharedT("taskViews.all"); } },
 ] as const;
 
 export type TaskListView = typeof taskListViews[number]["value"];

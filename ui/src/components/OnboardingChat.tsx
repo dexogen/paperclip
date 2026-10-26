@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { IssueComment } from "@paperclipai/shared";
@@ -33,26 +35,26 @@ function detectHiringPlan(body: string): boolean {
   return planPatterns.some((pattern) => pattern.test(body));
 }
 
-const QUEUED_MESSAGES = [
-  "Heartbeat triggered, waking up...",
-  "Initializing...",
-  "Getting ready...",
-];
+function QUEUED_MESSAGES(): string[] { return [
+  fullSharedTailT("fullSharedTail.onboarding_queued_messages_0"),
+  fullSharedTailT("fullSharedTail.onboarding_queued_messages_1"),
+  fullSharedTailT("fullSharedTail.onboarding_queued_messages_2")
+]; }
 
-const RUNNING_MESSAGES = [
-  "Working on a response...",
-  "Reading the conversation...",
-  "Thinking through the plan...",
-  "Drafting a response...",
-  "Still working...",
-  "Almost there...",
-];
+function RUNNING_MESSAGES(): string[] { return [
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_0"),
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_1"),
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_2"),
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_3"),
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_4"),
+  fullSharedTailT("fullSharedTail.onboarding_running_messages_5")
+]; }
 
-const WAITING_MESSAGES = [
-  "Waiting to wake up...",
-  "Heartbeat pending...",
-  "Should wake up soon...",
-];
+function WAITING_MESSAGES(): string[] { return [
+  fullSharedTailT("fullSharedTail.onboarding_waiting_messages_0"),
+  fullSharedTailT("fullSharedTail.onboarding_waiting_messages_1"),
+  fullSharedTailT("fullSharedTail.onboarding_waiting_messages_2")
+]; }
 
 function getCyclingMessage(messages: string[], elapsed: number, agentName: string): string {
   // Cycle through messages every 5 seconds
@@ -63,19 +65,19 @@ function getCyclingMessage(messages: string[], elapsed: number, agentName: strin
 function getRunStatusMessage(status: string, agentName: string, elapsed: number): string {
   switch (status) {
     case "queued":
-      return getCyclingMessage(QUEUED_MESSAGES, elapsed, agentName);
+      return getCyclingMessage(QUEUED_MESSAGES(), elapsed, agentName);
     case "running":
-      return getCyclingMessage(RUNNING_MESSAGES, elapsed, agentName);
+      return getCyclingMessage(RUNNING_MESSAGES(), elapsed, agentName);
     case "succeeded":
-      return `${agentName} finished`;
+      return fullSharedTailT("fullSharedTail.onboardingFinished", { name: agentName });
     case "failed":
-      return `${agentName} encountered an error`;
+      return fullSharedTailT("fullSharedTail.onboardingError", { name: agentName });
     case "cancelled":
-      return `${agentName}'s run was cancelled`;
+      return fullSharedTailT("fullSharedTail.onboardingCancelled", { name: agentName });
     case "timed_out":
-      return `${agentName}'s run timed out`;
+      return fullSharedTailT("fullSharedTail.onboardingTimedOut", { name: agentName });
     default:
-      return `${agentName} is thinking...`;
+      return fullSharedTailT("fullSharedTail.onboardingThinking", { name: agentName });
   }
 }
 
@@ -88,6 +90,7 @@ export function OnboardingChat({
   onPlanDetected,
   onReviewPlan,
 }: OnboardingChatProps) {
+  useFullSharedTranslation();
   const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -248,9 +251,7 @@ export function OnboardingChat({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
-        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-        Loading conversation...
-      </div>
+        <Loader2 className="h-4 w-4 mr-2 animate-spin" />{fullSharedT("fullShared.loading_conversation_05ddf5")}</div>
     );
   }
 
@@ -296,13 +297,11 @@ export function OnboardingChat({
                       : "text-foreground/70",
                   )}
                 >
-                  {isAgent ? agentName : "You"}
+                  {isAgent ? agentName : fullSharedT("taskDisplay.assignees.you")}
                 </span>
                 {isPlan && (
                   <span className="inline-flex items-center gap-0.5 text-(length:--text-nano) text-green-600 dark:text-green-400 font-medium">
-                    <CheckCircle2 className="h-3 w-3" />
-                    Hiring plan detected
-                  </span>
+                    <CheckCircle2 className="h-3 w-3" />{fullSharedT("fullShared.hiring_plan_detected_889b96")}</span>
                 )}
               </div>
               <div className="prose prose-sm dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -331,7 +330,7 @@ export function OnboardingChat({
               ) : (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
-                  {getCyclingMessage(WAITING_MESSAGES, elapsed, agentName)}
+                  {getCyclingMessage(WAITING_MESSAGES(), elapsed, agentName)}
                 </>
               )}
             </div>
@@ -349,17 +348,11 @@ export function OnboardingChat({
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
               <div>
-                <p className="text-sm font-medium">
-                  {agentName} has prepared a hiring plan
-                </p>
-                <p className="text-(length:--text-micro) text-muted-foreground">
-                  Review it, make edits, then approve.
-                </p>
+                <p className="text-sm font-medium"><FullSharedTrans i18nKey="fullShared.has_prepared_a_hiring_plan_0baf95" components={{ part1: <>{agentName}</> }} /></p>
+                <p className="text-(length:--text-micro) text-muted-foreground">{fullSharedT("fullShared.review_it_make_edits_then_approve_7cd07c")}</p>
               </div>
             </div>
-            <Button size="sm" onClick={onReviewPlan}>
-              Review plan
-              <ArrowRight className="h-3.5 w-3.5 ml-1" />
+            <Button size="sm" onClick={onReviewPlan}>{fullSharedT("taskChatUi.thread.reviewPlan")}<ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Button>
           </div>
         </div>
@@ -371,7 +364,7 @@ export function OnboardingChat({
           ref={inputRef}
           type="text"
           className="flex-1 rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-          placeholder={detectedPlanCommentId ? `Ask ${agentName} to revise the plan...` : `Message ${agentName}...`}
+          placeholder={detectedPlanCommentId ? fullSharedT("fullShared.ask_to_revise_the_plan_0e8c8b", { value1: agentName }) : fullSharedT("fullShared.message_e64b6a", { value1: agentName })}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -409,6 +402,7 @@ function WelcomeMessage({
   onDiscuss: () => void;
   onStart: () => void;
 }) {
+  useFullSharedTranslation();
   const [phase, setPhase] = useState<"waking" | "composing" | "message" | "chips">("waking");
 
   useEffect(() => {
@@ -431,15 +425,9 @@ function WelcomeMessage({
               {agentName}
             </span>
           </div>
-          <p>
-            Hi! Thanks for bringing me on to lead <strong>{companyName}</strong>.
-          </p>
-          <p className="mt-1">
-            Our mission is: <em>{companyGoal}</em>
-          </p>
-          <p className="mt-1">
-            I'm ready to put together a plan for who we should bring on. Want me to get started?
-          </p>
+          <p><FullSharedTrans i18nKey="fullShared.hi_thanks_for_bringing_me_on_to_lead_89f092" components={{ part1: <strong>{companyName}</strong> }} /></p>
+          <p className="mt-1"><FullSharedTrans i18nKey="fullShared.our_mission_is_bc59fa" components={{ part1: <em>{companyGoal}</em> }} /></p>
+          <p className="mt-1">{fullSharedT("fullShared.i_m_ready_to_put_together_a_plan_for_who_we_should_b_68554b")}</p>
         </div>
       )}
 
@@ -449,15 +437,11 @@ function WelcomeMessage({
           <button
             className="rounded-full border border-border px-3 py-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
             onClick={onDiscuss}
-          >
-            Let's discuss first
-          </button>
+          >{fullSharedT("fullShared.let_s_discuss_first_0334a9")}</button>
           <button
             className="rounded-full border border-foreground bg-foreground text-background px-3 py-1 text-xs hover:opacity-90 transition-opacity"
             onClick={onStart}
-          >
-            Yes, get started!
-          </button>
+          >{fullSharedT("fullShared.yes_get_started_75735c")}</button>
         </div>
       )}
 
@@ -472,8 +456,8 @@ function WelcomeMessage({
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500" />
           </span>
           {phase === "waking"
-            ? `${agentName} is waking up...`
-            : `${agentName} is composing a message...`}
+            ? fullSharedT("fullShared.is_waking_up_8b177c", { value1: agentName })
+            : fullSharedT("fullShared.is_composing_a_message_5fad51", { value1: agentName })}
         </div>
       )}
     </>

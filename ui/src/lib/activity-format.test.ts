@@ -168,6 +168,31 @@ describe("activity formatting", () => {
 describe("localized activity presentation", () => {
   afterEach(async () => { await i18n.changeLanguage("en"); });
 
+  it("localizes legacy task history with the caller translator while preserving source names and details", () => {
+    const ru = i18n.getFixedT("ru");
+    const details = { status: "in_review", externalConversationState: "waiting", _previous: { status: "in_progress" }, assigneeUserId: "literal-name" };
+    const snapshot = JSON.stringify(details);
+    const options = { userProfileMap: new Map([["literal-name", { label: "You <em>raw</em>", image: null }]]) };
+    const result = formatIssueActivityAction("issue.updated", details, options, ru);
+    expect(result).toContain('изменил статус с «В работе» на «Ожидает»');
+    expect(result).toContain('назначил ответственным за задачу: You <em>raw</em>');
+    expect(JSON.stringify(details)).toBe(snapshot);
+    expect(formatIssueActivityAction("issue.updated", details, options)).toContain("changed the status from in progress to idle");
+    expect(formatIssueActivityAction("issue.updated", { reviewPolicy: null }, {}, ru)).toBe("изменил правило согласования: кто угодно");
+    expect(formatIssueActivityAction("issue.updated", { reviewPolicy: "human_only" }, {}, ru)).toBe("изменил правило согласования: только человек");
+    expect(formatIssueActivityAction("issue.document_created", { key: "plan", title: "User title" }, {}, ru)).toContain("plan (User title)");
+  });
+
+  it("uses whole legacy relation messages and plural forms for task history", () => {
+    const ru = i18n.getFixedT("ru");
+    const options = { userProfileMap: new Map([["user-1", { label: "Board", image: null }]]) };
+    expect(formatIssueActivityAction("issue.reviewers_updated", { addedParticipants: [{ type: "user", userId: "user-1" }] }, options, ru)).toBe('добавил проверяющего «Board»');
+    for (const [count, expected] of [[2, "добавил 2 блокирующие задачи"], [5, "добавил 5 блокирующих задач"], [21, "добавил 21 блокирующую задачу"]] as const) {
+      expect(formatIssueActivityAction("issue.blockers_updated", { addedBlockedByIssues: Array.from({ length: count }, (_, i) => ({ identifier: `TASK-${i}` })) }, {}, ru)).toBe(expected);
+    }
+    expect(formatIssueActivityAction("issue.accepted_plan_decomposition_updated", { status: "completed", childIssueIds: ["a", "b"], newlyCreatedChildIssueIds: ["a"] }, {}, ru)).toBe("декомпозиция завершена (создано новых задач: 1, использовано существующих задач: 1)");
+  });
+
   it("translates selected event semantics while legacy consumers stay in English", async () => {
     await i18n.changeLanguage("ru");
     const ru = i18n.getFixedT("ru");

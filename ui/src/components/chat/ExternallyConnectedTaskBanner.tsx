@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { TaskVoiceLauncher } from "@/components/voice/TaskVoiceLauncher";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -52,63 +54,63 @@ type PublicationFeedback = {
 
 const publicationFeedback: Record<ChatPublicationState, PublicationFeedback> = {
   awaiting_consent: {
-    title: "Waiting for file consent",
-    body: "The recipient must accept the file card in Microsoft Teams. The file is not delivered yet; this send identity is kept while Paperclip waits.",
+    get title() { return fullSharedT("fullShared.waiting_for_file_consent_569916"); },
+    get body() { return fullSharedTailT("fullSharedTail.consentBody"); },
     tone: "info",
   },
   published: {
-    title: "Sent to channel",
-    body: "The board update was published to the connected conversation.",
+    get title() { return fullSharedT("fullShared.sent_to_channel_255e70"); },
+    get body() { return fullSharedTailT("fullSharedTail.publishedBody"); },
     tone: "success",
   },
   pending: {
-    title: "Queued for channel",
-    body: "Delivery is still pending. Your draft is kept until Paperclip confirms publication.",
+    get title() { return fullSharedT("fullShared.queued_for_channel_cf7ce8"); },
+    get body() { return fullSharedTailT("fullSharedTail.pendingBody"); },
     tone: "info",
   },
   streaming: {
-    title: "Publishing to channel",
-    body: "Delivery is still in progress. Your draft is kept until Paperclip confirms publication.",
+    get title() { return fullSharedT("fullShared.publishing_to_channel_c30305"); },
+    get body() { return fullSharedTailT("fullSharedTail.streamingBody"); },
     tone: "info",
   },
   retry: {
-    title: "Delivery retry scheduled",
-    body: "Paperclip will retry this publication. Your draft and retry identity are kept.",
+    get title() { return fullSharedT("fullShared.delivery_retry_scheduled_d4db8f"); },
+    get body() { return fullSharedTailT("fullSharedTail.retryBody"); },
     tone: "warn",
   },
   delivery_unknown: {
-    title: "Delivery not confirmed",
-    body: "The provider may have accepted this update. Resolve it in Activity before trying again to avoid a duplicate.",
+    get title() { return fullSharedT("fullShared.delivery_not_confirmed_521724"); },
+    get body() { return fullSharedTailT("fullSharedTail.unknownDeliveryBody"); },
     tone: "warn",
   },
   failed: {
-    title: "Channel delivery failed",
-    body: "Your draft is kept. Open Activity to retry this same publication safely.",
+    get title() { return fullSharedT("fullShared.channel_delivery_failed_ce13a3"); },
+    get body() { return fullSharedTailT("fullSharedTail.failedDeliveryBody"); },
     tone: "error",
   },
   cancelled: {
-    title: "Channel delivery cancelled",
-    body: "Your draft is kept. Some parts may already have been published; check Activity before starting a new send.",
+    get title() { return fullSharedT("fullShared.channel_delivery_cancelled_c918fc"); },
+    get body() { return fullSharedTailT("fullSharedTail.cancelledDeliveryBody"); },
     tone: "info",
   },
 };
 
 const filePhaseLabels: Record<ChatFileTransferPhase, string> = {
-  consent_pending: "Consent card queued",
-  consent_sending: "Sending consent card",
-  consent_unknown: "Consent card delivery not confirmed",
-  awaiting_consent: "Awaiting consent",
-  upload_pending: "Upload queued",
-  uploading: "Uploading file",
-  upload_unknown: "File upload not confirmed",
-  file_info_pending: "File notification queued",
-  file_info_sending: "Sending file notification",
-  file_info_unknown: "File notification not confirmed",
-  delivered: "Delivered",
-  declined: "Declined",
-  expired: "Consent expired",
-  cancelled: "Cancelled; remote bytes may remain",
-  conflict: "File delivery needs review",
+  get consent_pending() { return fullSharedTailT("fullSharedTail.display_71fdd08da0b2"); },
+  get consent_sending() { return fullSharedTailT("fullSharedTail.display_ab3e8e535b9d"); },
+  get consent_unknown() { return fullSharedTailT("fullSharedTail.display_5aaa61e8e52c"); },
+  get awaiting_consent() { return fullSharedTailT("fullSharedTail.display_e618056b0153"); },
+  get upload_pending() { return fullSharedTailT("fullSharedTail.display_015bf2166aad"); },
+  get uploading() { return fullSharedTailT("fullSharedTail.display_1fa531b892bb"); },
+  get upload_unknown() { return fullSharedTailT("fullSharedTail.display_4fea38e8c8bc"); },
+  get file_info_pending() { return fullSharedTailT("fullSharedTail.display_d82a29a76784"); },
+  get file_info_sending() { return fullSharedTailT("fullSharedTail.display_2dddacbd2c8f"); },
+  get file_info_unknown() { return fullSharedTailT("fullSharedTail.display_fcd355150de0"); },
+  get delivered() { return fullSharedTailT("fullSharedTail.display_da548218bb0c"); },
+  get declined() { return fullSharedTailT("fullSharedTail.display_e93e57c3cdd3"); },
+  get expired() { return fullSharedTailT("fullSharedTail.display_634a32b529df"); },
+  get cancelled() { return fullSharedTailT("fullSharedTail.display_6a97e3b560dd"); },
+  get conflict() { return fullSharedTailT("fullSharedTail.display_e209e60fb35f"); },
 };
 
 export function useIssueChatBinding(companyId: string, issueId: string) {
@@ -135,6 +137,7 @@ type ConnectedTaskProps = {
 };
 
 export function ExternallyConnectedTaskBanner(props: ConnectedTaskProps) {
+  useFullSharedTranslation();
   const { binding } = useIssueChatBinding(props.companyId, props.issueId);
   return <>
     {binding && binding.provider !== "speko" && binding.provider !== "agentmail" && <ConnectedTaskComposer
@@ -154,6 +157,7 @@ function ConnectedTaskComposer({
   issueCacheRefs,
   binding,
 }: ConnectedTaskProps & { binding: ExternalChannelBindingSummary }) {
+  useFullSharedTranslation();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
   const [composing, setComposing] = useState(false);
@@ -259,7 +263,7 @@ function ConnectedTaskComposer({
     setComposing(false);
     invalidateTask();
     pushToast(publicationFeedback.published);
-  }, [invalidateTask, pushToast, storageKey]);
+  }, [fullSharedI18n.language, invalidateTask, pushToast, storageKey]);
   // Keep the first returned ID as the anchor. A batch's blocking row may
   // change as text and files finish; no read is allowed to submit another send.
   const publicationStatus = useQuery({
@@ -337,7 +341,7 @@ function ConnectedTaskComposer({
       pushToast({
         ...feedback,
         action: {
-          label: "View activity",
+          label: fullSharedT("fullShared.view_activity_4bf3f8"),
           href: `/apps/chat/${binding!.endpointId}/activity`,
         },
       });
@@ -360,18 +364,18 @@ function ConnectedTaskComposer({
         setUnconfirmedRequest(false);
         invalidateTask();
         pushToast({
-          title: "Update was not sent",
-          body: "A selected file already belongs to another comment. Edit the rejected send to correct the selection.",
+          title: fullSharedT("fullShared.update_was_not_sent_313813"),
+          body: fullSharedTailT("fullSharedTail.fileAlreadyAttached"),
           tone: "error",
         });
         return;
       }
       pushToast({
-        title: "Couldn't confirm channel delivery",
+        title: fullSharedT("fullShared.couldn_t_confirm_channel_delivery_c3e051"),
         body:
           error instanceof Error
-            ? `${error.message} Your draft is kept; retrying here reuses the same request identity.`
-            : "Your draft is kept; retrying here reuses the same request identity.",
+            ? fullSharedTailT("fullSharedTail.retryAfterError", { error: error.message })
+            : fullSharedTailT("fullSharedTail.retainedDraftRetry"),
         tone: "error",
       });
     },
@@ -468,15 +472,15 @@ function ConnectedTaskComposer({
     canDismissBoardSendBatch(batch) && batch!.published < batch!.total;
   const currentFeedback = mixedTerminal
     ? {
-        title: "Delivery settled with mixed outcomes",
-        body: "Not every part was confirmed delivered. Review the outcomes below; dismissing this receipt does not resend anything.",
+        title: fullSharedT("fullShared.delivery_settled_with_mixed_outcomes_308794"),
+        body: fullSharedTailT("fullSharedTail.partiallyDelivered"),
         tone: "info" as const,
       }
     : currentPublication?.state === "cancelled" &&
         (batch?.awaitingConsent ?? 0) > 0
       ? {
-          title: "Waiting for remaining file consent",
-          body: "Some parts have settled. The remaining file cards still need the recipient's response; this send stays locked until the whole batch is resolved.",
+          title: fullSharedT("fullShared.waiting_for_remaining_file_consent_15cf54"),
+          body: fullSharedTailT("fullSharedTail.awaitingRemainingConsent"),
           tone: "info" as const,
         }
       : currentPublication
@@ -485,20 +489,18 @@ function ConnectedTaskComposer({
   const activityPath = `/apps/chat/${binding.endpointId}/activity`;
   return (
     <section
-      aria-label="External conversation"
+      aria-label={fullSharedT("fullShared.external_conversation_051d5b")}
       className={cn("task-context-notice space-y-3", className)}
     >
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex min-w-0 flex-1 basis-64 items-center gap-3">
           <Radio className="h-4 w-4 shrink-0 text-muted-foreground" />
           <div className="min-w-0 flex-1">
-            <p className="font-medium">
-              Connected to {providerNames[binding.provider]}
-            </p>
+            <p className="font-medium"><FullSharedTrans i18nKey="fullShared.connected_to_c891dc" components={{ part1: <>{providerNames[binding.provider]}</> }} /></p>
             <p className="truncate text-xs text-muted-foreground">
               {binding.externalLabel} · {binding.provider === "slack"
-                ? "Messages you send here and agent replies are also posted to Slack."
-                : "Agent assignment is fixed for this external task."}
+                ? fullSharedT("fullShared.messages_you_send_here_and_agent_replies_are_also_po_900b0c")
+                : fullSharedT("fullShared.agent_assignment_is_fixed_for_this_external_task_740997")}
             </p>
           </div>
         </div>
@@ -506,7 +508,7 @@ function ConnectedTaskComposer({
           {binding.externalUrl && (
             <Button asChild size="sm" variant="outline">
               <a href={binding.externalUrl} target="_blank" rel="noreferrer">
-                Open {providerNames[binding.provider]} <ExternalLink />
+                {fullSharedTailT("fullSharedTail.openProvider", { provider: providerNames[binding.provider] })} <ExternalLink />
               </a>
             </Button>
           )}
@@ -514,13 +516,9 @@ function ConnectedTaskComposer({
             size="sm"
             variant="outline"
             onClick={() => setComposing((value) => !value)}
-          >
-            Send to channel
-          </Button>
+          >{fullSharedT("fullShared.send_to_channel_dface7")}</Button>
           <Button asChild size="sm" variant="ghost">
-            <Link to={`/apps/chat/${binding.endpointId}/conversations`}>
-              Connection
-            </Link>
+            <Link to={`/apps/chat/${binding.endpointId}/conversations`}>{fullSharedT("providerSetup.select.connection")}</Link>
           </Button>
         </div>
       </div>
@@ -529,9 +527,7 @@ function ConnectedTaskComposer({
           <label
             className="text-xs font-medium"
             htmlFor="external-board-update"
-          >
-            Board update
-          </label>
+          >{fullSharedT("fullShared.board_update_6e1dcf")}</label>
           <Textarea
             id="external-board-update"
             value={body}
@@ -548,19 +544,17 @@ function ConnectedTaskComposer({
               idempotencyKey.current = null;
               publish.reset();
             }}
-            placeholder="Write only what should be visible in the provider conversation."
+            placeholder={fullSharedT("fullShared.write_only_what_should_be_visible_in_the_provider_co_c5a8ff")}
           />
           {selectedAttachmentIds.length > 0 && !body.trim() && (
-            <p className="text-xs text-muted-foreground">
-              Add a message to send with your files.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.add_a_message_to_send_with_your_files_680f3a")}</p>
           )}
           <div className="flex flex-wrap items-center gap-2">
             <input
               ref={fileInput}
               type="file"
               className="hidden"
-              aria-label="Attach file to channel update"
+              aria-label={fullSharedT("fullShared.attach_file_to_channel_update_59a735")}
               disabled={uploadDisabled}
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -576,11 +570,9 @@ function ConnectedTaskComposer({
               onClick={() => fileInput.current?.click()}
             >
               <Paperclip />
-              {uploading ? "Uploading…" : "Attach file"}
+              {uploading ? fullSharedT("taskPanels.upload.uploading") : fullSharedT("fullShared.attach_file_87fbe4")}
             </Button>
-            <p className="text-xs text-muted-foreground">
-              Files stay on this task until you send them to the channel.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.files_stay_on_this_task_until_you_send_them_to_the_c_c68a82")}</p>
           </div>
           {uploadError && (
             <p role="alert" className="text-xs text-destructive">
@@ -588,11 +580,7 @@ function ConnectedTaskComposer({
             </p>
           )}
           {selectionNotice && (
-            <p role="status" className="text-xs text-muted-foreground">
-              A file already attached to another comment was removed from this
-              selection. Attach a new copy or share the task link; your message
-              is unchanged.
-            </p>
+            <p role="status" className="text-xs text-muted-foreground">{fullSharedT("fullShared.a_file_already_attached_to_another_comment_was_remov_157172")}</p>
           )}
           {visibleAttachments.length > 0 && (
             <fieldset
@@ -608,23 +596,23 @@ function ConnectedTaskComposer({
             >
               <legend className="px-1 text-xs font-medium">
                 {showingRetainedFiles
-                  ? "Files in this send"
-                  : "Include task files"}
+                  ? fullSharedT("fullShared.files_in_this_send_7674c3")
+                  : fullSharedT("fullShared.include_task_files_47c29c")}
               </legend>
               <p className="text-xs text-muted-foreground">
                 {binding.provider === "github"
-                  ? "GitHub Apps cannot upload file bytes in comments. Checked files stay on the Paperclip task; GitHub receives an authenticated task link when this Board has a public URL, or a private-task notice otherwise."
+                  ? fullSharedT("fullShared.github_apps_cannot_upload_file_bytes_in_comments_che_82e71c")
                   : binding.provider === "microsoft-teams" &&
                       !showingRetainedFiles
-                    ? "In personal Teams chats, recipients accept each file before upload. Channels and group chats receive supported images directly; other files stay on the task, with a task link or private-task notice."
+                    ? fullSharedT("fullShared.in_personal_teams_chats_recipients_accept_each_file__53b1a2")
                     : showingRetainedFiles
-                      ? "These are the files selected for this send. Selection is locked until delivery is resolved."
-                      : "Only checked files will be published to the external conversation."}
+                      ? fullSharedT("fullShared.these_are_the_files_selected_for_this_send_selection_3b09f2")
+                      : fullSharedT("fullShared.only_checked_files_will_be_published_to_the_external_53a7b5")}
               </p>
               <div className="space-y-2">
                 {visibleAttachments.map((attachment) => {
                   const label =
-                    attachment.originalFilename ?? "Unnamed attachment";
+                    attachment.originalFilename ?? fullSharedT("fullShared.unnamed_attachment_a90dd5");
                   return (
                     <label
                       className="flex items-center gap-2 text-xs"
@@ -661,12 +649,8 @@ function ConnectedTaskComposer({
               role="alert"
               className="space-y-1 rounded-md border border-border bg-background p-3 text-xs"
             >
-              <p className="font-medium">Update was not sent</p>
-              <p className="text-muted-foreground">
-                A selected file already belongs to another comment. This request
-                was rejected before any channel message was queued. Your exact
-                draft is kept.
-              </p>
+              <p className="font-medium">{fullSharedT("fullShared.update_was_not_sent_313813")}</p>
+              <p className="text-muted-foreground">{fullSharedT("fullShared.a_selected_file_already_belongs_to_another_comment_t_c22adf")}</p>
               <Button
                 size="sm"
                 variant="outline"
@@ -699,9 +683,7 @@ function ConnectedTaskComposer({
                   setSelectionNotice(true);
                   publish.reset();
                 }}
-              >
-                Edit rejected send
-              </Button>
+              >{fullSharedT("fullShared.edit_rejected_send_c342fb")}</Button>
             </div>
           )}
           {!rejection &&
@@ -712,18 +694,12 @@ function ConnectedTaskComposer({
                 role="alert"
                 className="space-y-1 rounded-md border border-border bg-background p-3 text-xs"
               >
-                <p className="font-medium">Delivery result not confirmed</p>
-                <p className="text-muted-foreground">
-                  Your exact draft and request identity are kept. Retry safely
-                  to learn the authoritative publication state without creating
-                  a duplicate.
-                </p>
+                <p className="font-medium">{fullSharedT("fullShared.delivery_result_not_confirmed_68d563")}</p>
+                <p className="text-muted-foreground">{fullSharedT("fullShared.your_exact_draft_and_request_identity_are_kept_retry_876c54")}</p>
                 <Link
                   className="inline-block font-medium underline underline-offset-4"
                   to={activityPath}
-                >
-                  Open Activity
-                </Link>
+                >{fullSharedT("fullShared.open_activity_b2a977")}</Link>
               </div>
             )}
           {publication && currentPublication && currentFeedback && (
@@ -745,25 +721,25 @@ function ConnectedTaskComposer({
                   batch.cancelled !== undefined &&
                   batch.awaitingConsent !== undefined
                     ? [
-                        `${batch.published} published`,
+                        fullSharedTailT("fullSharedTail.publicationCount_published", { count: batch.published }),
                         ...(batch.awaitingConsent
-                          ? [`${batch.awaitingConsent} awaiting consent`]
+                          ? [fullSharedTailT("fullSharedTail.publicationCount_awaitingConsent", { count: batch.awaitingConsent })]
                           : []),
                         ...(batch.declined
-                          ? [`${batch.declined} declined`]
+                          ? [fullSharedTailT("fullSharedTail.publicationCount_declined", { count: batch.declined })]
                           : []),
-                        ...(batch.expired ? [`${batch.expired} expired`] : []),
+                        ...(batch.expired ? [fullSharedTailT("fullSharedTail.publicationCount_expired", { count: batch.expired })] : []),
                         ...(batch.cancelled
-                          ? [`${batch.cancelled} cancelled`]
+                          ? [fullSharedTailT("fullSharedTail.publicationCount_cancelled", { count: batch.cancelled })]
                           : []),
                       ].join(" · ")
-                    : `${batch.published} of ${batch.total} parts published.`}
+                    : fullSharedT("fullShared.of_parts_published_4ee4fe", { value1: batch.published, value2: batch.total })}
                 </p>
               )}
               {batch?.parts?.some((part) => part.fileTransfer) && (
                 <ul
                   className="space-y-1 text-muted-foreground"
-                  aria-label="File delivery outcomes"
+                  aria-label={fullSharedT("fullShared.file_delivery_outcomes_e0229a")}
                 >
                   {batch.parts
                     .filter((part) => part.fileTransfer)
@@ -776,22 +752,15 @@ function ConnectedTaskComposer({
                 </ul>
               )}
               {publicationStatus.isError && (
-                <p role="alert" className="text-muted-foreground">
-                  Delivery status could not be refreshed. Your draft is kept;
-                  Paperclip will check again without sending another update.
-                </p>
+                <p role="alert" className="text-muted-foreground">{fullSharedT("fullShared.delivery_status_could_not_be_refreshed_your_draft_is_2c58b8")}</p>
               )}
               {currentPublication.redactedError && (
-                <p className="text-muted-foreground">
-                  Provider detail: {currentPublication.redactedError}
-                </p>
+                <p className="text-muted-foreground"><FullSharedTrans i18nKey="fullShared.provider_detail_55e4e6" components={{ part1: <>{currentPublication.redactedError}</> }} /></p>
               )}
               <Link
                 className="inline-block font-medium underline underline-offset-4"
                 to={activityPath}
-              >
-                Open Activity
-              </Link>
+              >{fullSharedT("fullShared.open_activity_b2a977")}</Link>
               {dismissible && (
                 <Button
                   className="ml-3"
@@ -819,17 +788,15 @@ function ConnectedTaskComposer({
                     idempotencyKey.current = null;
                     publish.reset();
                   }}
-                >
-                  Dismiss delivery receipt
-                </Button>
+                >{fullSharedT("fullShared.dismiss_delivery_receipt_e6d60f")}</Button>
               )}
             </div>
           )}
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
               {binding.provider === "slack"
-                ? "Your message is posted to Slack with your name and starts the agent."
-                : "Ordinary board comments remain Paperclip-only."}
+                ? fullSharedT("fullShared.your_message_is_posted_to_slack_with_your_name_and_s_fe11e3")
+                : fullSharedT("fullShared.ordinary_board_comments_remain_paperclip_only_9add38")}
             </p>
             <Button
               size="sm"
@@ -882,10 +849,10 @@ function ConnectedTaskComposer({
               }}
             >
               {publish.isPending
-                ? "Sending…"
+                ? fullSharedT("fullShared.sending_b8ed52")
                 : !rejection && (publish.isError || unconfirmedRequest)
-                  ? "Retry safely"
-                  : "Send to channel"}
+                  ? fullSharedT("fullShared.retry_safely_aea735")
+                  : fullSharedT("fullShared.send_to_channel_dface7")}
             </Button>
           </div>
         </div>

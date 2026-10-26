@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
 
@@ -23,8 +25,8 @@ import type { LabArtifact } from "../../kit";
  */
 
 const STATES = {
-  needs_review: { label: "Review", marker: "border-2 border-(--status-task-icon-in_review)" },
-  changes_requested: { label: "Changes requested", marker: "bg-(--status-task-icon-blocked)" },
+  needs_review: { get label() { return fullSharedT("fullShared.review_aff076"); }, marker: "border-2 border-(--status-task-icon-in_review)" },
+  changes_requested: { get label() { return fullSharedT("taskPanels.workProduct.changesRequested"); }, marker: "bg-(--status-task-icon-blocked)" },
 } as const;
 
 // Line-height after the size: tailwind-merge drops a leading that precedes a font size.
@@ -42,6 +44,7 @@ export function StateMark({
   size?: keyof typeof SIZES;
   className?: string;
 }) {
+  useFullSharedTranslation();
   if (!review) return null;
   const state = STATES[review];
   return (
@@ -57,6 +60,7 @@ export function StateMark({
 
 /** The marker alone, for places too small for the word (the caller supplies the accessible text). */
 export function StateDot({ review, className }: { review: LabArtifact["review"]; className?: string }) {
+  useFullSharedTranslation();
   if (!review) return null;
   return <span aria-hidden data-state={review} className={cn("block size-2 shrink-0 rounded-full", STATES[review].marker, className)} />;
 }
@@ -66,13 +70,13 @@ export function StateDot({ review, className }: { review: LabArtifact["review"];
  * artifacts — a panel section, a folder's pocket, an opened stack's caption.
  */
 export function ReviewTally({ count, className }: { count: number; className?: string }) {
+  useFullSharedTranslation();
   if (count <= 0) return null;
   return (
     <p data-tally className={cn("flex shrink-0 items-center gap-1.5 text-xs font-medium leading-4 text-foreground", className)}>
       <StateDot review="needs_review" />
       <span>
-        <span className="font-mono text-(length:--text-micro)">{count}</span> to review
-      </span>
+        <span className="font-mono text-(length:--text-micro)">{count}</span>{" "}{t("fullDiagnostics.toReview")}</span>
     </p>
   );
 }

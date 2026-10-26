@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Agent } from "@paperclipai/shared";
 import { toolsApi } from "@/api/tools";
@@ -14,6 +15,7 @@ export function EmailConnectionAccess({
   connectionId: string;
   agents: Agent[];
 }) {
+  useFullSharedTranslation();
   const cache = useQueryClient();
   const grants = useQuery({
     queryKey: queryKeys.tools.connectionGrants(connectionId),
@@ -34,23 +36,21 @@ export function EmailConnectionAccess({
     },
   });
   if (grants.isLoading || installs.isLoading)
-    return <p className="text-sm text-muted-foreground">Loading access…</p>;
+    return <p className="text-sm text-muted-foreground">{fullSharedT("projectConfigUi.access.loading")}</p>;
   if (grants.error || installs.error)
     return (
-      <p role="alert" className="text-sm text-destructive">
-        Connection access could not be loaded.
-      </p>
+      <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.connection_access_could_not_be_loaded_953390")}</p>
     );
   const active = grants.data?.grants.filter((g) => g.status === "active") ?? [];
   const everyone = active.some((g) => g.kind === "organization");
   const personal = active.find((g) => g.kind === "user");
   const humanLabel = everyone
-    ? "Any human in the organization"
+    ? fullSharedT("providerSetup.access.anyHuman")
     : personal
       ? personal.subjectUserId === grants.data?.currentUserId
-        ? "Just me"
-        : "Only the credential owner"
-      : "Access revoked";
+        ? fullSharedT("providerSetup.access.justMe")
+        : fullSharedT("fullShared.only_the_credential_owner_78987d")
+      : fullSharedT("taskProperties.share.revoked");
   const allAgents =
     installs.data?.installs.some((i) => i.targetType === "company") ?? false;
   const selected = new Set(
@@ -62,23 +62,19 @@ export function EmailConnectionAccess({
   return (
     <div className="space-y-8">
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">
-          Which humans can use this credential?
-        </h2>
+        <h2 className="text-sm font-semibold">{fullSharedT("providerSetup.access.identityHeading")}</h2>
         <p className="text-sm">{humanLabel}</p>
       </section>
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold">
-          Which agents can use this connection?
-        </h2>
+        <h2 className="text-sm font-semibold">{fullSharedT("providerSetup.access.agentsHeading")}</h2>
         <RadioCardGroup
           ariaLabel="Which agents can use this connection"
           value={allAgents ? "all" : "selected"}
           disabled={disabled}
           className="sm:grid-cols-2"
           options={[
-            { value: "selected", title: "Just agents I pick" },
-            { value: "all", title: "Any agent" },
+            { value: "selected", title: fullSharedT("providerSetup.access.justChosen") },
+            { value: "all", title: fullSharedT("fullShared.any_agent_ee3e76") },
           ]}
           onValueChange={(value) =>
             save.mutate(
@@ -106,9 +102,7 @@ export function EmailConnectionAccess({
             }
           />
         )}
-        <p className="text-xs text-muted-foreground">
-          Removing an assigned agent stops receiving and sending from its inbox.
-        </p>
+        <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.removing_an_assigned_agent_stops_receiving_and_sendi_e816d5")}</p>
         {save.error && (
           <p role="alert" className="text-sm text-destructive">
             {save.error.message}

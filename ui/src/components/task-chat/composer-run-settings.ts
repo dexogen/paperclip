@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 import { codexLocalReasoningEffortsForModel, isCodexLocalFastModeSupported, isCodexLocalKnownModel } from "@paperclipai/adapter-codex-local";
@@ -15,8 +16,8 @@ export interface ComposerRunSettings {
 
 export const DEFAULT_COMPOSER_RUN_SETTINGS: ComposerRunSettings = { model: null, effort: null, fast: false };
 export const EFFORT_LABELS: Record<string, string> = {
-  off: "Off", minimal: "Minimal", low: "Low", medium: "Medium", high: "High",
-  xhigh: "Extra High", max: "Max", ultra: "Ultra",
+  get off() { return fullSharedT("fullShared.off_ca7981"); }, get minimal() { return fullSharedT("fullShared.minimal_057b5d"); }, get low() { return fullSharedT("fullShared.low_f793de"); }, get medium() { return fullSharedT("fullShared.medium_8e588c"); }, get high() { return fullSharedT("fullShared.high_c4ebc6"); },
+  get xhigh() { return fullSharedT("taskChatUi.settings.effortXhigh"); }, get max() { return fullSharedT("fullShared.max_a1a593"); }, get ultra() { return fullSharedT("fullShared.ultra_ac364e"); },
 };
 
 export function composerEffortLabel(value: string, t: TFunction = i18n.getFixedT("en")): string {

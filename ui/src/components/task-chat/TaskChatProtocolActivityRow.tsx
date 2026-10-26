@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { formatRunDisplayText } from "./task-chat-display";
 import { formatTaskChatResource } from "./task-chat-adapter";
@@ -33,6 +34,7 @@ const COMPACT_RESEARCH_RESULT_LIMIT = 5;
 const COMPACT_WORKSPACE_FILE_LIMIT = 8;
 
 function StatusIcon({ status }: { status: "running" | "completed" | "failed" | "interrupted" | "informational" }) {
+  useFullSharedTranslation();
   if (status === "running") return <Loader2 className="h-3.5 w-3.5 animate-spin text-(--status-agent-running)" aria-hidden />;
   if (status === "failed" || status === "interrupted") return <X className="h-3.5 w-3.5 text-destructive" aria-hidden />;
   if (status === "completed") return <Check className="h-3.5 w-3.5 text-(--status-task-icon-done)" aria-hidden />;
@@ -118,9 +120,7 @@ function ResearchDetails({ item }: { item: TaskChatProviderActivityItem }) {
               type="button"
               className="mt-1.5 text-muted-foreground hover:text-foreground"
               onClick={() => setShowAllResults(false)}
-            >
-              Show fewer results
-            </button>
+            >{fullSharedT("runUi.protocol.fewer")}</button>
           ) : null}
         </div>
       ) : null}

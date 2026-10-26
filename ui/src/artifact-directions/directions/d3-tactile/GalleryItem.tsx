@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import type { CSSProperties } from "react";
 import { Download, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -55,8 +56,9 @@ function footprint(a: LabArtifact): { box?: string; height: string } {
 }
 
 export function GalleryItem({ artifact }: { artifact: LabArtifact }) {
+  useTranslation();
   const actions = galleryActions(artifact);
-  const edited = `Last edited ${artifact.updatedLabel}`;
+  const edited = t("fullDiagnostics.lastEdited", { date: artifact.updatedLabel });
   const { box, height } = footprint(artifact);
   return (
     // The size attributes are the object's own, so the item resolves the same footprint the object does.
@@ -102,7 +104,7 @@ export function GalleryItem({ artifact }: { artifact: LabArtifact }) {
         {/* When and who, across the whole caption; a long name wraps rather than hides. */}
         <p className="wrap-anywhere text-(length:--text-micro) leading-4 text-(--tac-meta)">
           <time dateTime={artifact.updatedAt} className="whitespace-nowrap font-mono">
-            <span className="sr-only">Last edited {artifact.dayLabel}, </span>
+            <span className="sr-only">{t("fullShared.last_edited_43c314")}{" "}{artifact.dayLabel}, </span>
             {timeOf(artifact)}
           </time>
           <span aria-hidden className="px-1 opacity-70">

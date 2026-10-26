@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { useState } from "react";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -90,7 +91,7 @@ export function GalleryPreview({
           )}
         </span>
       ) : (
-        <Facts artifact={artifact} cell={cell} note={failed ? "No preview" : undefined} />
+        <Facts artifact={artifact} cell={cell} note={failed ? t("fullDiagnostics.noPreview") : undefined} />
       )}
       {state ? <StateMarker review={artifact.review} on="corner" /> : null}
     </div>

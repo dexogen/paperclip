@@ -1,3 +1,6 @@
+import { statusLabel } from "@/i18n/ui-labels";
+import { t } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import { revealWordProgress } from "./word-reveal";
 import type { HeartbeatRunEvent } from "@paperclipai/shared";
 import type { TranscriptEntry } from "../../adapters";
@@ -63,8 +66,8 @@ const completedEvents = () => [...workingEvents().slice(0, -1), ...tool(9, "exec
 const snapshot = (events: HeartbeatRunEvent[], status: ThreadPreviewSnapshot["status"] = "running", extra: Partial<ThreadPreviewSnapshot> = {}): ThreadPreviewSnapshot => ({
   entries: nativeRunEventsToTranscript(events), status, ...extra,
 });
-const example = (id: string, label: string, group: string, build: () => ThreadPreviewSnapshot): ThreadPreviewCase => ({ id, label, group, build });
-const direct = (id: string, label: string, group: string, entries: TranscriptEntry[], extra: Partial<ThreadPreviewSnapshot> = {}) => example(id, label, group, () => ({ entries, status: "running", ...extra }));
+const example = (id: string, label: () => string, group: () => string, build: () => ThreadPreviewSnapshot): ThreadPreviewCase => ({ id, get label() { return label(); }, get group() { return group(); }, build });
+const direct = (id: string, label: () => string, group: () => string, entries: TranscriptEntry[], extra: Partial<ThreadPreviewSnapshot> = {}) => example(id, label, group, () => ({ entries, status: "running", ...extra }));
 
 /** The prior exchange makes each state a realistic conversation, like staging. */
 export function previewHistory(agentName: string): { human: TaskChatMessageItem; response: TaskChatMessageItem; entries: TranscriptEntry[] } {
@@ -79,7 +82,7 @@ const permission = (status: "pending" | "resolved" | "expired" | "cancelled", in
   kind: "runtime_request", ts: ts(15), requestId: `preview-${input ? "question" : "permission"}`, requestKind: input ? "elicitation" : "command_approval",
   turnId: "synthetic-turn", requestType: input ? "input" : "permission", status,
   prompt: input ? "Which reconnect behavior should I verify?" : "Allow running the focused reconnect tests?",
-  choices: input ? [] : [{ key: "accept", label: "Allow once" }, { key: "decline", label: "Deny" }], fields: [],
+  choices: input ? [] : [{ key: "accept", label: t("fullDiagnostics.allowOnce") }, { key: "decline", label: fullSharedT("taskChatUi.protocol.deny") }], fields: [],
   questionSet: input ? { schema: "paperclip.question_set.v1", title: "Choose a reconnect policy", questions: [{
     id: "policy", prompt: "Which reconnect policy should I test?", required: true, answerMode: "single_select",
     options: [{ id: "bounded", label: "Bounded retry", description: "Stop after three attempts." }, { id: "manual", label: "Manual recovery", description: "Ask before reconnecting." }],
@@ -89,61 +92,61 @@ const permission = (status: "pending" | "resolved" | "expired" | "cancelled", in
 const providerFamilies = ["plan", "tool_execution", "research", "delegation", "model_identity", "context", "artifact", "review", "hook", "memory", "safety", "terminal", "wait", "provider_notice"] as const;
 
 export const THREAD_PREVIEW_CASES: ThreadPreviewCase[] = [
-  example("staging-conversation", "Conversation · live work (staging layout)", "Conversation", () => snapshot(workingEvents())),
-  example("session-start", "Starting · waiting for activity", "Conversation", () => snapshot([], "running")),
-  example("runner-queued", "Queued · waiting to start", "Conversation", () => snapshot([], "queued", { emptyMessage: "Waiting to start…" })),
-  example("thinking", "Thinking · live reasoning", "Conversation", () => snapshot(reasoning(false))),
-  ...(["summary", "detail", "unknown"] as const).map(channel => example(`reasoning-${channel}`, `Reasoning · ${channel === "unknown" ? "lifecycle only" : channel}`, "Reasoning and tools", () => snapshot(reasoning(false, channel, channel === "unknown" ? "" : undefined)))),
-  example("tool-call", "Tool · reading files", "Reasoning and tools", () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5, "read_file", false)])),
-  example("working", "Tool · running a command", "Reasoning and tools", () => snapshot(workingEvents())),
-  example("tool-completed", "Tool · completed", "Reasoning and tools", () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5)])),
-  example("tool-failed", "Tool · failed", "Reasoning and tools", () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5, "exec_command", true, true)])),
-  example("tool-interrupted", "Tool · interrupted", "Reasoning and tools", () => snapshot([...tool(5, "exec_command", false)], "cancelled")),
-  example("responding", "Commentary · streaming", "Conversation", () => snapshot([
+  example("staging-conversation", () => t("fullDiagnostics.caseConversationLive"), () => t("fullDiagnostics.caseConversation"), () => snapshot(workingEvents())),
+  example("session-start", () => t("fullDiagnostics.caseStartingActivity"), () => t("fullDiagnostics.caseConversation"), () => snapshot([], "running")),
+  example("runner-queued", () => t("fullDiagnostics.caseQueuedStart"), () => t("fullDiagnostics.caseConversation"), () => snapshot([], "queued", { emptyMessage: t("fullDiagnostics.waitingToStart") })),
+  example("thinking", () => t("fullDiagnostics.caseThinkingLive"), () => t("fullDiagnostics.caseConversation"), () => snapshot(reasoning(false))),
+  ...(["summary", "detail", "unknown"] as const).map(channel => example(`reasoning-${channel}`, () => t("fullDiagnostics.caseReasoningDetail", { detail: channel === "unknown" ? t("fullDiagnostics.caseLifecycleOnly") : channel }), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot(reasoning(false, channel, channel === "unknown" ? "" : undefined)))),
+  example("tool-call", () => t("fullDiagnostics.caseToolRead"), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5, "read_file", false)])),
+  example("working", () => t("fullDiagnostics.caseToolCommand"), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot(workingEvents())),
+  example("tool-completed", () => t("fullDiagnostics.caseToolComplete"), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5)])),
+  example("tool-failed", () => t("fullDiagnostics.caseToolFailed"), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot([...reasoning(), commentary(4, progressText), ...tool(5, "exec_command", true, true)])),
+  example("tool-interrupted", () => t("fullDiagnostics.caseToolInterrupted"), () => t("fullDiagnostics.caseReasoningTools"), () => snapshot([...tool(5, "exec_command", false)], "cancelled")),
+  example("responding", () => t("fullDiagnostics.caseCommentStreaming"), () => t("fullDiagnostics.caseConversation"), () => snapshot([
     ...reasoning(), commentary(4, progressText), ...tool(5), event(8, "item.started", { kind: "assistant_message", channel: "progress", text: "" }, "streaming"),
     event(9, "item.delta", { text: "The earlier answer counted files in the directory configured for UI components. I’m checking the exact filenames so the explanation is reproducible." }, "streaming"),
   ])),
-  example("streaming-final", "Final answer · streaming", "Conversation", () => snapshot([
+  example("streaming-final", () => t("fullDiagnostics.caseFinalStreaming"), () => t("fullDiagnostics.caseConversation"), () => snapshot([
     ...completedEvents().slice(0, -1), event(12, "item.started", { kind: "assistant_message", channel: "final", text: "" }, "final"),
     event(13, "item.delta", { text: SYNTHETIC_FINAL }, "final"),
   ])),
-  example("completed", "Completed · answer and Activity disclosure", "Conversation", () => snapshot(completedEvents(), "succeeded")),
-  example("activity-phases", "Completed · multiple activity groups", "Conversation", () => snapshot(completedEvents(), "succeeded")),
-  ...(["failed", "timed_out", "cancelled"] as const).map(status => example(`runner-${status}`, `Run · ${status.replaceAll("_", " ")}`, "Run outcomes", () => snapshot([...reasoning(), ...tool(5, "exec_command", false)], status))),
-  example("runner-running", "Native runner · live activity", "Native runner", () => snapshot(workingEvents(), "running", { renderer: "native" })),
-  example("runner-succeeded", "Native runner · completed response", "Native runner", () => snapshot(completedEvents(), "succeeded", { renderer: "native" })),
-  ...(["failed", "timed_out", "cancelled"] as const).map(status => example(`native-${status}`, `Native runner · ${status.replaceAll("_", " ")}`, "Native runner", () => snapshot([...reasoning(), ...tool(5, "exec_command", false), event(15, "run.terminal", { schema: "paperclip.prp.terminal.v1", turnTerminalState: status === "cancelled" ? "cancelled" : "failed", runTerminalState: status === "cancelled" ? "cancelled" : "failed", reportedWorkDisposition: "needs_review", stopReason: { schema: "paperclip.stop_reason.v1", code: "synthetic_provider_stop", message: status === "cancelled" ? "The synthetic run was cancelled." : "The synthetic test process stopped before a final reply." } })], status, { renderer: "native" }))),
-  example("native-streaming", "Native runner · streaming final response", "Native runner", () => snapshot([...reasoning(), ...tool(5), event(12, "item.started", { kind: "assistant_message", channel: "final", text: "" }, "final"), event(13, "item.delta", { text: SYNTHETIC_FINAL }, "final")], "running", { renderer: "native" })),
-  example("native-starting", "Native runner · starting", "Native runner", () => snapshot([], "queued", { renderer: "native" })),
-  example("native-reconnecting", "Native runner · activity unavailable", "Native runner", () => snapshot(workingEvents(), "running", { renderer: "native", activityUnavailable: true })),
-  example("native-steering", "Native runner · continued after steering", "Native runner", () => snapshot(workingEvents(), "running", { renderer: "native", continuedAfterSteering: true })),
-  ...(["pending", "queued"] as const).map(messageState => example(`message-${messageState}`, `Human message · ${messageState}`, "Messages and composer", () => snapshot([], "queued", { messageState }))),
-  ...(["leaf", "subtree"] as const).map(paused => example(`paused-${paused}`, paused === "leaf" ? "Task paused · draft preserved" : "Subtree paused · draft preserved", "Messages and composer", () => snapshot([], "cancelled", { paused }))),
-  ...(["neutral", "info", "success", "warning", "danger"] as const).map(notice => example(`notice-${notice}`, `System notice · ${notice}`, "Messages and composer", () => snapshot([], "succeeded", { notice }))),
-  ...(["pending", "resolved", "expired", "cancelled"] as const).map(status => direct(`permission-${status}`, `Permission request · ${status}`, "Requests and results", [permission("pending"), ...(status !== "pending" ? [permission(status)] : [])], { emptyMessage: "Waiting for permission…" })),
-  direct("permission-denied", "Permission request · denied", "Requests and results", [{ ...permission("resolved"), resolvedAction: "decline" }]),
-  direct("question-text", "Question · free-text input", "Requests and results", [{ ...permission("pending", true), questionSet: null, fields: [{ name: "delay", label: "Reconnect delay", placeholder: "For example, 30 seconds" }] }], { emptyMessage: "Waiting for your answer…" }),
-  ...(["pending", "resolved", "expired", "cancelled"] as const).map(status => direct(`question-${status}`, `Question · ${status}`, "Requests and results", [permission("pending", true), ...(status !== "pending" ? [{ ...permission(status, true), response: status === "resolved" ? { schema: "paperclip.question_response.v1" as const, answers: { policy: { selectedOptionIds: ["bounded"] } } } : null }] : [])], { emptyMessage: "Waiting for your answer…" })),
-  ...(["done", "blocked", "needs_review", "yielded"] as const).map(disposition => direct(`result-${disposition}`, `Run result · ${disposition.replaceAll("_", " ")}`, "Requests and results", [{
+  example("completed", () => t("fullDiagnostics.caseCompleteActivity"), () => t("fullDiagnostics.caseConversation"), () => snapshot(completedEvents(), "succeeded")),
+  example("activity-phases", () => t("fullDiagnostics.caseCompleteGroups"), () => t("fullDiagnostics.caseConversation"), () => snapshot(completedEvents(), "succeeded")),
+  ...(["failed", "timed_out", "cancelled"] as const).map(status => example(`runner-${status}`, () => t("fullDiagnostics.caseRunOutcome", { detail: statusLabel(status) }), () => t("fullDiagnostics.caseRunOutcomes"), () => snapshot([...reasoning(), ...tool(5, "exec_command", false)], status))),
+  example("runner-running", () => t("fullDiagnostics.caseNativeLive"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot(workingEvents(), "running", { renderer: "native" })),
+  example("runner-succeeded", () => t("fullDiagnostics.caseNativeComplete"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot(completedEvents(), "succeeded", { renderer: "native" })),
+  ...(["failed", "timed_out", "cancelled"] as const).map(status => example(`native-${status}`, () => t("fullDiagnostics.caseNativeOutcome", { detail: statusLabel(status) }), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot([...reasoning(), ...tool(5, "exec_command", false), event(15, "run.terminal", { schema: "paperclip.prp.terminal.v1", turnTerminalState: status === "cancelled" ? "cancelled" : "failed", runTerminalState: status === "cancelled" ? "cancelled" : "failed", reportedWorkDisposition: "needs_review", stopReason: { schema: "paperclip.stop_reason.v1", code: "synthetic_provider_stop", message: status === "cancelled" ? t("fullDiagnostics.theSyntheticRunWasCancelled") : t("fullDiagnostics.theSyntheticTestProcessStoppedBeforeA") } })], status, { renderer: "native" }))),
+  example("native-streaming", () => t("fullDiagnostics.caseNativeStreaming"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot([...reasoning(), ...tool(5), event(12, "item.started", { kind: "assistant_message", channel: "final", text: "" }, "final"), event(13, "item.delta", { text: SYNTHETIC_FINAL }, "final")], "running", { renderer: "native" })),
+  example("native-starting", () => t("fullDiagnostics.caseNativeStarting"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot([], "queued", { renderer: "native" })),
+  example("native-reconnecting", () => t("fullDiagnostics.caseNativeUnavailable"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot(workingEvents(), "running", { renderer: "native", activityUnavailable: true })),
+  example("native-steering", () => t("fullDiagnostics.caseNativeSteered"), () => t("fullDiagnostics.caseNativeRunner"), () => snapshot(workingEvents(), "running", { renderer: "native", continuedAfterSteering: true })),
+  ...(["pending", "queued"] as const).map(messageState => example(`message-${messageState}`, () => t("fullDiagnostics.caseHumanMessage", { detail: messageState }), () => t("fullDiagnostics.caseMessagesComposer"), () => snapshot([], "queued", { messageState }))),
+  ...(["leaf", "subtree"] as const).map(paused => example(`paused-${paused}`, () => paused === "leaf" ? t("fullDiagnostics.caseTaskPaused") : t("fullDiagnostics.caseSubtreePaused"), () => t("fullDiagnostics.caseMessagesComposer"), () => snapshot([], "cancelled", { paused }))),
+  ...(["neutral", "info", "success", "warning", "danger"] as const).map(notice => example(`notice-${notice}`, () => t("fullDiagnostics.caseSystemNotice", { detail: notice }), () => t("fullDiagnostics.caseMessagesComposer"), () => snapshot([], "succeeded", { notice }))),
+  ...(["pending", "resolved", "expired", "cancelled"] as const).map(status => direct(`permission-${status}`, () => t("fullDiagnostics.casePermission", { detail: statusLabel(status) }), () => t("fullDiagnostics.caseRequestsResults"), [permission("pending"), ...(status !== "pending" ? [permission(status)] : [])], { emptyMessage: t("fullDiagnostics.waitingForPermission") })),
+  direct("permission-denied", () => t("fullDiagnostics.casePermissionDenied"), () => t("fullDiagnostics.caseRequestsResults"), [{ ...permission("resolved"), resolvedAction: "decline" }]),
+  direct("question-text", () => t("fullDiagnostics.caseQuestionInput"), () => t("fullDiagnostics.caseRequestsResults"), [{ ...permission("pending", true), questionSet: null, fields: [{ name: "delay", label: "Reconnect delay", placeholder: "For example, 30 seconds" }] }], { get emptyMessage() { return t("fullDiagnostics.waitingForYourAnswer"); } }),
+  ...(["pending", "resolved", "expired", "cancelled"] as const).map(status => direct(`question-${status}`, () => t("fullDiagnostics.caseQuestion", { detail: statusLabel(status) }), () => t("fullDiagnostics.caseRequestsResults"), [permission("pending", true), ...(status !== "pending" ? [{ ...permission(status, true), response: status === "resolved" ? { schema: "paperclip.question_response.v1" as const, answers: { policy: { selectedOptionIds: ["bounded"] } } } : null }] : [])], { emptyMessage: t("fullDiagnostics.waitingForYourAnswer") })),
+  ...(["done", "blocked", "needs_review", "yielded"] as const).map(disposition => direct(`result-${disposition}`, () => t("fullDiagnostics.caseRunResult", { detail: statusLabel(disposition) }), () => t("fullDiagnostics.caseRequestsResults"), [{
     kind: "run_result", ts: ts(20), disposition, summary: "The reconnect implementation is ready for review.", objectiveSatisfied: disposition === "done",
     verification: [{ commandOrCheck: "Reconnect tests", status: "passed", detail: "12 cases passed" }, { commandOrCheck: "Live provider smoke test", status: "not_run", detail: "No provider is contacted by this preview" }],
     remainingWork: disposition === "done" ? [] : [{ description: "Review the recovery message.", blocksCompletion: true }],
     blocker: disposition === "blocked" ? { reasonCode: "review_required", unblockAction: "Confirm the recovery behavior.", scope: "current_track" } : null, artifacts: [],
   }], { renderer: "native", status: disposition === "yielded" ? "running" : "succeeded" })),
-  ...providerFamilies.map(family => direct(`provider-${family}`, `Provider activity · ${family.replaceAll("_", " ")}`, "Provider and workspace", [{
-    kind: "provider_activity", ts: ts(10), family, eventType: `synthetic.${family}`, status: "completed", title: `${family.replaceAll("_", " ")} activity`,
-    summary: "Synthetic provider activity using the shipped transcript contract.", payload: family === "plan" ? { steps: [{ stepId: "read", body: "Inspect the reconnect boundary", status: "completed" }, { stepId: "test", body: "Run focused tests", status: "in_progress" }, { stepId: "review", body: "Review recovery messages", status: "pending" }] } : family === "delegation" ? { children: [{ childId: "reviewer", role: "Test reviewer", status: "completed", summary: "Checked the reconnect cases." }, { childId: "writer", role: "Documentation writer", status: "running", activitySummary: "Updating recovery examples" }] } : family === "tool_execution" ? { name: "pnpm test:run", operation: "execute", transport: "process", output: "PASS reconnect.test.ts\n12 tests passed", outputTruncated: false } : { summary: "Synthetic provider activity details.", message: "No provider or agent is contacted." },
+  ...providerFamilies.map(family => direct(`provider-${family}`, () => t("fullDiagnostics.caseProviderFamily", { detail: family.replaceAll("_", " ") }), () => t("fullDiagnostics.caseProviderWorkspace"), [{
+    kind: "provider_activity", ts: ts(10), family, eventType: `synthetic.${family}`, status: "completed", title: t("fullDiagnostics.activity", { value1: family.replaceAll("_", " ") }),
+    summary: "Synthetic provider activity using the shipped transcript contract.", payload: family === "plan" ? { steps: [{ stepId: "read", body: "Inspect the reconnect boundary", status: "completed" }, { stepId: "test", body: "Run focused tests", status: "in_progress" }, { stepId: "review", body: "Review recovery messages", status: "pending" }] } : family === "delegation" ? { children: [{ childId: "reviewer", role: "Test reviewer", status: "completed", summary: "Checked the reconnect cases." }, { childId: "writer", role: "Documentation writer", status: "running", activitySummary: "Updating recovery examples" }] } : family === "tool_execution" ? { name: "pnpm test:run", operation: "execute", transport: "process", output: "PASS reconnect.test.ts\n12 tests passed", outputTruncated: false } : { summary: "Synthetic provider activity details.", message: t("fullDiagnostics.noProviderOrAgentIsContacted") },
   }], { renderer: "native" })),
-  ...(["running", "failed", "interrupted", "informational"] as const).map(status => direct(`provider-status-${status}`, `Provider activity · ${status}`, "Provider and workspace", [{ kind: "provider_activity", ts: ts(10), family: "tool_execution", eventType: "synthetic.tool", status, title: "Running reconnect tests", summary: status === "failed" ? "The reconnect test timed out." : "Checking reconnect behavior.", payload: { name: "pnpm test:run", operation: "execute", transport: "process", output: status === "failed" ? "FAIL reconnect.test.ts\nExpected reconnect after 3 attempts; received timeout." : "Checking reconnect tests…" } }], { renderer: "native" })),
-  direct("workspace-changes", "Workspace · diff summary", "Provider and workspace", [{
+  ...(["running", "failed", "interrupted", "informational"] as const).map(status => direct(`provider-status-${status}`, () => t("fullDiagnostics.caseProviderStatus", { detail: statusLabel(status) }), () => t("fullDiagnostics.caseProviderWorkspace"), [{ kind: "provider_activity", ts: ts(10), family: "tool_execution", eventType: "synthetic.tool", status, title: t("fullDiagnostics.runningReconnectTests"), summary: status === "failed" ? "The reconnect test timed out." : "Checking reconnect behavior.", payload: { name: "pnpm test:run", operation: "execute", transport: "process", output: status === "failed" ? "FAIL reconnect.test.ts\nExpected reconnect after 3 attempts; received timeout." : "Checking reconnect tests…" } }], { renderer: "native" })),
+  direct("workspace-changes", () => t("fullDiagnostics.caseWorkspaceDiff"), () => t("fullDiagnostics.caseProviderWorkspace"), [{
     kind: "workspace_change", ts: ts(15), changeSetId: "synthetic-changes", revision: 1, source: "runner_verified", complete: true, patchArtifactRef: null,
     totals: { files: 1, additions: 1, deletions: 1 }, files: [{ path: "connectors/reconnect.ts", operation: "modify", previousPath: null, additions: 1, deletions: 1, binary: false, diff: "- const delay = 1000;\n+ const delay = Math.min(attempt * 1000, 30_000);" }],
   }], { renderer: "native" }),
-  direct("workspace-file", "Workspace · code preview", "Provider and workspace", [{
+  direct("workspace-file", () => t("fullDiagnostics.caseWorkspaceCode"), () => t("fullDiagnostics.caseProviderWorkspace"), [{
     kind: "workspace_file_reference", ts: ts(15), referenceId: "synthetic-file", source: "harness_reported", path: "connectors/reconnect.ts", displayName: "Reconnect implementation", mediaType: "text/typescript", presentation: "code", line: 12,
     preview: "export const retryDelay = (attempt: number) => Math.min(attempt * 1000, 30_000);", previewTruncated: false, contentDigest: null,
   }], { renderer: "native" }),
-  direct("live-token-cost", "Usage · run and provider totals", "Provider and workspace", [{ kind: "result", ts: ts(18), text: "", inputTokens: 12000, outputTokens: 1800, cachedTokens: 4000, costUsd: 0.042, subtype: "paperclip_runner_usage", isError: false, errors: [] }, { kind: "result", ts: ts(19), text: "Cumulative provider usage includes earlier turns.", inputTokens: 50000, outputTokens: 6000, cachedTokens: 16000, costUsd: 0.19, subtype: "paperclip_runner_session_usage", isError: false, errors: [] }]),
+  direct("live-token-cost", () => t("fullDiagnostics.caseUsageTotals"), () => t("fullDiagnostics.caseProviderWorkspace"), [{ kind: "result", ts: ts(18), text: "", inputTokens: 12000, outputTokens: 1800, cachedTokens: 4000, costUsd: 0.042, subtype: "paperclip_runner_usage", isError: false, errors: [] }, { kind: "result", ts: ts(19), get text() { return t("fullDiagnostics.cumulativeProviderUsageIncludesEarlierTurns"); }, inputTokens: 50000, outputTokens: 6000, cachedTokens: 16000, costUsd: 0.19, subtype: "paperclip_runner_session_usage", isError: false, errors: [] }]),
 ];
 
 // Keep links shared during the first preview usable without retaining lab-only UI.
@@ -157,24 +160,24 @@ export const THREAD_PREVIEW_ALIASES: Record<string, string> = {
 /** One cumulative, successful conversation for the watchable preview. Timing
  * uses units of --motion-sandbox-playback-step; no agent/provider is contacted. */
 export const CONVERSATION_PLAYBACK_STAGES = [
-  { label: "Starting", units: 0.25 },
-  { label: "Thinking", units: 0.5 },
-  { label: "Commentary", units: 0.5 },
-  { label: "Reading files", units: 0.5 },
-  { label: "Reviewing the component list", units: 0.5 },
-  { label: "Running a command", units: 0.75 },
-  { label: "Writing the answer", units: 1 },
-  { label: "Follow-up · queued", units: 0.5 },
-  { label: "Planning the verification", units: 0.5 },
-  { label: "Clarification · demo answer follows automatically", units: 0.75 },
-  { label: "Answered · bounded retry", units: 0.5 },
-  { label: "Permission · demo approval follows automatically", units: 0.75 },
-  { label: "Running focused tests", units: 0.75 },
-  { label: "Test failed · inspecting the timeout", units: 0.75 },
-  { label: "Explaining the retry", units: 0.5 },
-  { label: "Retrying the focused test", units: 0.75 },
-  { label: "Reviewing the file preview and usage", units: 0.75 },
-  { label: "Writing the verification result", units: 1 },
+  { get label() { return fullSharedT("taskChatUi.goal.starting"); }, units: 0.25 },
+  { get label() { return t("fullDiagnostics.thinking"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.commentary"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.readingFiles"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.reviewingTheComponentList"); }, units: 0.5 },
+  { get label() { return fullSharedT("runUi.tool.action.run.running"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.writingTheAnswer"); }, units: 1 },
+  { get label() { return t("fullDiagnostics.followUpQueued"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.planningTheVerification"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.clarificationDemoAnswerFollowsAutomatically"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.answeredBoundedRetry"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.permissionDemoApprovalFollowsAutomatically"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.runningFocusedTests"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.testFailedInspectingTheTimeout"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.explainingTheRetry"); }, units: 0.5 },
+  { get label() { return t("fullDiagnostics.retryingTheFocusedTest"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.reviewingTheFilePreviewAndUsage"); }, units: 0.75 },
+  { get label() { return t("fullDiagnostics.writingTheVerificationResult"); }, units: 1 },
 ] as const;
 
 export const PLAYBACK_FOLLOW_UP_STAGE = 7;
@@ -190,7 +193,7 @@ export function conversationPlaybackSnapshot(stage: number, progress: number): T
   // deltas themselves are not guaranteed to align with word boundaries.
   const text = (value: string) => revealWordProgress(value, Math.min(1, progress * 2));
   if (stage >= PLAYBACK_FOLLOW_UP_STAGE) {
-    if (stage === 7) return snapshot([], "queued", { emptyMessage: "Waiting to start…" });
+    if (stage === 7) return snapshot([], "queued", { emptyMessage: t("fullDiagnostics.waitingToStart") });
     const entries: TranscriptEntry[] = [...THREAD_PREVIEW_CASES.find(item => item.id === "provider-plan")!.build().entries];
     if (stage >= 9) entries.push({ ...permission(stage > 9 ? "resolved" : "pending", true), response: stage > 9 ? { schema: "paperclip.question_response.v1", answers: { policy: { selectedOptionIds: ["bounded"] } } } : null });
     if (stage >= 11) entries.push(permission(stage > 11 ? "resolved" : "pending"));

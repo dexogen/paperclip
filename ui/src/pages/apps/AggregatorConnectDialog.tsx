@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useState } from "react";
 import { aggregatorManagementUrl } from "@paperclipai/shared/aggregator-apps";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,7 @@ export function AggregatorConnectDialog({ app, connections, initialProvider, onC
   onClose: () => void;
   onNavigate: (href: string) => void;
 }) {
+  useFullAppsTranslation();
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [selected, setSelected] = useState<AggregatorAppRoute | null>(() => app.routes.find(route => route.provider === initialProvider) ?? (app.routes.length === 1 ? app.routes[0] : null));
   const canChooseProvider = app.routes.length > 1;
@@ -39,26 +41,26 @@ export function AggregatorConnectDialog({ app, connections, initialProvider, onC
   return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>{provider ? `Connect ${app.name} through ${provider.name}` : `Connect ${app.name}`}</DialogTitle>
+        <DialogTitle>{provider ? fullAppsT("fullApps.connect_through_034a87", { value1: app.name, value2: provider.name }) : fullAppsT("fullApps.connect_60c786", { value1: app.name })}</DialogTitle>
         <DialogDescription className={selected?.provider === "composio" ? "sr-only" : undefined}>{selected?.provider === "composio"
-          ? `Choose a saved Composio account or connect a new one to use ${app.name}.`
+          ? fullAppsT("fullApps.choose_a_saved_composio_account_or_connect_a_new_one_7547df", { value1: app.name })
           : provider
-          ? `Your ${provider.name} gateway is already saved. ${app.name} authorization is managed inside ${provider.name}.`
-          : "Which service would you like to use? This service handles the connection and requests to this app."}</DialogDescription>
+          ? fullAppsT("fullApps.your_gateway_is_already_saved_authorization_is_manag_ae438a", { value1: provider.name, value2: app.name, value3: provider.name })
+          : fullAppsT("fullApps.which_service_would_you_like_to_use_this_service_han_f4e368")}</DialogDescription>
       </DialogHeader>
       {!selected ? <div className="space-y-2">{[...app.routes].sort((a, b) => Number(Boolean(connections[b.provider]?.length)) - Number(Boolean(connections[a.provider]?.length))).map((route) => {
         const accounts = connections[route.provider] ?? [];
         const name = remoteMcpProviders[route.provider].name;
         const status = accounts.some((connection) => connection.status === "active" && connection.enabled && !isToolConnectionAttentionHealth(connection.healthStatus))
-          ? "Already connected" : accounts.some((connection) => connection.status === "draft") ? "Setup incomplete" : accounts.length ? "Needs attention" : "Set up a connection";
+          ? fullAppsT("fullApps.already_connected_be03b8") : accounts.some((connection) => connection.status === "draft") ? fullAppsT("fullApps.setup_incomplete_167fc0") : accounts.length ? fullAppsT("fullApps.needs_attention_c1ebc7") : fullAppsT("fullApps.set_up_a_connection_4832cc");
         return <button type="button" key={route.provider} onClick={() => choose(route)}
           className="flex w-full items-center gap-3 rounded-lg border border-border px-4 py-3 text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <AppLogo name={name} brandKey={route.provider} size={24} />
           <div className="min-w-0 flex-1"><div className="text-sm font-medium">{name}</div><div className="text-xs text-muted-foreground">{status}</div></div>
-          <span className="text-xs text-muted-foreground">Continue →</span>
+          <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.continue_496267")}</span>
         </button>;
       })}</div> : <div className="space-y-4">
-        {selected.provider !== "composio" ? <div className="space-y-2"><Label htmlFor="aggregator-account">{provider!.name} account</Label>
+        {selected.provider !== "composio" ? <div className="space-y-2"><Label htmlFor="aggregator-account"><FullAppsTrans i18nKey="fullApps.account_a9eedf" components={{ part1: <>{provider!.name}</> }} /></Label>
           <select id="aggregator-account" value={account?.id ?? ""} onChange={event => setSelectedAccountId(event.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm">
             {existing.map(connection => <option key={connection.id} value={connection.id}>{connection.name}</option>)}
           </select>
@@ -68,10 +70,10 @@ export function AggregatorConnectDialog({ app, connections, initialProvider, onC
 
       </div>}
       {selected?.provider !== "composio" ? <DialogFooter className="sm:items-center sm:justify-between">
-        <Button variant="ghost" onClick={selected && canChooseProvider ? () => setSelected(null) : onClose}>{selected && canChooseProvider ? "Back" : "Cancel"}</Button>
+        <Button variant="ghost" onClick={selected && canChooseProvider ? () => setSelected(null) : onClose}>{selected && canChooseProvider ? fullAppsT("onboarding.actions.back") : fullAppsT("fullApps.cancel_19766e")}</Button>
         {selected ? <div className="flex flex-wrap items-center gap-3">
-          {managementUrl ? <Button asChild><a href={managementUrl} target="_blank" rel="noopener noreferrer" onClick={onClose}>Continue<ExternalLink className="size-4" /></a></Button> : null}
-          <Button variant="link" size="sm" className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground" onClick={() => { onNavigate(`${aggregatorAppConnectHref(selected)}&new=1`); onClose(); }}>Connect a new account</Button>
+          {managementUrl ? <Button asChild><a href={managementUrl} target="_blank" rel="noopener noreferrer" onClick={onClose}>{fullAppsT("onboarding.actions.continue")}<ExternalLink className="size-4" /></a></Button> : null}
+          <Button variant="link" size="sm" className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground" onClick={() => { onNavigate(`${aggregatorAppConnectHref(selected)}&new=1`); onClose(); }}>{fullAppsT("fullApps.connect_a_new_account_2a4210")}</Button>
         </div> : null}
       </DialogFooter> : null}
     </DialogContent>

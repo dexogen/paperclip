@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type {
   CompanyPortabilityEmbeddedAssetManifestEntry,
   CompanyPortabilityIssueManifestEntry,
@@ -39,12 +40,12 @@ export const EXPORT_CATEGORY_ORDER: ExportCategoryKey[] = [
 ];
 
 export const EXPORT_CATEGORY_LABELS: Record<ExportCategoryKey, string> = {
-  agents: "Agents",
-  projects: "Projects",
-  skills: "Skills",
-  routines: "Routines",
-  tasks: "Tasks",
-  attachments: "Attachments",
+  get agents() { return fullSharedT("sidebar.agents"); },
+  get projects() { return fullSharedT("sidebar.projects"); },
+  get skills() { return fullSharedT("sidebar.skills"); },
+  get routines() { return fullSharedT("sidebar.routines"); },
+  get tasks() { return fullSharedT("sidebar.tasks"); },
+  get attachments() { return fullSharedT("newIssue.attachments"); },
 };
 
 /** Everything exports by default. */

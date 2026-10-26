@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { TextAttachmentContext } from "@/context/TextAttachmentContext";
 import { TaskAttachmentPanel } from "./TaskAttachmentPanel";
@@ -164,6 +165,7 @@ function selectorForWorkspaceKind(kind: "execution_workspace" | "project_workspa
  * deliberately lives in this adapter instead of depending on provider ancestry.
  */
 function useTaskSidePanelFileRouting() {
+  useFullSharedTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const state = useMemo(() => readFileViewerStateFromSearch(location.search), [location.search]);
@@ -427,7 +429,7 @@ export function TaskSidePanel({
       planDocument === null
     ) return;
     const document = documents.find((candidate) => candidate.key === documentDeepLink.documentKey);
-    const label = document ? documentDisplayTitle(document) : documentDeepLink.documentKey === "plan" ? "Plan" : documentDeepLink.documentKey;
+    const label = document ? documentDisplayTitle(document) : documentDeepLink.documentKey === "plan" ? fullSharedT("fullShared.plan_fa8ed0") : documentDeepLink.documentKey;
     // A refresh must not replay a link after the user selects another tab.
     handledDocumentRequestRef.current = documentDeepLink.requestId;
     controller.openTab(taskPanelDocumentTab(documentDeepLink.documentKey, label));

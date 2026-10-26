@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Component, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useLocation, useNavigate } from "@/lib/router";
 import { Button } from "@/components/ui/button";
@@ -70,21 +71,15 @@ class RouteErrorBoundaryInner extends Component<RouteErrorBoundaryInnerProps, Ro
     return (
       <div className="mx-auto max-w-2xl space-y-4 px-4 py-10">
         <div>
-          <h1 className="text-lg font-semibold">This page hit an error</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Something went wrong while rendering this page. You can go back and try again, or reload.
-          </p>
+          <h1 className="text-lg font-semibold">{fullSharedT("fullShared.this_page_hit_an_error_58443b")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{fullSharedT("fullShared.something_went_wrong_while_rendering_this_page_you_c_46d793")}</p>
         </div>
         <pre className="overflow-auto rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive whitespace-pre-wrap">
           {error.message}
         </pre>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={this.props.onReset}>
-            Go back
-          </Button>
-          <Button size="sm" onClick={() => window.location.reload()}>
-            Reload page
-          </Button>
+          <Button variant="outline" size="sm" onClick={this.props.onReset}>{fullSharedT("taskChatUi.classic.goBack")}</Button>
+          <Button size="sm" onClick={() => window.location.reload()}>{fullSharedT("fullShared.reload_page_437d0d")}</Button>
         </div>
       </div>
     );
@@ -92,6 +87,7 @@ class RouteErrorBoundaryInner extends Component<RouteErrorBoundaryInnerProps, Ro
 }
 
 export function RouteErrorBoundary({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const resetKey = `${location.pathname}${location.search}`;

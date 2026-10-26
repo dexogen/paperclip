@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { lazy } from "react";
 import { useDialogActions, useDialogState } from "../context/DialogContext";
@@ -13,9 +14,9 @@ export function BoardDialogs() {
   const { newIssueOpen, newProjectOpen, newGoalOpen, newAgentOpen } = useDialogState();
   const { closeNewIssue, closeNewProject, closeNewGoal, closeNewAgent } = useDialogActions();
   return <>
-    <DeferredOverlay requested={newIssueOpen} title="New task" onClose={closeNewIssue}><NewIssueDialog /></DeferredOverlay>
+    <DeferredOverlay requested={newIssueOpen} title={fullSharedT("newIssue.newTask")} onClose={closeNewIssue}><NewIssueDialog /></DeferredOverlay>
     <DeferredOverlay requested={newProjectOpen} title={t("projectConfigUi.sidebar.new")} onClose={closeNewProject}><NewProjectDialog /></DeferredOverlay>
-    <DeferredOverlay requested={newGoalOpen} title="New goal" onClose={closeNewGoal}><NewGoalDialog /></DeferredOverlay>
+    <DeferredOverlay requested={newGoalOpen} title={fullSharedT("fullShared.new_goal_f326ad")} onClose={closeNewGoal}><NewGoalDialog /></DeferredOverlay>
     <DeferredOverlay requested={newAgentOpen} title={t("agentSetupUi.common.newAgent")} onClose={closeNewAgent}><NewAgentDialog /></DeferredOverlay>
   </>;
 }

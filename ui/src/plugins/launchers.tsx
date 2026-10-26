@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import {
   Component,
   createContext,
@@ -289,6 +290,7 @@ function isPluginLauncherBounds(value: unknown): value is PluginLauncherBounds {
 export function usePluginLaunchers(
   filters: UsePluginLaunchersFilters,
 ): UsePluginLaunchersResult {
+  useFullSharedTranslation();
   const queryEnabled = filters.enabled ?? true;
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.plugins.uiContributions,
@@ -379,6 +381,7 @@ function PluginLauncherBridgeScope({
   hostContext: PluginHostContext;
   children: ReactNode;
 }) {
+  useFullSharedTranslation();
   const value = useMemo(() => ({ pluginId, hostContext }), [pluginId, hostContext]);
 
   return (
@@ -416,9 +419,7 @@ class LauncherErrorBoundary extends Component<LauncherErrorBoundaryProps, Launch
   override render() {
     if (this.state.hasError) {
       return (
-        <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-          {this.props.launcher.pluginDisplayName}: failed to render
-        </div>
+        <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><FullSharedTrans i18nKey="fullShared.failed_to_render_fe810d" components={{ part1: <>{this.props.launcher.pluginDisplayName}</> }} /></div>
       );
     }
     return this.props.children;
@@ -432,6 +433,7 @@ function LauncherRenderContent({
   instance: LauncherInstance;
   renderEnvironment: PluginRenderEnvironmentContext;
 }) {
+  useFullSharedTranslation();
   const component = instance.component;
   const { data: session } = useQuery({
     queryKey: queryKeys.auth.session,
@@ -455,9 +457,7 @@ function LauncherRenderContent({
     }
 
     return (
-      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-        {instance.launcher.pluginDisplayName}: could not resolve launcher target "{instance.launcher.action.target}".
-      </div>
+      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><FullSharedTrans i18nKey="fullShared.could_not_resolve_launcher_target_8abb0b" components={{ part1: <>{instance.launcher.pluginDisplayName}</>, part2: <>{instance.launcher.action.target}</> }} /></div>
     );
   }
 
@@ -496,6 +496,7 @@ function LauncherModalShell({
   requestBounds: (key: string, request: PluginModalBoundsRequest) => Promise<void>;
   closeLauncher: (key: string, event: PluginRenderCloseEvent) => Promise<void>;
 }) {
+  useFullSharedTranslation();
   const contentRef = useRef<HTMLDivElement | null>(null);
   const titleId = useId();
 
@@ -595,9 +596,7 @@ function LauncherModalShell({
             size="sm"
             className="ml-auto"
             onClick={() => void closeLauncher(instance.key, { reason: "programmatic" })}
-          >
-            Close
-          </Button>
+          >{fullSharedT("common.close")}</Button>
         </div>
         <div
           className={cn(
@@ -613,6 +612,7 @@ function LauncherModalShell({
 }
 
 export function PluginLauncherProvider({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   const [stack, setStack] = useState<LauncherInstance[]>([]);
   const stackRef = useRef(stack);
   stackRef.current = stack;
@@ -761,6 +761,7 @@ function DefaultLauncherTrigger({
   placementZone: PluginLauncherPlacementZone;
   onClick: (event: ReactMouseEvent<HTMLButtonElement>) => void;
 }) {
+  useFullSharedTranslation();
   return (
     <Button
       type="button"
@@ -798,6 +799,7 @@ export function PluginLauncherOutlet({
   errorClassName,
   errorBehavior = "inline",
 }: PluginLauncherOutletProps) {
+  useFullSharedTranslation();
   const { activateLauncher } = usePluginLauncherRuntime();
   const { launchers, contributionsByPluginId, errorMessage } = usePluginLaunchers({
     placementZones,
@@ -808,9 +810,7 @@ export function PluginLauncherOutlet({
 
   if (errorMessage && errorBehavior === "inline") {
     return (
-      <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}>
-        Plugin launchers unavailable: {errorMessage}
-      </div>
+      <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}><FullSharedTrans i18nKey="fullShared.plugin_launchers_unavailable_da284f" components={{ part1: <>{errorMessage}</> }} /></div>
     );
   }
 
@@ -851,6 +851,7 @@ export function PluginLauncherButton({
   className,
   onActivated,
 }: PluginLauncherButtonProps) {
+  useFullSharedTranslation();
   const { activateLauncher } = usePluginLauncherRuntime();
 
   return (

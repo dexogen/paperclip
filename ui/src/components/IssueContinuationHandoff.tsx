@@ -1,3 +1,5 @@
+import { t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import type { IssueDocument } from "@paperclipai/shared";
 import { ISSUE_CONTINUATION_SUMMARY_DOCUMENT_KEY } from "@paperclipai/shared";
@@ -18,6 +20,8 @@ export function IssueContinuationHandoff({
   focusSignal = 0,
   externalReferences,
 }: IssueContinuationHandoffProps) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const [expanded, setExpanded] = useState(false);
   const [highlighted, setHighlighted] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -33,7 +37,7 @@ export function IssueContinuationHandoff({
 
   if (!document) return null;
 
-  const title = document.title?.trim() || "Continuation handoff";
+  const title = document.title?.trim() || fullSharedT("fullShared.continuation_handoff_f052bd");
 
   return (
     <div
@@ -49,7 +53,7 @@ export function IssueContinuationHandoff({
           type="button"
           className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
           onClick={() => setExpanded((current) => !current)}
-          aria-label={expanded ? "Collapse continuation handoff" : "Expand continuation handoff"}
+          aria-label={expanded ? fullSharedT("fullShared.collapse_continuation_handoff_d05124") : fullSharedT("fullShared.expand_continuation_handoff_854366")}
           aria-expanded={expanded}
         >
           {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
@@ -58,20 +62,15 @@ export function IssueContinuationHandoff({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-foreground">{title}</span>
-            <Badge variant="outline" className="border-border font-mono text-(length:--text-nano) uppercase text-muted-foreground">
-              handoff
-            </Badge>
+            <Badge variant="outline" className="border-border font-mono text-(length:--text-nano) uppercase text-muted-foreground">{fullSharedT("fullShared.handoff_249215")}</Badge>
           </div>
-          <div className="text-(length:--text-micro) text-muted-foreground">
-            Updated {relativeTime(document.updatedAt)}
-            {document.latestRevisionNumber > 0 ? ` - revision ${document.latestRevisionNumber}` : ""}
-          </div>
+          <div className="text-(length:--text-micro) text-muted-foreground"><FullSharedTrans i18nKey="fullShared.updated_b03d23" components={{ part1: <>{relativeTime(document.updatedAt)}</>, part2: <>{document.latestRevisionNumber > 0 ? fullSharedTailT("fullSharedTail.revision_7601ae", { value1: document.latestRevisionNumber }) : ""}</> }} /></div>
         </div>
         <AgentSetupPrompt
           prompt={document.body}
-          label="Continue with an agent"
-          title="Task handoff"
-          description="Paste this into your agent to continue from this handoff."
+          label={fullSharedT("fullShared.continue_with_an_agent_f36434")}
+          title={fullSharedT("fullShared.task_handoff_3b56d4")}
+          description={fullSharedT("fullShared.paste_this_into_your_agent_to_continue_from_this_han_5e1b55")}
           align="end"
         />
       </div>

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { ChevronDown, Download, ExternalLink, Maximize2, PanelRightOpen, Table2 } from "lucide-react";
 import type { LabArtifact } from "../../kit";
 import type { SolidAction } from "./actions";
@@ -28,26 +29,26 @@ export interface PanelActions {
 
 export function panelActions(a: LabArtifact): PanelActions {
   const download = (label: string): SolidAction => ({ id: "download", label, icon: Download, href: `#download-${a.id}` });
-  const openFile: SolidAction = { id: "preview", label: "Open file", icon: ExternalLink, href: `#file-${a.id}`, external: true };
-  const openTab: SolidAction = { id: "tab", label: "Open in tab", icon: PanelRightOpen, href: `#attachment-${a.id}` };
+  const openFile: SolidAction = { id: "preview", label: fullSharedT("taskPanels.card.openFile"), icon: ExternalLink, href: `#file-${a.id}`, external: true };
+  const openTab: SolidAction = { id: "tab", label: fullSharedT("taskPanels.file.openTab"), icon: PanelRightOpen, href: `#attachment-${a.id}` };
 
   if (isTaskDocument(a)) {
-    return { primary: { id: "document", label: "Read document", icon: PanelRightOpen, href: `#document-${slug(a)}` }, more: [] };
+    return { primary: { id: "document", label: fullSharedT("taskPanels.card.readDocument"), icon: PanelRightOpen, href: `#document-${slug(a)}` }, more: [] };
   }
   if (a.kind === "link") {
-    return { primary: { id: "preview", label: "Open link", icon: ExternalLink, href: a.url ?? "#", external: true }, more: [] };
+    return { primary: { id: "preview", label: fullSharedT("taskPanels.card.openLink"), icon: ExternalLink, href: a.url ?? "#", external: true }, more: [] };
   }
-  if (a.kind === "image") return { primary: { id: "gallery", label: "View image", icon: Maximize2 }, more: [] };
-  if (a.kind === "video") return { primary: { id: "gallery", label: "Open video", icon: Maximize2 }, more: [] };
+  if (a.kind === "image") return { primary: { id: "gallery", label: fullSharedT("taskPanels.card.viewImage"), icon: Maximize2 }, more: [] };
+  if (a.kind === "video") return { primary: { id: "gallery", label: fullSharedT("taskPanels.card.openVideo"), icon: Maximize2 }, more: [] };
   if (a.kind === "document") {
     // A Markdown file an agent attached: reads in place, with the product's three ways out.
     return {
-      primary: { id: "document", label: "Read document", icon: ChevronDown },
-      more: [openTab, { id: "preview", label: "Open raw", icon: ExternalLink, href: `#raw-${a.id}`, external: true }, download("Download")],
+      primary: { id: "document", label: fullSharedT("taskPanels.card.readDocument"), icon: ChevronDown },
+      more: [openTab, { id: "preview", label: fullSharedT("taskPanels.file.openRaw"), icon: ExternalLink, href: `#raw-${a.id}`, external: true }, download("Download")],
     };
   }
   if (isTextLike(a)) {
-    const data: SolidAction[] = /\.csv$/i.test(a.filename ?? "") ? [{ id: "tab", label: "Preview data", icon: Table2 }] : [];
+    const data: SolidAction[] = /\.csv$/i.test(a.filename ?? "") ? [{ id: "tab", label: fullSharedT("taskPanels.preview.data"), icon: Table2 }] : [];
     return { primary: openTab, more: [...data, openFile, download("Download file")] };
   }
   return { primary: download("Download file"), more: [openFile] };

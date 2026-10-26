@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { Issue } from "@paperclipai/shared";
 import { timeAgo } from "@/lib/timeAgo";
 import { IssueRow } from "./IssueRow";
@@ -5,13 +6,14 @@ import { IssueRow } from "./IssueRow";
 /** Flat, read-style summary of caller-ordered tasks. Reuses the canonical row's
  * navigation, status tooltip, hover, focus and cell-local marquee. Rendering a
  * summary never changes the task's actual read state. */
-export function TaskSummaryList({ issues, label = "Recent tasks", showIdentifier = true, showUpdated = true, issueLinkState }: {
+export function TaskSummaryList({ issues, label = fullSharedT("fullShared.recent_tasks_7b940d"), showIdentifier = true, showUpdated = true, issueLinkState }: {
   issues: readonly Issue[];
   label?: string;
   showIdentifier?: boolean;
   showUpdated?: boolean;
   issueLinkState?: unknown;
 }) {
+  useFullSharedTranslation();
   return <ul className="task-summary-list" aria-label={label}>
     {issues.map(issue => <li key={issue.id}>
       <IssueRow issue={issue} presentation="task" appearance="refreshed" density="comfortable"

@@ -1,3 +1,4 @@
+import { t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
 import { createContext, useContext, useLayoutEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { FlyoutAppearanceProvider } from "@/components/ui/flyout";
@@ -11,6 +12,7 @@ export function useDesignSandbox() { return useContext(DesignSandboxContext); }
 /** Local integration experiment. Neither production builds nor ordinary dev
  * instances enable this through browser storage alone. */
 export function DesignSandboxProvider({ children }: { children: ReactNode }) {
+  useFullSharedTailTranslation();
   const available = import.meta.env.DEV && import.meta.env.VITE_PAPERCLIP_DESIGN_SANDBOX === "true";
   const [selected, setSelected] = useState(() => {
     try { return localStorage.getItem(storageKey) !== "off"; } catch { return true; }
@@ -33,7 +35,7 @@ export function DesignSandboxProvider({ children }: { children: ReactNode }) {
           const next = !selected;
           setSelected(next);
           try { localStorage.setItem(storageKey, next ? "on" : "off"); } catch { /* Session-only when storage is unavailable. */ }
-        }}>Design proposals: {enabled ? "On" : "Off"}</Button>
+        }}><FullSharedTailTrans i18nKey="fullSharedTail.design_proposals_940950" components={{ part1: <>{enabled ? fullSharedTailT("fullSharedTail.on") : fullSharedTailT("fullSharedTail.off")}</> }} /></Button>
       </div> : null}
     </FlyoutAppearanceProvider>
   </DesignSandboxContext.Provider>;

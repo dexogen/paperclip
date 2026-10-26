@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n, t as fullAppsT } from "@/i18n";
 import type {
   ConnectionGrantKind,
   ConnectionAudienceMember,
@@ -20,12 +22,13 @@ export type ConnectionTypeLabel = "Personal" | "Dedicated agent" | "Organization
 /** The two connection types shown throughout the product. */
 export function connectionTypeLabel(
   credentialPolicy: ToolConnectionCredentialPolicy,
-): ConnectionTypeLabel {
+  t: TFunction = i18n.getFixedT("en"),
+): string {
   return credentialPolicy === "per_user"
-    ? "Personal"
+    ? t("fullApps.personal_845f92")
     : credentialPolicy === "per_agent"
-      ? "Dedicated agent"
-      : "Organization";
+      ? t("fullApps.child_91807e3f9a")
+      : t("fullApps.caption_d764d42592");
 }
 
 const ORGANIZATION_NAME_SUFFIX = " for the organization";
@@ -73,15 +76,15 @@ export function connectionNameForCredentialPolicy(
 export function grantStatusLabel(status: ConnectionGrantStatus | null): string {
   switch (status) {
     case "active":
-      return "Connected";
+      return fullAppsT("fullApps.child_22965568d2");
     case "needs_reauthorization":
-      return "Needs attention";
+      return fullAppsT("fullApps.needs_attention_c1ebc7");
     case "expired":
-      return "Expired";
+      return fullAppsT("fullApps.expired_424a25");
     case "revoked":
-      return "Revoked";
+      return fullAppsT("fullApps.revoked_f6f738");
     default:
-      return "Not connected";
+      return fullAppsT("fullApps.child_0303e18246");
   }
 }
 
@@ -112,9 +115,9 @@ export function grantAccountLabel(
 ): string {
   const tenantName = grant?.providerTenant?.name?.trim();
   if (tenantName) return tenantName;
-  if (grant?.kind === "user") return options.subjectLabel?.trim() || "Connected account";
-  if (grant?.kind === "agent") return options.subjectLabel?.trim() || "Dedicated account";
-  return "Shared credential";
+  if (grant?.kind === "user") return options.subjectLabel?.trim() || fullAppsT("fullApps.child_3903f0e1ae");
+  if (grant?.kind === "agent") return options.subjectLabel?.trim() || fullAppsT("fullApps.child_eeda128273");
+  return fullAppsT("fullApps.child_d38adc7888");
 }
 
 /**
@@ -124,8 +127,8 @@ export function grantAccountLabel(
  */
 export function audienceSummary(grant: Pick<ConnectionGrant, "members"> | null): string {
   const count = grant?.members?.length ?? 0;
-  if (count === 0) return "All organization members";
-  return `${count} selected ${count === 1 ? "member" : "members"}`;
+  if (count === 0) return fullAppsT("fullApps.all_organization_members_eac089");
+  return fullAppsT("fullApps.selectedMembers", { count });
 }
 
 export function audienceUserIds(grant: Pick<ConnectionGrant, "members"> | null): Set<string> {

@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { useState } from "react";
 import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ const SPROCKETS = [0, 1, 2, 3, 4];
 const SQUARE = 1.15;
 
 function FilmStrip() {
+  useTranslation();
   return (
     <span aria-hidden className="flex w-(--tac-film-w) shrink-0 flex-col items-center justify-evenly bg-(--tac-film)">
       {SPROCKETS.map((hole) => (
@@ -36,6 +38,7 @@ function FilmStrip() {
 }
 
 export function Print({ artifact, size, player = false }: { artifact: LabArtifact; size: ObjectSize; /** PANEL — a video plays in place. */ player?: boolean }) {
+  useTranslation();
   const [failed, setFailed] = useState(false);
   const aspect = clamp(artifact.aspect ?? 4 / 3, 0.75, 1.9);
   const video = artifact.kind === "video";
@@ -63,7 +66,7 @@ export function Print({ artifact, size, player = false }: { artifact: LabArtifac
               controls
               playsInline
               preload="metadata"
-              aria-label={`Video: ${artifact.title}`}
+              aria-label={t("fullDiagnostics.video", { value1: artifact.title })}
               className="absolute inset-0 block size-full bg-(--tac-film) object-cover"
             />
           ) : blank ? (

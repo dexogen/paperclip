@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabGroup } from "../../kit";
 import { ProseExcerpt } from "./Content";
@@ -38,6 +39,7 @@ import { metaParts } from "./kinds";
 const OBJECT = "w-(--hy-paper-tile-w) shrink-0";
 
 export function StackSingle({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const artifact = group.artifacts[0];
   const [kind, onError] = usePreviewKind(artifact);
   return (
@@ -63,7 +65,7 @@ export function StackSingle({ group }: { group: LabGroup }) {
         <div className="mt-auto flex min-w-0 items-end gap-3 pt-4">
           <p className="flex min-w-0 flex-1 flex-col gap-0.5 font-mono text-(length:--text-micro) leading-4 text-(--hy-ink-2)">
             <span>{artifactCount(group.count)}</span>
-            <span>Updated {group.updatedLabel}</span>
+            <span><FullSharedTrans i18nKey="fullShared.updated_44d29d" components={{ part1: <>{group.updatedLabel}</> }} /></span>
           </p>
           <StateMark review={artifact.review} />
         </div>

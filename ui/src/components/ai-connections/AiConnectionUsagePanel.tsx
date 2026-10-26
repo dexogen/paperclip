@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMutation } from "@tanstack/react-query";
 import type { AiConnectionUsage, AiConnectionUsageLimit, AiManagedConnectionSummary } from "@paperclipai/shared";
 import { supportsAiConnectionUsage } from "@paperclipai/shared";
@@ -73,26 +74,27 @@ function usageError(usage: AiConnectionUsage) {
 }
 
 export function AiConnectionUsagePanel({ account, observation, cachedOnly = false }: { account: AiManagedConnectionSummary; observation?: AiConnectionUsage; cachedOnly?: boolean }) {
+  useFullSharedTranslation();
   const probe = useMutation({
     mutationFn: () => aiConnectionsApi.probeUsage(account.companyId, account.id, account.grantId),
   });
   const supported = supportsAiConnectionUsage(account.provider, account.method);
   const usage = cachedOnly ? observation : probe.isSuccess ? probe.data : undefined;
   return (
-    <section aria-label="Account usage limits" className="space-y-3">
+    <section aria-label={fullSharedT("fullShared.account_usage_limits_4c36ba")} className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold">Usage</h3>
+        <h3 className="text-sm font-semibold">{fullSharedT("agentDetailUi.overview.usage")}</h3>
         {supported && !cachedOnly && <Button variant="outline" size="sm" disabled={probe.isPending || account.status !== "connected"} onClick={() => probe.mutate()}>
-          {probe.isPending ? "Checking…" : usage?.status === "ok" ? "Refresh" : "Check usage"}
+          {probe.isPending ? fullSharedT("taskProperties.fields.checking") : usage?.status === "ok" ? fullSharedT("externalAgentUi.common.refresh") : fullSharedT("fullShared.check_usage_6b1f1b")}
         </Button>}
       </div>
-      {cachedOnly && !usage && <p className="text-xs text-muted-foreground">Usage not observed.</p>}
-      {!supported && <p className="text-xs text-muted-foreground">Unavailable for this sign-in method.</p>}
+      {cachedOnly && !usage && <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.usage_not_observed_c5966c")}</p>}
+      {!supported && <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.unavailable_for_this_sign_in_method_f46c30")}</p>}
       {probe.error && <p role="alert" className="text-sm text-destructive">{probe.error.message}</p>}
       {usage && usage.status !== "ok" && <p role={usage.status === "unsupported" ? "status" : "alert"} className="text-sm text-muted-foreground">{usageError(usage)}</p>}
       {usage?.status === "ok" && (
         <div className="space-y-3" aria-live="polite">
-          {usage.limits.length === 0 && <p className="text-xs text-muted-foreground">Usage not reported.</p>}
+          {usage.limits.length === 0 && <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.usage_not_reported_75d161")}</p>}
           {usage.limits.map((window) => {
             const details = limitDetails(window);
             return <div key={window.id} className="space-y-1.5">
@@ -105,10 +107,10 @@ export function AiConnectionUsagePanel({ account, observation, cachedOnly = fals
             </div>;
           })}
           {usage.overage && <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="text-muted-foreground">Overage</span>
+            <span className="text-muted-foreground">{fullSharedT("fullShared.overage_c4b024")}</span>
             <span className="font-mono">{overageSummary(usage)}</span>
           </div>}
-          <p className="text-xs text-muted-foreground">Updated <time className="font-mono" dateTime={usage.checkedAt} title={formatDateTime(usage.checkedAt)}>{formatDateTime(usage.checkedAt, { includeYear: false })}</time>{usage.planType ? ` · ${usage.planType}` : ""}</p>
+          <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.updated_3a5ecc")}<time className="font-mono" dateTime={usage.checkedAt} title={formatDateTime(usage.checkedAt)}>{formatDateTime(usage.checkedAt, { includeYear: false })}</time>{usage.planType ? ` · ${usage.planType}` : ""}</p>
         </div>
       )}
     </section>

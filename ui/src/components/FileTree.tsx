@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { useMemo, useRef, useState } from "react";
@@ -216,18 +218,18 @@ export function parseFrontmatter(content: string): { data: FrontmatterData; body
 }
 
 export const FRONTMATTER_FIELD_LABELS: Record<string, string> = {
-  name: "Name",
-  title: "Title",
-  kind: "Kind",
-  reportsTo: "Reports to",
-  skills: "Skills",
-  status: "Status",
-  description: "Description",
-  priority: "Priority",
-  assignee: "Responsible",
-  project: "Project",
-  recurring: "Recurring",
-  targetDate: "Target date",
+  get name() { return fullSharedT("fullShared.name_dcd1d5"); },
+  get title() { return fullSharedT("fullShared.title_7e8cd2"); },
+  get kind() { return fullSharedT("companySettings.governance.kind"); },
+  get reportsTo() { return fullSharedT("agentConfigUi.reportsTo"); },
+  get skills() { return fullSharedT("sidebar.skills"); },
+  get status() { return fullSharedT("sidebar.status"); },
+  get description() { return fullSharedT("companySettings.description"); },
+  get priority() { return fullSharedT("fullShared.priority_d60dbb"); },
+  get assignee() { return fullSharedT("taskViews.column_assignee"); },
+  get project() { return fullSharedT("newIssue.project"); },
+  get recurring() { return fullSharedT("fullShared.recurring_c0c06e"); },
+  get targetDate() { return fullSharedT("projects.sort.targetDate"); },
 };
 
 // -- File tree component -----------------------------------------------------
@@ -385,14 +387,12 @@ export function FileTree({
                 statusBadge.error ?? statusBadgeDefault,
               )}
             >
-              error
+              {fullSharedTailT("fullSharedTail.errorBadge")}
             </Badge>
             <span className="min-w-0 text-destructive">{error.message}</span>
           </div>
           {error.retry && (
-            <Button type="button" size="xs" variant="outline" onClick={error.retry}>
-              Retry
-            </Button>
+            <Button type="button" size="xs" variant="outline" onClick={error.retry}>{fullSharedT("newIssue.retry")}</Button>
           )}
         </div>
       </div>

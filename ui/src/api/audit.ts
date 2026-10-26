@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { tenantSessionRecovery } from "@/lib/tenant-session-recovery";
 import { api } from "./client";
 
@@ -101,7 +102,7 @@ export const auditApi = {
    * Fetch the filtered feed as a CSV blob. The server logs an `audit.exported`
    * activity row for the export itself (training-data export precedent).
    */
-  exportAgentActionsCsv: async (
+  get exportAgentActionsCsv() { return async (
     companyId: string,
     filters: Omit<AuditActionFilters, "cursor" | "limit"> = {},
   ): Promise<Blob> => {
@@ -115,9 +116,9 @@ export const auditApi = {
       const body = await res.json().catch(() => null);
       const recovery = tenantSessionRecovery.recoverIfNeeded(res.status, body);
       if (recovery) return recovery;
-      const message = (body as { error?: string } | null)?.error ?? `Export failed: ${res.status}`;
+      const message = (body as { error?: string } | null)?.error ?? fullSharedT("fullShared.export_failed_8dc4d4", { value1: res.status });
       throw new Error(message);
     }
     return res.blob();
-  },
+  }; },
 };

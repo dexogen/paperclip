@@ -1,3 +1,5 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { useEffect, useId, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -51,12 +53,12 @@ import {
 export const githubSelectClass =
   "w-full rounded-md border border-input bg-background px-3 py-2 text-sm";
 const eventLabels = {
-  opened: "New pull request",
-  synchronize: "Updated commits",
-  reopened: "Reopened",
-  ready_for_review: "Ready for review",
-  mention: "Mention",
-  comment: "Follow-up comment",
+  get opened() { return fullAppsT("fullApps.new_pull_request_263c79"); },
+  get synchronize() { return fullAppsT("fullApps.updated_commits_30b313"); },
+  get reopened() { return fullAppsT("fullApps.copy_53a4ae1c597a"); },
+  get ready_for_review() { return fullAppsT("fullApps.ready_for_review_75c2a5"); },
+  get mention() { return fullAppsT("fullApps.copy_d820d8de70e4"); },
+  get comment() { return fullAppsT("fullApps.copy_f33a51e2f903"); },
 };
 function GitHubHelp({
   label,
@@ -65,13 +67,14 @@ function GitHubHelp({
   label: string;
   children: React.ReactNode;
 }) {
+  useFullAppsTranslation();
   const [open, setOpen] = useState(false);
   return (
     <Tooltip open={open} onOpenChange={setOpen}>
       <TooltipTrigger asChild>
         <button
           type="button"
-          aria-label={`About ${label}`}
+          aria-label={fullAppsT("fullApps.about_fd0987", { value1: label })}
           className="inline-flex shrink-0 items-center text-muted-foreground hover:text-foreground"
           onClick={() => setOpen(true)}
         >
@@ -100,6 +103,7 @@ export function GitHubToggle({
   ariaLabel?: string;
   disabled?: boolean;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="flex items-center justify-between gap-4 py-2">
       <div className="min-w-0">
@@ -132,6 +136,7 @@ function GitHubListInput({
   separator?: "\n" | ",";
   onChange: (values: string[]) => void;
 }) {
+  useFullAppsTranslation();
   const joiner = separator === "," ? ", " : "\n";
   const [text, setText] = useState(values.join(joiner));
   const parse = (value: string) =>
@@ -172,6 +177,7 @@ function GitHubPassingScore({
   onChange: (value: GitHubReviewPolicy["ratingThreshold"]) => void;
   onValidityChange?: (valid: boolean) => void;
 }) {
+  useFullAppsTranslation();
   const id = useId();
   const [localText, setLocalText] = useState(String(value ?? 5));
   const text = controlledText ?? localText;
@@ -182,7 +188,7 @@ function GitHubPassingScore({
   useEffect(() => { onValidityChange?.(valid); }, [valid, onValidityChange]);
   return (
     <div className="space-y-3 py-3">
-      <Label htmlFor={id}>Passing score</Label>
+      <Label htmlFor={id}>{fullAppsT("fullApps.passing_score_6c4400")}</Label>
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <Input id={id} type="number" min={1} max={5} step={1} required
@@ -195,26 +201,21 @@ function GitHubPassingScore({
               if (next.trim() && Number.isInteger(score) && score >= 1 && score <= 5)
                 onChange(score as 1 | 2 | 3 | 4 | 5);
             }} />
-          <span className="text-sm text-muted-foreground">out of 5</span>
+          <span className="text-sm text-muted-foreground">{fullAppsT("fullApps.out_of_5_8b923a")}</span>
         </div>
         <Label className="flex items-center gap-2 text-sm font-normal">
-          <Checkbox aria-label="Report only" checked={value === null}
-            onCheckedChange={(checked) => { setText("5"); onChange(checked === true ? null : 5); }} />
-          Report only
-        </Label>
+          <Checkbox aria-label={fullAppsT("fullApps.report_only_5d4974")} checked={value === null}
+            onCheckedChange={(checked) => { setText("5"); onChange(checked === true ? null : 5); }} />{fullAppsT("fullApps.report_only_5d4974")}</Label>
       </div>
-      {!valid && <p id={`${id}-error`} role="alert" className="text-xs text-destructive">Enter a whole number from 1 to 5.</p>}
+      {!valid && <p id={`${id}-error`} role="alert" className="text-xs text-destructive">{fullAppsT("fullApps.enter_a_whole_number_from_1_to_5_dc643e")}</p>}
       <p id={`${id}-help`} className="text-xs text-muted-foreground">
         {value === null
-          ? "Publishes a neutral check without a score requirement. GitHub can accept neutral checks for merging."
-          : "Paperclip passes the check when a complete review of the latest commit meets this score. Lower scores fail. This does not approve the PR."}
+          ? fullAppsT("fullApps.publishes_a_neutral_check_without_a_score_requiremen_4fe594")
+          : fullAppsT("fullApps.paperclip_passes_the_check_when_a_complete_review_of_48d100")}
       </p>
-      <p className="text-xs text-muted-foreground">
-        To block merging, require the <strong>Paperclip Review</strong> check from this App in your GitHub branch rules.{" "}
-        <a className="underline hover:text-foreground"
+      <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.to_block_merging_require_the_check_from_this_app_in__9661e5" components={{ part1: <strong>Paperclip Review</strong>, part2: <>{" "}</>, part3: <a className="underline hover:text-foreground"
           href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository"
-          target="_blank" rel="noreferrer">Configure on GitHub</a>
-      </p>
+          target="_blank" rel="noreferrer">{fullAppsT("fullApps.configure_on_github_106d34")}</a> }} /></p>
     </div>
   );
 }
@@ -238,6 +239,7 @@ export function GitHubPolicyEditor({
   onChange: (policy: GitHubReviewPolicy) => void;
   onValidityChange?: (valid: boolean) => void;
 }) {
+  useFullAppsTranslation();
   const id = useId();
   const automaticMode = useRef<"linked_authors" | "allowed_authors">(
     "linked_authors",
@@ -282,26 +284,19 @@ export function GitHubPolicyEditor({
         <h2
           id={`${id}-github-instructions-heading`}
           className="text-base font-semibold"
-        >
-          Instructions
-        </h2>
+        >{fullAppsT("taskProperties.fields.instructions")}</h2>
         <MarkdownEditor
           readOnly={readOnly}
-          ariaLabel="Agent instructions"
+          ariaLabel={fullAppsT("fullApps.agent_instructions_dc390e")}
           contentClassName="min-h-32"
           value={policy.instructions}
-          placeholder="What should this agent do on GitHub?"
+          placeholder={fullAppsT("fullApps.what_should_this_agent_do_on_github_37c931")}
           onChange={(value) => set("instructions", value)}
         />
-        <p className="text-xs text-muted-foreground">
-          Included in every GitHub task. Type / to select a skill for the agent
-          to use.
-        </p>
-        <GitHubSettingsDisclosure title="Event-specific instructions">
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.included_in_every_github_task_type_to_select_a_skill_5fd094")}</p>
+        <GitHubSettingsDisclosure title={fullAppsT("fullApps.event_specific_instructions_ee76af")}>
           <div className="grid gap-3 pt-3">
-            <Label htmlFor={`${id}-github-prompt-event`} className="sr-only">
-              Event
-            </Label>
+            <Label htmlFor={`${id}-github-prompt-event`} className="sr-only">{fullAppsT("runUi.provider.detail.event")}</Label>
             <select
               id={`${id}-github-prompt-event`}
               className={githubSelectClass}
@@ -313,12 +308,12 @@ export function GitHubPolicyEditor({
                   {eventLabels[event]}
                 </option>
               ))}
-              <option value="issue_opened">New issue</option>
+              <option value="issue_opened">{fullAppsT("fullApps.new_issue_3484d1")}</option>
             </select>
             <MarkdownEditor
               key={prompt}
               readOnly={readOnly}
-              ariaLabel={`${prompt === "issue_opened" ? "New issue" : eventLabels[prompt]} instructions`}
+              ariaLabel={fullAppsT("fullApps.message_539acabd571a", { value1: prompt === "issue_opened" ? fullAppsT("fullApps.caption_3484d10f01") : eventLabels[prompt] })}
               contentClassName="min-h-32"
               value={
                 prompt === "issue_opened"
@@ -334,9 +329,7 @@ export function GitHubPolicyEditor({
                     })
               }
             />
-            <p className="text-xs text-muted-foreground">
-              Added to the main instructions for this event. Type / to select a skill for the agent to use.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.added_to_the_main_instructions_for_this_event_type_t_df8dbb")}</p>
           </div>
         </GitHubSettingsDisclosure>
       </section>
@@ -347,26 +340,19 @@ export function GitHubPolicyEditor({
         <h2
           id={`${id}-github-triggers-heading`}
           className="text-base font-semibold"
-        >
-          When to run
-        </h2>
+        >{fullAppsT("fullApps.when_to_run_650e50")}</h2>
         <div className="flex items-start gap-3 py-2">
           <AtSign className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
           <div className="space-y-1">
-            <p className="text-sm font-medium">When mentioned</p>
-            <p className="text-xs text-muted-foreground">
-              Authorized people can always @mention this bot.{" "}
-              {accessHref && (
-                <Link className="underline underline-offset-4" to={accessHref}>
-                  Manage people in Access
-                </Link>
-              )}
-            </p>
+            <p className="text-sm font-medium">{fullAppsT("fullApps.when_mentioned_f232a3")}</p>
+            <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.authorized_people_can_always_mention_this_bot_1e6234" components={{ part1: <>{" "}</>, part2: <>{accessHref && (
+                <Link className="underline underline-offset-4" to={accessHref}>{fullAppsT("fullApps.manage_people_in_access_92a6fb")}</Link>
+              )}</> }} /></p>
           </div>
         </div>
         <GitHubToggle
-          label="Run automatically"
-          description="Start work without a mention when an allowed person creates an issue or updates a pull request."
+          label={fullAppsT("fullApps.run_automatically_55fb9f")}
+          description={fullAppsT("fullApps.start_work_without_a_mention_when_an_allowed_person__6da3bc")}
           checked={policy.invocation !== "mentions_only"}
           onChange={(enabled) =>
             set("invocation", enabled ? (rememberedAutomaticMode ?? automaticMode.current) : "mentions_only")
@@ -376,7 +362,7 @@ export function GitHubPolicyEditor({
           <div className="space-y-4">
             <div
               className="grid gap-x-6 gap-y-3 sm:grid-cols-2"
-              aria-label="Automatic events"
+              aria-label={fullAppsT("fullApps.automatic_events_cc4906")}
             >
               {GITHUB_REVIEW_EVENTS.slice(0, 4).map((event) => (
                 <Label
@@ -403,73 +389,66 @@ export function GitHubPolicyEditor({
                   onCheckedChange={(enabled) =>
                     set("issueOpened", enabled === true)
                   }
-                />
-                New issues
-              </Label>
+                />{fullAppsT("fullApps.new_issues_a6a0e0")}</Label>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Runs for authorized authors in Access. Use the author filters below to limit whose issues and PRs start work.
-            </p>
-            <GitHubSettingsDisclosure title="Automatic review filters">
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.runs_for_authorized_authors_in_access_use_the_author_925509")}</p>
+            <GitHubSettingsDisclosure title={fullAppsT("fullApps.automatic_review_filters_28f6dd")}>
               <div>
                 <GitHubToggle
-                  label="Include draft PRs"
+                  label={fullAppsT("fullApps.include_draft_prs_433fa0")}
                   checked={policy.reviewDrafts}
                   onChange={(value) => set("reviewDrafts", value)}
                 />
                 <GitHubToggle
-                  label="Include bot authors"
-                  description="The account also needs a sponsor and external-contributor automatic runs enabled in Access."
+                  label={fullAppsT("fullApps.include_bot_authors_1d3265")}
+                  description={fullAppsT("fullApps.the_account_also_needs_a_sponsor_and_external_contri_488929")}
                   checked={policy.reviewBotAuthors}
                   onChange={(value) => set("reviewBotAuthors", value)}
                 />
               </div>
-              <GitHubSettingsDisclosure title="Authors">
+              <GitHubSettingsDisclosure title={fullAppsT("fullApps.authors_2c00c9")}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {filterField(
                     "includeAuthors",
-                    "Included authors",
-                    "Leave empty for all authorized authors. One username or glob per line.",
+                    fullAppsT("fullApps.included_authors_9bdcd9"),
+                    fullAppsT("fullApps.leave_empty_for_all_authorized_authors_one_username__0fe87a"),
                   )}
                   {filterField(
                     "excludeAuthors",
-                    "Excluded authors",
-                    "One username or glob per line.",
+                    fullAppsT("fullApps.excluded_authors_c17489"),
+                    fullAppsT("fullApps.one_username_or_glob_per_line_474974"),
                   )}
                 </div>
               </GitHubSettingsDisclosure>
-              <GitHubSettingsDisclosure title="Branches">
+              <GitHubSettingsDisclosure title={fullAppsT("fullApps.branches_2eee03")}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {filterField(
                     "targetBranches",
-                    "Target branches",
-                    "Leave empty for all branches. Supports * and **.",
+                    fullAppsT("fullApps.target_branches_fc76f6"),
+                    fullAppsT("fullApps.leave_empty_for_all_branches_supports_and_ec44fc"),
                   )}
                   {filterField(
                     "excludedBranches",
-                    "Excluded branches",
-                    "Supports * and **.",
+                    fullAppsT("fullApps.excluded_branches_aa4b92"),
+                    fullAppsT("fullApps.supports_and_12fdca"),
                   )}
                 </div>
               </GitHubSettingsDisclosure>
-              <GitHubSettingsDisclosure title="Labels">
+              <GitHubSettingsDisclosure title={fullAppsT("issueFilters.labels")}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {filterField(
                     "requiredLabels",
-                    "Required labels",
-                    "All listed labels must be present.",
+                    fullAppsT("fullApps.required_labels_72ca62"),
+                    fullAppsT("fullApps.all_listed_labels_must_be_present_22e328"),
                   )}
                   {filterField(
                     "excludedLabels",
-                    "Excluded labels",
-                    "Any listed label prevents automatic review.",
+                    fullAppsT("fullApps.excluded_labels_2ca622"),
+                    fullAppsT("fullApps.any_listed_label_prevents_automatic_review_213371"),
                   )}
                 </div>
               </GitHubSettingsDisclosure>
-              <p className="text-xs text-muted-foreground">
-                Reviews requested by @mention bypass these scheduling filters.
-                Repository access and ignored files still apply.
-              </p>
+              <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.reviews_requested_by_mention_bypass_these_scheduling_bae1a3")}</p>
             </GitHubSettingsDisclosure>
           </div>
         )}
@@ -481,17 +460,15 @@ export function GitHubPolicyEditor({
         <h2
           id={`${id}-github-results-heading`}
           className="text-base font-semibold"
-        >
-          Review results
-        </h2>
+        >{fullAppsT("fullApps.review_results_0bf454")}</h2>
         <div className="grid gap-x-8 sm:grid-cols-2">
           <GitHubToggle
-            label="Post a review summary"
+            label={fullAppsT("fullApps.post_a_review_summary_e98a8d")}
             checked={policy.publishSummary}
             onChange={(value) => set("publishSummary", value)}
           />
           <GitHubToggle
-            label="Post inline findings"
+            label={fullAppsT("fullApps.post_inline_findings_b279f1")}
             checked={policy.publishInline}
             onChange={(value) => set("publishInline", value)}
           />
@@ -500,19 +477,17 @@ export function GitHubPolicyEditor({
           onChange={(value) => set("ratingThreshold", value)} onValidityChange={onValidityChange} />
       </section>
       <div className="divide-y divide-border">
-        <GitHubSettingsDisclosure title="Ignored files">
+        <GitHubSettingsDisclosure title={fullAppsT("fullApps.ignored_files_0384b2")}>
           {filterField(
             "ignoredPaths",
-            "File patterns",
-            "Excluded from all reviews, including @mentions. One pattern per line; supports * and **.",
+            fullAppsT("fullApps.file_patterns_0245e0"),
+            fullAppsT("fullApps.excluded_from_all_reviews_including_mentions_one_pat_c8eb40"),
           )}
         </GitHubSettingsDisclosure>
-        <GitHubSettingsDisclosure title="Inline comment options">
+        <GitHubSettingsDisclosure title={fullAppsT("fullApps.inline_comment_options_1caeb6")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor={`${id}-github-categories`}>
-                Finding categories
-              </Label>
+              <Label htmlFor={`${id}-github-categories`}>{fullAppsT("fullApps.finding_categories_6f31e9")}</Label>
               <GitHubListInput
                 id={`${id}-github-categories`}
                 values={policy.findingCategories}
@@ -521,9 +496,7 @@ export function GitHubPolicyEditor({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor={`${id}-github-severity`}>
-                Minimum inline severity
-              </Label>
+              <Label htmlFor={`${id}-github-severity`}>{fullAppsT("fullApps.minimum_inline_severity_3680d1")}</Label>
               <select
                 id={`${id}-github-severity`}
                 className={githubSelectClass}
@@ -536,31 +509,26 @@ export function GitHubPolicyEditor({
                   )
                 }
               >
-                <option value="info">Info</option>
-                <option value="warning">Warning</option>
-                <option value="error">Error</option>
+                <option value="info">{fullAppsT("fullApps.info_170322")}</option>
+                <option value="warning">{fullAppsT("runUi.protocol.warning")}</option>
+                <option value="error">{fullAppsT("fullApps.error_54a0e8")}</option>
               </select>
-              <p className="text-xs text-muted-foreground">
-                Hidden findings still count in the assessment.
-              </p>
+              <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.hidden_findings_still_count_in_the_assessment_9ae76c")}</p>
             </div>
           </div>
         </GitHubSettingsDisclosure>
-        <GitHubSettingsDisclosure title="Approvals and change requests">
-          <p className="text-xs text-muted-foreground">
-            Optional formal decisions on GitHub. Scores, comments, and checks
-            still work when these are off.
-          </p>
+        <GitHubSettingsDisclosure title={fullAppsT("fullApps.approvals_and_change_requests_c107ba")}>
+          <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.optional_formal_decisions_on_github_scores_comments__9b065b")}</p>
           <div>
             <GitHubToggle
-              label="Allow approvals"
-              help="Lets the agent submit an Approve review on GitHub after a complete assessment. The agent must explicitly choose it; a 5/5 score or passing check does not approve the PR. Off still allows scores, comments, and checks."
+              label={fullAppsT("fullApps.allow_approvals_95e18e")}
+              help={fullAppsT("fullApps.lets_the_agent_submit_an_approve_review_on_github_af_2befcb")}
               checked={policy.allowApprove}
               onChange={(value) => set("allowApprove", value)}
             />
             <GitHubToggle
-              label="Allow request changes"
-              help="Lets the agent submit a Request changes review on GitHub after a complete assessment. This is a formal review decision and may prevent merging under your repository rules. Off still allows findings, comments, and a failing check."
+              label={fullAppsT("fullApps.allow_request_changes_dd7b04")}
+              help={fullAppsT("fullApps.lets_the_agent_submit_a_request_changes_review_on_gi_66111e")}
               checked={policy.allowRequestChanges}
               onChange={(value) => set("allowRequestChanges", value)}
             />
@@ -582,6 +550,7 @@ export function GitHubAccessEditor({
   configuration: GitHubChatConfiguration;
   onChange: (configuration: GitHubChatConfiguration) => void;
 }) {
+  useFullAppsTranslation();
   const company = useOptionalCompany()?.companies.find((item) => item.id === companyId);
   const accountLink = useRef<HTMLAnchorElement>(null);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -600,8 +569,8 @@ export function GitHubAccessEditor({
     githubUserId: string;
     login: string;
   } | null>(null);
-  const [error, setError] = useState("");
-  const [lookupError, setLookupError] = useState("");
+  const [error, setError] = useState<AppDisplayText | null>("");
+  const [lookupError, setLookupError] = useState<AppDisplayText | null>("");
   const [busy, setBusy] = useState(false);
   const activeMembers = (members.data?.members ?? []).filter(
     (member) =>
@@ -667,7 +636,7 @@ export function GitHubAccessEditor({
       await links.refetch();
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Could not unlink this account.",
+        e instanceof Error ? appErrorDisplay(e) : ownAppDisplayText("fullApps.could_not_unlink_this_account_445e5a"),
       );
     } finally {
       setBusy(false);
@@ -697,32 +666,30 @@ export function GitHubAccessEditor({
               <p className="break-words text-sm font-medium">@{person.login}</p>
               <p className="text-xs text-muted-foreground">
                 {person.kind === "guest"
-                  ? `Sponsored by ${memberName(person.sponsorUserId)}`
-                  : (identity?.paperclipUserLabel ?? "Company member")}
+                  ? fullAppsT("fullApps.sponsored_by_e2be39", { value1: memberName(person.sponsorUserId) })
+                  : (identity?.paperclipUserLabel ?? fullAppsT("fullApps.company_member_a0b293"))}
               </p>
               {!linked && (
-                <p className="mt-1 text-xs text-destructive">
-                  GitHub account needs linking.
-                </p>
+                <p className="mt-1 text-xs text-destructive">{fullAppsT("fullApps.github_account_needs_linking_441afd")}</p>
               )}
             </div>
             <div className="flex items-center gap-5">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-xs text-muted-foreground">Mentions</span>
+                <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.mentions_6f32e6")}</span>
                 {person.kind === "guest" ||
                 configuration.memberAccess === "all_linked" ? (
                   <span
                     className="flex h-5 items-center gap-1 text-xs"
-                    aria-label={`Mentions ${linked ? "allowed" : "unavailable"} for @${person.login}`}
+                    aria-label={fullAppsT("fullApps.mentions_for_b665bc", { value1: linked ? "allowed" : "unavailable", value2: person.login })}
                   >
                     {linked && (
                       <Check className="size-3.5 text-muted-foreground" />
                     )}
-                    {linked ? "Allowed" : "Unlinked"}
+                    {linked ? fullAppsT("fullApps.allowed_1bb201") : fullAppsT("fullApps.unlinked_1e690b")}
                   </span>
                 ) : (
                   <ToggleSwitch
-                    aria-label={`Allow mentions from @${person.login}`}
+                    aria-label={fullAppsT("fullApps.allow_mentions_from_f85e99", { value1: person.login })}
                     checked={mentions}
                     disabled={!linked}
                     onCheckedChange={(enabled) =>
@@ -736,24 +703,20 @@ export function GitHubAccessEditor({
                   <Button
                     size="icon"
                     variant="ghost"
-                    aria-label={`Manage @${person.login}`}
+                    aria-label={fullAppsT("fullApps.manage_4b15c9", { value1: person.login })}
                   >
                     <MoreHorizontal className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {removable && (
-                    <DropdownMenuItem onClick={() => removePerson(person)}>
-                      Remove access
-                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => removePerson(person)}>{fullAppsT("fullApps.remove_access_bb349b")}</DropdownMenuItem>
                   )}
                   {identity && (
                     <DropdownMenuItem
                       disabled={busy}
                       onClick={() => void unlink(identity.principalId)}
-                    >
-                      Unlink GitHub account
-                    </DropdownMenuItem>
+                    >{fullAppsT("fullApps.unlink_github_account_2e1ae0")}</DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>}
@@ -764,17 +727,14 @@ export function GitHubAccessEditor({
     </div>
   );
   return (
-    <section className="space-y-6" aria-label="People">
+    <section className="space-y-6" aria-label={fullAppsT("taskProperties.share.people")}>
       <div className="space-y-1">
-        <h2 className="text-base font-semibold">People</h2>
-        <p className="text-sm text-muted-foreground">
-          Choose who can mention this bot and whose activity can start work
-          automatically.
-        </p>
+        <h2 className="text-base font-semibold">{fullAppsT("taskProperties.share.people")}</h2>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.choose_who_can_mention_this_bot_and_whose_activity_c_42e101")}</p>
       </div>
-      <section className="space-y-2" aria-label="Company members">
+      <section className="space-y-2" aria-label={fullAppsT("fullApps.company_members_630613")}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold">Company members</h3>
+          <h3 className="text-sm font-semibold">{fullAppsT("fullApps.company_members_630613")}</h3>
           <Button
             variant="outline"
             size="sm"
@@ -784,16 +744,14 @@ export function GitHubAccessEditor({
               setError("");
             }}
           >
-            <Plus className="size-4" />
-            Link a member
-          </Button>
+            <Plus className="size-4" />{fullAppsT("fullApps.link_a_member_b5c8d1")}</Button>
         </div>
         <GitHubToggle
-          label="Allow mentions from all linked members"
+          label={fullAppsT("fullApps.allow_mentions_from_all_linked_members_d89b20")}
           description={
             configuration.memberAccess === "all_linked"
-              ? `Includes members from ${company?.name ?? "this company"} who link their GitHub account later.`
-              : "Only members you enable below can mention this bot."
+              ? fullAppsT("fullApps.includes_members_from_who_link_their_github_account__5ed45e", { value1: company?.name ?? fullAppsT("fullApps.copy_2a63de74eed7") })
+              : fullAppsT("fullApps.only_members_you_enable_below_can_mention_this_bot_606a19")
           }
           checked={configuration.memberAccess === "all_linked"}
           onChange={(enabled) =>
@@ -805,47 +763,35 @@ export function GitHubAccessEditor({
         />
         {peopleRows(memberRows)}
         {links.isPending && (
-          <p role="status" className="py-4 text-sm text-muted-foreground">
-            Loading linked accounts…
-          </p>
+          <p role="status" className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.loading_linked_accounts_851574")}</p>
         )}
         {!links.isPending && !links.isError && memberRows.length === 0 && (
-          <p className="py-4 text-sm text-muted-foreground">
-            No members linked yet. Link an account to get started.
-          </p>
+          <p className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_members_linked_yet_link_an_account_to_get_started_27d267")}</p>
         )}
         <p className="text-xs text-muted-foreground">
           {automatic ? (
-            <>
-              Automatic runs use the events and author filters in{" "}
+            <>{fullAppsT("fullApps.automatic_runs_use_the_events_and_author_filters_in_892655")}{" "}
               <Link
                 className="underline underline-offset-4"
                 to={`/apps/chat/${endpointId}/settings`}
-              >
-                Settings
-              </Link>
+              >{fullAppsT("companySwitcher.settings")}</Link>
               .
             </>
           ) : (
-            <>
-              Automatic runs are off in{" "}
+            <>{fullAppsT("fullApps.automatic_runs_are_off_in_9106d5")}{" "}
               <Link
                 className="underline underline-offset-4"
                 to={`/apps/chat/${endpointId}/settings`}
-              >
-                Settings
-              </Link>
-              . Authorized @mentions still work.
-            </>
+              >{fullAppsT("companySwitcher.settings")}</Link>{fullAppsT("fullApps.authorized_mentions_still_work_2ad622")}</>
           )}
         </p>
       </section>
       <section
         className="space-y-2 border-t border-border pt-6"
-        aria-label="External contributors"
+        aria-label={fullAppsT("fullApps.external_contributors_7697aa")}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold">External contributors</h3>
+          <h3 className="text-sm font-semibold">{fullAppsT("fullApps.external_contributors_7697aa")}</h3>
           <Button
             variant="outline"
             size="sm"
@@ -854,23 +800,17 @@ export function GitHubAccessEditor({
               setLookupError("");
             }}
           >
-            <Plus className="size-4" />
-            Add external contributor
-          </Button>
+            <Plus className="size-4" />{fullAppsT("fullApps.add_external_contributor_855674")}</Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Allow specific GitHub users with a member as their sponsor. They
-          receive restricted access, without company membership or the sponsor’s
-          personal credentials.
-        </p>
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.allow_specific_github_users_with_a_member_as_their_s_296b5f")}</p>
         {peopleRows(guests)}
         {guests.length > 0 && (
           <GitHubToggle
-            label="Allow automatic runs for external contributors"
+            label={fullAppsT("fullApps.allow_automatic_runs_for_external_contributors_9c5e69")}
             description={
               automatic
-                ? "Authorized contributors can trigger the events and author filters configured in Settings."
-                : "Turn on automatic runs in Settings first. Mentions remain available."
+                ? fullAppsT("fullApps.authorized_contributors_can_trigger_the_events_and_a_241b15")
+                : fullAppsT("fullApps.turn_on_automatic_runs_in_settings_first_mentions_re_b3e410")
             }
             checked={guestsAutomatic}
             disabled={!automatic}
@@ -886,15 +826,13 @@ export function GitHubAccessEditor({
           />
         )}
       </section>
-      <GitHubSettingsDisclosure title="Automatic task responsibility">
+      <GitHubSettingsDisclosure title={fullAppsT("fullApps.automatic_task_responsibility_619eaf")}>
         <div className="space-y-2">
           {activeMembers.length === 1 && responsible ? (
-            <p className="text-sm">
-              Responsible member: {memberName(configuration.responsibleUserId)}
-            </p>
+            <p className="text-sm"><FullAppsTrans i18nKey="fullApps.responsible_member_a88be8" components={{ part1: <>{memberName(configuration.responsibleUserId)}</> }} /></p>
           ) : (
             <>
-              <Label htmlFor="github-responsible">Responsible member</Label>
+              <Label htmlFor="github-responsible">{fullAppsT("fullApps.responsible_member_b61ca7")}</Label>
               <select
                 id="github-responsible"
                 className={githubSelectClass}
@@ -908,7 +846,7 @@ export function GitHubAccessEditor({
               >
                 {!responsible && (
                   <option value={configuration.responsibleUserId}>
-                    {configuration.responsibleUserId || "Select a member"}
+                    {configuration.responsibleUserId || fullAppsT("fullApps.select_a_member_185e2c")}
                   </option>
                 )}
                 {activeMembers.map((member) => (
@@ -921,23 +859,17 @@ export function GitHubAccessEditor({
               </select>
             </>
           )}
-          <p className="text-xs text-muted-foreground">
-            The member accountable for automatically created Paperclip tasks.
-            GitHub authors remain recorded separately. This grants no access to
-            the member’s personal credentials.
-          </p>
+          <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.the_member_accountable_for_automatically_created_pap_18b431")}</p>
         </div>
       </GitHubSettingsDisclosure>
       {error && (
         <p role="alert" className="text-sm text-destructive">
-          {error}
+          {renderAppDisplayText(error)}
         </p>
       )}
       {(members.error || links.error) && (
         <div className="flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-sm text-destructive">
-            Could not load members or linked accounts.
-          </p>
+          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_members_or_linked_accounts_a7ea33")}</p>
           <Button
             variant="link"
             size="sm"
@@ -945,9 +877,7 @@ export function GitHubAccessEditor({
               void members.refetch();
               void links.refetch();
             }}
-          >
-            Try again
-          </Button>
+          >{fullAppsT("fullApps.try_again_d8b839")}</Button>
         </div>
       )}
       <Dialog
@@ -960,51 +890,49 @@ export function GitHubAccessEditor({
           <DialogHeader>
             <DialogTitle>
               {dialog === "member"
-                ? "Link a company member"
-                : "Add external contributor"}
+                ? fullAppsT("fullApps.link_a_company_member_07f42f")
+                : fullAppsT("fullApps.add_external_contributor_855674")}
             </DialogTitle>
             <DialogDescription>
               {dialog === "member"
-                ? "Each member confirms their own GitHub identity. Share this link with an existing company member, or link your own account."
-                : "Allow a GitHub user to mention this bot. A company member must sponsor their restricted access."}
+                ? fullAppsT("fullApps.each_member_confirms_their_own_github_identity_share_76883b")
+                : fullAppsT("fullApps.allow_a_github_user_to_mention_this_bot_a_company_me_cea354")}
             </DialogDescription>
           </DialogHeader>
           {dialog === "member" ? (
             <>
               <Button
                 variant="outline"
-                aria-label="Copy account linking URL"
+                aria-label={fullAppsT("fullApps.copy_account_linking_url_948db1")}
                 onClick={() => {
                   if (accountLink.current)
                     void copyTextToClipboard(accountLink.current.href).then(
                       () => setLinkCopied(true),
                       () =>
                         setError(
-                          "Could not copy the link. Open account linking and copy the address.",
+                          ownAppDisplayText("fullApps.could_not_copy_the_link_open_account_linking_and_cop_e3f2cb"),
                         ),
                     );
                 }}
               >
                 <Copy className="size-4" />
-                {linkCopied ? "Copied" : "Copy invitation link"}
+                {linkCopied ? fullAppsT("taskPanels.preview.copied") : fullAppsT("fullApps.copy_invitation_link_641dce")}
               </Button>
               <Link
                 ref={accountLink}
                 to={`/apps/chat/connect?provider=github&resume=${endpointId}&stage=identity`}
                 className="text-sm underline underline-offset-4"
-              >
-                Link your account
-              </Link>
+              >{fullAppsT("fullApps.link_your_account_645783")}</Link>
               {error && (
                 <p role="alert" className="text-sm text-destructive">
-                  {error}
+                  {renderAppDisplayText(error)}
                 </p>
               )}
             </>
           ) : (
             <>
               <div className="space-y-2">
-                <Label htmlFor="github-guest-login">GitHub username</Label>
+                <Label htmlFor="github-guest-login">{fullAppsT("fullApps.github_username_64477e")}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="github-guest-login"
@@ -1030,19 +958,19 @@ export function GitHubAccessEditor({
                         );
                       } catch (e) {
                         setLookupError(
-                          e instanceof Error ? e.message : "Lookup failed",
+                          e instanceof Error ? appErrorDisplay(e) : ownAppDisplayText("fullApps.lookup_failed_a8a25e"),
                         );
                       } finally {
                         setBusy(false);
                       }
                     }}
                   >
-                    {busy ? "Looking up…" : "Look up"}
+                    {busy ? fullAppsT("fullApps.looking_up_a84f10") : fullAppsT("fullApps.look_up_504101")}
                   </Button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="github-guest-sponsor">Sponsor</Label>
+                <Label htmlFor="github-guest-sponsor">{fullAppsT("fullApps.sponsor_fd6e87")}</Label>
                 <select
                   id="github-guest-sponsor"
                   className={githubSelectClass}
@@ -1051,7 +979,7 @@ export function GitHubAccessEditor({
                 >
                   {!activeMembers.some(
                     (member) => member.principalId === sponsor,
-                  ) && <option value={sponsor}>Select a member</option>}
+                  ) && <option value={sponsor}>{fullAppsT("fullApps.select_a_member_185e2c")}</option>}
                   {activeMembers.map((member) => (
                     <option key={member.principalId} value={member.principalId}>
                       {member.user?.name ?? member.principalId}
@@ -1067,19 +995,17 @@ export function GitHubAccessEditor({
                   linkedAccounts.some(
                     (link) => link.githubUserId === candidate.githubUserId,
                   )
-                    ? `@${candidate.login} is already listed in People.`
-                    : `Found @${candidate.login}. They will be able to mention the bot after you save.`}
+                    ? fullAppsT("fullApps.is_already_listed_in_people_8aaaa1", { value1: candidate.login })
+                    : fullAppsT("fullApps.found_they_will_be_able_to_mention_the_bot_after_you_1a3ab3", { value1: candidate.login })}
                 </p>
               )}
               {lookupError && (
                 <p role="alert" className="text-sm text-destructive">
-                  {lookupError}
+                  {renderAppDisplayText(lookupError)}
                 </p>
               )}
               <DialogFooter className="flex-row justify-between sm:justify-between">
-                <Button variant="ghost" onClick={() => setDialog(null)}>
-                  Cancel
-                </Button>
+                <Button variant="ghost" onClick={() => setDialog(null)}>{fullAppsT("fullApps.cancel_19766e")}</Button>
                 <Button
                   disabled={
                     !candidate ||
@@ -1106,9 +1032,7 @@ export function GitHubAccessEditor({
                       setLogin("");
                     }
                   }}
-                >
-                  Add contributor
-                </Button>
+                >{fullAppsT("fullApps.add_contributor_59d72a")}</Button>
               </DialogFooter>
             </>
           )}

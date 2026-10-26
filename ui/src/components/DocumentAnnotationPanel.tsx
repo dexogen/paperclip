@@ -1,3 +1,5 @@
+import { t as fullSharedTailT, i18n as fullSharedTailI18n, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
+import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AgentAvatar } from "./AgentAvatar";
 import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import type {
@@ -65,6 +67,8 @@ export interface AnnotationPanelProps {
 }
 
 export function DocumentAnnotationPanel(props: AnnotationPanelProps) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   if (props.isMobile) {
     return (
       <Sheet open={props.open} onOpenChange={props.onOpenChange}>
@@ -73,9 +77,7 @@ export function DocumentAnnotationPanel(props: AnnotationPanelProps) {
           showCloseButton={false}
           className="paperclip-doc-annotation-sheet z-(--z-60) flex max-h-(--sz-88vh) flex-col rounded-none border-t border-border bg-popover p-0 text-popover-foreground shadow-2xl"
         >
-          <SheetTitle className="sr-only">
-            Comments on {props.documentKey} revision {props.documentRevisionNumber}
-          </SheetTitle>
+          <SheetTitle className="sr-only"><FullSharedTrans i18nKey="fullShared.comments_on_revision_70b631" components={{ part1: <>{props.documentKey}</>, part2: <>{props.documentRevisionNumber}</> }} /></SheetTitle>
           <div className="mx-auto mt-2 h-1.5 w-12 shrink-0 rounded-full bg-muted-foreground/30" aria-hidden="true" />
           <AnnotationPanelBody {...props} />
         </SheetContent>
@@ -88,7 +90,7 @@ export function DocumentAnnotationPanel(props: AnnotationPanelProps) {
   return (
     <aside
       role="complementary"
-      aria-label={`Annotations for ${props.documentKey.toUpperCase()}, revision ${props.documentRevisionNumber}`}
+      aria-label={fullSharedT("fullShared.annotations_for_revision_82e9e1", { value1: props.documentKey.toUpperCase(), value2: props.documentRevisionNumber })}
       data-testid="document-annotation-panel"
       className={cn(
         "isolate flex h-full max-h-(--sz-80vh) shrink-0 flex-col overflow-hidden rounded-none border border-border bg-popover text-popover-foreground shadow-xl",
@@ -103,6 +105,8 @@ export function DocumentAnnotationPanel(props: AnnotationPanelProps) {
 }
 
 export function AnnotationPanelBody(props: AnnotationPanelProps) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const copyAnnotationLink = useCopyAnnotationLink();
   const [composerValue, setComposerValue] = useState("");
   const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
@@ -112,7 +116,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
     if (props.target) return props.target;
     if (!props.issueId) throw new Error("Document annotation panel requires an annotation target.");
     return { kind: "issue", issueId: props.issueId, documentKey: props.documentKey };
-  }, [props.documentKey, props.issueId, props.target]);
+  }, [fullSharedTailI18n.language, fullSharedI18n.language, props.documentKey, props.issueId, props.target]);
 
   const { createThread, addReply, updateStatus, mutationError, currentUser } = useDocumentAnnotationMutations({
     target: annotationTarget,
@@ -139,7 +143,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
           (a.normalizedStart - b.normalizedStart)
           || (a.markdownStart - b.markdownStart)
           || (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())),
-    [props.threads],
+    [fullSharedTailI18n.language, fullSharedI18n.language, props.threads],
   );
 
 
@@ -177,9 +181,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
         data-testid={bodyTestId}
         className="flex items-center justify-end gap-1 border-b border-border bg-popover px-2 py-1.5"
       >
-        <span className="text-(length:--text-micro) tabular-nums text-muted-foreground">
-          rev {props.documentRevisionNumber}
-        </span>
+        <span className="text-(length:--text-micro) tabular-nums text-muted-foreground"><FullSharedTailTrans i18nKey="fullSharedTail.rev_136630" components={{ part1: <>{props.documentRevisionNumber}</> }} /></span>
         <Button
           type="button"
           size="icon-xs"
@@ -189,7 +191,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
             props.onFocusThread(null);
             props.onOpenChange(false);
           }}
-          aria-label="Close annotation panel"
+          aria-label={fullSharedT("fullShared.close_annotation_panel_f3bbe7")}
         >
           <X className="h-4 w-4" />
         </Button>
@@ -279,7 +281,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
                 }
               }
             }}
-            placeholder="Write a comment…"
+            placeholder={fullSharedT("fullShared.write_a_comment_d21c3e")}
             disabled={props.newCommentDisabled}
             className="resize-y rounded-none text-sm"
           />
@@ -292,9 +294,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
                 props.onClearPendingAnchor();
                 setComposerValue("");
               }}
-            >
-              Cancel
-            </Button>
+            >{fullSharedT("fullShared.cancel_19766e")}</Button>
             <Button
               type="button"
               size="sm"
@@ -306,7 +306,7 @@ export function AnnotationPanelBody(props: AnnotationPanelProps) {
               }
               onClick={() => createThread.mutate(composerValue.trim())}
             >
-              {createThread.isPending ? "Posting…" : "Comment"}
+              {createThread.isPending ? fullSharedT("approvalsUi.posting") : fullSharedT("searchUi.result.comment")}
             </Button>
           </div>
         </div>
@@ -330,6 +330,8 @@ export function ThreadCard(props: {
   agentMap?: ReadonlyMap<string, Pick<Agent, "id" | "name"> & Partial<Pick<Agent, "icon" | "appearance">>>;
   userProfileMap?: ReadonlyMap<string, CompanyUserProfile>;
 }) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const { thread } = props;
   const latestComment = thread.comments[thread.comments.length - 1];
 
@@ -383,7 +385,7 @@ export function ThreadCard(props: {
                   }
                 }
               }}
-              placeholder="Reply…"
+              placeholder={fullSharedT("fullShared.reply_1d627a")}
               className="resize-y rounded-none text-sm"
               disabled={props.pendingReply}
             />
@@ -398,12 +400,10 @@ export function ThreadCard(props: {
               >
                 {thread.status === "resolved" ? (
                   <>
-                    <RotateCcw className="h-3 w-3" /> Reopen
-                  </>
+                    <RotateCcw className="h-3 w-3" />{fullSharedT("fullShared.reopen_a886d1")}</>
                 ) : (
                   <>
-                    <Check className="h-3 w-3" /> Resolve
-                  </>
+                    <Check className="h-3 w-3" />{fullSharedT("decisionsUi.feed.verb.resolve")}</>
                 )}
               </Button>
               <Button
@@ -412,7 +412,7 @@ export function ThreadCard(props: {
                 disabled={!props.replyDraft.trim() || props.pendingReply}
                 onClick={props.onSubmitReply}
               >
-                {props.pendingReply ? "Sending…" : "Reply"}
+                {props.pendingReply ? fullSharedT("fullShared.sending_b8ed52") : fullSharedT("taskChatUi.classic.reply")}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -421,8 +421,8 @@ export function ThreadCard(props: {
                     variant="ghost"
                     size="icon-xs"
                     className="text-muted-foreground"
-                    title="More actions"
-                    aria-label="More thread actions"
+                    title={fullSharedT("taskDetail.copy.moreActions")}
+                    aria-label={fullSharedT("fullShared.more_thread_actions_a96a17")}
                   >
                     <MoreHorizontal className="h-3.5 w-3.5" />
                   </Button>
@@ -434,9 +434,7 @@ export function ThreadCard(props: {
                       props.onCopyLink();
                     }}
                   >
-                    <Copy className="h-3.5 w-3.5" />
-                    Copy link
-                  </DropdownMenuItem>
+                    <Copy className="h-3.5 w-3.5" />{fullSharedT("fullShared.copy_link_dbf362")}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -444,7 +442,7 @@ export function ThreadCard(props: {
         ) : (
           <p className="px-3 py-2 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
-              {thread.comments.length} comment{thread.comments.length === 1 ? "" : "s"}
+              {fullSharedTailT("fullSharedTail.comments", { count: thread.comments.length })}
             </span>
             {latestComment ? <span className="ml-1">· {truncate(latestComment.body, 120)}</span> : null}
           </p>
@@ -465,6 +463,8 @@ function CommentRow({
   agentMap?: ReadonlyMap<string, Pick<Agent, "id" | "name"> & Partial<Pick<Agent, "icon" | "appearance">>>;
   userProfileMap?: ReadonlyMap<string, CompanyUserProfile>;
 }) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const author = resolveAuthor(comment, { agentMap, userProfileMap });
   return (
     <div
@@ -484,7 +484,7 @@ function CommentRow({
           </Avatar>)}
           <span className="truncate font-medium text-foreground">{author.name}</span>
           {author.role === "agent" ? (
-            <span className="text-muted-foreground">· agent</span>
+            <span className="text-muted-foreground">{fullSharedT("fullShared.agent_b5c454")}</span>
           ) : null}
         </span>
         <span className="shrink-0 text-muted-foreground">{relativeTime(comment.createdAt)}</span>
@@ -546,6 +546,6 @@ export function useCopyAnnotationLink() {
       const hash = `#document-${encodeURIComponent(documentKey)}&thread=${encodeURIComponent(threadId)}`;
       void copyWithToast(`${window.location.origin}${pathname}${hash}`, "Link copied");
     },
-    [copyWithToast],
+    [fullSharedTailI18n.language, fullSharedI18n.language, copyWithToast],
   );
 }

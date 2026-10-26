@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { quotaUnavailableMessage } from "@/lib/quota-refresh";
 import type { QuotaWindow } from "@paperclipai/shared";
 import { cn, quotaSourceDisplayName } from "@/lib/utils";
@@ -58,6 +59,7 @@ export function CodexSubscriptionPanel({
   source = null,
   error = null,
 }: CodexSubscriptionPanelProps) {
+  useFullSharedTranslation();
   const ordered = orderedWindows(windows);
   const accountWindows = ordered.filter((window) => !isModelSpecific(window.label));
   const modelWindows = ordered.filter((window) => isModelSpecific(window.label));
@@ -66,12 +68,8 @@ export function CodexSubscriptionPanel({
     <div className="border border-border px-4 py-4">
       <div className="flex items-start justify-between gap-3 border-b border-border pb-3">
         <div className="min-w-0">
-          <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-            Codex subscription
-          </div>
-          <div className="mt-1 text-sm text-muted-foreground">
-            Quota from the Codex subscription connected to this server.
-          </div>
+          <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">{fullSharedT("fullShared.codex_subscription_3e08a5")}</div>
+          <div className="mt-1 text-sm text-muted-foreground">{fullSharedT("fullShared.quota_from_the_codex_subscription_connected_to_this__cdc16c")}</div>
         </div>
         {source ? (
           <span className="shrink-0 border border-border px-2.5 py-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
@@ -88,9 +86,7 @@ export function CodexSubscriptionPanel({
 
       <div className="mt-4 space-y-5">
         <div className="space-y-3">
-          <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-            Account windows
-          </div>
+          <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">{fullSharedT("fullShared.account_windows_17b840")}</div>
           <div className="space-y-3">
             {accountWindows.map((window) => (
               <QuotaWindowRow key={window.label} window={window} />
@@ -100,9 +96,7 @@ export function CodexSubscriptionPanel({
 
         {modelWindows.length > 0 ? (
           <div className="space-y-3">
-            <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">
-              Model windows
-            </div>
+            <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-caps) text-muted-foreground">{fullSharedT("fullShared.model_windows_e830a4")}</div>
             <div className="space-y-3">
               {modelWindows.map((window) => (
                 <QuotaWindowRow key={window.label} window={window} />
@@ -116,6 +110,7 @@ export function CodexSubscriptionPanel({
 }
 
 function QuotaWindowRow({ window }: { window: QuotaWindow }) {
+  useFullSharedTranslation();
   const detail = detailText(window);
   if (window.usedPercent == null) {
     return (
@@ -142,9 +137,7 @@ function QuotaWindowRow({ window }: { window: QuotaWindow }) {
             <div className="mt-1 text-xs text-muted-foreground">{detail}</div>
           ) : null}
         </div>
-        <div className="shrink-0 text-sm font-semibold tabular-nums text-foreground">
-          {window.usedPercent}% used
-        </div>
+        <div className="shrink-0 text-sm font-semibold tabular-nums text-foreground"><FullSharedTrans i18nKey="fullShared.used_cae0c7" components={{ part1: <>{window.usedPercent}</> }} /></div>
       </div>
 
       <div className="mt-3 h-2 overflow-hidden bg-muted">

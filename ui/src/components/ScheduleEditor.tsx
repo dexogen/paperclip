@@ -1,3 +1,4 @@
+import { i18n, useTranslation } from "@/i18n";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,18 +8,22 @@ import { nextCronFires, parseCronExpression } from "../lib/cron-fires";
 export type SchedulePreset = "every_minute" | "every_hour" | "every_day" | "weekdays" | "weekly" | "monthly" | "custom";
 
 const PRESETS: { value: SchedulePreset; label: string }[] = [
-  { value: "every_minute", label: "Every minute" },
-  { value: "every_hour", label: "Every hour" },
-  { value: "every_day", label: "Every day" },
-  { value: "weekdays", label: "Weekdays" },
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
-  { value: "custom", label: "Custom (cron)" },
+  { value: "every_minute", get label() { return i18n.t("fullRoutinesSecrets.everyMinute"); } },
+  { value: "every_hour", get label() { return i18n.t("fullRoutinesSecrets.everyHour"); } },
+  { value: "every_day", get label() { return i18n.t("fullRoutinesSecrets.everyDay"); } },
+  { value: "weekdays", get label() { return i18n.t("fullRoutinesSecrets.weekdays"); } },
+  { value: "weekly", get label() { return i18n.t("fullRoutinesSecrets.weekly"); } },
+  { value: "monthly", get label() { return i18n.t("fullRoutinesSecrets.monthly"); } },
+  { value: "custom", get label() { return i18n.t("fullRoutinesSecrets.customCron"); } },
 ];
 
 const HOURS = Array.from({ length: 24 }, (_, i) => ({
   value: String(i),
-  label: i === 0 ? "12 AM" : i < 12 ? `${i} AM` : i === 12 ? "12 PM" : `${i - 12} PM`,
+  get label() {
+    return i18n.resolvedLanguage?.startsWith("ru")
+      ? String(i).padStart(2, "0")
+      : i === 0 ? "12 AM" : i < 12 ? `${i} AM` : i === 12 ? "12 PM" : `${i - 12} PM`;
+  },
 }));
 
 const MINUTES = Array.from({ length: 12 }, (_, i) => ({
@@ -27,13 +32,13 @@ const MINUTES = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 const DAYS_OF_WEEK = [
-  { value: "1", label: "Mon" },
-  { value: "2", label: "Tue" },
-  { value: "3", label: "Wed" },
-  { value: "4", label: "Thu" },
-  { value: "5", label: "Fri" },
-  { value: "6", label: "Sat" },
-  { value: "0", label: "Sun" },
+  { value: "1", get label() { return i18n.t("fullRoutinesSecrets.mon"); } },
+  { value: "2", get label() { return i18n.t("fullRoutinesSecrets.tue"); } },
+  { value: "3", get label() { return i18n.t("fullRoutinesSecrets.wed"); } },
+  { value: "4", get label() { return i18n.t("fullRoutinesSecrets.thu"); } },
+  { value: "5", get label() { return i18n.t("fullRoutinesSecrets.fri"); } },
+  { value: "6", get label() { return i18n.t("fullRoutinesSecrets.sat"); } },
+  { value: "0", get label() { return i18n.t("fullRoutinesSecrets.sun"); } },
 ];
 
 const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, i) => ({
@@ -126,21 +131,21 @@ function describeSchedule(cron: string): string {
 
   switch (preset) {
     case "every_minute":
-      return "Every minute";
+      return i18n.t("fullRoutinesSecrets.everyMinute");
     case "every_hour":
-      return `Every hour at :${minute.padStart(2, "0")}`;
+      return i18n.t("fullRoutinesSecrets.everyHourAt", { "value1": minute.padStart(2, "0") });
     case "every_day":
-      return `Every day at ${timeStr}`;
+      return i18n.t("fullRoutinesSecrets.everyDayAt", { "timeStr": timeStr });
     case "weekdays":
-      return `Weekdays at ${timeStr}`;
+      return i18n.t("fullRoutinesSecrets.weekdaysAt", { "timeStr": timeStr });
     case "weekly": {
       const day = DAYS_OF_WEEK.find((d) => d.value === dayOfWeek)?.label ?? dayOfWeek;
-      return `Every ${day} at ${timeStr}`;
+      return i18n.t("fullRoutinesSecrets.everyAt", { "day": day, "timeStr": timeStr });
     }
     case "monthly":
-      return `Monthly on the ${dayOfMonth}${ordinalSuffix(Number(dayOfMonth))} at ${timeStr}`;
+      return i18n.t("fullRoutinesSecrets.monthlySchedule", { day: i18n.resolvedLanguage?.startsWith("ru") ? dayOfMonth : `${dayOfMonth}${ordinalSuffix(Number(dayOfMonth))}`, time: timeStr });
     case "custom":
-      return cron || "No schedule set";
+      return cron || i18n.t("fullRoutinesSecrets.noScheduleSet");
   }
 }
 
@@ -161,7 +166,7 @@ export function getScheduleCronValidation(cron: string): {
   if (!trimmed) {
     return {
       valid: false,
-      message: "Enter a 5-field cron expression.",
+      message: i18n.t("fullRoutinesSecrets.enterAFieldCronExpression"),
       nextFires: [],
     };
   }
@@ -170,7 +175,7 @@ export function getScheduleCronValidation(cron: string): {
   if (fields.length !== 5) {
     return {
       valid: false,
-      message: `Use exactly 5 fields; this has ${fields.length}.`,
+      message: i18n.t("fullRoutinesSecrets.useExactlyFieldsThisHas", { "value1": fields.length }),
       nextFires: [],
     };
   }
@@ -178,7 +183,7 @@ export function getScheduleCronValidation(cron: string): {
   if (!parseCronExpression(trimmed)) {
     return {
       valid: false,
-      message: "Cron fields must use valid numbers, ranges, lists, wildcards, or steps.",
+      message: i18n.t("fullRoutinesSecrets.cronFieldsMustUseValidNumbersRangesListsWildcards"),
       nextFires: [],
     };
   }
@@ -186,7 +191,7 @@ export function getScheduleCronValidation(cron: string): {
   const nextFires = nextCronFires(trimmed, 3, { timeZone: "UTC" });
   return {
     valid: true,
-    message: nextFires.length > 0 ? "Valid cron." : "Valid cron, but no upcoming fires were found.",
+    message: nextFires.length > 0 ? i18n.t("fullRoutinesSecrets.validCron") : i18n.t("fullRoutinesSecrets.validCronButNoUpcomingFiresWereFound"),
     nextFires,
   };
 }
@@ -200,14 +205,15 @@ export function ScheduleEditor({
   onChange: (cron: string) => void;
   onValidityChange?: (valid: boolean) => void;
 }) {
-  const parsed = useMemo(() => parseCronToPreset(value), [value]);
+  const { t } = useTranslation();
+  const parsed = useMemo(() => parseCronToPreset(value), [value, t]);
   const [preset, setPreset] = useState<SchedulePreset>(parsed.preset);
   const [hour, setHour] = useState(parsed.hour);
   const [minute, setMinute] = useState(parsed.minute);
   const [dayOfWeek, setDayOfWeek] = useState(parsed.dayOfWeek);
   const [dayOfMonth, setDayOfMonth] = useState(parsed.dayOfMonth);
   const [customCron, setCustomCron] = useState(preset === "custom" ? value : "");
-  const customValidation = useMemo(() => getScheduleCronValidation(customCron), [customCron]);
+  const customValidation = useMemo(() => getScheduleCronValidation(customCron), [customCron, t]);
 
   useEffect(() => {
     onValidityChange?.(preset !== "custom" || customValidation.valid);
@@ -232,7 +238,7 @@ export function ScheduleEditor({
         onChange(buildCron(p, h, m, dow, dom));
       }
     },
-    [onChange],
+    [onChange, t],
   );
 
   const handlePresetChange = (newPreset: SchedulePreset) => {
@@ -247,8 +253,8 @@ export function ScheduleEditor({
   return (
     <div className="space-y-3">
       <Select value={preset} onValueChange={(v) => handlePresetChange(v as SchedulePreset)}>
-        <SelectTrigger className="w-full" aria-label="Schedule frequency">
-          <SelectValue placeholder="Choose frequency..." />
+        <SelectTrigger className="w-full" aria-label={t("fullRoutinesSecrets.scheduleFrequency")}>
+          <SelectValue placeholder={t("fullRoutinesSecrets.chooseFrequency")} />
         </SelectTrigger>
         <SelectContent>
           {PRESETS.map((p) => (
@@ -277,20 +283,18 @@ export function ScheduleEditor({
               }
             }}
             placeholder="0 10 * * *"
-            aria-label="Cron expression"
+            aria-label={t("fullRoutinesSecrets.cronExpression")}
             aria-invalid={!customValidation.valid}
             className="font-mono text-sm"
           />
-          <p className="text-xs text-muted-foreground">
-            Five fields: minute hour day-of-month month day-of-week
-          </p>
+          <p className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.fiveFieldsMinuteHourDayOfMonthMonthDay")}</p>
           <p
             className={customValidation.valid ? "text-xs text-muted-foreground" : "text-xs text-destructive"}
             aria-live="polite"
           >
             {customValidation.message}
             {customValidation.valid && customValidation.nextFires.length > 0
-              ? ` Next: ${customValidation.nextFires.map((fire) => fire.toLocaleString()).join(", ")}.`
+              ? t("fullRoutinesSecrets.next253", { "value1": customValidation.nextFires.map((fire) => fire.toLocaleString(i18n.resolvedLanguage)).join(", ") })
               : null}
           </p>
         </div>
@@ -298,7 +302,7 @@ export function ScheduleEditor({
         <div className="flex flex-wrap items-center gap-2">
           {preset !== "every_minute" && preset !== "every_hour" && (
             <>
-              <span className="text-sm text-muted-foreground">at</span>
+              <span className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.at")}</span>
               <Select
                 value={hour}
                 onValueChange={(h) => {
@@ -341,7 +345,7 @@ export function ScheduleEditor({
 
           {preset === "every_hour" && (
             <>
-              <span className="text-sm text-muted-foreground">at minute</span>
+              <span className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.atMinute")}</span>
               <Select
                 value={minute}
                 onValueChange={(m) => {
@@ -365,7 +369,7 @@ export function ScheduleEditor({
 
           {preset === "weekly" && (
             <>
-              <span className="text-sm text-muted-foreground">on</span>
+              <span className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.on256")}</span>
               <div className="flex gap-1">
                 {DAYS_OF_WEEK.map((d) => (
                   <Button
@@ -389,7 +393,7 @@ export function ScheduleEditor({
 
           {preset === "monthly" && (
             <>
-              <span className="text-sm text-muted-foreground">on day</span>
+              <span className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.onDay")}</span>
               <Select
                 value={dayOfMonth}
                 onValueChange={(dom) => {

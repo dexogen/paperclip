@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectPopover } from "../../components/ui/select";
 import { AdapterMark } from "../../components/AdapterMark";
@@ -48,7 +49,7 @@ const runnerHarnessOptions = [
   { value: "opencode", label: "OpenCode 1.18.34", adapter: "opencode_local" },
   { value: "claude_managed", label: "Claude Managed", adapter: "claude_local" },
   { value: "aws_agentcore", label: "AWS AgentCore", adapter: "aws_agentcore" },
-  { value: "acpx", label: "ACP agents", adapter: "acpx_local" },
+  { value: "acpx", get label() { return fullSharedT("agentConfigUi.acpAgents"); }, adapter: "acpx_local" },
   { value: "grok", label: "Grok Build", adapter: "grok_local" },
 ];
 
@@ -101,7 +102,7 @@ export function CodexLocalConfigFields({
   const runnerPermissionCapability: PaperclipRunnerPermissionCapability =
     isPaperclipRunnerProvider(runnerProvider)
       ? PAPERCLIP_RUNNER_PERMISSION_CAPABILITIES[runnerProvider]
-      : { configurable: false, defaultMode: "provider-managed", options: [], description: "Unknown provider configuration is preserved." };
+      : { configurable: false, defaultMode: "provider-managed", options: [], description: fullSharedT("fullShared.unknown_provider_configuration_is_preserved_fded48") };
 
   const permissionLabelKeys: Record<string, Record<string, string>> = {
   "codex": {

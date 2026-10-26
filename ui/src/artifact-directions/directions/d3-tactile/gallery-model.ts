@@ -1,3 +1,5 @@
+import { artifactUnit } from "../../localized-copy";
+import { t } from "@/i18n";
 import type { LabArtifact, LabGroup, LabKind } from "../../kit";
 import { kindLabel } from "./kind";
 
@@ -80,7 +82,7 @@ export function pileOf(count: number, shown: number): 0 | 1 | 2 | 3 {
 
 export const reviewCountOf = (artifacts: readonly LabArtifact[]) => artifacts.filter((a) => a.review === "needs_review").length;
 
-export const countLabel = (count: number) => (count === 1 ? "artifact" : "artifacts");
+export const countLabel = (count: number) => artifactUnit(count, "artifact");
 
 /** "Document 7 · Slides 3 · PDF 3 …": what a stack holds, largest group first, in the product's kind wording. */
 export function tallyOf(artifacts: readonly LabArtifact[]): { label: string; count: number }[] {

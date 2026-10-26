@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "@/i18n";
 import { AgentObservabilitySettingsSection } from "../components/observability/AgentObservabilitySettings";
@@ -198,7 +199,7 @@ export function CompanySettings() {
       { label: selectedCompany?.name ?? t("companySettings.company"), href: "/dashboard" },
       { label: t("companySettings.settings") }
     ]);
-  }, [setBreadcrumbs, selectedCompany?.name, t]);
+  }, [setBreadcrumbs, selectedCompany?.name, t, i18n.language]);
 
   if (!selectedCompany) {
     return (

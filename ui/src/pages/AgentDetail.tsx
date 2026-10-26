@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { statusLabel } from "@/i18n/ui-labels";
 import { i18n, Trans, useTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
@@ -322,15 +323,15 @@ function scrollToContainerBottom(container: ScrollContainer, behavior: ScrollBeh
 export const AGENT_DETAIL_TABS = AGENT_DETAIL_NAVIGATION.flatMap((section) => section.items);
 
 const LEGACY_AGENT_DETAIL_TABS = [
-  { value: "dashboard", label: "Dashboard" },
-  { value: "instructions", label: "Instructions" },
-  { value: "skills", label: "Skills" },
-  { value: "configuration", label: "Configuration" },
-  { value: "secrets", label: "Secrets" },
-  { value: "tools", label: "Tools" },
-  { value: "runs", label: "Runs" },
-  { value: "audit", label: "Audit" },
-  { value: "budget", label: "Budget" },
+  { value: "dashboard", get label() { return t("sidebar.dashboard"); } },
+  { value: "instructions", get label() { return t("agentDetailUi.nav.instructions"); } },
+  { value: "skills", get label() { return t("sidebar.skills"); } },
+  { value: "configuration", get label() { return t("fullPages.configuration"); } },
+  { value: "secrets", get label() { return t("settingsNav.secrets"); } },
+  { value: "tools", get label() { return t("agentDetailUi.nav.tools"); } },
+  { value: "runs", get label() { return t("skillsGap.runs"); } },
+  { value: "audit", get label() { return t("sidebar.audit"); } },
+  { value: "budget", get label() { return t("costsUi.budget"); } },
 ] as const;
 
 export const DISCARD_AGENT_CONFIG_CHANGES_MESSAGE = "Discard unsaved agent configuration changes?";
@@ -339,7 +340,7 @@ export function confirmAgentConfigNavigation(
   dirty: boolean,
   confirm: (message: string) => boolean = (message) =>
     typeof window === "undefined" || window.confirm(message),
-  message = DISCARD_AGENT_CONFIG_CHANGES_MESSAGE,
+  message = t("agentDetailUi.header.discardConfirm"),
 ): boolean {
   return !dirty || confirm(message);
 }
@@ -802,9 +803,9 @@ type AgentDetailOwnErrorKind = "agent_missing" | "candidate_missing" | "company_
 class AgentDetailOwnError extends Error {
   constructor(readonly kind: AgentDetailOwnErrorKind) {
     super({
-      agent_missing: "No agent reference", candidate_missing: "These instruction edits have not been retrieved yet.",
-      company_missing: "Select an organization to upload images", resume_skipped: "Resume request was skipped.",
-      trace_skipped: "Trace re-run was skipped.",
+      agent_missing: t("agentDetailUi.error.agentMissing"), candidate_missing: t("agentDetailUi.error.candidateMissing"),
+      company_missing: t("fullPages.selectAnOrganizationToUploadImages"), resume_skipped: t("agentDetailUi.error.resumeSkipped"),
+      trace_skipped: t("runUi.ledger.traceSkipped"),
     }[kind]);
   }
 }
@@ -1157,7 +1158,7 @@ export function AgentDetail() {
       }
     }
     setBreadcrumbs(crumbs);
-  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId, t]);
+  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId, t, i18n.language]);
 
   useEffect(() => {
     closePanel();
@@ -1609,6 +1610,7 @@ export function AgentDetail() {
 /* ---- Helper components ---- */
 
 function SummaryRow({ label, children }: { label: string; children: React.ReactNode }) {
+  useTranslation();
   return (
     <div className="flex items-center justify-between">
       <span className="text-muted-foreground text-xs">{label}</span>
@@ -3307,6 +3309,7 @@ export function PromptsTab({
 }
 
 function PromptsTabSkeleton() {
+  useTranslation();
   return (
     <div className="max-w-5xl space-y-4">
       <div className="rounded-lg border border-border p-4 space-y-4">
@@ -3352,6 +3355,7 @@ function PromptsTabSkeleton() {
 }
 
 function PromptEditorSkeleton() {
+  useTranslation();
   return (
     <div className="space-y-3">
       <Skeleton className="h-10 w-full" />
@@ -4000,7 +4004,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
               <div className="px-4 pb-3 space-y-1 text-xs">
                 {run.sessionIdBefore && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-12">{sessionChanged ? t("agentDetailUi.run.before") : "ID"}</span>
+                    <span className="text-muted-foreground w-12">{sessionChanged ? t("agentDetailUi.run.before") : t("taskViews.column_id")}</span>
                     <CopyText text={run.sessionIdBefore} className="font-mono" />
                   </div>
                 )}
@@ -4562,7 +4566,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
 
   const transcript = useMemo(
     () => buildTranscript(logLines, adapter, { censorUsernameInLogs }),
-    [adapter, censorUsernameInLogs, logLines, parserTick],
+    [adapter, censorUsernameInLogs, logLines, parserTick, i18n.language],
   );
   const toolDecisionLookup = useQuery({
     queryKey: queryKeys.tools.runDecisions(run.companyId, run.id),

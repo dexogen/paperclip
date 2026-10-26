@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import {
   connectionNameForCredentialPolicy,
@@ -61,4 +62,17 @@ describe("connectionNameForCredentialPolicy", () => {
     expect(connectionNameForCredentialPolicy("Notion for the company", "shared"))
       .toBe("Notion for the organization");
   });
+});
+
+
+it("localizes connection type without changing persisted organization naming", async () => {
+  try {
+    await i18n.changeLanguage("ru");
+    expect(connectionTypeLabel("per_agent", i18n.t)).toBe("Для отдельного агента");
+    expect(connectionTypeLabel("shared")).toBe("Organization");
+    expect(connectionNameForCredentialPolicy("Literal <App>", "shared")).toBe("Literal <App> for the organization");
+    expect(connectionNameForCredentialPolicy("Literal <App>", "per_user")).toBe("Literal <App>");
+  } finally {
+    await i18n.changeLanguage("en");
+  }
 });

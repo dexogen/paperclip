@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { Agent, FeedbackVote } from "@paperclipai/shared";
 import type { LiveRunForIssue } from "../api/heartbeats";
 import type { InlineEntityOption } from "../components/InlineEntitySelector";
@@ -105,7 +106,7 @@ export const issueChatUxReassignOptions: InlineEntityOption[] = [
   },
   {
     id: "user:user-1",
-    label: "Board",
+    get label() { return fullSharedT("profile.board"); },
     searchText: "board user",
   },
 ];

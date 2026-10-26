@@ -1,10 +1,11 @@
+import { t, i18n } from "@/i18n";
 import type { StatusCardRefreshPolicy, StatusCardUpdate } from "@paperclipai/shared";
 
 /** "1.1k tok" / "940 tok" — compact token count for footers and chips. */
 export function formatTokens(tokens: number | null | undefined): string | null {
   if (tokens === null || tokens === undefined) return null;
-  if (tokens < 1000) return `${tokens} tok`;
-  return `${(tokens / 1000).toFixed(1)}k tok`;
+  if (tokens < 1000) return t("fullPages.tokensCompact", { value: tokens });
+  return t("fullPages.tokensThousands", { value: (tokens / 1000).toLocaleString(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
 }
 
 /**
@@ -98,8 +99,8 @@ export function estimateStatusCardCost(policy: StatusCardRefreshPolicy): StatusC
     const cost = `${formatCents(EST_FULL_CENTS)} · ${formatTokens(EST_FULL_TOKENS)}`;
     return {
       cost,
-      primary: `~1 rebuild per refresh ≈ ${cost}`,
-      note: "Manual cards only cost tokens when you press Refresh.",
+      primary: t("fullPages.costPerRefresh", { cost }),
+      note: t("fullPages.manualCardCost"),
     };
   }
 
@@ -109,11 +110,11 @@ export function estimateStatusCardCost(policy: StatusCardRefreshPolicy): StatusC
   if (policy.mode === "interval") {
     const interval = policy.intervalMinutes ?? 15;
     maxPerDay = Math.floor(windowMinutes / interval);
-    cadence = `every ${interval} min`;
+    cadence = t("fullPages.costCadenceMinutes", { interval });
   } else {
     const perHour = policy.maxUpdatesPerHour ?? 6;
     maxPerDay = Math.round((windowMinutes / 60) * perHour);
-    cadence = `up to ${perHour}/hour`;
+    cadence = t("fullPages.costCadenceHourly", { count: perHour });
   }
 
   const cap = policy.dailyTokenCap ?? null;
@@ -123,33 +124,33 @@ export function estimateStatusCardCost(policy: StatusCardRefreshPolicy): StatusC
 
   const tokens = effective * EST_INCREMENTAL_TOKENS;
   const cents = effective * EST_INCREMENTAL_CENTS;
-  const withinHours = policy.activeHours ? " during active hours" : "";
+  const withinHours = policy.activeHours ? t("fullPages.duringActiveHours") : "";
   const cost = `${formatCents(cents)} · ${formatTokens(tokens)}`;
 
   return {
     cost,
-    primary: `Up to ~${effective} updates/day (${cadence}${withinHours}) ≈ ${cost}`,
+    primary: t("fullPages.costPerDay", { count: effective, cadence, hours: withinHours, cost }),
     note: cappedByTokenCap
-      ? `Capped by your ${formatTokens(cap!)} daily token cap — the card pauses when it's hit.`
-      : "Only runs when something changed; a cheap no-op check otherwise.",
+      ? t("fullPages.dailyCapExplanation", { cap: formatTokens(cap!) })
+      : t("fullPages.changedOnlyCost"),
   };
 }
 
 /** "0.4k in / 0.2k out" — the per-update token split shown in history rows. */
 export function formatTokenSplit(inputTokens: number, outputTokens: number): string {
-  const fmt = (n: number) => (n < 1000 ? `${n}` : `${(n / 1000).toFixed(1)}k`);
-  return `${fmt(inputTokens)} in / ${fmt(outputTokens)} out`;
+  const fmt = (n: number) => (n < 1000 ? `${n}` : t("fullPages.thousandsCompact", { value: (n / 1000).toLocaleString(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) }));
+  return t("fullPages.tokenSplit", { input: fmt(inputTokens), output: fmt(outputTokens) });
 }
 
 /** Human label for an update's kind. */
 export function updateKindLabel(kind: StatusCardUpdate["kind"]): string {
   switch (kind) {
     case "compile":
-      return "compile";
+      return t("fullPages.updateCompile");
     case "full":
-      return "full rebuild";
+      return t("fullPages.updateFull");
     case "incremental":
-      return "incremental";
+      return t("fullPages.updateIncremental");
     default:
       return kind;
   }

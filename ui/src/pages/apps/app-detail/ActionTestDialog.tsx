@@ -1,3 +1,5 @@
+import { renderAppError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -89,6 +91,7 @@ export function ActionTestDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  useFullAppsTranslation();
   const testAgentsQuery = useQuery({
     queryKey: queryKeys.tools.testAgents(connectionId),
     queryFn: () => toolsApi.listTestAgents(connectionId),
@@ -130,38 +133,32 @@ export function ActionTestDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-(--sz-85vh) overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Test {title}</DialogTitle>
-          <DialogDescription>
-            Run a real action with the same permissions and credentials an agent would use.
-          </DialogDescription>
+          <DialogTitle><FullAppsTrans i18nKey="fullApps.test_d6b3a2" components={{ part1: <>{title}</> }} /></DialogTitle>
+          <DialogDescription>{fullAppsT("fullApps.run_a_real_action_with_the_same_permissions_and_cred_c96dff")}</DialogDescription>
         </DialogHeader>
 
         {testAgentsQuery.isLoading ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground" role="status">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Loading agents…
-          </div>
+            <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_agents_ae0c14")}</div>
         ) : testAgentsQuery.isError ? (
           <TestLoadError
-            message="We couldn't load the agents available for testing."
+            message={fullAppsT("fullApps.we_couldn_t_load_the_agents_available_for_testing_30f10d")}
             onRetry={() => { void testAgentsQuery.refetch(); }}
           />
         ) : agents.length === 0 ? (
-          <p className="py-6 text-sm text-muted-foreground">No agents are available to test as.</p>
+          <p className="py-6 text-sm text-muted-foreground">{fullAppsT("fullApps.no_agents_are_available_to_test_as_3d77dc")}</p>
         ) : accessQuery.isError && !accessQuery.data ? (
           <TestLoadError
-            message={`We couldn't load ${selectedAgentBase?.name ?? "this agent"}'s permissions.`}
+            message={fullAppsT("fullApps.we_couldn_t_load_s_permissions_303200", { value1: selectedAgentBase?.name ?? fullAppsT("fullApps.copy_b2dcc8dd0d6c") })}
             onRetry={() => { void accessQuery.refetch(); }}
           />
         ) : !selectedAgent ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground" role="status">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Loading agent permissions…
-          </div>
+            <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_agent_permissions_f8def2")}</div>
         ) : (
           <div className="space-y-5">
             <div className="rounded-md border border-border bg-muted/30 p-4">
-              <p className="text-xs font-medium text-muted-foreground">Act as</p>
+              <p className="text-xs font-medium text-muted-foreground">{fullAppsT("fullApps.act_as_66ad5e")}</p>
               <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
                 <AgentPicker
                   agents={agents}
@@ -192,20 +189,21 @@ export function ActionTestDialog({
 
 const DECISION_META: Record<ToolConnectionTestDecision, DecisionMeta> = {
   allowed: {
-    label: "Allowed",
+    get label() { return fullAppsT("fullApps.allowed_1bb201"); },
     className: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   },
   ask_first: {
-    label: "Ask first",
+    get label() { return fullAppsT("fullApps.ask_first_4a9e8c"); },
     className: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
   },
   off: {
-    label: "Off",
+    get label() { return fullAppsT("fullApps.off_ca7981"); },
     className: "border-border bg-muted text-muted-foreground",
   },
 };
 
 function DecisionBadge({ decision }: { decision: ToolConnectionTestDecision }) {
+  useFullAppsTranslation();
   const meta = DECISION_META[decision];
   return (
     <span
@@ -220,12 +218,11 @@ function DecisionBadge({ decision }: { decision: ToolConnectionTestDecision }) {
 }
 
 function TestLoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
+  useFullAppsTranslation();
   return (
     <div className="py-8 text-center">
       <p className="text-sm font-medium text-foreground">{message}</p>
-      <Button className="mt-3" size="sm" variant="outline" onClick={onRetry}>
-        Try again
-      </Button>
+      <Button className="mt-3" size="sm" variant="outline" onClick={onRetry}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
     </div>
   );
 }
@@ -247,6 +244,7 @@ function AgentPicker({
   connectionId: string;
   appName: string;
 }) {
+  useFullAppsTranslation();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -260,7 +258,7 @@ function AgentPicker({
         <button
           type="button"
           className="inline-flex items-center gap-1.5 font-semibold text-foreground underline-offset-2 outline-none hover:text-primary hover:underline focus-visible:text-primary"
-          aria-label="Choose which agent to test as"
+          aria-label={fullAppsT("fullApps.choose_which_agent_to_test_as_2072e7")}
         >
           {selectedAgent.name}
           <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground" />
@@ -271,8 +269,8 @@ function AgentPicker({
           <div className="relative">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
-              aria-label="Search agents"
-              placeholder="Search agents…"
+              aria-label={fullAppsT("agents.search")}
+              placeholder={fullAppsT("agents.searchPlaceholder")}
               className="h-8 pl-8 text-sm"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -282,7 +280,7 @@ function AgentPicker({
         </div>
         <div className="max-h-60 overflow-y-auto p-1">
           {filtered.length === 0 ? (
-            <p className="px-3 py-4 text-center text-xs text-muted-foreground">No agents match.</p>
+            <p className="px-3 py-4 text-center text-xs text-muted-foreground">{fullAppsT("fullApps.no_agents_match_892741")}</p>
           ) : (
             filtered.map((agent) => {
               const detail = agent.title?.trim() || agent.role;
@@ -316,24 +314,20 @@ function AgentPicker({
           )}
         </div>
         <div className="border-t border-border px-3 py-2 text-(length:--text-micro) text-muted-foreground">
-          <p>Only agents you can assign tasks to are listed.</p>
-          <p>Pick one to preview what they'd see in {appName}.</p>
+          <p>{fullAppsT("fullApps.only_agents_you_can_assign_tasks_to_are_listed_b4ee96")}</p>
+          <p><FullAppsTrans i18nKey="fullApps.pick_one_to_preview_what_they_d_see_in_b57e6c" components={{ part1: <>{appName}</> }} /></p>
         </div>
         <div className="border-t border-border p-3">
-          <p className="text-xs font-semibold text-foreground">What the badges mean</p>
+          <p className="text-xs font-semibold text-foreground">{fullAppsT("fullApps.what_the_badges_mean_acd5cc")}</p>
           <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground">
-            <li><span className="font-medium text-foreground">Allowed</span> — runs immediately when you press Run.</li>
-            <li><span className="font-medium text-foreground">Ask first</span> — Run is parked in Review for your OK.</li>
+            <li><FullAppsTrans i18nKey="fullApps.runs_immediately_when_you_press_run_283db9" components={{ part1: <span className="font-medium text-foreground">{fullAppsT("fullApps.allowed_1bb201")}</span> }} /></li>
+            <li><FullAppsTrans i18nKey="fullApps.run_is_parked_in_review_for_your_ok_b3181e" components={{ part1: <span className="font-medium text-foreground">{fullAppsT("fullApps.ask_first_4a9e8c")}</span> }} /></li>
             <li>
-              <span className="font-medium text-foreground">Off</span> — won't run. Change it in{" "}
-              <Link className="text-primary hover:underline" to={appTabHref(connectionId, "permissions")}>
-                Permissions
-              </Link>.
+              <span className="font-medium text-foreground">{fullAppsT("fullApps.off_ca7981")}</span>{fullAppsT("fullApps.won_t_run_change_it_in_3fcad1")}{" "}
+              <Link className="text-primary hover:underline" to={appTabHref(connectionId, "permissions")}>{fullAppsT("agentDetailUi.config.permissions")}</Link>.
             </li>
           </ul>
-          <p className="mt-2 text-(length:--text-micro) text-muted-foreground">
-            Badges reflect this agent's current settings, not yours. Swap agents to see how an action would behave for each.
-          </p>
+          <p className="mt-2 text-(length:--text-micro) text-muted-foreground">{fullAppsT("fullApps.badges_reflect_this_agent_s_current_settings_not_you_ff41d9")}</p>
         </div>
       </PopoverContent>
     </Popover>
@@ -408,9 +402,9 @@ function splitRequiredOptional(schema: JsonSchemaNode): JsonSchemaNode {
 }
 
 const GUT_CHECK: Record<ToolConnectionTestDecision, (app: string, agent: string) => string> = {
-  allowed: (app, agent) => `This runs a real call against ${app} as ${agent}.`,
-  ask_first: () => `Waiting for your OK before this call leaves Paperclip.`,
-  off: (_app, agent) => `No call will be made — this action is off for ${agent}.`,
+  allowed: (app, agent) => fullAppsT("fullApps.message_50a831867460", { value1: app, value2: agent }),
+  ask_first: () => fullAppsT("fullApps.message_e8f3443a7051"),
+  off: (_app, agent) => fullAppsT("fullApps.message_0634f06c8182", { value1: agent }),
 };
 
 function ActionTester({
@@ -430,6 +424,7 @@ function ActionTester({
   allAgents: ToolConnectionTestAgent[];
   onSelectAgent: (agentId: string) => void;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { selectedCompanyId } = useCompany();
   const rawSchema = (entry.inputSchema ?? { type: "object", properties: {} }) as JsonSchemaNode;
@@ -538,10 +533,10 @@ function ActionTester({
           onChange={setValues}
           errors={errors}
           disabled={running}
-          advancedLabel="More options"
+          advancedLabel={fullAppsT("fullApps.more_options_bc79cd")}
         />
       ) : (
-        <p className="text-xs text-muted-foreground">This action takes no inputs.</p>
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.this_action_takes_no_inputs_53b634")}</p>
       )}
 
       <p className="text-xs text-muted-foreground">{GUT_CHECK[decision](appName, agent.name)}</p>
@@ -550,29 +545,24 @@ function ActionTester({
         <Button onClick={onRun} disabled={running || !!outcome?.result.upstreamPending?.resumeTool || outcome?.result.decision === "ask_first"} size="sm">
           {running ? (
             <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Running…
-            </>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />{fullAppsT("decisionForms.interaction.running")}</>
           ) : (
             <>
-              <Play className="h-3.5 w-3.5" /> {outcome ? "Run again" : "Run"}
+              <Play className="h-3.5 w-3.5" /> {outcome ? fullAppsT("fullApps.run_again_3e310b") : fullAppsT("fullApps.run_00d60e")}
             </>
           )}
         </Button>
-        <Button onClick={onReset} disabled={running} size="sm" variant="ghost">
-          Reset
-        </Button>
+        <Button onClick={onReset} disabled={running} size="sm" variant="ghost">{fullAppsT("agentDetailUi.bundle.reset")}</Button>
       </div>
 
-      {(outcome?.result.decision === "ask_first" || outcome?.result.upstreamPending?.resumeTool) && <p className="text-xs text-muted-foreground">Finish the existing request below. Use Reset only when you intend to start a new call.</p>}
+      {(outcome?.result.decision === "ask_first" || outcome?.result.upstreamPending?.resumeTool) && <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.finish_the_existing_request_below_use_reset_only_whe_3fdd9c")}</p>}
 
       {running && (
         <RunningCard entry={entry} appName={appName} agentName={agent.name} elapsedMs={elapsedMs} onCancel={onCancelRunning} />
       )}
 
       {run.isError && !running && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-          Couldn't reach {agent.name}. {run.error instanceof Error ? run.error.message : "Please try again."}
-        </div>
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"><FullAppsTrans i18nKey="fullApps.couldn_t_reach_7ff5ed" components={{ part1: <>{agent.name}</>, part2: <>{run.error instanceof Error ? renderAppError(run.error) : fullAppsT("fullApps.please_try_again_eea4fb")}</> }} /></div>
       )}
 
       {outcome && !running && (
@@ -599,21 +589,18 @@ function RunningCard({
   elapsedMs: number;
   onCancel: () => void;
 }) {
-  const verb = entry.isReadOnly ? "Reading from" : entry.isWrite ? "Writing to" : "Calling";
+  useFullAppsTranslation();
+  const verb = entry.isReadOnly ? fullAppsT("fullApps.reading_from_1f6f91") : entry.isWrite ? fullAppsT("fullApps.writing_to_78c876") : fullAppsT("fullApps.caption_74028104c2");
   return (
     <div className="rounded-md border border-border bg-muted/30 p-4">
       <div className="flex items-center gap-2">
         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        <span className="text-sm font-medium text-foreground">Running…</span>
+        <span className="text-sm font-medium text-foreground">{fullAppsT("decisionForms.interaction.running")}</span>
       </div>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {verb} {appName} as {agentName}.
-      </p>
+      <p className="mt-1 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.as_04fce8" components={{ part1: <>{verb}</>, part2: <>{appName}</>, part3: <>{agentName}</> }} /></p>
       <div className="mt-3 flex items-center justify-between">
-        <span className="text-xs text-muted-foreground">Started {seconds(elapsedMs)} ago · Press cancel to stop</span>
-        <Button onClick={onCancel} size="sm" variant="outline">
-          Cancel
-        </Button>
+        <span className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.started_ago_press_cancel_to_stop_0cc3b8" components={{ part1: <>{seconds(elapsedMs)}</> }} /></span>
+        <Button onClick={onCancel} size="sm" variant="outline">{fullAppsT("fullApps.cancel_19766e")}</Button>
       </div>
     </div>
   );
@@ -636,6 +623,7 @@ function ResultPanel({
   connectionId: string;
   agent?: TestAgentWithAccess;
 }) {
+  useFullAppsTranslation();
   const { result } = outcome;
   if (result.upstreamPending) return <ProviderPendingResult pending={result.upstreamPending} appName={appName} connectionId={connectionId} agent={agent} />;
   if (result.decision === "ask_first") {
@@ -644,7 +632,7 @@ function ResultPanel({
   if (result.decision === "off") {
     return (
       <div className="rounded-md border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
-        {result.error?.message ?? "This action is off and won't run."}
+        {result.error?.message ?? fullAppsT("fullApps.this_action_is_off_and_won_t_run_78cf41")}
       </div>
     );
   }
@@ -659,35 +647,36 @@ function ResultPanel({
 }
 
 function ProviderPendingResult({ pending, appName, connectionId, agent }: { pending: ToolUpstreamPending; appName: string; connectionId: string; agent?: TestAgentWithAccess }) {
+  useFullAppsTranslation();
   const [resumed, setResumed] = useState<{ outcome: RunOutcome; entry: ToolCatalogEntry; action: "accept" | "decline" | "cancel" } | null>(null);
   const resumeError = resumed && (resumed.outcome.result.error ?? mcpToolError(resumed.outcome.result.result));
   const stoppedByUser = resumed && resumeError?.reasonCode === "tool_error" &&
     ((resumed.action === "decline" && /request was declined by the user/i.test(resumeError.message)) ||
       (resumed.action === "cancel" && /request was cancelled by the user/i.test(resumeError.message)));
   if (stoppedByUser) return <div role="status" className="space-y-2 rounded-md border border-border bg-muted/40 p-4 text-sm">
-    <p className="font-medium">{resumed.action === "decline" ? "Request declined" : "Request cancelled"}</p>
+    <p className="font-medium">{resumed.action === "decline" ? fullAppsT("fullApps.request_declined_1df48b") : fullAppsT("fullApps.request_cancelled_710818")}</p>
     <p>{resumeError.message}</p>
-    <p className="text-muted-foreground">The original call was not repeated.</p>
-    {pending.executionId && <p>Execution: <code className="break-all">{pending.executionId}</code></p>}
+    <p className="text-muted-foreground">{fullAppsT("fullApps.the_original_call_was_not_repeated_019849")}</p>
+    {pending.executionId && <p><FullAppsTrans i18nKey="fullApps.execution_ef6a09" components={{ part1: <code className="break-all">{pending.executionId}</code> }} /></p>}
   </div>;
   if (resumed) return <ResultPanel outcome={resumed.outcome} entry={resumed.entry} appName={appName} connectionId={connectionId} agent={agent} />;
   return (
     <div role="status" className="space-y-3 rounded-md border border-border bg-muted/40 p-4 text-sm">
-      <p className="font-medium">{pending.kind === "approval" ? "Approval needed" : "Authorization needed"} in {appName}</p>
-      <p className="text-muted-foreground">Paperclip allowed this call. The provider needs your input before it can continue.</p>
+      <p className="font-medium"><FullAppsTrans i18nKey="fullApps.in_1c37be" components={{ part1: <>{pending.kind === "approval" ? fullAppsT("fullApps.approval_needed_9928dd") : fullAppsT("fullApps.authorization_needed_a82e13")}</>, part2: <>{appName}</> }} /></p>
+      <p className="text-muted-foreground">{fullAppsT("fullApps.paperclip_allowed_this_call_the_provider_needs_your__2b9d26")}</p>
       {pending.links.map((link) => {
         const checked = checkOAuthEndpointUrl(link.url);
-        return checked.ok ? <Button key={checked.url} variant="outline" asChild><a href={checked.url} target="_blank" rel="noopener noreferrer">Continue at {checked.host}</a></Button> : null;
+        return checked.ok ? <Button key={checked.url} variant="outline" asChild><a href={checked.url} target="_blank" rel="noopener noreferrer"><FullAppsTrans i18nKey="fullApps.continue_at_bb315b" components={{ part1: <>{checked.host}</> }} /></a></Button> : null;
       })}
       {pending.message && <p className="whitespace-pre-wrap break-words">{pending.message}</p>}
-      {pending.links.length === 0 && !pending.resumeTool && <p>Open the provider dashboard to complete this request.</p>}
-      {pending.executionId && <p>Execution: <code className="break-all">{pending.executionId}</code></p>}
-      {pending.elicitationId && <p>Request: <code className="break-all">{pending.elicitationId}</code></p>}
-      {pending.expiresAt && <p>Approval expires {new Date(pending.expiresAt).toLocaleTimeString()}.</p>}
+      {pending.links.length === 0 && !pending.resumeTool && <p>{fullAppsT("fullApps.open_the_provider_dashboard_to_complete_this_request_a3a5ac")}</p>}
+      {pending.executionId && <p><FullAppsTrans i18nKey="fullApps.execution_ef6a09" components={{ part1: <code className="break-all">{pending.executionId}</code> }} /></p>}
+      {pending.elicitationId && <p><FullAppsTrans i18nKey="fullApps.request_ce4d38" components={{ part1: <code className="break-all">{pending.elicitationId}</code> }} /></p>}
+      {pending.expiresAt && <p><FullAppsTrans i18nKey="fullApps.approval_expires_01bdb4" components={{ part1: <>{new Date(pending.expiresAt).toLocaleTimeString()}</> }} /></p>}
       {pending.resumeTool && agent ? <ProviderResumeControls pending={pending} connectionId={connectionId} agent={agent} onResult={setResumed} /> :
       <p className="text-muted-foreground">{pending.resumeTool
-        ? `After approval, test the ${pending.resumeTool} action with this execution ID. Do not start the original action again.`
-        : "After authorizing, check the provider's result before using Run again. Paperclip will not repeat the call automatically."}</p>}
+        ? fullAppsT("fullApps.after_approval_test_the_action_with_this_execution_i_b55bf4", { value1: pending.resumeTool })
+        : fullAppsT("fullApps.after_authorizing_check_the_provider_s_result_before_fda63e")}</p>}
     </div>
   );
 }
@@ -696,6 +685,7 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
   pending: ToolUpstreamPending; connectionId: string; agent: TestAgentWithAccess;
   onResult: (result: { outcome: RunOutcome; entry: ToolCatalogEntry; action: "accept" | "decline" | "cancel" }) => void;
 }) {
+  useFullAppsTranslation();
   const catalog = useQuery({ queryKey: queryKeys.tools.catalog(connectionId), queryFn: () => toolsApi.listCatalog(connectionId) });
   const entry = catalog.data?.catalog.find((item) => item.toolName === pending.resumeTool && item.status === "active");
   const schema = (pending.requestedSchema ?? { type: "object", properties: {} }) as JsonSchemaNode;
@@ -717,18 +707,18 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
     if (!Object.keys(validation).length) resume.mutate(action);
   };
   return <div className="space-y-3">
-    <p className="text-muted-foreground">Review the provider's request, then resume this execution as {agent.name}. The original action will not be started again.</p>
-    <div className="flex items-center gap-2"><span>Resume permission</span><DecisionBadge decision={permission} /></div>
+    <p className="text-muted-foreground"><FullAppsTrans i18nKey="fullApps.review_the_provider_s_request_then_resume_this_execu_d75329" components={{ part1: <>{agent.name}</> }} /></p>
+    <div className="flex items-center gap-2"><span>{fullAppsT("fullApps.resume_permission_8dd708")}</span><DecisionBadge decision={permission} /></div>
     {Object.keys(schema.properties ?? {}).length > 0 && <JsonSchemaForm schema={schema} values={content} onChange={setContent} errors={errors} disabled={resume.isPending} />}
     <div className="flex flex-wrap gap-2">
-      <Button disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("accept")}>{resume.isPending ? "Resuming…" : "Approve and resume"}</Button>
-      <Button variant="outline" disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("decline")}>Decline</Button>
-      <Button variant="ghost" disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("cancel")}>Cancel request</Button>
+      <Button disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("accept")}>{resume.isPending ? fullAppsT("fullApps.resuming_c494e3") : fullAppsT("fullApps.approve_and_resume_d05239")}</Button>
+      <Button variant="outline" disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("decline")}>{fullAppsT("fullApps.decline_a2d285")}</Button>
+      <Button variant="ghost" disabled={!entry || expired || permission === "off" || resume.isPending} onClick={() => submit("cancel")}>{fullAppsT("fullApps.cancel_request_561966")}</Button>
     </div>
-    {expired && <p>This provider approval expired. Check the provider before starting a new action.</p>}
-    {permission === "off" && <p>Allow the resume action in Permissions before continuing.</p>}
-    {catalog.isError && <p role="alert">Could not load the resume action. Close this test and try again.</p>}
-    {resume.isError && <p role="alert">{resume.error instanceof Error ? resume.error.message : "Could not resume. Check the provider before trying again."}</p>}
+    {expired && <p>{fullAppsT("fullApps.this_provider_approval_expired_check_the_provider_be_6de678")}</p>}
+    {permission === "off" && <p>{fullAppsT("fullApps.allow_the_resume_action_in_permissions_before_contin_7f7e0e")}</p>}
+    {catalog.isError && <p role="alert">{fullAppsT("fullApps.could_not_load_the_resume_action_close_this_test_and_0049bd")}</p>}
+    {resume.isError && <p role="alert">{resume.error instanceof Error ? renderAppError(resume.error) : fullAppsT("fullApps.could_not_resume_check_the_provider_before_trying_ag_f0ab46")}</p>}
   </div>;
 }
 
@@ -749,7 +739,7 @@ function mcpToolError(value: unknown): { message: string; reasonCode: string | n
   const message =
     (typeof envelope.content === "string" && envelope.content.trim() !== "" && envelope.content)
     || (typeof envelope.error === "string" && envelope.error.trim() !== "" && envelope.error)
-    || "The app returned an error result.";
+    || fullAppsT("fullApps.the_app_returned_an_error_result_92bcfd");
   return { message, reasonCode: "tool_error" };
 }
 
@@ -811,15 +801,15 @@ function resultPreview(value: unknown): { items: Array<{ label: string | null; v
     if (content.type === "text" && typeof content.text === "string") {
       const parsed = parseText(content.text);
       if (structured === null || structured === undefined || safeStringify(parsed) !== safeStringify(structuredValue)) {
-        items.push({ label: (blocks?.length ?? 0) > 1 || (structured !== null && structured !== undefined) ? "Text" : null, value: parsed });
+        items.push({ label: (blocks?.length ?? 0) > 1 || (structured !== null && structured !== undefined) ? fullAppsT("taskChatUi.attachment.text") : null, value: parsed });
       }
     } else if (content.type === "image" || content.type === "audio") {
-      items.push({ label: content.type === "image" ? "Image" : "Audio", value: typeof content.mimeType === "string" ? content.mimeType : "Media attachment" });
+      items.push({ label: content.type === "image" ? fullAppsT("taskPanels.card.image") : fullAppsT("taskChatUi.attachment.audio"), value: typeof content.mimeType === "string" ? content.mimeType : fullAppsT("fullApps.media_attachment_b0951d") });
     } else if (content.type === "resource_link") {
-      items.push({ label: "Resource", value: content.title ?? content.name ?? content.uri ?? "Resource link" });
+      items.push({ label: fullAppsT("fullApps.resource_eb7a84"), value: content.title ?? content.name ?? content.uri ?? fullAppsT("fullApps.resource_link_47ebfe") });
     } else if (content.type === "resource" && content.resource && typeof content.resource === "object") {
       const resource = content.resource as Record<string, unknown>;
-      items.push({ label: "Resource", value: typeof resource.text === "string" ? parseText(resource.text) : resource.uri ?? "Embedded resource" });
+      items.push({ label: fullAppsT("fullApps.resource_eb7a84"), value: typeof resource.text === "string" ? parseText(resource.text) : resource.uri ?? fullAppsT("fullApps.embedded_resource_0de35d") });
     } else {
       return { items: [{ label: null, value }], summary: value, rawFallback: true };
     }
@@ -840,11 +830,13 @@ function writeVerb(entry: ToolCatalogEntry): string | null {
 
 function successHeadline(value: unknown, entry: ToolCatalogEntry, appName: string): string {
   const verb = writeVerb(entry);
-  if (!entry.isReadOnly && verb) return `Worked. Row ${verb}.`;
+  if (!entry.isReadOnly && verb === "added") return fullAppsT("fullApps.copy_d178b8b929cc");
+  if (!entry.isReadOnly && verb === "updated") return fullAppsT("fullApps.copy_657b9a7087c3");
+  if (!entry.isReadOnly && verb === "removed") return fullAppsT("fullApps.copy_bb6660b74ffb");
   const rows = asRows(value);
-  if (rows) return `Worked. ${rows.length} ${rows.length === 1 ? "row" : "rows"} came back.`;
-  if (isEmptyResult(value)) return "Worked. No data to show.";
-  return `Worked. ${appName} sent back the result.`;
+  if (rows) return fullAppsT("fullApps.resultRows", { count: rows.length });
+  if (isEmptyResult(value)) return fullAppsT("fullApps.worked_no_data_to_show_88dee7");
+  return fullAppsT("fullApps.message_529636f04dc5", { value1: appName });
 }
 
 function AllowedResult({
@@ -858,6 +850,7 @@ function AllowedResult({
   appName: string;
   connectionId: string;
 }) {
+  useFullAppsTranslation();
   const value = outcome.result.result;
   const preview = resultPreview(value);
   return (
@@ -867,13 +860,12 @@ function AllowedResult({
         <span className="text-sm font-medium text-foreground">{successHeadline(preview.summary, entry, appName)}</span>
       </div>
       <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="h-3 w-3" />
-        Ran as {outcome.agentName} · {seconds(outcome.durationMs)} · {relTime(outcome.ranAt)}
+        <Clock className="h-3 w-3" />{fullAppsT("fullApps.ranAs", { name: outcome.agentName })} · {seconds(outcome.durationMs)} · {relTime(outcome.ranAt)}
       </p>
 
       {preview.items.some((item) => !isEmptyResult(item.value)) && (
         <div className="mt-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Preview</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("taskChatUi.protocol.preview")}</p>
           <div className="mt-1.5">
             <div className="space-y-2">
               {preview.items.map((item, index) => (
@@ -889,20 +881,18 @@ function AllowedResult({
 
       <RawResponseDisclosure value={value} initiallyOpen={preview.rawFallback} />
 
-      <p className="mt-3 text-xs text-muted-foreground">
-        This call is in the{" "}
-        <Link className="text-primary hover:underline" to="/activity?mode=agents&action=tool_">
-          Audit log
-        </Link>
+      <p className="mt-3 text-xs text-muted-foreground">{fullAppsT("fullApps.this_call_is_in_the_882a49")}{" "}
+        <Link className="text-primary hover:underline" to="/activity?mode=agents&action=tool_">{fullAppsT("fullApps.audit_log_e4d36f")}</Link>
         .
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">Last run finished in {seconds(outcome.durationMs)}.</p>
+      <p className="mt-1 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.last_run_finished_in_315246" components={{ part1: <>{seconds(outcome.durationMs)}</> }} /></p>
     </div>
   );
 }
 
 /** Pretty preview: tables for row arrays, labeled fields for objects, plain text for prose. */
 function PrettyPreview({ value }: { value: unknown }) {
+  useFullAppsTranslation();
   const rows = asRows(value);
   if (rows) {
     const columns = Array.from(new Set(rows.flatMap((r) => Object.keys(r)))).slice(0, 6);
@@ -915,7 +905,7 @@ function PrettyPreview({ value }: { value: unknown }) {
         <div className="space-y-2">
           {shown.map((row, index) => <PreviewRowCard key={index} row={row} index={index} />)}
           {rows.length > shown.length && (
-            <p className="text-(length:--text-micro) text-muted-foreground">… {rows.length - shown.length} more rows in the raw response</p>
+            <p className="text-(length:--text-micro) text-muted-foreground"><FullAppsTrans i18nKey="fullApps.more_rows_in_the_raw_response_43004a" components={{ part1: <>{rows.length - shown.length}</> }} /></p>
           )}
         </div>
       );
@@ -941,7 +931,7 @@ function PrettyPreview({ value }: { value: unknown }) {
           </tbody>
         </table>
         {rows.length > shown.length && (
-          <p className="px-2.5 py-1.5 text-(length:--text-micro) text-muted-foreground">… {rows.length - shown.length} more rows</p>
+          <p className="px-2.5 py-1.5 text-(length:--text-micro) text-muted-foreground"><FullAppsTrans i18nKey="fullApps.more_rows_2645b7" components={{ part1: <>{rows.length - shown.length}</> }} /></p>
         )}
       </div>
     );
@@ -969,6 +959,7 @@ function PrettyPreview({ value }: { value: unknown }) {
 }
 
 function PreviewRowCard({ row, index }: { row: Record<string, unknown>; index: number }) {
+  useFullAppsTranslation();
   const titleKey = ["title", "name", "label"].find((key) => typeof row[key] === "string" && row[key] !== "");
   const summaryKey = ["highlight", "description", "summary"].find((key) => typeof row[key] === "string" && row[key] !== "");
   const url = typeof row.url === "string" && /^https?:\/\//i.test(row.url) ? row.url : null;
@@ -984,9 +975,9 @@ function PreviewRowCard({ row, index }: { row: Record<string, unknown>; index: n
     <div className="min-w-0 rounded-md border border-border bg-background p-3 text-xs">
       <div className="flex min-w-0 items-start justify-between gap-3">
         <p className="min-w-0 break-words text-sm font-medium text-foreground">
-          {titleKey ? cellText(row[titleKey]) : `Result ${index + 1}`}
+          {titleKey ? cellText(row[titleKey]) : fullAppsT("fullApps.result_f031eb", { value1: index + 1 })}
         </p>
-        {url && <a className="shrink-0 text-primary hover:underline" href={url} target="_blank" rel="noopener noreferrer">Open link</a>}
+        {url && <a className="shrink-0 text-primary hover:underline" href={url} target="_blank" rel="noopener noreferrer">{fullAppsT("taskPanels.card.openLink")}</a>}
       </div>
       {summaryKey && <p className="mt-1 line-clamp-2 break-words text-muted-foreground">{cellText(row[summaryKey]).replace(/\*\*(.*?)\*\*/g, "$1")}</p>}
       {details.length > 0 && (
@@ -999,7 +990,7 @@ function PreviewRowCard({ row, index }: { row: Record<string, unknown>; index: n
           ))}
         </dl>
       )}
-      {details.length > 3 && <p className="mt-2 text-muted-foreground">{details.length - 3} more {details.length === 4 ? "field" : "fields"} in the raw response</p>}
+      {details.length > 3 && <p className="mt-2 text-muted-foreground">{fullAppsT("fullApps.moreFields", { count: details.length - 3 })}</p>}
     </div>
   );
 }
@@ -1023,6 +1014,7 @@ function collapseDeep(value: unknown, maxDepth: number, depth = 0): unknown {
 }
 
 function RawResponseDisclosure({ value, initiallyOpen = false }: { value: unknown; initiallyOpen?: boolean }) {
+  useFullAppsTranslation();
   const [showRaw, setShowRaw] = useState(initiallyOpen);
   if (value === undefined || value === null) return null;
   return (
@@ -1032,7 +1024,7 @@ function RawResponseDisclosure({ value, initiallyOpen = false }: { value: unknow
         onClick={() => setShowRaw((prev) => !prev)}
         className="text-xs font-semibold uppercase tracking-wide text-primary hover:underline"
       >
-        {showRaw ? "Hide raw response" : "Show raw response"}
+        {showRaw ? fullAppsT("fullApps.hide_raw_response_914909") : fullAppsT("fullApps.show_raw_response_f63a30")}
       </button>
       {showRaw && (
         <pre className="mt-2 max-h-64 overflow-auto rounded-md border border-border bg-background p-3 text-xs text-foreground">
@@ -1056,25 +1048,25 @@ function ErrorResult({
   connectionId: string;
   error: { message: string; reasonCode: string | null };
 }) {
+  useFullAppsTranslation();
   const hints = errorHints(error.message, error.reasonCode);
   const needsReconnect = isReconnectError(error.reasonCode);
   return (
     <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-4">
       <div className="flex items-center gap-2">
         <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-        <span className="text-sm font-medium text-foreground">It didn't work.</span>
+        <span className="text-sm font-medium text-foreground">{fullAppsT("fullApps.it_didn_t_work_24edd2")}</span>
       </div>
       <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="h-3 w-3" />
-        Tried as {outcome.agentName} · {seconds(outcome.durationMs)} · {relTime(outcome.ranAt)}
+        <Clock className="h-3 w-3" />{fullAppsT("fullApps.triedAs", { name: outcome.agentName })} · {seconds(outcome.durationMs)} · {relTime(outcome.ranAt)}
       </p>
       <div className="mt-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What {appName} said</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"><FullAppsTrans i18nKey="fullApps.what_said_47c64d" components={{ part1: <>{appName}</> }} /></p>
         <p className="mt-1 break-words text-sm text-foreground">{error.message}</p>
-        {error.reasonCode && <p className="mt-0.5 text-xs text-muted-foreground">code: {error.reasonCode}</p>}
+        {error.reasonCode && <p className="mt-0.5 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.code_c4138e" components={{ part1: <>{error.reasonCode}</> }} /></p>}
       </div>
       <div className="mt-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What to try</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("fullApps.what_to_try_86fe60")}</p>
         <ul className="mt-1 list-disc space-y-0.5 pl-4 text-sm text-foreground">
           {hints.map((hint) => (
             <li key={hint}>{hint}</li>
@@ -1083,13 +1075,10 @@ function ErrorResult({
       </div>
       {outcome.result.result !== undefined && <RawResponseDisclosure value={outcome.result.result} initiallyOpen />}
       <p className="mt-3 text-xs text-muted-foreground">
-        {needsReconnect ? "After reconnecting, run this action again." : "Adjust the input above and try again."}
+        {needsReconnect ? fullAppsT("fullApps.after_reconnecting_run_this_action_again_5a7fe6") : fullAppsT("fullApps.adjust_the_input_above_and_try_again_ea1603")}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Also visible in the{" "}
-        <Link className="text-primary hover:underline" to="/activity?mode=agents&action=tool_">
-          Audit log
-        </Link>
+      <p className="mt-1 text-xs text-muted-foreground">{fullAppsT("fullApps.also_visible_in_the_caab8e")}{" "}
+        <Link className="text-primary hover:underline" to="/activity?mode=agents&action=tool_">{fullAppsT("fullApps.audit_log_e4d36f")}</Link>
         .
       </p>
     </div>
@@ -1132,6 +1121,7 @@ function AskFirstResult({
   connectionId: string;
   agent?: TestAgentWithAccess;
 }) {
+  useFullAppsTranslation();
   const { selectedCompanyId } = useCompany();
   const queryClient = useQueryClient();
   const actionRequestId = outcome.result.actionRequestId;
@@ -1189,37 +1179,37 @@ function AskFirstResult({
   const where = formatWhere(status?.parameters);
   const statusLabel =
     phase === "running"
-      ? "Approved · running"
+      ? fullAppsT("fullApps.approved_running_5efaff")
       : phase === "denied"
-        ? "Denied — see Review for why"
+        ? fullAppsT("fullApps.denied_see_review_for_why_1d4dee")
         : phase === "cancelled"
-          ? "Cancelled"
+          ? fullAppsT("fullApps.cancelled_d353a9")
           : phase === "expired"
-            ? "Expired — send it again"
-            : `Waiting · ${relTime(requestedAt)}`;
+            ? fullAppsT("fullApps.expired_send_it_again_284e65")
+            : fullAppsT("fullApps.waiting_985edb", { value1: relTime(requestedAt) });
   const settled = phase === "denied" || phase === "cancelled" || phase === "expired";
 
   return (
     <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-4">
       <div className="flex items-center gap-2">
         <ShieldQuestion className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-        <span className="text-sm font-medium text-foreground">Sent for your OK.</span>
+        <span className="text-sm font-medium text-foreground">{fullAppsT("fullApps.sent_for_your_ok_0e6726")}</span>
       </div>
-      <p className="mt-0.5 text-xs text-muted-foreground">{outcome.agentName} needs your approval before this runs.</p>
+      <p className="mt-0.5 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.needs_your_approval_before_this_runs_17facc" components={{ part1: <>{outcome.agentName}</> }} /></p>
 
       <dl className="mt-3 space-y-1.5 text-sm">
         <div className="flex gap-3">
-          <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Action</dt>
+          <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("runUi.inspector.action")}</dt>
           <dd className="text-foreground">{entry.title ?? entry.toolName}</dd>
         </div>
         {where && (
           <div className="flex gap-3">
-            <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Where</dt>
+            <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("fullApps.where_1daaa3")}</dt>
             <dd className="break-words text-foreground">{where}</dd>
           </div>
         )}
         <div className="flex gap-3">
-          <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Status</dt>
+          <dt className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("sidebar.status")}</dt>
           <dd className={cn("flex items-center gap-1.5 text-foreground", settled && "text-muted-foreground")}>
             {phase === "running" && <Loader2 className="h-3 w-3 animate-spin" />}
             {statusLabel}
@@ -1228,22 +1218,17 @@ function AskFirstResult({
       </dl>
 
       {!settled && (
-        <p className="mt-3 text-sm text-foreground">
-          Approve it in the{" "}
-          <Link className="font-medium text-primary hover:underline" to={appTabHref(connectionId, "review")}>
-            Review tab
-          </Link>{" "}
-          to finish the test. You can also cancel the request.
-        </p>
+        <p className="mt-3 text-sm text-foreground">{fullAppsT("fullApps.approve_it_in_the_08d0bd")}{" "}
+          <Link className="font-medium text-primary hover:underline" to={appTabHref(connectionId, "review")}>{fullAppsT("fullApps.review_tab_d397f9")}</Link>{" "}{fullAppsT("fullApps.to_finish_the_test_you_can_also_cancel_the_request_f71ae5")}</p>
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Button asChild size="sm" variant="outline">
-          <Link to={appTabHref(connectionId, "review")}>Open Review tab</Link>
+          <Link to={appTabHref(connectionId, "review")}>{fullAppsT("fullApps.open_review_tab_711039")}</Link>
         </Button>
         {phase === "waiting" && actionRequestId && selectedCompanyId && (
           <Button size="sm" variant="ghost" onClick={() => cancel.mutate()} disabled={cancel.isPending}>
-            {cancel.isPending ? "Cancelling…" : "Cancel this request"}
+            {cancel.isPending ? fullAppsT("agentDetailUi.run.cancelling") : fullAppsT("fullApps.cancel_this_request_5a0551")}
           </Button>
         )}
       </div>
@@ -1267,6 +1252,7 @@ function OffExplanation({
   allAgents: ToolConnectionTestAgent[];
   onSelectAgent: (agentId: string) => void;
 }) {
+  useFullAppsTranslation();
   const title = entry.title ?? entry.toolName;
   const permHref = `${appTabHref(connectionId, "permissions")}?focus=${encodeURIComponent(entry.id)}`;
 
@@ -1276,8 +1262,8 @@ function OffExplanation({
   const others = allAgents.filter((a) => a.id !== agent.id);
 
   const whyBody = entry.status === "quarantined"
-    ? "This action is new and hasn't been turned on yet."
-    : `${agent.name}'s access profile sets this action to Off.`;
+    ? fullAppsT("fullApps.this_action_is_new_and_hasn_t_been_turned_on_yet_6ce411")
+    : fullAppsT("fullApps.message_ee113ef3faf8", { value1: agent.name });
 
   // "Last changed by {Actor} · {relativeTime}" — only the access config carries
   // this; a quarantined action has never been configured, so there's nothing to
@@ -1285,7 +1271,7 @@ function OffExplanation({
   const { lastChangedAt, lastChangedByName } = agent.effectiveAccess;
   const auditHint =
     entry.status !== "quarantined" && lastChangedAt
-      ? `Last changed${lastChangedByName ? ` by ${lastChangedByName}` : ""} · ${relTime(new Date(lastChangedAt))}`
+      ? (lastChangedByName ? fullAppsT("fullApps.lastChangedBy", { name: lastChangedByName, time: relTime(new Date(lastChangedAt)) }) : fullAppsT("fullApps.lastChanged", { time: relTime(new Date(lastChangedAt)) }))
       : null;
 
   return (
@@ -1294,30 +1280,24 @@ function OffExplanation({
         <div className="flex items-start gap-2">
           <Ban className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
           <div className="text-sm text-muted-foreground">
-            <p className="font-medium text-foreground">{title} is off for {agent.name}.</p>
-            <p className="mt-0.5">It won't run here, and it won't run from a task either.</p>
-            <p className="mt-2">
-              Want to test it? Turn it on for {agent.name} in{" "}
-              <Link className="font-medium text-primary hover:underline" to={appTabHref(connectionId, "permissions")}>
-                Permissions
-              </Link>{" "}
-              — set it to Allowed or Ask first.
-            </p>
+            <p className="font-medium text-foreground"><FullAppsTrans i18nKey="fullApps.is_off_for_501b28" components={{ part1: <>{title}</>, part2: <>{agent.name}</> }} /></p>
+            <p className="mt-0.5">{fullAppsT("fullApps.it_won_t_run_here_and_it_won_t_run_from_a_task_eithe_9b8d2f")}</p>
+            <p className="mt-2"><FullAppsTrans i18nKey="fullApps.enableTestAction" components={{ agent: <>{agent.name}</>, permissions: <Link className="font-medium text-primary hover:underline" to={appTabHref(connectionId, "permissions")}>{fullAppsT("agentDetailUi.config.permissions")}</Link> }} /></p>
           </div>
         </div>
         <Button asChild size="sm">
-          <Link to={permHref}>Open Permissions →</Link>
+          <Link to={permHref}>{fullAppsT("fullApps.open_permissions_1ac1cf")}</Link>
         </Button>
-        <p className="text-xs text-muted-foreground">No call will be made — this action is off for {agent.name}.</p>
+        <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.no_call_will_be_made_this_action_is_off_for_a21a3b" components={{ part1: <>{agent.name}</> }} /></p>
       </div>
 
       <aside>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Why this is off</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullAppsT("fullApps.why_this_is_off_d9e466")}</p>
         <p className="mt-1.5 text-xs text-muted-foreground">{whyBody}</p>
         {auditHint && <p className="mt-1.5 text-(length:--text-micro) text-muted-foreground">{auditHint}</p>}
         {others.length > 0 && (
           <div className="mt-3">
-            <p className="text-(length:--text-micro) font-medium text-muted-foreground">Try as a different agent:</p>
+            <p className="text-(length:--text-micro) font-medium text-muted-foreground">{fullAppsT("fullApps.try_as_a_different_agent_d143ee")}</p>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {others.slice(0, 4).map((other) => (
                 <button
@@ -1360,33 +1340,33 @@ function isReconnectError(reasonCode: string | null | undefined): boolean {
 
 export function errorHints(message: string, reasonCode: string | null | undefined): string[] {
   if (reasonCode === "grant_credential_invalid") {
-    return ["Ask the connection owner to reconnect it from Connectors with a fresh key or server URL."];
+    return [fullAppsT("fullApps.ask_the_connection_owner_to_reconnect_it_from_connec_1ea319")];
   }
   if (reasonCode === "oauth_insufficient_scope") {
-    return ["Reconnect the app and allow the permissions required for this action."];
+    return [fullAppsT("fullApps.reconnect_the_app_and_allow_the_permissions_required_9b228c")];
   }
   const haystack = `${reasonCode ?? ""} ${message}`.toUpperCase();
   if (haystack.includes("NOT_FOUND")) {
     return [
-      "Double-check the ID or name you entered — pick it from a dropdown if one is offered.",
-      "Make sure this agent has access to that resource in the connected account.",
+      fullAppsT("fullApps.double_check_the_id_or_name_you_entered_pick_it_from_ff725b"),
+      fullAppsT("fullApps.make_sure_this_agent_has_access_to_that_resource_in__3f67eb"),
     ];
   }
   if (haystack.includes("PERMISSION") || haystack.includes("FORBIDDEN") || haystack.includes("UNAUTHORIZED")) {
     return [
-      "The connected account may not have permission for this action.",
-      "Reconnect the app from Setup if its access was recently changed.",
+      fullAppsT("fullApps.the_connected_account_may_not_have_permission_for_th_b41f09"),
+      fullAppsT("fullApps.reconnect_the_app_from_setup_if_its_access_was_recen_93ae61"),
     ];
   }
   if (haystack.includes("INVALID_ARGUMENT") || haystack.includes("INVALID") || haystack.includes("BAD_REQUEST")) {
     return [
-      "Check the field formats above — a value may be the wrong type or shape.",
-      "Open “More options” to confirm any advanced fields are filled in correctly.",
+      fullAppsT("fullApps.check_the_field_formats_above_a_value_may_be_the_wro_bdc831"),
+      fullAppsT("fullApps.open_more_options_to_confirm_any_advanced_fields_are_2e25eb"),
     ];
   }
   if (haystack.includes("RATE_LIMIT") || haystack.includes("RESOURCE_EXHAUSTED") || haystack.includes("429")) {
-    return ["The app is rate-limiting calls right now — wait a moment and run it again."];
+    return [fullAppsT("fullApps.the_app_is_rate_limiting_calls_right_now_wait_a_mome_24aece")];
   }
   // Locked generic fallback (copy-spec decision #2).
-  return ["Check the inputs above and try again."];
+  return [fullAppsT("fullApps.check_the_inputs_above_and_try_again_da1b05")];
 }

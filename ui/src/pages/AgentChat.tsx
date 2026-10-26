@@ -1,3 +1,5 @@
+import { i18n } from "@/i18n";
+import { t, useTranslation } from "@/i18n";
 import { useCallback, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { agentChatsApi } from "@/api/agentChats";
@@ -13,6 +15,7 @@ import { TaskDetailSurface } from "./IssueDetail";
 import { isUuidLike, type Issue } from "@paperclipai/shared";
 
 export function AgentChat() {
+  useTranslation();
   const { agentRef = "" } = useParams<{ agentRef: string }>();
   const { selectedCompanyId } = useCompany();
   const { enabled, loaded } = useAgentChatEnabled();
@@ -52,7 +55,7 @@ export function AgentChat() {
       recordAgentChatVisit(agent.companyId, userId, agent.id, chat.data?.id ?? null);
   }, [enabled, agent?.id, agent?.companyId, userId, session.isSuccess, chat.isSuccess, chat.data?.id]);
   const ensureIssue = useCallback(async () => {
-    if (!agent || !selectedCompanyId) throw new Error("Agent not found");
+    if (!agent || !selectedCompanyId) throw new Error(t("fullPages.agentNotFound"));
     if (chat.data) return chat.data;
     const promise = (creating.current ??= agentChatsApi.ensure(
       selectedCompanyId,
@@ -68,17 +71,14 @@ export function AgentChat() {
       creating.current = null;
       throw error;
     }
-  }, [agent, selectedCompanyId, chat.data, client, userId]);
+  }, [agent, selectedCompanyId, chat.data, client, userId, i18n.language]);
   if (!loaded || agents.isPending || session.isPending || historyAgent.isFetching && !agent)
     return (
-      <p className="text-sm text-muted-foreground">Loading conversation…</p>
+      <p className="text-sm text-muted-foreground">{t("fullPages.loadingConversation")}</p>
     );
   if (!enabled && !chat.data)
     return (
-      <p className="text-sm text-muted-foreground">
-        Agent Chat is disabled. Enable it in Experimental settings. Existing
-        history remains available through task links.
-      </p>
+      <p className="text-sm text-muted-foreground">{t("fullPages.agentChatIsDisabledEnableItIn")}</p>
     );
   if (agents.error || chat.error || !rosterAgent && historyAgent.error)
     return (
@@ -87,10 +87,10 @@ export function AgentChat() {
       </p>
     );
   if (!agent)
-    return <p className="text-sm text-destructive">Agent not found.</p>;
+    return <p className="text-sm text-destructive">{t("fullPages.agentNotFound_157b19")}</p>;
   if (chat.isPending)
     return (
-      <p className="text-sm text-muted-foreground">Loading conversation…</p>
+      <p className="text-sm text-muted-foreground">{t("fullPages.loadingConversation")}</p>
     );
   return (
     <TaskDetailSurface

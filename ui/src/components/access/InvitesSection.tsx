@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, Copy } from "lucide-react";
@@ -14,26 +16,26 @@ import { Badge } from "@/components/ui/badge";
 const inviteRoleOptions = [
   {
     value: "viewer",
-    label: "Viewer",
-    description: "Can view organization work and follow along.",
+    get label() { return fullSharedT("authGap.roleViewer"); },
+    get description() { return fullSharedT("fullShared.can_view_organization_work_and_follow_along_c0074e"); },
     gets: "View-only organization membership.",
   },
   {
     value: "operator",
-    label: "Operator",
-    description: "Can edit organization work and invite people.",
+    get label() { return fullSharedT("authGap.roleOperator"); },
+    get description() { return fullSharedT("fullShared.can_edit_organization_work_and_invite_people_ae45d4"); },
     gets: "Full editing and audit access. Cannot approve join requests or manage member permissions.",
   },
   {
     value: "admin",
-    label: "Admin",
-    description: "Recommended for operators who need to invite people, create agents, and approve joins.",
+    get label() { return fullSharedT("authGap.roleAdmin"); },
+    get description() { return fullSharedT("fullShared.recommended_for_operators_who_need_to_invite_people__508b27"); },
     gets: "Can create agents, invite users, assign tasks, and approve join requests.",
   },
   {
     value: "owner",
-    label: "Owner",
-    description: "Full organization access, including membership management.",
+    get label() { return fullSharedT("fullShared.owner_4b1b8a"); },
+    get description() { return fullSharedT("fullShared.full_organization_access_including_membership_manage_050eac"); },
     gets: "Everything in Admin, plus managing members.",
   },
 ] as const;
@@ -47,6 +49,7 @@ function isInviteHistoryRow(value: unknown): value is Awaited<ReturnType<typeof 
 
 /** The Invites tab of the Members page (extracted from the former standalone Invites page). */
 export function InvitesSection() {
+  useFullSharedTranslation();
   const { selectedCompanyId } = useCompany();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
@@ -76,7 +79,7 @@ export function InvitesSection() {
       afterFallback?.();
     }
     pushToast({
-      title: "Clipboard unavailable",
+      title: fullSharedT("fullShared.clipboard_unavailable_4ff69f"),
       body: unavailableBody,
       tone: "warn",
     });
@@ -117,19 +120,19 @@ export function InvitesSection() {
     onSuccess: async (invite) => {
       setLatestInviteUrl(invite.inviteUrl);
       setLatestInviteCopied(false);
-      const copied = await copyText(invite.inviteUrl, "Copy the invite URL manually from the field below.");
+      const copied = await copyText(invite.inviteUrl, fullSharedTailT("fullSharedTail.inviteCopyManually"));
 
       await queryClient.invalidateQueries({ queryKey: inviteHistoryQueryKey });
       pushToast({
-        title: "Invite created",
-        body: copied ? "Invite ready below and copied to clipboard." : "Invite ready below.",
+        title: fullSharedT("fullShared.invite_created_eb00b1"),
+        body: copied ? fullSharedTailT("fullSharedTail.inviteReadyCopied") : fullSharedTailT("fullSharedTail.inviteReady"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to create invite",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: fullSharedT("fullShared.failed_to_create_invite_23a0de"),
+        body: error instanceof Error ? error.message : fullSharedTailT("fullSharedTail.unknownError"),
         tone: "error",
       });
     },
@@ -139,52 +142,47 @@ export function InvitesSection() {
     mutationFn: (inviteId: string) => accessApi.revokeInvite(inviteId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: inviteHistoryQueryKey });
-      pushToast({ title: "Invite revoked", tone: "success" });
+      pushToast({ title: fullSharedT("fullShared.invite_revoked_d8fb33"), tone: "success" });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to revoke invite",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: fullSharedT("fullShared.failed_to_revoke_invite_ac674f"),
+        body: error instanceof Error ? error.message : fullSharedTailT("fullSharedTail.unknownError"),
         tone: "error",
       });
     },
   });
 
   if (!selectedCompanyId) {
-    return <div className="text-sm text-muted-foreground">Select an organization to manage invites.</div>;
+    return <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.select_an_organization_to_manage_invites_462e18")}</div>;
   }
 
   if (invitesQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading invites…</div>;
+    return <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_invites_5c525c")}</div>;
   }
 
   if (invitesQuery.error) {
     const message =
       invitesQuery.error instanceof ApiError && invitesQuery.error.status === 403
-        ? "You do not have permission to manage organization invites."
+        ? fullSharedT("fullShared.you_do_not_have_permission_to_manage_organization_in_e61b97")
         : invitesQuery.error instanceof Error
           ? invitesQuery.error.message
-          : "Failed to load invites.";
+          : fullSharedT("fullShared.failed_to_load_invites_d62fcf");
     return <div className="text-sm text-destructive">{message}</div>;
   }
 
   return (
     <div className="max-w-6xl space-y-8">
-      <p className="max-w-3xl text-sm text-muted-foreground">
-        Invite people to request access to this organization. New invite links are copied to your clipboard when they are
-        generated.
-      </p>
+      <p className="max-w-3xl text-sm text-muted-foreground">{fullSharedT("fullShared.invite_people_to_request_access_to_this_organization_b8b297")}</p>
 
       <section className="space-y-4 rounded-xl border border-border p-5">
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold">Invite a person</h2>
-          <p className="text-sm text-muted-foreground">
-            Generate a human invite link and choose the default access it should request.
-          </p>
+          <h2 className="text-sm font-semibold">{fullSharedT("fullShared.invite_a_person_f76f96")}</h2>
+          <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.generate_a_human_invite_link_and_choose_the_default__dd31c5")}</p>
         </div>
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-medium">Choose a role</legend>
+          <legend className="text-sm font-medium">{fullSharedT("fullShared.choose_a_role_a49c49")}</legend>
           <div className="rounded-xl border border-border">
             {inviteRoleOptions.map((option, index) => {
               const checked = humanRole === option.value;
@@ -205,9 +203,7 @@ export function InvitesSection() {
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-medium">{option.label}</span>
                       {option.value === "operator" ? (
-                        <Badge variant="outline" className="border-border text-muted-foreground">
-                          Default
-                        </Badge>
+                        <Badge variant="outline" className="border-border text-muted-foreground">{fullSharedT("providerSetup.model.default")}</Badge>
                       ) : null}
                     </span>
                     <span className="block max-w-2xl text-sm text-muted-foreground">{option.description}</span>
@@ -219,35 +215,29 @@ export function InvitesSection() {
           </div>
         </fieldset>
 
-        <div className="rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">
-          Each invite link is single-use. Human invitees get the selected role immediately after sign-in; agent invites still create a join request for approval.
-        </div>
+        <div className="rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">{fullSharedT("fullShared.each_invite_link_is_single_use_human_invitees_get_th_879640")}</div>
 
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={() => createInviteMutation.mutate()} disabled={createInviteMutation.isPending}>
-            {createInviteMutation.isPending ? "Creating…" : "Create invite"}
+            {createInviteMutation.isPending ? fullSharedT("taskProperties.fields.creating") : fullSharedT("fullShared.create_invite_9f395b")}
           </Button>
-          <span className="text-sm text-muted-foreground">Invite history below keeps the audit trail.</span>
+          <span className="text-sm text-muted-foreground">{fullSharedT("fullShared.invite_history_below_keeps_the_audit_trail_030769")}</span>
         </div>
 
         {latestInviteUrl ? (
           <div className="space-y-3 rounded-lg border border-border px-4 py-4">
             <div className="space-y-1">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-medium">Latest invite link</div>
+                <div className="text-sm font-medium">{fullSharedT("fullShared.latest_invite_link_ee47fa")}</div>
                 {latestInviteCopied ? (
                   <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
-                    <Check className="h-3.5 w-3.5" />
-                    Copied
-                  </div>
+                    <Check className="h-3.5 w-3.5" />{fullSharedT("taskPanels.preview.copied")}</div>
                 ) : null}
               </div>
-              <div className="text-sm text-muted-foreground">
-                This URL includes the current Paperclip domain returned by the server.
-              </div>
+              <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.this_url_includes_the_current_paperclip_domain_retur_3bad03")}</div>
             </div>
             <label className="block space-y-1">
-              <span className="sr-only">Latest invite URL</span>
+              <span className="sr-only">{fullSharedT("fullShared.latest_invite_url_35fbc9")}</span>
               <input
                 ref={latestInviteInputRef}
                 readOnly
@@ -255,7 +245,7 @@ export function InvitesSection() {
                 onFocus={(event) => event.currentTarget.select()}
                 onClick={(event) => event.currentTarget.select()}
                 className="w-full rounded-md border border-border bg-muted/60 px-3 py-2 text-sm text-foreground outline-none transition-colors selection:bg-primary selection:text-primary-foreground focus:border-ring"
-                aria-label="Latest invite URL"
+                aria-label={fullSharedT("fullShared.latest_invite_url_35fbc9")}
               />
             </label>
             <div className="flex flex-wrap gap-2">
@@ -268,9 +258,7 @@ export function InvitesSection() {
                   setLatestInviteCopied(copied);
                 }}
               >
-                <Copy className="h-4 w-4" />
-                Copy link
-              </Button>
+                <Copy className="h-4 w-4" />{fullSharedT("fullShared.copy_link_dbf362")}</Button>
             </div>
           </div>
         ) : null}
@@ -279,32 +267,26 @@ export function InvitesSection() {
       <section className="rounded-xl border border-border">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div className="space-y-1">
-            <h2 className="text-sm font-semibold">Invite history</h2>
-            <p className="text-sm text-muted-foreground">
-              Review invite status, audience, inviter, and any linked join request.
-            </p>
+            <h2 className="text-sm font-semibold">{fullSharedT("fullShared.invite_history_0269fe")}</h2>
+            <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.review_invite_status_audience_inviter_and_any_linked_bc3cae")}</p>
           </div>
-          <Link to="/inbox/requests" className="text-sm underline underline-offset-4">
-            Open join request queue
-          </Link>
+          <Link to="/inbox/requests" className="text-sm underline underline-offset-4">{fullSharedT("fullShared.open_join_request_queue_3f3aa6")}</Link>
         </div>
 
         {inviteHistory.length === 0 ? (
-          <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            No invites have been created for this organization yet.
-          </div>
+          <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">{fullSharedT("fullShared.no_invites_have_been_created_for_this_organization_y_c20447")}</div>
         ) : (
           <div className="border-t border-border">
             <div className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-5 py-3 font-medium text-muted-foreground">State</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">For</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Invited by</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Created</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Join request</th>
-                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Action</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("runUi.inspector.state")}</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("fullShared.for_ca15eb")}</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("authGap.invitedBy")}</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("fullShared.created_d70b9e")}</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">{fullSharedT("decisionsUi.source.join")}</th>
+                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">{fullSharedT("runUi.inspector.action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -317,7 +299,7 @@ export function InvitesSection() {
                       </td>
                       <td className="px-5 py-3 align-top">{formatInviteAudience(invite)}</td>
                       <td className="px-5 py-3 align-top">
-                        <div>{invite.invitedByUser?.name || invite.invitedByUser?.email || "Unknown inviter"}</div>
+                        <div>{invite.invitedByUser?.name || invite.invitedByUser?.email || fullSharedT("fullShared.unknown_inviter_7cf15e")}</div>
                         {invite.invitedByUser?.email && invite.invitedByUser.name ? (
                           <div className="text-xs text-muted-foreground">{invite.invitedByUser.email}</div>
                         ) : null}
@@ -327,9 +309,7 @@ export function InvitesSection() {
                       </td>
                       <td className="px-5 py-3 align-top">
                         {invite.relatedJoinRequestId ? (
-                          <Link to="/inbox/requests" className="underline underline-offset-4">
-                            Review request
-                          </Link>
+                          <Link to="/inbox/requests" className="underline underline-offset-4">{fullSharedT("taskChatUi.interaction.reviewRequest")}</Link>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
@@ -341,11 +321,9 @@ export function InvitesSection() {
                             variant="outline"
                             onClick={() => revokeMutation.mutate(invite.id)}
                             disabled={revokeMutation.isPending}
-                          >
-                            Revoke
-                          </Button>
+                          >{fullSharedT("taskProperties.share.revoke")}</Button>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Inactive</span>
+                          <span className="text-xs text-muted-foreground">{fullSharedT("fullShared.inactive_ac7c94")}</span>
                         )}
                       </td>
                     </tr>
@@ -361,7 +339,7 @@ export function InvitesSection() {
                   onClick={() => invitesQuery.fetchNextPage()}
                   disabled={invitesQuery.isFetchingNextPage}
                 >
-                  {invitesQuery.isFetchingNextPage ? "Loading more…" : "View more"}
+                  {invitesQuery.isFetchingNextPage ? fullSharedT("fullShared.loading_more_964e5f") : fullSharedT("fullShared.view_more_267e55")}
                 </Button>
               </div>
             ) : null}

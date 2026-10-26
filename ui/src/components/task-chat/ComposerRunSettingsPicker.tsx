@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n, Trans, useTranslation } from "@/i18n";
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type Ref } from "react";
@@ -47,8 +48,8 @@ const HARNESS_LABELS: Record<string, string> = {
   claude_local: "Claude Code", codex_local: "Codex", opencode_local: "OpenCode",
   pi_local: "Pi", kimi_local: "Kimi Code", gemini_local: "Gemini CLI",
   cursor: "Cursor", cursor_cloud: "Cursor Cloud", grok_local: "Grok CLI",
-  hermes_local: "Hermes CLI", paperclip_runner: "Paperclip Runner",
-  process: "Process", http: "HTTP", openclaw_gateway: "OpenClaw Gateway",
+  hermes_local: "Hermes CLI", get paperclip_runner() { return fullSharedT("runtimeSelect.paperclip"); },
+  get process() { return fullSharedT("taskChatUi.settings.process"); }, http: "HTTP", openclaw_gateway: "OpenClaw Gateway",
   hermes_gateway: "Hermes Gateway",
 };
 
@@ -71,6 +72,7 @@ function unavailableModelReason(agent: Agent | undefined, t: TFunction): string 
 }
 
 function AnimatedBody({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | null>(null);
   useLayoutEffect(() => {

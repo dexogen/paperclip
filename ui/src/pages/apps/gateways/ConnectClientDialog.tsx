@@ -1,3 +1,6 @@
+import { renderAppError } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { type ComponentType, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -73,6 +76,7 @@ export function ConnectClientDialog({
   createdTokens: ToolMcpGatewayTokenCreated[];
   onTokenCreated: (token: ToolMcpGatewayTokenCreated) => void;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const snippets = useMemo(() => orderedSnippets(gateway.clientSnippets ?? []), [gateway.clientSnippets]);
@@ -91,7 +95,7 @@ export function ConnectClientDialog({
   );
   const tokenGroups = useMemo<SearchableSelectGroup<string, TokenOption>[]>(() => [{
     id: "tokens",
-    label: "Available this session",
+    label: fullAppsT("fullApps.available_this_session_07bcb1"),
     options: availableTokens.map((token) => ({
       key: token.id,
       value: token.id,
@@ -100,7 +104,7 @@ export function ConnectClientDialog({
       searchText: `${token.name} ${token.clientLabel} ${token.tokenPrefix}`,
       token,
     })),
-  }], [availableTokens]);
+  }], [availableTokens, fullAppsI18n.resolvedLanguage]);
 
   const [active, setActive] = useState<PanelKey>(snippets[0]?.client ?? "raw_url");
   const [selectedTokenId, setSelectedTokenId] = useState("");
@@ -129,15 +133,15 @@ export function ConnectClientDialog({
       onTokenCreated(token);
       setSelectedTokenId(token.id);
       pushToast({
-        title: "Token issued",
-        body: "The copy buttons now include its full Authorization header.",
+        title: fullAppsT("fullApps.token_issued_819e5d"),
+        body: fullAppsT("fullApps.the_copy_buttons_now_include_its_full_authorization__e8f457"),
         tone: "success",
       });
       await queryClient.invalidateQueries({ queryKey: gatewaysQueryKey(gateway.companyId) });
     },
     onError: (error) => pushToast({
-      title: "Token was not issued",
-      body: error instanceof Error ? error.message : String(error),
+      title: fullAppsT("fullApps.token_was_not_issued_2f956f"),
+      body: error instanceof Error ? renderAppError(error) : String(error),
       tone: "error",
     }),
   });
@@ -145,11 +149,11 @@ export function ConnectClientDialog({
   async function copyText(value: string, label: string) {
     try {
       await copyTextToClipboard(value);
-      pushToast({ title: "Copied", body: label, tone: "success" });
+      pushToast({ title: fullAppsT("taskPanels.preview.copied"), body: label, tone: "success" });
     } catch (error) {
       pushToast({
-        title: "Copy failed",
-        body: error instanceof Error ? error.message : "Clipboard access is unavailable.",
+        title: fullAppsT("taskPanels.viewer.copy.failed"),
+        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.clipboard_access_is_unavailable_0899c2"),
         tone: "error",
       });
     }
@@ -179,38 +183,31 @@ export function ConnectClientDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            Client snippets
-            <Tooltip>
+          <DialogTitle className="flex items-center gap-2">{fullAppsT("fullApps.client_snippets_e79437")}<Tooltip>
               <TooltipTrigger asChild>
-                <button type="button" aria-label="About client snippets" className="text-muted-foreground hover:text-foreground">
+                <button type="button" aria-label={fullAppsT("fullApps.about_client_snippets_217e85")} className="text-muted-foreground hover:text-foreground">
                   <HelpCircle className="h-4 w-4" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs text-xs">
-                Give this MCP gateway configuration to your tool. It does not give it access to Paperclip or
-                skills; it only gateways calls between the client and the tools exposed here.
-              </TooltipContent>
+              <TooltipContent className="max-w-xs text-xs">{fullAppsT("fullApps.give_this_mcp_gateway_configuration_to_your_tool_it__e635f3")}</TooltipContent>
             </Tooltip>
           </DialogTitle>
-          <DialogDescription>
-            Choose a client and copy a complete, authenticated configuration.
-          </DialogDescription>
+          <DialogDescription>{fullAppsT("fullApps.choose_a_client_and_copy_a_complete_authenticated_co_d4d88f")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
-          <span className="text-xs font-medium text-muted-foreground">Authorization</span>
+          <span className="text-xs font-medium text-muted-foreground">{fullAppsT("fullApps.authorization_ca5839")}</span>
           {availableTokens.length > 0 ? (
             <SearchableSelect<string, TokenOption>
               value={selectedTokenId}
               groups={tokenGroups}
               onValueChange={setSelectedTokenId}
-              placeholder="Issue a token"
-              searchPlaceholder="Search tokens…"
-              emptyMessage="No copyable tokens."
+              placeholder={fullAppsT("fullApps.issue_a_token_141806")}
+              searchPlaceholder={fullAppsT("fullApps.search_tokens_6323cd")}
+              emptyMessage={fullAppsT("fullApps.no_copyable_tokens_fe96bd")}
               contentWidth="auto"
               triggerClassName="h-8 w-auto max-w-xs rounded-full px-3"
-              renderValue={(option) => option ? `${option.label} · ${maskedTokenLabel(option.token)}` : "Issue a token"}
+              renderValue={(option) => option ? `${option.label} · ${maskedTokenLabel(option.token)}` : fullAppsT("fullApps.copy_1418067b77b6")}
               renderOption={(option) => (
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate">{option.label}</span>
@@ -220,7 +217,7 @@ export function ConnectClientDialog({
                 </span>
               )}
               createItem={{
-                render: () => <span>+ Issue a new token</span>,
+                render: () => <span>{fullAppsT("fullApps.issue_a_new_token_6cc76e")}</span>,
                 onSelect: issueToken,
               }}
             />
@@ -233,7 +230,7 @@ export function ConnectClientDialog({
               disabled={issueTokenMutation.isPending}
               onClick={issueToken}
             >
-              {issueTokenMutation.isPending ? "Issuing…" : "Issue a token"}
+              {issueTokenMutation.isPending ? fullAppsT("fullApps.issuing_0247fb") : fullAppsT("fullApps.issue_a_token_141806")}
             </Button>
           )}
           {selectedToken ? (
@@ -241,24 +238,18 @@ export function ConnectClientDialog({
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => void copyText(`Authorization: Bearer ${selectedToken.token}`, "Authorization header")}
+              onClick={() => void copyText(`Authorization: Bearer ${selectedToken.token}`, fullAppsT("fullApps.copy_8e68075cabda"))}
             >
-              <Copy className="mr-1 h-3.5 w-3.5" />
-              Copy header
-            </Button>
+              <Copy className="mr-1 h-3.5 w-3.5" />{fullAppsT("fullApps.copy_header_575ecd")}</Button>
           ) : null}
         </div>
 
         {!selectedToken ? (
-          <p className="text-xs text-muted-foreground">
-            Issue a token before copying a snippet; the full <code>Authorization: Bearer …</code> header is
-            required. Existing token secrets cannot be retrieved again, so only tokens issued in this page
-            session can fill a snippet.
-          </p>
+          <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.issue_a_token_before_copying_a_snippet_the_full_head_a1ff00" components={{ part1: <code>Authorization: Bearer …</code> }} /></p>
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-(--gtc-10)">
-          <nav className="flex gap-1 overflow-x-auto sm:flex-col" aria-label="Clients">
+          <nav className="flex gap-1 overflow-x-auto sm:flex-col" aria-label={fullAppsT("fullApps.clients_65a725")}>
             {snippets.map((snippet) => {
               const Icon = CLIENT_ICONS[snippet.client];
               return (
@@ -288,28 +279,24 @@ export function ConnectClientDialog({
                   : "text-muted-foreground hover:bg-muted/60",
               )}
             >
-              <LinkIcon className="h-4 w-4 shrink-0" />
-              Raw URL
-            </button>
+              <LinkIcon className="h-4 w-4 shrink-0" />{fullAppsT("fullApps.raw_url_79300f")}</button>
           </nav>
 
           <div className="min-w-0 space-y-3">
             {active === "raw_url" ? (
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <div className="text-sm font-medium text-foreground">Endpoint URL</div>
+                  <div className="text-sm font-medium text-foreground">{fullAppsT("fullApps.endpoint_url_257817")}</div>
                   <div className="flex items-center gap-2">
                     <code className="min-w-0 flex-1 truncate rounded-md bg-muted px-3 py-2 font-mono text-xs text-muted-foreground">
                       {endpoint}
                     </code>
-                    <Button variant="outline" size="sm" onClick={() => void copyText(endpoint, "Endpoint URL")}>
-                      <Copy className="mr-1 h-3.5 w-3.5" />
-                      Copy
-                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => void copyText(endpoint, fullAppsT("fullApps.copy_2578179d1779"))}>
+                      <Copy className="mr-1 h-3.5 w-3.5" />{fullAppsT("taskDetailCommon.markdown.copy")}</Button>
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <div className="text-sm font-medium text-foreground">Authorization header</div>
+                  <div className="text-sm font-medium text-foreground">{fullAppsT("fullApps.authorization_header_8e6807")}</div>
                   <code className="block truncate rounded-md bg-muted px-3 py-2 font-mono text-xs text-muted-foreground">
                     {selectedToken ? `Authorization: Bearer ${maskedTokenLabel(selectedToken)}` : "Authorization: Bearer pcgw_•••"}
                   </code>
@@ -323,11 +310,9 @@ export function ConnectClientDialog({
                     variant="outline"
                     size="sm"
                     disabled={!copyConfigText}
-                    onClick={() => copyConfigText && void copyText(copyConfigText, `${activeSnippet.label} config`)}
+                    onClick={() => copyConfigText && void copyText(copyConfigText, fullAppsT("fullApps.message_20a8ab1c2d91", { value1: activeSnippet.label }))}
                   >
-                    <Copy className="mr-1 h-3.5 w-3.5" />
-                    Copy
-                  </Button>
+                    <Copy className="mr-1 h-3.5 w-3.5" />{fullAppsT("taskDetailCommon.markdown.copy")}</Button>
                 </div>
                 <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 font-mono text-xs text-muted-foreground">
                   {displayConfigText}
@@ -339,21 +324,16 @@ export function ConnectClientDialog({
                 ) : null}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">No client snippets available for this gateway.</p>
+              <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.no_client_snippets_available_for_this_gateway_b77520")}</p>
             )}
 
-            <p className="text-xs text-muted-foreground">
-              Treat the token like a password. Anyone holding it can call the tools this gateway allows. Revoke
-              it if it leaks.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.treat_the_token_like_a_password_anyone_holding_it_ca_8dce39")}</p>
           </div>
         </div>
 
         <DialogFooter>
           <Button onClick={() => onOpenChange(false)}>
-            <Check className="mr-1.5 h-4 w-4" />
-            Done
-          </Button>
+            <Check className="mr-1.5 h-4 w-4" />{fullAppsT("fullApps.done_11a676")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "../i18n";
 
@@ -19,14 +20,13 @@ export type LowTrustBoundaryTarget =
   | { type: "issue"; id: string };
 
 export const TRUST_PRESET_LABELS: Record<TrustPreset, string> = {
-  standard: "Standard",
-  low_trust_review: "Low-trust review",
+  get standard() { return fullSharedT("agentAccessUi.trust.standard"); },
+  get low_trust_review() { return fullSharedT("agentAccessUi.trust.lowTrust"); },
 };
 
 export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = {
-  standard: "Organization-visible collaboration. This is the default for normal work.",
-  low_trust_review:
-    "Contained for hostile or untrusted input. Narrow Paperclip API, quarantined output. Use for PR review and external-content triage.",
+  get standard() { return fullSharedT("agentAccessUi.trust.standardDescription"); },
+  get low_trust_review() { return fullSharedT("agentAccessUi.trust.lowTrustDescription"); },
 };
 
 export function getTrustPresetLabels(t: TFunction = i18n.getFixedT("en")): Record<TrustPreset, string> {

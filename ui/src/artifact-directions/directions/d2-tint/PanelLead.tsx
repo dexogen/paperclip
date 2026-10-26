@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -37,6 +38,7 @@ const PLAY_RING = "focus-visible:outline-2 focus-visible:-outline-offset-4 focus
 const DURATION = "absolute bottom-2 right-2 rounded-(--rad-4) bg-(--tint-scrim) px-1.5 py-1 font-mono text-(length:--text-micro) leading-none text-(--tint-on-kind)";
 
 export function PanelPicture({ artifact, onError }: { artifact: LabArtifact; onError: () => void }) {
+  useFullSharedTranslation();
   const [playing, setPlaying] = useState(false);
   const box = cn("w-full", pictureBox(artifact.aspect));
   const video = artifact.kind === "video";
@@ -47,7 +49,7 @@ export function PanelPicture({ artifact, onError }: { artifact: LabArtifact; onE
   return (
     <FoldedPreview artifact={artifact} fold="lg" fit="contain" play={false} className={cn(box, video ? "z-10" : null)} onError={onError}>
       {video ? (
-        <button type="button" aria-label={`Play video: ${artifact.title}`} onClick={() => setPlaying(true)} className={cn("group/play absolute inset-0 cursor-pointer", PLAY_RING)}>
+        <button type="button" aria-label={fullSharedT("fullShared.play_video_3cbb68", { value1: artifact.title })} onClick={() => setPlaying(true)} className={cn("group/play absolute inset-0 cursor-pointer", PLAY_RING)}>
           {/* The disc is the button's visible state: it darkens under the pointer and grows while pressed. */}
           <PlayMark fold="lg" className={cn("group-hover/play:bg-(--tint-scrim-strong) group-active/play:scale-95", MOTION)} />
           {artifact.durationLabel ? <span className={DURATION}>{artifact.durationLabel}</span> : null}
@@ -60,6 +62,7 @@ export function PanelPicture({ artifact, onError }: { artifact: LabArtifact; onE
 const MONO = "text-(length:--text-micro) leading-4.5";
 
 export function PanelSheet({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <FoldedSheet artifact={artifact} fold="md">
       {artifact.kind === "document" ? (
@@ -75,5 +78,6 @@ export function PanelSheet({ artifact }: { artifact: LabArtifact }) {
 
 /** 112px wide (80 in a pane dragged under about 23rem), and as tall as the card's words, so no card is taller than what it says. */
 export function PanelNamed({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return <KindWell artifact={artifact} size="md" className="min-h-21 w-28 shrink-0 self-stretch @max-xs:min-h-15 @max-xs:w-20" glyphClassName="@max-xs:h-11.5 @max-xs:w-10" />;
 }

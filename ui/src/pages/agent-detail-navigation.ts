@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 import { auditSectionHref, type AuditSection } from "./audit/audit-navigation";
@@ -24,30 +25,30 @@ export const AGENT_DETAIL_NAVIGATION: ReadonlyArray<{
 }> = [
   {
     id: "agent",
-    label: "Agent",
+    get label() { return t("approvalsUi.agent"); },
     items: [
-      { value: "overview", label: "Overview" },
-      { value: "instructions", label: "Instructions" },
-      { value: "skills", label: "Skills" },
+      { value: "overview", get label() { return t("costsUi.overview"); } },
+      { value: "instructions", get label() { return t("agentDetailUi.nav.instructions"); } },
+      { value: "skills", get label() { return t("sidebar.skills"); } },
     ],
   },
   {
     id: "runtime",
-    label: "Runtime",
+    get label() { return t("agentDetailUi.nav.groupRuntime"); },
     items: [
-      { value: "runtime", label: "Harness / Runtime" },
-      { value: "secrets", label: "Secrets" },
-      { value: "tools", label: "Tools" },
-      { value: "channels", label: "Channels" },
+      { value: "runtime", get label() { return t("agentDetailUi.nav.runtime"); } },
+      { value: "secrets", get label() { return t("settingsNav.secrets"); } },
+      { value: "tools", get label() { return t("agentDetailUi.nav.tools"); } },
+      { value: "channels", get label() { return t("agentChannelsUi.heading"); } },
     ],
   },
   {
     id: "governance",
-    label: "Governance",
+    get label() { return t("agentDetailUi.nav.groupGovernance"); },
     items: [
-      { value: "permissions", label: "Permissions / Trust" },
-      { value: "api-keys", label: "API Keys" },
-      { value: "revisions", label: "Revisions" },
+      { value: "permissions", get label() { return t("agentDetailUi.nav.permissions"); } },
+      { value: "api-keys", get label() { return t("agentDetailUi.nav.api-keys"); } },
+      { value: "revisions", get label() { return t("agentDetailUi.nav.revisions"); } },
     ],
   },
 ] as const;

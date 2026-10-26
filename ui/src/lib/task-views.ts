@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { InboxTab } from "./inbox";
 
 /**
@@ -49,22 +50,22 @@ export interface TaskViewGroup {
 
 export const TASK_VIEW_GROUPS: TaskViewGroup[] = [
   {
-    label: "My work",
+    get label() { return fullSharedT("taskViews.myWork"); },
     views: [
-      { key: "mine", label: "Mine", surface: "inbox", inboxTab: "mine", hint: "Assigned to you or waiting on you" },
-      { key: "unread", label: "Unread", surface: "inbox", inboxTab: "unread", hint: "Tasks you touched with new activity" },
-      { key: "blocked", label: "Blocked", surface: "inbox", inboxTab: "blocked", hint: "Blocked tasks, grouped by blocker" },
-      { key: "recent", label: "Recent", surface: "inbox", inboxTab: "recent", hint: "Everything you touched lately" },
-      { key: "everything", label: "Everything", surface: "inbox", inboxTab: "all", hint: "Tasks, approvals, failed runs and join requests" },
+      { key: "mine", get label() { return fullSharedT("taskViews.mine"); }, surface: "inbox", inboxTab: "mine", get hint() { return fullSharedT("taskViews.hints.mine"); } },
+      { key: "unread", get label() { return fullSharedT("taskViews.unread"); }, surface: "inbox", inboxTab: "unread", get hint() { return fullSharedT("taskViews.hints.unread"); } },
+      { key: "blocked", get label() { return fullSharedT("fullShared.blocked_18f2a0"); }, surface: "inbox", inboxTab: "blocked", get hint() { return fullSharedT("taskViews.hints.blocked"); } },
+      { key: "recent", get label() { return fullSharedT("taskViews.recent"); }, surface: "inbox", inboxTab: "recent", get hint() { return fullSharedT("taskViews.hints.recent"); } },
+      { key: "everything", get label() { return fullSharedT("taskViews.everything"); }, surface: "inbox", inboxTab: "all", get hint() { return fullSharedT("taskViews.hints.everything"); } },
     ],
   },
   {
-    label: "Organization",
+    get label() { return fullSharedT("sidebar.organization"); },
     views: [
-      { key: "all", label: "All tasks", surface: "issues", statuses: [], hint: "Every task in the organization" },
-      { key: "active", label: "Active", surface: "issues", statuses: ["todo", "in_progress", "in_review", "blocked"], hint: "Open tasks, running or not" },
-      { key: "backlog", label: "Backlog", surface: "issues", statuses: ["backlog"], hint: "Not started yet" },
-      { key: "done", label: "Done", surface: "issues", statuses: ["done", "cancelled"], hint: "Completed and cancelled" },
+      { key: "all", get label() { return fullSharedT("taskViews.all"); }, surface: "issues", statuses: [], get hint() { return fullSharedT("taskViews.hints.all"); } },
+      { key: "active", get label() { return fullSharedT("fullShared.active_923406"); }, surface: "issues", statuses: ["todo", "in_progress", "in_review", "blocked"], get hint() { return fullSharedT("taskViews.hints.active"); } },
+      { key: "backlog", get label() { return fullSharedT("taskViews.backlog"); }, surface: "issues", statuses: ["backlog"], get hint() { return fullSharedT("taskViews.hints.backlog"); } },
+      { key: "done", get label() { return fullSharedT("fullShared.done_11a676"); }, surface: "issues", statuses: ["done", "cancelled"], get hint() { return fullSharedT("taskViews.hints.done"); } },
     ],
   },
 ];

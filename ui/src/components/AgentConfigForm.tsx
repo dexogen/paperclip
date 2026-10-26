@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { t as translate, useTranslation, t, i18n } from "../i18n";
 import type { TFunction } from "i18next";
 import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS } from "@/lib/copilot-task-model-catalog";
@@ -365,6 +367,7 @@ function ConfigSections({ order, className, children }: {
   className: string;
   children: ReactNode;
 }) {
+  useFullSharedTranslation();
   if (!order) return <div className={className}>{children}</div>;
   const rank = (child: ReactNode) => {
     const key = isValidElement<{ "data-config-section"?: string }>(child)
@@ -931,8 +934,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       effectiveLoginEnvironmentId: resolve(rawCurrentDefaultEnvironmentId || null),
       savedLoginEnvironmentId: resolve(savedDefaultEnvironmentId),
     };
-  }, [
-    rawCurrentDefaultEnvironmentId,
+  }, [rawCurrentDefaultEnvironmentId,
     savedDefaultEnvironmentId,
     instanceSettings?.defaultEnvironmentId,
     environments,
@@ -1719,7 +1721,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       String(config.promptTemplate ?? ""),
                     )}
                     onChange={(v) => mark("adapterConfig", "promptTemplate", v ?? "")}
-                    placeholder="You are agent {{ agent.name }}. Your role is {{ agent.role }}..."
+                    placeholder={fullSharedTailT("fullSharedTail.promptTemplateExample", { name: "{{ agent.name }}", role: "{{ agent.role }}" })}
                     contentClassName="min-h-(--sz-88px) text-sm font-mono"
                     imageUploadHandler={async (file) => {
                       const namespace = `agents/${props.agent.id}/prompt-template`;
@@ -2413,6 +2415,7 @@ const ADAPTER_LOGIN_POLL_INTERVAL_MS = 2000;
 // A copy-to-clipboard button. It mirrors the workspace service control bar: a
 // short "copied" flash, then it returns to the copy icon.
 function AdapterLoginCopyButton({ value, label }: { value: string; label: string }) {
+  useFullSharedTranslation();
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -2582,6 +2585,7 @@ function adapterLoginTitle(adapterType: string): string {
 }
 
 export function AdapterLoginPanel(props: AdapterLoginPanelProps) {
+  useFullSharedTranslation();
   const getCapabilities = useAdapterCapabilities();
   const panelMode = getCapabilities(props.adapterType).login?.panelMode;
   if (panelMode === "submitted_browser_code") {
@@ -4109,7 +4113,7 @@ export function ModelDropdown({
                 <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
               </svg>
-              {detectingModel ? t("providerSetup.model.detecting") : detectedModel ? (redetectModelLabel ?? detectModelLabel?.replace(/^Detect\b/, "Re-detect") ?? t("providerSetup.model.redetect")) : (detectModelLabel ?? t("providerSetup.model.detect"))}
+              {detectingModel ? t("providerSetup.model.detecting") : detectedModel ? (redetectModelLabel ?? detectModelLabel?.replace(/^Detect\b/, fullSharedT("fullShared.re_detect_b513a3")) ?? t("providerSetup.model.redetect")) : (detectModelLabel ?? t("providerSetup.model.detect"))}
             </button>
           )}
           {onRefreshModels && !modelSearch.trim() && (

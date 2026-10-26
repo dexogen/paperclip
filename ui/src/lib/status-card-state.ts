@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import type { StatusCard, StatusCardRefreshPolicy } from "@paperclipai/shared";
 
 /**
@@ -52,60 +54,60 @@ export const STATUS_CARD_LIFECYCLE_PRESENTATION: Record<
   StatusCardLifecyclePresentation
 > = {
   compiling: {
-    label: "Setting up",
+    get label() { return fullSharedT("fullShared.setting_up_dbdf27"); },
     dotClassName: "bg-cyan-400 animate-pulse",
-    description: "Just created; setting up and generating the first summary.",
+    get description() { return fullSharedT("fullShared.just_created_setting_up_and_generating_the_first_sum_226c1e"); },
     dashedBorder: true,
     keepsLastSummary: false,
   },
   fresh: {
-    label: "Fresh",
+    get label() { return fullSharedT("taskDisplay.external.liveness.fresh"); },
     dotClassName: "bg-emerald-400",
-    description: "Summary reflects all known changes; nothing pending.",
+    get description() { return fullSharedT("fullShared.summary_reflects_all_known_changes_nothing_pending_52934f"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   stale: {
-    label: "Stale",
+    get label() { return fullSharedT("fullShared.stale_40c9e5"); },
     dotClassName: "bg-amber-400",
-    description: "Changes are pending since the last update.",
+    get description() { return fullSharedT("fullShared.changes_are_pending_since_the_last_update_c68136"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   updating: {
     // Blue (distinct from fresh-emerald and compiling-cyan) so an in-flight
     // update never reads as "fresh" on a glance-scan of the board.
-    label: "Updating",
+    get label() { return fullSharedT("fullShared.updating_0b5260"); },
     dotClassName: "bg-blue-500 animate-pulse",
-    description: "An update is streaming in now.",
+    get description() { return fullSharedT("fullShared.an_update_is_streaming_in_now_0b749e"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   error: {
-    label: "Error",
+    get label() { return fullSharedT("fullShared.error_54a0e8"); },
     dotClassName: "bg-red-500",
-    description: "The last run failed; the last good summary stays visible.",
+    get description() { return fullSharedT("fullShared.the_last_run_failed_the_last_good_summary_stays_visi_3a1419"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   paused_budget: {
-    label: "Paused — budget",
+    get label() { return fullSharedT("fullShared.paused_budget_62ae66"); },
     dotClassName: "bg-orange-400",
-    description: "The daily token cap was hit; auto-updates are suspended.",
+    get description() { return fullSharedT("fullShared.the_daily_token_cap_was_hit_auto_updates_are_suspend_7fb1a0"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   paused_hours: {
-    label: "Paused — hours",
+    get label() { return fullSharedT("fullShared.paused_hours_9e0292"); },
     dotClassName: "bg-orange-400",
-    description: "Outside active hours; changes batch into one update at window open.",
+    get description() { return fullSharedT("fullShared.outside_active_hours_changes_batch_into_one_update_a_5fc833"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
   archived: {
-    label: "Archived",
+    get label() { return fullSharedT("fullShared.archived_bdb865"); },
     dotClassName: "bg-muted-foreground/50",
-    description: "No auto-updates and no watches. Restore to start watching again.",
+    get description() { return fullSharedT("fullShared.no_auto_updates_and_no_watches_restore_to_start_watc_cd8313"); },
     dashedBorder: false,
     keepsLastSummary: true,
   },
@@ -128,16 +130,16 @@ export function formatUsdFromCents(cents: number): string {
 export function describeRefreshPolicy(policy: StatusCardRefreshPolicy): string {
   switch (policy.mode) {
     case "manual":
-      return "manual";
+      return fullSharedTailT("fullSharedTail.refreshManual");
     case "interval":
       return policy.intervalMinutes
-        ? `every ${policy.intervalMinutes}m if changed`
-        : "on a schedule if changed";
+        ? fullSharedTailT("fullSharedTail.refreshInterval", { minutes: policy.intervalMinutes })
+        : fullSharedTailT("fullSharedTail.refreshSchedule");
     case "reactive": {
       const debounce = policy.debounceSeconds ?? 60;
-      return `on change (${debounce}s)`;
+      return fullSharedTailT("fullSharedTail.refreshReactive", { seconds: debounce });
     }
     default:
-      return "manual";
+      return fullSharedTailT("fullSharedTail.refreshManual");
   }
 }

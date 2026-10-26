@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 /**
  * Single source of truth for adapter display metadata.
  *
@@ -61,110 +63,110 @@ export interface AdapterDisplayInfo {
 }
 
 const adapterDisplayMap: Record<string, AdapterDisplayInfo> = {
-  copilot_runtime: { label: "GitHub Copilot", description: "Copilot through Paperclip Runner", icon: Code, hideFromVisualSelection: true },
+  copilot_runtime: { label: "GitHub Copilot", get description() { return fullSharedT("fullShared.copilot_through_paperclip_runner_2bf511"); }, icon: Code, hideFromVisualSelection: true },
   acpx_local: {
-    label: "ACPX (retired)",
-    description: "Retired standalone ACPX adapter",
+    get label() { return fullSharedT("agentConfigUi.retiredAcpx"); },
+    get description() { return fullSharedT("fullShared.retired_standalone_acpx_adapter_b063be"); },
     icon: Bot,
     comingSoon: true,
-    disabledLabel: "Use Claude Code or Codex with the ACP engine",
+    get disabledLabel() { return fullSharedTailT("fullSharedTail.display_2da923218646"); },
     hideFromVisualSelection: true,
   },
   claude_local: {
     label: "Claude Code",
-    description: "Claude Code CLI harness",
+    get description() { return fullSharedT("fullShared.claude_code_cli_harness_8ef9af"); },
     icon: Sparkles,
     recommended: true,
   },
   codex_local: {
     label: "Codex",
-    description: "Codex CLI harness",
+    get description() { return fullSharedT("fullShared.codex_cli_harness_8544df"); },
     icon: Code,
     recommended: true,
   },
   paperclip_runner: {
-    label: "Paperclip Runner",
-    description: "Experimental Rust runner with a Codex provider",
+    get label() { return fullSharedT("runtimeSelect.paperclip"); },
+    get description() { return fullSharedT("fullShared.experimental_rust_runner_with_a_codex_provider_98edf6"); },
     icon: Cpu,
     experimental: true,
   },
   gemini_local: {
     label: "Gemini CLI",
-    description: "Gemini CLI harness",
+    get description() { return fullSharedT("fullShared.gemini_cli_harness_f87585"); },
     icon: Gem,
   },
   grok_local: {
     label: "Grok Build",
-    description: "Grok Build harness",
+    get description() { return fullSharedT("fullShared.grok_build_harness_916ba1"); },
     icon: Bot,
   },
   kimi_local: {
     label: "Kimi Code",
-    description: "Kimi Code CLI harness",
+    get description() { return fullSharedT("fullShared.kimi_code_cli_harness_92db38"); },
     icon: Moon,
   },
   hermes_gateway: {
     label: "Hermes Gateway",
-    description: "Remote Hermes API server",
+    get description() { return fullSharedT("fullShared.remote_hermes_api_server_120e74"); },
     icon: Bot,
     hideFromVisualSelection: true,
   },
   hermes_local: {
     label: "Hermes",
-    description: "Hermes harness",
+    get description() { return fullSharedT("fullShared.hermes_harness_1709fe"); },
     icon: Bot,
   },
   opencode_local: {
     label: "OpenCode",
-    description: "OpenCode multi-provider harness",
+    get description() { return fullSharedT("fullShared.opencode_multi_provider_harness_b8f8e3"); },
     icon: OpenCodeLogoIcon,
   },
   pi_local: {
     label: "Pi",
-    description: "Pi harness",
+    get description() { return fullSharedT("fullShared.pi_harness_19e155"); },
     icon: Terminal,
   },
   cursor: {
     label: "Cursor",
-    description: "Cursor CLI harness",
+    get description() { return fullSharedT("fullShared.cursor_cli_harness_473f10"); },
     icon: MousePointer2,
   },
   // Display-only choice: persisted as paperclip_runner with provider openai_dot.
-  grok_bot: { label: "Grok Bot", experimental: true, icon: Bot, description: "An existing external Bot in Grok" },
+  grok_bot: { label: "Grok Bot", experimental: true, icon: Bot, get description() { return fullSharedT("fullShared.an_existing_external_bot_in_grok_d87558"); } },
   openai_dot: {
     label: "OpenAI Dot",
-    description: "Your Dot in ChatGPT",
+    get description() { return fullSharedT("externalAgentUi.preset.dot"); },
     icon: Bot,
     experimental: true,
   },
   muse: {
-    label: "Muse — Personal agent",
-    description: "Your personal Muse at muse.ai",
+    get label() { return fullSharedT("agentConfigUi.musePersonal"); },
+    get description() { return fullSharedT("externalAgentUi.preset.muse"); },
     icon: Bot,
     experimental: true,
   },
   cursor_cloud: {
     label: "Cursor Cloud",
-    description: "Managed remote Cursor agent",
+    get description() { return fullSharedT("fullShared.managed_remote_cursor_agent_201c0c"); },
     icon: MousePointer2,
   },
   openclaw_gateway: {
     label: "OpenClaw Gateway",
-    description: "External gateway adapter",
+    get description() { return fullSharedT("fullShared.external_gateway_adapter_73f252"); },
     icon: Bot,
     comingSoon: true,
-    disabledLabel: "Invite external agents from the add-agent modal",
+    get disabledLabel() { return fullSharedTailT("fullSharedTail.display_eab0a5ddc8ff"); },
     hideFromVisualSelection: true,
   },
   process: {
-    label: "Process",
-    description: "Internal process adapter",
+    get label() { return fullSharedT("taskChatUi.settings.process"); },
+    get description() { return fullSharedT("fullShared.internal_process_adapter_485c4b"); },
     icon: Cpu,
     comingSoon: true,
   },
   http: {
     label: "HTTP",
-    description: "Internal HTTP adapter",
+    get description() { return fullSharedT("fullShared.internal_http_adapter_603668"); },
     icon: Cpu,
     comingSoon: true,
   },
@@ -211,7 +213,7 @@ export function getAdapterDisplay(type: string): AdapterDisplayInfo {
   const label = withSuffix(humanizeType(type), suffix);
   return {
     label,
-    description: suffix ? `External ${suffix} adapter` : "External adapter",
+    description: suffix ? fullSharedT("fullShared.external_adapter_37c807", { value1: suffix }) : fullSharedT("fullShared.external_adapter_0ff880"),
     icon: Cpu,
   };
 }

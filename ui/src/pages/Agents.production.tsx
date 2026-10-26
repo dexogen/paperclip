@@ -1,3 +1,5 @@
+import { roleLabel } from "@/i18n/ui-labels";
+import { i18n } from "@/i18n";
 import { PrimaryAgentIndicator } from "@/components/primary-agent/PrimaryAgentPresentation";
 import { AgentBulkRoster } from "@/components/agents/AgentBulkRoster";
 import { AgentAvatar } from "@/components/AgentAvatar";
@@ -294,7 +296,7 @@ export function Agents() {
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("agents.title") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   useEffect(() => {
     if (requestedTab !== "all") {
@@ -362,7 +364,7 @@ export function Agents() {
         titleClassName="flex-1"
         titleTextClassName="whitespace-normal break-words xl:truncate xl:whitespace-nowrap"
         subtitleClassName="whitespace-normal break-words xl:truncate xl:whitespace-nowrap"
-        subtitle={`${roleLabels[agent.role] ?? agent.role}${agent.title ? ` - ${agent.title}` : ""}`}
+        subtitle={`${roleLabel(agent.role)}${agent.title ? ` - ${agent.title}` : ""}`}
         to={agentUrl(agent)}
         className="group"
         leading={hasInvalidOrgChain ? (
@@ -557,7 +559,7 @@ function OrgTreeNode({
           <div className="min-w-(--sz-7rem) truncate">
             <span className="text-sm font-medium">{node.name}</span>
             <span className="text-xs text-muted-foreground ml-2">
-              {roleLabels[node.role] ?? node.role}
+              {roleLabel(node.role)}
               {agent?.title ? ` - ${agent.title}` : ""}
             </span>
           </div>

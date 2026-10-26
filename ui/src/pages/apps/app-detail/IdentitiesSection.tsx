@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Building2, Loader2, Lock, RefreshCw, TriangleAlert, UserRound } from "lucide-react";
 import type {
@@ -53,6 +54,7 @@ const STATUS_CHIP: Record<GrantStatusTone, string> = {
 };
 
 function StatusText({ status }: { status: ConnectionGrant["status"] | null }) {
+  useFullAppsTranslation();
   const tone = grantStatusTone(status);
   return (
     <span
@@ -122,6 +124,7 @@ export function IdentitiesSection({
   onOpenAudience: (grantId: string) => void;
   onCloseAudience: () => void;
 }) {
+  useFullAppsTranslation();
   const grants = grantsQuery?.grants ?? [];
   const capabilities = grantsQuery?.capabilities;
   const currentUserId = grantsQuery?.currentUserId ?? null;
@@ -165,9 +168,7 @@ export function IdentitiesSection({
     return (
       <section className="space-y-5">
         <IdentitiesHeading />
-        <InlineBanner tone="warning" compact>
-          We couldn't load who this connection acts as. Reload the page to try again.
-        </InlineBanner>
+        <InlineBanner tone="warning" compact>{fullAppsT("fullApps.we_couldn_t_load_who_this_connection_acts_as_reload__8d0b5a")}</InlineBanner>
       </section>
     );
   }
@@ -176,24 +177,19 @@ export function IdentitiesSection({
     const github = agentGrant?.providerTenant?.github;
     return (
       <section className="space-y-5">
-        <h2 className="text-sm font-semibold text-foreground">GitHub identity</h2>
-        <p className="text-sm text-muted-foreground">This agent uses this GitHub account for everyone’s work, instead of the person giving instructions.</p>
+        <h2 className="text-sm font-semibold text-foreground">{fullAppsT("agentToolsUi.github.title")}</h2>
+        <p className="text-sm text-muted-foreground">{fullAppsT("providerSetup.access.dedicatedExplanation")}</p>
         <IdentityRow
-          title={github ? `@${github.login}` : "Dedicated GitHub account"}
+          title={github ? `@${github.login}` : fullAppsT("agentToolsUi.github.dedicated")}
           status={agentGrant?.status ?? null}
           detail={dedicatedAgent ? (
             <Link
               to={agentUrl(dedicatedAgent)}
               className="transition-colors hover:text-foreground hover:underline"
-            >
-              Used only by {dedicatedAgent.name}
-            </Link>
-          ) : "Dedicated to one agent"}
+            ><FullAppsTrans i18nKey="fullApps.used_only_by_5310dd" components={{ part1: <>{dedicatedAgent.name}</> }} /></Link>
+          ) : fullAppsT("fullApps.dedicated_to_one_agent_9c2614")}
           actions={!agentGrant && dedicatedAgent && capabilities?.canConfigure ? (
-            <Button size="sm" disabled={connectPending} onClick={() => onConnectAgent(dedicatedAgent.id)}>
-              {connectPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-              Connect dedicated account
-            </Button>
+            <Button size="sm" disabled={connectPending} onClick={() => onConnectAgent(dedicatedAgent.id)}><FullAppsTrans i18nKey="fullApps.connect_dedicated_account_17866a" components={{ part1: <>{connectPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}</> }} /></Button>
           ) : null}
         />
         {github ? <GitHubConnectionSummary grant={agentGrant} onRefreshAccess={onRefreshAccess} refreshPending={refreshAccessPending} /> : null}
@@ -233,14 +229,11 @@ export function IdentitiesSection({
           personalGrant ? null : (
             <IdentityRow
               id="personal-identity"
-              title="Personal account"
+              title={fullAppsT("fullApps.personal_account_96c55b")}
               status={null}
-              detail="Personal identity"
+              detail={fullAppsT("fullApps.personal_identity_dfb320")}
               actions={capabilities?.canConnectAsCurrentUser ? (
-                  <Button size="sm" disabled={connectPending} onClick={onConnectAsMe}>
-                    {connectPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-                    Connect as me
-                  </Button>
+                  <Button size="sm" disabled={connectPending} onClick={onConnectAsMe}><FullAppsTrans i18nKey="fullApps.connect_as_me_5331db" components={{ part1: <>{connectPending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}</> }} /></Button>
                 ) : null}
             />
           )
@@ -248,20 +241,16 @@ export function IdentitiesSection({
           orgGrant ? (
             orgGrant.capabilities?.canEditAudience ? (
               <div className="flex justify-end">
-                  <Button size="sm" variant="outline" onClick={() => onOpenAudience(orgGrant.id)}>
-                    Manage access
-                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => onOpenAudience(orgGrant.id)}>{fullAppsT("projectConfigUi.access.manage")}</Button>
               </div>
             ) : null
           ) : (
             <IdentityRow
-              title="Organization account"
+              title={fullAppsT("fullApps.organization_account_d20569")}
               status={null}
-              detail="Organization identity"
+              detail={fullAppsT("fullApps.organization_identity_4f644c")}
               actions={capabilities?.canCreateOrganizationGrant ? (
-                  <Button size="sm" disabled={connectPending} onClick={onConnectOrganization}>
-                    Connect organization identity
-                  </Button>
+                  <Button size="sm" disabled={connectPending} onClick={onConnectOrganization}>{fullAppsT("fullApps.connect_organization_identity_dfa1d1")}</Button>
                 ) : null}
             />
           )
@@ -293,6 +282,7 @@ function GitHubConnectionSummary({
   onRefreshAccess?: () => void;
   refreshPending: boolean;
 }) {
+  useFullAppsTranslation();
   const github = grant.providerTenant?.github;
   if (!github) return null;
   const configurationUrl = github.appSlug
@@ -301,17 +291,17 @@ function GitHubConnectionSummary({
       ? github.installationUrl
       : null;
   const repositoryWarning = github.repositorySelection === "all"
-    ? "All current and future repositories"
+    ? fullAppsT("fullApps.all_current_and_future_repositories_e52357")
     : github.repositorySelection === "mixed"
-      ? "Mixed access; scope varies by installation"
+      ? fullAppsT("fullApps.mixed_access_scope_varies_by_installation_2a24b2")
       : null;
   const repositorySummary = github.repositorySelection === "none"
-    ? "No repositories selected"
-    : `${github.repositoryCount} selected ${github.repositoryCount === 1 ? "repository" : "repositories"}`;
+    ? fullAppsT("fullApps.no_repositories_selected_cfc956")
+    : fullAppsT("fullApps.selectedRepositories", { count: github.repositoryCount });
   return (
     <div className="divide-y divide-border border-y border-border">
       <div className="py-3">
-        <div className="text-sm font-medium text-foreground">GitHub account</div>
+        <div className="text-sm font-medium text-foreground">{fullAppsT("fullApps.github_account_d686f8")}</div>
         <a className="text-sm text-muted-foreground hover:underline" href={`https://github.com/${encodeURIComponent(github.login)}`} target="_blank" rel="noreferrer">
           @{github.login}
         </a>
@@ -319,7 +309,7 @@ function GitHubConnectionSummary({
       <div className="space-y-3 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-sm font-medium text-foreground">Repositories</div>
+            <div className="text-sm font-medium text-foreground">{fullAppsT("projectConfigUi.repos.title")}</div>
             {repositoryWarning ? (
               <div
                 role="note"
@@ -337,49 +327,43 @@ function GitHubConnectionSummary({
           </div>
           <div className="flex items-center gap-2">
             {onRefreshAccess && configurationUrl ? (
-              <Button size="icon-sm" variant="outline" aria-label="Refresh access" title="Refresh access" disabled={refreshPending} onClick={onRefreshAccess}>
+              <Button size="icon-sm" variant="outline" aria-label={fullAppsT("fullApps.refresh_access_0df81b")} title={fullAppsT("fullApps.refresh_access_0df81b")} disabled={refreshPending} onClick={onRefreshAccess}>
                 {refreshPending ? <Loader2 className="animate-spin" aria-hidden="true" /> : <RefreshCw aria-hidden="true" />}
               </Button>
             ) : null}
             {configurationUrl ? (
               <Button asChild size="sm" variant="outline">
-                <a href={configurationUrl} target="_blank" rel="noreferrer">Add More Repos on GitHub</a>
+                <a href={configurationUrl} target="_blank" rel="noreferrer">{fullAppsT("fullApps.add_more_repos_on_github_c7c688")}</a>
               </Button>
             ) : onRefreshAccess ? (
-              <Button size="sm" variant="outline" disabled={refreshPending} onClick={onRefreshAccess}>
-                {refreshPending ? <Loader2 className="animate-spin" aria-hidden="true" /> : <RefreshCw aria-hidden="true" />}
-                Load GitHub configuration
-              </Button>
+              <Button size="sm" variant="outline" disabled={refreshPending} onClick={onRefreshAccess}><FullAppsTrans i18nKey="fullApps.load_github_configuration_2be0b6" components={{ part1: <>{refreshPending ? <Loader2 className="animate-spin" aria-hidden="true" /> : <RefreshCw aria-hidden="true" />}</> }} /></Button>
             ) : null}
           </div>
         </div>
         {github.repositories ? (
-          github.repositories.length ? <ul aria-label="Accessible GitHub repositories" tabIndex={0} className="max-h-(--sz-github-repository-list) space-y-2 overflow-y-auto text-sm">
+          github.repositories.length ? <ul aria-label={fullAppsT("fullApps.accessible_github_repositories_8aec55")} tabIndex={0} className="max-h-(--sz-github-repository-list) space-y-2 overflow-y-auto text-sm">
             {github.repositories.map((repository) => (
               <li key={repository.id}>
                 <a className="flex items-center gap-2 text-muted-foreground hover:underline" href={`https://github.com/${repository.fullName.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noreferrer">
                   <GithubIcon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   <span className="break-all">{repository.fullName}</span>
-                  {repository.private === true ? <Lock className="h-3 w-3 shrink-0" role="img" aria-label="Private repository" /> : null}
+                  {repository.private === true ? <Lock className="h-3 w-3 shrink-0" role="img" aria-label={fullAppsT("projectConfigUi.repos.private")} /> : null}
                 </a>
               </li>
             ))}
-          </ul> : <p role="status" className="text-sm text-muted-foreground">
-            No accessible repositories.
-          </p>
+          </ul> : <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.no_accessible_repositories_ecffe2")}</p>
         ) : (
-          <p className="text-sm text-muted-foreground">Refresh access to load the current repository list.</p>
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.refresh_access_to_load_the_current_repository_list_601183")}</p>
         )}
-        {configurationUrl ? <p className="text-xs text-muted-foreground">
-          Missing an organization or repository? <a href={configurationUrl} target="_blank" rel="noreferrer" className="text-foreground hover:underline">Configure access on GitHub</a>, then refresh this list.
-        </p> : null}
+        {configurationUrl ? <p className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.missing_an_organization_or_repository_then_refresh_t_4f4af9" components={{ part1: <a href={configurationUrl} target="_blank" rel="noreferrer" className="text-foreground hover:underline">{fullAppsT("fullApps.configure_access_on_github_e9f56c")}</a> }} /></p> : null}
       </div>
     </div>
   );
 }
 
 function IdentitiesHeading() {
-  return <h2 className="text-sm font-semibold text-foreground">Which humans can use this credential?</h2>;
+  useFullAppsTranslation();
+  return <h2 className="text-sm font-semibold text-foreground">{fullAppsT("providerSetup.access.identityHeading")}</h2>;
 }
 
 function HumanAccessCards({
@@ -401,10 +385,11 @@ function HumanAccessCards({
   onChooseAll: () => void;
   onChooseSelected: () => void;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="space-y-3">
       <RadioCardGroup
-        ariaLabel="Which humans can use this credential"
+        ariaLabel={fullAppsT("fullApps.which_humans_can_use_this_credential_e68f7a")}
         value={personal ? "personal" : restricted ? "selected" : "company"}
         className="sm:grid-cols-2"
         onValueChange={(next) => {
@@ -415,22 +400,22 @@ function HumanAccessCards({
         options={personal ? [
           {
             value: "personal",
-            title: "Just me",
-            description: "Only you can use this connection.",
+            title: fullAppsT("providerSetup.access.justMe"),
+            description: fullAppsT("fullApps.only_you_can_use_this_connection_7fb35f"),
             icon: <UserRound className="h-4 w-4" />,
           },
         ] : [
           {
             value: "selected",
-            title: "Humans I pick",
-            description: "Only selected people in your company.",
+            title: fullAppsT("fullApps.humans_i_pick_733eda"),
+            description: fullAppsT("fullApps.only_selected_people_in_your_company_c4dd62"),
             icon: <UserRound className="h-4 w-4" />,
             disabled: !canEditAudience,
           },
           {
             value: "company",
-            title: "Any human in the company",
-            description: "Anyone in your company can use this connection.",
+            title: fullAppsT("fullApps.any_human_in_the_company_4b9236"),
+            description: fullAppsT("fullApps.anyone_in_your_company_can_use_this_connection_066376"),
             icon: <Building2 className="h-4 w-4" />,
             disabled: !canEditAudience,
           },
@@ -459,6 +444,7 @@ function IdentityRow({
   detail: ReactNode;
   actions: ReactNode;
 }) {
+  useFullAppsTranslation();
   return (
     <div id={id} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
       <div className="min-w-0">
@@ -495,6 +481,7 @@ export function AudienceDialog({
   onCancel: () => void;
   onSave: (memberUserIds: string[]) => void;
 }) {
+  useFullAppsTranslation();
   const initialSelection = useMemo(() => audienceUserIds(grant), [grant]);
   const [scope, setScope] = useState<"all" | "selected">(initialSelection.size === 0 ? "all" : "selected");
   const [selected, setSelected] = useState<Set<string>>(initialSelection);
@@ -510,7 +497,7 @@ export function AudienceDialog({
     <Dialog open onOpenChange={(open) => { if (!open) onCancel(); }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Who can use this identity</DialogTitle>
+          <DialogTitle>{fullAppsT("fullApps.who_can_use_this_identity_c43b59")}</DialogTitle>
           <DialogDescription>
             {grantAccountLabel(grant)} · {appName}
           </DialogDescription>
@@ -518,19 +505,19 @@ export function AudienceDialog({
 
         <div className="space-y-3">
           <RadioCardGroup
-            ariaLabel="Who can use this identity"
+            ariaLabel={fullAppsT("fullApps.who_can_use_this_identity_c43b59")}
             value={scope}
             onValueChange={(next) => setScope(next as "all" | "selected")}
             options={[
               {
                 value: "all",
-                title: "All organization members",
-                description: "Anyone in this organization can have work use this identity.",
+                title: fullAppsT("fullApps.all_organization_members_eac089"),
+                description: fullAppsT("fullApps.anyone_in_this_organization_can_have_work_use_this_i_eb1968"),
               },
               {
                 value: "selected",
-                title: "Selected members",
-                description: "Only the people you choose.",
+                title: fullAppsT("fullApps.selected_members_78a279"),
+                description: fullAppsT("fullApps.only_the_people_you_choose_085cf1"),
               },
             ]}
           />
@@ -545,15 +532,12 @@ export function AudienceDialog({
               selectedUserIds={selected}
               onChange={setSelected}
               triggerLabel={selected.size === 0
-                ? "Choose people"
-                : `${selected.size} ${selected.size === 1 ? "person" : "people"} selected`}
+                ? fullAppsT("fullApps.choose_people_4929aa")
+                : fullAppsT("fullApps.selectedPeople", { count: selected.size })}
             />
           ) : null}
 
-          <p className="text-xs text-muted-foreground">
-            This controls whose work can use the identity. It does not change which agents have the
-            connection.
-          </p>
+          <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.this_controls_whose_work_can_use_the_identity_it_doe_0f4980")}</p>
 
           {error ? (
             <InlineBanner tone="warning" compact>
@@ -563,16 +547,11 @@ export function AudienceDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onCancel} disabled={pending}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={onCancel} disabled={pending}>{fullAppsT("fullApps.cancel_19766e")}</Button>
           <Button
             disabled={pending || !canSave}
             onClick={() => onSave(scope === "all" ? [] : [...selected])}
-          >
-            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Save audience
-          </Button>
+          ><FullAppsTrans i18nKey="fullApps.save_audience_ce59d6" components={{ part1: <>{pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}</> }} /></Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -606,19 +585,20 @@ export function RevokeGrantDialog({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  useFullAppsTranslation();
   const personal = grant.kind === "user";
   const title = personal
     ? isOwnIdentity
-      ? `Revoke your ${providerName} identity?`
-      : `Revoke this ${providerName} identity?`
-    : "Revoke the organization identity?";
+      ? fullAppsT("fullApps.revoke_your_identity_94fe18", { value1: providerName })
+      : fullAppsT("fullApps.revoke_this_identity_48d514", { value1: providerName })
+    : fullAppsT("fullApps.revoke_the_organization_identity_2606ac");
   const body = personal
     ? isOwnIdentity
-      ? "Agents will stop acting as you. Work that needs this identity can ask you to connect again."
-      : "Agents will stop acting as this person. They can connect again themselves; no one else can do it for them."
+      ? fullAppsT("fullApps.agents_will_stop_acting_as_you_work_that_needs_this__a4695e")
+      : fullAppsT("fullApps.agents_will_stop_acting_as_this_person_they_can_conn_3ae62a")
     : credentialPolicy === "per_user"
-      ? "Installed agents lose this shared identity immediately."
-      : "Eligible members and installed agents will lose this shared identity immediately.";
+      ? fullAppsT("fullApps.installed_agents_lose_this_shared_identity_immediate_687d8a")
+      : fullAppsT("fullApps.eligible_members_and_installed_agents_will_lose_this_c9379a");
 
   return (
     <AlertDialog open onOpenChange={(open) => { if (!open) onCancel(); }}>
@@ -629,18 +609,14 @@ export function RevokeGrantDialog({
         </AlertDialogHeader>
         {children}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending} autoFocus>
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={pending} autoFocus>{fullAppsT("fullApps.cancel_19766e")}</AlertDialogCancel>
           <AlertDialogAction
             disabled={pending}
             onClick={(event) => {
               event.preventDefault();
               onConfirm();
             }}
-          >
-            Revoke identity
-          </AlertDialogAction>
+          >{fullAppsT("fullApps.revoke_identity_c85342")}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

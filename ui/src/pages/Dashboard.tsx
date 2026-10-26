@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { AgentIdentity } from "../components/AgentIdentity";
 import { TaskSummaryList } from "../components/TaskSummaryList";
@@ -162,7 +163,7 @@ export function Dashboard() {
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("dashboardUi.title") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   const dashboardQueryKey = queryKeys.dashboard(selectedCompanyId!);
   const sharedDashboard = useSharedPollingQuery({

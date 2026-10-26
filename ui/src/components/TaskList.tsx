@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Fragment, useState, type ReactNode } from "react";
 import type { Issue } from "@paperclipai/shared";
 import { ChevronDown, ChevronRight, GitBranch } from "lucide-react";
@@ -46,6 +48,7 @@ export function TaskList({ items, allItems = items, initialColumns = defaultTask
   groupBy?: TaskListGrouping;
   emptyState?: ReactNode;
 }) {
+  useFullSharedTranslation();
   const [columns, setColumns] = useState(initialColumns);
   const [columnOrder, setColumnOrder] = useState(allTaskListColumns);
   const [sort, setSort] = useState<TaskListSort>();
@@ -87,7 +90,7 @@ export function TaskList({ items, allItems = items, initialColumns = defaultTask
           unreadState={item.unread ? "visible" : "hidden"}
           treeGuides={depth} chevronInGuide={depth > 0 && children.length > 0}
           leadingControl={children.length ? (
-            <Button variant="ghost" size="icon-xs" className="task-row-disclosure" aria-label={`${expanded ? "Collapse" : "Expand"} ${issue.title}`} aria-expanded={expanded} onClick={() => {
+            <Button variant="ghost" size="icon-xs" className="task-row-disclosure" aria-label={expanded ? fullSharedTailT("fullSharedTail.collapseTask", { title: issue.title }) : fullSharedTailT("fullSharedTail.expandTask", { title: issue.title })} aria-expanded={expanded} onClick={() => {
               const next = new Set(collapsed);
               if (next.has(issue.id)) next.delete(issue.id); else next.add(issue.id);
               setCollapsed(next);
@@ -109,18 +112,18 @@ export function TaskList({ items, allItems = items, initialColumns = defaultTask
   };
   const groups = new Map<string, Issue[]>();
   for (const root of roots) {
-    const label = groupBy === "status" ? issueFilterLabel(root.status) : groupBy === "project" ? root.project?.name ?? "No project" : "";
+    const label = groupBy === "status" ? issueFilterLabel(root.status) : groupBy === "project" ? root.project?.name ?? fullSharedT("newIssue.noProject") : "";
     groups.set(label, [...(groups.get(label) ?? []), root]);
   }
   return (
     <TaskListViewport visibleColumns={columns} columnOrder={columnOrder} controls={<TaskListColumnSettings visibleColumns={columns} onVisibleColumnsChange={updateColumns} onColumnOrderChange={setColumnOrder} onResetDefaults={() => setSort(undefined)} />}>
       <TaskListColumnHeader sort={sort} onSortChange={setSort} onColumnOrderChange={setColumnOrder} />
       {items.length === 0 ? emptyState : (
-        <div aria-label={`${density} task list`}>
+        <div aria-label={fullSharedT("fullShared.task_list_ac152a", { value1: density })}>
           {[...groups].map(([label, groupRoots]) => (
             <Fragment key={label}>
               {label ? <IssueGroupHeader label={label} className="task-list-group-heading" trailing={<span className="text-xs text-muted-foreground">{groupRoots.length}</span>} /> : null}
-              {groupRoots.map(issue => <TaskRowGroup key={issue.id} role="rowgroup" aria-label={`${issue.title} task group`}>{renderBranch(issue, 0)}</TaskRowGroup>)}
+              {groupRoots.map(issue => <TaskRowGroup key={issue.id} role="rowgroup" aria-label={fullSharedT("fullShared.task_group_cb957b", { value1: issue.title })}>{renderBranch(issue, 0)}</TaskRowGroup>)}
             </Fragment>
           ))}
         </div>

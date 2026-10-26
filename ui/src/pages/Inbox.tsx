@@ -1273,7 +1273,7 @@ function StreamlinedInbox({
       if (a.kind !== b.kind) return a.kind === "user" ? -1 : 1;
       return a.label.localeCompare(b.label);
     });
-  }, [agents, currentUserId, displayCompanyUserLabelMap, mineIssues, touchedIssues, t]);
+  }, [agents, currentUserId, displayCompanyUserLabelMap, mineIssues, touchedIssues, t, i18n.language]);
   const issuesToRender = useMemo(
     () => {
       if (tab === "mine") return visibleMineIssues;

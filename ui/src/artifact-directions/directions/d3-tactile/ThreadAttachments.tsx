@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -39,6 +41,7 @@ const fitName = (base: string, ext: string) => (base.length + ext.length > NAME_
 
 /** One place on the ledge: the object stands in it, foot behind the lip. */
 function Place({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     <span className={cn("block h-22 w-full", LEDGE)}>
       <span className="flex size-full items-end justify-center" style={STAND_CLIP}>
@@ -49,11 +52,12 @@ function Place({ children }: { children: ReactNode }) {
 }
 
 function DeskItem({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   const [base, ext] = splitName(artifact);
   const media = artifact.kind === "image" || artifact.kind === "video";
   const name = `${base}${ext}`;
   // The flag on the object is decorative, so the state is said in the item's name.
-  const label = `Open ${name}${artifact.review ? ` — ${REVIEW_LABEL[artifact.review]}` : ""}`;
+  const label = t("fullDiagnostics.open", { value1: name, value2: artifact.review ? ` — ${REVIEW_LABEL[artifact.review]}` : "" });
   const content = (
     <>
       <Place>
@@ -81,8 +85,9 @@ function DeskItem({ artifact }: { artifact: LabArtifact }) {
 
 /** The pile that stands for the prints that did not fit. */
 function MorePrints({ count }: { count: number }) {
+  useFullSharedTranslation();
   return (
-    <button type="button" aria-label={`Open ${count} more images`} className={ITEM}>
+    <button type="button" aria-label={t("fullDiagnostics.openMoreImages", { value1: count })} className={ITEM}>
       <Place>
         <span data-tac-size="sm" className="relative block aspect-4/3 w-(--tac-print-ws) filter-(--tac-filter-rest)">
           <span className="absolute inset-0 block rotate-(--tac-tilt-d) rounded-(--tac-print-r) bg-(--tac-paper-back)" />
@@ -92,12 +97,13 @@ function MorePrints({ count }: { count: number }) {
           </span>
         </span>
       </Place>
-      <span className="text-(length:--text-micro) leading-4 text-(--tac-meta)">more images</span>
+      <span className="text-(length:--text-micro) leading-4 text-(--tac-meta)">{t("fullDiagnostics.moreImages")}</span>
     </button>
   );
 }
 
 function Count({ label, count }: { label: string; count: number }) {
+  useFullSharedTranslation();
   return (
     <span>
       {label} · <span className="font-mono">{count}</span>
@@ -106,6 +112,7 @@ function Count({ label, count }: { label: string; count: number }) {
 }
 
 export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   const images = artifacts.filter((a) => a.kind === "image");
   const files = artifacts.filter((a) => a.kind !== "image");
   const prints = images.length > MAX_PRINTS ? images.slice(0, MAX_PRINTS - 1) : images;
@@ -117,10 +124,10 @@ export function ThreadAttachments({ artifacts }: { artifacts: LabArtifact[] }) {
   return (
     // The column, measured: like a row's tray, the full tray keeps 40rem in a wide column and fills a narrow one.
     <div className="@container/col w-full">
-      <section aria-label="Attachments" className={cn("relative flex flex-col gap-2 pt-1", full ? "w-full max-w-(--tac-tray-max) @max-3xl/col:max-w-none" : "w-fit max-w-full")}>
+      <section aria-label={fullSharedT("newIssue.attachments")} className={cn("relative flex flex-col gap-2 pt-1", full ? "w-full max-w-(--tac-tray-max) @max-3xl/col:max-w-none" : "w-fit max-w-full")}>
         <p className="flex gap-3 px-1 text-xs text-muted-foreground">
-          {images.length > 0 ? <Count label="Images" count={images.length} /> : null}
-          {files.length > 0 ? <Count label="Files" count={files.length} /> : null}
+          {images.length > 0 ? <Count label={fullSharedT("surfacesGap.artifacts.images")} count={images.length} /> : null}
+          {files.length > 0 ? <Count label={fullSharedT("taskPanels.tabs.files")} count={files.length} /> : null}
         </p>
         <div className="relative">
           {/* Clips on the x axis: each place's ledge runs out to the tray's edges. */}

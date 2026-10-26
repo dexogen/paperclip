@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -78,8 +79,8 @@ export function SheetTable({
   const preview = sheetPreview(artifact, maxRows, fit?.cells ?? 0);
   if (!preview) return null;
   const more = [
-    preview.more > 0 ? `+${preview.more} more row${preview.more === 1 ? "" : "s"}` : null,
-    preview.moreColumns > 0 ? `+${preview.moreColumns} more column${preview.moreColumns === 1 ? "" : "s"}` : null,
+    preview.more > 0 ? t("fullDiagnostics.moreRows", { count: preview.more }) : null,
+    preview.moreColumns > 0 ? t("fullDiagnostics.moreColumns", { count: preview.moreColumns }) : null,
   ].filter(Boolean);
   return (
     <div ref={ref} data-excerpt className={cn("relative min-w-0 overflow-hidden font-mono", className)}>
