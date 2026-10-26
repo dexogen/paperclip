@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { useState } from "react";
-import { setLocale } from "@/i18n";
+import { setLocale, useTranslation } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -642,6 +642,92 @@ async function flushUntil(check: () => boolean, timeoutMs = 4000) {
 
 describe("AgentConfigForm environment selector", () => {
   let roots: Root[] = [];
+
+  it("A2 keeps pending runner qualification current through locale changes and translates its own later error", async () => {
+    const environment = makeEnvironment({ id: "daytona-computer", name: "Computer <strong>raw</strong>", driver: "sandbox", status: "active",
+      config: { provider: "daytona", snapshot: "managed-snapshot" } });
+    mockAdaptersApi.list.mockResolvedValue([{ type: "claude_local", supportedRunners: ["legacy"], defaultRunner: "legacy" }, { type: "paperclip_runner", supportedRunners: ["legacy"], defaultRunner: "legacy" }]);
+    let finish!: () => void;
+    mockAgentsApi.qualifyRunner.mockImplementation(() => new Promise(resolve => { finish = () => resolve({ ok: true,
+      details: { platformQualificationRecorded: true, leaseId: "lease" } }); }));
+    const result = await renderForm([environment], { adapterType: "claude_local", defaultEnvironmentId: environment.id });
+    roots.push(result.root);
+    await clickByText(result.container, "Upgrade runner");
+    await act(async () => { await setLocale("ru"); });
+    await flushReact();
+    expect(findButton(result.container, "Переход…")?.disabled).toBe(true);
+    expect(mockAgentsApi.qualifyRunner).toHaveBeenCalledExactlyOnceWith("agent-1", environment.id, "company-1");
+    expect(result.onSave).not.toHaveBeenCalled();
+    await act(async () => finish());
+    await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe("Эта среда не поддерживает Paperclip Runner. Агент продолжает использовать прежнюю среду запуска.");
+    const reads = mockAdaptersApi.list.mock.calls.length;
+    await act(async () => { await setLocale("en"); });
+    await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe("This environment does not support Paperclip Runner. Your agent still uses Legacy runner.");
+    expect(mockAdaptersApi.list).toHaveBeenCalledTimes(reads);
+    expect(mockAgentsApi.qualifyRunner).toHaveBeenCalledTimes(1);
+    expect(result.onSave).not.toHaveBeenCalled();
+  });
+
+  it("keeps explicit model detection captions distinct in both languages without detecting on locale changes", async () => {
+    const detect = vi.fn(async () => "raw/model");
+    const change = vi.fn();
+    const container = document.createElement("div"); document.body.appendChild(container);
+    const root = createRoot(container); roots.push(root);
+    function Fixture() {
+      const { t } = useTranslation();
+      return <ModelDropdown models={[]} value="" onChange={change} open onOpenChange={() => {}}
+        allowDefault required={false} groupByProvider={false} detectedModel="raw/model" onDetectModel={detect}
+        detectModelLabel={t("agentConfigUi.detectModel")} redetectModelLabel={t("agentConfigUi.redetectModel")} />;
+    }
+    await act(async () => root.render(<TooltipProvider><Fixture /></TooltipProvider>));
+    expect(findButton(document.body, "Re-detect model")).toBeDefined();
+    await act(async () => { await setLocale("ru"); });
+    expect(findButton(document.body, "Определить модель повторно")).toBeDefined();
+    expect(detect).not.toHaveBeenCalled();
+    await clickByText(document.body, "Определить модель повторно");
+    expect(detect).toHaveBeenCalledTimes(1);
+    expect(change).toHaveBeenCalledExactlyOnceWith("raw/model");
+  });
+
+  it("keeps an external failure literal even when it equals an app-owned English message", async () => {
+    mockAdaptersApi.list.mockResolvedValueOnce([{ type: "codex_local", supportedRunners: ["legacy", "paperclip"], defaultRunner: "paperclip" }]);
+    const result = await renderForm([]); roots.push(result.root);
+    const raw = "Could not upgrade this agent. Try again.";
+    result.onSave.mockRejectedValueOnce(new Error(raw));
+    await clickByText(result.container, "Upgrade runner");
+    await act(async () => { await setLocale("ru"); }); await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe(raw);
+    expect(result.onSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("A2 locale changes preserve a dirty name, focus and canonical save without rediscovery", async () => {
+    const result = await renderForm([], { name: "Agent <strong>raw</strong>", adapterConfig: { model: "provider/model", instructionsFilePath: "/raw/AGENTS.md" } });
+    roots.push(result.root);
+    const name = result.container.querySelector<HTMLInputElement>('[placeholder="Agent name"]')!;
+    await act(async () => setInputValue(name, "Draft <strong>raw</strong>"));
+    name.focus();
+    name.setSelectionRange(2, 5);
+    await flushReact();
+    const reads = [mockAgentsApi.adapterModels.mock.calls.length, mockAdaptersApi.list.mock.calls.length];
+    for (const locale of ["ru", "en"] as const) {
+      await act(async () => { await setLocale(locale); });
+      await flushReact();
+      expect(result.container.textContent).toContain(locale === "ru" ? "Несохранённые изменения" : "Unsaved changes");
+      expect(result.container.querySelector<HTMLInputElement>(locale === "ru" ? '[placeholder="Имя агента"]' : '[placeholder="Agent name"]')).toBe(name);
+      expect(document.activeElement).toBe(name);
+      expect([name.selectionStart, name.selectionEnd]).toEqual([2, 5]);
+      expect(name.value).toBe("Draft <strong>raw</strong>");
+      expect(result.onSave).not.toHaveBeenCalled();
+      expect([mockAgentsApi.adapterModels.mock.calls.length, mockAdaptersApi.list.mock.calls.length]).toEqual(reads);
+      expect(mockAgentsApi.testEnvironment).not.toHaveBeenCalled();
+      expect(mockAgentsApi.qualifyRunner).not.toHaveBeenCalled();
+    }
+    await clickByText(result.container, "Save");
+    expect(result.onSave).toHaveBeenCalledExactlyOnceWith({ name: "Draft <strong>raw</strong>" });
+  });
+
 
   it.each(["paperclip", "legacy"] as const)("uses the resolved %s Claude form to preserve the correct turn limit", async defaultRunner => {
     mockAdaptersApi.list.mockResolvedValue([{ type: "claude_local", supportedRunners: defaultRunner === "paperclip" ? ["paperclip", "legacy"] : ["legacy"], defaultRunner }]);

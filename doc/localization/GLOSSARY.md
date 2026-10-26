@@ -16,6 +16,7 @@ parameters; user-entered names and machine identifiers are never translated.
 | Execution environment | Среда выполнения | The machine, container, or other environment where an agent runs. |
 | Runner | Среда запуска | Generic runner controls; retain the product name `Paperclip Runner`. Distinct from a harness and an assigned agent. |
 | Run | Запуск | One execution attempt, distinct from the task. |
+| Heartbeat | Рабочий цикл | Use «Запускать по таймеру» and «Интервал запуска» for periodic execution controls. Keep API/config identifiers unchanged. |
 | Session | Сеанс | A conversation or provider session; distinct from a run and a turn. |
 | Inbox | Входящие | The person's task inbox. |
 | Approval | Согласование | A governed decision; use «Подтвердить» for a simple confirmation action. |

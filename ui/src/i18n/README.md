@@ -175,8 +175,42 @@ literal. Fixed English helper defaults preserve unconverted consumers.
 
 Component tests cover both languages and pending create/save state. They use
 mocked APIs and selected model/login controls; real provider login, qualification,
-backend permission checks and browser acceptance remain separate. Full agent
-configuration, shared form controls and external invitation flows are later slices.
+backend permission checks and browser acceptance remain separate. External
+invitation flows are a later slice.
+
+The agent-configuration slice covers the main form, manager selection, secret
+aliases, built-in agent setup and the Claude/Codex configuration controls.
+Owned errors retain a typed cause and resolve in the current language. Provider
+errors remain literal, including messages that match an English application error.
+Known built-in display names and purposes use the server's closed definition IDs;
+stored agent names and instructions do not change. Unknown definitions stay literal.
+
+Locale regressions preserve dirty names and commands, focus, selected runner and
+permission values, pending qualification and explicit save/secret payloads.
+English helper defaults and the existing explicit environment-draft flush remain
+compatible. Rare local errors passed to unconverted external renderers still use
+their English Error.message. Secret proposal review and inner Dot/Muse panels are
+outside this slice. Mocked component tests do not certify live provisioning.
+
+Shared form controls translate their default captions, local validation, path
+instructions, copy receipts, environment-variable rows and secret-binding controls.
+Custom captions, schema titles/descriptions, enum values, variable names/values,
+secret IDs/versions and provider errors remain literal. Unknown status values use
+own-property checks before a known status label is selected.
+
+`validateJsonSchemaFormIssues` returns owned `JsonSchemaValidationIssue` objects.
+The form resolves them in the current language; supplied string errors remain
+literal. Environment, plugin and action-test consumers retain these objects so
+saved errors change language without another validation or submit. The legacy
+`validateField` and `validateJsonSchemaForm` functions keep fixed English output
+and their existing path semantics. This change does not add JSON Pointer escaping.
+
+Environment drafts keep stable row IDs, values and version bindings. Hosts that
+do not call the editor's `flush()` explicitly can mark a localized external button
+with `data-flush-environment-draft="true"`. Submit and existing English action
+fallbacks remain supported. Changing language alone does not flush a draft.
+Component checks cover these state and payload contracts with mocked APIs; they
+do not certify a live secret write, clipboard integration or the entire host page.
 
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
@@ -185,8 +219,8 @@ the enabled plugins' message keys and defaults and exercise their controls in
 both languages. The source detector does not scan `node_modules`; catalog parity
 cannot prove that a newer library has no additional labels.
 
-Unconverted task-detail child panels, agent/project detail pages, the rest of agent
-configuration, dashboards and remaining settings still need translation. Shared task rows also appear in
+Unconverted task-detail child panels, agent/project detail pages, additional agent
+controls, dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
 pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.

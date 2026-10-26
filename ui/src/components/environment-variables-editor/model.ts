@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { CompanySecret, EnvBinding, SecretVersionSelector, UserSecretDefinition } from "@paperclipai/shared";
 
 export type RowSource = "text" | "secret" | "user_secret";
@@ -177,18 +179,19 @@ export function validateName(
   name: string,
   duplicateNames: ReadonlySet<string>,
   reservedPrefixes: readonly string[],
+  t: TFunction = i18n.getFixedT("en"),
 ): NameIssue | null {
   const trimmed = name.trim();
   if (!trimmed) return null;
   if (!ENV_NAME_RE.test(trimmed)) {
-    return { level: "error", message: "Invalid name — use letters, digits and _" };
+    return { level: "error", message: t("formsUi.validation.invalidName") };
   }
   if (duplicateNames.has(trimmed)) {
-    return { level: "error", message: "Duplicate name" };
+    return { level: "error", message: t("formsUi.validation.duplicateName") };
   }
   for (const prefix of reservedPrefixes) {
     if (prefix && trimmed.startsWith(prefix)) {
-      return { level: "warn", message: "Reserved prefix — provided automatically and may be overridden" };
+      return { level: "warn", message: t("formsUi.validation.reservedName") };
     }
   }
   return null;
@@ -241,21 +244,21 @@ export interface SecretHealth {
 }
 
 /** Per-row secret-binding health (plan §6.8). Null when healthy or not a bound ref. */
-export function computeRowHealth(row: EnvRow, secrets: readonly CompanySecret[]): SecretHealth | null {
+export function computeRowHealth(row: EnvRow, secrets: readonly CompanySecret[], t: TFunction = i18n.getFixedT("en")): SecretHealth | null {
   if (row.source !== "secret" || !row.secretId) return null;
   const secret = secrets.find((candidate) => candidate.id === row.secretId);
   if (!secret) {
     return {
       level: "error",
       kind: "missing",
-      message: "This secret no longer exists — runs will fail until you rebind.",
+      message: t("formsUi.validation.missingSecret"),
     };
   }
   if (secret.status !== "active") {
     return {
       level: "warn",
       kind: "disabled",
-      message: "Runs will fail until re-enabled or rebound.",
+      message: t("formsUi.validation.disabledSecret"),
     };
   }
   return null;
@@ -265,6 +268,7 @@ export function computeRowHealth(row: EnvRow, secrets: readonly CompanySecret[])
 export function computeUserSecretRowHealth(
   row: EnvRow,
   definitions: readonly UserSecretDefinition[] | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): SecretHealth | null {
   if (row.source !== "user_secret" || !row.userSecretKey || !definitions?.length) return null;
   const definition = definitions.find((candidate) => candidate.key === row.userSecretKey);
@@ -272,14 +276,14 @@ export function computeUserSecretRowHealth(
     return {
       level: "error",
       kind: "missing",
-      message: "This user secret definition no longer exists — runs will fail until you rebind.",
+      message: t("formsUi.validation.missingUserSecret"),
     };
   }
   if (definition.status !== "active") {
     return {
       level: "warn",
       kind: "disabled",
-      message: "Runs will fail until this user secret definition is re-enabled or rebound.",
+      message: t("formsUi.validation.disabledUserSecret"),
     };
   }
   return null;
