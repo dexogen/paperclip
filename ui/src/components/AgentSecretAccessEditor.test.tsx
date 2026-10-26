@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { setLocale } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -123,6 +124,31 @@ describe("AgentSecretAccessEditor component", () => {
   }
 
   const secrets = [makeSecret("s1", "STRIPE_KEY")];
+
+  it("A2 locale changes retain an invalid secret alias draft and its focus without emitting", async () => {
+    const onChange = vi.fn();
+    render(<AgentSecretAccessEditor config={{ "access.RAW": { type: "secret_ref", secretId: "s1", version: 1 } }} secrets={[makeSecret("s1", "Secret <strong>raw</strong>")]} onChange={onChange} />);
+    const alias = container.querySelector<HTMLInputElement>('[aria-label="Access alias"]')!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!.set!;
+    alias.focus();
+    flushSync(() => { setter.call(alias, "invalid alias"); alias.dispatchEvent(new Event("input", { bubbles: true })); });
+    alias.setSelectionRange(2, 5);
+    const calls = onChange.mock.calls.length;
+    try {
+      await setLocale("ru"); flushSync(() => {});
+      expect(container.textContent).toContain("Недопустимый псевдоним");
+      expect(container.textContent).toContain("Secret <strong>raw</strong>");
+      expect(container.querySelector('[aria-label="Псевдоним доступа"]')).toBe(alias);
+      expect(document.activeElement).toBe(alias);
+      expect([alias.selectionStart, alias.selectionEnd]).toEqual([2, 5]);
+      expect(alias.value).toBe("invalid alias");
+      expect(onChange).toHaveBeenCalledTimes(calls);
+      await setLocale("en"); flushSync(() => {});
+      expect(container.querySelector('[aria-label="Access alias"]')).toBe(alias);
+      expect(onChange).toHaveBeenCalledTimes(calls);
+    } finally { await setLocale("en"); }
+  });
+
 
   it("shows the delivery-mode overview for existing bindings", () => {
     render(

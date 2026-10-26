@@ -668,8 +668,16 @@ cleanup correction `47fbbda9` adds checked archive/cancel calls and waits for ow
 agent lifecycle settlement. All 38 fixture checks pass. The new native attempt
 reached its final functional screenshot, then failed the existing five-second
 cleanup poll: the unrelated agent was paused and live-runs empty, but parent and
-child still reported pausing. Diagnosis remains open. Process Stop, paused
-composer and upstream chat journeys have not yet run on that candidate.
+child still reported pausing. Reading an isolated copy of the stopped fixture
+database established a remaining preparer controller lease: both native processes
+had confirmed stop receipts, released environment leases and terminal native
+finalizations, but the old controller deadlines were still in the future.
+The executor clears that deadline only for legacy runs. The affected sources are
+unchanged from upstream `1fbbef45`; a fresh fetch still resolved to that commit.
+A guarded cleanup fix and regression are in progress. The forensic copy was
+stopped and the original content manifest was unchanged. This diagnosis does not
+turn the failed E2E receipt into a pass. Process Stop, paused composer and upstream
+chat journeys have not yet run on that candidate.
 Process cleanup passed; original database cleanup remains unconfirmed with stale markers retained.
 A later read-only observation found no active owned process or database listener.
 The original failed receipts are unchanged. Earlier build/unit/browser evidence
@@ -716,8 +724,8 @@ page/dialog, name/adapter selection, setup wizard, local validation and runtime
 test controls. All 151 tests in six related files, UI typecheck/build and token
 gates pass. Source review preserves create/qualification dependencies, canonical IDs,
 credential cleanup and raw provider diagnostics. The integrated audit passes
-with 5,663 reviewed families and 16,848 existing source findings. Full agent
-configuration and external invitations remain separate;
+with 5,663 reviewed families and 16,848 existing source findings. Additional agent
+detail controls and external invitations remain separate;
 mocked component checks do not prove real provider login or browser acceptance.
 
 The shared-form slice adds 168 reviewed message families for default captions,
@@ -738,7 +746,23 @@ with 5,831 reviewed families and 16,712 existing source findings, no pending,
 missing, invalid or new findings, and no source errors. Full host-page translation and
 real browser/secret-write acceptance remain separate work.
 
-After chat, the remaining major packages are agent configuration and invitations,
+The agent-configuration slice adds 311 reviewed EN/RU pairs for the main form,
+manager picker, secret aliases, built-in definitions and Claude/Codex controls.
+The complete 12-file affected run passed 381 tests; after editorial corrections,
+the two complete affected suites passed 37 tests. Final standalone UI typecheck,
+build and token gates passed. The first typecheck lacked generated plugin SDK
+declarations; building the declared prerequisite resolved that failure without
+changing the dependency lock. Root and peer review checked all pairs and changed
+sources. Only resolved baseline entries were removed. After integration with the
+shared forms and server import repair, 397 tests passed in 13 files and 41 tests
+passed in three additional form files, without skips. UI typecheck/build, token
+gates and map structure checks passed on `a06a6f9aa`. The integrated source audit
+has 6,142 reviewed families, 16,418 existing debt findings, no pending/missing/
+invalid messages, new findings or source errors. Stored content, provider errors,
+credential and runner payloads remain literal. Live provisioning and external
+invitation acceptance remain outstanding.
+
+After chat, the remaining major packages are agent detail controls and invitations,
 project details/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
@@ -756,10 +780,24 @@ Actions is enabled, but its default token is read-only and Actions PR creation i
 disabled. A sync App and registry publication have not been demonstrated. After
 an earlier `repository invocation blocked` cancellation, the owner re-enabled
 Actions on 2026-10-26. A new exact-SHA dispatch for `07332f25c` started real jobs;
-the [localization lane passed](https://github.com/dexogen/paperclip/actions/runs/40291467289),
-while the complete hosted result is pending. The available evidence does not
-establish why GitHub disabled execution. Local checks and one successful lane do
-not make the full hosted gate green.
+the [run finished with a failed integration gate](https://github.com/dexogen/paperclip/actions/runs/40291467289).
+The localization lane, complete code job, and two server partitions passed.
+Four server partitions failed from three causes: two could not resolve the UI-only
+`@/i18n` alias, the actual PRP test timed out while delivering escape-heavy 500 KB
+results, and the multilingual route test did not find a Chinese substring.
+A relative import fixes the first cause: existing server policy and persistence
+suites pass 82 tests, and three affected UI suites pass 49 tests.
+The CJK fix preserves substring matching for short Han, Hiragana, Katakana and
+Hangul terms while retaining word-start matching for other short words. The
+original multilingual assertion reproduced the failure. Four complete real-DB
+search suites then passed 115 tests with one expected opt-in scale test skipped.
+The PRP timeout did not reproduce with either release or debug Runner locally.
+The test now reports only safe progress counters on timeout, with its original
+15-second deadline and assertions unchanged; its hosted failure remains unexplained.
+The diagnostic version passed the complete actual-PRP suite locally. These repairs
+are a separate review candidate; a new combined hosted run is still required.
+The available evidence does not establish why GitHub disabled execution, and
+local passes do not make the failed hosted gate green.
 
 The inherited `commitperclip PR Review` workflow was temporarily disabled after
 its unguarded default-branch run failed on unavailable upstream configuration.

@@ -1,3 +1,5 @@
+import { useTranslation, Trans, i18n } from "@/i18n";
+import type { TFunction } from "i18next";
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Tooltip,
@@ -69,6 +71,87 @@ import { getAdapterLabels } from "../adapters/adapter-display-registry";
 export const adapterLabels = getAdapterLabels();
 
 export const roleLabels = AGENT_ROLE_LABELS as Record<string, string>;
+
+
+// These legacy exports stay fixed English for consumers outside this slice.
+const helpKeys = {
+  name: "agentConfigUi.help.name",
+  title: "agentConfigUi.help.title",
+  role: "agentConfigUi.help.role",
+  reportsTo: "agentConfigUi.help.reportsTo",
+  capabilities: "agentConfigUi.help.capabilities",
+  adapterType: "agentConfigUi.help.adapterType",
+  cwd: "agentConfigUi.help.cwd",
+  promptTemplate: "agentConfigUi.help.promptTemplate",
+  model: "agentConfigUi.help.model",
+  thinkingEffort: "agentConfigUi.help.thinkingEffort",
+  chrome: "agentConfigUi.help.chrome",
+  dangerouslySkipPermissions: "agentConfigUi.help.dangerouslySkipPermissions",
+  dangerouslyBypassSandbox: "agentConfigUi.help.dangerouslyBypassSandbox",
+  search: "agentConfigUi.help.search",
+  fastMode: "agentConfigUi.help.fastMode",
+  workspaceStrategy: "agentConfigUi.help.workspaceStrategy",
+  workspaceBaseRef: "agentConfigUi.help.workspaceBaseRef",
+  workspaceBranchTemplate: "agentConfigUi.help.workspaceBranchTemplate",
+  worktreeParentDir: "agentConfigUi.help.worktreeParentDir",
+  runtimeServicesJson: "agentConfigUi.help.runtimeServicesJson",
+  maxTurnsPerRun: "agentConfigUi.help.maxTurnsPerRun",
+  command: "agentConfigUi.help.command",
+  localCommand: "agentConfigUi.help.localCommand",
+  args: "agentConfigUi.help.args",
+  extraArgs: "agentConfigUi.help.extraArgs",
+  envVars: "agentConfigUi.help.envVars",
+  secretAccess: "agentConfigUi.help.secretAccess",
+  bootstrapPrompt: "agentConfigUi.help.bootstrapPrompt",
+  payloadTemplateJson: "agentConfigUi.help.payloadTemplateJson",
+  webhookUrl: "agentConfigUi.help.webhookUrl",
+  heartbeatInterval: "agentConfigUi.help.heartbeatInterval",
+  intervalSec: "agentConfigUi.help.intervalSec",
+  timeoutSec: "agentConfigUi.help.timeoutSec",
+  graceSec: "agentConfigUi.help.graceSec",
+  wakeOnDemand: "agentConfigUi.help.wakeOnDemand",
+  cooldownSec: "agentConfigUi.help.cooldownSec",
+  maxConcurrentRuns: "agentConfigUi.help.maxConcurrentRuns",
+  maxTurnContinuationEnabled: "agentConfigUi.help.maxTurnContinuationEnabled",
+  maxTurnContinuationMaxAttempts: "agentConfigUi.help.maxTurnContinuationMaxAttempts",
+  maxTurnContinuationDelaySec: "agentConfigUi.help.maxTurnContinuationDelaySec",
+  budgetMonthlyCents: "agentConfigUi.help.budgetMonthlyCents",
+} as const;
+
+/** Resolve app-owned help at render time; templates are literal examples. */
+export function getAgentConfigHelp(t: TFunction = i18n.getFixedT("en")): Record<string, string> {
+  const templates = {
+    agentIdTemplate: "{{ agent.id }}",
+    agentNameTemplate: "{{ agent.name }}",
+    agentRoleTemplate: "{{ agent.role }}",
+    issueIdentifierTemplate: "{{issue.identifier}}",
+    issueTitleTemplate: "{{issue.title}}",
+    agentNameCompactTemplate: "{{agent.name}}",
+    projectIdTemplate: "{{project.id}}",
+    workspaceRefTemplate: "{{workspace.repoRef}}",
+    slugTemplate: "{{slug}}",
+  };
+  return Object.fromEntries(Object.entries(helpKeys).map(([key, message]) => [key, t(message, templates)]));
+}
+
+/** Known role IDs are app-owned; custom roles remain literal. */
+export function agentConfigRoleLabel(role: string, t: TFunction = i18n.getFixedT("en")): string {
+  const keys: Record<string, string> = {
+    ceo: "searchUi.palette.roles.ceo",
+    cto: "searchUi.palette.roles.cto",
+    cmo: "searchUi.palette.roles.cmo",
+    cfo: "searchUi.palette.roles.cfo",
+    security: "searchUi.palette.roles.security",
+    engineer: "searchUi.palette.roles.engineer",
+    designer: "searchUi.palette.roles.designer",
+    pm: "searchUi.palette.roles.pm",
+    qa: "searchUi.palette.roles.qa",
+    devops: "searchUi.palette.roles.devops",
+    researcher: "searchUi.palette.roles.researcher",
+    general: "searchUi.palette.roles.general",
+  };
+  return Object.hasOwn(keys, role) ? t(keys[role]) : role;
+}
 
 /* ---- Primitive components ---- */
 
@@ -382,6 +465,7 @@ export function DraftNumberInput({
  * type the path due to browser security limitations.
  */
 export function ChoosePathButton() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -389,56 +473,49 @@ export function ChoosePathButton() {
         type="button"
         className="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent/50 transition-colors shrink-0"
         onClick={() => setOpen(true)}
-      >
-        Choose
-      </button>
+      >{t("agentConfigUi.choose")}</button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Specify path manually</DialogTitle>
-            <DialogDescription>
-              Browser security blocks apps from reading full local paths via a file picker.
-              Copy the absolute path and paste it into the input.
-            </DialogDescription>
+            <DialogTitle>{t("agentConfigUi.manualPath")}</DialogTitle>
+            <DialogDescription>{t("agentConfigUi.manualPathHint")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 text-sm">
             <section className="space-y-1.5">
               <p className="font-medium">macOS (Finder)</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in Finder.</li>
-                <li>Hold <kbd>Option</kbd> and right-click the folder.</li>
-                <li>Click "Copy &lt;folder name&gt; as Pathname".</li>
-                <li>Paste the result into the path input.</li>
+                <li>{t("agentConfigUi.finderFind")}</li>
+                <li><Trans t={t} i18nKey="agentConfigUi.holdOption" components={{ key: <kbd /> }} /></li>
+                <li>{t("agentConfigUi.finderCopy", { folderName: "<folder name>" })}</li>
+                <li>{t("agentConfigUi.pathPaste")}</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 /Users/yourname/Documents/project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Windows (File Explorer)</p>
+              <p className="font-medium">{t("agentConfigUi.windowsExplorer")}</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in File Explorer.</li>
-                <li>Hold <kbd>Shift</kbd> and right-click the folder.</li>
-                <li>Click "Copy as path".</li>
-                <li>Paste the result into the path input.</li>
+                <li>{t("agentConfigUi.windowsFind")}</li>
+                <li><Trans t={t} i18nKey="agentConfigUi.holdShift" components={{ key: <kbd /> }} /></li>
+                <li>{t("agentConfigUi.windowsCopy")}</li>
+                <li>{t("agentConfigUi.pathPaste")}</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 C:\Users\yourname\Documents\project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Terminal fallback (macOS/Linux)</p>
+              <p className="font-medium">{t("agentConfigUi.terminalFallback")}</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Run <code>cd /path/to/folder</code>.</li>
-                <li>Run <code>pwd</code>.</li>
-                <li>Copy the output and paste it into the path input.</li>
+                <li><Trans t={t} i18nKey="agentConfigUi.runCd" components={{ command: <code /> }} /></li>
+                <li><Trans t={t} i18nKey="agentConfigUi.runPwd" components={{ command: <code /> }} /></li>
+                <li>{t("agentConfigUi.pathOutput")}</li>
               </ol>
             </section>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              OK
-            </Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t("agentConfigUi.ok")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

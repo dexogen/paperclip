@@ -99,14 +99,16 @@ function taskSearchAny(field: SQL, search: TaskSearch): SQL<boolean> {
   return search.patterns.length === 0 ? sql`false`
     : sql`(${sql.join(search.patterns.map((pattern) => sql`${input} ILIKE ${pattern}`), sql` OR `)})`;
 }
-// Short typeahead terms must start a word: UI must not match "build", and
+// Short non-CJK typeahead terms must start a word: UI must not match "build", and
 // API must not match "Capistrano". Keep an indexable literal precondition.
 export function taskSearchTermMatch(field: SQL, search: TaskSearch, index: number): SQL<boolean> {
   const term = search.tokens[index]!;
   const input = taskSearchField(field, search);
   const wordInput = search.requiresUnicodeCollation ? sql`lower(${input})` : input;
   const literal = sql<boolean>`${input} ILIKE ${search.patterns[index]!}`;
-  return /^[\p{L}]{1,3}$/u.test(term)
+  const requiresWordStart = /^[\p{L}]{1,3}$/u.test(term)
+    && !/[\p{Script_Extensions=Han}\p{Script_Extensions=Hiragana}\p{Script_Extensions=Katakana}\p{Script_Extensions=Hangul}]/u.test(term);
+  return requiresWordStart
     ? sql`(${literal} AND ${wordInput} ~* ${`(^|[^[:alnum:]])${term}`})`
     : literal;
 }

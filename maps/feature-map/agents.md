@@ -139,6 +139,16 @@ from the hiring picker; API fixture creation does not prove this UI journey.
 
 Automated: [instruction service](../../server/src/__tests__/agent-instructions-service.test.ts) and [instruction revisions](../../server/src/__tests__/agent-instruction-revisions.test.ts) cover file/revision contracts.
 
+The [form locale regressions](../../ui/src/components/AgentConfigForm.render.test.tsx),
+[configuration primitives](../../ui/src/components/agent-config-primitives.localization.test.tsx),
+[secret aliases](../../ui/src/components/AgentSecretAccessEditor.test.tsx) and
+[Codex controls](../../ui/src/adapters/codex-local/config-fields.test.tsx) check
+EN/RU/EN changes with dirty inputs, focus, pending qualification and canonical
+save/permission payloads. Owned errors change language without repeating the
+operation; provider messages remain literal. For browser acceptance, repeat this
+while editing an agent, then save explicitly and verify the same values after
+reload. Component fixtures do not establish live provider execution.
+
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
 For failed setup, use an unavailable model or invalid command on a disposable agent.
@@ -181,6 +191,11 @@ or provider execution.
 ### `organization`
 
 Automated: [org chart](../../ui/src/pages/OrgChart.test.tsx) is component evidence. Built-in setup also has [configuration modal tests](../../ui/src/components/ConfigureBuiltInAgentModal.test.tsx).
+
+Built-in modal locale cases cover all four known definition IDs and literal custom
+definitions, including a name that resembles markup. Language changes retain the
+pending provision and canonical model payload. Stored agent names and instructions
+remain unchanged. These fixtures do not prove a real provision or approval flow.
 
 Manual: Inspect a manager and report, change the relationship through the offered controls, and reload both views. Exercise a rejected invalid relationship. Configure a built-in agent and verify it retains its required identity and restrictions.
 

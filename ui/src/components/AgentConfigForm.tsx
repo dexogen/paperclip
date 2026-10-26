@@ -1,4 +1,5 @@
-import { t as translate, useTranslation, t } from "../i18n";
+import { t as translate, useTranslation, t, i18n } from "../i18n";
+import type { TFunction } from "i18next";
 import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS } from "@/lib/copilot-task-model-catalog";
 import { useConnectionModels } from "./ai-connections/useConnectionModels";
 import { agentHarnessType, agentRunner, paperclipRunnerProfileForHarness, normalizeClaudeRunnerOptions, type AgentRunnerChoice } from "@paperclipai/shared";
@@ -74,7 +75,7 @@ import {
   CollapsibleSection,
   DraftInput,
   DraftNumberInput,
-  help,
+  getAgentConfigHelp,
   adapterLabels,
 } from "./agent-config-primitives";
 import { defaultCreateValues } from "./agent-config-defaults";
@@ -99,6 +100,32 @@ import { buildAgentUpdatePatch, omitUndefinedEntries, type AgentConfigOverlay } 
 import { useAdapterCapabilities } from "../adapters/use-adapter-capabilities";
 import { resolveForcedKubernetesEnvironment } from "../lib/forced-kubernetes-environment";
 import { codexReasoningEffortOptions } from "../lib/codex-reasoning-effort";
+
+const configErrorMessages = {
+  createSecretCompany: "agentConfigUi.errors.createSecretCompany",
+  uploadImageCompany: "agentConfigUi.errors.uploadImageCompany",
+  detectModelCompany: "agentConfigUi.errors.detectModelCompany",
+  testCompany: "agentConfigUi.errors.testCompany",
+  upgradeEnvironment: "agentConfigUi.errors.upgradeEnvironment",
+  upgradeChanged: "agentConfigUi.errors.upgradeChanged",
+  upgradeUnsupported: "agentConfigUi.errors.upgradeUnsupported",
+  upgradeFailed: "agentConfigUi.errors.upgradeFailed",
+  environmentSettings: "agentConfigUi.errors.environmentSettings",
+  testFailed: "agentConfigUi.errors.testFailed",
+  refreshModelsFailed: "agentConfigUi.errors.refreshModelsFailed",
+  loadModelsFailed: "agentConfigUi.errors.loadModelsFailed",
+} as const;
+
+class AgentConfigError extends Error {
+  constructor(readonly code: keyof typeof configErrorMessages) {
+    super(i18n.getFixedT("en")(configErrorMessages[code]));
+  }
+}
+
+function configErrorMessage(error: unknown, fallback: keyof typeof configErrorMessages, t: TFunction): string {
+  return error instanceof AgentConfigError ? t(configErrorMessages[error.code])
+    : error instanceof Error ? error.message : t(configErrorMessages[fallback]);
+}
 
 /* ---- Create mode values ---- */
 
@@ -280,35 +307,44 @@ function formatArgList(value: unknown): string {
 }
 
 const openCodeThinkingEffortOptions = [
-  { id: "", label: "Auto" },
-  { id: "minimal", label: "Minimal" },
-  { id: "low", label: "Low" },
-  { id: "medium", label: "Medium" },
-  { id: "high", label: "High" },
-  { id: "xhigh", label: "X-High" },
-  { id: "max", label: "Max" },
+  { id: "", labelKey: "agentConfigUi.effortAuto" },
+  { id: "minimal", labelKey: "agentConfigUi.effortMinimal" },
+  { id: "low", labelKey: "agentConfigUi.effortLow" },
+  { id: "medium", labelKey: "agentConfigUi.effortMedium" },
+  { id: "high", labelKey: "agentConfigUi.effortHigh" },
+  { id: "xhigh", labelKey: "agentConfigUi.effortXhigh" },
+  { id: "max", labelKey: "agentConfigUi.effortMax" },
 ] as const;
 
 const cursorModeOptions = [
-  { id: "", label: "Auto" },
-  { id: "plan", label: "Plan" },
-  { id: "ask", label: "Ask" },
+  { id: "", labelKey: "agentConfigUi.effortAuto" },
+  { id: "plan", labelKey: "agentConfigUi.effortPlan" },
+  { id: "ask", labelKey: "agentConfigUi.effortAsk" },
 ] as const;
 
 const claudeThinkingEffortOptions = [
-  { id: "", label: "Auto" },
-  { id: "low", label: "Low" },
-  { id: "medium", label: "Medium" },
-  { id: "high", label: "High" },
+  { id: "", labelKey: "agentConfigUi.effortAuto" },
+  { id: "low", labelKey: "agentConfigUi.effortLow" },
+  { id: "medium", labelKey: "agentConfigUi.effortMedium" },
+  { id: "high", labelKey: "agentConfigUi.effortHigh" },
 ] as const;
 
 // Kimi exposes low/high/max (no "medium") via each model's support_efforts;
 // the kimi_local adapter maps a legacy "medium" onto "high" at runtime.
 const kimiThinkingEffortOptions = [
-  { id: "", label: "Auto" },
-  { id: "low", label: "Low" },
-  { id: "high", label: "High" },
-  { id: "max", label: "Max" },
+  { id: "", labelKey: "agentConfigUi.effortAuto" },
+  { id: "low", labelKey: "agentConfigUi.effortLow" },
+  { id: "high", labelKey: "agentConfigUi.effortHigh" },
+  { id: "max", labelKey: "agentConfigUi.effortMax" },
+] as const;
+
+const piThinkingEffortOptions = [
+  { id: "off", labelKey: "agentConfigUi.piEffortOff" },
+  { id: "minimal", labelKey: "agentConfigUi.piEffortMinimal" },
+  { id: "low", labelKey: "agentConfigUi.piEffortLow" },
+  { id: "medium", labelKey: "agentConfigUi.piEffortMedium" },
+  { id: "high", labelKey: "agentConfigUi.piEffortHigh" },
+  { id: "xhigh", labelKey: "agentConfigUi.piEffortXhigh" },
 ] as const;
 
 const MAX_TURN_CONTINUATION_DEFAULT_MAX_ATTEMPTS = 2;
@@ -344,6 +380,8 @@ function ConfigSections({ order, className, children }: {
 /* ---- Form ---- */
 
 export function AgentConfigForm(props: AgentConfigFormProps) {
+  const { t } = useTranslation();
+  const help = getAgentConfigHelp(t);
   const { mode, adapterModels: externalModels } = props;
   const isCreate = mode === "create";
   const cards = props.sectionLayout === "cards";
@@ -457,7 +495,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   );
   const createSecret = useMutation({
     mutationFn: (input: { name: string; value: string }) => {
-      if (!selectedCompanyId) throw new Error("Select an organization to create secrets");
+      if (!selectedCompanyId) throw new AgentConfigError("createSecretCompany");
       return secretsApi.create(selectedCompanyId, input);
     },
     onSuccess: () => {
@@ -468,7 +506,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
 
   const uploadMarkdownImage = useMutation({
     mutationFn: async ({ file, namespace }: { file: File; namespace: string }) => {
-      if (!selectedCompanyId) throw new Error("Select an organization to upload images");
+      if (!selectedCompanyId) throw new AgentConfigError("uploadImageCompany");
       return assetsApi.uploadImage(selectedCompanyId, file, namespace);
     },
   });
@@ -480,12 +518,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   const [runnerUpgrade, setRunnerUpgrade] = useState<{
     agentId: string;
     status: "pending" | "upgraded" | "failed";
-    error?: string;
+    error?: unknown;
   } | null>(null);
   const currentRunnerUpgrade = !isCreate && runnerUpgrade?.agentId === props.agent.id ? runnerUpgrade : null;
   const runnerUpgradePending = currentRunnerUpgrade?.status === "pending";
   const runnerUpgraded = currentRunnerUpgrade?.status === "upgraded";
-  const runnerUpgradeError = currentRunnerUpgrade?.error;
+  const runnerUpgradeError = currentRunnerUpgrade?.status === "failed"
+    ? configErrorMessage(currentRunnerUpgrade.error, "upgradeFailed", t) : null;
   useEffect(() => {
     if (!isCreate && props.agent.adapterType !== "paperclip_runner") {
       setRunnerUpgrade(current => current?.agentId === props.agent.id ? null : current);
@@ -912,6 +951,12 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     && canQualifyRunnerEnvironment(upgradeEnvironment)
     && Boolean(runnerAvailability && !runnerAvailability.disabled && !runnerAvailability.overriddenBuiltin)
     && Boolean(nativeRunnerAvailability && !nativeRunnerAvailability.disabled && !nativeRunnerAvailability.overriddenBuiltin);
+  const warningKeys: Record<string, string> = {
+    maxTurnsPerRun: "agentConfigUi.ignored.maxTurnsPerRun",
+    chrome: "agentConfigUi.ignored.chrome",
+    warmHandleIdleMs: "agentConfigUi.ignored.warmHandleIdleMs",
+    acpWarmHandleIdleMs: "agentConfigUi.ignored.acpWarmHandleIdleMs",
+  };
   const upgradeWarnings = harnessType === "claude_local" ? normalizeClaudeRunnerOptions(effectiveConfig).warnings : [];
   const upgradeTargetRef = useRef("");
   const upgradeTarget = JSON.stringify([!isCreate ? props.agent.id : null, selectedCompanyId, adapterType,
@@ -935,7 +980,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       const pendingTarget = upgradeTargetRef.current;
       if (runnerAvailability?.defaultRunner !== "paperclip") {
         if (!canQualifyRunnerUpgrade || !upgradeEnvironmentId || !selectedCompanyId) {
-          throw new Error("Could not determine which environment to verify. Retry the upgrade.");
+          throw new AgentConfigError("upgradeEnvironment");
         }
         const qualified = await qualifyRunnerEnvironment({
           adapterType: harnessType,
@@ -943,15 +988,15 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           probeEnvironment: () => agentsApi.qualifyRunner(agentId, upgradeEnvironmentId, selectedCompanyId),
           isCurrent: () => upgradeTargetRef.current === pendingTarget,
         });
-        if (!qualified) throw new Error("Agent settings changed during verification. Retry the upgrade with the current settings.");
+        if (!qualified) throw new AgentConfigError("upgradeChanged");
         queryClient.setQueryData(queryKeys.adapters.availability(selectedCompanyId, rawCurrentDefaultEnvironmentId || null), qualified.adapters);
-        if (qualified.runner !== "paperclip") throw new Error("This environment does not support Paperclip Runner. Your agent still uses Legacy runner.");
+        if (qualified.runner !== "paperclip") throw new AgentConfigError("upgradeUnsupported");
       }
       await props.onSave({ ...buildAgentUpdatePatch(props.agent, nextOverlay), runner: "paperclip" });
       setRunnerUpgrade(current => current?.agentId === agentId ? { agentId, status: "upgraded" } : current);
     } catch (error) {
       setRunnerUpgrade(current => current?.agentId === agentId ? {
-        agentId, status: "failed", error: error instanceof Error ? error.message : "Could not upgrade this agent. Try again.",
+        agentId, status: "failed", error,
       } : current);
     }
   };
@@ -1008,8 +1053,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   const inheritedEnvironmentLabel = instanceDefaultEnvironment
     ? environmentDisplayLabel(instanceDefaultEnvironment)
     : managedSandboxOnly
-      ? "Paperclip Computer"
-      : "Local";
+      ? t("agentConfigUi.paperclipComputer")
+      : t("agentConfigUi.local");
 
   const modelProvider = adapterType === "opencode_local" && aiConnectionBindingSchema.safeParse(
     (overlay.runtime.runtimeConfig as Record<string, unknown> | undefined)?.aiConnection ?? runtimeConfig.aiConnection,
@@ -1045,7 +1090,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   useEffect(() => {
     if (copilotModelScope && selectedCompanyId && !isExternalRunner && !connectionModels) void refreshConnectionModels();
   }, [copilotModelScope, selectedCompanyId, isExternalRunner, connectionModels, refreshConnectionModels]);
-  const [refreshModelsError, setRefreshModelsError] = useState<string | null>(null);
+  const [refreshModelsFailure, setRefreshModelsFailure] = useState<{ cause: unknown } | null>(null);
+  const refreshModelsError = refreshModelsFailure ? configErrorMessage(refreshModelsFailure.cause, "refreshModelsFailed", t) : null;
   const [refreshingModels, setRefreshingModels] = useState(false);
   const models = connectionModels?.models ?? fetchedModels ?? externalModels ?? [];
   const modelError = connectionModels ? connectionModels.error : fetchedModelsError;
@@ -1059,7 +1105,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       : ["agents", "none", "detect-model", adapterType],
     queryFn: () => {
       if (!selectedCompanyId) {
-        throw new Error("Select an organization to detect the model");
+        throw new AgentConfigError("detectModelCompany");
       }
       return agentsApi.detectModel(selectedCompanyId, adapterType);
     },
@@ -1133,7 +1179,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   const testEnvironment = useMutation({
     mutationFn: async () => {
       if (!selectedCompanyId) {
-        throw new Error("Select an organization to test adapter environment");
+        throw new AgentConfigError("testCompany");
       }
       const flushedEnv = flushEnvironmentDraft();
       const adapterConfigPatch = flushedEnv ? { env: flushedEnv } : undefined;
@@ -1182,9 +1228,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           environmentList = resolvedEnvironments;
           managedSandboxOnly = resolvedExperimental?.enableManagedSandboxOnly === true;
         } catch {
-          throw new Error(
-            "Could not load environment settings to determine which environment to test in. Retry the test.",
-          );
+          throw new AgentConfigError("environmentSettings");
         }
       }
       // Mirror the server run-time resolution, including the managed-sandbox-only
@@ -1222,8 +1266,9 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     },
   });
   const [testActionPending, setTestActionPending] = useState(false);
-  const [testActionError, setTestActionError] = useState<string | null>(null);
-  const testActionLabel = "Test";
+  const [testActionFailure, setTestActionFailure] = useState<{ cause: unknown } | null>(null);
+  const testActionError = testActionFailure ? configErrorMessage(testActionFailure.cause, "testFailed", t) : null;
+  const testActionLabel = t("agentConfigUi.test");
   const isSavePending = !isCreate && Boolean(props.isSaving);
   const testEnvironmentDisabled = testActionPending || isSavePending || !selectedCompanyId;
 
@@ -1263,7 +1308,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
 
   useEffect(() => {
     resetTestEnvironmentRef.current();
-    setTestActionError(null);
+    setTestActionFailure(null);
     clearClaudeLoginClaimRef.current();
   }, [adapterType, runner, effectiveLoginEnvironmentId, runner === "auto" ? runnerAvailability?.defaultRunner : undefined]);
 
@@ -1303,15 +1348,15 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     (!loginNeedsPty || providerSupportsLoginPty);
   const runEnvironmentTest = useCallback(async () => {
     if (!selectedCompanyId) {
-      throw new Error("Select an organization to test adapter environment");
+      throw new AgentConfigError("testCompany");
     }
     setTestActionPending(true);
-    setTestActionError(null);
+    setTestActionFailure(null);
     testEnvironment.reset();
     try {
       return await testEnvironment.mutateAsync();
     } catch (error) {
-      setTestActionError(error instanceof Error ? error.message : "Environment test failed");
+      setTestActionFailure({ cause: error });
       throw error;
     } finally {
       setTestActionPending(false);
@@ -1361,11 +1406,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     if (!props.onTestFeedbackChange) return;
     props.onTestFeedbackChange({
       errorMessage: testActionError
-        ?? (testEnvironment.error instanceof Error
-          ? testEnvironment.error.message
-          : testEnvironment.error
-            ? "Environment test failed"
-            : null),
+        ?? (testEnvironment.error ? configErrorMessage(testEnvironment.error, "testFailed", t) : null),
       result: testEnvironment.data ?? null,
       // `showAdapterLogin` already requires a selected company and a non-empty
       // environment id, so both are present here.
@@ -1382,6 +1423,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     testActionError,
     testEnvironment.data,
     testEnvironment.error,
+    t,
     showAdapterLogin,
     selectedCompanyId,
     adapterType,
@@ -1397,12 +1439,12 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   async function handleRefreshModels() {
     if (!selectedCompanyId) return;
     setRefreshingModels(true);
-    setRefreshModelsError(null);
+    setRefreshModelsFailure(null);
     try {
       const refreshed = await agentsApi.adapterModels(selectedCompanyId, modelAdapterType, { refresh: true, environmentId: currentDefaultEnvironmentId || null, provider: modelProvider, ...(runnerAcpxAgent === "copilot" ? { acpxAgent: runnerAcpxAgent, aiConnection: modelAiBinding, agentId: !isCreate ? props.agent.id : undefined } : {}) });
       queryClient.setQueryData(modelQueryKey, refreshed);
     } catch (error) {
-      setRefreshModelsError(error instanceof Error ? error.message : "Failed to refresh adapter models.");
+      setRefreshModelsFailure({ cause: error });
     } finally {
       setRefreshingModels(false);
     }
@@ -1417,26 +1459,35 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           ? "variant"
           : adapterType === "grok_local" ? "reasoningEffort"
           : adapterType === "pi_local" ? "thinking" : "effort";
+  const setupEffortKeys: Record<string, string> = {
+    minimal: "agentConfigUi.effortMinimal",
+    low: "agentConfigUi.effortLow",
+    medium: "agentConfigUi.effortMedium",
+    high: "agentConfigUi.effortHigh",
+    xhigh: "agentConfigUi.effortXhigh",
+    max: "agentConfigUi.effortMax",
+    ultra: "agentConfigUi.effortUltra",
+  };
   const thinkingEffortOptions =
     isCodexHarness
-      ? codexReasoningEffortOptions(currentModelId, "Auto").map((option) => ({
+      ? codexReasoningEffortOptions(currentModelId, t("agentConfigUi.auto"), t).map((option) => ({
           id: option.value,
           label: option.label,
         }))
       : adapterType === "cursor"
-        ? cursorModeOptions
+        ? cursorModeOptions.map(option => ({ id: option.id, label: t(option.labelKey) }))
         : adapterType === "opencode_local"
-          ? openCodeThinkingEffortOptions
+          ? openCodeThinkingEffortOptions.map(option => ({ id: option.id, label: t(option.labelKey) }))
           : adapterType === "kimi_local"
-            ? kimiThinkingEffortOptions
+            ? kimiThinkingEffortOptions.map(option => ({ id: option.id, label: t(option.labelKey) }))
             : adapterType === "pi_local"
-              ? [{ id: "", label: "Auto" }, ...["off", "minimal", "low", "medium", "high", "xhigh"].map(id => ({ id, label: id }))]
+              ? [{ id: "", label: t("agentConfigUi.auto") }, ...piThinkingEffortOptions.map(option => ({ id: option.id, label: t(option.labelKey) }))]
               : harnessType === "claude_local" || adapterType === "grok_local"
-                ? [{ id: "", label: "Auto" }, ...setupEfforts(harnessType, currentModelId).map((id) => ({
+                ? [{ id: "", label: t("agentConfigUi.auto") }, ...setupEfforts(harnessType, currentModelId).map((id) => ({
                     id,
-                    label: id === "xhigh" ? "X-High" : id[0].toUpperCase() + id.slice(1),
+                    label: Object.hasOwn(setupEffortKeys, id) ? t(setupEffortKeys[id]) : id,
                   }))]
-                : claudeThinkingEffortOptions;
+                : claudeThinkingEffortOptions.map(option => ({ id: option.id, label: t(option.labelKey) }));
   const currentThinkingEffort = isCreate
     ? val!.thinkingEffort
     : isCodexHarness || (adapterType === "paperclip_runner" && harnessType === "claude_local")
@@ -1531,9 +1582,9 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         {isDirty && !props.hideInlineSave && (
           <div className="sticky top-0 z-10 flex items-center justify-end border-b border-primary/20 bg-background/90 px-4 py-2 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground">Unsaved changes</span>
+              <span className="text-xs text-muted-foreground">{t("agentConfigUi.unsaved")}</span>
               <Button size="sm" onClick={handleSave} disabled={props.isSaving}>
-                {props.isSaving ? "Saving..." : "Save"}
+                {props.isSaving ? t("agentConfigUi.saving") : t("agentConfigUi.save")}
               </Button>
             </div>
           </div>
@@ -1542,8 +1593,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         {props.environmentVariablesPlacement === "secrets" && (
           <div data-config-section="environment-variables" className={cn(!cards && "border-b border-border")}>
             {cards
-              ? <h3 className="mb-3 text-sm font-medium">Environment variables</h3>
-              : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Environment variables</div>
+              ? <h3 className="mb-3 text-sm font-medium">{t("agentConfigUi.environmentVariables")}</h3>
+              : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.environmentVariables")}</div>
             }
             <div className={cn(cards ? "rounded-lg border border-border p-4" : "px-4 pb-3")}>
               {environmentVariablesEditor}
@@ -1553,8 +1604,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
 
         <div data-config-section="secrets" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="mb-3 text-sm font-medium">Secret access</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Secret access</div>
+            ? <h3 className="mb-3 text-sm font-medium">{t("agentConfigUi.secretAccess")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.secretAccess")}</div>
           }
           <div className={cn(cards ? "space-y-3 rounded-lg border border-border p-4" : "space-y-3 px-4 pb-3")}>
             <p className="text-xs text-muted-foreground">{help.secretAccess}</p>
@@ -1580,31 +1631,30 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div className="min-w-0 flex-1 space-y-1">
-              <p className="text-sm font-medium">Upgrade to Paperclip Runner</p>
+              <p className="text-sm font-medium">{t("agentConfigUi.upgradeTitle")}</p>
               <p className="text-sm text-muted-foreground">
-                Keep {harnessType === "claude_local" ? "Claude" : "Codex"}, your model, account, and compatible settings.
-                New sessions start fresh; past runs stay available.
+                {t("agentConfigUi.upgradeDescription", { harness: harnessType === "claude_local" ? "Claude" : "Codex" })}
               </p>
               {canQualifyRunnerUpgrade && runnerAvailability?.defaultRunner !== "paperclip" ? (
-                <p className="text-xs text-muted-foreground">The upgrade will verify your computer first. This can take a few minutes.</p>
+                <p className="text-xs text-muted-foreground">{t("agentConfigUi.upgradeVerify")}</p>
               ) : null}
-              {upgradeWarnings.map(warning => <p key={warning.field} className="text-xs text-muted-foreground">{warning.message}</p>)}
+              {upgradeWarnings.map(warning => <p key={warning.field} className="text-xs text-muted-foreground">{warning.code === "runner_option_ignored" && Object.hasOwn(warningKeys, warning.field) ? t(warningKeys[warning.field]) : warning.message}</p>)}
               {upgradeEnvironmentChanged ? (
-                <p className="text-xs text-muted-foreground">Save your computer change before upgrading the runner.</p>
-              ) : isDirty ? <p className="text-xs text-muted-foreground">Your unsaved changes will be included.</p> : null}
+                <p className="text-xs text-muted-foreground">{t("agentConfigUi.upgradeSaveComputer")}</p>
+              ) : isDirty ? <p className="text-xs text-muted-foreground">{t("agentConfigUi.upgradeIncludesDraft")}</p> : null}
             </div>
             <Button size="sm" className="self-end sm:self-auto" onClick={upgradeRunner} disabled={runnerUpgradePending || upgradeEnvironmentChanged || (!isCreate && props.isSaving)}>
               {runnerUpgradePending ? <Loader2 className="size-4 animate-spin" /> : null}
-              {runnerUpgradePending ? "Upgrading…" : "Upgrade runner"}
+              {runnerUpgradePending ? t("agentConfigUi.upgrading") : t("agentConfigUi.upgrade")}
             </Button>
           </div>
           {runnerUpgradeError ? <p role="alert" className="text-sm text-destructive">{runnerUpgradeError}</p> : null}
         </div>
       ) : null}
-      {runnerUpgraded ? <p role="status" className="text-sm text-muted-foreground">Upgraded to Paperclip Runner.</p> : null}
+      {runnerUpgraded ? <p role="status" className="text-sm text-muted-foreground">{t("agentConfigUi.upgraded")}</p> : null}
       {adapterType === "paperclip_runner" && upgradeWarnings.length > 0 ? (
         <div role="status" className="space-y-1 rounded-lg border border-border bg-muted/30 p-4">
-          {upgradeWarnings.map(warning => <p key={warning.field} className="text-sm text-muted-foreground">{warning.message}</p>)}
+          {upgradeWarnings.map(warning => <p key={warning.field} className="text-sm text-muted-foreground">{warning.code === "runner_option_ignored" && Object.hasOwn(warningKeys, warning.field) ? t(warningKeys[warning.field]) : warning.message}</p>)}
         </div>
       ) : null}
     <ConfigSections order={props.sectionOrder} className={cn("relative", cards && "space-y-6")}>
@@ -1612,13 +1662,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {isDirty && !props.hideInlineSave && (
         <div className="sticky top-0 z-10 flex items-center justify-end px-4 py-2 bg-background/90 backdrop-blur-sm border-b border-primary/20">
           <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground">Unsaved changes</span>
+            <span className="text-xs text-muted-foreground">{t("agentConfigUi.unsaved")}</span>
             <Button
               size="sm"
               onClick={handleSave}
               disabled={!isCreate && props.isSaving}
             >
-              {!isCreate && props.isSaving ? "Saving..." : "Save"}
+              {!isCreate && props.isSaving ? t("agentConfigUi.saving") : t("agentConfigUi.save")}
             </Button>
           </div>
         </div>
@@ -1628,40 +1678,40 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {!isCreate && (
         <div data-config-section="identity" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">{props.sectionTitles?.["identity"] ?? "Identity"}</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Identity</div>
+            ? <h3 className="text-sm font-medium mb-3">{props.sectionTitles?.["identity"] ?? t("agentConfigUi.identity")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.identity")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
-            <Field label="Name" hint={help.name}>
+            <Field label={t("agentConfigUi.name")} hint={help.name}>
               <DraftInput
                 value={eff("identity", "name", props.agent.name)}
                 onCommit={(v) => mark("identity", "name", v)}
                 immediate
                 className={inputClass}
-                placeholder="Agent name"
+                placeholder={t("agentConfigUi.agentName")}
               />
             </Field>
-            <Field label="Title" hint={help.title}>
+            <Field label={t("agentConfigUi.title")} hint={help.title}>
               <DraftInput
                 value={eff("identity", "title", props.agent.title ?? "")}
                 onCommit={(v) => mark("identity", "title", v || null)}
                 immediate
                 className={inputClass}
-                placeholder="e.g. VP of Engineering"
+                placeholder={t("agentConfigUi.titleExample")}
               />
             </Field>
-            <Field label="Reports to" hint={help.reportsTo}>
+            <Field label={t("agentConfigUi.reportsTo")} hint={help.reportsTo}>
               <ReportsToPicker
                 agents={companyAgents}
                 value={eff("identity", "reportsTo", props.agent.reportsTo ?? null)}
                 onChange={(id) => mark("identity", "reportsTo", id)}
                 excludeAgentIds={[props.agent.id]}
-                chooseLabel="Choose manager…"
+                chooseLabel={t("agentConfigUi.chooseManager")}
               />
             </Field>
             {isLocal && !props.hidePromptTemplate && (
               <>
-                <Field label="Prompt Template" hint={help.promptTemplate}>
+                <Field label={t("agentConfigUi.promptTemplate")} hint={help.promptTemplate}>
                   <MarkdownEditor
                     value={eff(
                       "adapterConfig",
@@ -1678,9 +1728,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     }}
                   />
                 </Field>
-                <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-100">
-                  Prompt template is replayed on every heartbeat. Keep it compact and dynamic to avoid recurring token cost and cache churn.
-                </div>
+                <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-100">{t("agentConfigUi.promptWarning")}</div>
               </>
             )}
           </div>
@@ -1694,24 +1742,20 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         // Render the environment read-only instead of the selectable picker.
         <div data-config-section="environment" className={cn(!cards && (isCreate ? "border-t border-border" : "border-b border-border"))}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Environment</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Environment</div>
+            ? <h3 className="text-sm font-medium mb-3">{t("agentConfigUi.environment")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.environment")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
             <Field
-              label="Default environment"
-              hint="This instance runs all agents in the Kubernetes sandbox. Local execution is disabled."
+              label={t("agentConfigUi.defaultEnvironment")}
+              hint={t("agentConfigUi.forcedEnvironmentHint")}
             >
               {kubernetesEnvironment ? (
                 <div className={cn(inputClass, "flex items-center text-muted-foreground")}>
-                  {kubernetesEnvironment.name} · Kubernetes sandbox
+                  {t("agentConfigUi.kubernetesEnvironment", { name: kubernetesEnvironment.name })}
                 </div>
               ) : (
-                <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
-                  This instance requires the Kubernetes sandbox, but no managed Kubernetes
-                  environment is available for this organization yet. Configure one before creating
-                  agents; execution will not fall back to local.
-                </div>
+                <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">{t("agentConfigUi.forcedEnvironmentMissing")}</div>
               )}
             </Field>
           </div>
@@ -1719,14 +1763,14 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       ) : showEnvironmentOverrideControl ? (
         <div data-config-section="environment" className={cn(!cards && (isCreate ? "border-t border-border" : "border-b border-border"))}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Environment</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Environment</div>
+            ? <h3 className="text-sm font-medium mb-3">{t("agentConfigUi.environment")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.environment")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
-            <Field label="Environment override">
+            <Field label={t("agentConfigUi.environmentOverride")}>
               <div className="space-y-2">
                 <SelectPopover
-                  aria-label="Environment override"
+                  aria-label={t("agentConfigUi.environmentOverride")}
                   value={currentDefaultEnvironmentId}
                   onValueChange={(nextValue) => {
                     if (isCreate) {
@@ -1736,7 +1780,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     mark("identity", "defaultEnvironmentId", nextValue || null);
                   }}
                   options={[
-                    { value: "", label: `Default: ${inheritedEnvironmentLabel}` },
+                    { value: "", label: t("agentConfigUi.environmentDefault", { name: inheritedEnvironmentLabel }) },
                     ...environmentOptions.map((environment) => ({
                       value: environment.id,
                       label: environmentDisplayLabel(environment),
@@ -1753,8 +1797,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       <div data-config-section="adapter" className={cn(!cards && (isCreate ? "border-t border-border" : "border-b border-border"))}>
         <div className={cn(cards ? "flex items-center justify-between mb-3" : "px-4 py-2 flex items-center justify-between gap-2")}>
           {cards
-            ? <h3 className="text-sm font-medium">{props.sectionTitles?.["adapter"] ?? "Adapter"}</h3>
-            : <span className="text-xs font-medium text-muted-foreground">Adapter</span>
+            ? <h3 className="text-sm font-medium">{props.sectionTitles?.["adapter"] ?? t("agentConfigUi.adapter")}</h3>
+            : <span className="text-xs font-medium text-muted-foreground">{t("agentConfigUi.adapter")}</span>
           }
           {showInlineAdapterTestEnvironmentButton && (
             <Button
@@ -1765,13 +1809,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
               onClick={triggerTestEnvironment}
               disabled={testEnvironmentDisabled}
             >
-              {testActionPending ? `${testActionLabel}...` : testActionLabel}
+              {testActionPending ? t("agentConfigUi.testing") : testActionLabel}
             </Button>
           )}
         </div>
         <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
           {showAdapterTypeField && isGrokBotRunner && (
-            <Field label="Harness" hint={help.adapterType}>
+            <Field label={t("agentConfigUi.harness")} hint={help.adapterType}>
               <div className="inline-flex items-center gap-1.5">
                 <AdapterMark type="grok_bot" className="size-4" />
                 <span>Grok Bot</span>
@@ -1780,7 +1824,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             </Field>
           )}
           {showAdapterTypeField && !isGrokBotRunner && (
-            <Field label="Harness" hint={help.adapterType}>
+            <Field label={t("agentConfigUi.harness")} hint={help.adapterType}>
               <AdapterTypeDropdown
                 value={isDotRunner ? "openai_dot" : isMuseRunner ? "muse" : isRunnerHarness ? harnessType : adapterType}
                 disabledTypes={adapterPickerDisabledTypes}
@@ -1866,9 +1910,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           {showInlineAdapterTestEnvironmentFeedback && !props.compactTestFeedback && (testActionError || testEnvironment.error) && (
             <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
               {testActionError
-                ?? (testEnvironment.error instanceof Error
-                  ? testEnvironment.error.message
-                  : "Environment test failed")}
+                ?? configErrorMessage(testEnvironment.error, "testFailed", t)}
             </div>
           )}
 
@@ -1892,7 +1934,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
 
           {/* Working directory */}
           {showLegacyWorkingDirectoryField && (
-            <Field label="Working directory (deprecated)" hint={help.cwd}>
+            <Field label={t("agentConfigUi.workingDirectory")} hint={help.cwd}>
               <div className="flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5">
                 <FolderOpen className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <DraftInput
@@ -1940,7 +1982,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 }}
                 open={modelOpen}
                 onOpenChange={setModelOpen}
-                defaultLabel={adapterType === "claude_local" ? `Default (${DEFAULT_CLAUDE_LOCAL_MODEL})` : undefined}
+                defaultLabel={adapterType === "claude_local" ? t("agentConfigUi.modelDefault", { model: DEFAULT_CLAUDE_LOCAL_MODEL }) : undefined}
                 allowDefault={adapterType !== "opencode_local" && adapterType !== "pi_local" && adapterType !== "paperclip_runner"}
                 required={adapterType === "opencode_local" || adapterType === "pi_local"}
                 groupByProvider={!connectionModels && (adapterType === "opencode_local" || adapterType === "pi_local")}
@@ -1960,15 +2002,14 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     : undefined
                 }
                 refreshingModels={connectionModels?.refreshing ?? refreshingModels}
-                detectModelLabel="Detect model"
-                emptyDetectHint="No model detected. Select or enter one manually."
+                detectModelLabel={t("agentConfigUi.detectModel")}
+                redetectModelLabel={t("agentConfigUi.redetectModel")}
+                emptyDetectHint={t("agentConfigUi.noModelDetected")}
               />
               {(refreshModelsError || modelError) && (
                 <p className="text-xs text-destructive">
                   {refreshModelsError
-                    ?? (modelError instanceof Error
-                      ? modelError.message
-                      : "Failed to load adapter models.")}
+                    ?? configErrorMessage(modelError, "loadModelsFailed", t)}
                 </p>
               )}
               {adapterType === "opencode_local"
@@ -1976,7 +2017,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 && currentDefaultEnvironment
                 && currentDefaultEnvironment.driver !== "local" && (
                 <p className="text-xs text-muted-foreground">
-                  Live OpenCode model discovery only runs for Local environments. Using the curated list and manual entry for {currentDefaultEnvironment.name}.
+                  {t("agentConfigUi.openCodeRemoteModels", { name: currentDefaultEnvironment.name })}
                 </p>
               )}
 
@@ -2001,9 +2042,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                   {adapterType === "codex_local" &&
                     codexSearchEnabled &&
                     currentThinkingEffort === "minimal" && (
-                      <p className="text-xs text-amber-400">
-                        Codex may reject `minimal` thinking when search is enabled.
-                      </p>
+                      <p className="text-xs text-amber-400">{t("agentConfigUi.minimalSearchWarning")}</p>
                     )}
                 </>
               )}
@@ -2016,13 +2055,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {(
         <div data-config-section="configuration" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Configuration</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Configuration</div>
+            ? <h3 className="text-sm font-medium mb-3">{t("agentConfigUi.configuration")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.configuration")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
               {!isCreate && typeof config.bootstrapPromptTemplate === "string" && config.bootstrapPromptTemplate && (
                 <>
-                  <Field label="Bootstrap prompt (legacy)" hint={help.bootstrapPrompt}>
+                  <Field label={t("agentConfigUi.bootstrapPrompt")} hint={help.bootstrapPrompt}>
                     <MarkdownEditor
                       value={eff(
                         "adapterConfig",
@@ -2032,7 +2071,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       onChange={(v) =>
                         mark("adapterConfig", "bootstrapPromptTemplate", v || undefined)
                       }
-                      placeholder="Optional initial setup prompt for the first run"
+                      placeholder={t("agentConfigUi.bootstrapPlaceholder")}
                       contentClassName="min-h-(--sz-44px) text-sm font-mono"
                       imageUploadHandler={async (file) => {
                         const namespace = `agents/${props.agent.id}/bootstrap-prompt`;
@@ -2041,15 +2080,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       }}
                     />
                   </Field>
-                  <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
-                    Bootstrap prompt is legacy and will be removed in a future release. Consider moving this content into the agent&apos;s prompt template or instructions file instead.
-                  </div>
+                  <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">{t("agentConfigUi.bootstrapWarning")}</div>
                 </>
               )}
               {renderAdapterFields("configuration")}
               {(isLocal || adapterType === "process" || configSchema?.fields.some((field) => schemaFieldSection(field.key) === "advanced")) && (
               <CollapsibleSection
-                title="Advanced"
+                title={t("agentConfigUi.advanced")}
                 open={configurationAdvancedOpen}
                 onToggle={() => setConfigurationAdvancedOpen(!configurationAdvancedOpen)}
               >
@@ -2071,7 +2108,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 flashes on a managed instance.
               */}
               {!hideHostPaths && (
-                <Field label="Command" hint={help.localCommand}>
+                <Field label={t("agentConfigUi.command")} hint={help.localCommand}>
                   <DraftInput
                     value={
                       isCreate
@@ -2106,7 +2143,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 </Field>
               )}
 
-              <Field label="Extra args (comma-separated)" hint={help.extraArgs}>
+              <Field label={t("agentConfigUi.extraArgs")} hint={help.extraArgs}>
                 <DraftInput
                   value={
                     isCreate
@@ -2119,7 +2156,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       : mark("adapterConfig", "extraArgs", v?.trim() ? parseCommaArgs(v) : null)
                   }
                   className={inputClass}
-                  placeholder="e.g. --verbose, --foo=bar"
+                  placeholder={t("agentConfigUi.extraArgsExample")}
                 />
               </Field>
 
@@ -2136,8 +2173,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {props.environmentVariablesPlacement !== "secrets" && (isLocal || configSchema?.fields.some((field) => schemaFieldSection(field.key) === "environment")) && (
         <div data-config-section="environment-variables" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Environment variables</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Environment variables</div>
+            ? <h3 className="text-sm font-medium mb-3">{t("agentConfigUi.environmentVariables")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{t("agentConfigUi.environmentVariables")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
             {isLocal ? environmentVariablesEditor : renderAdapterFields("environment")}
@@ -2149,23 +2186,23 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {isCreate && showCreateRunPolicySection ? (
         <div data-config-section="run-policy" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> Run Policy</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> Run Policy</div>
+            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> {t("agentConfigUi.runPolicy")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> {t("agentConfigUi.runPolicy")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
             <ToggleWithNumber
-              label="Heartbeat on interval"
+              label={t("agentConfigUi.heartbeatInterval")}
               hint={help.heartbeatInterval}
               checked={val!.heartbeatEnabled}
               onCheckedChange={(v) => set!({ heartbeatEnabled: v })}
               number={val!.intervalSec}
               onNumberChange={(v) => set!({ intervalSec: v })}
-              numberLabel="sec"
-              numberPrefix="Run heartbeat every"
+              numberLabel={t("agentConfigUi.seconds")}
+              numberPrefix={t("agentConfigUi.heartbeatEvery")}
               numberHint={help.intervalSec}
               showNumber={val!.heartbeatEnabled}
             />
-            <CollapsibleSection title="Advanced Run Policy" open={runPolicyAdvancedOpen} onToggle={() => setRunPolicyAdvancedOpen(!runPolicyAdvancedOpen)}>
+            <CollapsibleSection title={t("agentConfigUi.advancedRunPolicy")} open={runPolicyAdvancedOpen} onToggle={() => setRunPolicyAdvancedOpen(!runPolicyAdvancedOpen)}>
               <div className="space-y-3">{renderAdapterFields("runPolicy")}</div>
             </CollapsibleSection>
           </div>
@@ -2173,26 +2210,26 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       ) : !isCreate ? (
         <div data-config-section="run-policy" className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> Run Policy</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> Run Policy</div>
+            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> {t("agentConfigUi.runPolicy")}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> {t("agentConfigUi.runPolicy")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg overflow-hidden" : "")}>
             <div className={cn(cards ? "p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
               <ToggleWithNumber
-                label="Heartbeat on interval"
+                label={t("agentConfigUi.heartbeatInterval")}
                 hint={help.heartbeatInterval}
                 checked={eff("heartbeat", "enabled", heartbeat.enabled === true)}
                 onCheckedChange={(v) => mark("heartbeat", "enabled", v)}
                 number={eff("heartbeat", "intervalSec", Number(heartbeat.intervalSec ?? 300))}
                 onNumberChange={(v) => mark("heartbeat", "intervalSec", v)}
-                numberLabel="sec"
-                numberPrefix="Run heartbeat every"
+                numberLabel={t("agentConfigUi.seconds")}
+                numberPrefix={t("agentConfigUi.heartbeatEvery")}
                 numberHint={help.intervalSec}
                 showNumber={eff("heartbeat", "enabled", heartbeat.enabled === true)}
               />
             </div>
             <CollapsibleSection
-              title="Advanced Run Policy"
+              title={t("agentConfigUi.advancedRunPolicy")}
               bordered={cards}
               open={runPolicyAdvancedOpen}
               onToggle={() => setRunPolicyAdvancedOpen(!runPolicyAdvancedOpen)}
@@ -2204,7 +2241,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
               {!isCreate && (
                 <>
                   {!configSchema?.fields.some((field) => field.key === "timeoutSec") && (
-                  <Field label="Timeout (sec)" hint={help.timeoutSec}>
+                  <Field label={t("agentConfigUi.timeout")} hint={help.timeoutSec}>
                     <DraftNumberInput
                       value={eff(
                         "adapterConfig",
@@ -2218,7 +2255,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                   </Field>
                   )}
                   {!configSchema?.fields.some((field) => field.key === "graceSec") && (
-                  <Field label="Interrupt grace period (sec)" hint={help.graceSec}>
+                  <Field label={t("agentConfigUi.gracePeriod")} hint={help.graceSec}>
                     <DraftNumberInput
                       value={eff(
                         "adapterConfig",
@@ -2235,7 +2272,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
               )}
               </>)}
               <ToggleField
-                label="Wake on demand"
+                label={t("agentConfigUi.wakeOnDemand")}
                 hint={help.wakeOnDemand}
                 checked={eff(
                   "heartbeat",
@@ -2244,7 +2281,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 )}
                 onChange={(v) => mark("heartbeat", "wakeOnDemand", v)}
               />
-              <Field label="Cooldown (sec)" hint={help.cooldownSec}>
+              <Field label={t("agentConfigUi.cooldown")} hint={help.cooldownSec}>
                 <DraftNumberInput
                   value={eff(
                     "heartbeat",
@@ -2256,7 +2293,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Max concurrent runs" hint={help.maxConcurrentRuns}>
+              <Field label={t("agentConfigUi.concurrentRuns")} hint={help.maxConcurrentRuns}>
                 <DraftNumberInput
                   value={eff(
                     "heartbeat",
@@ -2270,14 +2307,14 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
               </Field>
               <div className="rounded-md border border-border/70 px-3 py-2">
                 <ToggleField
-                  label="Continue after max-turn stop"
+                  label={t("agentConfigUi.continueAfterLimit")}
                   hint={help.maxTurnContinuationEnabled}
                   checked={maxTurnContinuationEnabled}
                   onChange={(v) => updateMaxTurnContinuation({ enabled: v })}
                 />
                 {maxTurnContinuationEnabled ? (
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <Field label="Continuation attempts" hint={help.maxTurnContinuationMaxAttempts}>
+                    <Field label={t("agentConfigUi.continuationAttempts")} hint={help.maxTurnContinuationMaxAttempts}>
                       <DraftNumberInput
                         value={maxTurnContinuationMaxAttempts}
                         onCommit={(v) =>
@@ -2288,7 +2325,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                         className={inputClass}
                       />
                     </Field>
-                    <Field label="Continuation delay (sec)" hint={help.maxTurnContinuationDelaySec}>
+                    <Field label={t("agentConfigUi.continuationDelay")} hint={help.maxTurnContinuationDelaySec}>
                       <DraftNumberInput
                         value={maxTurnContinuationDelaySec}
                         onCommit={(v) =>
@@ -2313,12 +2350,10 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         <div className={cn(!cards && "border-b border-border")}>
           {cards ? (
             <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
-              <Bug className="h-3 w-3" /> Debugging
-            </h3>
+              <Bug className="h-3 w-3" />{t("agentConfigUi.debugging")}</h3>
           ) : (
             <div className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
-              <Bug className="h-3 w-3" /> Debugging
-            </div>
+              <Bug className="h-3 w-3" />{t("agentConfigUi.debugging")}</div>
           )}
           <div
             className={cn(
@@ -2329,8 +2364,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             )}
           >
             <ToggleField
-              label="Capture raw provider traces"
-              hint="Stores exact provider traffic for every future run until disabled. Traces may contain sensitive prompts and tool arguments, are administrator-only, and expire after 24 hours."
+              label={t("agentConfigUi.captureTraces")}
+              hint={t("agentConfigUi.captureTracesHint")}
               checked={eff<unknown>("debug", "providerTrace", debug.providerTrace) === "raw"}
               onChange={(enabled) =>
                 mark("debug", "providerTrace", enabled ? "raw" : undefined)
@@ -2339,9 +2374,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             {eff<unknown>("debug", "providerTrace", debug.providerTrace) === "raw" ? (
               <div className="mt-3 flex items-start gap-2 rounded-md border border-border bg-background/60 px-3 py-2 text-xs text-foreground">
                 <Bug className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                <span>
-                  Raw tracing is on for future runs. Paperclip keeps at most 64 MiB per run and automatically deletes it after 24 hours.
-                </span>
+                <span>{t("agentConfigUi.captureTracesOn")}</span>
               </div>
             ) : null}
           </div>
@@ -2354,7 +2387,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           metadataOnly={adapterType === "paperclip_runner" && runnerAcpxAgent === "copilot"}
           state={testActionPending ? "running" : testActionError || testEnvironment.error ? "fail" : testResult?.status ?? "idle"}
           result={testResult ?? null}
-          error={testActionError ?? (testEnvironment.error instanceof Error ? testEnvironment.error.message : null)}
+          error={testActionError ?? (testEnvironment.error ? configErrorMessage(testEnvironment.error, "testFailed", t) : null)}
           onTest={triggerTestEnvironment}
           disabled={testEnvironmentDisabled}
         />
@@ -3788,8 +3821,10 @@ function SubmittedBrowserCodeLoginPanel({
 }
 
 export function AdapterEnvironmentResult({ result }: { result: AdapterEnvironmentTestResult }) {
+  const { t, i18n } = useTranslation();
+  const levelLabels: Record<string, string> = { info: t("agentConfigUi.info"), warn: t("agentConfigUi.warn"), error: t("agentConfigUi.error") };
   const statusLabel =
-    result.status === "pass" ? "Passed" : result.status === "warn" ? "Warnings" : "Failed";
+    result.status === "pass" ? t("agentConfigUi.passed") : result.status === "warn" ? t("agentConfigUi.warnings") : t("agentConfigUi.failed");
   const statusClass =
     result.status === "pass"
       ? "text-green-700 dark:text-green-300 border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10"
@@ -3802,19 +3837,19 @@ export function AdapterEnvironmentResult({ result }: { result: AdapterEnvironmen
       <div className="flex items-center justify-between gap-2">
         <span className="font-medium">{statusLabel}</span>
         <span className="text-(length:--text-micro) opacity-80">
-          {new Date(result.testedAt).toLocaleTimeString()}
+          {new Date(result.testedAt).toLocaleTimeString(i18n.language)}
         </span>
       </div>
       <div className="mt-2 space-y-1.5">
         {result.checks.map((check, idx) => (
           <div key={`${check.code}-${idx}`} className="text-(length:--text-micro) leading-relaxed break-words">
             <span className="font-medium uppercase tracking-wide opacity-80">
-              {check.level}
+              {Object.hasOwn(levelLabels, check.level) ? levelLabels[check.level] : check.level}
             </span>
             <span className="mx-1 opacity-60">·</span>
             <span>{check.message}</span>
             {check.detail && <span className="block opacity-75 break-all">({check.detail})</span>}
-            {check.hint && <span className="block opacity-90 break-words">Hint: {check.hint}</span>}
+            {check.hint && <span className="block opacity-90 break-words">{t("agentConfigUi.hint", { hint: check.hint })}</span>}
           </div>
         ))}
       </div>
@@ -3839,32 +3874,36 @@ export function AdapterTypeDropdown({
   museEnabled?: boolean;
   nativeRunnerEnabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const selectedDisplay = getAdapterDisplay(value);
+  const labelForType = (type: string) => type === "muse" ? t("agentConfigUi.musePersonal")
+    : type === "process" ? t("agentConfigUi.process")
+      : type === "acpx_local" ? t("agentConfigUi.retiredAcpx")
+        : adapterLabels[type] ?? getAdapterLabel(type);
   const adapterList = useMemo(() =>
-    [...listAdapterOptions(type => adapterLabels[type] ?? getAdapterLabel(type)),
+    [...listAdapterOptions(labelForType),
       ...(openAiDotEnabled ? [{ value: "openai_dot", label: "OpenAI Dot", experimental: true, comingSoon: false }] : []),
-      ...(museEnabled ? [{ value: "muse", label: "Muse — Personal agent", experimental: true, comingSoon: false }] : []),
+      ...(museEnabled ? [{ value: "muse", label: t("agentConfigUi.musePersonal"), experimental: true, comingSoon: false }] : []),
     ].filter(item => (item.value !== "paperclip_runner" || nativeRunnerEnabled) && !disabledTypes.has(item.value))
       .sort((a, b) => Number(a.value === "paperclip_runner") - Number(b.value === "paperclip_runner")),
-    [disabledTypes, openAiDotEnabled, nativeRunnerEnabled, museEnabled]);
-  return <SelectPopover aria-label="Harness" value={value} onValueChange={onChange}
+    [disabledTypes, openAiDotEnabled, nativeRunnerEnabled, museEnabled, t]);
+  return <SelectPopover aria-label={t("agentConfigUi.harness")} value={value} onValueChange={onChange}
     displayValue={<span className="inline-flex min-w-0 items-center gap-1.5">
       <span aria-hidden="true" className="inline-flex shrink-0"><AdapterMark type={value} className="size-4" /></span>
-      <span className="truncate">{adapterLabels[value] ?? getAdapterLabel(value)}</span>
+      <span className="truncate">{labelForType(value)}</span>
       {selectedDisplay.experimental && <ExperimentalBadge />}
     </span>}
     options={adapterList.map(item => ({ value: item.value, disabled: item.comingSoon,
-      group: item.value === "paperclip_runner" ? "Advanced" : undefined,
+      group: item.value === "paperclip_runner" ? t("agentConfigUi.advanced") : undefined,
       label: <span className="inline-flex items-center gap-1.5"><span aria-hidden="true" className="inline-flex shrink-0"><AdapterMark type={item.value} className="size-4" /></span><span>{item.label}</span>{item.experimental && <ExperimentalBadge />}</span>,
-      suffix: item.comingSoon ? <span className="text-(length:--text-nano) text-muted-foreground">Coming soon</span> : undefined,
+      suffix: item.comingSoon ? <span className="text-(length:--text-nano) text-muted-foreground">{t("agentConfigUi.comingSoon")}</span> : undefined,
     }))} />;
 }
 
 function ExperimentalBadge() {
+  const { t } = useTranslation();
   return (
-    <span className="shrink-0 rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-(length:--text-nano) font-medium leading-none text-amber-700 dark:text-amber-200">
-      Experimental
-    </span>
+    <span className="shrink-0 rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-(length:--text-nano) font-medium leading-none text-amber-700 dark:text-amber-200">{t("agentConfigUi.experimental")}</span>
   );
 }
 
@@ -3886,6 +3925,7 @@ export function ModelDropdown({
   refreshingModels,
   loadingModels,
   detectModelLabel,
+  redetectModelLabel,
   emptyDetectHint,
   defaultLabel,
   presentation = "searchable",
@@ -3908,6 +3948,7 @@ export function ModelDropdown({
   refreshingModels?: boolean;
   loadingModels?: boolean;
   detectModelLabel?: string;
+  redetectModelLabel?: string;
   emptyDetectHint?: string;
   defaultLabel?: string;
   presentation?: "searchable" | "native";
@@ -4069,7 +4110,7 @@ export function ModelDropdown({
                 <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
               </svg>
-              {detectingModel ? t("providerSetup.model.detecting") : detectedModel ? (detectModelLabel?.replace(/^Detect\b/, "Re-detect") ?? t("providerSetup.model.redetect")) : (detectModelLabel ?? t("providerSetup.model.detect"))}
+              {detectingModel ? t("providerSetup.model.detecting") : detectedModel ? (redetectModelLabel ?? detectModelLabel?.replace(/^Detect\b/, "Re-detect") ?? t("providerSetup.model.redetect")) : (detectModelLabel ?? t("providerSetup.model.detect"))}
             </button>
           )}
           {onRefreshModels && !modelSearch.trim() && (
@@ -4242,8 +4283,10 @@ function ThinkingEffortDropdown({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  return <Field label="Thinking effort" hint={help.thinkingEffort}>
-    <SelectPopover aria-label="Thinking effort" value={value} onValueChange={onChange}
+  const { t } = useTranslation();
+  const help = getAgentConfigHelp(t);
+  return <Field label={t("agentConfigUi.thinkingEffort")} hint={help.thinkingEffort}>
+    <SelectPopover aria-label={t("agentConfigUi.thinkingEffort")} value={value} onValueChange={onChange}
       open={open} onOpenChange={onOpenChange}
       options={options.map(option => ({ value: option.id, label: option.label,
         suffix: option.id ? <span className="text-xs text-muted-foreground font-mono">{option.id}</span> : undefined,

@@ -103,6 +103,7 @@ for await (const line of createInterface({input:process.stdin})) {
       await bundle.transport.request("initialize", {});
       await bundle.transport.request("thread/start", { cwd: fixture.workspace, dynamicTools: authority.definitions() });
       await bundle.transport.request("turn/start", { input: [{ type: "text", text: "Read every saved result page" }] });
+      const waitStartedAt = Date.now();
       await Promise.race([
         (async () => { for await (const notification of bundle.transport.notifications()) {
           notifications.push({ method: notification.method, type: (notification.params.item as { type?: string })?.type,
@@ -110,7 +111,18 @@ for await (const line of createInterface({input:process.stdin})) {
           if (notification.method === "item/completed" && (notification.params.item as { text?: string })?.text === "all-pages-verified") verified = true;
           if (notification.method === "turn/completed") return;
         } })(),
-        new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("Escaped pages did not reach the provider")), 15_000); }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error("Escaped pages did not reach the provider: " + JSON.stringify({
+            elapsedMs: Date.now() - waitStartedAt,
+            resultCount: sizes.length,
+            lastResultBytes: sizes.at(-1)?.result ?? null,
+            lastWrapperBytes: sizes.at(-1)?.wrapper ?? null,
+            notificationCount: notifications.length,
+            sawTurnStarted: notifications.some(({ method }) => method === "turn/started"),
+            sawTurnCompleted: notifications.some(({ method }) => method === "turn/completed"),
+            verified,
+          }))), 15_000);
+        }),
       ]);
       expect(verified, JSON.stringify({ sizes, notifications, diagnostics: bundle.evidence().diagnostics })).toBe(true);
       expect(executeTool.mock.calls.map(([call]) => call.parameters)).toEqual([{ variant: "large" }, { variant: "inline" }]);
