@@ -1120,7 +1120,7 @@ The agent-skills integration in [PR #27](https://github.com/dexogen/paperclip/pu
 also [passed all nine jobs](https://github.com/dexogen/paperclip/actions/runs/40312816178)
 on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`. The agent-journey candidate in
 [PR #28](https://github.com/dexogen/paperclip/pull/28), at
-`42b699cb093a3817a1ff4cd1674637e7d9644169`, has two failed jobs in
+`42b699cb093a3817a1ff4cd1674637e7d9644169`, has failed code and general-server lanes (and therefore a failed final gate) in
 [its separate run](https://github.com/dexogen/paperclip/actions/runs/40322370157).
 The UI failure checked the MarkdownEditor fallback before its asynchronous
 transition committed. The locale case now uses the same bounded readiness
@@ -1131,6 +1131,14 @@ results (last result 400,014 bytes, escaped wrapper 800,082 bytes), before turn
 completion. That failure remains under investigation; the earlier passing runs
 do not explain it. The failed hosted run is retained, and full CI of the repairs
 remains pending.
+
+The same payload contract passes locally with both native profiles: debug takes
+18.84 seconds overall and release takes 8.30 seconds (6.432 seconds in the
+bounded delivery wait). The test now records bounded progress and queue counters.
+CI explicitly selects its already-built release Runner for this production
+payload test; other native fixtures keep their debug defaults. Assertions and
+the 15-second delivery limit remain unchanged. These measurements do not prove
+the cause of the hosted failure.
 
 The [workspace integration run](https://github.com/dexogen/paperclip/actions/runs/40324609862)
 on `320a21509bedd36c33261ccffeefaf963c5c2cf3` repeats the editor readiness
@@ -1144,6 +1152,14 @@ failure.
 Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
+
+The runtime integration branch also merges upstream
+`a1f77821b9cd5c9c846fdf7a0fa5cc620ad2b6bb`. It preserves compact task history,
+selected-workspace access checks and the revised harness choices. The two new
+history captions are translated, Retry reuses the reviewed caption, and the
+removed Coming soon option no longer has an unused catalog entry. Full CI and
+lab acceptance of this combined candidate remain pending. Further translation
+expansion is deferred until this candidate has been verified in the lab.
 
 The inherited `commitperclip PR Review` workflow was temporarily disabled after
 its unguarded default-branch run failed on unavailable upstream configuration.

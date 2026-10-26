@@ -184,6 +184,7 @@ jobs:
           cargo build --release --locked --manifest-path packages/paperclip-runner/runner/Cargo.toml -p paperclip-runner-core --bin paperclip-runnerd --bin fake-codex-app-server
           test -x packages/paperclip-runner/runner/target/debug/paperclip-runnerd
           test -x packages/paperclip-runner/runner/target/debug/fake-codex-app-server
+          test -x packages/paperclip-runner/runner/target/release/paperclip-runnerd
       - name: Run complete server partition
         env:
           TEST_MODE: ${{ matrix.mode }}
@@ -191,6 +192,9 @@ jobs:
           SHARD_COUNT: ${{ matrix.shard_count }}
         run: |
           if [ "$TEST_MODE" = general ]; then
+            # Exercise the large-payload PRP contract with the production build.
+            # Other native process fixtures retain their existing debug defaults.
+            export PAPERCLIP_PRP_TEST_RUNNER_BINARY="$GITHUB_WORKSPACE/packages/paperclip-runner/runner/target/release/paperclip-runnerd"
             pnpm test:run:general -- --group general-server --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
           else
             pnpm test:run:serialized -- --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
