@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import {
   CircleCheck,
   CircleAlert,
@@ -9,42 +10,6 @@ import type { AdapterEnvironmentTestResult } from "@paperclipai/shared";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 export type TestState = "idle" | "running" | "pass" | "fail";
-
-const copy = {
-  idle: {
-    title: "Test your agent",
-    description: "Check that your runtime and model can respond.",
-    action: "Run test",
-  },
-  running: {
-    title: "Testing connection",
-    description: "Checking the runtime and waiting for a model response…",
-    action: "Testing…",
-  },
-  pass: {
-    title: "Connection successful",
-    description: "Your runtime checks passed. Review the details below.",
-    action: "Test again",
-  },
-  warn: {
-    title: "Connection needs attention",
-    description: "Review the test details before running your agent.",
-    action: "Test again",
-  },
-  fail: {
-    title: "Couldn't connect",
-    description: "Check your model and provider connection, then try again.",
-    action: "Retry test",
-  },
-} as const;
-
-const prerequisiteCopy = {
-  idle: { title: "Check prerequisites", description: "Check instance settings and public connection configuration.", action: "Check setup" },
-  running: { title: "Checking prerequisites", description: "Checking instance settings and public connection configuration…", action: "Checking…" },
-  pass: { title: "Setup checks passed", description: "Review the setup details before assigning work.", action: "Check again" },
-  warn: { title: "Pairing required", description: "Create this agent, then pair it and verify event delivery.", action: "Check again" },
-  fail: { title: "Prerequisite check failed", description: "Review the setup details and retry.", action: "Retry check" },
-} as const;
 
 export function RuntimeTestCard({
   state,
@@ -63,16 +28,53 @@ export function RuntimeTestCard({
   variant?: "connection" | "prerequisites";
   metadataOnly?: boolean;
 }) {
+  const { t } = useTranslation();
+  const copy = {
+    idle: {
+      title: t("agentSetupUi.runtime.idleTitle"),
+      description: t("agentSetupUi.runtime.idleDescription"),
+      action: t("agentSetupUi.runtime.run"),
+    },
+    running: {
+      title: t("agentSetupUi.runtime.runningTitle"),
+      description: t("agentSetupUi.runtime.runningDescription"),
+      action: t("agentSetupUi.runtime.testing"),
+    },
+    pass: {
+      title: t("agentSetupUi.runtime.passTitle"),
+      description: t("agentSetupUi.runtime.passDescription"),
+      action: t("agentSetupUi.runtime.again"),
+    },
+    warn: {
+      title: t("agentSetupUi.runtime.warnTitle"),
+      description: t("agentSetupUi.runtime.warnDescription"),
+      action: t("agentSetupUi.runtime.again"),
+    },
+    fail: {
+      title: t("agentSetupUi.runtime.failTitle"),
+      description: t("agentSetupUi.runtime.failDescription"),
+      action: t("agentSetupUi.runtime.retry"),
+    },
+  } as const;
+
+  const prerequisiteCopy = {
+    idle: { title: t("agentSetupUi.runtime.prerequisitesIdle"), description: t("agentSetupUi.runtime.prerequisitesDescription"), action: t("agentSetupUi.runtime.checkSetup") },
+    running: { title: t("agentSetupUi.runtime.prerequisitesRunning"), description: t("agentSetupUi.runtime.prerequisitesRunningDescription"), action: t("agentSetupUi.runtime.checking") },
+    pass: { title: t("agentSetupUi.runtime.prerequisitesPass"), description: t("agentSetupUi.runtime.prerequisitesPassDescription"), action: t("agentSetupUi.runtime.checkAgain") },
+    warn: { title: t("agentSetupUi.runtime.pairing"), description: t("agentSetupUi.runtime.pairingDescription"), action: t("agentSetupUi.runtime.checkAgain") },
+    fail: { title: t("agentSetupUi.runtime.prerequisitesFail"), description: t("agentSetupUi.runtime.prerequisitesFailDescription"), action: t("agentSetupUi.runtime.retryCheck") },
+  } as const;
+
   const missingRuntime = state === "fail"
     ? result?.checks.find(check => check.code === "acpx_runtime_package_missing")
     : undefined;
   const content = missingRuntime
-    ? { ...copy.fail, title: "Runtime missing", description: missingRuntime.message }
+    ? { ...copy.fail, title: t("agentSetupUi.runtime.missing"), description: missingRuntime.message }
     : (variant === "prerequisites" ? prerequisiteCopy : copy)[state];
   const description = metadataOnly && state === "idle"
-    ? "Verify your saved token, runtime installation, and selected model without sending a model prompt."
+    ? t("agentSetupUi.runtime.metadataIdle")
     : metadataOnly && state === "running"
-      ? "Checking the saved token, runtime, and selected model…"
+      ? t("agentSetupUi.runtime.metadataRunning")
       : content.description;
   const Icon =
     state === "running"
@@ -84,7 +86,7 @@ export function RuntimeTestCard({
           : Play;
   return (
     <section
-      aria-label="Runtime test"
+      aria-label={t("agentSetupUi.runtime.label")}
       className="rounded-lg border border-border bg-card"
     >
       <div className="flex items-start gap-3 p-4 sm:items-center">
@@ -139,7 +141,7 @@ export function RuntimeTestCard({
               aria-hidden="true"
               className="size-3 transition-transform group-open:rotate-90"
             />
-            Test details
+            {t("agentSetupUi.runtime.details")}
           </summary>
           <ul className="space-y-3 px-4 pb-4">
             {result.checks.map((check) => (

@@ -3,6 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { setLocale } from "@/i18n";
 import { NewAgentDialog } from "./NewAgentDialog";
 import { queryKeys } from "@/lib/queryKeys";
 vi.mock("@/api/instanceSettings", () => ({
@@ -43,6 +44,7 @@ async function click(label: string) {
   await act(async () => button!.click());
 }
 beforeEach(async () => {
+  await setLocale("en");
   vi.clearAllMocks();
   const rows = new Map();
   Object.values(agents).forEach(mock => mock.mockReset());
@@ -86,6 +88,7 @@ afterEach(async () => {
   await act(async () => root.unmount());
   cache.clear();
   container.remove();
+  await setLocale("en");
 });
 async function name(value = "Ada & Co") {
   const input = document.querySelector("input")!;
@@ -559,4 +562,52 @@ it("keeps completed checks but shows a pause blocker for a paired paused Dot", a
   const blocked = Array.from(document.querySelectorAll("button")).find(button => button.textContent?.includes("Agent unavailable"));
   expect(blocked?.disabled).toBe(true);
   expect(dotApi.pair).not.toHaveBeenCalled();
+});
+
+
+it("retains a literal dirty name and pending setup identity through EN RU EN", async () => {
+  const literalName = "You <b>& Агент</b>";
+  const input = document.querySelector("input")!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, literalName);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  input.focus();
+  input.setSelectionRange(2, 8);
+  await act(async () => setLocale("ru"));
+  expect(document.body.textContent).toContain("Имя агента");
+  expect(document.querySelector("input")).toBe(input);
+  expect(input.value).toBe(literalName);
+  expect(document.activeElement).toBe(input);
+  expect([input.selectionStart, input.selectionEnd]).toEqual([2, 8]);
+  expect(agents.create).not.toHaveBeenCalled();
+  await act(async () => setLocale("en"));
+  let finish!: (value: object) => void;
+  agents.create.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+  await click("Choose adapter");
+  const payload = agents.create.mock.calls[0][1];
+  expect(payload).toMatchObject({ name: literalName, role: "ceo", adapterType: "process", metadata: { setupAdapterPending: true }, runtimeConfig: { heartbeat: { enabled: false } } });
+  const snapshot = structuredClone(payload);
+  await act(async () => setLocale("ru"));
+  expect(document.body.textContent).toContain("Сохранение…");
+  await act(async () => setLocale("en"));
+  expect(agents.create).toHaveBeenCalledTimes(1);
+  expect(payload).toEqual(snapshot);
+  await act(async () => finish({ ...payload, id: payload.setupId }));
+  await act(async () => document.querySelector<HTMLInputElement>('input[value="codex_local"]')!.click());
+  const radio = document.querySelector<HTMLInputElement>('input[value="codex_local"]')!;
+  radio.focus();
+  await act(async () => setLocale("ru"));
+  expect(document.body.textContent).toContain(`Как должен работать агент «${literalName}»?`);
+  expect(document.querySelector('input[value="codex_local"]')).toBe(radio);
+  expect(radio.checked).toBe(true);
+  expect(document.activeElement).toBe(radio);
+  await act(async () => setLocale("en"));
+  expect(agents.update).not.toHaveBeenCalled();
+  await click("Configure agent");
+  expect(agents.create).toHaveBeenCalledTimes(1);
+  expect(agents.update).toHaveBeenCalledTimes(1);
+  expect(agents.update.mock.calls[0][0]).toBe(payload.setupId);
+  expect(agents.update.mock.calls[0][1]).toMatchObject({ name: literalName, adapterType: "codex_local", metadata: { setupAdapterPending: false } });
+  expect(new URL(state.navigate.mock.calls[0][0], "http://local").searchParams.get("name")).toBe(literalName);
 });

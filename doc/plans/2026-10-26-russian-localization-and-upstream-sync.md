@@ -689,8 +689,10 @@ build found an incomplete local Copilot asset installation. The verified install
 recreated the ignored files from the pinned package. The complete `pnpm build`
 and `pnpm -r typecheck` then passed on checkpoint `1a2bae9c2`. This does not certify
 the later split trees or a complete fresh test suite. Publication and live
-qualification remain pending. Split into
-buildable run/recovery and chat/composer PRs below the repository's file limit.
+qualification remain pending. The source is published in draft
+[run/recovery #15](https://github.com/dexogen/paperclip/pull/15) and
+[chat/composer #16](https://github.com/dexogen/paperclip/pull/16), with 85 and 49
+changed files respectively. Neither has merged or passed hosted verification.
 
 The standalone run/recovery slice retains the older chat/composer consumers and
 includes only their four required helper dependencies. Its 44 affected test files
@@ -703,7 +705,16 @@ and the exact commit. All copied source, catalog and lockfile hashes remained
 unchanged. This is scoped standalone verification, not a fresh full monorepo test
 suite. It does not establish full chat/composer or browser acceptance.
 
-After chat, the remaining major packages are agent creation/configuration,
+The first agent-creation slice adds 142 reviewed EN/RU message pairs across the
+page/dialog, name/adapter selection, setup wizard, local validation and runtime
+test controls. All 151 tests in six related files, UI typecheck/build and token
+gates pass. Source review preserves create/qualification dependencies, canonical IDs,
+credential cleanup and raw provider diagnostics. The integrated audit passes
+with 5,663 reviewed families and 16,848 existing source findings. Shared form
+controls, full agent configuration and external invitations remain separate;
+mocked component checks do not prove real provider login or browser acceptance.
+
+After chat, the remaining major packages are agent configuration and invitations,
 project details/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

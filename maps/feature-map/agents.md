@@ -87,6 +87,17 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Use 
 
 Automated: [new agent page](../../ui/src/pages/NewAgent.test.tsx) and [configuration form](../../ui/src/components/AgentConfigForm.render.test.tsx) cover mocked UI behavior.
 
+The [setup locale regressions](../../ui/src/pages/NewAgent.locale.test.tsx),
+[name dialog](../../ui/src/components/NewAgentDialog.test.tsx) and
+[runtime card](../../ui/src/components/RuntimeTestCard.test.tsx) cover EN/RU/EN
+changes with dirty names, selected model/effort/environment, focus, pending
+create/save state and exact request payloads. Own validation captions change
+language; provider diagnostics remain literal. APIs and selected model/login
+controls are mocked. For live acceptance, repeat the language change before
+submission and during an owned pending request, then verify the same agent ID
+after reload and prove execution with an explicit test. A translated success
+caption alone does not prove provider qualification or permission enforcement.
+
 Manual: Hire an agent with a distinct name and role. Complete any required approval, reload the roster, and open its configuration. Confirm manager, adapter, and model persisted; run a small task to prove execution readiness.
 
 For a new Codex hire, choose the Codex harness. Automatic selection uses Paperclip
