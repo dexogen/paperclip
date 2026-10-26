@@ -373,6 +373,7 @@ export function projectExecution(
       }
     }
     if (leaseConfirmed && waitingForProvider) {
+      projection.display = { label: { code: "waiting_for_provider", provider: waitingForProvider === "muse" ? "muse" : "dot" } };
       projection.nextAction = "The assignment is offered. Waiting for the external agent to accept it.";
       return set("waiting_for_provider", `Waiting for ${waitingForProvider === "muse" ? "Muse" : "Dot"}`);
     }

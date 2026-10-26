@@ -1,4 +1,5 @@
 import { AlertTriangle, Info } from "lucide-react";
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import { completedActivitySummary } from "./completed-activity-summary";
 import type {
@@ -186,4 +187,20 @@ describe("completedActivitySummary", () => {
     expect(result.label).not.toContain("Distinct provider message");
   });
 
+});
+
+it("localizes after raw deduplication and preserves a provider notice matching a generated caption", async () => {
+  const items: Activity[] = [tool("read", "failed"), tool("read"), provider("research"), tool("exec_command", "failed"), tool("bash")];
+  const snapshot = JSON.stringify(items);
+  const english = completedActivitySummary(items);
+  const russian = completedActivitySummary(items, i18n.getFixedT("ru"));
+  expect(russian.label).toBe("Читал файлы, искал в интернете, выполнял команды");
+  expect(russian.icon).toBe(english.icon);
+  expect(JSON.stringify(items)).toBe(snapshot);
+  const raw = "Received a provider update";
+  expect(completedActivitySummary([{ ...provider("provider_notice", "informational"), summary: raw }], i18n.getFixedT("ru")).label).toBe(raw);
+  try {
+    await i18n.changeLanguage("ru");
+    expect(completedActivitySummary(items)).toEqual(english);
+  } finally { await i18n.changeLanguage("en"); }
 });

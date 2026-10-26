@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useWorkspaceBaseRefRecovery, useWorkspaceRetry } from "@/components/WorkspaceBaseRefRecovery";
 import { WorkspaceBaseRefRecoveryNotice } from "@/components/WorkspaceBaseRefRecoveryNotice";
 import { DispositionRecoveryNotice, useDispositionRecoverySnapshot } from "@/components/DispositionRecoveryNotice";
@@ -58,6 +59,7 @@ export function TaskChatSystemNotice({
   onTryAgainNoLiveExecutionPath?: () => Promise<void> | void;
   tryAgainNoLiveExecutionPathPending?: boolean;
 }) {
+  const { t } = useTranslation();
   const recoverySnapshot = useDispositionRecoverySnapshot(item.metadata);
   const branchRecovery = useWorkspaceBaseRefRecovery(item.metadata);
   const workspaceRetry = useWorkspaceRetry(item.metadata);
@@ -67,17 +69,17 @@ export function TaskChatSystemNotice({
   const { title, tone, detail } = humanizeSystemNotice({
     body: item.text,
     presentation: item.presentation,
-  });
+  }, t);
   const sections = mapCommentMetadataToSystemNoticeSections(item.metadata, {
     runAgentId: item.runAgentId,
-  });
+  }, t);
   const isStructuredWorkspaceReadyNotice =
     item.presentation?.kind === "system_notice" &&
     item.presentation.title?.trim().toLowerCase().startsWith("workspace ready") === true &&
     sections.some((section) => section.title?.trim().toLowerCase() === "workspace");
   const showBody = !isStructuredWorkspaceReadyNotice;
   const ToneIcon = TONE_ICON[tone];
-  const relative = item.createdAtIso ? timeAgo(item.createdAtIso) : undefined;
+  const relative = item.createdAtIso ? timeAgo(item.createdAtIso, t) : undefined;
   const showTryAgain =
     Boolean(onTryAgainNoLiveExecutionPath) &&
     isNoLiveExecutionPathNotice(item);
@@ -101,7 +103,7 @@ export function TaskChatSystemNotice({
       data-testid="task-chat-system-notice"
       data-tone={streamlined ? tone : undefined}
       role={streamlined ? "group" : undefined}
-      aria-label={streamlined ? `System update: ${title}` : undefined}
+      aria-label={streamlined ? t("runUi.system.aria", { title }) : undefined}
     >
       <div className="flex max-w-(--pct-85) items-center gap-1.5">
         <button
@@ -133,7 +135,7 @@ export function TaskChatSystemNotice({
             disabled={tryAgainNoLiveExecutionPathPending}
             data-testid="task-chat-no-live-path-try-again"
           >
-            {tryAgainNoLiveExecutionPathPending ? "Trying again..." : "Try again"}
+            {tryAgainNoLiveExecutionPathPending ? t("runUi.system.trying") : t("runUi.system.retry")}
           </Button>
         ) : null}
       </div>
@@ -169,7 +171,7 @@ export function TaskChatSystemNotice({
                 disabled={tryAgainNoLiveExecutionPathPending}
                 data-testid="task-chat-no-live-path-try-again"
               >
-                {tryAgainNoLiveExecutionPathPending ? "Trying again..." : "Try again"}
+                {tryAgainNoLiveExecutionPathPending ? t("runUi.system.trying") : t("runUi.system.retry")}
               </Button>
             </div>
           ) : null}

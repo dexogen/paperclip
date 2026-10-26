@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
 import type { ExecutionProjection } from "@paperclipai/shared";
 import { Loader2 } from "lucide-react";
 import type { TranscriptEntry } from "../../adapters";
@@ -16,7 +18,7 @@ import { useTaskChatShimmer } from "./TaskChatShimmer";
  * tool_call as its status progresses, so calls carrying a `toolUseId` are
  * counted once.
  */
-export function toolCountSummaryFromEntries(entries: readonly TranscriptEntry[]): string | null {
+export function toolCountSummaryFromEntries(entries: readonly TranscriptEntry[], t?: TFunction): string | null {
   const seen = new Set<string>();
   let commands = 0;
   let other = 0;
@@ -30,8 +32,8 @@ export function toolCountSummaryFromEntries(entries: readonly TranscriptEntry[])
     else other += 1;
   }
   const parts: string[] = [];
-  if (commands > 0) parts.push(`ran ${commands} command${commands === 1 ? "" : "s"}`);
-  if (other > 0) parts.push(`called ${other} tool${other === 1 ? "" : "s"}`);
+  if (commands > 0) parts.push(t ? t("runUi.turn.ranCommands", { count: commands }) : `ran ${commands} command${commands === 1 ? "" : "s"}`);
+  if (other > 0) parts.push(t ? t("runUi.turn.calledTools", { count: other }) : `called ${other} tool${other === 1 ? "" : "s"}`);
   return parts.length > 0 ? parts.join(", ") : null;
 }
 
@@ -58,6 +60,7 @@ export function TaskChatLiveRunPill({
   finishedAtMs?: number | null;
   toolSummary: string | null;
 }) {
+  const { t } = useTranslation();
   const active = !isTerminalRunStatus(status);
   const shimmer = useTaskChatShimmer("working");
   // One shared page-wide ticker drives the live elapsed readout, matching the
@@ -67,11 +70,15 @@ export function TaskChatLiveRunPill({
   const elapsedMs =
     startedAtMs == null ? null : (active ? Date.now() : finishedAtMs ?? Date.now()) - startedAtMs;
   const elapsed = elapsedMs != null
-    ? formatDurationWords(elapsedMs)
+    ? formatDurationWords(elapsedMs, t, "elapsed")
     : null;
   const failed = ["failed", "timed_out", "cancelled", "interrupted"].includes(status);
-  const verb = active ? "Working" : failed ? "Stopped" : "Worked";
-  const suffix = elapsed ? `for ${elapsed}` : null;
+  const verb = active ? t("runUi.turn.working") : failed ? t("runUi.turn.stopped") : t("runUi.turn.worked");
+  const suffix = elapsed
+    ? failed
+      ? t("runUi.turn.stoppedSuffix", { duration: elapsed })
+      : t("runUi.turn.liveSuffix", { duration: elapsed })
+    : null;
 
   return (
     <div

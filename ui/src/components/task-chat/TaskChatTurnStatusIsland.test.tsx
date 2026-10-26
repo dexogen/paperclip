@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { TaskChatItem, TaskChatProviderActivityItem } from "./task-chat-model";
@@ -55,6 +56,7 @@ describe("TaskChatTurnStatusIsland", () => {
   afterEach(() => {
     act(() => root.unmount());
     document.body.replaceChildren();
+    act(() => { void i18n.changeLanguage("en"); });
   });
 
   it("selects in-progress, blocked, pending, then final completed steps", () => {
@@ -115,6 +117,17 @@ describe("TaskChatTurnStatusIsland", () => {
     expect(checklist?.textContent).toContain("Build the island");
     expect(checklist?.textContent).toContain("Verify");
     expect(checklist?.querySelector('[aria-current="step"]')?.textContent).toContain("Build the island");
+    const current = checklist?.querySelector('[aria-current="step"]');
+    const focused = document.activeElement;
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-turn-status-island"]')).toBe(island);
+    expect(document.activeElement).toBe(focused);
+    expect(current?.textContent).toContain("Build the island");
+    expect(current?.closest("ol, ul")).not.toBeNull();
+    expect(island.textContent).toContain("Шаг 2 / 3");
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).toBe(checklist);
+    expect(checklist?.querySelector('[aria-current="step"]')).toBe(current);
   });
 
   it("renders diff-only status without an empty interactive popover", () => {

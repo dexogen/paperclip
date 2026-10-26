@@ -19,12 +19,15 @@ export function credentialAccessNotice(
   const credential = object(configuration.credentialAccess);
   const responsibleUserId = typeof configuration.responsibleUserId === "string"
     ? configuration.responsibleUserId : run.responsibleUserId;
+  const viewer = Boolean(responsibleUserId && responsibleUserId === currentUserId);
+  const userName = responsibleUserId ? userLabels?.get(responsibleUserId) : undefined;
   return {
     agentName: run.agentName?.trim() || "This agent",
+    agentKind: run.agentName?.trim() ? "named" : "fallback",
     credentialName: typeof credential.connectionName === "string" && credential.connectionName.trim()
       ? credential.connectionName : undefined,
-    deniedUser: responsibleUserId && responsibleUserId === currentUserId
-      ? "you" : responsibleUserId ? userLabels?.get(responsibleUserId) || "the person this task runs for" : "the person this task runs for",
+    deniedUser: viewer ? "you" : userName || "the person this task runs for",
+    deniedUserKind: viewer ? "viewer" : userName ? "named" : "unknown",
     settingsHref: `/agents/${encodeURIComponent(run.agentId)}/runtime`,
   };
 }

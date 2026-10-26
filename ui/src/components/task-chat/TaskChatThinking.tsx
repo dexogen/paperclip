@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import { formatRunDisplayText } from "./task-chat-display";
 import { useState } from "react";
 import { Brain, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,14 +23,16 @@ export function TaskChatThinking({
   /** Whether this reasoning block is the runner's current activity. */
   active?: boolean;
 }) {
+  const { t } = useTranslation();
+  const summaryLabel = formatRunDisplayText("thinkingSummary", item.summaryLabel, item.display?.summaryLabel, t);
   const [open, setOpen] = useState(defaultOpen ?? false);
   const shimmer = useTaskChatShimmer(item.id);
   const body = item.lines.join("\n").trim();
   const preview = flattenSelfTalk(body);
-  const baseLabel = item.channel === "detail" ? "Reasoning detail" : "Reasoning";
+  const baseLabel = item.channel === "detail" ? t("runUi.thinking.detail") : t("runUi.thinking.reasoning");
   const label = active
-    ? body ? `${baseLabel}…` : "Thinking…"
-    : item.summaryLabel ?? (body ? baseLabel : "Thought");
+    ? body ? item.channel === "detail" ? t("runUi.thinking.detailActive") : t("runUi.thinking.reasoningActive") : t("runUi.thinking.active")
+    : summaryLabel ?? (body ? baseLabel : t("runUi.thinking.settled"));
 
   if (body && !active) {
     return (
@@ -70,7 +74,7 @@ export function TaskChatThinking({
       <button
         type="button"
         aria-expanded={open}
-        aria-label={`${open ? "Collapse" : "Expand"} ${baseLabel.toLowerCase()}: ${preview}`}
+        aria-label={item.channel === "detail" ? open ? t("runUi.thinking.collapseDetail", { preview }) : t("runUi.thinking.expandDetail", { preview }) : open ? t("runUi.thinking.collapse", { preview }) : t("runUi.thinking.expand", { preview })}
         onClick={() => setOpen((value) => !value)}
         className={cn("group/thinking -mx-1.5 flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-sm px-1.5 py-0.5 text-left font-normal text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", rowClassName)}
       >

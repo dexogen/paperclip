@@ -200,6 +200,154 @@
     {
       "id": "539da01f772b0e58074b7b87dd0fcfb646a207e8b208bfe45d51e07b003b401c",
       "reason": "Approvals compares the stored action-error discriminator against approve while rendering its translated fallback. The canonical action identifier is not rendered."
+    },
+    {
+      "id": "771cfc571637b1ae80c1bc65e1d1dbc91fcc6103a45ee67f11d57fbc9f09cc10",
+      "reason": "The closed resource.agentAttachment provenance code selects a translated application fallback. Custom resource titles keep their original text; the code itself is not displayed."
+    },
+    {
+      "id": "96a251bfe030113c702796942213fa030996a054652fbbf7d8a48b7cea931e48",
+      "reason": "The closed browser.label provenance code selects a translated application caption. Custom browser labels keep their original text; the code itself is not displayed."
+    },
+    {
+      "id": "1dd20afd10d60b2b208a4b5b0a533477e4b32ea8d6c5d8ac8efdd2e4e005c56f",
+      "reason": "Title joins a literal task identifier with statusLabel(status), which already resolves the current locale; only colon punctuation is added."
+    },
+    {
+      "id": "e5baf9852aa63bfb12d0907ace5ab6b2a338827a90b10024ce9a7d131f928e75",
+      "reason": "Punctuation-only separator before formatTimeShort(action.resolvedAt, t); the date is already formatted with the current translator."
+    },
+    {
+      "id": "df6f34a0df567cb0847567d288617d7a64218dfb9ad01f1ed9fe8f3aead4bf14",
+      "reason": "Canonical provider-trace state comparison; the selected caption is translated with the explicit runUi.trace.requested key."
+    },
+    {
+      "id": "ce8a36451eb7440132ab84fb3ee60fff6a4ab9c3e51dd63101381e02f187c8bb",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "2c4a48482bd659a0e9a0b2fc0c8ed1b4b34fc73d5cb040b5fe87622b5b409458",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "9a8796e8cff4d6e706aa01595c94b767a4c32a8055b9c6662384b79240514927",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "b0a1ecaf93a6d41aecf10bf754fd197a8f8b9834c1f49984fbdd15cc9c43399f",
+      "reason": "Canonical WorkspaceRecoveryReceiptError kind comparison, selecting explicit translated retry/repair captions rather than displaying the enum."
+    },
+    {
+      "id": "0d7f8f04e94a68de9bc84240b558c6377f7a6744ae1e5405c532e980a89d1dd2",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "70fe4ef158de11b210349a58187f25dc2d14d081806407cad02671122f39cb8d",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "03379648882adcf19dec6713dcae48e8230076e160ca01f96f9e3c4773eaa73d",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "48741a680872912f3a944b5d086a873a1f497f1d0b7517df1f876880d0c1f96a",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "46d650689cb88711ba4fff9aa141dd23f01d9d1edfc545cebc0e9d6de866b49a",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "679f18677444db358ffa4ecb911e66f8d0a4cf33cbcd41b94e3540c3637405a8",
+      "reason": "Canonical permission decision comparison; allowed/rejected captions are translated after the raw decision is read."
+    },
+    {
+      "id": "5eefb486cd67c50b1385e609bcdea6860472d07699eb05dfdbb5974dfb3e32c4",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "281882a29e48b1c60420d0597c8ebf1e8362dbbac2ec743fe9eb48d78db973d4",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "ff4660ec4afe1986e751ae25faf5780978dea66be9528841b22590bd67d40794",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "98cfc95829e8eeedad7913a8b2cf21d207acbeed2e7d088eb18fb86aa8005c3d",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "62ab5771b20084727ff38905e40a6d764e40f17465a8ecc88b28161ea2397423",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "bfda4065acb7357b2661e80b522e307dd0b733eb289d209fb5297334f1dbfac0",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "cc7c079a8c5899d40e500897e133ba40163200e98838f03e63ee4f805def7820",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "b5e666ea7b53764a58514e77f53a6e6ff85b90a30f0a320c7be0f0fc6ca8cbdd",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "e0e363d9ecf9e19aa3958fe32d429cff1c308ad031674e7ce47aec545aae4f23",
+      "reason": "Canonical reasoning channel discriminator detail, selecting separate explicit localized detail/reasoning captions and accessible labels; not display prose."
+    },
+    {
+      "id": "309780434cda4a004ea9ac0e4b1d5774f72fa98b691de7e5a8ccfa920e6562a9",
+      "reason": "Canonical reasoning channel discriminator detail, selecting separate explicit localized detail/reasoning captions and accessible labels; not display prose."
+    },
+    {
+      "id": "d09b9ec90557324ae6dc140764c889ec90019a5ebfcda825cc5095e549572869",
+      "reason": "Canonical permission decision comparison; allowed/rejected captions are translated after the raw decision is read."
+    },
+    {
+      "id": "68721480ffe1937fbec2cfffa6aa3ded649c02e0e05dca568a435a22c70be72e",
+      "reason": "Fixed English default for the optional-translator helper, retained for raw/default consumers. The only production caller TaskChatRunnerActivityGroup passes current t after raw category deduplication and ordering; translated path uses runUi.completed.more."
+    },
+    {
+      "id": "38b490c69d436ae5b50b29d7c8736cb975703201889f995feef1b8f3ff4c7492",
+      "reason": "Canonical legacy raw thought-duration label retained in adapter model. The same producer attaches summaryLabel code thoughtDuration with numeric seconds; the only display consumer TaskChatThinking resolves it through validated formatRunDisplayText(thinkingSummary, ..., t). No inference from equal provider strings."
+    },
+    {
+      "id": "641175ee73f9d150c35724d8178c077f5dddc7b5fc638ac111509350aa4a74c4",
+      "reason": "Canonical legacy raw thought-duration label retained in adapter model. The same producer attaches summaryLabel code thoughtDuration with numeric seconds; the only display consumer TaskChatThinking resolves it through validated formatRunDisplayText(thinkingSummary, ..., t). No inference from equal provider strings."
+    },
+    {
+      "id": "a49be9799874f87076a377872366083ee25faf42f9d6d2c35a2ead8886f96fee",
+      "reason": "The fixed-English rawRelative sentinel now selects the due-now caption. The rendered title comes from scheduledRetry translation keys; this comparison never renders the sentinel."
+    },
+    {
+      "id": "58b3a1999b3f6b0d46c63f0ddd502f3647b1efc2b101db63ff5f8a9407a03c06",
+      "reason": "The message property name is a union guard that preserves external diagnostics. It is not visible copy."
+    },
+    {
+      "id": "a6d8a0d8fd169194d4f860fa331296984551582a490b90f1f0bf1cacf93c3df5",
+      "reason": "The inspection discriminant selects the translated local error caption and is not rendered."
+    },
+    {
+      "id": "5f98d910ccc1be6525433ed6537ff46f41f5ef851644acc53c394324d2f7f0a7",
+      "reason": "The canonical overview view ID selects the existing panel without changing URL or component identity. Visible tab text is translated separately."
+    },
+    {
+      "id": "883cfd2342b2d67da1acd44780c789185929a07ec04706b528145044c4b6ebcc",
+      "reason": "The canonical pipeline view ID selects the existing panel without changing URL or component identity. Visible tab text is translated separately."
+    },
+    {
+      "id": "b0414f3dd219ee4d48fab3dbf8aa75c57280826f3f339627b9e9303a051532c5",
+      "reason": "Angle brackets are literal delimiters around the translated transcriptView.empty caption in a text node, not an untranslated message or markup tag."
+    },
+    {
+      "id": "f5940bb5faa9e576b9f3bdb8bce979857af8d62bb62f7ef526da7ff5020d45e3",
+      "reason": "Angle brackets are literal delimiters around the translated transcriptView.empty caption in a text node, not an untranslated message or markup tag."
+    },
+    {
+      "id": "b1f370ba75d95ec32ec5199748e3a06c7eaac64e2cd780baa15feab38377f298",
+      "reason": "The canonical event tone error selects the translated app-owned fallback. Provider event text remains literal; the discriminant is not rendered."
     }
   ]
 }

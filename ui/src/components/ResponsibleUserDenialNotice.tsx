@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { ShieldX, UserX } from "lucide-react";
 import {
   describeResponsibleUserDenial,
@@ -24,7 +25,21 @@ export function ResponsibleUserDenialNotice({
   userName?: string | null;
   className?: string;
 }) {
-  const copy = describeResponsibleUserDenial(code, { userName });
+  const { t } = useTranslation();
+  const rawCopy = describeResponsibleUserDenial(code, { userName });
+  const name = userName?.trim();
+  const who = name || t("runUi.responsible.who");
+  const copy = code === "RESPONSIBLE_USER_UNAVAILABLE" ? {
+    ...rawCopy,
+    title: t("runUi.responsible.unavailableTitle"),
+    description: name ? t("runUi.responsible.unavailableNamed", { who: name }) : t("runUi.responsible.unavailableBody", { who }),
+    recommendedAction: t("runUi.responsible.unavailableAction"),
+  } : code === "RESPONSIBLE_USER_UNAUTHORIZED" ? {
+    ...rawCopy,
+    title: t("runUi.responsible.unauthorizedTitle"),
+    description: name ? t("runUi.responsible.unauthorizedNamed", { who: name }) : t("runUi.responsible.unauthorizedBody", { who }),
+    recommendedAction: name ? t("runUi.responsible.unauthorizedAction", { name }) : t("runUi.responsible.unauthorizedActionFallback"),
+  } : rawCopy;
   const isUnavailable = copy.tone === "unavailable";
   const Icon = isUnavailable ? UserX : ShieldX;
 

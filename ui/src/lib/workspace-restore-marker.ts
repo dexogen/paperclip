@@ -1,4 +1,19 @@
 import { safeWorkspaceRestorePath } from "@paperclipai/shared";
+import type { RunMarkerDetailMessage } from "../components/task-chat/task-chat-display";
+
+export function workspaceRestoreMarkerDisplay(input: {
+  result: Record<string, unknown> | null | undefined;
+  savedPlan: boolean;
+  hasResponse: boolean;
+}): RunMarkerDetailMessage {
+  const affectedPath = safeWorkspaceRestorePath(input.result?.workspaceRestorePath);
+  return {
+    code: "detail.workspaceRestore",
+    savedPlan: input.savedPlan,
+    noFinalResponse: !input.hasResponse && input.result?.finalResponseRecorded === false,
+    ...(affectedPath ? { affectedPath } : {}),
+  };
+}
 
 export function workspaceRestoreMarkerDetail(input: {
   result: Record<string, unknown> | null | undefined;

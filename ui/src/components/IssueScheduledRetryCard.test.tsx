@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { IssueRetryNowOutcome, IssueScheduledRetry } from "@paperclipai/shared";
 import { IssueScheduledRetryCard } from "./IssueScheduledRetryCard";
 import { ToastProvider } from "../context/ToastContext";
+import { i18n } from "@/i18n";
 
 const retryNowMock = vi.hoisted(() => vi.fn());
 
@@ -104,10 +105,11 @@ beforeEach(() => {
   root = createRoot(container);
 });
 
-afterEach(() => {
+afterEach(async () => {
   act(() => root.unmount());
   container.remove();
   dateNowSpy?.mockRestore();
+  await i18n.changeLanguage("en");
 });
 
 function getCard() {
@@ -121,6 +123,58 @@ function getRetryNowButton() {
 }
 
 describe("IssueScheduledRetryCard", () => {
+  it("keeps the retry pending across locale changes and submits the canonical action only on click", async () => {
+    const literal = "Provider <b>{{literal}}</b> & rate limit";
+    let rejectRequest!: (error: unknown) => void;
+    retryNowMock.mockImplementation(() => new Promise((_, reject) => { rejectRequest = reject; }));
+    renderWithProviders(
+      <IssueScheduledRetryCard issueId="issue-1" scheduledRetry={{ ...baseRetry, error: literal }} />,
+    );
+    const card = getCard();
+    const link = card!.querySelector("a");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(getCard()).toBe(card);
+    expect(card!.textContent).toContain("Повторный запуск через 15 мин");
+    expect(card!.textContent).toContain(literal);
+    expect(card!.querySelector("b")).toBeNull();
+    expect(card!.querySelector("a")).toBe(link);
+    expect(link!.getAttribute("href")).toBe("/agents/agent-1/runs/run-prev-1234567");
+    expect(retryNowMock).not.toHaveBeenCalled();
+    const button = getRetryNowButton()!;
+    button.focus();
+    await act(async () => { button.click(); });
+    await waitForUi(() => { expect(button.disabled).toBe(true); });
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(getRetryNowButton()).toBe(button);
+    expect(button.textContent).toContain("Retrying…");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(button.textContent).toContain("Запускаем повторно…");
+    expect(button.disabled).toBe(true);
+    expect(retryNowMock).toHaveBeenCalledExactlyOnceWith("issue-1");
+    await act(async () => { rejectRequest(new Error(literal)); });
+    await waitForUi(() => {
+      expect(card!.textContent).toContain("Не удалось запустить повторно");
+      expect(button.disabled).toBe(false);
+    });
+    const band = card!.querySelector('[role="alert"]')!;
+    expect(band.textContent).toContain(literal);
+    expect(band.querySelector("b")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(band.textContent).toContain("Couldn't retry now");
+    expect(band.textContent).toContain(literal);
+    expect(retryNowMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("translates the near-due continuation without changing its schedule or adding a retry", async () => {
+    await i18n.changeLanguage("ru");
+    renderWithProviders(
+      <IssueScheduledRetryCard issueId="issue-1" scheduledRetry={{ ...baseRetry,
+        scheduledRetryAt: "2026-04-18T20:00:10.000Z", scheduledRetryReason: "max_turns_continuation" }} />,
+    );
+    expect(getCard()!.textContent).toContain("Автоматическое продолжение: пора запускать");
+    expect(retryNowMock).not.toHaveBeenCalled();
+  });
+
   it("shows workspace contention as an automatic wait without failure or retry controls", () => {
     renderWithProviders(<IssueScheduledRetryCard issueId="issue-1" scheduledRetry={{ ...baseRetry, scheduledRetryReason: "workspace_busy" }} />);
     expect(container.textContent).toContain("Waiting for workspace");

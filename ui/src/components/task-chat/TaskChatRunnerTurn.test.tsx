@@ -2,6 +2,7 @@
 
 import type { ExecutionProjection } from "@paperclipai/shared";
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -30,6 +31,7 @@ describe("TaskChatRunnerTurn", () => {
   afterEach(() => {
     act(() => root.unmount());
     container.remove();
+    act(() => { void i18n.changeLanguage("en"); });
   });
 
   const render = (
@@ -166,6 +168,29 @@ describe("TaskChatRunnerTurn", () => {
       expect(container.textContent).not.toContain("Reconnecting");
     },
   );
+
+  it("localizes only validated waiting provenance and preserves raw legacy, malformed and terminal outcomes", () => {
+    const action = vi.fn();
+    const execution = { phase: "waiting_for_provider", label: "Waiting for Muse", display: { label: { code: "waiting_for_provider", provider: "muse" } } } as ExecutionProjection;
+    render([], "running", "run-1", action, false, false, execution);
+    const header = container.querySelector('[data-testid="task-chat-turn-status-header"]');
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-turn-status-header"]')).toBe(header);
+    expect(header?.textContent).toContain("Ожидание Muse");
+    expect(container.textContent).not.toContain("Thinking");
+    expect(action).not.toHaveBeenCalled();
+    for (const display of [undefined, { label: { code: "working", provider: "muse" } }, { label: { code: "waiting_for_provider", provider: "unknown" } }, { label: { code: "waiting_for_provider", provider: "muse", extra: true } }]) {
+      render([], "running", "run-1", action, false, false, { ...execution, display } as ExecutionProjection);
+      expect(header?.textContent).toContain("Waiting for Muse");
+    }
+    render([], "failed", "run-1", action, false, false, execution);
+    expect(container.querySelector('[data-testid="task-chat-current-activity"]')).toBeNull();
+    expect(container.textContent).not.toContain("Ожидание Muse");
+    act(() => { void i18n.changeLanguage("en"); });
+    render([], "running", "run-1", action, false, false, execution);
+    expect(container.textContent).toContain("Waiting for Muse");
+    expect(action).not.toHaveBeenCalled();
+  });
 
   it.each(["Muse", "Dot"])("shows Waiting for %s until native acceptance, without a Thinking claim", provider => {
     const waiting = { phase: "waiting_for_provider", label: `Waiting for ${provider}` } as ExecutionProjection;

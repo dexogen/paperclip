@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { describeRunRetryState, formatRetryReason } from "./runRetryState";
+import { i18n } from "@/i18n";
 
 describe("runRetryState", () => {
+  it("localizes generated copy while retaining retry semantics and literal provider reasons", () => {
+    const run = Object.freeze({ status: "failed", retryOfRunId: "run-raw", scheduledRetryAttempt: 2,
+      scheduledRetryReason: "transient_failure", retryExhaustedReason: "<span>{{literal}}</span>" });
+    const english = describeRunRetryState(run)!;
+    const russian = describeRunRetryState(run, i18n.getFixedT("ru"))!;
+    expect(russian.badgeLabel).toBe("Попытки исчерпаны");
+    expect(russian.secondary).toBe("<span>{{literal}}</span> Требуется вмешательство оператора.");
+    expect([russian.kind, russian.tone, russian.retryOfRunId]).toEqual([english.kind, english.tone, english.retryOfRunId]);
+    expect(describeRunRetryState(run)).toEqual(english);
+    const alreadyExplained = { ...run, retryExhaustedReason: "Manual intervention required: <raw>" };
+    expect(describeRunRetryState(alreadyExplained, i18n.getFixedT("ru"))?.secondary).toBe(alreadyExplained.retryExhaustedReason);
+  });
   it("formats internal retry reasons for operators", () => {
     expect(formatRetryReason("transient_failure")).toBe("Transient failure");
     expect(formatRetryReason("native_provider_overloaded")).toBe("Model at capacity");

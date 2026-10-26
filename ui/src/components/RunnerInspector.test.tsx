@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RunnerInspector } from "./RunnerInspector";
+import { i18n } from "@/i18n";
 
 const accessMock = vi.hoisted(() => vi.fn());
 const eventsMock = vi.hoisted(() => vi.fn());
@@ -126,11 +127,88 @@ describe("RunnerInspector", () => {
     traceMock.mockResolvedValue({ trace: null, entries: [] });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
     vi.restoreAllMocks();
     vi.clearAllMocks();
+  });
+
+  it("preserves the selected operation and focused search through locale changes without revealing or refetching data", async () => {
+    traceMock.mockResolvedValue(traceInspection("run-locale", "<span>{{literal}}</span>"));
+    flushSync(() => root.render(<RunnerInspector runId="run-locale" open onOpenChange={vi.fn()} />));
+    await flush();
+    const search = container.querySelector<HTMLInputElement>('input[placeholder="Search operations, fields, and events"]')!;
+    expect(search).not.toBeNull();
+    const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
+    setValue.call(search, "item/completed");
+    search.dispatchEvent(new Event("input", { bubbles: true }));
+    await flush();
+    search.focus();
+    search.setSelectionRange(2, 7, "forward");
+    const selected = container.querySelector('button[data-selected="true"]');
+    expect(selected).not.toBeNull();
+    const url = window.location.href;
+    for (const [locale, heading, placeholder] of [
+      ["ru", "Инспектор среды запуска", "Поиск операций, полей и событий"],
+      ["en", "Runner Inspector", "Search operations, fields, and events"],
+    ]) {
+      await i18n.changeLanguage(locale);
+      await flush();
+      expect(container.querySelector("h2")?.textContent).toBe(heading);
+      expect(container.querySelector(`input[placeholder="${placeholder}"]`)).toBe(search);
+      expect(search.value).toBe("item/completed");
+      expect(document.activeElement).toBe(search);
+      expect([search.selectionStart, search.selectionEnd, search.selectionDirection]).toEqual([2, 7, "forward"]);
+      expect(container.querySelector('button[data-selected="true"]')).toBe(selected);
+      expect(window.location.href).toBe(url);
+      expect(container.textContent).toContain("item/completed");
+      expect(eventsMock).toHaveBeenCalledTimes(1);
+      expect(traceMock).toHaveBeenCalledTimes(1);
+      expect(revealMock).not.toHaveBeenCalled();
+      expect(downloadMock).not.toHaveBeenCalled();
+      expect(deleteMock).not.toHaveBeenCalled();
+    }
+    await i18n.changeLanguage("ru");
+    await flush();
+    const confirmation = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const reveal = Array.from(container.querySelectorAll("button")).find((button) => button.textContent?.trim() === "Показать исходный кадр")!;
+    expect(reveal).toBeDefined();
+    flushSync(() => reveal.click());
+    await flush();
+    expect(confirmation).toHaveBeenCalledWith("Этот исходный кадр провайдера может содержать запросы к модели, аргументы инструментов, секреты или рассуждения. Показать его?");
+    expect(revealMock).not.toHaveBeenCalled();
+    confirmation.mockReturnValue(true);
+    revealMock.mockResolvedValue({ rawBase64: btoa('{"literal":"<span>{{literal}}</span>"}') });
+    flushSync(() => reveal.click());
+    await flush();
+    expect(revealMock).toHaveBeenCalledExactlyOnceWith("run-locale", 1);
+    expect(container.textContent).toContain("<span>{{literal}}</span>");
+    await i18n.changeLanguage("en");
+    await flush();
+    expect(container.textContent).toContain("<span>{{literal}}</span>");
+    expect(revealMock).toHaveBeenCalledTimes(1);
+    expect(downloadMock).not.toHaveBeenCalled();
+    expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["own fallback", {}, "Не удалось проверить среду запуска"],
+    ["provider text", new Error("Runner inspection failed"), "Runner inspection failed"],
+  ])("renders %s after a locale change without retrying the failed read", async (_name, cause, expected) => {
+    traceMock.mockRejectedValue(cause);
+    flushSync(() => root.render(<RunnerInspector runId="run-error" open onOpenChange={vi.fn()} />));
+    await flush();
+    expect(container.textContent).toContain("Runner inspection failed");
+    await i18n.changeLanguage("ru");
+    await flush();
+    expect(container.textContent).toContain(expected);
+    expect(traceMock).toHaveBeenCalledTimes(1);
+    expect(eventsMock).toHaveBeenCalledTimes(1);
+    expect(revealMock).not.toHaveBeenCalled();
+    expect(downloadMock).not.toHaveBeenCalled();
+    expect(deleteMock).not.toHaveBeenCalled();
   });
 
   it("keeps canonical inspection available when raw capture was disabled", async () => {

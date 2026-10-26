@@ -41,6 +41,7 @@ export interface ExecutionProjection {
     | "completed"
     | "failed";
   label: string;
+  display?: { label?: { code: "waiting_for_provider"; provider: "muse" | "dot" } };
   cause: string | null;
   lastConfirmedActivityAt: string | null;
   retryAt: string | null;

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import type { AnchorHTMLAttributes, ReactElement, ReactNode } from "react";
@@ -97,6 +98,7 @@ afterEach(() => {
   container = null;
   dateNowSpy?.mockRestore();
   dateNowSpy = null;
+  act(() => { void i18n.changeLanguage("en"); });
 });
 
 function withProviders(node: ReactNode) {
@@ -124,6 +126,32 @@ function render(element: ReactElement) {
 }
 
 describe("IssueBlockedNotice", () => {
+  it("retains ordered blocker IDs, progress and literal titles through EN/RU/EN without retrying", () => {
+    const blockers = [
+      { id: "queued", identifier: "PAP-3", title: "<b>Waiting on live work</b>", status: "todo", priority: "medium", assigneeAgentId: "agent-1", assigneeUserId: null },
+      { id: "live", identifier: "PAP-2", title: "Live task", status: "in_progress", priority: "medium", assigneeAgentId: "agent-1", assigneeUserId: null },
+      { id: "done", identifier: "PAP-1", title: "Done task", status: "done", priority: "medium", assigneeAgentId: "agent-1", assigneeUserId: null },
+    ] as IssueRelationIssueSummary[];
+    const node = render(<IssueBlockedNotice issueId="issue-1" issueStatus="blocked" blockers={blockers.slice(0, 2)} allBlockers={blockers} liveIssueIds={new Set(["live"])} blockerAttention={{ state: "covered", reason: "active_dependency", unresolvedBlockerCount: 2, coveredBlockerCount: 2, stalledBlockerCount: 0, attentionBlockerCount: 0, sampleBlockerIdentifier: "PAP-2", sampleStalledBlockerIdentifier: null }} />);
+    const steps = node.querySelector('[data-testid="issue-blocked-notice-steps"]')!;
+    const links = Array.from(steps.querySelectorAll("a"));
+    const hrefs = links.map(link => link.getAttribute("href"));
+    const progress = node.querySelector('[role="progressbar"]')!;
+    expect(progress.getAttribute("aria-valuenow")).toBe("1");
+    expect(progress.getAttribute("aria-valuemax")).toBe("3");
+    for (const locale of ["ru", "en"]) {
+      act(() => { void i18n.changeLanguage(locale); });
+      expect(node.querySelector('[data-testid="issue-blocked-notice-steps"]')).toBe(steps);
+      expect(Array.from(steps.querySelectorAll("a"))).toEqual(links);
+      expect(links.map(link => link.getAttribute("href"))).toEqual(hrefs);
+      expect(progress.getAttribute("aria-valuenow")).toBe("1");
+      expect(node.textContent).toContain(locale === "ru" ? "Ожидание текущей работы" : "Waiting on live work");
+      expect(steps.textContent).toContain("<b>Waiting on live work</b>");
+      expect(steps.querySelector("b")).toBeNull();
+      expect(retryNowMock).not.toHaveBeenCalled();
+    }
+  });
+
   it("renders a locked blocker without reading its withheld status", () => {
     const node = render(<IssueBlockedNotice issueStatus="blocked" blockers={[
       { id: "private-task", identifier: "PAP-42", locked: true } as unknown as IssueRelationIssueSummary,
@@ -202,6 +230,12 @@ describe("IssueBlockedNotice", () => {
       expect(retryNowMock).toHaveBeenCalledWith("issue-1");
       expect(button!.disabled).toBe(true);
     });
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(retryNowMock).toHaveBeenCalledTimes(1);
+    expect(node.querySelector('[data-testid="issue-next-step-retry-now"]')).toBe(button);
+    expect(button?.disabled).toBe(true);
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(retryNowMock).toHaveBeenCalledTimes(1);
   });
 
   it("replaces the alarm with the calm in-flight line while a live continuation is running the issue", () => {

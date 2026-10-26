@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import type { AnchorHTMLAttributes, ReactElement } from "react";
@@ -42,6 +43,7 @@ afterEach(() => {
   root = null;
   container?.remove();
   container = null;
+  act(() => { void i18n.changeLanguage("en"); });
 });
 
 function render(element: ReactElement) {
@@ -659,6 +661,30 @@ describe("IssueRecoveryActionCard W7 reconcile actions", () => {
     expect(enabledConfirm?.disabled).toBe(false);
     click(enabledConfirm);
     expect(onBreakGlassOverride).toHaveBeenCalledWith("Verified live branch is safe to adopt.");
+  });
+
+  it("keeps a dirty override reason, focus and exact audit payload through EN/RU/EN", () => {
+    const onBreakGlassOverride = vi.fn();
+    const node = render(<IssueRecoveryActionCard action={buildWorkspaceValidationAction()} onBreakGlassOverride={onBreakGlassOverride} canBreakGlass />);
+    click(node.querySelector("[data-testid='recovery-action-breakglass-trigger']"));
+    const reason = document.body.querySelector<HTMLTextAreaElement>("[data-testid='recovery-breakglass-reason']")!;
+    setTextareaValue(reason, "  <b>Verified branch</b>  ");
+    reason.focus();
+    const confirm = document.body.querySelector<HTMLButtonElement>("[data-testid='recovery-action-breakglass-confirm']")!;
+    expect(confirm.disabled).toBe(false);
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(document.body.querySelector("[data-testid='recovery-breakglass-reason']")).toBe(reason);
+    expect(document.activeElement).toBe(reason);
+    expect(reason.value).toBe("  <b>Verified branch</b>  ");
+    expect(document.getElementById("recovery-breakglass-title")?.textContent).toContain("Принудительное согласование");
+    expect(document.body.textContent).toContain("PAP-522-recorded");
+    expect(document.body.textContent).toContain("nleach/PAP-1405-live");
+    expect(onBreakGlassOverride).not.toHaveBeenCalled();
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(document.activeElement).toBe(reason);
+    expect(confirm.disabled).toBe(false);
+    click(confirm);
+    expect(onBreakGlassOverride).toHaveBeenCalledExactlyOnceWith("<b>Verified branch</b>");
   });
 
   it("does not offer reconcile actions for non-workspace recovery kinds", () => {

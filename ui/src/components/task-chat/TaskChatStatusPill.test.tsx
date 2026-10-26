@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { lineScrollOffset, TaskChatStatusPill } from "./TaskChatStatusPill";
@@ -13,6 +14,7 @@ function liveStatus(overrides: Partial<TaskChatStatusItem> = {}): TaskChatStatus
     kind: "status",
     status: "running",
     label: "Running",
+    display: overrides.label === undefined ? { label: { code: "status.running" } } : undefined,
     startedAtMs: Date.now(),
     ...overrides,
   };
@@ -35,6 +37,7 @@ describe("TaskChatStatusPill whimsy", () => {
     document.documentElement.style.removeProperty("--motion-interstitial-dwell");
     document.documentElement.style.removeProperty("--motion-line-scroll");
     vi.useRealTimers();
+    act(() => { void i18n.changeLanguage("en"); });
   });
 
   const render = (item: TaskChatStatusItem) => {
@@ -49,6 +52,23 @@ describe("TaskChatStatusPill whimsy", () => {
     const expected = whimsyWord(item.id, 0);
     expect(container.textContent).toContain(`${expected}…`);
     expect(container.textContent).not.toContain("Running…");
+  });
+
+  it("preserves a custom Running label while localizing generated status without resetting the live row", () => {
+    const item = liveStatus({ selfTalk: "<strong>Running</strong>", tokens: { used: 21, size: 200000 } });
+    render(item);
+    const row = container.querySelector('[data-testid="task-chat-interstitial-row"]');
+    act(() => { vi.advanceTimersByTime(1200); });
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-interstitial-row"]')).toBe(row);
+    expect(container.textContent).toContain(whimsyWord(item.id, 1200, i18n.getFixedT("ru")));
+    expect(container.textContent).toContain("<strong>Running</strong>");
+    expect(container.querySelector("strong")).toBeNull();
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("1.2s");
+    render(liveStatus({ label: "Running", display: undefined }));
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Running…");
   });
 
   it("rotates the word roughly every 10s while live", () => {
@@ -131,7 +151,7 @@ describe("TaskChatStatusPill whimsy", () => {
 
   it("mounts a streaming interstitial as its own row above the status line (PAP-361 amended)", () => {
     const item = liveStatus({
-      label: "Responding",
+      label: "Responding", display: { label: { code: "status.responding" } },
       selfTalk: "I'll extend the ipRateLimit helper with a per-account bucket.",
       tokens: { used: 18240, size: 200000 },
     });
@@ -160,7 +180,7 @@ describe("TaskChatStatusPill whimsy", () => {
   it("holds the finished update through the dwell, then slides it away (PAP-376)", () => {
     document.documentElement.style.setProperty("--motion-interstitial-dwell", "4000ms");
     document.documentElement.style.setProperty("--motion-line-scroll", "240ms");
-    render(liveStatus({ label: "Responding", selfTalk: "Almost there." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Almost there." }));
     render(liveStatus({}));
     // selfTalk gone → held as a static single-line readout while the dwell
     // runs.
@@ -195,20 +215,20 @@ describe("TaskChatStatusPill whimsy", () => {
 
   it("swaps a new update straight in after the held line has slid away", () => {
     document.documentElement.style.setProperty("--motion-interstitial-dwell", "4000ms");
-    render(liveStatus({ label: "Responding", selfTalk: "First." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "First." }));
     render(liveStatus({}));
     act(() => {
       vi.advanceTimersByTime(4100);
     });
     expect(container.querySelector('[data-testid="task-chat-live-self-talk"]')).toBeNull();
-    render(liveStatus({ label: "Responding", selfTalk: "Second." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Second." }));
     const line = container.querySelector('[data-testid="task-chat-live-self-talk"]');
     expect(line?.textContent).toBe("Second.");
     expect(line?.getAttribute("data-streaming")).toBe("true");
   });
 
   it("renders the interstitial text without a leading icon (PAP-376)", () => {
-    render(liveStatus({ label: "Responding", selfTalk: "No icon on this row." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "No icon on this row." }));
     const row = container.querySelector('[data-testid="task-chat-interstitial-row"]');
     expect(row?.textContent).toBe("No icon on this row.");
     expect(row?.querySelector("svg")).toBeNull();
@@ -217,7 +237,7 @@ describe("TaskChatStatusPill whimsy", () => {
   });
 
   it("streams the tail line without a transition once the enter slide settles", () => {
-    render(liveStatus({ label: "Responding", selfTalk: "Streaming along nicely." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Streaming along nicely." }));
     act(() => {
       vi.advanceTimersByTime(50);
     });
@@ -233,20 +253,20 @@ describe("TaskChatStatusPill whimsy", () => {
   it("respects the minimum dwell between swaps and collapses bursts latest-wins", () => {
     document.documentElement.style.setProperty("--motion-interstitial-dwell", "4000ms");
     // Update A streams and finishes → held.
-    render(liveStatus({ label: "Responding", selfTalk: "Update A." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Update A." }));
     render(liveStatus({}));
     const innerBefore = container.querySelector(".tc-line-scroll-inner");
     act(() => {
       vi.advanceTimersByTime(1000);
     });
     // Update B arrives 1s after A swapped in: inside the dwell → queued.
-    render(liveStatus({ label: "Responding", selfTalk: "Update B." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Update B." }));
     act(() => {
       vi.advanceTimersByTime(2000);
     });
     expect(container.textContent).toContain("Update A.");
     // Update C supersedes B while still queued (latest-wins queue of one).
-    render(liveStatus({ label: "Responding", selfTalk: "Update C." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Update C." }));
     act(() => {
       vi.advanceTimersByTime(900);
     });
@@ -269,13 +289,13 @@ describe("TaskChatStatusPill whimsy", () => {
 
   it("swaps a queued update in as held when its stream already ended", () => {
     document.documentElement.style.setProperty("--motion-interstitial-dwell", "4000ms");
-    render(liveStatus({ label: "Responding", selfTalk: "Update A." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Update A." }));
     render(liveStatus({}));
     act(() => {
       vi.advanceTimersByTime(1000);
     });
     // B streams and ENDS while A's dwell is still running.
-    render(liveStatus({ label: "Responding", selfTalk: "Update B, done already." }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Update B, done already." }));
     render(liveStatus({}));
     act(() => {
       vi.advanceTimersByTime(3100);
@@ -287,7 +307,7 @@ describe("TaskChatStatusPill whimsy", () => {
   });
 
   it("clears the held line when the turn ends", () => {
-    render(liveStatus({ label: "Responding", selfTalk: "Held across the turn?" }));
+    render(liveStatus({ label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: "Held across the turn?" }));
     render(liveStatus({}));
     expect(container.textContent).toContain("Held across the turn?");
     // Turn settles into a non-live status: the row (and held text) is gone;

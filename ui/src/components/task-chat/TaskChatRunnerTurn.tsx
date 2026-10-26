@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
 import { useRef } from "react";
 import type { ExecutionProjection } from "@paperclipai/shared";
 import { useSecondTick } from "@/hooks/useSecondTick";
@@ -44,13 +46,13 @@ function currentActivityStatusItems(
   return items.slice(boundaryIndex + 1);
 }
 
-function formatCompactDuration(ms: number | null): string | null {
+function formatCompactDuration(ms: number | null, t: TFunction): string | null {
   if (ms == null || !Number.isFinite(ms)) return null;
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  if (totalSeconds < 60) return `${totalSeconds}s`;
+  if (totalSeconds < 60) return t("runUi.turn.seconds", { seconds: totalSeconds });
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  return seconds === 0 ? `${minutes}m` : `${minutes}m ${seconds}s`;
+  return seconds === 0 ? t("runUi.turn.minutes", { minutes }) : t("runUi.turn.minutesSeconds", { minutes, seconds });
 }
 
 function terminalStatusFailed(status: string): boolean {
@@ -75,6 +77,7 @@ function RunnerTurnStatus({
   continuedAfterSteering?: boolean;
   waitingLabel?: string | null;
 }) {
+  const { t } = useTranslation();
   const terminal = isTerminalRunStatus(status);
   useSecondTick(!terminal && startedAtMs != null);
   const elapsedMs =
@@ -84,13 +87,13 @@ function RunnerTurnStatus({
           0,
           (terminal ? (finishedAtMs ?? Date.now()) : Date.now()) - startedAtMs,
         );
-  const elapsed = formatCompactDuration(elapsedMs);
+  const elapsed = formatCompactDuration(elapsedMs, t);
 
   const failed = terminalStatusFailed(status);
-  const label = terminal ? (failed ? "Stopped" : "Worked") : waitingLabel ?? "Working";
+  const label = terminal ? (failed ? t("runUi.turn.stopped") : t("runUi.turn.worked")) : waitingLabel ?? t("runUi.turn.working");
   const suffix = terminal
-    ? elapsed ? ` ${failed ? "after" : "for"} ${elapsed}` : ""
-    : waitingLabel ? elapsed ? ` · ${elapsed}` : "" : ` for ${elapsed ?? "0s"}`;
+    ? elapsed ? failed ? t("runUi.turn.afterSuffix", { duration: elapsed }) : t("runUi.turn.forSuffix", { duration: elapsed }) : ""
+    : waitingLabel ? elapsed ? ` · ${elapsed}` : "" : t("runUi.turn.forSuffix", { duration: elapsed ?? t("runUi.turn.seconds", { seconds: 0 }) });
 
   return (
     <span
@@ -100,17 +103,18 @@ function RunnerTurnStatus({
       aria-live="polite"
       aria-atomic="true"
     >
-      {continuedAfterSteering ? <span data-conversation-meta="">Continued after steering · </span> : null}
+      {continuedAfterSteering ? <span data-conversation-meta="">{t("runUi.turn.continued")}</span> : null}
       {label}<span data-conversation-meta="">{suffix}</span>
     </span>
   );
 }
 
 function RunnerCurrentActivityTail({ status, waitingLabel }: { status: string; waitingLabel?: string | null }) {
+  const { t } = useTranslation();
   const shimmer = useTaskChatShimmer("working");
   if (isTerminalRunStatus(status)) return null;
   return <div className="mt-2 flex min-h-8 min-w-0 items-center gap-2 px-1 py-1 text-xs text-muted-foreground" data-testid="task-chat-current-activity" data-turn-position="tail">
-    <span className={cn(!waitingLabel && shimmer && "shimmer-text shimmer-text-muted")} aria-live="polite" data-testid="task-chat-current-activity-label">{waitingLabel ?? "Thinking"}</span>
+    <span className={cn(!waitingLabel && shimmer && "shimmer-text shimmer-text-muted")} aria-live="polite" data-testid="task-chat-current-activity-label">{waitingLabel ?? t("runUi.turn.thinking")}</span>
   </div>;
 }
 
@@ -154,8 +158,16 @@ export function TaskChatRunnerTurn({
     decision: TaskChatRuntimeRequestDecision,
   ) => void | Promise<void>;
 }) {
+  const { t } = useTranslation();
   const terminal = isTerminalRunStatus(status);
-  const waitingLabel = !terminal && execution?.phase === "waiting_for_provider" ? execution.label
+  const waitingMessage = execution?.display?.label;
+  const localizedWaitingLabel = execution?.phase === "waiting_for_provider"
+    && waitingMessage && typeof waitingMessage === "object" && !Array.isArray(waitingMessage)
+    && Object.keys(waitingMessage).length === 2 && waitingMessage.code === "waiting_for_provider"
+    && (waitingMessage.provider === "muse" || waitingMessage.provider === "dot")
+    ? t("runUi.turn.waitingForProvider", { provider: waitingMessage.provider === "muse" ? "Muse" : "Dot" })
+    : execution?.label;
+  const waitingLabel = !terminal && execution?.phase === "waiting_for_provider" ? localizedWaitingLabel
     : !runId && !terminal ? preparationLabel ?? null : null;
   const yielded = items.some(
     (item) =>
@@ -279,7 +291,7 @@ export function TaskChatRunnerTurn({
           data-testid="task-chat-final-response"
         >
           <TaskChatBubble
-            item={{ ...final, authorName: agentName ?? undefined, agentIcon, agent, timestamp: final.timestamp ?? formatTaskChatTimestamp(final.atMs) }}
+            item={{ ...final, authorName: agentName ?? undefined, agentIcon, agent, timestamp: final.timestamp ?? formatTaskChatTimestamp(final.atMs, t) }}
             animateEntry={false}
             hideAgentIdentity={!continuedAfterSteering}
             actions={<TaskChatBubbleActions copyText={final.text} />}

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 type TranscriptDensity = "comfortable" | "compact";
 
 type TranscriptActivity = {
@@ -10,6 +12,7 @@ export interface ToolInputDetail {
   label: string;
   value: string;
   tone?: "default" | "code";
+  display?: { label: string; value: string };
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -117,8 +120,8 @@ export function isCommandTool(name: string, input: unknown): boolean {
   return Boolean(record && (typeof record.command === "string" || typeof record.cmd === "string"));
 }
 
-export function displayToolName(name: string, input: unknown): string {
-  if (isCommandTool(name, input)) return "Executing command";
+export function displayToolName(name: string, input: unknown, t: TFunction = i18n.getFixedT("en")): string {
+  if (isCommandTool(name, input)) return t("runUi.transcript.executing");
   return humanizeLabel(name);
 }
 
@@ -126,6 +129,7 @@ export function summarizeToolInput(
   name: string,
   input: unknown,
   density: TranscriptDensity = "comfortable",
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   const compactMax = density === "compact" ? 72 : 120;
   if (typeof input === "string") {
@@ -135,7 +139,7 @@ export function summarizeToolInput(
   const record = asRecord(input);
   if (!record) {
     const serialized = compactWhitespace(formatUnknown(input));
-    return serialized ? truncate(serialized, compactMax) : `Inspect ${name} input`;
+    return serialized ? truncate(serialized, compactMax) : t("runUi.transcript.inspect", { name });
   }
 
   const command = typeof record.command === "string"
@@ -162,14 +166,14 @@ export function summarizeToolInput(
   if (Array.isArray(record.paths) && record.paths.length > 0) {
     const first = record.paths.find((value): value is string => typeof value === "string" && value.trim().length > 0);
     if (first) {
-      return truncate(`${record.paths.length} paths, starting with ${first}`, compactMax);
+      return truncate(t("runUi.transcript.paths", { count: record.paths.length, first }), compactMax);
     }
   }
 
   const keys = Object.keys(record);
-  if (keys.length === 0) return `No ${name} input`;
-  if (keys.length === 1) return truncate(`${keys[0]} payload`, compactMax);
-  return truncate(`${keys.length} fields: ${keys.slice(0, 3).join(", ")}`, compactMax);
+  if (keys.length === 0) return t("runUi.transcript.noInput", { name });
+  if (keys.length === 1) return truncate(t("runUi.transcript.payload", { key: keys[0] }), compactMax);
+  return truncate(t("runUi.transcript.fields", { count: keys.length, keys: keys.slice(0, 3).join(", ") }), compactMax);
 }
 
 function readToolDetailValue(value: unknown, max = 200): string | null {
@@ -183,36 +187,42 @@ function readToolDetailValue(value: unknown, max = 200): string | null {
   return null;
 }
 
-export function describeToolInput(name: string, input: unknown): ToolInputDetail[] {
+export function describeToolInput(name: string, input: unknown, t?: TFunction): ToolInputDetail[] {
   if (typeof input === "string") {
     const summary = compactWhitespace(isCommandTool(name, input) ? stripWrappedShell(input) : input);
-    return summary ? [{ label: isCommandTool(name, input) ? "Command" : "Input", value: truncate(summary, 200), tone: "code" }] : [];
+    return summary ? [{ label: isCommandTool(name, input) ? "Command" : "Input", value: truncate(summary, 200), tone: "code", ...(t ? { display: { label: isCommandTool(name, input) ? t("runUi.transcript.detail.command") : t("runUi.transcript.detail.input"), value: truncate(summary, 200) } } : {}) }] : [];
   }
 
   const record = asRecord(input);
   if (!record) return [];
 
   const details: ToolInputDetail[] = [];
+  const displayLabels = new Map<ToolInputDetail, (t: TFunction) => string>();
+  let pathsDetail: ToolInputDetail | undefined;
   const seen = new Set<string>();
-  const pushDetail = (label: string, value: string | null, tone: ToolInputDetail["tone"] = "default") => {
+  const pushDetail = (label: string, value: string | null, displayLabel: (t: TFunction) => string, tone: ToolInputDetail["tone"] = "default") => {
     if (!value) return;
     const key = `${label}:${value}`;
     if (seen.has(key)) return;
     seen.add(key);
-    details.push({ label, value, tone });
+    const detail = { label, value, tone };
+    details.push(detail);
+    displayLabels.set(detail, displayLabel);
+    return detail;
   };
 
   pushDetail(
     "Intent",
     summarizeRecord(record, ["description", "summary", "reason", "goal", "intent", "action", "task"]) ?? null,
+    (t: TFunction) => t("runUi.transcript.detail.intent"),
   );
-  pushDetail("Path", readToolDetailValue(record.path) ?? readToolDetailValue(record.filePath) ?? readToolDetailValue(record.file_path));
-  pushDetail("Directory", readToolDetailValue(record.cwd));
-  pushDetail("Query", readToolDetailValue(record.query));
-  pushDetail("Target", readToolDetailValue(record.url) ?? readToolDetailValue(record.target));
-  pushDetail("Prompt", readToolDetailValue(record.prompt) ?? readToolDetailValue(record.message));
-  pushDetail("Pattern", readToolDetailValue(record.pattern));
-  pushDetail("Name", readToolDetailValue(record.name) ?? readToolDetailValue(record.title));
+  pushDetail("Path", readToolDetailValue(record.path) ?? readToolDetailValue(record.filePath) ?? readToolDetailValue(record.file_path), (t: TFunction) => t("runUi.transcript.detail.path"));
+  pushDetail("Directory", readToolDetailValue(record.cwd), (t: TFunction) => t("runUi.transcript.detail.directory"));
+  pushDetail("Query", readToolDetailValue(record.query), (t: TFunction) => t("runUi.transcript.detail.query"));
+  pushDetail("Target", readToolDetailValue(record.url) ?? readToolDetailValue(record.target), (t: TFunction) => t("runUi.transcript.detail.target"));
+  pushDetail("Prompt", readToolDetailValue(record.prompt) ?? readToolDetailValue(record.message), (t: TFunction) => t("runUi.transcript.detail.prompt"));
+  pushDetail("Pattern", readToolDetailValue(record.pattern), (t: TFunction) => t("runUi.transcript.detail.pattern"));
+  pushDetail("Name", readToolDetailValue(record.name) ?? readToolDetailValue(record.title), (t: TFunction) => t("runUi.transcript.detail.name"));
 
   if (Array.isArray(record.paths) && record.paths.length > 0) {
     const paths = record.paths
@@ -221,7 +231,7 @@ export function describeToolInput(name: string, input: unknown): ToolInputDetail
       .join(", ");
     if (paths) {
       const suffix = record.paths.length > 3 ? `, +${record.paths.length - 3} more` : "";
-      pushDetail("Paths", `${paths}${suffix}`);
+      pathsDetail = pushDetail("Paths", `${paths}${suffix}`, (t: TFunction) => t("runUi.transcript.detail.paths"));
     }
   }
 
@@ -231,26 +241,36 @@ export function describeToolInput(name: string, input: unknown): ToolInputDetail
       ? record.cmd
       : null;
   if (command && isCommandTool(name, record) && !details.some((detail) => detail.label === "Intent")) {
-    pushDetail("Command", truncate(stripWrappedShell(command), 200), "code");
+    pushDetail("Command", truncate(stripWrappedShell(command), 200), (t: TFunction) => t("runUi.transcript.detail.command"), "code");
   }
 
-  return details;
+  if (!t) return details;
+  return details.map(detail => ({
+    ...detail,
+    display: {
+      label: displayLabels.get(detail)!(t),
+      value: detail === pathsDetail && Array.isArray(record.paths) && record.paths.length > 3
+        ? record.paths.filter((value): value is string => typeof value === "string" && value.trim().length > 0).slice(0, 3).join(", ") + t("runUi.transcript.morePaths", { count: record.paths.length - 3 })
+        : detail.value,
+    },
+  }));
 }
 
 export function summarizeToolResult(
   result: string | undefined,
   isError: boolean | undefined,
   density: TranscriptDensity = "comfortable",
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
-  if (!result) return isError ? "Tool failed" : "Waiting for result";
+  if (!result) return isError ? t("runUi.transcript.failed") : t("runUi.transcript.waiting");
   const structured = parseStructuredToolResult(result);
   if (structured) {
     if (structured.body) {
       return truncate(structured.body.split("\n")[0] ?? structured.body, density === "compact" ? 84 : 140);
     }
-    if (structured.status === "completed") return "Completed";
+    if (structured.status === "completed") return t("runUi.transcript.completed");
     if (structured.status === "failed" || structured.status === "error") {
-      return structured.exitCode ? `Failed with exit code ${structured.exitCode}` : "Failed";
+      return structured.exitCode ? t("runUi.transcript.failedExit", { code: structured.exitCode }) : t("runUi.transcript.failedShort");
     }
   }
   const lines = result

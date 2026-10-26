@@ -143,6 +143,25 @@ No database field or API action changes. The date picker forwards trigger props
 and refs so the existing Custom control can open and retain its range across locales.
 The task-list date separator also passes the active translator.
 
+The run/recovery slice covers run status, history, inspection and transcript
+controls, activity summaries, retry controls and recovery notices. Canonical
+fields still drive deduplication, grouping, identity and retry decisions; closed
+display descriptors identify application captions at rendering time. Raw commands,
+paths, messages, names and diagnostics stay literal. Helper defaults retain fixed
+English behavior for callers that have not yet adopted the active translator.
+
+An optional execution label descriptor identifies a confirmed wait for Muse or
+Dot. The UI validates its closed code and arguments; missing or malformed metadata
+keeps the original label. This adds no database field or action. New server and
+provider producers need a source review because the detector cannot establish
+their provenance from text alone.
+
+Locale regressions preserve recovery reasons, selected operation IDs, expanded
+details and exact explicit action payloads. Inspection keeps its access and
+disclosure gates. Component checks use mocked APIs where declared; they do not
+certify authenticated trace access, provider execution or a complete live chat
+journey. Chat/composer and compact interaction cards remain a separate slice.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review
@@ -150,8 +169,8 @@ the enabled plugins' message keys and defaults and exercise their controls in
 both languages. The source detector does not scan `node_modules`; catalog parity
 cannot prove that a newer library has no additional labels.
 
-Full task/agent/project detail pages, the rest of agent configuration, dashboards,
-and remaining settings still need translation. Shared task rows also appear in
+The chat/composer, agent/project detail pages, the rest of agent configuration,
+dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
 pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.

@@ -63,9 +63,9 @@ const now = new Date("2026-10-13T18:36:00Z");
     const select = vi.spyOn(db, "select");
     try {
       const projections = await executionProjectionsForRuns(db, muse.companyId, [muse.runId, claimed.runId, dot.runId], now);
-      expect(projections.get(muse.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Muse" });
-      expect(projections.get(claimed.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Muse" });
-      expect(projections.get(dot.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Dot" });
+      expect(projections.get(muse.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Muse", display: { label: { code: "waiting_for_provider", provider: "muse" } } });
+      expect(projections.get(claimed.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Muse", display: { label: { code: "waiting_for_provider", provider: "muse" } } });
+      expect(projections.get(dot.runId)).toMatchObject({ phase: "waiting_for_provider", label: "Waiting for Dot", display: { label: { code: "waiting_for_provider", provider: "dot" } } });
       // Runs, coordinators, interactions, recoveries, and one read per provider.
       expect(select).toHaveBeenCalledTimes(6);
     } finally { select.mockRestore(); }
@@ -77,6 +77,7 @@ const now = new Date("2026-10-13T18:36:00Z");
     if (provider === "muse") await db.update(museRunnerAssignments).set({ nativeAcceptedAt: now }).where(eq(museRunnerAssignments.id, f.assignmentId));
     else await db.update(dotRunnerAssignments).set({ acceptedAt: now }).where(eq(dotRunnerAssignments.id, f.assignmentId));
     expect((await f.project()).get(f.runId)).toMatchObject({ phase: "working", label: "Working" });
+    expect((await f.project()).get(f.runId)?.display).toBeUndefined();
     await db.update(heartbeatRuns).set({ status: "failed", errorCode: "native_provider_terminal_failed", finishedAt: now }).where(eq(heartbeatRuns.id, f.runId));
     expect((await f.project()).get(f.runId)).toMatchObject({ phase: "failed", label: "Failed" });
   });
@@ -100,6 +101,7 @@ const now = new Date("2026-10-13T18:36:00Z");
     expect(projections.has(omitted.runId)).toBe(false);
     for (const runId of [stale.runId, revoked.runId, wrongCompany.runId]) {
       expect(projections.get(runId)?.phase).toBe("working");
+      expect(projections.get(runId)?.display).toBeUndefined();
     }
   });
 });

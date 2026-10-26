@@ -1,7 +1,12 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import type { Agent } from "@paperclipai/shared";
 import {
   buildAssistantPartsFromTranscript,
+  formatDurationWords,
+  formatIssueChatDisplayText,
+  formatIssueChatPartText,
+  issueChatProviderTitle,
   buildIssueChatMessages,
   isCoTSegmentActive,
   isRedundantAiRecoveryNotice,
@@ -1806,5 +1811,91 @@ describe("AI recovery presentation", () => {
     const messages = buildIssueChatMessages({ comments: [notice], interactions: [interaction], timelineEvents: [], linkedRuns: [], liveRuns: [] });
     expect(messages).toHaveLength(1);
     expect(messages[0]?.metadata.custom).toMatchObject({ kind: "interaction" });
+  });
+});
+
+
+describe("classic transcript localization provenance", () => {
+  const ru = i18n.getFixedT("ru");
+
+  it("translates only generated error segments after raw reasoning merge", () => {
+    const { parts } = buildAssistantPartsFromTranscript([
+      { kind: "thinking", ts: "2026-04-06T12:00:00.000Z", text: "Run error: <strong>literal</strong> & user" },
+      { kind: "result", ts: "2026-04-06T12:00:01.000Z", isError: true, errors: ["<em>provider</em> & raw"] },
+    ]);
+    expect(parts).toHaveLength(1);
+    const part = parts[0];
+    if (part.type !== "reasoning") throw new Error("Expected reasoning");
+    const raw = "Run error: <strong>literal</strong> & user\nRun error: <em>provider</em> & raw";
+    expect(part.text).toBe(raw);
+    expect(formatIssueChatPartText(part)).toBe(raw);
+    expect(formatIssueChatPartText(part, ru)).toBe("Run error: <strong>literal</strong> & user\nОшибка запуска: <em>provider</em> & raw");
+    expect(formatIssueChatPartText({ ...part, text: "Run error: edited provider text" }, ru)).toBe("Run error: edited provider text");
+    expect(part.text).toBe(raw);
+  });
+
+  it("retains provider titles and annotates only absent title fallbacks", () => {
+    const { parts } = buildAssistantPartsFromTranscript([
+      { kind: "provider_activity", ts: "2026-04-06T12:00:00.000Z" },
+      { kind: "provider_activity", ts: "2026-04-06T12:00:01.000Z", title: "Provider activity" },
+      { kind: "provider_activity", ts: "2026-04-06T12:00:02.000Z", title: "" },
+    ]);
+    for (const part of parts) if (part.type !== "tool-call") throw new Error("Expected tool");
+    const tools = parts.filter(part => part.type === "tool-call");
+    expect(tools.map(part => part.toolCallId)).toEqual(["provider-activity-0", "provider-activity-1", "provider-activity-2"]);
+    expect(tools.map(part => issueChatProviderTitle(part, ru))).toEqual(["Действия провайдера", undefined, undefined]);
+    expect(tools.map(part => part.args.title)).toEqual(["Provider activity", "Provider activity", ""]);
+  });
+
+  it("marks the current viewer before directory labels while preserving other named You actors", () => {
+    const events: IssueTimelineEvent[] = ["viewer", "named-other"].map((actorId, index) => ({
+      id: `actor-${actorId}`, createdAt: new Date(`2026-04-06T12:00:0${index}.000Z`),
+      actorType: "user", actorId, statusChange: { from: "todo", to: "in_progress" },
+    }));
+    const messages = buildIssueChatMessages({ comments: [], timelineEvents: events, linkedRuns: [], liveRuns: [],
+      currentUserId: "viewer", userLabelMap: new Map([["viewer", "Ada"], ["named-other", "You"]]),
+    });
+    expect(messages.map(message => message.id)).toEqual(["activity:actor-viewer", "activity:actor-named-other"]);
+    const snapshot = JSON.stringify(messages);
+    const captions = messages.map(message => message.metadata.custom as Record<string, unknown>);
+    expect(captions.map(custom => custom.actorName)).toEqual(["You", "You"]);
+    expect(captions.map(custom => custom.actorId)).toEqual(["viewer", "named-other"]);
+    for (const locale of ["en", "ru", "en"]) {
+      const t = i18n.getFixedT(locale);
+      expect(captions.map(custom => formatIssueChatDisplayText("actorName", String(custom.actorName), custom, t)))
+        .toEqual(locale === "ru" ? ["Вы", "You"] : ["You", "You"]);
+      expect(JSON.stringify(messages)).toBe(snapshot);
+    }
+  });
+
+  it("formats generated waiting and duration metadata without changing run identity or raw source", () => {
+    const messages = buildIssueChatMessages({ comments: [], timelineEvents: [], liveRuns: [], linkedRuns: [{
+      runId: "run-localized", agentId: "agent-literal", agentName: "Working...", status: "cancelled",
+      createdAt: "2026-04-06T12:00:00.000Z", startedAt: "2026-04-06T12:00:00.000Z", finishedAt: "2026-04-06T12:00:21.000Z",
+      resultJson: { stopReason: "paused" },
+    }], transcriptsByRunId: new Map([["run-localized", []]]), hasOutputForRun: () => false });
+    const message = messages.find(item => item.id === "run-assistant:run-localized")!;
+    const snapshot = JSON.stringify(message);
+    const custom = message.metadata.custom as Record<string, unknown>;
+    expect(custom.chainOfThoughtLabel).toBe("Paused by board after 21 seconds");
+    expect(custom.waitingText).toBe("Run finished");
+    expect(formatIssueChatDisplayText("chainOfThoughtLabel", String(custom.chainOfThoughtLabel), custom, ru)).toBe("Оператор приостановил запуск через 21 секунду");
+    expect(formatIssueChatDisplayText("waitingText", String(custom.waitingText), custom, ru)).toBe("Запуск завершён");
+    expect(formatIssueChatDisplayText("waitingText", "Run finished", {}, ru)).toBe("Run finished");
+    expect(formatIssueChatDisplayText("waitingText", "Run finished", { display: { waitingText: { code: "failed" } } }, ru)).toBe("Run finished");
+    expect(formatIssueChatDisplayText("chainOfThoughtLabel", "raw", { display: { chainOfThoughtLabel: { code: "failed", durationMs: "21" } } }, ru)).toBe("raw");
+    expect(JSON.stringify(message)).toBe(snapshot);
+  });
+
+  it.each([[1, "1 секунду"], [2, "2 секунды"], [5, "5 секунд"], [11, "11 секунд"], [21, "21 секунду"], [22, "22 секунды"], [25, "25 секунд"]])("formats %i rounded seconds", (seconds, expected) => {
+    expect(formatDurationWords(Number(seconds) * 1000, ru, "elapsed")).toBe(expected);
+    expect(formatDurationWords(Number(seconds) * 1000)).toBe(`${seconds} second${seconds === 1 ? "" : "s"}`);
+  });
+
+  it("keeps duration rounding and absent duration behavior", () => {
+    expect(formatDurationWords(null, ru)).toBeNull();
+    expect(formatDurationWords(0, ru)).toBeNull();
+    expect(formatDurationWords(1500, ru)).toBe("2 секунды");
+    expect(formatDurationWords(61 * 60 * 1000, ru, "elapsed")).toBe("1 час 1 минуту");
   });
 });
