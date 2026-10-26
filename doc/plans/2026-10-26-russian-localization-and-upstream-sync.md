@@ -808,57 +808,28 @@ production code. The complete 55-case editor suite then passed. The other 29
 complete suites passed in the original run. Integrated UI typecheck, build,
 token gates and map checks passed; these results do not claim full repository CI.
 
-The trust/project-access slice adds 69 reviewed families (75 English and 87
-Russian forms) across four production owners. All 52 cases in four complete
-related suites passed, including the existing email setup consumer. UI typecheck,
-build and token gates passed. The strict audit reports 6,979 reviewed families
-and 15,699 remaining findings, with no pending/missing/invalid messages, new
-findings or source errors. Only 67 resolved baseline entries were removed, with
-one exact exception for the canonical project-type comparison. An initial draft
-missed the export of a pure count helper; the existing multi-boundary case caught
-it, and the corrected complete suite passed. Permission builders remain unchanged.
-Component tests preserve selected projects, pending saves, raw names/errors and
-locale-independent requests; they do not establish live permission enforcement.
+The combined agent-tab package adds 206 reviewed message families: trust and
+project access (69), tools (79), skills (42), and channels (16). Three reused
+adapter-label contexts were reviewed again. The merged strict audit passes with
+7,116 reviewed families and 15,588 remaining source findings, with no pending,
+missing or invalid messages, new findings, source errors or resolved-debt residue.
+The baseline shrinks by 178 entries. One exact exception records a canonical
+project-type comparison; it is not visible copy.
 
-The agent-tools slice adds 79 reviewed families (81 English and 85 Russian forms).
-Nine complete related suites passed 57 tests without skips, including shared
-component consumers. UI typecheck, build, token gates and map checks passed.
-Its strict audit reports 6,989 reviewed families and 15,697 existing findings,
-with no pending/missing/invalid messages, new findings or source errors. Only 69
-resolved baseline entries were removed; no exception was added. Regressions
-preserve pending/queued installs, failed-draft suppression, canonical requests,
-company-wide locks and raw profile/provider text. Initial cold-import timing and
-an incorrect ApiError test fixture were corrected without relaxing assertions or
-timeouts. The three changed shared presentation exports retain fixed-English
-defaults. Live GitHub/tool access and the other Apps owners remain unverified.
+All 168 tests in 20 complete related suites pass together on the combined source
+at `677104493d393bc8362028b361bad3e5ae0076c1`, without skips. Combined UI typecheck,
+build, token gates and map checks pass. Later documentation and review-record
+ordering edits preserve that tested source and all parsed review records.
+Exact-head hosted CI and Greptile review for the combined PR remain pending.
 
-The agent-skills slice adds 42 reviewed EN/RU message pairs for the active tab,
-rows, release picker and source fallbacks. Root reviewed all pairs and the source
-and test changes; three reused adapter-label contexts were also reviewed. Only
-32 resolved baseline entries were removed, with no new exceptions or dynamic
-keys. The standalone strict audit passes with 6,952 reviewed families and 15,734
-remaining source findings, no pending/missing/invalid messages, new findings or
-source errors.
-
-Three locale cases failed against the original source before implementation.
-Six complete affected suites then passed 43 tests with no skips. After fixture
-type corrections, the two affected suites passed all 10 cases again; the other
-four suites remained unchanged. UI typecheck, build, token gates and map checks
-pass. The real row and release picker preserve pending toggle/version-pin drafts,
-search, focus, selection, raw names and exact requests across EN/RU/EN changes.
-Autosave timing and existing eligibility gates are unchanged. This is component
-evidence with mocked APIs, not live materialization or a complete Skills catalog
-translation. Exact-head hosted CI and Greptile review remain pending.
-
-The agent-channel list adds 16 reviewed message families. Its complete existing
-visibility-gate suite passes 16 cases without skips; UI typecheck, build and token
-gates pass. The strict audit reports 6,995 reviewed families and 15,689 remaining
-source findings, with no pending/missing/invalid messages, new findings or source
-errors. Only 10 resolved baseline entries are removed; no exception is added.
-Locale tests preserve pending queries, raw identity labels, status fallbacks,
-links and independent visibility filters. This is component evidence, not live
-provider setup or delivery. The existing query-error-as-empty gap remains outside
-this slice. Exact-head hosted CI and Greptile review remain pending.
+The regressions retain drafts, focus, selected projects, permission payloads,
+tool-install queues, failed-draft suppression, skill version pins and channel
+visibility through EN/RU/EN changes. Autosave timing and eligibility gates are
+unchanged. Names, paths, provider diagnostics and unknown status values keep
+their original display contract. Shared presentation helpers retain English
+defaults for existing consumers. These are component tests with mocked APIs;
+live permission enforcement, provider access and skill materialization require
+separate acceptance. The existing channel-query error-as-empty gap is unchanged.
 
 The remaining major packages are agent bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
