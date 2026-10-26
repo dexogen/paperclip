@@ -1046,9 +1046,19 @@ the localization gate. The later agent-detail slice is published in
 also passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`.
 The agent-skills integration in [PR #27](https://github.com/dexogen/paperclip/pull/27)
 also [passed all nine jobs](https://github.com/dexogen/paperclip/actions/runs/40312816178)
-on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`. The next agent-journey candidate in
-[PR #28](https://github.com/dexogen/paperclip/pull/28) is being checked separately
-at `42b699cb093a3817a1ff4cd1674637e7d9644169`.
+on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`. The agent-journey candidate in
+[PR #28](https://github.com/dexogen/paperclip/pull/28), at
+`42b699cb093a3817a1ff4cd1674637e7d9644169`, has two failed jobs in
+[its separate run](https://github.com/dexogen/paperclip/actions/runs/40322370157).
+The UI failure checked the MarkdownEditor fallback before its asynchronous
+transition committed. The locale case now uses the same bounded readiness
+assertion as the existing parser-fallback cases; all 55 tests in the complete
+editor suite pass. Source behavior, assertions and test deadlines are unchanged.
+The actual-PRP large-result case again reached its 15-second deadline, after five
+results (last result 400,014 bytes, escaped wrapper 800,082 bytes), before turn
+completion. That failure remains under investigation; the earlier passing runs
+do not explain it. The failed hosted run is retained, and full CI of the repairs
+remains pending.
 Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
