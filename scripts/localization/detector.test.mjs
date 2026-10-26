@@ -75,6 +75,162 @@ test("dynamic translation keys require an explicit manifest", () => {
   assert.equal(audit.references.length, 0);
 });
 
+test("audits typed translator parameters without leaking names into sibling helpers", () => {
+  const source = `import type { TFunction as Translator } from "i18next";
+    import { i18n } from "@/i18n";
+    function translated(t: Translator = i18n.getFixedT("en")) {
+      return t("helper.open", { url: value });
+    }
+    const arrow = (translate: Translator) => translate(dynamicKey);
+    function ordinary(t: (value: string) => string) { return t("ordinary data"); }
+    function nested(t: Translator) {
+      function inner(t: (value: string) => string) { return t("shadowed data"); }
+      return t("helper.missing");
+    }`;
+  const audit = scanSource("ui/src/helpers.ts", source);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["helper.open", "helper.missing"]);
+  assert.deepEqual(audit.dynamicKeys.map(({ text }) => text), ["dynamicKey"]);
+  const catalog = analyzeCatalog({ source: { helper: { open: "Open {{url}}" } },
+    target: { helper: { open: "Открыть {{url}}" } }, locale: "ru", references: audit.references });
+  assert.deepEqual(catalog.invalid, []);
+  assert.equal(catalog.missingKeys[0].key, "helper.missing");
+  const changed = scanSource("ui/src/helpers.ts", source.replace("{ url: value }", "{ other: value }"));
+  assert.ok(analyzeCatalog({ source: { helper: { open: "Open {{url}}" } }, target: {}, locale: "ru",
+    references: changed.references }).invalid.some(({ message }) => message.includes("missing interpolation parameter: url")));
+});
+
+test("a local translation hook overrides an outer ordinary function parameter", () => {
+  const audit = scanSource(path, `import { useTranslation } from "@/i18n";
+    function outer(t: (value: string) => string) {
+      function Inner() { const { t } = useTranslation(); return t("missing.key"); }
+    }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["missing.key"]);
+  assert.deepEqual(audit.errors, []);
+  assert.deepEqual(analyzeCatalog({ source: {}, target: {}, locale: "ru", references: audit.references })
+    .missingKeys.map(({ key }) => key), ["missing.key"]);
+});
+
+test("translator namespaces belong to their lexical binding, including literal TFunction namespaces", () => {
+  const audit = scanSource(path, `import type { TFunction as Translator } from "i18next";
+    import { t, useTranslation as useT } from "@/i18n";
+    function other() { const { t } = useT("other"); return t("one"); }
+    function normal(t: Translator) { return t("helper.open"); }
+    function typed(t: Translator<"settings">) { return t("helper.open"); }
+    function ordinary() { return t("common.open"); }
+    function innerHook(t: Translator<"outer">) {
+      function Inner() { const { t } = useT("inner"); return t("one"); }
+      return t("two");
+    }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), [
+    "other:one", "helper.open", "settings:helper.open", "common.open", "inner:one", "outer:two",
+  ]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("ordinary local declarations shadow imported and typed translators in their own scopes", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { t, i18n } from "@/i18n";
+    function outer(t: TFunction) {
+      { const t = (value: string) => value; const label = t("Ordinary label"); }
+      { const { t } = ordinary; t("ordinary destructured value"); }
+      try {} catch (t) { t("ordinary caught value"); }
+      return t("real.key");
+    }
+    function ordinary(i18n: { t: (value: string) => string }) { return i18n.t("ordinary member"); }
+    function local() { function t(value: string) { return value; } return t("ordinary function"); }
+    { const t = ordinary; t("ordinary block"); }
+    t("module.key"); i18n.t("instance.key");`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["real.key", "module.key", "instance.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("hook names and imported translator types respect local shadowing", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { useTranslation } from "@/i18n";
+    function ordinary(useTranslation: () => { t: (value: string) => string }) {
+      const { t } = useTranslation(); return t("ordinary hook");
+    }
+    function nestedType() {
+      type TFunction = (value: string) => string;
+      function helper(t: TFunction) { return t("ordinary local type"); }
+    }
+    function generic<TFunction>(t: TFunction) { return t("ordinary generic type"); }
+    function real(t: TFunction) { return t("real.key"); }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["real.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("unresolved translator namespaces fail audit rather than using the default catalog", (t) => {
+  const f = fixture(t, `import type { TFunction } from "i18next";
+    import { useTranslation } from "@/i18n";
+    function generic<Ns extends string>(translate: TFunction<Ns>) { return translate("action"); }
+    function dynamicHook() { const { t } = useTranslation(namespace); return t("action"); }`);
+  const report = createReport(f.root);
+  assert.equal(report.ok, false);
+  assert.equal(report.summary.sourceErrors, 2);
+  assert.ok(report.source.errors.every(({ message }) => /translation namespace.*statically/i.test(message)));
+  assert.deepEqual(report.catalog.messages[0].contexts, []);
+});
+
+test("var bindings shadow through a function while loop and catch bindings stay local", () => {
+  const audit = scanSource(path, `import { t } from "@/i18n";
+    function ordinary() { if (true) { var t = ordinaryCall; } return t("ordinary var"); }
+    for (const t of callbacks) { t("ordinary loop"); }
+    try {} catch ({ t }) { t("ordinary catch"); }
+    t("module.key");`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["module.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("generic function types do not shadow sibling translator types and anonymous classes remain scannable", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { t } from "@/i18n";
+    const ordinary: <TFunction>(value: TFunction) => TFunction = value => value;
+    function helper(t: TFunction) { return t("helper.key"); }
+    export default class { render() { return <p>{t("class.key")}</p>; } }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["helper.key", "class.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("var redeclarations preserve translator parameters and hook bindings", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { useTranslation } from "@/i18n";
+    function helper(t: TFunction) { var t; return t("helper.key"); }
+    function view() { var { t } = useTranslation(); if (true) { var t; } return t("view.key"); }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["helper.key", "view.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("function body variables cannot hide imported translators from default parameter initializers", () => {
+  const audit = scanSource(path, `import { t } from "@/i18n";
+    function ordinary(value = t("default.key")) { var t = (text: string) => text; return t("ordinary"); }
+    class Holder { static { var t = (text: string) => text; t("ordinary static"); } }
+    t("module.key");`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["default.key", "module.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("an explicit key namespace overrides the translator namespace", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { useTranslation } from "@/i18n";
+    function helper(t: TFunction<"settings">) { return t("common:open"); }
+    function View() { const { t } = useTranslation("settings"); return t("translation:default.key"); }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["common:open", "default.key"]);
+  assert.deepEqual(audit.errors, []);
+});
+
+test("unsupported key prefixes fail closed instead of auditing a different key", () => {
+  const audit = scanSource(path, `import type { TFunction } from "i18next";
+    import { useTranslation } from "@/i18n";
+    function helper(t: TFunction<"translation", "prefix">) { return t("open"); }
+    function View() { const { t } = useTranslation(undefined, { keyPrefix: "prefix" }); return t("open"); }
+    function Dynamic() { const { t } = useTranslation(undefined, options); return t("open"); }
+    function Empty() { const { t } = useTranslation(undefined, { keyPrefix: "" }); return t("plain.key"); }`);
+  assert.deepEqual(audit.references.map(({ key }) => key), ["plain.key"]);
+  assert.equal(audit.errors.length, 3);
+  assert.ok(audit.errors.every(({ message }) => /translation key prefix.*unsupported/i.test(message)));
+});
+
 test("source and Russian edits invalidate separate review fingerprints", () => {
   const source = { action: "Continue" }, target = { action: "Продолжить" };
   const initial = analyzeCatalog({ source, target, locale: "ru" }).messages[0];

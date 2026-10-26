@@ -22,6 +22,7 @@ const listAccessGrants = vi.fn();
 const createAccessGrant = vi.fn();
 const revokeAccessGrant = vi.fn();
 const listUserDirectory = vi.fn();
+const listAgents = vi.fn();
 
 vi.mock("@/api/issues", () => ({
   issuesApi: {
@@ -34,13 +35,14 @@ vi.mock("@/api/access", () => ({
   accessApi: { listUserDirectory: (...args: unknown[]) => listUserDirectory(...args) },
 }));
 vi.mock("@/api/agents", () => ({
-  agentsApi: { list: vi.fn().mockResolvedValue([]) },
+  agentsApi: { list: (...args: unknown[]) => listAgents(...args) },
 }));
 vi.mock("@/context/ToastContext", () => ({
   useToastActions: () => ({ pushToast: vi.fn() }),
 }));
 
 import { IssueShareSheet } from "./IssueShareSheet";
+import { i18n } from "@/i18n";
 import { queryKeys } from "@/lib/queryKeys";
 
 function grant(overrides: Partial<IssueAccessGrant>): IssueAccessGrant {
@@ -87,12 +89,14 @@ describe("IssueShareSheet", () => {
     createAccessGrant.mockReset();
     revokeAccessGrant.mockReset();
     listUserDirectory.mockReset().mockResolvedValue({ users: [] });
+    listAgents.mockReset().mockResolvedValue([]);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     if (root) act(() => root?.unmount());
     container.remove();
     document.body.innerHTML = "";
+    await i18n.changeLanguage("en");
     vi.unstubAllGlobals();
     Element.prototype.scrollIntoView = originalScrollIntoView;
   });
@@ -217,4 +221,52 @@ describe("IssueShareSheet", () => {
     await renderSheet(true);
     expect(document.body.querySelector('[data-testid="share-sheet-empty"]')).not.toBeNull();
   });
+  it("keeps a translated revocation dialog open until explicit confirmation", async () => {
+    const name = "Ada <strong>operator</strong>";
+    listAccessGrants.mockResolvedValue([grant({ id: "g-localized", subjectDisplayName: name })]);
+    revokeAccessGrant.mockResolvedValue({});
+    await renderSheet();
+    act(() => [...document.body.querySelectorAll("button")].find(button => button.textContent?.trim() === "Revoke")!.click());
+    await settle();
+    const dialog = document.body.querySelector('[role="alertdialog"]');
+    expect(dialog).not.toBeNull();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await settle();
+    expect(document.body.querySelector('[role="alertdialog"]')).toBe(dialog);
+    expect(dialog?.textContent).toContain(`Удалить сохранённое разрешение для ${name}?`);
+    expect(dialog?.querySelector("strong")).toBeNull();
+    expect(dialog?.textContent).toContain("не удаляет уже увиденное содержимое");
+    expect(revokeAccessGrant).not.toHaveBeenCalled();
+    expect(createAccessGrant).not.toHaveBeenCalled();
+    act(() => [...dialog!.querySelectorAll("button")].find(button => button.textContent?.trim() === "Удалить разрешение")!.click());
+    await settle();
+    expect(revokeAccessGrant).toHaveBeenCalledExactlyOnceWith("i1", "g-localized");
+  });
+
+  it("preserves the selected shared agent and literal name when the warning changes language", async () => {
+    const name = "Helper <strong>literal</strong>";
+    listAccessGrants.mockResolvedValue([]);
+    listAgents.mockResolvedValue([{ id: "a-localized", name, permissions: {} }]);
+    createAccessGrant.mockResolvedValue(grant({ subjectType: "agent", subjectId: "a-localized" }));
+    await renderSheet();
+    act(() => [...document.body.querySelectorAll("button")].find(button => button.textContent?.trim() === "Add someone")!.click());
+    await settle();
+    act(() => (document.body.querySelector('[role="combobox"]') as HTMLElement).click());
+    await settle();
+    act(() => ([...document.body.querySelectorAll('[role="option"]')].find(option => option.textContent?.includes(name)) as HTMLElement).click());
+    await settle();
+    const caution = document.body.querySelector('[data-testid="shared-agent-caution"]');
+    expect(caution?.textContent).toContain(name);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await settle();
+    expect(document.body.querySelector('[data-testid="shared-agent-caution"]')).toBe(caution);
+    expect(caution?.textContent).toContain("Общий агент.");
+    expect(caution?.textContent).toContain(name);
+    expect(caution?.querySelector("strong")).toBeNull();
+    expect(createAccessGrant).not.toHaveBeenCalled();
+    act(() => [...document.body.querySelectorAll("button")].find(button => button.textContent?.trim() === "Добавить")!.click());
+    await settle();
+    expect(createAccessGrant).toHaveBeenCalledExactlyOnceWith("i1", { subjectType: "agent", subjectId: "a-localized" });
+  });
+
 });

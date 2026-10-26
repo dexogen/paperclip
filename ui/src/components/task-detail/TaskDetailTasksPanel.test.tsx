@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import type { Issue, Project } from "@paperclipai/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TaskDetailTasksPanel } from "./TaskDetailTasksPanel";
+import { i18n } from "@/i18n";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 vi.mock("@/lib/router", () => ({ Link: ({ to, children, ...props }: { to: string; children: React.ReactNode }) => <a href={to} {...props}>{children}</a> }));
@@ -12,7 +13,7 @@ const task = (id: string, overrides: Partial<Issue> = {}) => ({ id, title: id, s
 const project = { id: "project-1", name: "Board UI", urlKey: "board-ui" } as Project;
 let container: HTMLDivElement;
 let root: ReturnType<typeof createRoot>;
-afterEach(() => { act(() => root?.unmount()); container?.remove(); });
+afterEach(async () => { act(() => root?.unmount()); container?.remove(); await i18n.changeLanguage("en"); });
 function render(props: React.ComponentProps<typeof TaskDetailTasksPanel>) {
   container = document.createElement("div"); document.body.append(container);
   root = createRoot(container);
@@ -124,4 +125,34 @@ describe("TaskDetailTasksPanel", () => {
     expect(container.querySelector('section[aria-label="Created from"]')).toBeNull();
     expect(container.textContent).toContain("No tasks yet.");
   });
+  it("preserves folded ancestors and literal provenance names when the language changes", async () => {
+    const title = "Source <strong>task</strong>";
+    const name = "Agent <em>name</em>";
+    render({
+      ancestors,
+      createdFrom: {
+        issue: { id: "source", identifier: "PAP-168", title, status: "in_progress" },
+        run: { id: "run-1", agentId: "qa" },
+        agent: { id: "qa", name },
+      },
+      subtasks: [], createdTasks: [], projects: [],
+    });
+    const group = container.querySelector('section[aria-label="Ancestors"]')!;
+    act(() => (group.querySelector("button") as HTMLButtonElement).click());
+    const note = container.querySelector('[data-testid="issue-created-from"]')!;
+    const link = note.querySelector("a");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(group.querySelector("a")).toBeNull();
+    expect(group.getAttribute("aria-label")).toBe("Родительские задачи");
+    expect(container.querySelector('[data-testid="issue-created-from"]')).toBe(note);
+    expect(note.querySelector("a")).toBe(link);
+    expect(link?.getAttribute("href")).toBe("/issues/PAP-168");
+    expect(note.textContent).toContain(title);
+    expect(note.textContent).toContain(name);
+    expect(note.querySelector("strong, em")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(group.getAttribute("aria-label")).toBe("Ancestors");
+    expect(group.querySelector("a")).toBeNull();
+  });
+
 });

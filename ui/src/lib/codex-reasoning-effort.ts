@@ -1,27 +1,33 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import {
   codexLocalReasoningEffortsForModel,
   type CodexLocalReasoningEffort,
 } from "@paperclipai/adapter-codex-local";
 
-const CODEX_REASONING_EFFORT_LABELS: Record<CodexLocalReasoningEffort, string> = {
-  minimal: "Minimal",
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  xhigh: "X-High",
-  max: "Max",
-  ultra: "Ultra",
-};
+function codexReasoningEffortLabels(t: TFunction): Record<CodexLocalReasoningEffort, string> {
+  return {
+    minimal: t("taskProperties.effort.minimal"),
+    low: t("taskProperties.effort.low"),
+    medium: t("taskProperties.effort.medium"),
+    high: t("taskProperties.effort.high"),
+    xhigh: t("taskProperties.effort.xhigh"),
+    max: t("taskProperties.effort.max"),
+    ultra: t("taskProperties.effort.ultra"),
+  };
+}
 
 export function codexReasoningEffortOptions(
   model: string | null | undefined,
-  defaultLabel = "Default",
+  defaultLabel?: string,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
+  const labels = codexReasoningEffortLabels(t);
   return [
-    { value: "", label: defaultLabel },
+    { value: "", label: defaultLabel ?? t("taskProperties.effort.default") },
     ...codexLocalReasoningEffortsForModel(model).map((value) => ({
       value,
-      label: CODEX_REASONING_EFFORT_LABELS[value],
+      label: labels[value],
     })),
   ];
 }

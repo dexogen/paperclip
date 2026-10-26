@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { scoreFuzzyTextFields } from "./searchable-select";
 
 export interface ReusableExecutionWorkspaceLike {
@@ -109,6 +111,7 @@ export function orderReusableExecutionWorkspaces<T extends ReusableExecutionWork
 export function buildReusableExecutionWorkspaceOptionGroups<T extends ReusableExecutionWorkspaceLike>(
   workspaces: readonly T[],
   options: { now?: Date | string; recentCutoffDays?: number } = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): ReusableWorkspaceOptionGroup<T>[] {
   const nowTime = options.now ? new Date(options.now).getTime() : Date.now();
   const cutoffDays = options.recentCutoffDays ?? RECENT_WORKSPACE_CUTOFF_DAYS;
@@ -139,8 +142,8 @@ export function buildReusableExecutionWorkspaceOptionGroups<T extends ReusableEx
     .map((workspace) => toOption(workspace, "all"));
 
   return [
-    ...(recent.length > 0 ? [{ id: "recent" as const, label: "Recent", options: recent }] : []),
-    { id: "all", label: "All workspaces", options: all },
+    ...(recent.length > 0 ? [{ id: "recent" as const, label: t("taskProperties.workspace.recent"), options: recent }] : []),
+    { id: "all", label: t("taskProperties.workspace.all"), options: all },
   ];
 }
 

@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { useEffect, useState, type ReactNode } from "react";
 import type { IssueExternalObjectGroup } from "../../hooks/useIssueExternalObjects";
 import {
@@ -27,20 +29,20 @@ function sortExternalObjectGroups(groups: IssueExternalObjectGroup[]) {
   });
 }
 
-function externalObjectRowDisplayKey(group: IssueExternalObjectGroup): string {
+function externalObjectRowDisplayKey(group: IssueExternalObjectGroup, t: TFunction): string {
   const { pill } = group;
   const displayKey = pill.displayKey?.trim();
   if (displayKey) return displayKey;
   if (pill.providerKey === "github") {
-    if (pill.objectType === "pull_request") return "Github PR";
-    if (pill.objectType === "issue") return "Github Issue";
+    if (pill.objectType === "pull_request") return t("taskProperties.external.githubPr");
+    if (pill.objectType === "issue") return t("taskProperties.external.githubIssue");
   }
-  return externalObjectDisplayLabel(pill.providerKey, pill.objectType);
+  return externalObjectDisplayLabel(pill.providerKey, pill.objectType, undefined, t);
 }
 
-function externalObjectRowLabel(group: IssueExternalObjectGroup): ReactNode {
+function externalObjectRowLabel(group: IssueExternalObjectGroup, t: TFunction): ReactNode {
   const { pill } = group;
-  const displayKey = externalObjectRowDisplayKey(group);
+  const displayKey = externalObjectRowDisplayKey(group, t);
   const Icon = externalObjectIconForKey(pill.iconKey);
   return (
     <span className="inline-flex min-w-0 items-start gap-1" title={displayKey}>
@@ -50,7 +52,7 @@ function externalObjectRowLabel(group: IssueExternalObjectGroup): ReactNode {
   );
 }
 
-function githubObjectPropertyValue(url: string | null | undefined): string | null {
+function githubObjectPropertyValue(url: string | null | undefined, t: TFunction): string | null {
   if (!url) return null;
   try {
     const parsed = new URL(url);
@@ -58,22 +60,22 @@ function githubObjectPropertyValue(url: string | null | undefined): string | nul
     const [, owner, repo, kind, number] = parsed.pathname.split("/");
     if (!owner || !repo || !number) return null;
     if (kind === "pull") return `PR ${number}`;
-    if (kind === "issues") return `Issue ${number}`;
+    if (kind === "issues") return t("taskProperties.external.issueNumber", { number });
     return null;
   } catch {
     return null;
   }
 }
 
-function externalObjectPropertyStatusLabel(group: IssueExternalObjectGroup): string {
-  return externalObjectDisplayStatusLabel(group.pill);
+function externalObjectPropertyStatusLabel(group: IssueExternalObjectGroup, t?: TFunction): string {
+  return externalObjectDisplayStatusLabel(group.pill, t);
 }
 
-function externalObjectPropertyValue(group: IssueExternalObjectGroup): string {
+function externalObjectPropertyValue(group: IssueExternalObjectGroup, t: TFunction): string {
   const { pill } = group;
-  const statusLabel = externalObjectPropertyStatusLabel(group);
-  const githubLabel = pill.providerKey === "github" ? githubObjectPropertyValue(pill.url) : null;
-  const base = githubLabel ?? pill.displayTitle?.trim() ?? externalObjectRowDisplayKey(group);
+  const statusLabel = externalObjectPropertyStatusLabel(group, t);
+  const githubLabel = pill.providerKey === "github" ? githubObjectPropertyValue(pill.url, t) : null;
+  const base = githubLabel ?? pill.displayTitle?.trim() ?? externalObjectRowDisplayKey(group, t);
   return statusLabel ? `${base} - ${statusLabel}` : base;
 }
 
@@ -94,18 +96,19 @@ function externalObjectPropertyStatusIconKey(group: IssueExternalObjectGroup): s
   return group.pill.statusIconKey;
 }
 
-function externalObjectPropertyTitle(group: IssueExternalObjectGroup): string {
+function externalObjectPropertyTitle(group: IssueExternalObjectGroup, t: TFunction): string {
   const { pill, sourceLabels } = group;
-  const base = pill.displayTitle ?? externalObjectPropertyValue(group);
+  const base = pill.displayTitle ?? externalObjectPropertyValue(group, t);
   return sourceLabels.length > 0 ? `${base} - ${sourceLabels.join(", ")}` : base;
 }
 
 function ExternalObjectPropertyValue({ group }: { group: IssueExternalObjectGroup }) {
+  const { t } = useTranslation();
   const { pill } = group;
-  const statusLabel = externalObjectPropertyStatusLabel(group);
-  const providerLabel = externalObjectProviderLabel(pill.providerKey);
-  const typeLabel = externalObjectTypeLabel(pill.objectType);
-  const value = externalObjectPropertyValue(group);
+  const statusLabel = externalObjectPropertyStatusLabel(group, t);
+  const providerLabel = externalObjectProviderLabel(pill.providerKey, t);
+  const typeLabel = externalObjectTypeLabel(pill.objectType, t);
+  const value = externalObjectPropertyValue(group, t);
   const content = (
     <>
       <ExternalObjectStatusIcon
@@ -113,7 +116,7 @@ function ExternalObjectPropertyValue({ group }: { group: IssueExternalObjectGrou
         liveness={pill.liveness}
         statusIconKey={externalObjectPropertyStatusIconKey(group)}
         sizeClassName="h-3.5 w-3.5"
-        label={`${providerLabel}: ${statusLabel}`}
+        label={t("taskProperties.external.providerStatus", { provider: providerLabel, status: statusLabel })}
       />
       <span className="min-w-0 truncate">{value}</span>
     </>
@@ -134,8 +137,8 @@ function ExternalObjectPropertyValue({ group }: { group: IssueExternalObjectGrou
         data-external-status={pill.statusCategory}
         data-external-liveness={pill.liveness}
         className={className}
-        title={externalObjectPropertyTitle(group)}
-        aria-label={`${providerLabel} ${typeLabel} - ${statusLabel}: ${pill.displayTitle ?? value}`}
+        title={externalObjectPropertyTitle(group, t)}
+        aria-label={t("taskProperties.external.objectStatus", { provider: providerLabel, type: typeLabel, status: statusLabel, title: pill.displayTitle ?? value })}
       >
         {content}
       </a>
@@ -148,8 +151,8 @@ function ExternalObjectPropertyValue({ group }: { group: IssueExternalObjectGrou
       data-external-status={pill.statusCategory}
       data-external-liveness={pill.liveness}
       className={className}
-      title={externalObjectPropertyTitle(group)}
-      aria-label={`${providerLabel} ${typeLabel} - ${statusLabel}: ${pill.displayTitle ?? value}`}
+      title={externalObjectPropertyTitle(group, t)}
+      aria-label={t("taskProperties.external.objectStatus", { provider: providerLabel, type: typeLabel, status: statusLabel, title: pill.displayTitle ?? value })}
     >
       {content}
     </span>
@@ -167,6 +170,7 @@ export function ExternalObjectRows({
   externalObjectsError?: boolean;
   onRetryExternalObjects?: () => void;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -175,9 +179,9 @@ export function ExternalObjectRows({
 
   if (externalObjectsError) {
     return (
-      <PropertyRow label="External objects">
+      <PropertyRow label={t("taskProperties.external.objects")}>
         <span className="text-xs text-muted-foreground">
-          Couldn't load external objects.
+          {t("taskProperties.external.loadFailed")}
           {onRetryExternalObjects ? (
             <>
               {" "}
@@ -186,7 +190,7 @@ export function ExternalObjectRows({
                 className="text-primary underline-offset-2 hover:underline"
                 onClick={onRetryExternalObjects}
               >
-                Retry
+                {t("taskProperties.fields.retry")}
               </button>
             </>
           ) : null}
@@ -197,7 +201,7 @@ export function ExternalObjectRows({
 
   if (externalObjectsLoading) {
     return (
-      <PropertyRow label="External objects">
+      <PropertyRow label={t("taskProperties.external.objects")}>
         <span className="h-4 w-24 animate-pulse rounded bg-muted/40" />
       </PropertyRow>
     );
@@ -219,14 +223,14 @@ export function ExternalObjectRows({
           return (
             <PropertyRow
               key={group.object?.id ?? `${pill.providerKey}:${pill.objectType}:${pill.url ?? "anon"}`}
-              label={externalObjectRowLabel(externalObject)}
+              label={externalObjectRowLabel(externalObject, t)}
             >
               <ExternalObjectPropertyValue group={externalObject} />
             </PropertyRow>
           );
         })}
       {expanded || hiddenExternalObjectCount > 0 ? (
-        <PropertyRow label="References">
+        <PropertyRow label={t("taskProperties.fields.references")}>
           <ExpandRelationListButton
             hiddenCount={hiddenExternalObjectCount}
             expanded={expanded}

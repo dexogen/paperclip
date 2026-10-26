@@ -19,7 +19,9 @@ Markdown limits each section to 150 rows. It escapes source markup and mentions.
 Neither invocation changes catalogs, baseline, review records or Git state.
 
 The AST parser comes from the installed UI Storybook dependency, using the same
-resolution pattern as `scripts/storybook-button-usage.mjs`. A production-only or
+resolution pattern as `scripts/storybook-button-usage.mjs`. Lexical value bindings
+use Storybook's pinned `internal/babel` traversal export, with a bounded overlay
+for TypeScript type names. A production-only or
 filtered dependency install is insufficient. The dependency failure is explicit.
 This avoids the removed `createSourceFile` JavaScript API in TypeScript 7; parser
 smoke coverage runs as part of the detector tests.
@@ -63,8 +65,16 @@ Both ordinary and `.production.tsx` components are scanned. Known sinks include:
 - toast, alert, confirmation and local error/message setter calls;
 - complete template messages, with substitutions retained as context.
 
-The parser recognizes imports and aliases of `t` and `useTranslation`, literal
+The parser recognizes imports and aliases of `t` and `useTranslation`, helper
+parameters typed with an imported i18next `TFunction` (including type aliases
+at import and default values), literal
 fallback-key arrays and conditional literal keys, and `Trans`'s `i18nKey`.
+Typed parameter names are scoped to their function; an ordinary callback with
+the same name in a sibling or nested function is not a translator declaration.
+Literal namespaces and explicit namespace-qualified keys are supported. Unknown
+namespaces and nonempty or unknown key prefixes fail with a source audit error;
+the detector does not infer them from arbitrary runtime values. Prefer complete
+static message keys in these helpers.
 Every static reference must exist in English, even with `defaultValue`. Runtime
 keys need a `dynamicKeys` manifest with `file`, `expression`, optional `owner`,
 explicit `keys` and `reason`; those declared keys receive the same catalog checks.

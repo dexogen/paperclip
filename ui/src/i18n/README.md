@@ -14,7 +14,8 @@ Server-side utility callers without a browser retain English. The existing
 Vitest suite explicitly builds with the English default; localization tests
 exercise both languages and the production default resolver.
 
-Use `useTranslation` in React components. Resolve labels during rendering so a
+Import `useTranslation` from `@/i18n` in React components so isolated consumers
+also initialize the catalogs. Resolve labels during rendering so a
 language change updates the screen without remounting it. Keep semantic keys in
 static label maps and translate them inside the component. Include `t` in memo
 and effect dependencies when a callback reads translated text. Do not translate
@@ -65,6 +66,20 @@ their display helpers. Those helpers retain English defaults for other callers
 whose existing contracts still use English labels. Language changes preserve
 search text, open controls, pagination, user titles, and canonical status values.
 The design-sandbox-only refreshed filter panel is outside this production slice.
+
+The task-detail slice covers the page shell, properties, privacy and sharing,
+relations, subtask controls, monitor and retry presentation, and common inline
+and Markdown editors. Locale regressions check literal names, drafts, selection,
+dialog state and explicit mutations. They use mocked requests and do not certify
+server authorization or a live task-detail journey. The chat/composer, activity
+formatters and unconverted child panels still need translation.
+
+`lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
+plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
+English fallback, with literal interpolation. A dependency update must review
+the enabled plugins' message keys and defaults and exercise their controls in
+both languages. The source detector does not scan `node_modules`; catalog parity
+cannot prove that a newer library has no additional labels.
 
 Full task/agent/project detail pages, the rest of agent configuration, dashboards,
 and remaining settings still need translation. Shared task rows also appear in
