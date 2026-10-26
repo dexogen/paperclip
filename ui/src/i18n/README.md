@@ -71,8 +71,8 @@ The task-detail slice covers the page shell, properties, privacy and sharing,
 relations, subtask controls, monitor and retry presentation, and common inline
 and Markdown editors. Locale regressions check literal names, drafts, selection,
 dialog state and explicit mutations. They use mocked requests and do not certify
-server authorization or a live task-detail journey. The chat/composer, activity
-formatters and unconverted child panels still need translation.
+server authorization or a live task-detail journey. Chat/composer and activity
+coverage is described separately below.
 
 The task-panel slice covers document and attachment panels, artifact and output
 controls, workspace file browsing and previews, browser controls, and side-panel
@@ -84,10 +84,10 @@ literal. Locale regressions preserve dirty/conflicted document drafts, selected
 resources, pending uploads, clipboard state and browser viewer identity, and check
 that changing language does not repeat saves, uploads or browser control requests.
 
-This bounded slice changes 49 production files. Advanced annotation tools, the
-full chat/composer, browser activity, and most of `RichWorkProductCard` remain
-outside it; that shared card only receives translated state-chip labels. Component
-tests do not establish a complete browser journey or server permission coverage.
+Advanced annotation tools remain outside the panel slice. Chat/composer, browser
+activity and the expanded work-product card are covered by the later chat slice.
+Component tests do not establish a complete browser journey or server permission
+coverage.
 
 The search slice covers the full-search page, result and empty states, desktop
 and mobile filters, sorting, recovery suggestions, and the command palette. Search
@@ -112,8 +112,8 @@ The shared approval helper translates only its type and subject wrapper; the ful
 approval payload renderer is outside this slice. Existing toast storage keeps text
 snapshots, so a shown toast retains the language in which it was created. The
 combined-host fixture renders Inbox with the real host props; it does not verify
-the App redirect or the full Tasks wrapper. Complete Decisions and chat/composer
-flows still require separate translation and live verification.
+the App redirect or the full Tasks wrapper. Decisions and chat/composer coverage
+is described separately below; full-stack verification remains separate.
 
 The shared decision-form slice covers decision previews and results, interaction
 cards, paged questions, audience explanations, validation and image-input controls.
@@ -121,7 +121,7 @@ Stored errors keep the original cause and translate at render time. A locale
 change keeps drafts, selected IDs, focus, pending uploads and submitted payloads.
 Optional helper translators retain English defaults for unconverted consumers.
 Custom prompts, labels, provider errors and names stay literal. The secret proposal
-page only translates its justification caption. The complete chat/composer still needs separate work. Component evidence uses mocked APIs and
+page only translates its justification caption. Component evidence uses mocked APIs and
 editors; real server authorization and browser acceptance are separate checks.
 
 The Decisions slice covers both queue pages, rows, filters, date controls, triage,
@@ -143,6 +143,29 @@ No database field or API action changes. The date picker forwards trigger props
 and refs so the existing Custom control can open and retain its range across locales.
 The task-list date separator also passes the active translator.
 
+The chat and run slice covers both task-thread renderers, the composer and queue,
+run settings, handoff and pause controls, goals, compact interaction cards,
+protocol/resource cards, browser activity, run history, inspection and transcript
+controls, and recovery notices. Helpers keep fixed English defaults for callers
+that still use their output for classification. Rendering uses the active
+translator. Raw messages, titles, commands, paths, IDs and provider diagnostics
+keep their existing values, even when they equal an English application caption.
+
+Closed display descriptors identify application-generated captions without
+replacing the original model fields. Deduplication, grouping, keys, ordering and
+retry decisions use those original fields. A separate optional execution label
+descriptor identifies a confirmed wait for Muse or Dot; missing or malformed
+metadata keeps the original label. It adds no database field, request, authority
+or dispatch behavior. The detector cannot establish provenance across arbitrary
+server or provider producers; new producers require source review.
+
+Locale regressions cover dirty text and override reasons, focus and selection,
+pending uploads and requests, expanded details, selected operation IDs and exact
+action payloads. Run inspection keeps its existing explicit access and disclosure
+gates. Component checks use mocked APIs where declared; they do not certify
+authenticated trace access, real editor behavior, provider execution or a complete
+live chat journey. Toasts retain the language used when the event occurred.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review
@@ -150,8 +173,8 @@ the enabled plugins' message keys and defaults and exercise their controls in
 both languages. The source detector does not scan `node_modules`; catalog parity
 cannot prove that a newer library has no additional labels.
 
-Full task/agent/project detail pages, the rest of agent configuration, dashboards,
-and remaining settings still need translation. Shared task rows also appear in
+Unconverted task-detail child panels, agent/project detail pages, the rest of agent
+configuration, dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
 pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.

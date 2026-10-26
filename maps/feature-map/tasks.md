@@ -108,9 +108,19 @@ the task-detail suite, [sharing sheet](../../ui/src/components/IssueShareSheet.t
 [Markdown renderer](../../ui/src/components/MarkdownBody.rerender.test.tsx)
 check preserved drafts, literal names, selected items, markup, and explicit
 mutation counts. These checks use mocked requests. They do not prove live
-persistence, privacy isolation or complete translation of chat/composer and
-unconverted child panels. In a live check, switch languages with an unsaved draft
+persistence, privacy isolation or complete translation of unconverted child
+panels. In a live check, switch languages with an unsaved draft
 and sharing dialog open, then save one intended change and reload it separately.
+
+The standard and classic thread component suites also exercise English/Russian
+changes with dirty composer text, pending attachment uploads and selected
+controls. Protocol and resource tests retain raw provider content, stable message
+identity and exact decision payloads. Run ledger, inspector and transcript tests
+keep selected IDs, expanded details and explicit diagnostic-access controls.
+In a live discussion check, repeat the locale switch in both thread variants,
+submit one intended message with its attachment, then reload and inspect the
+saved body and receipt. Test provider execution and authenticated trace access
+separately; these component fixtures do not prove either boundary.
 
 Failure markers have no dashed divider rules. An adjacent run error and
 no-live-execution-path notice show only the last error, with its details and

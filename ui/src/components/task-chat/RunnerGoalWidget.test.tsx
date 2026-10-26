@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -56,6 +57,7 @@ async function render(agentId = "agent-goal") {
 }
 
 beforeEach(async () => {
+  await i18n.changeLanguage("en");
   vi.clearAllMocks();
   client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } } });
   client.setQueryData(queryKeys.issues.runnerGoal("issue-goal", "agent-goal"), projection);
@@ -70,9 +72,39 @@ afterEach(async () => {
   await act(async () => root.unmount());
   client.clear();
   container.remove();
+  await i18n.changeLanguage("en");
 });
 
 describe("session goal dialogs", () => {
+  it("retains the dirty goal dialog and focus across languages without changing the revision or sending another action", async () => {
+    await click("Edit goal");
+    const raw = "<b>Goal</b> & {{objective}}"; await objective(raw);
+    const textarea = document.querySelector("textarea")!; textarea.focus(); textarea.setSelectionRange(3, 9);
+    const before = client.getQueryData(queryKeys.issues.runnerGoal("issue-goal", "agent-goal"));
+    for (const language of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      expect(document.querySelector("textarea")).toBe(textarea); expect(textarea.value).toBe(raw);
+      expect(document.activeElement).toBe(textarea); expect(textarea.selectionStart).toBe(3); expect(textarea.selectionEnd).toBe(9);
+      expect(document.querySelector('[role="dialog"]')?.textContent).toContain(language === "ru" ? "Изменить цель сеанса" : "Edit session goal");
+      expect(issuesApi.actOnRunnerGoal).not.toHaveBeenCalled(); expect(issuesApi.getRunnerGoal).not.toHaveBeenCalled();
+      expect(client.getQueryData(queryKeys.issues.runnerGoal("issue-goal", "agent-goal"))).toBe(before);
+    }
+    await click("Сохранить цель");
+    expect(issuesApi.actOnRunnerGoal).toHaveBeenCalledTimes(1);
+    expect(issuesApi.actOnRunnerGoal).toHaveBeenCalledWith("issue-goal", { requestId: expect.any(String), agentId: "agent-goal", expectedRevision: 7, action: "edit", objective: raw });
+  });
+
+  it("keeps a raw forbidden provider error literal and never retries it on locale changes", async () => {
+    const cause = Object.assign(new Error("The goal action could not be applied."), { status: 403 });
+    vi.mocked(issuesApi.actOnRunnerGoal).mockRejectedValue(cause);
+    await click("Pause goal");
+    for (const language of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe(cause.message);
+      expect(issuesApi.actOnRunnerGoal).toHaveBeenCalledTimes(1); expect(issuesApi.getRunnerGoal).not.toHaveBeenCalled();
+    }
+  });
+
   it("hides the widget after an expanded goal is cleared", async () => {
     await click("Focus goal");
     vi.mocked(issuesApi.actOnRunnerGoal).mockResolvedValue({

@@ -70,16 +70,23 @@ export interface RunStatusPresentation {
 export function resolveRunStatusPresentation(
   status: string,
   opts: { operatorInterrupted?: boolean } = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): RunStatusPresentation {
   if (status === "cancelled" && opts.operatorInterrupted) {
     return {
-      label: "interrupted",
+      label: t("taskChatUi.handoff.interrupted"),
       className: "text-amber-700 dark:text-amber-300",
-      srHint: "interrupted by board comment",
+      srHint: t("taskChatUi.handoff.interruptedHint"),
     };
   }
+  const labels: Record<string, string> = {
+    succeeded: t("taskChatUi.handoff.succeeded"), failed: t("taskChatUi.handoff.failed"),
+    error: t("taskChatUi.handoff.error"), timed_out: t("taskChatUi.handoff.timedOut"),
+    running: t("taskChatUi.handoff.running"), queued: t("taskChatUi.handoff.queuedStatus"),
+    pending: t("taskChatUi.handoff.pending"), cancelled: t("taskChatUi.handoff.cancelled"),
+  };
   return {
-    label: status === "timed_out" ? "timed out" : status.replace(/_/g, " "),
+    label: labels[status] ?? status.replace(/_/g, " "),
     className: runStatusClassName(status),
     srHint: null,
   };
@@ -217,6 +224,7 @@ export interface ComposerHandoffPreviewInput {
  */
 export function computeComposerHandoffPreview(
   input: ComposerHandoffPreviewInput,
+  t: TFunction = i18n.getFixedT("en"),
 ): ComposerHandoffPreview {
   const hasReassignment = input.reassignTarget !== input.currentAssigneeValue;
 
@@ -227,13 +235,13 @@ export function computeComposerHandoffPreview(
         ? {
             kind: "interrupt_handoff_agent",
             tone: "neutral",
-            text: "Interrupt current run, hand off to",
+            text: t("taskChatUi.handoff.interruptAgent"),
             chip: { kind: "agent", id: target.id },
           }
         : {
             kind: "wake_agent",
             tone: "neutral",
-            text: "Wake",
+            text: t("taskChatUi.handoff.wakeAgent"),
             chip: { kind: "agent", id: target.id },
           };
     }
@@ -241,16 +249,16 @@ export function computeComposerHandoffPreview(
       return {
         kind: "user_handoff",
         tone: "neutral",
-        text: "Hand off to",
+        text: t("taskChatUi.handoff.handoff"),
         chip: { kind: "user", id: target.id },
-        suffix: "— no agent will be notified",
+        suffix: t("taskChatUi.handoff.noNotifySuffix"),
       };
     }
     // Cleared / no target chosen for the mutation.
     return {
       kind: "clear_assignee",
       tone: "neutral",
-      text: "Clear responsible — no agent will be notified",
+      text: t("taskChatUi.handoff.clearResponsible"),
     };
   }
 
@@ -258,9 +266,9 @@ export function computeComposerHandoffPreview(
     return {
       kind: "notify_agent",
       tone: "neutral",
-      text: "Notify",
+      text: t("taskChatUi.handoff.notify"),
       chip: input.mentionedAgentId ? { kind: "agent", id: input.mentionedAgentId } : undefined,
-      suffix: input.mentionedAgentId ? undefined : "the mentioned agent",
+      suffix: input.mentionedAgentId ? undefined : t("taskChatUi.handoff.mentioned"),
     };
   }
 
@@ -268,7 +276,7 @@ export function computeComposerHandoffPreview(
     return {
       kind: "plain_text_only",
       tone: "warn",
-      text: "No agent will be notified. Use @ to mention an agent.",
+      text: t("taskChatUi.handoff.plainText"),
     };
   }
 
@@ -298,21 +306,23 @@ export interface AssigneeHandoffInfo {
 export function classifyAssigneeHandoff(
   to: TimelineAssigneeLike,
   opts: { agentName?: string | null; interruptedRunAttached?: boolean } = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): AssigneeHandoffInfo {
   if (to.agentId) {
-    const who = opts.agentName ?? "the responsible agent";
-    const suffix = opts.interruptedRunAttached ? " (interrupted run attached)" : "";
-    return { kind: "agent_wake", wakeText: `queued for ${who}${suffix}` };
+    const wakeText = opts.agentName != null
+      ? opts.interruptedRunAttached ? t("taskChatUi.handoff.queuedNamedInterrupted", { name: opts.agentName }) : t("taskChatUi.handoff.queuedNamed", { name: opts.agentName })
+      : opts.interruptedRunAttached ? t("taskChatUi.handoff.queuedInterrupted") : t("taskChatUi.handoff.queued");
+    return { kind: "agent_wake", wakeText };
   }
   if (to.userId) {
     return {
       kind: "user_handoff",
-      wakeText: "not created — this is a handoff to a board user",
+      wakeText: t("taskChatUi.handoff.userNoWake"),
     };
   }
   return {
     kind: "unassigned",
-    wakeText: "not created — no agent selected. Mention @agent or pick a responsible to dispatch.",
+    wakeText: t("taskChatUi.handoff.noAgentWake"),
   };
 }
 
@@ -377,21 +387,15 @@ export interface PauseAffectsSummary {
   nothingLive: boolean;
 }
 
-const PAUSE_BUCKET_LABEL: Record<PauseAffectsBucketKey, string> = {
-  live_runs: "Live agent runs",
-  queued_wakes: "Queued wakes",
-  agent_owned: "Agent-owned",
-  human_owned: "Human-owned",
-  static: "Static",
-};
-
-const PAUSE_BUCKET_DETAIL: Record<PauseAffectsBucketKey, string> = {
-  live_runs: "interrupted now, re-queued when you resume",
-  queued_wakes: "held — they won't start until you resume",
-  agent_owned: "responsible agent; no run is live",
-  human_owned: "owned by a board user; pausing won't notify them",
-  static: "no responsible; nothing was going to run",
-};
+function pauseBucketLabels(t: TFunction): Record<PauseAffectsBucketKey, { label: string; detail: string }> {
+  return {
+    live_runs: { label: t("taskChatUi.handoff.liveRuns"), detail: t("taskChatUi.handoff.liveRunsDetail") },
+    queued_wakes: { label: t("taskChatUi.handoff.queuedWakes"), detail: t("taskChatUi.handoff.queuedWakesDetail") },
+    agent_owned: { label: t("taskChatUi.handoff.agentOwned"), detail: t("taskChatUi.handoff.agentOwnedDetail") },
+    human_owned: { label: t("taskChatUi.handoff.humanOwned"), detail: t("taskChatUi.handoff.humanOwnedDetail") },
+    static: { label: t("taskChatUi.handoff.static"), detail: t("taskChatUi.handoff.staticDetail") },
+  };
+}
 
 /**
  * Partition the issues an operation affects into the five disjoint buckets the
@@ -400,6 +404,7 @@ const PAUSE_BUCKET_DETAIL: Record<PauseAffectsBucketKey, string> = {
  */
 export function computePauseAffectsSummary(
   issues: readonly PauseAffectsIssueLike[],
+  t: TFunction = i18n.getFixedT("en"),
 ): PauseAffectsSummary {
   const counts: Record<PauseAffectsBucketKey, number> = {
     live_runs: 0,
@@ -428,12 +433,13 @@ export function computePauseAffectsSummary(
     "static",
   ];
 
+  const labels = pauseBucketLabels(t);
   return {
     buckets: order.map((key) => ({
       key,
-      label: PAUSE_BUCKET_LABEL[key],
+      label: labels[key].label,
       count: counts[key],
-      detail: PAUSE_BUCKET_DETAIL[key],
+      detail: labels[key].detail,
     })),
     affectedIssueCount,
     nothingLive: counts.live_runs === 0 && counts.queued_wakes === 0,

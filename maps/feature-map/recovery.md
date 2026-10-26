@@ -154,6 +154,14 @@ pnpm exec vitest run server/src/__tests__/issue-recovery-actions.test.ts ui/src/
 pnpm exec playwright test -c tests/e2e/execution-recovery/playwright.config.ts recovery.spec.ts
 ```
 
+English/Russian component regressions retain a dirty workspace-override reason,
+focused input, selected source/action IDs, blocker order and retry pending state.
+They assert that changing language does not invoke an action. Repeat these checks
+in a live workspace-recovery journey, submit one explicit reason, and inspect
+the saved audit entry. Translated labels do not change ancestry checks, ownership,
+retry eligibility or break-glass authority; component fixtures do not prove those
+server boundaries.
+
 Manual: open a stopped task through each affected navigation path. Confirm its
 explanation, original owner, recovery owner if different, and next action. Follow
 the supported recovery until the source task produces a useful result or a

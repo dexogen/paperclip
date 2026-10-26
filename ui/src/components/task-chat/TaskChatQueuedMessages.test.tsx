@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, type ComponentProps } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -54,15 +55,17 @@ describe("TaskChatQueuedMessages", () => {
   let container: HTMLDivElement;
   let root: Root;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     root = createRoot(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
   });
 
   function render(
@@ -79,6 +82,23 @@ describe("TaskChatQueuedMessages", () => {
     flushSync(() => root.render(<TaskChatQueuedMessages {...props} />));
     return props;
   }
+
+  it("localizes actual drag instructions without replacing handles or sending queue mutations", async () => {
+    const props = render();
+    const handle = container.querySelector<HTMLButtonElement>('button[aria-label^="Reorder"]')!;
+    const descriptionId = handle.getAttribute("aria-describedby")!;
+    const description = document.getElementById(descriptionId)!;
+    expect(description.textContent).toContain("press the space bar");
+    for (const locale of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(locale); });
+      expect(handle.isConnected).toBe(true);
+      expect(handle.getAttribute("aria-describedby")).toBe(descriptionId);
+      expect(document.getElementById(descriptionId)).toBe(description);
+      expect(description.textContent).toContain(locale === "ru" ? "нажмите пробел" : "press the space bar");
+      expect(props.onReorder).not.toHaveBeenCalled();
+      expect(props.onSteer).not.toHaveBeenCalled();
+    }
+  });
 
   it("keeps saved input visible without duplicating the task status", () => {
     const message = "Waiting for the previous environment to stop. Your message will start automatically.";
@@ -399,6 +419,34 @@ describe("TaskChatQueuedMessages", () => {
     expect(container.textContent).toContain("First queued message");
     expect(container.querySelector('[data-testid="task-chat-queued-interrupt-comment-1"]')).toBeNull();
     expect(container.querySelector('[data-testid="task-chat-queued-steer-comment-1"]')).toBeNull();
+  });
+
+
+  it("preserves queued identities through language changes and translates a stored action failure without retrying", async () => {
+    const acknowledgement = deferred<void>();
+    const literal = "<b>Сообщение & {{raw}}</b>";
+    const sourceQueue = { ...queue, entries: queue.entries.map((entry, index) => index === 0
+      ? { ...entry, comment: { ...entry.comment, body: literal } } : entry) };
+    const original = structuredClone(sourceQueue);
+    const props = render({ queue: sourceQueue, onSteer: vi.fn().mockReturnValue(acknowledgement.promise) });
+    const second = container.querySelector('[data-testid="task-chat-queued-message-comment-2"]');
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-queued-message-comment-2"]')).toBe(second);
+    expect(container.querySelector('[data-testid="task-chat-queued-steer-comment-1"]')?.textContent).toContain("Отправить в текущий ход");
+    expect(props.onSteer).not.toHaveBeenCalled();
+    await act(async () => { container.querySelector<HTMLButtonElement>('[data-testid="task-chat-queued-steer-comment-1"]')!.click(); });
+    expect(props.onSteer).toHaveBeenCalledExactlyOnceWith("comment-1", "rev-1");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector('[data-testid="task-chat-queued-message-comment-2"]')).toBe(second);
+    expect(container.querySelector('[data-testid="task-chat-queued-message-comment-1"]')).toBeNull();
+    await act(async () => { acknowledgement.reject(new Error("Provider detail remains outside this existing fallback surface")); });
+    expect(container.textContent).toContain("Couldn’t steer. Message is still queued.");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Не удалось отправить сообщение в текущий ход. Оно осталось в очереди.");
+    expect(container.textContent).toContain(literal); expect(container.querySelector("b")).toBeNull();
+    expect(props.onSteer).toHaveBeenCalledTimes(1); expect(props.onDiscard).not.toHaveBeenCalled();
+    expect(props.onReorder).not.toHaveBeenCalled(); expect(props.onEdit).not.toHaveBeenCalled();
+    expect(sourceQueue).toEqual(original);
   });
 
 });

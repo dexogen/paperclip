@@ -1,10 +1,13 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { useRef, useState } from "react";
 
 /** Keeps stop requests independent of draft submission and prevents double clicks. */
-export function useComposerStop(onStop?: () => Promise<void>, pending = false) {
+export function useComposerStop(onStop?: () => Promise<void>, pending = false, t: TFunction = i18n.getFixedT("en")) {
   const inFlight = useRef(false);
   const [stopping, setStopping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errorState, setError] = useState<{ message: string } | { fallback: true } | null>(null);
+  const error = errorState ? "message" in errorState ? errorState.message : t("taskChatUi.composer.stopFailed") : null;
 
   async function stop() {
     if (!onStop || inFlight.current || pending) return;
@@ -15,7 +18,7 @@ export function useComposerStop(onStop?: () => Promise<void>, pending = false) {
       await onStop();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Unable to stop. Try again.",
+        err instanceof Error ? { message: err.message } : { fallback: true },
       );
     } finally {
       inFlight.current = false;

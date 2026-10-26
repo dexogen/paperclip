@@ -14,7 +14,9 @@ parameters; user-entered names and machine identifiers are never translated.
 | Human/user | Пользователь | Use for people when permissions distinguish them from agents. |
 | Harness | Инструмент агента | For Claude/Codex and other execution tools; distinct from the agent's role. |
 | Execution environment | Среда выполнения | The machine, container, or other environment where an agent runs. |
+| Runner | Среда запуска | Generic runner controls; retain the product name `Paperclip Runner`. Distinct from a harness and an assigned agent. |
 | Run | Запуск | One execution attempt, distinct from the task. |
+| Session | Сеанс | A conversation or provider session; distinct from a run and a turn. |
 | Inbox | Входящие | The person's task inbox. |
 | Approval | Согласование | A governed decision; use «Подтвердить» for a simple confirmation action. |
 | Connection | Подключение | A configured connection to an external service. |

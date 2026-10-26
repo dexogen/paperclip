@@ -1,24 +1,27 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
+import { formatRunDisplayText } from "./task-chat-display";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { ChevronRight, Loader2, ShieldQuestion, OctagonX, Ban, Scissors } from "lucide-react";
 import type { TaskChatStatusItem } from "./task-chat-model";
 import { statusLabelIcon, toolTaxonomy } from "./tool-taxonomy";
-import { isGenericStatusLabel, whimsyWord } from "./status-whimsy";
+import { whimsyWord } from "./status-whimsy";
 import { parseCssTimeMs } from "./motion-tokens";
 
-function elapsedLabel(ms?: number): string | null {
+function elapsedLabel(ms: number | undefined, t: TFunction): string | null {
   if (ms == null) return null;
   const s = Math.round(ms / 1000);
-  if (s < 60) return `${s}s`;
-  return `${Math.floor(s / 60)}m ${s % 60}s`;
+  if (s < 60) return t("runUi.status.elapsedSeconds", { seconds: formatNumber(s) });
+  return t("runUi.status.elapsedMinutes", { minutes: formatNumber(Math.floor(s / 60)), seconds: formatNumber(s % 60) });
 }
 
 /** Tenths-precision elapsed ("24.3s", "1m 24.3s") so the readout visibly moves. */
-function liveElapsedLabel(ms?: number): string | null {
+function liveElapsedLabel(ms: number | undefined, t: TFunction): string | null {
   if (ms == null) return null;
   const s = Math.max(0, ms) / 1000;
-  if (s < 60) return `${s.toFixed(1)}s`;
-  return `${Math.floor(s / 60)}m ${(s % 60).toFixed(1)}s`;
+  if (s < 60) return t("runUi.status.elapsedSeconds", { seconds: formatNumber(s, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
+  return t("runUi.status.elapsedMinutes", { minutes: formatNumber(Math.floor(s / 60)), seconds: formatNumber(s % 60, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
 }
 
 /** Elapsed ms since `startedAtMs`, ticking ten times a second while `live`. */
@@ -289,15 +292,17 @@ export function TaskChatStatusPill({
   chevronOpen,
   onToggle,
 }: TaskChatStatusPillProps) {
+  const { t } = useTranslation();
+  const displayLabel = formatRunDisplayText("statusLabel", item.label, item.display?.label, t);
   const { Icon, spin, tone } = CONFIG[item.status];
   const awaiting = item.status === "awaiting_approval";
   const live = item.status === "running" || item.status === "working";
   const liveElapsedMs = useLiveElapsedMs(item.startedAtMs, live);
   const heldSelfTalk = useHeldSelfTalk(live ? item.selfTalk : undefined, live);
-  const elapsed = elapsedLabel(item.elapsedMs);
+  const elapsed = elapsedLabel(item.elapsedMs, t);
 
   if (live) {
-    const liveElapsed = liveElapsedLabel(liveElapsedMs ?? item.elapsedMs);
+    const liveElapsed = liveElapsedLabel(liveElapsedMs ?? item.elapsedMs, t);
     // While an interstitial streams, its text lives on its OWN row above; the
     // status line below keeps the uninterrupted gerund rotation ("Responding"
     // never takes the line, and no Responding icon appears here).
@@ -312,9 +317,10 @@ export function TaskChatStatusPill({
     // text renders on the row above — swap for a deterministic whimsical
     // gerund (seeded by the run-scoped item id, rotating ~10s via the live
     // tick).
-    const label = streamingInterstitial || isGenericStatusLabel(item.label)
-      ? whimsyWord(item.id, liveElapsedMs ?? item.elapsedMs ?? 0)
-      : item.label;
+    const ownStatus = item.display?.label?.code;
+    const label = ownStatus === "status.running" || ownStatus === "status.working" || (streamingInterstitial && ownStatus === "status.responding")
+      ? whimsyWord(item.id, liveElapsedMs ?? item.elapsedMs ?? 0, t)
+      : displayLabel;
     const statusLine = (
       <div className="tc-enter-status flex items-center gap-2 py-0.5 text-xs text-muted-foreground">
         {chevronOpen !== undefined ? (
@@ -356,7 +362,7 @@ export function TaskChatStatusPill({
           ) : null}
           {item.tokens ? (
             <span className="ml-auto shrink-0 font-mono text-(length:--text-micro)">
-              {item.tokens.used.toLocaleString()}/{item.tokens.size.toLocaleString()} ctx
+              {t("runUi.status.context", { used: formatNumber(item.tokens.used), size: formatNumber(item.tokens.size) })}
             </span>
           ) : null}
         </span>
@@ -417,12 +423,12 @@ export function TaskChatStatusPill({
     >
       <div className="flex min-w-0 items-center gap-2">
         <Icon className={cn("h-4 w-4 shrink-0", tone, spin && "animate-spin")} />
-        <span className="min-w-0 truncate font-medium">{item.label}</span>
+        <span className="min-w-0 truncate font-medium">{displayLabel}</span>
         <span className="ml-auto flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
           {elapsed ? <span>{elapsed}</span> : null}
           {item.tokens ? (
             <span>
-              {item.tokens.used.toLocaleString()}/{item.tokens.size.toLocaleString()} ctx
+              {t("runUi.status.context", { used: formatNumber(item.tokens.used), size: formatNumber(item.tokens.size) })}
             </span>
           ) : null}
         </span>

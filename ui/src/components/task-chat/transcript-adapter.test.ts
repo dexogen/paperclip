@@ -1,8 +1,10 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import type { TranscriptEntry } from "@/adapters";
 import type { HeartbeatRunEvent } from "@paperclipai/shared";
 import {
   assembleThreadItems,
+  phaseSummary,
   attachSettledTurns,
   buildActivityPhases,
   buildTurnTimelineRows,
@@ -2841,4 +2843,12 @@ describe("prependIssueBrief (PAP-375)", () => {
     const items = [entry("u1", 1_000).item];
     expect(prependIssueBrief(items, false)).toBe(items);
   });
+});
+
+it.each([[1, "Прочитал файл"], [2, "Прочитал 2 файла"], [5, "Прочитал 5 файлов"], [21, "Прочитал 21 файл"]] as const)("counts %s raw tool identities before Russian phase formatting", (count, expected) => {
+  const items: TaskChatItem[] = Array.from({ length: count }, (_, index) => ({ id: `read-${index}`, kind: "tool", name: "Read", status: "completed", target: `source/${index}.ts` }));
+  const snapshot = JSON.stringify(items);
+  expect(phaseSummary(items as Parameters<typeof phaseSummary>[0], i18n.getFixedT("ru"))).toBe(expected);
+  expect(phaseSummary(items as Parameters<typeof phaseSummary>[0])).toBe(count === 1 ? "Read a file" : `Read ${count} files`);
+  expect(JSON.stringify(items)).toBe(snapshot);
 });

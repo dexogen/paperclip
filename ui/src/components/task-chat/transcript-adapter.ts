@@ -1,3 +1,6 @@
+import type { TFunction } from "i18next";
+import { formatRunDisplayText } from "./task-chat-display";
+import type { ProviderDetailKey, RunDisplaySlots } from "./task-chat-display";
 /**
  * Live adapter: map a run's streaming TranscriptEntry[] (from
  * useLiveRunTranscripts — the same source the current thread consumes) into the
@@ -203,16 +206,16 @@ export function toolDisplayName(name: string | undefined | null): string {
 function thoughtDurationLabel(
   startTs: string | undefined,
   endTs: string,
-): string | undefined {
+): { label: string; seconds: number } | undefined {
   if (!startTs) return undefined;
   const start = Date.parse(startTs);
   const end = Date.parse(endTs);
   if (!Number.isFinite(start) || !Number.isFinite(end)) return undefined;
   const secs = Math.round((end - start) / 1000);
   if (secs < 1) return undefined;
-  return secs < 60
+  return { label: secs < 60
     ? `Thought for ${secs}s`
-    : `Thought for ${Math.floor(secs / 60)}m ${secs % 60}s`;
+    : `Thought for ${Math.floor(secs / 60)}m ${secs % 60}s`, seconds: secs };
 }
 
 /** Append token deltas onto the open logical line while preserving real newlines. */
@@ -273,7 +276,7 @@ function safeHttpHref(value: unknown): string | null {
 
 const PROVIDER_DETAIL_KEYS: Record<
   TaskChatProviderActivityItem["family"],
-  readonly string[]
+  readonly ProviderDetailKey[]
 > = {
   plan: ["revision", "syncStatus", "documentRevision", "complete"],
   tool_execution: [
@@ -375,11 +378,12 @@ function providerActivityItem(
       continue;
     details.push({
       label: titleCaseKey(key),
+      display: { label: { code: "providerDetail", field: key }, ...(typeof entry.payload[key] === "boolean" ? { value: { code: "boolean" as const, value: entry.payload[key] as boolean } } : {}) },
       value: clip(
         value,
-        entry.family === "provider_notice" && (key === "summary" || key === "message")
+        entry.family === "provider_notice" && key === "summary"
           ? 4000
-          : key === "message" || key === "summary" || key === "reason" ? 320 : 160,
+          : key === "summary" || key === "reason" ? 320 : 160,
       ),
       mono: /(?:id|model|target|reference|url|code|bytes)$/i.test(key),
     });
@@ -410,6 +414,7 @@ function providerActivityItem(
             return {
               id: stringValue(step.stepId) ?? `${runId}:plan-step:${stepIndex}`,
               label: stringValue(step.body) ?? "Plan step",
+              ...(!stringValue(step.body) ? { display: { label: { code: "planStep" as const } } } : {}),
               status,
             };
           })
@@ -443,6 +448,7 @@ function providerActivityItem(
             id:
               stringValue(child.childId) ?? `${runId}:delegation:${childIndex}`,
             title: stringValue(child.role) ?? "Subagent",
+            ...(!stringValue(child.role) || !stringValue(child.status) ? { display: { ...(!stringValue(child.role) ? { title: { code: "subagent" as const } } : {}), ...(!stringValue(child.status) ? { status: { code: "childUnknown" as const } } : {}) } } : {}),
             status: stringValue(child.status) ?? "unknown",
             metadata:
               [stringValue(child.model), stringValue(child.activitySummary)]
@@ -686,7 +692,10 @@ export function transcriptToTaskChatItems(
             it.transcriptIndex = i;
             const startTs = thinkingStartTs.get(thinkingIndex);
             const label = thoughtDurationLabel(startTs, entry.ts);
-            if (label) it.summaryLabel = label;
+            if (label) {
+              it.summaryLabel = label.label;
+              it.display = { summaryLabel: { code: "thoughtDuration", seconds: label.seconds } };
+            }
             if (entry.lifecycle === "completed") it.streaming = false;
           }
         } else {
@@ -786,6 +795,7 @@ export function transcriptToTaskChatItems(
             id: `${runId}:tool:${toolCallId}`,
             kind: "tool",
             name: toolDisplayName(entry.name),
+            ...(isGenericToolName(entry.name) ? { display: { name: { code: "tool.unnamed" as const } } } : {}),
             rawName: entry.name ?? undefined,
             target: summarizeToolInput(entry.input),
             status: "in_progress",
@@ -862,6 +872,7 @@ export function transcriptToTaskChatItems(
             id: `${runId}:diff:${i}`,
             kind: "tool",
             name: "Edit",
+            display: { name: { code: "tool.edit" } },
             status: "completed",
             diff: {
               added: line.kind === "add" ? 1 : 0,
@@ -1044,6 +1055,7 @@ export function transcriptToTaskChatItems(
           ...(entry.subtype === "paperclip_runner_session_usage"
             ? {
                 label: "Provider session total",
+                display: { label: { code: "providerSessionTotal" as const }, ...(!entry.text ? { detail: { code: "sessionCumulative" as const } } : {}) },
                 detail:
                   entry.text ||
                   "This cumulative usage can include earlier runs in the resumed provider session.",
@@ -1460,8 +1472,9 @@ export function embedPlanDocumentAtWriteBoundary(
   ];
 }
 
-function phaseSummary(
+export function phaseSummary(
   items: ReadonlyArray<TaskChatActivityPhaseItem["items"][number]>,
+  t?: TFunction,
 ): string {
   const counts = new Map<string, number>();
   const providerCounts = new Map<
@@ -1520,13 +1533,13 @@ function phaseSummary(
     if (count)
       phrases.push({ text: count === 1 ? singular : plural(count), count });
   };
-  add("read", "Read a file", (count) => `Read ${count} files`);
-  add("edit", "Edited a file", (count) => `Edited ${count} files`);
-  add("terminal", "Ran a command", (count) => `Ran ${count} commands`);
+  add("read", (t ? t("runUi.phase.readSingle") : "Read a file"), (count) => (t ? t("runUi.phase.readCount", { count: count }) : `Read ${count} files`));
+  add("edit", (t ? t("runUi.phase.editSingle") : "Edited a file"), (count) => (t ? t("runUi.phase.editCount", { count: count }) : `Edited ${count} files`));
+  add("terminal", (t ? t("runUi.phase.commandSingle") : "Ran a command"), (count) => (t ? t("runUi.phase.commandCount", { count: count }) : `Ran ${count} commands`));
   const searched = (counts.get("grep") ?? 0) + (counts.get("search") ?? 0);
   if (searched)
     phrases.push({
-      text: searched === 1 ? "Searched once" : `Searched ${searched} times`,
+      text: searched === 1 ? (t ? t("runUi.phase.searchSingle") : "Searched once") : (t ? t("runUi.phase.searchCount", { count: searched }) : `Searched ${searched} times`),
       count: searched,
     });
   const known = new Set(["read", "edit", "terminal", "grep", "search"]);
@@ -1537,7 +1550,7 @@ function phaseSummary(
     ) + generic;
   if (other)
     phrases.push({
-      text: other === 1 ? "Used a tool" : `Used ${other} tools`,
+      text: other === 1 ? (t ? t("runUi.phase.toolSingle") : "Used a tool") : (t ? t("runUi.phase.toolCount", { count: other }) : `Used ${other} tools`),
       count: other,
     });
   const providerCount = (family: TaskChatProviderActivityItem["family"]) =>
@@ -1551,58 +1564,58 @@ function phaseSummary(
     if (count)
       phrases.push({ text: count === 1 ? singular : plural(count), count });
   };
-  addProvider("plan", "Updated the plan", (count) => `Updated ${count} plans`);
+  addProvider("plan", (t ? t("runUi.phase.planSingle") : "Updated the plan"), (count) => (t ? t("runUi.phase.planCount", { count: count }) : `Updated ${count} plans`));
   addProvider(
     "research",
-    "Searched once",
-    (count) => `Searched ${count} times`,
+    (t ? t("runUi.phase.searchSingle") : "Searched once"),
+    (count) => (t ? t("runUi.phase.searchCount", { count: count }) : `Searched ${count} times`),
   );
   addProvider(
     "delegation",
-    "Used a subagent",
-    (count) => `Used ${count} subagents`,
+    (t ? t("runUi.phase.delegationSingle") : "Used a subagent"),
+    (count) => (t ? t("runUi.phase.delegationCount", { count: count }) : `Used ${count} subagents`),
   );
   addProvider(
     "model_identity",
-    "Updated the model",
-    (count) => `Updated the model ${count} times`,
+    (t ? t("runUi.phase.modelSingle") : "Updated the model"),
+    (count) => (t ? t("runUi.phase.modelCount", { count: count }) : `Updated the model ${count} times`),
   );
   addProvider(
     "context",
-    "Compacted context",
-    (count) => `Compacted context ${count} times`,
+    (t ? t("runUi.phase.contextSingle") : "Compacted context"),
+    (count) => (t ? t("runUi.phase.contextCount", { count: count }) : `Compacted context ${count} times`),
   );
   addProvider(
     "artifact",
-    "Handled an artifact",
-    (count) => `Handled ${count} artifacts`,
+    (t ? t("runUi.phase.artifactSingle") : "Handled an artifact"),
+    (count) => (t ? t("runUi.phase.artifactCount", { count: count }) : `Handled ${count} artifacts`),
   );
   addProvider(
     "review",
-    "Changed review mode",
-    (count) => `Changed review mode ${count} times`,
+    (t ? t("runUi.phase.reviewSingle") : "Changed review mode"),
+    (count) => (t ? t("runUi.phase.reviewCount", { count: count }) : `Changed review mode ${count} times`),
   );
-  addProvider("hook", "Ran a hook", (count) => `Ran ${count} hooks`);
+  addProvider("hook", (t ? t("runUi.phase.hookSingle") : "Ran a hook"), (count) => (t ? t("runUi.phase.hookCount", { count: count }) : `Ran ${count} hooks`));
   addProvider(
     "memory",
-    "Referenced memory",
-    (count) => `Referenced memory ${count} times`,
+    (t ? t("runUi.phase.memorySingle") : "Referenced memory"),
+    (count) => (t ? t("runUi.phase.memoryCount", { count: count }) : `Referenced memory ${count} times`),
   );
   addProvider(
     "safety",
-    "Ran a safety review",
-    (count) => `Ran ${count} safety reviews`,
+    (t ? t("runUi.phase.safetySingle") : "Ran a safety review"),
+    (count) => (t ? t("runUi.phase.safetyCount", { count: count }) : `Ran ${count} safety reviews`),
   );
   addProvider(
     "terminal",
-    "Sent terminal input",
-    (count) => `Sent terminal input ${count} times`,
+    (t ? t("runUi.phase.terminalSingle") : "Sent terminal input"),
+    (count) => (t ? t("runUi.phase.terminalCount", { count: count }) : `Sent terminal input ${count} times`),
   );
-  addProvider("wait", "Waited", (count) => `Waited ${count} times`);
+  addProvider("wait", (t ? t("runUi.phase.waitSingle") : "Waited"), (count) => (t ? t("runUi.phase.waitCount", { count: count }) : `Waited ${count} times`));
   addProvider(
     "provider_notice",
-    "Received a provider notice",
-    (count) => `Received ${count} provider notices`,
+    (t ? t("runUi.phase.noticeSingle") : "Received a provider notice"),
+    (count) => (t ? t("runUi.phase.noticeCount", { count: count }) : `Received ${count} provider notices`),
   );
   // A canonical tool-execution row can be the only tool representation for a
   // provider. Avoid double-counting when the adapter also produced native
@@ -1616,41 +1629,41 @@ function phaseSummary(
       let text: string;
       switch (key) {
         case "command":
-          text = count === 1 ? "Ran a command" : `Ran ${count} commands`;
+          text = count === 1 ? (t ? t("runUi.phase.commandSingle") : "Ran a command") : (t ? t("runUi.phase.commandCount", { count: count }) : `Ran ${count} commands`);
           break;
         case "read":
-          text = count === 1 ? "Read a file" : `Read ${count} files`;
+          text = count === 1 ? (t ? t("runUi.phase.readSingle") : "Read a file") : (t ? t("runUi.phase.readCount", { count: count }) : `Read ${count} files`);
           break;
         case "search":
-          text = count === 1 ? "Searched once" : `Searched ${count} times`;
+          text = count === 1 ? (t ? t("runUi.phase.searchSingle") : "Searched once") : (t ? t("runUi.phase.searchCount", { count: count }) : `Searched ${count} times`);
           break;
         case "file_change":
-          text = count === 1 ? "Edited a file" : `Edited ${count} files`;
+          text = count === 1 ? (t ? t("runUi.phase.editSingle") : "Edited a file") : (t ? t("runUi.phase.editCount", { count: count }) : `Edited ${count} files`);
           break;
         case "delegation":
-          text = count === 1 ? "Used a subagent" : `Used ${count} subagents`;
+          text = count === 1 ? (t ? t("runUi.phase.delegationSingle") : "Used a subagent") : (t ? t("runUi.phase.delegationCount", { count: count }) : `Used ${count} subagents`);
           break;
         case "wait":
-          text = count === 1 ? "Waited" : `Waited ${count} times`;
+          text = count === 1 ? (t ? t("runUi.phase.waitSingle") : "Waited") : (t ? t("runUi.phase.waitCount", { count: count }) : `Waited ${count} times`);
           break;
         case "tool_search":
           text =
             count === 1
-              ? "Searched available tools"
-              : `Searched available tools ${count} times`;
+              ? (t ? t("runUi.phase.toolSearchSingle") : "Searched available tools")
+              : (t ? t("runUi.phase.toolSearchCount", { count: count }) : `Searched available tools ${count} times`);
           break;
         case "paperclip_read":
           text =
             count === 1
-              ? "Read from Paperclip"
-              : `Read from Paperclip ${count} times`;
+              ? (t ? t("runUi.phase.paperclipReadSingle") : "Read from Paperclip")
+              : (t ? t("runUi.phase.paperclipReadCount", { count: count }) : `Read from Paperclip ${count} times`);
           break;
         case "task_operation":
           text =
-            count === 1 ? "Used Paperclip" : `Used Paperclip ${count} times`;
+            count === 1 ? (t ? t("runUi.phase.taskOperationSingle") : "Used Paperclip") : (t ? t("runUi.phase.taskOperationCount", { count: count }) : `Used Paperclip ${count} times`);
           break;
         default:
-          text = count === 1 ? "Used a tool" : `Used ${count} tools`;
+          text = count === 1 ? (t ? t("runUi.phase.toolSingle") : "Used a tool") : (t ? t("runUi.phase.toolCount", { count: count }) : `Used ${count} tools`);
       }
       phrases.push({
         text,
@@ -1662,8 +1675,8 @@ function phaseSummary(
     phrases.push({
       text:
         workspaceFiles === 1
-          ? "Changed a file"
-          : `Changed ${workspaceFiles} files`,
+          ? (t ? t("runUi.phase.changeSingle") : "Changed a file")
+          : (t ? t("runUi.phase.changeCount", { count: workspaceFiles }) : `Changed ${workspaceFiles} files`),
       count: workspaceFiles,
     });
   if (phrases.length > 0) {
@@ -1678,20 +1691,20 @@ function phaseSummary(
           : phrase.text.charAt(0).toLowerCase() + phrase.text.slice(1),
       )
       .join(", ");
-    return `${summary}${hidden > 0 ? `, +${hidden} more` : ""}`;
+    return `${summary}${hidden > 0 ? (t ? t("runUi.phase.more", { count: hidden }) : `, +${hidden} more`) : ""}`;
   }
   const protocolCount = items.filter((item) => item.kind === "protocol").length;
   if (protocolCount > 0)
     return protocolCount === 1
-      ? "Runner activity"
-      : `${protocolCount} runner updates`;
-  if (items.some((item) => item.kind === "thinking")) return "Reasoning";
+      ? (t ? t("runUi.phase.runner") : "Runner activity")
+      : (t ? t("runUi.phase.runnerUpdates", { count: protocolCount }) : `${protocolCount} runner updates`);
+  if (items.some((item) => item.kind === "thinking")) return t ? t("runUi.phase.reasoning") : "Reasoning";
   const interrupted = items.find(
     (item) => item.kind === "marker" && item.variant === "interrupted",
   );
   return interrupted?.kind === "marker"
-    ? interrupted.label
-    : "No tool activity";
+    ? t ? formatRunDisplayText("markerLabel", interrupted.label, interrupted.display?.label, t) : interrupted.label
+    : t ? t("runUi.phase.noTools") : "No tool activity";
 }
 
 /**
@@ -1795,7 +1808,10 @@ export function buildTurnTimelineRows(
       row.kind !== "activity_phase" || row.interstitial || row.items.length > 0,
   );
   for (const row of meaningful) {
-    if (row.kind === "activity_phase") row.summary = phaseSummary(row.items);
+    if (row.kind === "activity_phase") {
+      row.summary = phaseSummary(row.items);
+      row.display = { summary: { code: "activityPhase" } };
+    }
   }
   if (running && current && meaningful.includes(current)) current.active = true;
   return meaningful;
@@ -1811,18 +1827,19 @@ export function buildActivityPhases(
   );
 }
 
-function formatDurationLabel(ms: number): string | undefined {
+export function formatDurationLabel(ms: number, t?: TFunction): string | undefined {
   if (!Number.isFinite(ms) || ms <= 0) return undefined;
   const totalSec = Math.round(ms / 1000);
-  if (totalSec < 1) return "1s";
-  if (totalSec < 60) return `${totalSec}s`;
+  if (totalSec < 1) return t ? t("runUi.turn.seconds", { seconds: 1 }) : "1s";
+  if (totalSec < 60) return t ? t("runUi.turn.seconds", { seconds: totalSec }) : `${totalSec}s`;
   const min = Math.floor(totalSec / 60);
   const sec = totalSec % 60;
-  return sec === 0 ? `${min}m` : `${min}m ${sec}s`;
+  return t ? sec === 0 ? t("runUi.turn.minutes", { minutes: min }) : t("runUi.turn.minutesSeconds", { minutes: min, seconds: sec }) : sec === 0 ? `${min}m` : `${min}m ${sec}s`;
 }
 
-function formatTokensLabel(tokens: number): string | undefined {
+export function formatTokensLabel(tokens: number, t?: TFunction): string | undefined {
   if (!Number.isFinite(tokens) || tokens <= 0) return undefined;
+  if (t) return tokens >= 1000 ? t("runUi.turn.tokensCompact", { count: tokens / 1000 }) : t("runUi.turn.tokens", { count: tokens });
   const label = tokens >= 1000 ? `${(tokens / 1000).toFixed(1)}k` : `${tokens}`;
   return `${label} tokens`;
 }
@@ -1871,6 +1888,7 @@ export function buildTurnSummary(
   }
   const durationMs = opts.durationMs ?? transcriptSpanMs(entries);
   return {
+    display: { durationMs, tokens },
     durationLabel:
       durationMs != null ? formatDurationLabel(durationMs) : undefined,
     toolCount: toolIds.size,
@@ -1912,6 +1930,7 @@ export function buildMergedTurnSummary(
   const counts = buildTurnSummary(all, { durationMs: 0, failed });
   return {
     ...counts,
+    display: { ...counts.display, durationMs },
     durationLabel:
       durationMs != null ? formatDurationLabel(durationMs) : undefined,
   };
@@ -2104,6 +2123,7 @@ export function attachSettledTurns(
 export function deriveRunStatusLabel(entries: readonly TranscriptEntry[]): {
   label: string;
   detail?: string;
+  display?: { label?: RunDisplaySlots["statusLabel"] };
   toolName?: string;
   selfTalk?: string;
 } {
@@ -2137,6 +2157,7 @@ export function deriveRunStatusLabel(entries: readonly TranscriptEntry[]): {
       const display = toolDisplayName(name);
       return {
         label: toolTaxonomy(name).verbLabel,
+        display: { label: { code: "status.tool", toolName: name ?? undefined } },
         detail: target ? `${display} · ${target}` : display,
         toolName: name ?? undefined,
       };
@@ -2163,11 +2184,11 @@ export function deriveRunStatusLabel(entries: readonly TranscriptEntry[]): {
         }
       }
       const selfTalk = flattenSelfTalk(parts.join(""));
-      return { label: "Responding", selfTalk: selfTalk || undefined };
+      return { label: "Responding", display: { label: { code: "status.responding" } }, selfTalk: selfTalk || undefined };
     }
-    if (entry.kind === "thinking") return { label: "Thinking" };
+    if (entry.kind === "thinking") return { label: "Thinking", display: { label: { code: "status.thinking" } } };
     if (entry.kind === "system" && entry.text === "Reasoning started")
-      return { label: "Thinking" };
+      return { label: "Thinking", display: { label: { code: "status.thinking" } } };
   }
-  return { label: "Running" };
+  return { label: "Running", display: { label: { code: "status.running" } } };
 }

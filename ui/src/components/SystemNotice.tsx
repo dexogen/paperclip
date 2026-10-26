@@ -1,3 +1,4 @@
+import { i18n, useTranslation } from "@/i18n";
 import { useId, useState, type ReactNode } from "react";
 import {
   ChevronDown,
@@ -100,7 +101,7 @@ const TONE_TOKENS: Record<SystemNoticeTone, ToneTokens> = {
 
 function formatTimestamp(ts: string) {
   try {
-    return new Date(ts).toLocaleString(undefined, {
+    return new Date(ts).toLocaleString(i18n.resolvedLanguage === "ru" ? "ru-RU" : "en-US", {
       month: "short",
       day: "numeric",
       hour: "numeric",
@@ -248,6 +249,7 @@ export function SystemNotice({
   timestamp,
   className,
 }: SystemNoticeProps) {
+  const { t } = useTranslation();
   const tokens = TONE_TOKENS[tone];
   const ToneIcon = tokens.icon;
   const [open, setOpen] = useState(detailsDefaultOpen);
@@ -256,11 +258,11 @@ export function SystemNotice({
   const resolvedLabel =
     label ??
     {
-      neutral: "System notice",
-      info: "System notice",
-      success: "System notice",
-      warning: "System warning",
-      danger: "System alert",
+      neutral: t("runUi.system.notice"),
+      info: t("runUi.system.notice"),
+      success: t("runUi.system.notice"),
+      warning: t("runUi.system.warning"),
+      danger: t("runUi.system.alert"),
     }[tone];
 
   return (
@@ -326,7 +328,7 @@ export function SystemNotice({
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
             )}
           >
-            <span>{open ? "Hide details" : "Details"}</span>
+            <span>{open ? t("runUi.system.hide") : t("runUi.system.details")}</span>
             <ChevronDown
               className={cn(
                 "h-3.5 w-3.5 transition-transform duration-150",

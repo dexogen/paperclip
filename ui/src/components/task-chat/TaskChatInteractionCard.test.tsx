@@ -18,6 +18,8 @@ import {
   pendingRequestItemVerdictsInteraction,
 } from "@/fixtures/issueThreadInteractionFixtures";
 import { TaskChatInteractionCard } from "./TaskChatInteractionCard";
+import { TaskChatCompactInteractionCard } from "./TaskChatCompactInteractionCard";
+import { i18n } from "@/i18n";
 import { TaskChatThreadView } from "./TaskChatThreadView";
 import type { TaskChatInteractionItem } from "./task-chat-model";
 
@@ -109,9 +111,71 @@ describe("TaskChatInteractionCard", () => {
     root = createRoot(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
+  });
+
+  it("preserves a compact rejection draft and focus across languages without submitting", async () => {
+    const interaction = createRequestConfirmation({
+      title: null,
+      payload: { version: 1, prompt: "Literal <span>{{name}}</span>", allowDeclineReason: true },
+    });
+    const snapshot = JSON.stringify(interaction);
+    const accept = vi.fn();
+    const reject = vi.fn().mockResolvedValue(undefined);
+    flushSync(() => root.render(
+      <TaskChatCompactInteractionCard interaction={interaction} onAcceptInteraction={accept} onRejectInteraction={reject} />,
+    ));
+    const button = (label: string) => Array.from(container.querySelectorAll("button")).find((entry) => entry.textContent?.trim() === label)!;
+    await act(async () => button("Reject").click());
+    const input = container.querySelector("textarea")!;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!;
+    await act(async () => {
+      setter.call(input, "  Изменить <draft> {{literal}}  ");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    input.focus();
+    input.setSelectionRange(3, 12, "backward");
+    for (const [locale, title, placeholder, back] of [
+      ["ru", "Подтверждение", "Добавьте короткую заметку", "Назад"],
+      ["en", "Confirmation", "Add a short note", "Back"],
+    ]) {
+      await act(async () => { await i18n.changeLanguage(locale); });
+      expect(container.querySelector("strong")?.textContent).toBe(title);
+      expect(container.querySelector("textarea")).toBe(input);
+      expect(input.placeholder).toBe(placeholder);
+      expect(input.value).toBe("  Изменить <draft> {{literal}}  ");
+      expect(document.activeElement).toBe(input);
+      expect([input.selectionStart, input.selectionEnd, input.selectionDirection]).toEqual([3, 12, "backward"]);
+      expect(button(back)).toBeDefined();
+      expect(container.textContent).toContain("Literal <span>{{name}}</span>");
+      expect(accept).not.toHaveBeenCalled();
+      expect(reject).not.toHaveBeenCalled();
+      expect(JSON.stringify(interaction)).toBe(snapshot);
+    }
+    await act(async () => button("Reject").click());
+    expect(reject).toHaveBeenCalledExactlyOnceWith(interaction, "Изменить <draft> {{literal}}");
+    expect(accept).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [{}, "Couldn't submit. Try again.", "Не удалось отправить. Повторите попытку."],
+    [new Error("Provider <literal>{{code}}"), "Provider <literal>{{code}}. Try again.", "Provider <literal>{{code}}. Повторите попытку."],
+  ])("translates compact failure presentation without retrying or replacing the provider reason", async (cause, english, russian) => {
+    const accept = vi.fn().mockRejectedValue(cause);
+    const interaction = createRequestConfirmation();
+    flushSync(() => root.render(<TaskChatCompactInteractionCard interaction={interaction} onAcceptInteraction={accept} />));
+    const approve = Array.from(container.querySelectorAll("button")).find((button) => button.textContent?.trim() === "Approve")!;
+    await act(async () => approve.click());
+    const error = container.querySelector('[data-testid="interaction-action-error"]')!;
+    expect(error.textContent).toBe(english);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(error.textContent).toBe(russian);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(error.textContent).toBe(english);
+    expect(accept).toHaveBeenCalledExactlyOnceWith(interaction);
   });
 
   it("does not render a pending confirmation in the timeline", () => {
@@ -1020,9 +1084,10 @@ describe("TaskChatThreadView interaction items", () => {
     root = createRoot(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
   });
 
   it("renders interaction items through renderInteraction", () => {

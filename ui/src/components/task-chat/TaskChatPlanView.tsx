@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Check, Circle, Loader2 } from "lucide-react";
 import type { TaskChatPlan, TaskChatPlanEntryStatus } from "./task-chat-model";
@@ -20,14 +21,15 @@ const PRIORITY_TONE = {
  * checklist with per-entry status and a revision label; entries stagger in.
  */
 export function TaskChatPlanView({ plan }: { plan: TaskChatPlan }) {
+  const { t } = useTranslation();
   const done = plan.entries.filter((e) => e.status === "completed").length;
   return (
     <div className="flex flex-col gap-2 py-2">
       <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
-        <span className="font-medium text-foreground">Plan</span>
-        <span>· rev {plan.revision}</span>
+        <span className="font-medium text-foreground">{t("taskPanels.document.plan")}</span>
+        <span>· {t("taskPanels.documentHeader.revision", { revision: plan.revision })}</span>
         <span className="ml-auto">
-          {done}/{plan.entries.length} done
+          {t("taskChatUi.plan.progress", { done, total: plan.entries.length })}
         </span>
       </div>
       <ul className="flex flex-col gap-1">
@@ -44,7 +46,7 @@ export function TaskChatPlanView({ plan }: { plan: TaskChatPlan }) {
                 {entry.content}
               </span>
               <span className={cn("shrink-0 text-(length:--text-nano) uppercase tracking-wide", PRIORITY_TONE[entry.priority])}>
-                {entry.priority}
+                {entry.priority === "high" ? t("statuses.high") : entry.priority === "medium" ? t("statuses.medium") : t("statuses.low")}
               </span>
             </li>
           );

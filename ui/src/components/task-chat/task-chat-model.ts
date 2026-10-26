@@ -25,6 +25,7 @@ import type {
   PaperclipQuestionResponse,
   PaperclipQuestionSet,
 } from "@paperclipai/adapter-utils";
+import type { RunDisplaySlots, RunMarkerDisplay } from "./task-chat-display";
 
 export type { PaperclipQuestionResponse, PaperclipQuestionSet };
 
@@ -108,6 +109,7 @@ export interface TaskChatMessageItem {
   kind: "message";
   author: TaskChatAuthorKind;
   authorName?: string;
+  display?: { authorName?: RunDisplaySlots["authorName"] };
   /** Human identity comes from the company directory, matched by stored user ID. */
   authorUserId?: string | null;
   authorAvatarUrl?: string | null;
@@ -178,6 +180,7 @@ export interface TaskChatThinkingItem {
   collapsed?: boolean;
   /** Human-readable elapsed label for the collapsed header. */
   summaryLabel?: string;
+  display?: { summaryLabel?: RunDisplaySlots["thinkingSummary"] };
   /** Provider-emitted reasoning surface; never synthesized by the UI. */
   channel?: "summary" | "detail" | "unknown";
   /** A real provider reasoning lifecycle with no provider-authored text. */
@@ -193,6 +196,7 @@ export interface TaskChatToolItem {
   name: string;
   /** Raw ACP tool name pre-collapse ("mcp__server__tool") for taxonomy lookup. */
   rawName?: string;
+  display?: { name?: RunDisplaySlots["toolName"] };
   /** ACP ToolKind. */
   toolKind?: string;
   status: TaskChatToolStatus;
@@ -223,6 +227,7 @@ export interface TaskChatStatusItem {
     | "refused"
     | "truncated";
   label: string;
+  display?: { label?: RunDisplaySlots["statusLabel"] };
   detail?: string;
   /** Raw tool name of the in-flight tail tool_call (drives the pill's icon). */
   toolName?: string;
@@ -252,6 +257,8 @@ export interface TaskChatMarkerItem {
   variant: "session_start" | "interrupted" | "turn_boundary";
   label: string;
   detail?: string;
+  display?: RunMarkerDisplay;
+  retryKind?: "run_failure" | "usage_limit" | null;
   /** False when the recorded run cannot be retried, even after the chat continues. */
   retryable?: boolean;
   /** Renders the marker as a quiet disclosure row with detail beneath it. */
@@ -265,8 +272,10 @@ export interface TaskChatMarkerItem {
   /** An actionable credential denial is always expanded in the task conversation. */
   credentialAccess?: {
     agentName: string;
+    agentKind?: "named" | "fallback";
     credentialName?: string;
     deniedUser: string;
+    deniedUserKind?: "viewer" | "named" | "unknown";
     settingsHref: string;
   };
 }
@@ -279,6 +288,7 @@ export interface TaskChatUsageItem {
   /** Present when the measurement is not scoped to the current run. */
   label?: string;
   detail?: string;
+  display?: { label?: RunDisplaySlots["usageLabel"]; detail?: RunDisplaySlots["usageDetail"] };
 }
 
 export interface TaskChatActivityPhaseItem {
@@ -296,6 +306,7 @@ export interface TaskChatActivityPhaseItem {
   >;
   /** Deterministic, taxonomy-based summary (for example "Read 3 files, ran 1 command"). */
   summary: string;
+  display?: { summary: { code: "activityPhase" } };
   /** The tail phase of an in-flight run stays foregrounded. */
   active: boolean;
 }
@@ -335,12 +346,14 @@ export interface TaskChatPlanDocumentItem {
 
 export interface TaskChatProtocolDetail {
   label: string;
+  display?: { label?: RunDisplaySlots["protocolDetailLabel"]; value?: RunDisplaySlots["protocolDetailValue"] };
   value: string;
   mono?: boolean;
 }
 
 export interface TaskChatProtocolStep {
   id: string;
+  display?: { label?: RunDisplaySlots["protocolStepLabel"] };
   label: string;
   status: "pending" | "in_progress" | "completed" | "blocked" | "failed";
 }
@@ -353,6 +366,7 @@ export interface TaskChatProtocolLink {
 
 export interface TaskChatProtocolChild {
   id: string;
+  display?: { title?: RunDisplaySlots["protocolChildTitle"]; status?: RunDisplaySlots["protocolChildStatus"] };
   title: string;
   status: string;
   metadata?: string;
@@ -477,6 +491,11 @@ export interface TaskChatMaterializedResourceItem {
   resourceKind: "document" | "deliverable" | "attachment";
   title: string;
   subtitle: string;
+  display?: {
+    title?: { code: "resource.agentAttachment" };
+    subtitle?: { code: "resource.documentRevision"; revision: number }
+      | { code: "resource.attachmentMetadata"; contentType: string; byteSize: number };
+  };
   href: string | null;
   timestamp?: string;
   document?: IssueDocumentSummary;
@@ -540,6 +559,7 @@ export interface TaskChatTurnItem {
   /** Durable response shown after the ordered Paperclip Runner timeline. */
   finalResponse?: TaskChatMessageItem;
   summary: {
+    display?: { durationMs?: number; tokens?: number };
     /** e.g. "38s" — omitted when unknown. */
     durationLabel?: string;
     toolCount: number;
@@ -578,6 +598,7 @@ export interface TaskChatBrowserItem {
   kind: "browser";
   browser: TaskBrowser;
   label: string;
+  display?: { label: { code: "browser.label"; number?: number } };
   timestamp: string;
 }
 

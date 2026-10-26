@@ -1,3 +1,6 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
+import { formatRunDisplayText } from "./task-chat-display";
 import { useId, useState } from "react";
 import { completedActivitySummary } from "./completed-activity-summary";
 import {
@@ -9,7 +12,7 @@ import {
 } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { MarkdownBody } from "@/components/MarkdownBody";
-import { cn } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { useTaskChatExpansion } from "./expansion-state";
 import type { TaskChatActivityPhaseItem } from "./task-chat-model";
 import {
@@ -27,12 +30,12 @@ import { useTaskChatShimmer } from "./TaskChatShimmer";
 
 type Activity = TaskChatActivityPhaseItem["items"][number];
 
-function presentation(item: Activity, active: boolean) {
+function presentation(item: Activity, active: boolean, t?: TFunction) {
   if (item.kind === "tool") {
     const tool = toolActivityPresentation({
       name: item.rawName ?? item.name,
       target: item.target,
-    });
+    }, t);
     const running =
       active && (item.status === "pending" || item.status === "in_progress");
     return {
@@ -54,7 +57,7 @@ function presentation(item: Activity, active: boolean) {
     const running = active && Boolean(item.streaming);
     return {
       icon: Brain,
-      label: running ? "Thinking" : "Thought",
+      label: t ? running ? t("runUi.activityGroup.thinking") : t("runUi.thinking.settled") : running ? "Thinking" : "Thought",
       target: item.lines
         .filter((line) => line.trim())
         .at(-1)
@@ -64,11 +67,11 @@ function presentation(item: Activity, active: boolean) {
     };
   }
   if (item.kind === "protocol") {
-    const protocol = protocolActivityPresentation(item);
+    const protocol = protocolActivityPresentation(item, t);
     if (!protocol) return null;
     return {
       icon: protocol.icon,
-      label: protocolActivityLabel(item, protocol),
+      label: protocolActivityLabel(item, protocol, t),
       target: protocol.detail,
       mono: true,
       running: active && protocolActivityIsRunning(item),
@@ -77,15 +80,15 @@ function presentation(item: Activity, active: boolean) {
   if (item.kind === "marker")
     return {
       icon: CirclePause,
-      label: item.label,
-      target: item.detail,
+      label: t ? formatRunDisplayText("markerLabel", item.label, item.display?.label, t) : item.label,
+      target: t ? formatRunDisplayText("markerDetail", item.detail, item.display?.detail, t) : item.detail,
       mono: false,
       running: false,
     };
   const { used, size, inputTokens, outputTokens, costUsd } = item.usage;
   const usage = [
     size > 0
-      ? `${used.toLocaleString()}/${size.toLocaleString()} ctx`
+      ? t ? t("runUi.activityGroup.context", { used: formatNumber(used), size: formatNumber(size) }) : `${used.toLocaleString()}/${size.toLocaleString()} ctx`
       : undefined,
     inputTokens != null || outputTokens != null
       ? `↑${(inputTokens ?? 0).toLocaleString()} ↓${(outputTokens ?? 0).toLocaleString()}`
@@ -96,8 +99,8 @@ function presentation(item: Activity, active: boolean) {
     .join(" · ");
   return {
     icon: Gauge,
-    label: item.label ?? "Token usage",
-    target: usage || item.detail,
+    label: t ? formatRunDisplayText("usageLabel", item.label, item.display?.label, t) ?? t("runUi.activityGroup.tokenUsage") : item.label ?? "Token usage",
+    target: usage || (t ? formatRunDisplayText("usageDetail", item.detail, item.display?.detail, t) : item.detail),
     mono: false,
     running: false,
   };
@@ -110,7 +113,8 @@ function ActivityContent({
   item: Activity;
   active: boolean;
 }) {
-  const row = presentation(item, active);
+  const { t } = useTranslation();
+  const row = presentation(item, active, t);
   const shimmer = useTaskChatShimmer(item.id);
   if (!row) return null;
   const Icon = row.icon;
@@ -211,6 +215,7 @@ function RollingActivity({
 }
 
 function ActivityDetails({ item }: { item: Activity }) {
+  const { t } = useTranslation();
   if (item.kind === "thinking")
     return <div data-conversation-text="progress"><MarkdownBody softBreaks>{item.lines.join("\n")}</MarkdownBody></div>;
   if (item.kind === "usage") return <TaskChatUsageReadout item={item} />;
@@ -219,7 +224,7 @@ function ActivityDetails({ item }: { item: Activity }) {
   if (item.kind === "marker")
     return (
       <p className="whitespace-pre-wrap break-words">
-        {item.detail ?? item.label}
+        {item.detail != null ? formatRunDisplayText("markerDetail", item.detail, item.display?.detail, t) : formatRunDisplayText("markerLabel", item.label, item.display?.label, t)}
       </p>
     );
   return (
@@ -232,7 +237,7 @@ function ActivityDetails({ item }: { item: Activity }) {
           {item.detail}
         </pre>
       ) : null}
-      {item.decision ? <p>Permission {item.decision}</p> : null}
+      {item.decision ? <p>{item.decision === "allowed" ? t("runUi.activityGroup.allowed") : t("runUi.activityGroup.rejected")}</p> : null}
       {item.diff ? (
         <p className="break-all font-mono">
           {item.diff.path} · +{item.diff.added} −{item.diff.removed}
@@ -315,6 +320,7 @@ export function TaskChatRunnerActivityGroup({
   item: TaskChatActivityPhaseItem;
   defaultExpanded?: boolean;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useTaskChatExpansion(
     item.id,
     defaultExpanded,
@@ -324,9 +330,9 @@ export function TaskChatRunnerActivityGroup({
     (activity) => presentation(activity, false) !== null,
   );
   const latest = activities.at(-1);
-  const summary = completedActivitySummary(activities);
+  const summary = completedActivitySummary(activities, t);
   const SummaryIcon = summary.icon;
-  const countLabel = `${activities.length} ${activities.length === 1 ? "activity" : "activities"}`;
+  const countLabel = t("runUi.activityGroup.count", { count: activities.length });
   return (
     <section
       className="flex min-w-0 flex-col gap-2"
@@ -354,7 +360,7 @@ export function TaskChatRunnerActivityGroup({
             onClick={() => setExpanded(!expanded)}
             aria-expanded={expanded}
             aria-controls={expanded ? historyId : undefined}
-            aria-label={`${expanded ? "Collapse" : "Expand"} ${item.active ? countLabel : `${summary.fullLabel.toLowerCase()} (${countLabel})`}`}
+            aria-label={expanded ? t("runUi.activityGroup.collapse", { summary: item.active ? countLabel : `${summary.fullLabel.toLowerCase()} (${countLabel})` }) : t("runUi.activityGroup.expand", { summary: item.active ? countLabel : `${summary.fullLabel.toLowerCase()} (${countLabel})` })}
           >
             {!item.active ? (
               <span
@@ -390,7 +396,7 @@ export function TaskChatRunnerActivityGroup({
             <ol
               id={historyId}
               className="flex min-w-0 flex-col gap-1"
-              aria-label="Activity history"
+              aria-label={t("runUi.activityGroup.history")}
               data-testid="task-chat-runner-activity-list"
             >
               {activities.map((activity, index) => (

@@ -1,13 +1,15 @@
 import { Link } from "@/lib/router";
 import { cn } from "@/lib/utils";
 import { describeRunRetryState } from "@/lib/runRetryState";
+import { useTranslation } from "@/i18n";
 
 /** Shared with the run page so Storybook exercises the production retry copy. */
 export function RunRetryDetails({ run, agentRouteId }: {
   run: Parameters<typeof describeRunRetryState>[0];
   agentRouteId: string;
 }) {
-  const retry = describeRunRetryState(run);
+  const { t } = useTranslation();
+  const retry = describeRunRetryState(run, t);
   if (!retry) return null;
   return <div className="rounded-md border border-border/70 bg-accent/20 px-3 py-2 text-xs leading-5">
     <div className="flex flex-wrap items-center gap-2">

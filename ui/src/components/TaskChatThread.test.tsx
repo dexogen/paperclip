@@ -5,6 +5,7 @@ import { act, forwardRef, useImperativeHandle, type ForwardedRef } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { setLocale } from "@/i18n";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TaskChatThread } from "./TaskChatThread";
@@ -117,7 +118,8 @@ let container: HTMLDivElement;
 let root: Root | null = null;
 let queryClient: QueryClient;
 
-beforeEach(() => {
+beforeEach(async () => {
+  await setLocale("en");
   localStorage.clear();
   transcriptState.transcriptByRun.clear();
   transcriptState.isInitialHydrating = false;
@@ -142,7 +144,8 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => {
+afterEach(async () => {
+  await setLocale("en");
   flushSync(() => root?.unmount());
   queryClient.clear();
   root = null;
@@ -1707,6 +1710,32 @@ describe("TaskChatThread runtime transcript selection", () => {
     revealUsage();
     expect(container.textContent).toContain("↑20");
     expect(container.textContent).not.toContain("↑10");
+  });
+
+  it("keeps generated failure marker, raw provider text and retry identity across EN RU EN", async () => {
+    const retry = vi.fn(async () => {});
+    const raw = "Run failed <strong>literal</strong> & Ошибка";
+    nativeTranscriptState.transcriptByRun.set("locale-failed", [assistantEntry("2026-08-25T18:00:01.000Z", raw, "progress")]);
+    renderThread({ comments: [], onAdd: async () => {}, issueStatus: "blocked", onRetryFailedRun: retry, linkedRuns: [{
+      runId: "locale-failed", runtimeMode: "native", status: "failed", errorCode: "provider_transport_failed", agentId: "agent-1", agentName: "Run failed", adapterType: "paperclip_runner",
+      createdAt: "2026-08-25T18:00:00.000Z", startedAt: "2026-08-25T18:00:00.000Z", finishedAt: "2026-08-25T18:00:02.000Z",
+    }] });
+    const marker = container.querySelector('[data-testid="task-chat-collapsible-marker"]')!;
+    const button = container.querySelector<HTMLButtonElement>('[data-testid="task-chat-run-failed-try-again"]')!;
+    const nativeSource = transcriptHookRuns.native.at(-1);
+    const queryKeys = queryClient.getQueryCache().getAll().map(query => JSON.stringify(query.queryKey));
+    for (const locale of ["ru", "en", "ru"] as const) {
+      await act(async () => { await setLocale(locale); });
+      expect(container.querySelector('[data-testid="task-chat-collapsible-marker"]')).toBe(marker);
+      expect(container.querySelector('[data-testid="task-chat-run-failed-try-again"]')).toBe(button);
+      expect(marker.textContent).toContain(locale === "ru" ? "Запуск завершился с ошибкой" : "Run failed");
+      expect(container.textContent).toContain(raw);
+      expect(transcriptHookRuns.native.at(-1)).toBe(nativeSource);
+      expect(queryClient.getQueryCache().getAll().map(query => JSON.stringify(query.queryKey))).toEqual(queryKeys);
+      expect(retry).not.toHaveBeenCalled();
+    }
+    await act(async () => button.click());
+    expect(retry).toHaveBeenCalledExactlyOnceWith("locale-failed");
   });
 
   it("keeps a failed native run actionable after progress was rendered", async () => {

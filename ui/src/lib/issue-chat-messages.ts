@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { ExecutionProjection } from "@paperclipai/shared";
 import type {
   ReasoningMessagePart,
@@ -582,6 +584,10 @@ function createCommentMessage(args: {
     commentId: comment.id,
     anchorId: `comment-${comment.id}`,
     authorName,
+    ...(!authorAgentId && !isSystemAuthor && !userLabelMap?.get(comment.authorUserId ?? "")?.trim() ? {
+      display: { authorName: !comment.authorUserId || comment.authorUserId === currentUserId ? { code: "you" }
+        : comment.authorUserId === "local-board" ? { code: "board" } : null },
+    } : {}),
     authorType: effectiveCommentAuthorType(comment),
     authorAgentId,
     authorUserId: comment.authorUserId,
@@ -691,6 +697,10 @@ function createTimelineEventMessage(args: {
         anchorId: `activity-${event.id}`,
         eventId: event.id,
         actorName,
+        ...(event.actorType === "system" ? { display: { actorName: { code: "system" } } }
+          : event.actorType !== "agent" && ((currentUserId && event.actorId === currentUserId) || !userLabelMap?.get(event.actorId)?.trim()) ? {
+            display: { actorName: currentUserId && event.actorId === currentUserId ? { code: "you" } : event.actorId === "local-board" || !event.actorId ? { code: "board" } : null },
+          } : {}),
         actorType: event.actorType,
         actorId: event.actorId,
         statusChange: event.statusChange ?? null,
@@ -777,22 +787,98 @@ function computeSegmentTimings(entries: readonly IssueChatTranscriptEntry[]): Se
   return timings;
 }
 
-export function formatDurationWords(ms: number | null) {
+export function formatDurationWords(ms: number | null, t: TFunction = i18n.getFixedT("en"), grammaticalCase: "standalone" | "elapsed" = "standalone") {
   if (ms === null || !Number.isFinite(ms) || ms <= 0) return null;
   const totalSeconds = Math.max(1, Math.round(ms / 1000));
   if (totalSeconds < 60) {
-    return `${totalSeconds} second${totalSeconds === 1 ? "" : "s"}`;
+    return grammaticalCase === "elapsed" ? t("taskChatUi.durationElapsed.seconds", { count: totalSeconds }) : t("taskChatUi.duration.seconds", { count: totalSeconds });
   }
   const totalMinutes = Math.round(totalSeconds / 60);
   if (totalMinutes < 60) {
-    return `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"}`;
+    return grammaticalCase === "elapsed" ? t("taskChatUi.durationElapsed.minutes", { count: totalMinutes }) : t("taskChatUi.duration.minutes", { count: totalMinutes });
   }
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   if (minutes === 0) {
-    return `${hours} hour${hours === 1 ? "" : "s"}`;
+    return t("taskChatUi.duration.hours", { count: hours });
   }
-  return `${hours} hour${hours === 1 ? "" : "s"} ${minutes} minute${minutes === 1 ? "" : "s"}`;
+  return t("taskChatUi.duration.hoursMinutes", { hours: t("taskChatUi.duration.hours", { count: hours }), minutes: grammaticalCase === "elapsed" ? t("taskChatUi.durationElapsed.minutes", { count: minutes }) : t("taskChatUi.duration.minutes", { count: minutes }) });
+}
+
+type ClassicRunDisplay = { code: "worked" | "failed" | "timedOut" | "interrupted" | "paused" | "cancelled" | "queued" | "working"; durationMs: number | null };
+
+function runDisplay(run: Parameters<typeof runDurationLabel>[0]): ClassicRunDisplay | null {
+  const start = run.startedAt ?? run.createdAt;
+  const durationMs = run.finishedAt ? Math.max(0, toTimestamp(run.finishedAt) - toTimestamp(start)) : null;
+  const code = run.status === "succeeded" ? "worked"
+    : run.status === "failed" || run.status === "error" ? "failed"
+    : run.status === "timed_out" ? "timedOut"
+    : run.status === "cancelled" ? isOperatorInterruptedRun(run.resultJson, run.errorCode) ? "interrupted"
+      : run.resultJson?.stopReason === "paused" ? "paused" : "cancelled"
+    : run.status === "queued" ? "queued"
+    : run.status === "running" ? "working" : null;
+  return code ? { code, durationMs } : null;
+}
+
+function record(value: unknown): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+export function formatIssueChatDisplayText(slot: "waitingText" | "chainOfThoughtLabel" | "authorName" | "actorName", fallback: string, custom: Record<string, unknown>, t: TFunction = i18n.getFixedT("en")): string {
+  const display = record(record(custom.display)?.[slot]);
+  if (!display) return fallback;
+  if (slot === "authorName" || slot === "actorName") {
+    switch (display.code) {
+      case "you": return t("taskChatUi.classic.you");
+      case "board": return t("taskDisplay.assignees.board");
+      case "system": return t("taskChatUi.classic.system");
+      default: return fallback;
+    }
+  }
+  if (slot === "waitingText") {
+    switch (display.code) {
+      case "finished": return t("taskChatUi.classicDisplay.runFinished");
+      case "queued": return t("taskChatUi.classicDisplay.queuedWaiting");
+      case "working": return t("taskChatUi.classicDisplay.workingWaiting");
+      default: return fallback;
+    }
+  }
+  if (display.durationMs !== null && (typeof display.durationMs !== "number" || !Number.isFinite(display.durationMs) || display.durationMs < 0)) return fallback;
+  const duration = formatDurationWords(display.durationMs as number | null, t, "elapsed");
+  switch (display.code) {
+    case "worked": return duration ? t("taskChatUi.classicDisplay.workedAfter", { duration }) : t("taskChatUi.classicDisplay.worked");
+    case "failed": return duration ? t("taskChatUi.classicDisplay.failedAfter", { duration }) : t("taskChatUi.classicDisplay.failed");
+    case "timedOut": return duration ? t("taskChatUi.classicDisplay.timedOutAfter", { duration }) : t("taskChatUi.classicDisplay.timedOut");
+    case "interrupted": return duration ? t("taskChatUi.classicDisplay.interruptedAfter", { duration }) : t("taskChatUi.classicDisplay.interrupted");
+    case "paused": return duration ? t("taskChatUi.classicDisplay.pausedAfter", { duration }) : t("taskChatUi.classicDisplay.paused");
+    case "cancelled": return duration ? t("taskChatUi.classicDisplay.cancelledAfter", { duration }) : t("taskChatUi.classicDisplay.cancelled");
+    case "queued": return t("taskChatUi.classic.queued");
+    case "working": return t("taskChatUi.classicDisplay.workingWaiting");
+    default: return fallback;
+  }
+}
+
+type ClassicTextSegment = { raw: string; error?: string };
+type ClassicTextPart = (TextMessagePart | ReasoningMessagePart) & { displaySegments?: ClassicTextSegment[] };
+
+function textSegments(part: TextMessagePart | ReasoningMessagePart): ClassicTextSegment[] {
+  const segments = (part as ClassicTextPart).displaySegments;
+  if (!Array.isArray(segments) || !segments.every(segment => record(segment) && typeof segment.raw === "string" && (segment.error === undefined || (typeof segment.error === "string" && segment.raw === `Run error: ${segment.error}`))) || segments.map(segment => segment.raw).join("") !== part.text) return [{ raw: part.text }];
+  return segments;
+}
+
+export function formatIssueChatPartText(part: TextMessagePart | ReasoningMessagePart, t: TFunction = i18n.getFixedT("en")): string {
+  return textSegments(part).map(segment => segment.error === undefined ? segment.raw : t("taskChatUi.classicDisplay.runError", { error: segment.error })).join("");
+}
+
+export function issueChatProviderTitle(part: ToolCallMessagePart, t: TFunction = i18n.getFixedT("en")): string | undefined {
+  const display = record(record(part)?.display);
+  return record(display?.title)?.code === "providerActivity" ? t("taskChatUi.classic.providerActivity") : undefined;
+}
+
+function runErrorPart(error: string): ClassicTextPart {
+  const raw = `Run error: ${error}`;
+  return { type: "reasoning", text: raw, displaySegments: [{ raw, error }] };
 }
 
 function runDurationLabel(run: {
@@ -891,6 +977,11 @@ function createHistoricalTranscriptMessage(args: {
       notices,
       waitingText,
       chainOfThoughtLabel: runDurationLabel(run),
+      display: {
+        chainOfThoughtLabel: runDisplay(run),
+        waitingText: waitingText ? { code: "finished" } : null,
+        waitingContent: parts.length === 0 && Boolean(waitingText),
+      },
       chainOfThoughtSegments: segments,
     }),
   };
@@ -949,6 +1040,7 @@ export function buildAssistantPartsFromTranscript(entries: readonly IssueChatTra
         toolName: "paperclip_provider_activity",
         args,
         argsText: "",
+        ...(entry.title == null ? { display: { title: { code: "providerActivity" } } } : {}),
         ...(entry.status === "running" ? {} : { result: { status: entry.status ?? "informational" } }),
       });
       continue;
@@ -1013,14 +1105,12 @@ export function buildAssistantPartsFromTranscript(entries: readonly IssueChatTra
     if (entry.kind === "result") {
       if (entry.isError && entry.errors?.length) {
         for (const error of entry.errors) {
-          orderedParts.push({ type: "reasoning", text: `Run error: ${summarizeNotice(error)}` });
+          orderedParts.push(runErrorPart(summarizeNotice(error)));
         }
       } else if (entry.text) {
-        orderedParts.push({
+        orderedParts.push(entry.isError ? runErrorPart(summarizeNotice(entry.text)) : {
           type: "reasoning",
-          text: entry.isError
-            ? `Run error: ${summarizeNotice(entry.text)}`
-            : summarizeNotice(entry.text),
+          text: summarizeNotice(entry.text),
         });
       }
       continue;
@@ -1037,10 +1127,15 @@ export function buildAssistantPartsFromTranscript(entries: readonly IssueChatTra
     }
     const previous = mergedParts.at(-1);
     if (previous && previous.type === part.type && previous.parentId === part.parentId) {
-      mergedParts[mergedParts.length - 1] = {
+      const text = mergePartText(previous, part);
+      const hasDisplay = (previous as ClassicTextPart).displaySegments || (part as ClassicTextPart).displaySegments;
+      const separator = text.slice(previous.text.length, text.length - part.text.length);
+      const merged: ClassicTextPart = {
         ...previous,
-        text: mergePartText(previous, part),
+        text,
+        ...(hasDisplay ? { displaySegments: [...textSegments(previous), { raw: separator }, ...textSegments(part)] } : {}),
       };
+      mergedParts[mergedParts.length - 1] = merged;
       continue;
     }
     mergedParts.push(part);
@@ -1134,6 +1229,10 @@ function createLiveRunMessage(args: {
       notices,
       waitingText,
       chainOfThoughtLabel: runDurationLabel(run),
+      display: {
+        chainOfThoughtLabel: runDisplay(run),
+        waitingText: waitingText ? { code: run.status === "queued" ? "queued" : "working" } : null,
+      },
       chainOfThoughtSegments: segments,
       currentStatusMessage: run.currentStatusMessage ?? null,
       currentStatusUpdatedAt: run.currentStatusUpdatedAt ?? null,

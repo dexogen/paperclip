@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 /**
  * Provider-neutral tool vocabulary shared by live status, transcript rows,
  * and canonical provider activity. Exact semantic tools get purpose-specific
@@ -355,12 +356,139 @@ function paperclipSummaryGroup(action: Action): ToolSummaryGroup {
   return group("task_operation", "task operation", "task operations");
 }
 
+function localizeToolCopy(
+  key: string, action: Action, object: string | undefined, semanticName: string,
+  copy: { running: string; completed: string }, t: TFunction,
+): { running: string; completed: string } {
+  switch (key) {
+    case "apply_patch": return { running: t("runUi.tool.exact.apply_patch.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.apply_patch.completed", { defaultValue: copy.completed }) };
+    case "read": return { running: t("runUi.tool.exact.read.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.read.completed", { defaultValue: copy.completed }) };
+    case "write": return { running: t("runUi.tool.exact.write.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.write.completed", { defaultValue: copy.completed }) };
+    case "edit": return { running: t("runUi.tool.exact.edit.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.edit.completed", { defaultValue: copy.completed }) };
+    case "notebook_read": return { running: t("runUi.tool.exact.notebook_read.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.notebook_read.completed", { defaultValue: copy.completed }) };
+    case "notebook_edit": return { running: t("runUi.tool.exact.notebook_edit.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.notebook_edit.completed", { defaultValue: copy.completed }) };
+    case "glob": return { running: t("runUi.tool.exact.glob.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.glob.completed", { defaultValue: copy.completed }) };
+    case "grep": return { running: t("runUi.tool.exact.grep.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.grep.completed", { defaultValue: copy.completed }) };
+    case "tool_search": return { running: t("runUi.tool.exact.tool_search.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.tool_search.completed", { defaultValue: copy.completed }) };
+    case "web_search": return { running: t("runUi.tool.exact.web_search.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.web_search.completed", { defaultValue: copy.completed }) };
+    case "web_fetch": return { running: t("runUi.tool.exact.web_fetch.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.web_fetch.completed", { defaultValue: copy.completed }) };
+    case "todo_write": return { running: t("runUi.tool.exact.todo_write.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.todo_write.completed", { defaultValue: copy.completed }) };
+    case "task_create": return { running: t("runUi.tool.exact.task_create.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_create.completed", { defaultValue: copy.completed }) };
+    case "task_update": return { running: t("runUi.tool.exact.task_update.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_update.completed", { defaultValue: copy.completed }) };
+    case "task_list": return { running: t("runUi.tool.exact.task_list.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_list.completed", { defaultValue: copy.completed }) };
+    case "task_get": return { running: t("runUi.tool.exact.task_get.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_get.completed", { defaultValue: copy.completed }) };
+    case "enter_plan_mode": return { running: t("runUi.tool.exact.enter_plan_mode.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.enter_plan_mode.completed", { defaultValue: copy.completed }) };
+    case "exit_plan_mode": return { running: t("runUi.tool.exact.exit_plan_mode.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.exit_plan_mode.completed", { defaultValue: copy.completed }) };
+    case "skill": return { running: t("runUi.tool.exact.skill.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.skill.completed", { defaultValue: copy.completed }) };
+    case "ask_user_question": return { running: t("runUi.tool.exact.ask_user_question.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.ask_user_question.completed", { defaultValue: copy.completed }) };
+    case "request_human_input": return { running: t("runUi.tool.exact.request_human_input.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.request_human_input.completed", { defaultValue: copy.completed }) };
+    case "agent": return { running: t("runUi.tool.exact.agent.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.agent.completed", { defaultValue: copy.completed }) };
+    case "task": return { running: t("runUi.tool.exact.task.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task.completed", { defaultValue: copy.completed }) };
+    case "task_output": return { running: t("runUi.tool.exact.task_output.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_output.completed", { defaultValue: copy.completed }) };
+    case "task_stop": return { running: t("runUi.tool.exact.task_stop.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.task_stop.completed", { defaultValue: copy.completed }) };
+    case "send_message": return { running: t("runUi.tool.exact.send_message.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.send_message.completed", { defaultValue: copy.completed }) };
+    case "spawn_agent": return { running: t("runUi.tool.exact.spawn_agent.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.spawn_agent.completed", { defaultValue: copy.completed }) };
+    case "wait_agent": return { running: t("runUi.tool.exact.wait_agent.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.wait_agent.completed", { defaultValue: copy.completed }) };
+    case "wait_threads": return { running: t("runUi.tool.exact.wait_threads.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.wait_threads.completed", { defaultValue: copy.completed }) };
+    case "interrupt_agent": return { running: t("runUi.tool.exact.interrupt_agent.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.interrupt_agent.completed", { defaultValue: copy.completed }) };
+    case "report_findings": return { running: t("runUi.tool.exact.report_findings.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.report_findings.completed", { defaultValue: copy.completed }) };
+    case "guardian_review": return { running: t("runUi.tool.exact.guardian_review.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.guardian_review.completed", { defaultValue: copy.completed }) };
+    case "lsp": return { running: t("runUi.tool.exact.lsp.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.lsp.completed", { defaultValue: copy.completed }) };
+    case "compact_conversation": return { running: t("runUi.tool.exact.compact_conversation.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.compact_conversation.completed", { defaultValue: copy.completed }) };
+    case "image_generation": return { running: t("runUi.tool.exact.image_generation.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.image_generation.completed", { defaultValue: copy.completed }) };
+    case "view_image": return { running: t("runUi.tool.exact.view_image.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.view_image.completed", { defaultValue: copy.completed }) };
+    case "multi_tool_use_parallel": return { running: t("runUi.tool.exact.multi_tool_use_parallel.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.multi_tool_use_parallel.completed", { defaultValue: copy.completed }) };
+    case "get_task_context": return { running: t("runUi.tool.exact.get_task_context.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_task_context.completed", { defaultValue: copy.completed }) };
+    case "get_task_history": return { running: t("runUi.tool.exact.get_task_history.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_task_history.completed", { defaultValue: copy.completed }) };
+    case "list_documents": return { running: t("runUi.tool.exact.list_documents.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.list_documents.completed", { defaultValue: copy.completed }) };
+    case "read_document": return { running: t("runUi.tool.exact.read_document.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.read_document.completed", { defaultValue: copy.completed }) };
+    case "list_document_revisions": return { running: t("runUi.tool.exact.list_document_revisions.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.list_document_revisions.completed", { defaultValue: copy.completed }) };
+    case "report_progress": return { running: t("runUi.tool.exact.report_progress.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.report_progress.completed", { defaultValue: copy.completed }) };
+    case "answer_status_question": return { running: t("runUi.tool.exact.answer_status_question.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.answer_status_question.completed", { defaultValue: copy.completed }) };
+    case "write_document": return { running: t("runUi.tool.exact.write_document.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.write_document.completed", { defaultValue: copy.completed }) };
+    case "register_deliverable": return { running: t("runUi.tool.exact.register_deliverable.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.register_deliverable.completed", { defaultValue: copy.completed }) };
+    case "finish_task": return { running: t("runUi.tool.exact.finish_task.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.finish_task.completed", { defaultValue: copy.completed }) };
+    case "paperclip_finish": return { running: t("runUi.tool.exact.paperclip_finish.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.paperclip_finish.completed", { defaultValue: copy.completed }) };
+    case "block_task": return { running: t("runUi.tool.exact.block_task.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.block_task.completed", { defaultValue: copy.completed }) };
+    case "paperclip_block": return { running: t("runUi.tool.exact.paperclip_block.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.paperclip_block.completed", { defaultValue: copy.completed }) };
+    case "request_review": return { running: t("runUi.tool.exact.request_review.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.request_review.completed", { defaultValue: copy.completed }) };
+    case "list_agents": return { running: t("runUi.tool.exact.list_agents.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.list_agents.completed", { defaultValue: copy.completed }) };
+    case "get_agent": return { running: t("runUi.tool.exact.get_agent.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_agent.completed", { defaultValue: copy.completed }) };
+    case "search_tasks": return { running: t("runUi.tool.exact.search_tasks.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.search_tasks.completed", { defaultValue: copy.completed }) };
+    case "list_approvals": return { running: t("runUi.tool.exact.list_approvals.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.list_approvals.completed", { defaultValue: copy.completed }) };
+    case "get_approval": return { running: t("runUi.tool.exact.get_approval.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_approval.completed", { defaultValue: copy.completed }) };
+    case "get_approval_context": return { running: t("runUi.tool.exact.get_approval_context.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_approval_context.completed", { defaultValue: copy.completed }) };
+    case "get_workspace_runtime": return { running: t("runUi.tool.exact.get_workspace_runtime.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.get_workspace_runtime.completed", { defaultValue: copy.completed }) };
+    case "control_workspace_service": return { running: t("runUi.tool.exact.control_workspace_service.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.control_workspace_service.completed", { defaultValue: copy.completed }) };
+    case "set_dependencies": return { running: t("runUi.tool.exact.set_dependencies.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.set_dependencies.completed", { defaultValue: copy.completed }) };
+    case "set_task_title": return { running: t("runUi.tool.exact.set_task_title.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.set_task_title.completed", { defaultValue: copy.completed }) };
+    case "create_task": return { running: t("runUi.tool.exact.create_task.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.create_task.completed", { defaultValue: copy.completed }) };
+    case "request_approval": return { running: t("runUi.tool.exact.request_approval.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.request_approval.completed", { defaultValue: copy.completed }) };
+    case "decide_approval": return { running: t("runUi.tool.exact.decide_approval.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.decide_approval.completed", { defaultValue: copy.completed }) };
+    case "comment_on_approval": return { running: t("runUi.tool.exact.comment_on_approval.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.comment_on_approval.completed", { defaultValue: copy.completed }) };
+    case "schedule_wake": return { running: t("runUi.tool.exact.schedule_wake.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.schedule_wake.completed", { defaultValue: copy.completed }) };
+    case "generic_api_request": return { running: t("runUi.tool.exact.generic_api_request.running", { defaultValue: copy.running }), completed: t("runUi.tool.exact.generic_api_request.completed", { defaultValue: copy.completed }) };
+  }
+  switch (action) {
+    case "read": return object
+      ? { running: t("runUi.tool.action.read.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.read.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.read.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.read.completed", { defaultValue: copy.completed }) };
+    case "list": return object
+      ? { running: t("runUi.tool.action.list.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.list.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.list.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.list.completed", { defaultValue: copy.completed }) };
+    case "search": return object
+      ? { running: t("runUi.tool.action.search.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.search.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.search.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.search.completed", { defaultValue: copy.completed }) };
+    case "fetch": return object
+      ? { running: t("runUi.tool.action.fetch.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.fetch.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.fetch.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.fetch.completed", { defaultValue: copy.completed }) };
+    case "open": return object
+      ? { running: t("runUi.tool.action.open.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.open.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.open.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.open.completed", { defaultValue: copy.completed }) };
+    case "update": return object
+      ? { running: t("runUi.tool.action.update.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.update.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.update.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.update.completed", { defaultValue: copy.completed }) };
+    case "create": return object
+      ? { running: t("runUi.tool.action.create.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.create.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.create.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.create.completed", { defaultValue: copy.completed }) };
+    case "delete": return object
+      ? { running: t("runUi.tool.action.delete.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.delete.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.delete.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.delete.completed", { defaultValue: copy.completed }) };
+    case "move": return object
+      ? { running: t("runUi.tool.action.move.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.move.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.move.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.move.completed", { defaultValue: copy.completed }) };
+    case "request": return object
+      ? { running: t("runUi.tool.action.request.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.request.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.request.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.request.completed", { defaultValue: copy.completed }) };
+    case "post": return object
+      ? { running: t("runUi.tool.action.post.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.post.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.post.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.post.completed", { defaultValue: copy.completed }) };
+    case "start": return object
+      ? { running: t("runUi.tool.action.start.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.start.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.start.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.start.completed", { defaultValue: copy.completed }) };
+    case "stop": return object
+      ? { running: t("runUi.tool.action.stop.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.stop.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.stop.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.stop.completed", { defaultValue: copy.completed }) };
+    case "switch": return object
+      ? { running: t("runUi.tool.action.switch.runningObject", { object, defaultValue: copy.running }), completed: t("runUi.tool.action.switch.completedObject", { object, defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.action.switch.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.switch.completed", { defaultValue: copy.completed }) };
+    case "run": return { running: t("runUi.tool.action.run.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.run.completed", { defaultValue: copy.completed }) };
+    case "wait": return { running: t("runUi.tool.action.wait.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.wait.completed", { defaultValue: copy.completed }) };
+    case "finish": return { running: t("runUi.tool.action.finish.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.finish.completed", { defaultValue: copy.completed }) };
+    case "block": return { running: t("runUi.tool.action.block.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.block.completed", { defaultValue: copy.completed }) };
+    case "think": return { running: t("runUi.tool.action.think.running", { defaultValue: copy.running }), completed: t("runUi.tool.action.think.completed", { defaultValue: copy.completed }) };
+    case "other": return isGenericToolName(semanticName)
+      ? { running: t("runUi.tool.unnamed.running", { defaultValue: copy.running }), completed: t("runUi.tool.unnamed.completed", { defaultValue: copy.completed }) }
+      : { running: t("runUi.tool.named.running", { name: humanizeToolName(semanticName), defaultValue: copy.running }), completed: t("runUi.tool.named.completed", { name: humanizeToolName(semanticName), defaultValue: copy.completed }) };
+  }
+}
+
 /**
  * Resolve one tool into status-specific copy and iconography. Precedence is:
  * exact aliases, canonical ACP operation/kind, normalized verb, then a named
  * fallback. MCP remains visible as the source icon without losing semantics.
  */
-export function toolActivityPresentation(input: ToolActivityPresentationInput): ToolActivityPresentation {
+export function toolActivityPresentation(input: ToolActivityPresentationInput, t?: TFunction): ToolActivityPresentation {
   const rawName = (input.name ?? "").trim();
   const parsedMcp = mcpToolIdentity(rawName);
   const namespace = (input.namespace ?? parsedMcp?.namespace ?? "").trim();
@@ -405,14 +533,15 @@ export function toolActivityPresentation(input: ToolActivityPresentationInput): 
     ? paperclipSummaryGroup(action)
     : exact?.group ?? defaultSummaryGroup(action);
 
+  const displayCopy = t ? localizeToolCopy(key, action, exact ? undefined : object, semanticName, copy, t) : copy;
   return {
     icon: FAMILY_ICONS[family],
     family,
-    runningLabel: copy.running,
-    completedLabel: copy.completed,
-    failedLabel: `${copy.completed} · failed`,
-    interruptedLabel: `${copy.running} · stopped`,
-    displayName,
+    runningLabel: displayCopy.running,
+    completedLabel: displayCopy.completed,
+    failedLabel: t ? t("runUi.tool.failed", { activity: displayCopy.completed }) : `${copy.completed} · failed`,
+    interruptedLabel: t ? t("runUi.tool.interrupted", { activity: displayCopy.running }) : `${copy.running} · stopped`,
+    displayName: t && isGenericToolName(semanticName) ? t("runUi.tool.unnamedName") : displayName,
     sourceLabel,
     technicalName: rawName || undefined,
     confidence,

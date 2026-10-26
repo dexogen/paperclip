@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { codexLocalReasoningEffortsForModel, isCodexLocalFastModeSupported, isCodexLocalKnownModel } from "@paperclipai/adapter-codex-local";
 import { claudeLocalReasoningEffortsForModel } from "@paperclipai/adapter-claude-local";
 import { resolvePaperclipRunnerModel } from "@paperclipai/adapter-utils";
@@ -16,6 +18,38 @@ export const EFFORT_LABELS: Record<string, string> = {
   off: "Off", minimal: "Minimal", low: "Low", medium: "Medium", high: "High",
   xhigh: "Extra High", max: "Max", ultra: "Ultra",
 };
+
+export function composerEffortLabel(value: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (value) {
+    case "off": return t("taskChatUi.settings.effortOff");
+    case "minimal": return t("taskChatUi.settings.effortMinimal");
+    case "low": return t("taskChatUi.settings.effortLow");
+    case "medium": return t("taskChatUi.settings.effortMedium");
+    case "high": return t("taskChatUi.settings.effortHigh");
+    case "xhigh": return t("taskChatUi.settings.effortXhigh");
+    case "max": return t("taskChatUi.settings.effortMax");
+    case "ultra": return t("taskChatUi.settings.effortUltra");
+    default: return value;
+  }
+}
+
+export function composerRoleLabel(role: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (role) {
+    case "ceo": return t("searchUi.palette.roles.ceo");
+    case "cto": return t("searchUi.palette.roles.cto");
+    case "cmo": return t("searchUi.palette.roles.cmo");
+    case "cfo": return t("searchUi.palette.roles.cfo");
+    case "security": return t("searchUi.palette.roles.security");
+    case "engineer": return t("searchUi.palette.roles.engineer");
+    case "designer": return t("searchUi.palette.roles.designer");
+    case "pm": return t("searchUi.palette.roles.pm");
+    case "qa": return t("searchUi.palette.roles.qa");
+    case "devops": return t("searchUi.palette.roles.devops");
+    case "researcher": return t("searchUi.palette.roles.researcher");
+    case "general": return t("searchUi.palette.roles.general");
+    default: return role;
+  }
+}
 
 const MODEL_ADAPTERS = new Set([
   "claude_local", "codex_local", "opencode_local", "pi_local", "kimi_local",

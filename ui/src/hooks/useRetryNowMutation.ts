@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { useCallback } from "react";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import type { IssueRetryNowOutcome, IssueRetryNowResponse } from "@paperclipai/shared";
@@ -12,13 +14,18 @@ export type RetryNowError = {
   status: number | null;
 };
 
-function readErrorMessage(error: unknown): string {
+class MissingRetryIssueError extends Error {
+  constructor() { super("Missing issue id"); }
+}
+
+function readErrorMessage(error: unknown, t: TFunction): string {
+  if (error instanceof MissingRetryIssueError) return t("runUi.scheduledRetry.missingIssue");
   if (error instanceof ApiError) {
     if (typeof error.message === "string" && error.message.trim().length > 0) return error.message;
-    return `Request failed (${error.status})`;
+    return t("runUi.scheduledRetry.httpError", { status: error.status });
   }
   if (error instanceof Error && error.message) return error.message;
-  return "The request failed. Try again in a moment.";
+  return t("runUi.scheduledRetry.requestFailed");
 }
 
 export const RETRY_NOW_OUTCOME_HEADLINE: Record<IssueRetryNowOutcome, string> = {
@@ -34,12 +41,13 @@ export function useRetryNowMutation(
 ): UseMutationResult<IssueRetryNowResponse, unknown, void, unknown> & {
   lastError: RetryNowError | null;
 } {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
 
   const mutation = useMutation({
     mutationFn: () => {
-      if (!issueId) throw new Error("Missing issue id");
+      if (!issueId) throw new MissingRetryIssueError();
       return issuesApi.retryScheduledRetryNow(issueId);
     },
     onSuccess: (response) => {
@@ -52,13 +60,13 @@ export function useRetryNowMutation(
       }
       if (response.outcome === "promoted") {
         pushToast({
-          title: RETRY_NOW_OUTCOME_HEADLINE.promoted,
+          title: t("runUi.scheduledRetry.promotedToast"),
           body: response.message,
           tone: "success",
         });
       } else if (response.outcome === "gate_suppressed") {
         pushToast({
-          title: RETRY_NOW_OUTCOME_HEADLINE.gate_suppressed,
+          title: t("runUi.scheduledRetry.cannotRetry"),
           body: response.message,
           tone: "error",
         });
@@ -66,8 +74,8 @@ export function useRetryNowMutation(
     },
     onError: (error) => {
       pushToast({
-        title: "Couldn't retry now",
-        body: readErrorMessage(error),
+        title: t("runUi.scheduledRetry.cannotRetry"),
+        body: readErrorMessage(error, t),
         tone: "error",
       });
     },
@@ -80,7 +88,7 @@ export function useRetryNowMutation(
     if (mutation.error) {
       const apiError = mutation.error instanceof ApiError ? mutation.error : null;
       return {
-        message: readErrorMessage(mutation.error),
+        message: readErrorMessage(mutation.error, t),
         outcomeMessage: null,
         status: apiError?.status ?? null,
       };

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { IssueCommentPresentation } from "@paperclipai/shared";
 import type { SystemNoticeTone } from "../components/SystemNotice";
 
@@ -15,7 +17,6 @@ export interface HumanizedSystemNotice {
   detail?: string;
 }
 
-const FALLBACK_TITLE = "System update";
 const DETAIL_MAX_CHARS = 80;
 
 /** Failure code the recovery comments embed as "Latest retry failure: `code`". */
@@ -46,7 +47,7 @@ function firstSentence(body: string): string | undefined {
 export function humanizeSystemNotice(input: {
   body: string;
   presentation?: IssueCommentPresentation | null;
-}): HumanizedSystemNotice {
+}, t: TFunction = i18n.getFixedT("en")): HumanizedSystemNotice {
   const presentationTitle = input.presentation?.title?.trim();
   const presentationTone = input.presentation?.tone;
   if (presentationTitle) {
@@ -58,19 +59,19 @@ export function humanizeSystemNotice(input: {
 
   if (code === "claude_auth_required") {
     return {
-      title: "Task paused — Claude needs re-authentication",
+      title: t("runUi.system.auth"),
       tone: presentationTone ?? "warning",
     };
   }
   if (code === "configuration_incomplete" || body.includes("secret/env bindings are missing")) {
     return {
-      title: "Task paused — a secret/config binding is missing",
+      title: t("runUi.system.config"),
       tone: presentationTone ?? "warning",
     };
   }
   if (code === "workspace_validation_failed" || body.includes("workspace failed validation")) {
     return {
-      title: "Task paused — workspace problem",
+      title: t("runUi.system.workspace"),
       tone: presentationTone ?? "warning",
     };
   }
@@ -78,14 +79,14 @@ export function humanizeSystemNotice(input: {
     const owner = recoveryOwnerName(body);
     return {
       title: owner
-        ? `Task paused — waiting on ${owner}`
-        : "Task paused — waiting on a recovery owner",
+        ? t("runUi.system.owner", { owner })
+        : t("runUi.system.ownerFallback"),
       tone: presentationTone ?? "warning",
     };
   }
 
   return {
-    title: FALLBACK_TITLE,
+    title: t("runUi.system.update"),
     tone: presentationTone ?? "neutral",
     detail: firstSentence(body),
   };

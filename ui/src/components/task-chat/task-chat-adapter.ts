@@ -1,3 +1,6 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
+import { formatFileSize } from "./task-chat-attachments";
 /**
  * Live adapter: normalize the existing IssueChatComment stream (including
  * optimistic echoes) into the redesign's TaskChatItem[] model. This is the
@@ -12,7 +15,7 @@ import type { IssueChatComment } from "@/lib/issue-chat-messages";
 import { resolveCommentAttribution } from "@/lib/comment-attribution";
 import { resolveIssueChatHumanAuthor } from "@/lib/issue-chat-human-author";
 import type { CompanyUserProfile } from "@/lib/company-members";
-import type { TaskChatAuthorKind, TaskChatItem, TaskChatMessageItem } from "./task-chat-model";
+import type { TaskChatAuthorKind, TaskChatItem, TaskChatMessageItem, TaskChatMaterializedResourceItem } from "./task-chat-model";
 
 export interface TaskChatAdapterContext {
   agentMap?: Map<string, Agent>;
@@ -50,11 +53,11 @@ function authorKind(comment: IssueChatComment): TaskChatAuthorKind {
 }
 
 /** Shared bubble-footer time format ("2:34 PM") — also used by the description bubble (PAP-375). */
-export function formatTaskChatTimestamp(value: unknown): string | undefined {
+export function formatTaskChatTimestamp(value: unknown, t: TFunction = i18n.getFixedT("en")): string | undefined {
   if (!value) return undefined;
   const d = value instanceof Date ? value : new Date(value as string);
   if (Number.isNaN(d.getTime())) return undefined;
-  return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return t("taskChatUi.common.timestamp", { value: d, formatParams: { value: { hour: "numeric", minute: "2-digit" } } });
 }
 
 /** Keep every comment footer on the same compact, user-visible timestamp. */
@@ -74,11 +77,14 @@ export function commentsToTaskChatItems(
     if (comment.deletedAt) continue;
     if (comment.conversationSessionGeneration != null) {
       items.push({ id: comment.id, kind: "marker", variant: "session_start", label: "New session",
-        detail: "Earlier messages and files are still available.", createdAtIso: new Date(comment.createdAt).toISOString() });
+        detail: "Earlier messages and files are still available.",
+        display: { label: { code: "marker.newSession" }, detail: { code: "detail.sessionHistory" } },
+        retryKind: null, createdAtIso: new Date(comment.createdAt).toISOString() });
       continue;
     }
     const kind = authorKind(comment);
     let authorName: string | undefined;
+    let display: TaskChatMessageItem["display"];
     let agentIcon: string | null | undefined;
     let onBehalfOfUserName: string | undefined;
     const humanAuthor = kind === "human" ? resolveIssueChatHumanAuthor({
@@ -89,7 +95,9 @@ export function commentsToTaskChatItems(
     }) : undefined;
     if (kind === "agent") {
       const agentId = effectiveAgentId(comment);
-      authorName = (agentId && ctx.agentMap?.get(agentId)?.name) || "Agent";
+      const agentName = agentId && ctx.agentMap?.get(agentId)?.name;
+      authorName = agentName || "Agent";
+      if (!agentName) display = { authorName: { code: "author.agent" } };
       agentIcon = agentId ? ctx.agentMap?.get(agentId)?.icon : undefined;
       onBehalfOfUserName = resolveCommentAttribution({
         authorAgentId: agentId,
@@ -99,6 +107,9 @@ export function commentsToTaskChatItems(
       })?.userName;
     } else if (kind === "human") {
       authorName = humanAuthor!.authorName;
+      const profileName = comment.authorUserId ? ctx.userProfileMap?.get(comment.authorUserId)?.label?.trim() : null;
+      const suppliedName = comment.authorUserId ? ctx.userLabelMap?.get(comment.authorUserId)?.trim() : null;
+      if (!profileName && !suppliedName) display = { authorName: { code: comment.authorUserId === "local-board" ? "author.board" : humanAuthor!.isCurrentUser ? "author.you" : "author.user" } };
     }
     const queued = comment.queueState === "queued" || comment.clientStatus === "queued";
     const optimistic =
@@ -128,6 +139,7 @@ export function commentsToTaskChatItems(
       kind: "message",
       author: kind,
       authorName,
+      ...(display ? { display } : {}),
       ...(humanAuthor ? {
         authorUserId: comment.authorUserId,
         authorAvatarUrl: humanAuthor.avatarUrl,
@@ -150,8 +162,25 @@ export function commentsToTaskChatItems(
       presentation: kind === "system" ? comment.presentation ?? null : undefined,
       metadata: kind === "system" ? comment.metadata ?? null : undefined,
       runAgentId: kind === "system" ? comment.runAgentId ?? null : undefined,
-      createdAtIso: kind === "system" ? createdAtIso : undefined,
+      createdAtIso,
     });
   }
   return items;
+}
+
+export function formatTaskChatResource(item: TaskChatMaterializedResourceItem, t: TFunction = i18n.getFixedT("en")) {
+  const title = item.display?.title?.code === "resource.agentAttachment"
+    ? t("taskChatUi.resource.agentAttachment") : item.title;
+  const message = item.display?.subtitle;
+  let subtitle = item.subtitle;
+  if (message?.code === "resource.documentRevision" && Number.isSafeInteger(message.revision) && message.revision >= 0) {
+    subtitle = t("taskChatUi.resource.documentRevision", { revision: message.revision });
+  } else if (message?.code === "resource.attachmentMetadata" && typeof message.contentType === "string"
+    && Number.isFinite(message.byteSize) && message.byteSize >= 0) {
+    subtitle = t("taskChatUi.resource.attachmentMetadata", {
+      contentType: message.contentType,
+      size: formatFileSize(message.byteSize, t) || t("taskChatUi.resource.bytes", { value: 0 }),
+    });
+  }
+  return { title, subtitle };
 }

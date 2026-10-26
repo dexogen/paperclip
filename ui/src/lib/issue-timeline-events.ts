@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { ActivityEvent, IssueWorkMode } from "@paperclipai/shared";
 import { isIssueWorkMode } from "@/lib/work-mode-meta";
 
@@ -35,9 +37,9 @@ export interface IssueTimelineWorkspace {
   mode: string | null;
 }
 
-export function formatTimelineWorkspaceLabel(workspace: IssueTimelineWorkspace) {
+export function formatTimelineWorkspaceLabel(workspace: IssueTimelineWorkspace, t: TFunction = i18n.getFixedT("en")) {
   const fallbackId = workspace.executionWorkspaceId ?? workspace.projectWorkspaceId;
-  return workspace.label ?? (fallbackId ? fallbackId.slice(0, 8) : "None");
+  return workspace.label ?? (fallbackId ? fallbackId.slice(0, 8) : t("taskChatUi.handoff.workspaceNone"));
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {

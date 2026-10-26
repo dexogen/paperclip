@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { Brain, CirclePause, Gauge, Layers3 } from "lucide-react";
 import type { TaskChatActivityPhaseItem } from "./task-chat-model";
 import {
@@ -25,16 +26,56 @@ const labels: Record<ToolFamily, string> = {
   other: "Used tools",
 };
 
+type SummaryCode = "terminal" | "grep" | "search" | "read" | "edit" | "web" | "plan" | "question" | "agent" | "safety" | "image" | "wait" | "mcp" | "other" | "research" | "delegation" | "artifact" | "context" | "memory" | "model_identity" | "review" | "hook" | "workspace_change" | "workspace_file" | "resource" | "notice" | "error" | "warning" | "updates" | "checked" | "thinking" | "stopped" | "usage";
+
+function summaryLabel(code: SummaryCode, t: TFunction): string {
+  switch (code) {
+    case "terminal": return t("runUi.completed.terminal");
+    case "grep": return t("runUi.completed.grep");
+    case "search": return t("runUi.completed.search");
+    case "read": return t("runUi.completed.read");
+    case "edit": return t("runUi.completed.edit");
+    case "web": return t("runUi.completed.web");
+    case "plan": return t("runUi.completed.plan");
+    case "question": return t("runUi.completed.question");
+    case "agent": return t("runUi.completed.agent");
+    case "safety": return t("runUi.completed.safety");
+    case "image": return t("runUi.completed.image");
+    case "wait": return t("runUi.completed.wait");
+    case "mcp": return t("runUi.completed.mcp");
+    case "other": return t("runUi.completed.other");
+    case "research": return t("runUi.completed.research");
+    case "delegation": return t("runUi.completed.delegation");
+    case "artifact": return t("runUi.completed.artifact");
+    case "context": return t("runUi.completed.context");
+    case "memory": return t("runUi.completed.memory");
+    case "model_identity": return t("runUi.completed.model_identity");
+    case "review": return t("runUi.completed.review");
+    case "hook": return t("runUi.completed.hook");
+    case "workspace_change": return t("runUi.completed.workspace_change");
+    case "workspace_file": return t("runUi.completed.workspace_file");
+    case "resource": return t("runUi.completed.resource");
+    case "notice": return t("runUi.completed.notice");
+    case "error": return t("runUi.completed.error");
+    case "warning": return t("runUi.completed.warning");
+    case "updates": return t("runUi.completed.updates");
+    case "checked": return t("runUi.completed.checked");
+    case "thinking": return t("runUi.completed.thinking");
+    case "stopped": return t("runUi.completed.stopped");
+    case "usage": return t("runUi.completed.usage");
+  }
+}
+
 /** Describe observed activities, never infer success from a finished group. */
-export function completedActivitySummary(items: Activity[]) {
+export function completedActivitySummary(items: Activity[], t?: TFunction) {
   const categories = new Map<
     string,
-    { label: string; icon: ToolIcon; order: number }
+    { label: string; icon: ToolIcon; order: number; code?: SummaryCode }
   >();
-  const add = (label: string, icon: ToolIcon, order = 0) => {
+  const add = (label: string, icon: ToolIcon, order = 0, code?: SummaryCode) => {
     const existing = categories.get(label);
     if (!existing || order < existing.order)
-      categories.set(label, { label, icon, order });
+      categories.set(label, { label, icon, order, code });
   };
   const tools: Array<{
     family: ToolFamily;
@@ -102,7 +143,7 @@ export function completedActivitySummary(items: Activity[]) {
               resource: "Added resources",
             } as Record<string, string>
           )[family] ?? "Used tools";
-        add(label, p.icon, order);
+        add(label, p.icon, order, family in labels ? family as ToolFamily : ["research", "delegation", "artifact", "context", "memory", "model_identity", "review", "hook", "workspace_change", "workspace_file", "resource"].includes(family) ? family as SummaryCode : "other");
       }
     }
   }
@@ -119,7 +160,7 @@ export function completedActivitySummary(items: Activity[]) {
           : "Received provider updates";
     // One notice category leaves room for actual work. Keep warnings and errors
     // visible when the compact label truncates other activity categories.
-    add(label, strongest.icon, strongest.severity === "info" ? notices[0]!.order : -1);
+    add(label, strongest.icon, strongest.severity === "info" ? notices[0]!.order : -1, notices.length === 1 ? strongest.summary ? undefined : "notice" : strongest.severity === "error" ? "error" : strongest.severity === "warning" ? "warning" : "updates");
   }
   const completedFamilies = new Set(
     tools.filter((tool) => tool.completed).map((tool) => tool.family),
@@ -133,25 +174,26 @@ export function completedActivitySummary(items: Activity[]) {
         : tool.family === "edit" && !succeeded
           ? "Worked on files"
           : labels[tool.family];
-    add(label, tool.icon, tool.order);
+    add(label, tool.icon, tool.order, tool.family === "read" && !succeeded ? "checked" : tool.family === "edit" && !succeeded ? "workspace_change" : tool.family);
   }
   if (!categories.size) {
     if (items.some((item) => item.kind === "thinking"))
-      add("Thought through the task", Brain);
+      add("Thought through the task", Brain, 0, "thinking");
     else if (items.some((item) => item.kind === "marker"))
-      add("Activity stopped", CirclePause);
-    else add("Recorded usage", Gauge);
+      add("Activity stopped", CirclePause, 0, "stopped");
+    else add("Recorded usage", Gauge, 0, "usage");
   }
   const values = [...categories.values()].sort((a, b) => a.order - b.order);
   const join = (parts: string[]) =>
     parts
       .map((p, i) => (i ? p.charAt(0).toLowerCase() + p.slice(1) : p))
       .join(", ");
-  const fullLabel = join(values.map((v) => v.label));
+  const displayValues = values.map(value => t && value.code ? summaryLabel(value.code, t) : value.label);
+  const fullLabel = join(displayValues);
   return {
     label:
       values.length > 3
-        ? `${join(values.slice(0, 2).map((v) => v.label))}, and more`
+        ? t ? t("runUi.completed.more", { summary: join(displayValues.slice(0, 2)) }) : `${join(displayValues.slice(0, 2))}, and more`
         : fullLabel,
     fullLabel,
     icon: values.length === 1 ? values[0].icon : Layers3,

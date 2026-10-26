@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ExecutionProjection } from "@paperclipai/shared";
@@ -52,6 +53,7 @@ describe("TaskChatLiveRunPill", () => {
     act(() => root.unmount());
     container.remove();
     vi.useRealTimers();
+    act(() => { void i18n.changeLanguage("en"); });
   });
 
   it("shimmers 'Working' with elapsed + tool summary while streaming", () => {
@@ -118,6 +120,39 @@ describe("TaskChatLiveRunPill", () => {
     expect(pill?.textContent).toContain("Worked");
     expect(pill?.textContent).toContain("for 42 seconds");
     expect(pill?.textContent).toContain("ran 1 command");
+  });
+
+  it.each([
+    [1_000, "1 секунду", "1 second"],
+    [21_000, "21 секунду", "21 seconds"],
+    [61 * 60_000, "1 час 1 минуту", "1 hour 1 minute"],
+  ] as const)("preserves live and settled duration semantics across locales at %i ms", (duration, russian, english) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-11T12:00:00Z"));
+    const startedAtMs = Date.now() - duration;
+    const render = (status: string) => act(() => root.render(
+      <TaskChatLiveRunPill status={status} startedAtMs={startedAtMs}
+        finishedAtMs={startedAtMs + duration} toolSummary="called <raw> tools" />,
+    ));
+    render("running");
+    const pill = container.querySelector('[data-testid="task-chat-live-run-pill"]');
+    expect(pill?.textContent).toContain(`for ${english}`);
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-live-run-pill"]')).toBe(pill);
+    expect(pill?.textContent).toContain(`Работает${russian}`);
+    expect(container.querySelector(".animate-spin")).not.toBeNull();
+    render("succeeded");
+    expect(pill?.textContent).toContain(`Работал${russian}`);
+    expect(container.querySelector(".animate-spin")).toBeNull();
+    render("failed");
+    expect(pill?.textContent).toContain(`Остановленчерез ${russian}`);
+    expect(pill?.textContent).toContain("called <raw> tools");
+    expect(container.querySelector("raw")).toBeNull();
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(container.querySelector('[data-testid="task-chat-live-run-pill"]')).toBe(pill);
+    expect(pill?.textContent).toContain(`Stoppedfor ${english}`);
+    act(() => vi.advanceTimersByTime(2_000));
+    expect(pill?.textContent).toContain(`Stoppedfor ${english}`);
   });
 
 });

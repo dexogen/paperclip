@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, useState, type ComponentProps } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -51,13 +52,14 @@ function render(onAssigneeChange: (value: string) => void, onSettingsChange: () 
   return queryClient;
 }
 
-beforeEach(() => localStorage.clear());
-afterEach(() => {
+beforeEach(async () => { localStorage.clear(); await i18n.changeLanguage("en"); });
+afterEach(async () => {
   vi.restoreAllMocks();
   flushSync(() => root?.unmount());
   root = null;
   container?.remove();
   container = null;
+  await i18n.changeLanguage("en");
 });
 
 describe("composer assignee picker", () => {
@@ -404,4 +406,64 @@ describe("composer assignee picker", () => {
     expect(document.querySelector('[aria-label="Search assignees"]')).not.toBeNull();
     expect(document.querySelector('[aria-label="Choose exact model"]')).toBeNull();
   });
+});
+
+
+it("preserves the focused exact model ID and renders its literal value through locale switches without catalog refetch", async () => {
+  const loadModels = vi.spyOn(agentsApi, "adapterModels").mockResolvedValue([{ id: "gpt-6-sol", label: "GPT-6 Sol" }]);
+  const onAssigneeChange = vi.fn(); const onSettingsChange = vi.fn();
+  render(onAssigneeChange, onSettingsChange, true);
+  await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+  await click("Select model and effort"); await click("Choose exact model");
+  const search = document.querySelector<HTMLInputElement>('input[aria-label="Search or paste a model ID"]')!;
+  const raw = "custom/<b>raw</b>";
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, raw);
+    search.dispatchEvent(new Event("input", { bubbles: true })); search.focus(); search.setSelectionRange(2, 8);
+  });
+  const reads = loadModels.mock.calls.length;
+  expect(reads).toBeGreaterThan(0);
+  for (const locale of ["ru", "en", "ru"]) {
+    await act(async () => { await i18n.changeLanguage(locale); });
+    expect(document.querySelector('input[type="search"]')).toBe(search);
+    expect(document.activeElement).toBe(search); expect(search.value).toBe(raw);
+    expect([search.selectionStart, search.selectionEnd]).toEqual([2, 8]);
+    expect(loadModels).toHaveBeenCalledTimes(reads); expect(onSettingsChange).not.toHaveBeenCalled();
+    expect(onAssigneeChange).not.toHaveBeenCalled();
+  }
+  const exact = [...document.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent === `Использовать точный ID ${raw}`)!;
+  expect(exact).toBeDefined(); expect(exact.querySelector("b")).toBeNull();
+  await act(async () => { exact.click(); });
+  expect(onSettingsChange).toHaveBeenCalledExactlyOnceWith({ model: raw, effort: null, fast: false });
+  expect(loadModels).toHaveBeenCalledTimes(reads);
+});
+
+it("keeps a Russian role search and selection stable, then clears the assignee with its canonical empty ID", async () => {
+  const knownAgent = { ...agent, role: "engineer", name: "Agent <literal> {{raw}}" } as Agent;
+  const onAssigneeChange = vi.fn(); const onSettingsChange = vi.fn();
+  render(onAssigneeChange, onSettingsChange, false, {
+    mobile: true, initialOpen: true, initialView: "agents", agents: new Map([[knownAgent.id, knownAgent]]),
+    options: [{ id: "agent:a1", label: knownAgent.name }],
+  });
+  const search = document.querySelector<HTMLInputElement>('input[aria-label="Search assignees"]')!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, "инженер");
+    search.dispatchEvent(new Event("input", { bubbles: true })); search.focus(); search.setSelectionRange(1, 4);
+  });
+  const selected = document.querySelector('[role="option"][aria-selected="true"]');
+  expect(selected?.textContent).toContain(knownAgent.name);
+  for (const locale of ["ru", "en", "ru"]) {
+    await act(async () => { await i18n.changeLanguage(locale); });
+    expect(document.querySelector('[role="option"][aria-selected="true"]')).toBe(selected);
+    expect(document.activeElement).toBe(search); expect(search.value).toBe("инженер");
+    expect([search.selectionStart, search.selectionEnd]).toEqual([1, 4]);
+    expect(onAssigneeChange).not.toHaveBeenCalled(); expect(onSettingsChange).not.toHaveBeenCalled();
+  }
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, "Unassigned");
+    search.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await click("Без исполнителя");
+  expect(onAssigneeChange).toHaveBeenCalledExactlyOnceWith("");
+  expect(onSettingsChange).toHaveBeenCalledExactlyOnceWith(null);
 });
