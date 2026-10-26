@@ -166,6 +166,18 @@ gates. Component checks use mocked APIs where declared; they do not certify
 authenticated trace access, real editor behavior, provider execution or a complete
 live chat journey. Toasts retain the language used when the event occurred.
 
+The agent-creation slice covers the New agent page and dialog, name and adapter
+selection, the setup wizard, local validation and runtime-test controls. Switching
+language preserves the inactive agent record, dirty inputs, selected environment,
+model and effort, pending requests and explicit action payloads. Closed error
+codes support late translation while provider errors and runtime diagnostics stay
+literal. Fixed English helper defaults preserve unconverted consumers.
+
+Component tests cover both languages and pending create/save state. They use
+mocked APIs and selected model/login controls; real provider login, qualification,
+backend permission checks and browser acceptance remain separate. Full agent
+configuration, shared form controls and external invitation flows are later slices.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review
