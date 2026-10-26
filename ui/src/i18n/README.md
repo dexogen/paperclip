@@ -176,7 +176,27 @@ literal. Fixed English helper defaults preserve unconverted consumers.
 Component tests cover both languages and pending create/save state. They use
 mocked APIs and selected model/login controls; real provider login, qualification,
 backend permission checks and browser acceptance remain separate. Full agent
-configuration, shared form controls and external invitation flows are later slices.
+configuration and external invitation flows are later slices.
+
+Shared form controls translate their default captions, local validation, path
+instructions, copy receipts, environment-variable rows and secret-binding controls.
+Custom captions, schema titles/descriptions, enum values, variable names/values,
+secret IDs/versions and provider errors remain literal. Unknown status values use
+own-property checks before a known status label is selected.
+
+`validateJsonSchemaFormIssues` returns owned `JsonSchemaValidationIssue` objects.
+The form resolves them in the current language; supplied string errors remain
+literal. Environment, plugin and action-test consumers retain these objects so
+saved errors change language without another validation or submit. The legacy
+`validateField` and `validateJsonSchemaForm` functions keep fixed English output
+and their existing path semantics. This change does not add JSON Pointer escaping.
+
+Environment drafts keep stable row IDs, values and version bindings. Hosts that
+do not call the editor's `flush()` explicitly can mark a localized external button
+with `data-flush-environment-draft="true"`. Submit and existing English action
+fallbacks remain supported. Changing language alone does not flush a draft.
+Component checks cover these state and payload contracts with mocked APIs; they
+do not certify a live secret write, clipboard integration or the entire host page.
 
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied

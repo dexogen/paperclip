@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
-import { useState } from "react";
+import { act, useState } from "react";
+import { setLocale } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -923,4 +924,122 @@ describe("EnvironmentVariablesEditor", () => {
     );
     expect(match?.querySelector<HTMLElement>("[title]")?.getAttribute("title")).toBe(cloudMigrationKey);
   });
+
+  it("retains a dirty focused row through locale changes and flushes one explicit outer action", async () => {
+    const changed = vi.fn();
+    const written = vi.fn();
+    const create = vi.fn();
+    function Harness() {
+      const [value, setValue] = useState<Record<string, EnvBinding>>({ TOKEN: { type: "plain", value: "initial" } });
+      return <><EnvironmentVariablesEditor value={value} secrets={secrets} onCreateSecret={create}
+        onChange={next => { changed(next); setValue(next ?? {}); }} />
+        <button type="button" data-flush-environment-draft="true" onClick={() => written(value)}>Применить</button></>;
+    }
+    try {
+      await setLocale("en");
+      render(<Harness />);
+      const input = container.querySelector<HTMLInputElement>('input[aria-label="Variable value"]')!;
+      flushSync(() => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "literal <b>& значение</b>");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      input.focus();
+      input.setSelectionRange(2, 7);
+      await act(async () => setLocale("ru"));
+      expect(container.textContent).toContain("Несохранённые изменения");
+      expect(container.querySelector('input[aria-label="Значение переменной"]')).toBe(input);
+      expect(input.value).toBe("literal <b>& значение</b>");
+      expect(document.activeElement).toBe(input);
+      expect([input.selectionStart, input.selectionEnd]).toEqual([2, 7]);
+      expect(changed).not.toHaveBeenCalled();
+      expect(create).not.toHaveBeenCalled();
+      await act(async () => setLocale("en"));
+      expect(changed).not.toHaveBeenCalled();
+      const outer = container.querySelector<HTMLButtonElement>('[data-flush-environment-draft]')!;
+      await act(async () => outer.click());
+      const expected = { TOKEN: { type: "plain", value: "literal <b>& значение</b>" } };
+      expect(changed).toHaveBeenCalledExactlyOnceWith(expected);
+      expect(written).toHaveBeenCalledExactlyOnceWith(expected);
+    } finally {
+      await act(async () => setLocale("en"));
+    }
+  });
+
+
+  it("retains pinned versions and source-switch undo across languages without emitting a save", async () => {
+    const change = vi.fn();
+    try {
+      await setLocale("en");
+      render(<EnvironmentVariablesEditor value={{ GH: { type: "secret_ref", secretId: "s1", version: 2 } }} secrets={secrets} onChange={change} onCreateSecret={vi.fn()} />);
+      const version = container.querySelector<HTMLButtonElement>('[aria-label="Version"]')!;
+      version.click(); await flush();
+      const group = document.querySelector('[role="radiogroup"]')!;
+      await act(async () => setLocale("ru"));
+      expect(document.querySelector('[role="radiogroup"]')).toBe(group);
+      expect(group.getAttribute("aria-label")).toBe("Версия секрета");
+      expect(group.querySelector('[aria-checked="true"]')?.textContent?.trim()).toBe("v2");
+      const v1 = [...group.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent?.trim() === "v1")!;
+      v1.click(); await flush();
+      await act(async () => setLocale("en"));
+      expect(version.textContent).toBe("v1");
+      const source = container.querySelector('[aria-label="Value source"]')!;
+      pointerClick(source); await flush();
+      const text = [...document.querySelectorAll<HTMLElement>('[role="menuitem"]')].find(item => item.textContent?.startsWith("Text value"))!;
+      pointerClick(text); await flush();
+      expect(container.textContent).toContain("Reverted to text");
+      const undo = [...container.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent === "Undo")!;
+      await act(async () => setLocale("ru"));
+      expect(container.textContent).toContain("Выбрано текстовое значение");
+      expect(undo.textContent).toBe("Отменить");
+      expect(change).not.toHaveBeenCalled();
+      undo.click(); await flush();
+      expect(container.querySelector('[aria-label="Версия"]')?.textContent).toBe("v1");
+      await act(async () => setLocale("en"));
+      saveButton().click(); await flush();
+      expect(change).toHaveBeenCalledExactlyOnceWith({ GH: { type: "secret_ref", secretId: "s1", version: 1 } });
+    } finally { await act(async () => setLocale("en")); }
+  });
+
+  it("reformats duplicate validation while retaining row IDs and literal values", async () => {
+    const change = vi.fn();
+    try {
+      await setLocale("en");
+      render(<EnvironmentVariablesEditor value={{ FIRST: { type: "plain", value: "one" }, SECOND: { type: "plain", value: "two<&>" } }} secrets={secrets} onChange={change} onCreateSecret={vi.fn()} />);
+      const [first, second] = nameInputs();
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(second, "FIRST");
+      second.dispatchEvent(new Event("input", { bubbles: true })); await flush();
+      expect(container.textContent?.match(/Duplicate name/g)).toHaveLength(2);
+      const description = second.getAttribute("aria-describedby");
+      second.focus();
+      await act(async () => setLocale("ru"));
+      expect(container.textContent?.match(/Повторяющееся имя/g)).toHaveLength(2);
+      expect(second.getAttribute("aria-describedby")).toBe(description);
+      expect(container.querySelectorAll('[aria-label="Имя переменной"]')[0]).toBe(first);
+      expect(container.querySelectorAll('[aria-label="Имя переменной"]')[1]).toBe(second);
+      expect(document.activeElement).toBe(second);
+      expect(container.querySelectorAll<HTMLInputElement>('[aria-label="Значение переменной"]')[1].value).toBe("two<&>");
+      expect(change).not.toHaveBeenCalled();
+      await act(async () => setLocale("en"));
+      expect(second.getAttribute("aria-describedby")).toBe(description);
+    } finally { await act(async () => setLocale("en")); }
+  });
+
+  it("renders an unknown status literally in the expanded secret list without changing selection", async () => {
+    const select = vi.fn();
+    try {
+      render(<SecretPicker secretId="weird" secrets={[makeSecret("weird", { name: "Raw name", status: "toString" as CompanySecret["status"] })]} onSelect={select} disablePortal />);
+      container.querySelector<HTMLElement>('[role="combobox"]')!.focus();
+      await flush();
+      const option = [...document.querySelectorAll<HTMLElement>("[cmdk-item]")].find(item => item.textContent?.includes("Raw name"))!;
+      expect(option.textContent).toContain("toString");
+      await act(async () => setLocale("ru"));
+      expect([...document.querySelectorAll<HTMLElement>("[cmdk-item]")].find(item => item.textContent?.includes("Raw name"))).toBe(option);
+      expect(option.textContent).toContain("toString");
+      expect(container.querySelector('[role="combobox"]')?.textContent).toContain("Raw name");
+      await act(async () => setLocale("en"));
+      expect(option.textContent).toContain("toString");
+      expect(select).not.toHaveBeenCalled();
+    } finally { await act(async () => setLocale("en")); }
+  });
+
 });
