@@ -687,6 +687,14 @@ the later split trees or a complete fresh test suite. Publication and live
 qualification remain pending. Split into
 buildable run/recovery and chat/composer PRs below the repository's file limit.
 
+The standalone run/recovery slice retains the older chat/composer consumers and
+includes only their four required helper dependencies. Its 44 affected test files
+pass 727 tests without skips, including 25 real PostgreSQL projection cases.
+The scoped source audit passes with 4,836 reviewed families and 17,481 existing
+source findings. UI typecheck/build, token gates and map structure checks pass;
+the server's required native build and final typecheck remain in progress.
+This slice's checks do not establish full chat/composer or browser acceptance.
+
 After chat, the remaining major packages are agent creation/configuration,
 project details/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
