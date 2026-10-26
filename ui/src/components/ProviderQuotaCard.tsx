@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "../i18n";
 import { AccountQuotaPanels } from "./AccountQuotaPanels";
 import { quotaUnavailableMessage } from "@/lib/quota-refresh";
 import { useMemo } from "react";
@@ -58,6 +59,8 @@ export function ProviderQuotaCard({
   quotaSource = null,
   quotaLoading = false,
 }: ProviderQuotaCardProps) {
+  const { t } = useTranslation();
+  const windowLabels = { "5h": t("costCardsUi.provider.window5h"), "24h": t("costCardsUi.provider.window24h"), "7d": t("costCardsUi.provider.window7d") };
   // single-pass aggregation over rows — memoized so the 8 derived values are not
   // recomputed on every parent render tick (providers tab polls every 30s, and each
   // card is mounted twice: once in the "all" tab grid and once in its per-provider tab).
@@ -148,16 +151,15 @@ export function ProviderQuotaCard({
               {providerDisplayName(provider)}
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              <span className="font-mono">{formatTokens(totalInputTokens)}</span> in
+              <Trans t={t} i18nKey="costCardsUi.tokens.input" values={{ tokens: formatTokens(totalInputTokens) }} components={{ value: <span className="font-mono" /> }} />
               {" · "}
-              <span className="font-mono">{formatTokens(totalOutputTokens)}</span> out
+              <Trans t={t} i18nKey="costCardsUi.tokens.output" values={{ tokens: formatTokens(totalOutputTokens) }} components={{ value: <span className="font-mono" /> }} />
               {(totalApiRuns > 0 || totalSubRuns > 0) && (
                 <span className="ml-1.5">
                   ·{" "}
-                  {totalApiRuns > 0 && `~${totalApiRuns} api`}
-                  {totalApiRuns > 0 && totalSubRuns > 0 && " / "}
-                  {totalSubRuns > 0 && `~${totalSubRuns} sub`}
-                  {" runs"}
+                  {totalApiRuns > 0 && totalSubRuns > 0
+                    ? t("costCardsUi.provider.approxBoth", { api: totalApiRuns, subscription: totalSubRuns })
+                    : totalApiRuns > 0 ? t("costCardsUi.provider.approxApi", { count: totalApiRuns }) : t("costCardsUi.provider.approxSub", { count: totalSubRuns })}
                 </span>
               )}
             </CardDescription>
@@ -173,17 +175,17 @@ export function ProviderQuotaCard({
         {hasBudget && (
           <div className="space-y-3">
             <QuotaBar
-              label="Period spend"
+              label={t("costCardsUi.provider.period")}
               percentUsed={budgetPct}
               leftLabel={formatCents(totalCostCents)}
-              rightLabel={`${Math.round(budgetPct)}% of company budget`}
+              rightLabel={t("costCardsUi.provider.budgetPercent", { percent: Math.round(budgetPct) })}
               showDeficitNotch={showDeficitNotch}
             />
             <QuotaBar
-              label="This week"
+              label={t("costCardsUi.provider.week")}
               percentUsed={weekPct}
               leftLabel={formatCents(weekSpendCents)}
-              rightLabel={`~${formatCents(Math.round(weeklyBudgetShare))} / wk`}
+              rightLabel={t("costCardsUi.provider.weeklyBudget", { amount: formatCents(Math.round(weeklyBudgetShare)) })}
               showDeficitNotch={weekPct >= 100}
             />
           </div>
@@ -195,7 +197,7 @@ export function ProviderQuotaCard({
             <div className="border-t border-border" />
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Rolling windows
+                {t("costCardsUi.provider.windows")}
               </p>
               <div className="space-y-2.5">
                 {ROLLING_WINDOWS.map((w) => {
@@ -208,9 +210,9 @@ export function ProviderQuotaCard({
                   return (
                     <div key={w} className="space-y-1">
                       <div className="flex items-center justify-between gap-2 text-xs">
-                        <span className="font-mono text-muted-foreground w-6 shrink-0">{w}</span>
+                        <span className="font-mono text-muted-foreground w-6 shrink-0">{windowLabels[w]}</span>
                         <span className="text-muted-foreground font-mono flex-1">
-                          {formatTokens(tokens)} tok
+                          {t("costCardsUi.tokens.tokens", { tokens: formatTokens(tokens) })}
                         </span>
                         <span className="font-medium tabular-nums">{formatCents(cents)}</span>
                       </div>
@@ -234,20 +236,20 @@ export function ProviderQuotaCard({
             <div className="border-t border-border" />
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Subscription
+                {t("costCardsUi.provider.subscription")}
               </p>
               <p className="text-xs text-muted-foreground">
-                <span className="font-mono text-foreground">{totalSubRuns}</span> runs
+                <Trans t={t} i18nKey="costCardsUi.provider.runs" count={totalSubRuns} components={{ value: <span className="font-mono text-foreground" /> }} />
                 {" · "}
                 {totalSubTokens > 0 && (
                   <>
-                    <span className="font-mono text-foreground">{formatTokens(totalSubTokens)}</span> total
+                    <Trans t={t} i18nKey="costCardsUi.tokens.total" values={{ tokens: formatTokens(totalSubTokens) }} components={{ value: <span className="font-mono text-foreground" /> }} />
                     {" · "}
                   </>
                 )}
-                <span className="font-mono text-foreground">{formatTokens(totalSubInputTokens)}</span> in
+                <Trans t={t} i18nKey="costCardsUi.tokens.input" values={{ tokens: formatTokens(totalSubInputTokens) }} components={{ value: <span className="font-mono text-foreground" /> }} />
                 {" · "}
-                <span className="font-mono text-foreground">{formatTokens(totalSubOutputTokens)}</span> out
+                <Trans t={t} i18nKey="costCardsUi.tokens.output" values={{ tokens: formatTokens(totalSubOutputTokens) }} components={{ value: <span className="font-mono text-foreground" /> }} />
               </p>
               {subSharePct > 0 && (
                 <>
@@ -258,7 +260,7 @@ export function ProviderQuotaCard({
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {Math.round(subSharePct)}% of token usage via subscription
+                    {t("costCardsUi.provider.subscriptionShare", { percent: Math.round(subSharePct) })}
                   </p>
                 </>
               )}
@@ -284,12 +286,12 @@ export function ProviderQuotaCard({
                           {row.model}
                         </span>
                         <span className="text-(length:--text-micro) text-muted-foreground truncate block">
-                          {providerDisplayName(row.biller)} · {billingTypeDisplayName(row.billingType)}
+                          {providerDisplayName(row.biller)} · {billingTypeDisplayName(row.billingType, t)}
                         </span>
                       </div>
                       <div className="flex items-center gap-3 shrink-0 tabular-nums text-xs">
                         <span className="text-muted-foreground">
-                          {formatTokens(rowTokens)} tok
+                          {t("costCardsUi.tokens.tokens", { tokens: formatTokens(rowTokens) })}
                         </span>
                         <span className="font-medium">{formatCents(row.costCents)}</span>
                       </div>
@@ -299,13 +301,13 @@ export function ProviderQuotaCard({
                       <div
                         className="absolute inset-y-0 left-0 bg-primary/60 transition-(--tp-width) duration-150"
                         style={{ width: `${tokenPct}%` }}
-                        title={`${Math.round(tokenPct)}% of provider tokens`}
+                        title={t("costCardsUi.provider.tokenShare", { percent: Math.round(tokenPct) })}
                       />
                       {/* cost share overlay — narrower, opaque, shows relative cost weight */}
                       <div
                         className="absolute inset-y-0 left-0 bg-primary/85 transition-(--tp-width) duration-150"
                         style={{ width: `${costPct}%` }}
-                        title={`${Math.round(costPct)}% of provider cost`}
+                        title={t("costCardsUi.provider.costShare", { percent: Math.round(costPct) })}
                       />
                     </div>
                   </div>
@@ -322,11 +324,11 @@ export function ProviderQuotaCard({
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  Subscription quota
+                  {t("costCardsUi.provider.quota")}
                 </p>
                 {quotaSource && !isClaudeQuotaPanel && !isCodexQuotaPanel ? (
                   <span className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-                    {quotaSourceDisplayName(quotaSource)}
+                    {quotaSourceDisplayName(quotaSource, t)}
                   </span>
                 ) : null}
               </div>
@@ -342,7 +344,7 @@ export function ProviderQuotaCard({
                 <>
                   {quotaError ? (
                     <p role="status" className="text-xs text-muted-foreground">
-                      {quotaUnavailableMessage(quotaWindows.length > 0)}
+                      {quotaUnavailableMessage(quotaWindows.length > 0, t)}
                     </p>
                   ) : null}
                   <div className="space-y-2.5">
@@ -363,7 +365,7 @@ export function ProviderQuotaCard({
                             {qw.valueLabel != null ? (
                               <span className="font-medium tabular-nums">{qw.valueLabel}</span>
                             ) : qw.usedPercent != null ? (
-                              <span className="font-medium tabular-nums">{qw.usedPercent}% used</span>
+                              <span className="font-medium tabular-nums">{t("costCardsUi.provider.used", { percent: qw.usedPercent })}</span>
                             ) : null}
                           </div>
                           {qw.usedPercent != null && fillColor != null && (
@@ -380,7 +382,7 @@ export function ProviderQuotaCard({
                             </p>
                           ) : qw.resetsAt ? (
                             <p className="text-xs text-muted-foreground">
-                              resets {new Date(qw.resetsAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                              {t("costCardsUi.provider.resets", { date: new Date(qw.resetsAt).toLocaleDateString(undefined, { month: "short", day: "numeric" }) })}
                             </p>
                           ) : null}
                         </div>

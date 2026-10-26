@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { useCallback, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -106,9 +107,10 @@ export function ProposalJustification({
   justification: string;
   className?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div className={cn("space-y-0.5", className)}>
-      <p className="text-(length:--text-micro) text-muted-foreground">Reason given by the agent</p>
+      <p className="text-(length:--text-micro) text-muted-foreground">{t("decisionForms.common.justification")}</p>
       <p className="whitespace-pre-wrap break-words text-xs text-foreground/80">
         “{justification}”
       </p>

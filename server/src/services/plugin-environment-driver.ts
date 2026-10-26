@@ -456,6 +456,10 @@ export async function probePluginEnvironmentDriver(input: {
     ok: result.ok,
     driver: "plugin",
     summary: result.summary ?? `Plugin environment driver "${pluginDriverProviderKey(input.config)}" probe ${result.ok ? "passed" : "failed"}.`,
+    ...(result.summary == null ? { summaryMessage: {
+      code: result.ok ? "plugin_probe_passed" as const : "plugin_probe_failed" as const,
+      params: { providerKey: pluginDriverProviderKey(input.config) },
+    } } : {}),
     details: {
       pluginKey: input.config.pluginKey,
       driverKey: input.config.driverKey,
@@ -483,6 +487,7 @@ export async function probePluginSandboxProviderDriver(input: {
       ok: false,
       driver: "sandbox",
       summary: `Sandbox provider "${input.provider}" is not installed or its plugin worker is not running.`,
+      summaryMessage: { code: "sandbox_provider_unavailable", params: { provider: input.provider } },
       details: {
         provider: input.provider,
       },
@@ -501,6 +506,10 @@ export async function probePluginSandboxProviderDriver(input: {
     ok: result.ok,
     driver: "sandbox",
     summary: result.summary ?? `Sandbox provider "${input.provider}" probe ${result.ok ? "passed" : "failed"}.`,
+    ...(result.summary == null ? { summaryMessage: {
+      code: result.ok ? "sandbox_provider_probe_passed" as const : "sandbox_provider_probe_failed" as const,
+      params: { provider: input.provider },
+    } } : {}),
     details: {
       provider: input.provider,
       pluginKey: resolved.plugin.pluginKey,

@@ -18,6 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "@/i18n";
 import {
   CodeMirrorEditor,
   MDXEditor,
@@ -37,6 +38,8 @@ import {
   defaultSvgIcons,
   type IconKey,
   type RealmPlugin,
+  type Translation,
+  translation$,
 } from "@mdxeditor/editor";
 import {
   buildAgentMentionHref,
@@ -59,6 +62,7 @@ import { unescapeBlockquoteMarkers } from "../lib/blockquote-markdown";
 import { pasteNormalizationPlugin } from "../lib/paste-normalization";
 import { cn } from "../lib/utils";
 import { useEditorAutocomplete, type SlashCommandOption } from "../context/EditorAutocompleteContext";
+import { translateMarkdownEditor } from "../lib/markdown-editor-i18n";
 
 /* ---- Mention types ---- */
 
@@ -88,6 +92,7 @@ interface MarkdownEditorProps {
   contentClassName?: string;
   onBlur?: () => void;
   imageUploadHandler?: (file: File) => Promise<string>;
+  renderImageUploadError?: (cause: unknown) => string;
   /** Called when a non-image file is dropped onto the editor (e.g. .zip). */
   onDropFile?: (file: File) => Promise<void>;
   /** When set to `parent`, a wrapper owns drag/drop behavior and visuals. */
@@ -736,6 +741,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
   contentClassName,
   onBlur,
   imageUploadHandler,
+  renderImageUploadError,
   onDropFile,
   fileDropTarget = "editor",
   bordered = true,
@@ -744,6 +750,12 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
   onSubmit,
   readOnly = false,
 }: MarkdownEditorProps, forwardedRef) {
+  const { t } = useTranslation();
+  const translation = useCallback<Translation>((key, fallback, interpolations = {}) =>
+    key === "contentArea.editableMarkdown" && ariaLabel
+      ? ariaLabel
+      : translateMarkdownEditor(t, key, fallback, interpolations),
+  [t, ariaLabel]);
   const editorValue = useMemo(() => prepareMarkdownForEditor(value), [value]);
   const { slashCommands: sharedSlashCommands } = useEditorAutocomplete();
   const slashCommands = useMemo(
@@ -763,7 +775,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
    * normalize or transform values cannot loop. Replaces the older blur/focus gate for the same concern.
    */
   const echoIgnoreMarkdownRef = useRef<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<{ cause: unknown; message: string | null } | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [richEditorError, setRichEditorError] = useState<RichEditorError | null>(null);
   const dragDepthRef = useRef(0);
@@ -980,8 +992,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             }, 100);
             return src;
           } catch (err) {
-            const message = err instanceof Error ? err.message : "Image upload failed";
-            setUploadError(message);
+            setUploadError(err instanceof Error && !err.message ? null : { cause: err, message: err instanceof Error ? err.message : null });
             throw err;
           }
         }
@@ -1010,6 +1021,10 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
     }
     return all;
   }, [hasImageUpload]);
+  const localizedPlugins = useMemo<RealmPlugin[]>(() => [
+    ...plugins,
+    { update: (realm) => realm.pub(translation$, translation) },
+  ], [plugins, translation]);
 
   useEffect(() => {
     if (editorValue !== latestValueRef.current) {
@@ -1341,7 +1356,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
       >
         <div className="flex items-start justify-between gap-3 px-3 pt-2 text-xs text-muted-foreground">
           <p>
-            Rich editor unavailable for this markdown. Showing raw source instead.{" "}
+            {t("taskDetailCommon.editor.richUnavailable")}{" "}
             <span data-testid="markdown-editor-fallback-code" className="font-mono">
               {richEditorError.code}
             </span>
@@ -1357,7 +1372,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
               setRichEditorError(null);
             }}
           >
-            Retry rich editor
+            {t("taskDetailCommon.editor.retryRich")}
           </button>
         </div>
         <textarea
@@ -1519,14 +1534,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
       <MarkdownEditorRichErrorBoundary onError={handleRichEditorRenderError}>
         <MDXEditor
           ref={setEditorRef}
-          translation={(key, fallback, interpolations = {}) =>
-            key === "contentArea.editableMarkdown" && ariaLabel
-              ? ariaLabel
-              : Object.entries(interpolations).reduce(
-                  (text, [name, value]) => text.replaceAll(`{{${name}}}`, String(value)),
-                  fallback,
-                )
-          }
+          translation={translation}
           markdown={editorValue}
           iconComponentFor={editorIconFor}
           suppressHtmlProcessing
@@ -1584,7 +1592,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             contentClassName,
           )}
           additionalLexicalNodes={[MentionAwareLinkNode, mentionAwareLinkNodeReplacement]}
-          plugins={plugins}
+          plugins={localizedPlugins}
         />
       </MarkdownEditorRichErrorBoundary>
 
@@ -1680,27 +1688,27 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
                 )}
                 {option.kind === "issue" && (
                   <span className="ml-auto text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
-                    Task
+                    {t("taskDetailCommon.editor.task")}
                   </span>
                 )}
                 {option.kind === "project" && option.projectId && (
                   <span className="ml-auto text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
-                    Project
+                    {t("taskDetailCommon.editor.project")}
                   </span>
                 )}
                 {option.kind === "user" && (
                   <span className="ml-auto text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
-                    User
+                    {t("taskDetailCommon.editor.user")}
                   </span>
                 )}
                 {option.kind === "skill" && (
                   <span className="ml-auto text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
-                    Skill
+                    {t("taskDetailCommon.editor.skill")}
                   </span>
                 )}
                 {option.kind === "routine" && (
                   <span className="ml-auto text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
-                    Routine
+                    {t("taskDetailCommon.editor.routine")}
                   </span>
                 )}
                 {option.kind === "action" && (
@@ -1721,11 +1729,11 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             !bordered && "inset-0 rounded-sm",
           )}
         >
-          Drop {onDropFile ? "file" : "image"} to upload
+          {onDropFile ? t("taskDetailCommon.editor.dropFile") : t("taskDetailCommon.editor.dropImage")}
         </div>
       )}
       {uploadError && (
-        <p className="px-3 pb-2 text-xs text-destructive">{uploadError}</p>
+        <p className="px-3 pb-2 text-xs text-destructive">{renderImageUploadError ? renderImageUploadError(uploadError.cause) : uploadError.message ?? t("taskDetailCommon.editor.uploadFailed")}</p>
       )}
     </div>
   );

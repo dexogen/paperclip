@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import type { BudgetIncident } from "@paperclipai/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BudgetIncidentCard } from "./BudgetIncidentCard";
+import { i18n } from "../i18n";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -46,6 +47,8 @@ async function renderCard(value: BudgetIncident) {
     div,
     buttons,
     onKeepPaused,
+    onRaiseAndResume,
+    renderPending: async () => act(async () => root.render(<BudgetIncidentCard incident={value} onKeepPaused={onKeepPaused} onRaiseAndResume={onRaiseAndResume} isMutating />)),
     cleanup: async () => {
       await act(async () => root.unmount());
       div.remove();
@@ -54,7 +57,7 @@ async function renderCard(value: BudgetIncident) {
 }
 
 describe("BudgetIncidentCard", () => {
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(async () => { vi.restoreAllMocks(); await i18n.changeLanguage("en"); });
 
   it("labels a hard-stop incident as paused", async () => {
     const { div, buttons, cleanup } = await renderCard(incident());
@@ -88,4 +91,32 @@ describe("BudgetIncidentCard", () => {
     expect(div.textContent).toContain("Project execution is paused.");
     await cleanup();
   });
+  it("retains a dirty budget and pending action without another callback when language changes", async () => {
+    const { div, onRaiseAndResume, onKeepPaused, renderPending, cleanup } = await renderCard(incident({ scopeName: "Open <raw>" }));
+    try {
+      const input = div.querySelector("input")!;
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "1200.25");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.focus();
+      });
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(div.textContent).toContain("Остановка по бюджету агента");
+      expect(div.textContent).toContain("Open <raw>");
+      expect(div.querySelector("input")).toBe(input);
+      expect(document.activeElement).toBe(input);
+      expect(input.value).toBe("1200.25");
+      await act(async () => div.querySelector("button")!.click());
+      expect(onRaiseAndResume).toHaveBeenCalledExactlyOnceWith(120025);
+      await renderPending();
+      expect(div.textContent).toContain("Применение…");
+      expect([...div.querySelectorAll("button")].every(button => button.disabled)).toBe(true);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(div.textContent).toContain("Applying...");
+      expect(input.value).toBe("1200.25");
+      expect(onRaiseAndResume).toHaveBeenCalledTimes(1);
+      expect(onKeepPaused).not.toHaveBeenCalled();
+    } finally { await cleanup(); }
+  });
+
 });

@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { TaskChatMarker } from "./TaskChatMarker";
-import { TaskChatThreadView } from "./TaskChatThreadView";
+import { TaskChatThreadView, taskChatContentKey } from "./TaskChatThreadView";
+import type { TaskChatItem } from "./task-chat-model";
 import { TaskChatPresentationProvider } from "./presentation-mode";
 
 vi.mock("@/lib/router", () => ({
@@ -31,6 +33,58 @@ describe("TaskChatMarker", () => {
     root = null;
     container.remove();
     vi.useRealTimers();
+    void i18n.changeLanguage("en");
+  });
+
+  it("localizes an expanded generated marker without changing raw identity or retry target", async () => {
+    const retry = vi.fn();
+    const items: TaskChatItem[] = [{
+      id: "canonical-failure", kind: "marker", variant: "interrupted", label: "Run failed",
+      detail: "The runner returned no user-facing response.", collapsible: true, runId: "canonical-run",
+      retryKind: "run_failure", display: { label: { code: "marker.runFailed" }, detail: { code: "detail.noResponse" } },
+    }, {
+      id: "custom-caption", kind: "marker", variant: "turn_boundary", label: "Run failed", detail: "<b>Raw {{detail}}</b>",
+    }];
+    const signature = taskChatContentKey(items);
+    flushSync(() => root!.render(<ThemeProvider><TaskChatThreadView scroll={false} items={items} onRetryFailedRun={retry} /></ThemeProvider>));
+    const toggle = container.querySelector<HTMLButtonElement>("button[aria-expanded]")!;
+    flushSync(() => toggle.click());
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    flushSync(() => { void i18n.changeLanguage("ru"); });
+    expect(toggle.textContent).toContain("Запуск завершился с ошибкой");
+    expect(container.textContent).toContain("Среда запуска не вернула ответ для пользователя.");
+    expect(container.textContent).toContain("Run failed");
+    expect(container.textContent).toContain("<b>Raw {{detail}}</b>");
+    expect(container.querySelector("b")).toBeNull();
+    expect(container.querySelector("button[aria-expanded]")).toBe(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(items[0]).toMatchObject({ id: "canonical-failure", label: "Run failed", runId: "canonical-run" });
+    expect(taskChatContentKey(items)).toBe(signature);
+    expect(retry).not.toHaveBeenCalled();
+    flushSync(() => { void i18n.changeLanguage("en"); });
+    expect(toggle.textContent).toContain("Run failed");
+    const button = container.querySelector<HTMLButtonElement>('[data-testid="task-chat-run-failed-try-again"]')!;
+    flushSync(() => button.click());
+    await Promise.resolve();
+    expect(retry).toHaveBeenCalledExactlyOnceWith("canonical-run");
+  });
+
+  it("distinguishes a user named you and an agent named This agent from fallback identities", async () => {
+    const retry = vi.fn();
+    flushSync(() => root!.render(<ThemeProvider><TaskChatMarker item={{
+      id: "credential", kind: "marker", variant: "interrupted", label: "Run failed",
+      credentialAccess: { agentName: "This agent", agentKind: "named", deniedUser: "you", deniedUserKind: "named", credentialName: "an AI credential", settingsHref: "/agents/raw-agent/runtime" },
+    }} onTryAgain={retry} /></ThemeProvider>));
+    flushSync(() => { void i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Агент «This agent»");
+    expect(container.textContent).toContain("пользователя «you»");
+    expect(container.textContent).toContain("учётные данные «an AI credential»");
+    expect(container.textContent).not.toContain("у вас нет доступа");
+    expect(container.querySelector('a[href="/agents/raw-agent/runtime"]')).not.toBeNull();
+    expect(retry).not.toHaveBeenCalled();
+    flushSync(() => { void i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("the user “you” doesn’t");
+    expect(retry).not.toHaveBeenCalled();
   });
 
   it.each(["production", "streamlined"] as const)("renders old failure markers without divider rules in %s mode", (mode) => {

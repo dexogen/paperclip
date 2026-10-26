@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
+import { act as reactAct } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -126,11 +128,13 @@ describe("FileViewerSheet copy actions", () => {
   async function click(label: string) {
     const button = document.body.querySelector(`button[aria-label="${label}"]`) as HTMLButtonElement | null;
     expect(button).not.toBeNull();
-    flushSync(() => {
-      button!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    await reactAct(async () => {
+      flushSync(() => {
+        button!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      });
+      await Promise.resolve();
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    await Promise.resolve();
-    await new Promise((resolve) => setTimeout(resolve, 0));
   }
 
   it("copies file contents and shows confirmation", async () => {
@@ -205,6 +209,32 @@ describe("FileViewerSheet copy actions", () => {
     expect(document.body.querySelector('[aria-label="launch.md source"]')).not.toBeNull();
     expect(document.body.querySelector('[aria-label="launch.md rendered Markdown"]')).toBeNull();
   });
+  it("keeps raw mode, file contents and clipboard data literal across a language change", async () => {
+    renderSheet();
+    await click("Show raw Markdown");
+    const source = document.body.querySelector('[role="region"][aria-label="tweet.md source"]');
+    expect(source).not.toBeNull();
+    const separator = document.body.querySelector('[role="separator"]')!;
+    flushSync(() => separator.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })));
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.body.querySelector('[role="region"][aria-label="tweet.md: исходный текст"]')).toBe(source);
+      expect(source?.textContent).toContain("hello from the file");
+      expect(document.body.querySelector('[role="separator"]')).toBe(separator);
+      expect(separator.getAttribute("aria-valuenow")).toBe("312");
+      await reactAct(async () => { await click("Скопировать содержимое файла"); });
+      expect(writeText).toHaveBeenCalledExactlyOnceWith("hello from the file");
+      expect(document.body.textContent).toContain("Содержимое скопировано");
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(document.body.querySelector('[role="region"][aria-label="tweet.md source"]')).toBe(source);
+      expect(document.body.textContent).toContain("Copied contents");
+      expect(writeText).toHaveBeenCalledTimes(1);
+      expect(viewerMock.open).not.toHaveBeenCalled();
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
 });
 
 
@@ -229,4 +259,6 @@ describe("source line navigation", () => {
       HTMLElement.prototype.scrollIntoView = original;
     }
   });
+
+
 });

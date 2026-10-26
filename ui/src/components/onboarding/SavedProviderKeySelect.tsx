@@ -1,3 +1,4 @@
+import { useTranslation } from "../../i18n";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import type { AiProvider } from "@paperclipai/shared";
 import { useQuery } from "@tanstack/react-query";
@@ -87,13 +88,14 @@ export function SavedProviderKeySelect({
   disabled?: boolean;
   kind?: "api" | "subscription";
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2">
       {options.length > 0 && (
         <label className="block space-y-2 text-sm">
-          <span>{kind === "api" ? "API key" : "Subscription"}</span>
+          <span>{kind === "api" ? t("onboarding.credentials.apiKey") : t("onboarding.credentials.subscription")}</span>
           <select
-            aria-label={kind === "api" ? "Saved API key" : "Saved subscription"}
+            aria-label={kind === "api" ? t("onboarding.credentials.savedKey") : t("onboarding.credentials.savedSubscription")}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             value={value}
             onChange={(event) => onChange(event.target.value)}
@@ -106,26 +108,21 @@ export function SavedProviderKeySelect({
             ))}
             <option value="">
               {kind === "api"
-                ? "Enter a new API key"
-                : "Sign in to another account"}
+                ? t("onboarding.credentials.newKey")
+                : t("onboarding.credentials.anotherAccount")}
             </option>
           </select>
         </label>
       )}
       {loading && (
-        <p role="status" className="text-sm text-muted-foreground">
-          Checking saved API keys…
-        </p>
+        <p role="status" className="text-sm text-muted-foreground">{t("onboarding.credentials.checking")}</p>
       )}
       {error && (
-        <p role="alert" className="text-sm text-destructive">
-          Some saved keys could not be loaded. You can still enter a new key.
-        </p>
+        <p role="alert" className="text-sm text-destructive">{t("onboarding.credentials.loadError")}</p>
       )}
       {value && (
         <p className="text-sm text-muted-foreground">
-          Reuse this saved {kind === "api" ? "key" : "subscription"} for this
-          agent.
+          {kind === "api" ? t("onboarding.credentials.reuseKey") : t("onboarding.credentials.reuseSubscription")}
         </p>
       )}
     </div>

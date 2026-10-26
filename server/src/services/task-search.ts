@@ -1,6 +1,50 @@
 import { sql, type SQL } from "drizzle-orm";
 import { COMPANY_SEARCH_MAX_QUERY_LENGTH, COMPANY_SEARCH_MAX_TOKENS } from "@paperclipai/shared";
+import type { Db } from "@paperclipai/db";
+import { HttpError } from "../errors.js";
 import { visibleIssueCondition } from "./issue-visibility.js";
+
+const unicodeCollations = [
+  { name: "pg_unicode_fast", provider: "b" },
+  { name: "pg_c_utf8", provider: "b" },
+  { name: "unicode", provider: "i" },
+  { name: "und-x-icu", provider: "i" },
+  { name: "C.utf8", provider: "c" },
+  { name: "C.UTF-8", provider: "c" },
+] as const;
+type UnicodeCollation = typeof unicodeCollations[number]["name"];
+const preparedUnicodeCollation = Symbol("preparedUnicodeCollation");
+const unicodeCollationCache = new WeakMap<Db, Promise<UnicodeCollation>>();
+
+async function resolveUnicodeCollation(db: Db): Promise<UnicodeCollation> {
+  const cached = unicodeCollationCache.get(db);
+  if (cached) return cached;
+  const pending = (async () => {
+    const rows = await db.execute(sql`
+      SELECT c.collname, c.collprovider
+      FROM pg_catalog.pg_collation c
+      JOIN pg_catalog.pg_namespace n ON n.oid = c.collnamespace
+      WHERE n.nspname = 'pg_catalog' AND c.collisdeterministic
+        AND c.collencoding IN (-1, pg_catalog.pg_char_to_encoding(current_setting('server_encoding')))
+        AND c.collname IN (${sql.join(unicodeCollations.map(({ name }) => sql`${name}`), sql`, `)})
+    `);
+    const selected = unicodeCollations.find(({ name, provider }) =>
+      rows.some((row) => row.collname === name && row.collprovider === provider));
+    if (!selected) {
+      throw new HttpError(503, "Unicode task search requires a deterministic Unicode collation.", {
+        code: "unicode_search_unavailable",
+      });
+    }
+    return selected.name;
+  })();
+  unicodeCollationCache.set(db, pending);
+  try {
+    return await pending;
+  } catch (error) {
+    if (unicodeCollationCache.get(db) === pending) unicodeCollationCache.delete(db);
+    throw error;
+  }
+}
 
 // Only grammatical filler is ignored, only in multi-term queries, and never
 // inside quotes. Keep negation and domain words (API, UI, PR, etc.) meaningful.
@@ -10,7 +54,9 @@ export function escapeTaskSearchPattern(value: string) {
 }
 
 export function parseTaskSearch(text: string) {
-  const normalizedQuery = text.slice(0, COMPANY_SEARCH_MAX_QUERY_LENGTH).trim().replace(/\s+/g, " ").toLowerCase();
+  const boundedQuery = text.slice(0, COMPANY_SEARCH_MAX_QUERY_LENGTH).trim().replace(/\s+/g, " ");
+  const requiresUnicodeCollation = /[^\x00-\x7f]/.test(boundedQuery);
+  const normalizedQuery = boundedQuery.toLowerCase();
   const parsed = Array.from(normalizedQuery.matchAll(/"([^"]+)"|([^\s"]+)/g), (match) => ({
     text: match[1] ?? match[2]!, quoted: match[1] !== undefined,
   }));
@@ -28,21 +74,42 @@ export function parseTaskSearch(text: string) {
   const patterns = tokens.map((token) => `%${escapeTaskSearchPattern(token)}%`);
   const containsPattern = `%${escapeTaskSearchPattern(phrase)}%`;
   const startsWithPattern = `${escapeTaskSearchPattern(phrase)}%`;
-  return { normalizedQuery, terms, tokens, phrase, identifierQuery, patterns, containsPattern, startsWithPattern };
+  return { normalizedQuery, terms, tokens, phrase, identifierQuery, patterns, containsPattern, startsWithPattern, requiresUnicodeCollation };
 }
-export type TaskSearch = ReturnType<typeof parseTaskSearch>;
+export type TaskSearch = ReturnType<typeof parseTaskSearch> & {
+  [preparedUnicodeCollation]?: UnicodeCollation;
+};
+
+export async function prepareTaskSearch(db: Db, text: string): Promise<TaskSearch> {
+  const search = parseTaskSearch(text);
+  return search.requiresUnicodeCollation
+    ? { ...search, [preparedUnicodeCollation]: await resolveUnicodeCollation(db) }
+    : search;
+}
+
+export function taskSearchField(field: SQL, search: TaskSearch): SQL {
+  if (!search.requiresUnicodeCollation) return field;
+  const collation = search[preparedUnicodeCollation];
+  if (!collation) throw new Error("Unicode task search must be prepared before generating SQL.");
+  return sql`(${field} COLLATE ${sql.identifier("pg_catalog")}.${sql.identifier(collation)})`;
+}
 
 function taskSearchAny(field: SQL, search: TaskSearch): SQL<boolean> {
+  const input = taskSearchField(field, search);
   return search.patterns.length === 0 ? sql`false`
-    : sql`(${sql.join(search.patterns.map((pattern) => sql`${field} ILIKE ${pattern}`), sql` OR `)})`;
+    : sql`(${sql.join(search.patterns.map((pattern) => sql`${input} ILIKE ${pattern}`), sql` OR `)})`;
 }
-// Short typeahead terms must start a word: UI must not match "build", and
+// Short non-CJK typeahead terms must start a word: UI must not match "build", and
 // API must not match "Capistrano". Keep an indexable literal precondition.
 export function taskSearchTermMatch(field: SQL, search: TaskSearch, index: number): SQL<boolean> {
   const term = search.tokens[index]!;
-  const literal = sql<boolean>`${field} ILIKE ${search.patterns[index]!}`;
-  return /^[\p{L}]{1,3}$/u.test(term)
-    ? sql`(${literal} AND ${field} ~* ${`(^|[^[:alnum:]])${term}`})`
+  const input = taskSearchField(field, search);
+  const wordInput = search.requiresUnicodeCollation ? sql`lower(${input})` : input;
+  const literal = sql<boolean>`${input} ILIKE ${search.patterns[index]!}`;
+  const requiresWordStart = /^[\p{L}]{1,3}$/u.test(term)
+    && !/[\p{Script_Extensions=Han}\p{Script_Extensions=Hiragana}\p{Script_Extensions=Katakana}\p{Script_Extensions=Hangul}]/u.test(term);
+  return requiresWordStart
+    ? sql`(${literal} AND ${wordInput} ~* ${`(^|[^[:alnum:]])${term}`})`
     : literal;
 }
 export function taskSearchFieldMatch(field: SQL, search: TaskSearch): SQL<boolean> {
@@ -78,11 +145,14 @@ export function taskSearchScore(search: TaskSearch): SQL<number> {
 }
 
 /** Shared task retrieval for company search and issue-list/command-palette search.
- * Uses existing pg_trgm indexes and current rows: no derived corpus or worker.
+ * Uses current rows: no derived corpus or worker.
  * The tagged comment/document sets are evaluated once, not once per task.
  */
 export function taskSearchCtes(companyId: string, search: TaskSearch, includeContext = true, fallbackFilters?: SQL, readCondition?: SQL<boolean>): SQL {
   const n = search.tokens.length;
+  const title = taskSearchField(sql`issues.title`, search);
+  const wordTitle = search.requiresUnicodeCollation ? sql`lower(${title})` : title;
+  const identifier = taskSearchField(sql`issues.identifier`, search);
   const comments = n === 0 || !includeContext ? sql`SELECT NULL::uuid AS issue_id, 0 AS ord WHERE false`
     : sql.join(search.patterns.map((_, index) => sql`
       SELECT c.issue_id, ${index}::int AS ord FROM issue_comments c
@@ -104,9 +174,9 @@ export function taskSearchCtes(companyId: string, search: TaskSearch, includeCon
   const commentTerms = search.patterns.map((_, index) => sql`issues.id IN (SELECT issue_id FROM comment_matches WHERE ord = ${index})`);
   const documentTerms = search.patterns.map((_, index) => sql`issues.id IN (SELECT issue_id FROM document_matches WHERE ord = ${index})`);
   const allTerms = issueTerms.map((term, index) => sql`(${term} OR ${commentTerms[index]!} OR ${documentTerms[index]!})`);
-  const phraseMatch = (field: SQL) => n > 0 ? sql`coalesce(${field} ILIKE ${search.containsPattern}, false)` : sql`false`;
-  const identExact = n > 0 ? sql`lower(issues.identifier) = ${search.identifierQuery}` : sql`false`;
-  const identStarts = n > 0 ? sql`issues.identifier ILIKE ${escapeTaskSearchPattern(search.identifierQuery) + "%"}` : sql`false`;
+  const phraseMatch = (field: SQL) => n > 0 ? sql`coalesce(${taskSearchField(field, search)} ILIKE ${search.containsPattern}, false)` : sql`false`;
+  const identExact = n > 0 ? sql`lower(${identifier}) = ${search.identifierQuery}` : sql`false`;
+  const identStarts = n > 0 ? sql`${identifier} ILIKE ${escapeTaskSearchPattern(search.identifierQuery) + "%"}` : sql`false`;
   const fuzzyAllowed = !search.terms.some((term) => term.quoted)
     && search.terms.some((term) => /^[\p{L}]{4,255}$/u.test(term.text))
     && !/^[a-z][a-z0-9]*[- ]?\d+$/i.test(search.normalizedQuery);
@@ -117,7 +187,7 @@ export function taskSearchCtes(companyId: string, search: TaskSearch, includeCon
     const edits = sql`CASE WHEN least(char_length(word), ${Array.from(term.text).length}) >= 6 THEN 2
       WHEN least(char_length(word), ${Array.from(term.text).length}) >= 5 THEN 1 ELSE 0 END`;
     return sql`(${titleTerms[index]!} OR EXISTS (
-      SELECT 1 FROM regexp_split_to_table(lower(issues.title), '[^[:alnum:]]+') AS word
+      SELECT 1 FROM regexp_split_to_table(lower(${title}), '[^[:alnum:]]+') AS word
       WHERE CASE WHEN char_length(word) BETWEEN 4 AND 255
         AND abs(char_length(word) - ${Array.from(term.text).length}) <= ${edits}
         THEN levenshtein_less_equal(${term.text}, word, ${edits}) <= ${edits}
@@ -128,7 +198,7 @@ export function taskSearchCtes(companyId: string, search: TaskSearch, includeCon
     ELSE (${sql.join(fuzzyTerms, sql` AND `)}) END` : sql`false`;
   const wordTerms = search.tokens.map((token) => {
     const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return sql`issues.title ~* ${`(^|[^[:alnum:]_])${escaped}($|[^[:alnum:]_])`}`;
+    return sql`${wordTitle} ~* ${`(^|[^[:alnum:]_])${escaped}($|[^[:alnum:]_])`}`;
   });
   // Carry flags, not potentially large bodies, through materialized stages.
   // The search page fetches descriptions only for its result window.
@@ -139,8 +209,8 @@ export function taskSearchCtes(companyId: string, search: TaskSearch, includeCon
         ${identExact} AS ident_exact, ${identStarts} AS ident_starts,
         ${phraseMatch(sql`issues.identifier`)} AS ident_phrase,
         ${taskSearchFieldMatch(sql`issues.identifier`, search)} AS ident_token,
-        ${n > 0 ? sql`lower(issues.title) = ${search.phrase}` : sql`false`} AS title_exact,
-        ${n > 0 ? sql`issues.title ILIKE ${search.startsWithPattern}` : sql`false`} AS title_starts,
+        ${n > 0 ? sql`lower(${title}) = ${search.phrase}` : sql`false`} AS title_exact,
+        ${n > 0 ? sql`${title} ILIKE ${search.startsWithPattern}` : sql`false`} AS title_starts,
         ${phraseMatch(sql`issues.title`)} AS title_phrase,
         ${taskSearchFieldMatch(sql`issues.title`, search)} AS title_token,
         ${phraseMatch(sql`issues.description`)} AS desc_phrase,

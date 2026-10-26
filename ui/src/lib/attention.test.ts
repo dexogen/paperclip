@@ -1,7 +1,12 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AttentionFeed, AttentionItem, AttentionSourceKind } from "@paperclipai/shared";
 import {
   ATTENTION_GROUP_BY_KEY,
+  decideByLabel,
+  attentionGroupByOptions,
+  attentionDateRangeOptions,
+  attentionSortOptions,
   ATTENTION_GROUP_BY_OPTIONS,
   attentionBadgeCount,
   attentionDateBucket,
@@ -672,5 +677,74 @@ describe("planAttentionRenderRows (PAP-13784 incremental rendering)", () => {
     expect(plan.snoozedRows).toHaveLength(2);
     expect(plan.dismissedRows).toHaveLength(0);
     expect(plan.hasMoreRows).toBe(true);
+  });
+});
+
+describe("localized attention presentation", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
+
+  it.each([
+    [0, "0 вопросов", "0 вариантов", "0 предложенных задач", "К рассмотрению: 0 пунктов"],
+    [1, "1 вопрос", "1 вариант", "1 предложенная задача", "К рассмотрению: 1 пункт"],
+    [2, "2 вопроса", "2 варианта", "2 предложенные задачи", "К рассмотрению: 2 пункта"],
+    [5, "5 вопросов", "5 вариантов", "5 предложенных задач", "К рассмотрению: 5 пунктов"],
+    [11, "11 вопросов", "11 вариантов", "11 предложенных задач", "К рассмотрению: 11 пунктов"],
+    [21, "21 вопрос", "21 вариант", "21 предложенная задача", "К рассмотрению: 21 пункт"],
+    [22, "22 вопроса", "22 варианта", "22 предложенные задачи", "К рассмотрению: 22 пункта"],
+    [25, "25 вопросов", "25 вариантов", "25 предложенных задач", "К рассмотрению: 25 пунктов"],
+    [1.5, "1,5 вопроса", "1,5 варианта", "1,5 предложенной задачи", "К рассмотрению: 1,5 пункта"],
+  ] as const)("renders complete detail families for %s while preserving literal excerpts", (count, questions, options, tasks, verdicts) => {
+    const ru = i18n.getFixedT("ru");
+    const excerpt = '<strong>Нет {{перевода}}</strong> & "текст"';
+    expect(attentionDetailLine(buildItem({ detail: { kind: "questions", images: [], questionCount: count, firstQuestionText: excerpt } }), ru)).toBe(`${questions} — “${excerpt}”`);
+    expect(attentionDetailLine(buildItem({ detail: { kind: "checkbox_confirmation", images: [], optionCount: count, promptExcerpt: null } }), ru)).toBe(options);
+    expect(attentionDetailLine(buildItem({ detail: { kind: "suggested_tasks", images: [], taskCount: count, firstTaskTitle: null } }), ru)).toBe(tasks);
+    expect(attentionDetailLine(buildItem({ detail: { kind: "item_verdicts", images: [], itemCount: count, promptExcerpt: null } }), ru)).toBe(verdicts);
+    expect(attentionDetailLine(buildItem({ detail: { kind: "questions", images: [], questionCount: count, firstQuestionText: null } }))).toBe(`${count} ${count === 1 ? "question" : "questions"}`);
+  });
+
+  it("translates only proven plan and join fallbacks, leaving identical custom titles literal", () => {
+    const ru = i18n.getFixedT("ru");
+    const plan = buildItem({ detail: { kind: "plan_approval", images: [], issueTitle: null, planTitle: "Plan", summaryExcerpt: null, display: { planTitle: { code: "detail.plan.defaultTitle" } } } });
+    const join = buildItem({ detail: { kind: "generic", images: [], summaryExcerpt: "Agent join request", display: { summaryExcerpt: { code: "title.join.agent" } } } });
+    const before = structuredClone([plan, join]);
+    expect(attentionDetailLine(plan, ru)).toBe("План");
+    expect(attentionDetailLine({ ...plan, detail: { kind: "plan_approval", images: [], issueTitle: null, planTitle: "Plan", summaryExcerpt: null } }, ru)).toBe("Plan");
+    expect(attentionDetailLine(join, ru)).toBe("“Запрос на присоединение агента”");
+    expect(attentionDetailLine({ ...join, detail: { kind: "generic", images: [], summaryExcerpt: "Agent join request" } }, ru)).toBe("“Agent join request”");
+    expect([plan, join]).toEqual(before);
+  });
+
+  it("searches fixed Russian and English projections without changing group order, IDs or raw data", async () => {
+    const tagged = buildItem({ id: "tagged", sourceKind: "issue_thread_interaction", subject: { ...buildItem().subject, title: "Confirmation requested", display: { title: { code: "title.interaction.confirmation" } } }, detail: { kind: "generic", images: [], summaryExcerpt: "literal <текст> {{user}}" } });
+    const custom = buildItem({ id: "custom", subject: { ...tagged.subject, display: undefined } });
+    const budget = buildItem({ id: "budget", sourceKind: "budget_alert" });
+    const items = [tagged, custom, budget];
+    const before = structuredClone(items);
+    for (const locale of ["en", "ru", "en"]) {
+      await i18n.changeLanguage(locale);
+      expect(filterAttentionItems(items, defaultAttentionFilterState, "Требуется подтверждение").map(item => item.id)).toEqual(["tagged"]);
+      expect(filterAttentionItems(items, defaultAttentionFilterState, "Confirmation requested").map(item => item.id)).toEqual(["tagged", "custom"]);
+      expect(filterAttentionItems(items, defaultAttentionFilterState, "<текст> {{user}}").map(item => item.id)).toEqual(["tagged"]);
+      const groups = groupAttentionItems(items, "type", { t: i18n.getFixedT(locale) });
+      expect(groups.map(group => group.key)).toEqual(["type:approval", "type:budget_alert", "type:issue_thread_interaction"]);
+      expect(groups.flatMap(group => group.items.map(item => item.id))).toEqual(["custom", "budget", "tagged"]);
+    }
+    expect(items).toEqual(before);
+  });
+
+  it("keeps canonical date, grouping and sorting options stable and formats a date in the requested language", async () => {
+    await i18n.changeLanguage("ru");
+    const ru = i18n.getFixedT("ru");
+    expect(decideByLabel("2026-01-12", ru)).toBe("12 янв.");
+    expect(decideByLabel("2026-01-12")).toBe("Jan 12");
+    expect(decideByLabel("custom <raw>", ru)).toBe("custom <raw>");
+    expect(attentionGroupByOptions(ru).map(([id]) => id)).toEqual(ATTENTION_GROUP_BY_OPTIONS.map(([id]) => id));
+    expect(attentionGroupByOptions(ru)[0]).toEqual(["none", "Нет"]);
+    expect(attentionDateRangeOptions(ru).map(([id]) => id)).toEqual(["all", "today", "yesterday", "last_7_days", "this_month"]);
+    expect(attentionSortOptions(ru)).toEqual([["newest", "Сначала новые"], ["oldest", "Сначала старые"]]);
+    const items = [buildItem({ decideBy: "today" }), buildItem({ id: "later", activityAt: "2026-01-01T00:00:00Z", createdAt: "2026-01-01T00:00:00Z" })];
+    const now = Date.parse("2026-07-09T13:00:00Z");
+    expect(buildDeskShelves(items, now, ru).map(({ key, label }) => [key, label])).toEqual([["desk:decide-now", "Решить сейчас"], ["desk:earlier", "Ранее"]]);
   });
 });

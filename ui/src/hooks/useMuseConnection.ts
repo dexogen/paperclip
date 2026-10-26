@@ -5,6 +5,13 @@ import { museInvitationsApi } from "@/api/museInvitations";
 import { useAccountIdentity } from "@/api/companies-query";
 import type { MuseConnectionState } from "@/components/new-agent/ExternalAgentInviteContent";
 
+export class MuseConnectionChangedError extends Error {
+  constructor() {
+    super("Connection changed. Refresh before recording detector cleanup.");
+    this.name = "MuseConnectionChangedError";
+  }
+}
+
 export function museConnectionState(connection: MuseConnection | undefined,
   { offline = false, promptUnavailable = false }: { offline?: boolean; promptUnavailable?: boolean } = {}): MuseConnectionState {
   const b = connection?.binding;
@@ -72,7 +79,7 @@ export function useMuseConnection(companyId: string | undefined, agentId: string
     const requestScope = scope;
     const current = await state.refetch({ throwOnError: true });
     const b = current.data?.binding;
-    if (currentScope.current !== requestScope || !b || !b.cleanup.attestationEligible || b.id !== input.bindingId || b.generation !== input.generation || b.revision !== input.expectedRevision || (b.qualification?.id ?? null) !== input.qualificationId || b.cleanup.hookScript !== input.hookScript) throw new Error("Connection changed. Refresh before recording detector cleanup.");
+    if (currentScope.current !== requestScope || !b || !b.cleanup.attestationEligible || b.id !== input.bindingId || b.generation !== input.generation || b.revision !== input.expectedRevision || (b.qualification?.id ?? null) !== input.qualificationId || b.cleanup.hookScript !== input.hookScript) throw new MuseConnectionChangedError();
     await museInvitationsApi.attestDetectorCleanup(companyId!, agentId!, input);
     await state.refetch({ throwOnError: true });
   }, onError: () => { void state.refetch(); } });

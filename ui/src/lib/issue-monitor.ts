@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { useEffect, useState } from "react";
 
 const SECOND_MS = 1_000;
@@ -62,33 +64,33 @@ function toTimestamp(value: MonitorDate): number {
   return timestamp;
 }
 
-function formatDuration(durationMs: number): string {
+function formatDuration(durationMs: number, t: TFunction): string {
   if (durationMs < MINUTE_MS) {
-    return `${Math.max(1, Math.ceil(durationMs / SECOND_MS))}s`;
+    return t("taskDisplay.monitor.seconds", { count: Math.max(1, Math.ceil(durationMs / SECOND_MS)) });
   }
   if (durationMs < HOUR_MS) {
-    return `${Math.floor(durationMs / MINUTE_MS)}m`;
+    return t("taskDisplay.monitor.minutes", { count: Math.floor(durationMs / MINUTE_MS) });
   }
   if (durationMs < DAY_MS) {
     const hours = Math.floor(durationMs / HOUR_MS);
     const minutes = Math.floor((durationMs % HOUR_MS) / MINUTE_MS);
-    return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+    return minutes > 0 ? t("taskDisplay.monitor.hoursMinutes", { hours, minutes }) : t("taskDisplay.monitor.hours", { count: hours });
   }
 
   const days = Math.floor(durationMs / DAY_MS);
   const hours = Math.floor((durationMs % DAY_MS) / HOUR_MS);
-  return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
+  return hours > 0 ? t("taskDisplay.monitor.daysHours", { days, hours }) : t("taskDisplay.monitor.days", { count: days });
 }
 
-export function formatMonitorEta(nextCheckAt: MonitorDate, now: MonitorDate = new Date()): string {
+export function formatMonitorEta(nextCheckAt: MonitorDate, now: MonitorDate = new Date(), t: TFunction = i18n.getFixedT("en")): string {
   const deltaMs = toTimestamp(nextCheckAt) - toTimestamp(now);
-  if (deltaMs > 0) return `in ${formatDuration(deltaMs)}`;
-  if (deltaMs > -DUE_NOW_GRACE_MS) return "due now";
-  return `overdue by ${formatDuration(Math.abs(deltaMs))}`;
+  if (deltaMs > 0) return t("taskDisplay.monitor.future", { duration: formatDuration(deltaMs, t) });
+  if (deltaMs > -DUE_NOW_GRACE_MS) return t("taskDisplay.monitor.dueNow");
+  return t("taskDisplay.monitor.overdue", { duration: formatDuration(Math.abs(deltaMs), t) });
 }
 
-export function formatMonitorEtaLabel(nextCheckAt: MonitorDate, now: MonitorDate = new Date()): string {
-  const eta = formatMonitorEta(nextCheckAt, now);
+export function formatMonitorEtaLabel(nextCheckAt: MonitorDate, now: MonitorDate = new Date(), t: TFunction = i18n.getFixedT("en")): string {
+  const eta = formatMonitorEta(nextCheckAt, now, t);
   return `${eta.charAt(0).toUpperCase()}${eta.slice(1)}`;
 }
 
@@ -119,6 +121,7 @@ export function formatMonitorAbsolute(
   nextCheckAt: MonitorDate,
   options: MonitorDateTimeFormatOptions = {},
   now: MonitorDate = new Date(),
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   const target = new Date(toTimestamp(nextCheckAt));
   const reference = new Date(toTimestamp(now));
@@ -135,7 +138,7 @@ export function formatMonitorAbsolute(
     targetYmd.year === referenceYmd.year &&
     targetYmd.month === referenceYmd.month &&
     targetYmd.day === referenceYmd.day;
-  if (isToday) return `Today, ${time}`;
+  if (isToday) return t("taskDisplay.monitor.today", { time });
 
   const weekday = new Intl.DateTimeFormat(options.locale, {
     weekday: "short",
@@ -259,12 +262,11 @@ export function useMonitorCountdown(nextCheckAt: MonitorDate | null | undefined)
   return now;
 }
 
-export function formatMonitorOffset(nextCheckAt: MonitorDate): string {
-  const now = new Date(Date.now());
-  const deltaMs = toTimestamp(nextCheckAt) - now.getTime();
-  if (Math.round(Math.abs(deltaMs) / MINUTE_MS) === 0) return "now";
-  const eta = formatMonitorEta(nextCheckAt, now);
-  if (eta === "due now") return "now";
-  if (eta.startsWith("overdue by ")) return `${eta.slice("overdue by ".length)} ago`;
-  return eta;
+export function formatMonitorOffset(nextCheckAt: MonitorDate, t: TFunction = i18n.getFixedT("en")): string {
+  const deltaMs = toTimestamp(nextCheckAt) - Date.now();
+  if (Math.round(Math.abs(deltaMs) / MINUTE_MS) === 0 || (deltaMs <= 0 && deltaMs > -DUE_NOW_GRACE_MS)) {
+    return t("taskDisplay.monitor.now");
+  }
+  const duration = formatDuration(Math.abs(deltaMs), t);
+  return deltaMs > 0 ? t("taskDisplay.monitor.future", { duration }) : t("taskDisplay.monitor.ago", { duration });
 }

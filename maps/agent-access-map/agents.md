@@ -87,6 +87,15 @@ configuration across restart and activation. An unrelated edit/import update mus
 not change existing execution; a new package without a runner choice receives
 creation defaults. Do not count a board call or component test as agent evidence.
 
+The external invitation locale component checks preserve preset/role IDs,
+company/agent scope, binding generations/revisions and the exact Muse cleanup
+observation payload. A language change does not issue a new invitation, copy or
+attestation. Local stale-snapshot errors have explicit identity; supplied provider
+messages remain literal. This is UI state/payload evidence with mocked requests,
+not a live grant, cleanup, approval or permission-denial qualification. Generated
+access prompts and existing server authorization remain unchanged; see the
+[product recipe](../feature-map/agents.md#hire-agent).
+
 Gaps: Identity/persona hiring works. Operator account login and sensitive
 adapter/environment configuration are separate guarded actions.
 
@@ -298,6 +307,13 @@ Policy: company/agent/client/resource/authorizer binding; current manage-agent p
 Evidence: `source-only` — [routes](../../server/src/routes/grok-bot.ts), [shared authority](../../server/src/services/external-bot-authority.ts), [routine receipts](../../server/src/services/grok-bot/routine.ts) and [Runner broker](../../server/src/services/dot-runner-broker.ts). Temporary actual-client OAuth and an outbound routine wake are qualified separately; they do not prove this candidate’s acceptance.
 
 Verification: `not-run` — deployed acceptance pending; focused protocol/authorization and actual Rust backend tests; run fresh/saved setup, assigned and proactive tasks, duplicate calls, stale sessions, restart, ambiguous delivery, stop and recovery through the real client on the serving managed candidate.
+
+The [setup locale regression](../../ui/src/components/new-agent/GrokBotSetup.locale.test.tsx)
+checks company/agent IDs, canonical role and manager, binding revision and exact
+routine credential payload through language changes. Pending operations and raw
+failures are retained without extra calls; generated prompts and consent/delivery
+checks keep their original inputs. This is mocked UI contract evidence, not proof
+of server permissions, actual secret persistence or authenticated provider access.
 
 Gaps: deployed two-way work and unattended first-time onboarding remain unqualified; remote termination, provider transcript streaming and usage accounting are unavailable.
 

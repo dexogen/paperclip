@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
 import type { ActivityEvent } from "@paperclipai/shared";
 
 export interface AssigneeSelection {
@@ -89,11 +91,11 @@ export function parseAssigneeValue(value: string): AssigneeSelection {
   return { assigneeAgentId: value, assigneeUserId: null };
 }
 
-export function currentUserAssigneeOption(currentUserId: string | null | undefined): AssigneeOption[] {
+export function currentUserAssigneeOption(currentUserId: string | null | undefined, t: TFunction = i18n.getFixedT("en")): AssigneeOption[] {
   if (!currentUserId) return [];
   return [{
     id: assigneeValueFromSelection({ assigneeUserId: currentUserId }),
-    label: "Me",
+    label: t("taskDisplay.assignees.me"),
     searchText: currentUserId === "local-board" ? "me board human local-board" : `me human ${currentUserId}`,
   }];
 }
@@ -102,15 +104,17 @@ export function formatAssigneeUserLabel(
   userId: string | null | undefined,
   currentUserId: string | null | undefined,
   userLabels?: ReadonlyMap<string, string> | Record<string, string> | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   if (!userId) return null;
-  if (currentUserId && userId === currentUserId) return "You";
-  return formatUserLabel(userId, userLabels);
+  if (currentUserId && userId === currentUserId) return t("taskDisplay.assignees.you");
+  return formatUserLabel(userId, userLabels, t);
 }
 
 export function formatUserLabel(
   userId: string | null | undefined,
   userLabels?: ReadonlyMap<string, string> | Record<string, string> | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   if (!userId) return null;
   if (userLabels) {
@@ -119,6 +123,6 @@ export function formatUserLabel(
       : (userLabels as Record<string, string>)[userId];
     if (typeof label === "string" && label.trim()) return label;
   }
-  if (userId === "local-board") return "Board";
+  if (userId === "local-board") return t("taskDisplay.assignees.board");
   return userId.slice(0, 5);
 }

@@ -38,6 +38,19 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Prep
 
 Automated: [app detail](../../ui/src/pages/apps/AppDetail.test.tsx) covers agent/action controls, quarantined actions, and navigation using mocked requests.
 
+The agent's Tools tab has [locale regressions](../../ui/src/pages/AgentToolsTab.test.tsx)
+for pending and queued installs, failed-draft suppression, company-wide locks,
+GitHub identity retries, raw profile/policy names and whole tool counts.
+[Shared presentation checks](../../ui/src/pages/tools/shared.localization.test.tsx)
+preserve fixed-English callers and literal provider errors. These use mocked
+requests; they do not prove a live grant, GitHub identity or tool invocation.
+
+The [connection instruction settings](../../ui/src/features/connections/ConnectionInstructions.test.tsx)
+retain permission gates, disabled settings, dirty text and template versions
+across English/Russian changes without resetting or submitting the draft. Saves
+retain the exact instruction payload; server errors remain literal. These mocked
+checks do not verify live management permission or downstream tool access.
+
 [Runtime assignment tests](../../server/src/__tests__/agent-runtime-assignments.test.ts)
 use PostgreSQL to verify committed assignment notifications, bounded snapshots,
 rollback, and concurrent AI adoption. The owning lifecycle plugin can read

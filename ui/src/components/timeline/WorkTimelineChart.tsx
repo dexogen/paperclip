@@ -1,3 +1,5 @@
+import { statusLabel } from "@/i18n/ui-labels";
+import { t, useTranslation, i18n } from "@/i18n";
 import { agentAvatarUrl } from "@/lib/agent-avatar-url";
 import { resolveAgentAppearance } from "@paperclipai/shared";
 /**
@@ -110,7 +112,7 @@ interface TooltipState {
   x: number;
   y: number;
   bar: PositionedBar;
-  connectorHint: string | null;
+  connectorHint: "dashed" | "solid" | null;
 }
 
 interface DragSelectionState {
@@ -121,16 +123,16 @@ interface DragSelectionState {
 function fmtClock(ms: number): string {
   const d = new Date(ms);
   const hasMinutes = d.getMinutes() !== 0;
-  return d.toLocaleTimeString("en-US", {
+  return d.toLocaleTimeString(i18n.resolvedLanguage, {
     hour: "numeric",
     minute: hasMinutes ? "2-digit" : undefined,
-    hour12: true,
+    hour12: i18n.resolvedLanguage?.startsWith("ru") ? false : true,
   });
 }
 
 function fmtTick(ms: number, stepMs: number): string {
   const d = new Date(ms);
-  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const date = d.toLocaleDateString(i18n.resolvedLanguage, { month: "short", day: "numeric" });
   if (stepMs >= 24 * 60 * 60 * 1000) {
     return date;
   }
@@ -141,23 +143,23 @@ export function formatVisibleDurationMinutes(minutes: number): string {
   const rounded = Math.max(1, Math.round(minutes));
   if (rounded >= 7 * 24 * 60 && rounded % (7 * 24 * 60) === 0) {
     const weeks = rounded / (7 * 24 * 60);
-    return `${weeks} week${weeks === 1 ? "" : "s"} visible`;
+    return t("surfacesGap.timeline.weeksVisible", { count: weeks });
   }
   if (rounded >= 24 * 60 && rounded % (24 * 60) === 0) {
     const days = rounded / (24 * 60);
-    return `${days} day${days === 1 ? "" : "s"} visible`;
+    return t("surfacesGap.timeline.daysVisible", { count: days });
   }
   if (rounded >= 24 * 60) {
     const days = Math.floor(rounded / (24 * 60));
     const hours = Math.round((rounded % (24 * 60)) / 60);
-    return `${days}d${hours > 0 ? ` ${hours}h` : ""} visible`;
+    return hours > 0 ? t("surfacesGap.timeline.daysHours", { days, hours }) : t("surfacesGap.timeline.daysShort", { days });
   }
   if (rounded >= 60 && rounded % 60 === 0) {
     const hours = rounded / 60;
-    return `${hours} hour${hours === 1 ? "" : "s"} visible`;
+    return t("surfacesGap.timeline.hoursVisible", { count: hours });
   }
-  if (rounded >= 60) return `${Math.floor(rounded / 60)}h ${rounded % 60}m visible`;
-  return `${rounded} minutes visible`;
+  if (rounded >= 60) return t("surfacesGap.timeline.hoursMinutes", { hours: Math.floor(rounded / 60), minutes: rounded % 60 });
+  return t("surfacesGap.timeline.minutesVisible", { minutes: rounded });
 }
 
 function truncate(text: string, n = 42): string {
@@ -258,6 +260,7 @@ export function WorkTimelineChart({
   onVisibleWindowChange,
   nowMs,
 }: WorkTimelineChartProps) {
+  useTranslation();
   const location = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const initialWindowKeyRef = useRef<string | null>(null);
@@ -440,12 +443,12 @@ export function WorkTimelineChart({
     setDocumentDrag(move, up);
   };
 
-  const connectorHintForBar = (bar: PositionedBar): string | null => {
+  const connectorHintForBar = (bar: PositionedBar): TooltipState["connectorHint"] => {
     const related = layout.connectors.filter((c) => c.sourceRunId === bar.span.runId || c.targetRunId === bar.span.runId);
     if (related.length === 0) return null;
     return related.some((c) => c.dashed)
-      ? "dashed handoff: retry or changes requested"
-      : "solid handoff: delegation or assignment";
+      ? "dashed"
+      : "solid";
   };
 
   const showTooltip = (evt: React.MouseEvent, bar: PositionedBar) => {
@@ -736,6 +739,7 @@ function TimeAxisOverlay({
   stepMs: number;
   scrollLeft: number;
 }) {
+  useTranslation();
   return (
     <div
       aria-hidden="true"
@@ -779,10 +783,11 @@ function TimeAxisOverlay({
 }
 
 function Tooltip({ tooltip, now }: { tooltip: TooltipState; now: number }) {
+  useTranslation();
   const { bar } = tooltip;
   const startMs = new Date(bar.span.start).getTime();
   const endMs = bar.span.end ? new Date(bar.span.end).getTime() : now;
-  const title = bar.span.issueTitle ?? bar.span.issueIdentifier ?? "run";
+  const title = bar.span.issueTitle ?? bar.span.issueIdentifier ?? t("surfacesGap.timeline.run");
   const left = Math.min(tooltip.x + 14, (typeof window !== "undefined" ? window.innerWidth : 1200) - 300);
   return (
     <div
@@ -792,17 +797,17 @@ function Tooltip({ tooltip, now }: { tooltip: TooltipState; now: number }) {
     >
       <div className="text-(length:--text-compact) font-medium text-foreground">{truncate(title)}</div>
       <div className="mt-0.5 text-muted-foreground">
-        {fmtClock(startMs)}–{bar.span.end ? fmtClock(endMs) : "now"} · {formatDuration(startMs, endMs)} ·{" "}
-        <span className="font-medium text-foreground">{bar.span.status}</span>
+        {fmtClock(startMs)}–{bar.span.end ? fmtClock(endMs) : t("surfacesGap.timeline.nowLower")} · {formatDuration(startMs, endMs, i18n.t)} ·{" "}
+        <span className="font-medium text-foreground">{statusLabel(bar.span.status)}</span>
       </div>
       {bar.kickoff && (
         <div className="text-muted-foreground">
-          kicked off by: {(bar.kickoff as WorkTimelineActor).name}
-          {bar.span.retryOfRunId ? " · retry" : ""}
+          {t("surfacesGap.timeline.kickoff", { name: (bar.kickoff as WorkTimelineActor).name })}
+          {bar.span.retryOfRunId ? t("surfacesGap.timeline.retry") : ""}
         </div>
       )}
       {tooltip.connectorHint && (
-        <div className="text-muted-foreground">{tooltip.connectorHint}</div>
+        <div className="text-muted-foreground">{tooltip.connectorHint === "dashed" ? t("surfacesGap.timeline.dashed") : t("surfacesGap.timeline.solid")}</div>
       )}
     </div>
   );
@@ -821,6 +826,7 @@ function MiniMap({
   scrollLeft: number;
   onVisibleRangeChange: (fromMs: number, toMs: number) => void;
 }) {
+  useTranslation();
   const documentDragCleanupRef = useRef<(() => void) | null>(null);
   const W = Math.max(320, viewportW || 900);
   const H = 54;
@@ -946,7 +952,7 @@ function MiniMap({
           height={H - 2}
           width={handleW}
           testId="timeline-minimap-left-handle"
-          label="Drag left edge to resize visible range"
+          label={t("surfacesGap.timeline.leftEdge")}
           onMouseDown={(e) => startRangeDrag("left", e)}
         />
         <MiniMapHandle
@@ -955,7 +961,7 @@ function MiniMap({
           height={H - 2}
           width={handleW}
           testId="timeline-minimap-right-handle"
-          label="Drag right edge to resize visible range"
+          label={t("surfacesGap.timeline.rightEdge")}
           onMouseDown={(e) => startRangeDrag("right", e)}
         />
       </svg>

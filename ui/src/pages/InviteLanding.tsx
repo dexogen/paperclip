@@ -14,9 +14,35 @@ import { getAdapterLabel } from "../adapters/adapter-display-registry";
 import { clearPendingInviteToken, rememberPendingInviteToken } from "../lib/invite-memory";
 import { queryKeys } from "../lib/queryKeys";
 import { formatDate } from "../lib/utils";
+import { Trans, useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
 type AuthMode = "sign_in" | "sign_up";
-type AuthFeedback = { tone: "error" | "info"; message: string };
+type InviteMessageKey =
+  | "authGap.accountExists"
+  | "authGap.credentialsMismatch"
+  | "authGap.accountMayExist"
+  | "authGap.authenticationFailed"
+  | "authGap.inviteNotFound"
+  | "authGap.checkingMembership"
+  | "authGap.alreadyMember"
+  | "authGap.acceptFailed"
+  | "authGap.requiredFields";
+type InviteMessage = { key: InviteMessageKey; values?: Record<string, string> } | { message: string };
+type AuthFeedback = { tone: "error" | "info" } & InviteMessage;
+
+class InviteLocalError extends Error {
+  constructor(readonly key: InviteMessageKey) { super(key); }
+}
+
+function renderInviteMessage(message: InviteMessage, t: TFunction): string {
+  if ("message" in message) return message.message;
+  const values = message.values?.email === ""
+    ? { ...message.values, email: t("authGap.thatEmail") }
+    : message.values;
+  return t(message.key, values);
+}
 
 // Agent-invite onboarding remains a legacy-adapter flow. Native runner setup
 // belongs in authenticated agent configuration after an administrator enables
@@ -45,13 +71,19 @@ function readNestedString(value: unknown, path: string[]): string | null {
 
 const fieldClassName =
   "w-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-zinc-500";
-const panelClassName = "border border-zinc-800 bg-zinc-950/95 p-6";
+const panelClassName = "min-w-0 border border-zinc-800 bg-zinc-950/95 p-6";
 const modeButtonBaseClassName =
   "flex-1 border px-3 py-2 text-sm transition-colors";
 
-function formatHumanRole(role: string | null | undefined) {
+function formatHumanRole(role: string | null | undefined, t: TFunction) {
   if (!role) return null;
-  return role.charAt(0).toUpperCase() + role.slice(1);
+  switch (role) {
+    case "viewer": return t("authGap.roleViewer");
+    case "operator": return t("authGap.roleOperator");
+    case "admin": return t("authGap.roleAdmin");
+    case "owner": return t("authGap.roleOwner");
+    default: return role.charAt(0).toUpperCase() + role.slice(1);
+  }
 }
 
 function getAuthErrorCode(error: unknown) {
@@ -73,41 +105,41 @@ function mapInviteAuthFeedback(
 ): AuthFeedback {
   const code = getAuthErrorCode(error);
   const message = getAuthErrorMessage(error);
-  const emailLabel = email.trim().length > 0 ? email.trim() : "that email";
+  const emailLabel = email.trim();
 
   if (code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
     return {
       tone: "info",
-      message: `An account already exists for ${emailLabel}. Sign in below to continue with this invite.`,
+      key: "authGap.accountExists",
+      values: { email: emailLabel },
     };
   }
 
   if (code === "INVALID_EMAIL_OR_PASSWORD") {
     return {
       tone: "error",
-      message:
-        "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      key: "authGap.credentialsMismatch",
     };
   }
 
   if (authMode === "sign_in" && message === "Request failed: 401") {
     return {
       tone: "error",
-      message:
-        "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      key: "authGap.credentialsMismatch",
     };
   }
 
   if (authMode === "sign_up" && message === "Request failed: 422") {
     return {
       tone: "info",
-      message: `An account may already exist for ${emailLabel}. Try signing in instead.`,
+      key: "authGap.accountMayExist",
+      values: { email: emailLabel },
     };
   }
 
   return {
     tone: "error",
-    message: message ?? "Authentication failed",
+    ...(message ? { message } : { key: "authGap.authenticationFailed" }),
   };
 }
 
@@ -161,7 +193,8 @@ function AwaitingJoinApprovalPanel({
   claimApiKeyPath = null,
   onboardingTextUrl = null,
 }: AwaitingJoinApprovalPanelProps) {
-  const approverLabel = invitedByUserName ?? "An organization admin";
+  const { t } = useTranslation();
+  const approverLabel = invitedByUserName ?? t("authGap.organizationAdmin");
 
   return (
     <div className="min-h-screen bg-zinc-950 px-6 py-12 text-zinc-100">
@@ -172,33 +205,33 @@ function AwaitingJoinApprovalPanel({
             companyLogoUrl={companyLogoUrl}
             className="h-12 w-12 border border-zinc-800 rounded-none"
           />
-          <h1 className="text-lg font-semibold">Request to join {companyDisplayName}</h1>
+          <h1 className="text-lg font-semibold">{t("authGap.requestToJoin", { organization: companyDisplayName })}</h1>
         </div>
         <div className="mt-4 space-y-3">
           <p className="text-sm text-zinc-400">
-            Your request is still awaiting approval. {approverLabel} must approve your request to join.
+            {t("authGap.awaitingApproval", { approver: approverLabel })}
           </p>
           <div className="border border-zinc-800 p-3">
-            <p className="text-xs text-zinc-500 mb-1">Approval page</p>
-            <p className="text-sm text-zinc-200">Settings → Members</p>
+            <p className="text-xs text-zinc-500 mb-1">{t("authGap.approvalPage")}</p>
+            <p className="text-sm text-zinc-200">{t("authGap.settingsMembers")}</p>
           </div>
           <p className="text-sm text-zinc-400">
-            Ask them to visit <span className="text-zinc-200">Settings → Members</span> to approve your request.
+            <Trans i18nKey="authGap.askApprover" components={{ settings: <span className="text-zinc-200" /> }} />
           </p>
           <p className="text-xs text-zinc-500">
-            Refresh this page after you've been approved — you'll be redirected automatically.
+            {t("authGap.refreshAfterApproval")}
           </p>
         </div>
         {claimSecret && claimApiKeyPath ? (
           <div className="mt-4 space-y-1 border border-zinc-800 p-3 text-xs text-zinc-400">
-            <div className="text-zinc-200">Claim secret</div>
+            <div className="text-zinc-200">{t("authGap.claimSecret")}</div>
             <div className="font-mono break-all">{claimSecret}</div>
             <div className="font-mono break-all">POST {claimApiKeyPath}</div>
           </div>
         ) : null}
         {onboardingTextUrl ? (
           <div className="mt-4 text-xs text-zinc-400">
-            Onboarding: <span className="font-mono break-all">{onboardingTextUrl}</span>
+            {t("authGap.onboarding")}: <span className="font-mono break-all">{onboardingTextUrl}</span>
           </div>
         ) : null}
       </div>
@@ -207,6 +240,7 @@ function AwaitingJoinApprovalPanel({
 }
 
 export function InviteLandingPage() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { setSelectedCompanyId } = useCompany();
@@ -220,7 +254,7 @@ export function InviteLandingPage() {
   const [adapterType, setAdapterType] = useState<AgentAdapterType>("claude_local");
   const [capabilities, setCapabilities] = useState("");
   const [result, setResult] = useState<{ kind: "bootstrap" | "join"; payload: unknown } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<InviteMessage | null>(null);
   const [authFeedback, setAuthFeedback] = useState<AuthFeedback | null>(null);
   const [autoAcceptStarted, setAutoAcceptStarted] = useState(false);
   const authErrorId = "invite-auth-error";
@@ -294,11 +328,11 @@ export function InviteLandingPage() {
     Boolean(invite?.companyId) &&
     companyList.some((company) => company.id === invite?.companyId);
   const companyName = invite?.companyName?.trim() || null;
-  const companyDisplayName = companyName || "this Paperclip company";
+  const companyDisplayName = companyName || t("authGap.organizationFallback");
   const companyLogoUrl = invite?.companyLogoUrl?.trim() || null;
   const invitedByUserName = invite?.invitedByUserName?.trim() || null;
   const inviteMessage = invite?.inviteMessage?.trim() || null;
-  const requestedHumanRole = formatHumanRole(invite?.humanRole);
+  const requestedHumanRole = formatHumanRole(invite?.humanRole, t);
   const inviteJoinRequestStatus = invite?.joinRequestStatus ?? null;
   const inviteJoinRequestType = invite?.joinRequestType ?? null;
   const canCompleteAcceptedHumanInvite =
@@ -321,7 +355,7 @@ export function InviteLandingPage() {
   const sessionLabel =
     sessionQuery.data?.user.name?.trim() ||
     sessionQuery.data?.user.email?.trim() ||
-    "this account";
+    t("authGap.accountFallback");
 
   const authCanSubmit =
     email.trim().length > 0 &&
@@ -330,12 +364,12 @@ export function InviteLandingPage() {
 
   const acceptMutation = useMutation({
     mutationFn: async () => {
-      if (!invite) throw new Error("Invite not found");
+      if (!invite) throw new InviteLocalError("authGap.inviteNotFound");
       if (isCheckingExistingMembership) {
-        throw new Error("Checking your organization access. Try again in a moment.");
+        throw new InviteLocalError("authGap.checkingMembership");
       }
       if (isCurrentMember) {
-        throw new Error("This account already belongs to the organization.");
+        throw new InviteLocalError("authGap.alreadyMember");
       }
       if (invite.inviteType === "bootstrap_ceo" || invite.allowedJoinTypes !== "agent") {
         return accessApi.acceptInvite(token, { requestType: "human" });
@@ -361,7 +395,8 @@ export function InviteLandingPage() {
       }
     },
     onError: (err) => {
-      setError(err instanceof Error ? err.message : "Failed to accept invite");
+      setError(err instanceof InviteLocalError ? { key: err.key }
+        : err instanceof Error ? { message: err.message } : { key: "authGap.acceptFailed" });
     },
   });
 
@@ -428,32 +463,32 @@ export function InviteLandingPage() {
   });
 
   const joinButtonLabel = useMemo(() => {
-    if (!invite) return "Continue";
-    if (isCurrentMember) return "Open organization";
-    if (invite.inviteType === "bootstrap_ceo") return "Accept invite";
-    if (showsAgentForm) return "Submit request";
-    return sessionQuery.data ? "Accept invite" : "Continue";
-  }, [invite, isCurrentMember, sessionQuery.data, showsAgentForm]);
+    if (!invite) return t("authGap.continue");
+    if (isCurrentMember) return t("authGap.openOrganization");
+    if (invite.inviteType === "bootstrap_ceo") return t("authGap.acceptInvite");
+    if (showsAgentForm) return t("authGap.submitRequest");
+    return sessionQuery.data ? t("authGap.acceptInvite") : t("authGap.continue");
+  }, [invite, isCurrentMember, sessionQuery.data, showsAgentForm, t]);
 
   if (!token) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-destructive">Invalid invite token.</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-destructive">{t("authGap.invalidToken")}</div>;
   }
 
   if (inviteQuery.isLoading || healthQuery.isLoading || sessionQuery.isLoading) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading invite...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("authGap.loadingInvite")}</div>;
   }
 
   if (isCheckingExistingMembership) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Checking your access...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("authGap.checkingAccess")}</div>;
   }
 
   if (inviteQuery.error || !invite) {
     return (
       <div className="mx-auto max-w-xl py-10">
         <div className="border border-border bg-card p-6" data-testid="invite-error">
-          <h1 className="text-lg font-semibold">Invite not available</h1>
+          <h1 className="text-lg font-semibold">{t("authGap.inviteUnavailable")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            This invite may be expired, revoked, or already used.
+            {t("authGap.inviteUnavailableDescription")}
           </p>
         </div>
       </div>
@@ -465,7 +500,7 @@ export function InviteLandingPage() {
     inviteJoinRequestType === "human" &&
     isCurrentMember
   ) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Opening organization...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("authGap.openingOrganization")}</div>;
   }
 
   if (inviteJoinRequestStatus === "pending_approval" && !canCompleteAcceptedHumanInvite) {
@@ -482,11 +517,11 @@ export function InviteLandingPage() {
     return (
       <div className="mx-auto max-w-xl py-10">
         <div className="border border-border bg-card p-6" data-testid="invite-error">
-          <h1 className="text-lg font-semibold">Invite not available</h1>
+          <h1 className="text-lg font-semibold">{t("authGap.inviteUnavailable")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {inviteJoinRequestStatus === "rejected"
-              ? "This join request was not approved."
-              : "This invite has already been used."}
+              ? t("authGap.joinRejected")
+              : t("authGap.inviteUsed")}
           </p>
         </div>
       </div>
@@ -497,10 +532,10 @@ export function InviteLandingPage() {
     return (
       <div className="min-h-screen bg-zinc-950 px-6 py-12 text-zinc-100">
         <div className="mx-auto max-w-md border border-zinc-800 bg-zinc-950 p-6">
-          <h1 className="text-lg font-semibold">Bootstrap complete</h1>
+          <h1 className="text-lg font-semibold">{t("authGap.bootstrapComplete")}</h1>
           <div className="mt-4">
             <Button asChild className="rounded-none">
-              <Link to="/">Open board</Link>
+              <Link to="/">{t("authGap.openBoard")}</Link>
             </Button>
           </div>
         </div>
@@ -529,11 +564,11 @@ export function InviteLandingPage() {
                 companyLogoUrl={companyLogoUrl}
                 className="h-12 w-12 border border-zinc-800 rounded-none"
               />
-              <h1 className="text-lg font-semibold">You joined the organization</h1>
+              <h1 className="text-lg font-semibold">{t("authGap.joinedOrganization")}</h1>
             </div>
             <div className="mt-4">
               <Button asChild className="w-full rounded-none">
-                <Link to="/">Open board</Link>
+                <Link to="/">{t("authGap.openBoard")}</Link>
               </Button>
             </div>
           </div>
@@ -554,6 +589,7 @@ export function InviteLandingPage() {
   return (
     <div className="min-h-screen bg-zinc-950 px-6 py-12 text-zinc-100">
       <div className="mx-auto max-w-5xl">
+        <div className="mb-4 flex justify-end"><div className="w-fit"><LocaleSwitcher /></div></div>
         <div className="grid gap-6 lg:grid-cols-(--gtc-36)">
           <section className={`${panelClassName} space-y-6`}>
             <div className="flex items-start gap-4">
@@ -564,52 +600,52 @@ export function InviteLandingPage() {
               />
               <div className="min-w-0">
                 <p className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">
-                  You&apos;ve been invited to join Paperclip
+                  {t("authGap.invitedToPaperclip")}
                 </p>
                 <h1 className="mt-2 text-2xl font-semibold">
-                  {invite.inviteType === "bootstrap_ceo" ? "Set up Paperclip" : `Join ${companyDisplayName}`}
+                  {invite.inviteType === "bootstrap_ceo" ? t("authGap.setup") : t("authGap.joinOrganization", { organization: companyDisplayName })}
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">
                   {showsAgentForm
-                    ? "Review the invite details, then submit the agent information below to start the join request."
+                    ? t("authGap.agentIntro")
                     : requiresHumanAccount
-                      ? "Create your Paperclip account first. If you already have one, switch to sign in and continue the invite with the same email."
-                      : "Your account is ready. Review the invite details, then accept it to continue."}
+                      ? t("authGap.accountIntro")
+                      : t("authGap.readyIntro")}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">Organization</div>
+                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{t("authGap.organization")}</div>
                 <div className="mt-1 text-sm text-zinc-100">{companyDisplayName}</div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">Invited by</div>
-                <div className="mt-1 text-sm text-zinc-100">{invitedByUserName ?? "Paperclip board"}</div>
+                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{t("authGap.invitedBy")}</div>
+                <div className="mt-1 text-sm text-zinc-100">{invitedByUserName ?? t("authGap.board")}</div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">Requested access</div>
+                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{t("authGap.requestedAccess")}</div>
                 <div className="mt-1 text-sm text-zinc-100">
-                  {showsAgentForm ? "Agent join request" : requestedHumanRole ?? "Organization access"}
+                  {showsAgentForm ? t("authGap.agentJoinRequest") : requestedHumanRole ?? t("authGap.organizationAccess")}
                 </div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">Invite expires</div>
+                <div className="text-xs uppercase tracking-(--tracking-caps) text-zinc-500">{t("authGap.inviteExpires")}</div>
                 <div className="mt-1 text-sm text-zinc-100">{formatDate(invite.expiresAt)}</div>
               </div>
             </div>
 
             {inviteMessage ? (
               <div className="border border-amber-500/40 bg-amber-500/10 p-4">
-                <div className="text-xs uppercase tracking-(--tracking-caps) text-amber-200/80">Message from inviter</div>
+                <div className="text-xs uppercase tracking-(--tracking-caps) text-amber-200/80">{t("authGap.inviterMessage")}</div>
                 <p className="mt-2 text-sm leading-6 text-amber-50">{inviteMessage}</p>
               </div>
             ) : null}
 
             {sessionQuery.data ? (
               <div className="border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">
-                Signed in as <span className="font-medium">{sessionLabel}</span>.
+                <Trans i18nKey="authGap.signedInAs" values={{ account: sessionLabel }} components={{ account: <span className="font-medium" /> }} />
               </div>
             ) : null}
           </section>
@@ -618,13 +654,13 @@ export function InviteLandingPage() {
             {showsAgentForm ? (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold">Submit agent details</h2>
+                  <h2 className="text-lg font-semibold">{t("authGap.agentDetails")}</h2>
                   <p className="mt-1 text-sm text-zinc-400">
-                    This invite will create an approval request for a new agent in {companyDisplayName}.
+                    {t("authGap.agentApproval", { organization: companyDisplayName })}
                   </p>
                 </div>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Agent name</span>
+                  <span className="mb-1 block text-zinc-400">{t("authGap.agentName")}</span>
                   <input
                     className={fieldClassName}
                     value={agentName}
@@ -632,7 +668,7 @@ export function InviteLandingPage() {
                   />
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Adapter type</span>
+                  <span className="mb-1 block text-zinc-400">{t("authGap.adapterType")}</span>
                   <select
                     className={fieldClassName}
                     value={adapterType}
@@ -640,13 +676,13 @@ export function InviteLandingPage() {
                   >
                     {joinAdapterOptions.map((type) => (
                       <option key={type} value={type} disabled={!ENABLED_INVITE_ADAPTERS.has(type)}>
-                        {getAdapterLabel(type)}{!ENABLED_INVITE_ADAPTERS.has(type) ? " (Coming soon)" : ""}
+                        {getAdapterLabel(type)}{!ENABLED_INVITE_ADAPTERS.has(type) ? t("authGap.comingSoon") : ""}
                       </option>
                     ))}
                   </select>
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Capabilities</span>
+                  <span className="mb-1 block text-zinc-400">{t("authGap.capabilities")}</span>
                   <textarea
                     className={fieldClassName}
                     rows={4}
@@ -654,25 +690,25 @@ export function InviteLandingPage() {
                     onChange={(event) => setCapabilities(event.target.value)}
                   />
                 </label>
-                {error ? <p className="text-xs text-red-400">{error}</p> : null}
+                {error ? <p className="text-xs text-red-400">{renderInviteMessage(error, t)}</p> : null}
                 <Button
                   className="w-full rounded-none"
                   disabled={acceptMutation.isPending || agentName.trim().length === 0}
                   onClick={() => acceptMutation.mutate()}
                 >
-                  {acceptMutation.isPending ? "Working..." : joinButtonLabel}
+                  {acceptMutation.isPending ? t("authGap.working") : joinButtonLabel}
                 </Button>
               </div>
             ) : requiresHumanAccount ? (
               <div className="space-y-5">
                 <div>
                   <h2 className="text-lg font-semibold">
-                    {authMode === "sign_up" ? "Create your account" : "Sign in to continue"}
+                    {authMode === "sign_up" ? t("authGap.createYourAccount") : t("authGap.signInToContinue")}
                   </h2>
                   <p className="mt-1 text-sm text-zinc-400">
                     {authMode === "sign_up"
-                      ? `Start with a Paperclip account. After that, you'll come right back here to accept the invite for ${companyDisplayName}.`
-                      : "Use the Paperclip account that already matches this invite. If you do not have one yet, switch back to create account."}
+                      ? t("authGap.createAccountIntro", { organization: companyDisplayName })
+                      : t("authGap.existingAccountIntro")}
                   </p>
                 </div>
 
@@ -689,7 +725,7 @@ export function InviteLandingPage() {
                       setAuthMode("sign_up");
                     }}
                   >
-                    Create account
+                    {t("authGap.createAccount")}
                   </button>
                   <button
                     type="button"
@@ -703,7 +739,7 @@ export function InviteLandingPage() {
                       setAuthMode("sign_in");
                     }}
                   >
-                    I already have an account
+                    {t("authGap.alreadyHaveAccount")}
                   </button>
                 </div>
 
@@ -715,7 +751,7 @@ export function InviteLandingPage() {
                     event.preventDefault();
                     if (authMutation.isPending) return;
                     if (!authCanSubmit) {
-                      setAuthFeedback({ tone: "error", message: "Please fill in all required fields." });
+                      setAuthFeedback({ tone: "error", key: "authGap.requiredFields" });
                       return;
                     }
                     authMutation.mutate();
@@ -724,7 +760,7 @@ export function InviteLandingPage() {
                 >
                   {authMode === "sign_up" ? (
                     <label className="block text-sm" htmlFor="invite-name">
-                      <span className="mb-1 block text-zinc-400">Name</span>
+                      <span className="mb-1 block text-zinc-400">{t("authGap.name")}</span>
                       <input
                         id="invite-name"
                         name="name"
@@ -744,7 +780,7 @@ export function InviteLandingPage() {
                     </label>
                   ) : null}
                   <label className="block text-sm" htmlFor="invite-email">
-                    <span className="mb-1 block text-zinc-400">Email</span>
+                    <span className="mb-1 block text-zinc-400">{t("authGap.email")}</span>
                     <input
                       id="invite-email"
                       name="email"
@@ -764,7 +800,7 @@ export function InviteLandingPage() {
                     />
                   </label>
                   <label className="block text-sm" htmlFor="invite-password">
-                    <span className="mb-1 block text-zinc-400">Password</span>
+                    <span className="mb-1 block text-zinc-400">{t("authGap.password")}</span>
                     <input
                       id="invite-password"
                       name="password"
@@ -790,27 +826,27 @@ export function InviteLandingPage() {
                         authFeedback.tone === "info" ? "text-amber-300" : "text-red-400"
                       }`}
                     >
-                      {authFeedback.message}
+                      {renderInviteMessage(authFeedback, t)}
                     </p>
                   ) : null}
                   <Button
                     type="submit"
-                    className="w-full rounded-none"
+                    className="h-auto min-h-10 w-full whitespace-normal rounded-none"
                     disabled={authMutation.isPending}
                     aria-disabled={!authCanSubmit || authMutation.isPending}
                   >
                     {authMutation.isPending
-                      ? "Working..."
+                      ? t("authGap.working")
                       : authMode === "sign_in"
-                        ? "Sign in and continue"
-                        : "Create account and continue"}
+                        ? t("authGap.signInContinue")
+                        : t("authGap.createContinue")}
                   </Button>
                 </form>
 
                 <p className="text-xs leading-5 text-zinc-500">
                   {authMode === "sign_up"
-                    ? "Already signed up before? Use the existing-account option instead so the invite lands on the right Paperclip user."
-                    : "No account yet? Switch back to create account so you can accept the invite with a new login."}
+                    ? t("authGap.existingAccountHint")
+                    : t("authGap.newAccountHint")}
                 </p>
               </div>
             ) : (
@@ -818,27 +854,27 @@ export function InviteLandingPage() {
                 <div>
                   <h2 className="text-lg font-semibold">
                     {isCurrentMember
-                      ? "Already in this organization"
+                      ? t("authGap.alreadyInOrganization")
                       : shouldAutoAcceptHumanInvite
-                      ? "Completing organization access"
+                      ? t("authGap.completingAccess")
                       : invite.inviteType === "bootstrap_ceo"
-                        ? "Accept bootstrap invite"
-                        : "Accept organization invite"}
+                        ? t("authGap.acceptBootstrap")
+                        : t("authGap.acceptOrganization")}
                   </h2>
                   <p className="mt-1 text-sm text-zinc-400">
                     {shouldAutoAcceptHumanInvite
-                      ? `Granting your access to ${companyDisplayName}.`
+                      ? t("authGap.grantingAccess", { organization: companyDisplayName })
                       : isCurrentMember
-                      ? `This account already belongs to ${companyDisplayName}.`
-                      : `This will ${
-                          invite.inviteType === "bootstrap_ceo" ? "finish setting up Paperclip" : `grant or complete your access to ${companyDisplayName}`
-                        }.`}
+                      ? t("authGap.accountBelongs", { organization: companyDisplayName })
+                      : invite.inviteType === "bootstrap_ceo"
+                        ? t("authGap.finishSetup")
+                        : t("authGap.grantAccess", { organization: companyDisplayName })}
                   </p>
                 </div>
-                {error ? <p className="text-xs text-red-400">{error}</p> : null}
+                {error ? <p className="text-xs text-red-400">{renderInviteMessage(error, t)}</p> : null}
                 {shouldAutoAcceptHumanInvite ? (
                   <div className="text-sm text-zinc-400">
-                    {acceptMutation.isPending ? "Submitting request..." : "Finishing sign-in..."}
+                    {acceptMutation.isPending ? t("authGap.submittingRequest") : t("authGap.finishingSignIn")}
                   </div>
                 ) : (
                   <Button
@@ -854,7 +890,7 @@ export function InviteLandingPage() {
                       acceptMutation.mutate();
                     }}
                   >
-                    {acceptMutation.isPending ? "Working..." : joinButtonLabel}
+                    {acceptMutation.isPending ? t("authGap.working") : joinButtonLabel}
                   </Button>
                 )}
               </div>

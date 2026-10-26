@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
 import { PageTabBar } from "@/components/PageTabBar";
 import { Tabs } from "@/components/ui/tabs";
 import { useCloudInstance } from "@/hooks/useCloudInstance";
@@ -5,22 +7,24 @@ import { useHiddenSettings } from "@/hooks/useHiddenSettings";
 import { INSTANCE_SETTINGS_PATH_PREFIX } from "@/lib/instance-settings";
 import { useLocation, useNavigate } from "@/lib/router";
 
-const items = [
-  { value: "general", label: "General", href: "/company/settings" },
-  { value: "export", label: "Export", href: "/company/export" },
-  { value: "import", label: "Import", href: "/company/import" },
-  { value: "members", label: "Members", href: "/company/settings/members" },
-  { value: "secrets", label: "Secrets", href: "/company/settings/secrets" },
-  { value: "instance-profile", label: "Profile", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/profile` },
-  { value: "instance-environments", label: "Environments", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/environments` },
-  { value: "connections", label: "Connections", href: "/company/settings/connections" },
-  { value: "instance-access", label: "Access", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/access` },
-  { value: "instance-experimental", label: "Experimental", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/experimental` },
-  { value: "instance-plugins", label: "Plugins", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/plugins` },
-  { value: "instance-adapters", label: "Adapters", href: `${INSTANCE_SETTINGS_PATH_PREFIX}/adapters` },
-] as const;
+function settingsItems(t: TFunction) {
+  return [
+    { value: "general", label: t("settingsNav.general"), href: "/company/settings" },
+    { value: "export", label: t("settingsNav.export"), href: "/company/export" },
+    { value: "import", label: t("settingsNav.import"), href: "/company/import" },
+    { value: "members", label: t("settingsNav.members"), href: "/company/settings/members" },
+    { value: "secrets", label: t("settingsNav.secrets"), href: "/company/settings/secrets" },
+    { value: "instance-profile", label: t("settingsNav.profile"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/profile` },
+    { value: "instance-environments", label: t("settingsNav.environments"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/environments` },
+    { value: "connections", label: t("settingsNav.connections"), href: "/company/settings/connections" },
+    { value: "instance-access", label: t("settingsNav.access"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/access` },
+    { value: "instance-experimental", label: t("settingsNav.experimental"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/experimental` },
+    { value: "instance-plugins", label: t("settingsNav.plugins"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/plugins` },
+    { value: "instance-adapters", label: t("settingsNav.adapters"), href: `${INSTANCE_SETTINGS_PATH_PREFIX}/adapters` },
+  ] as const;
+}
 
-type CompanySettingsTab = (typeof items)[number]["value"];
+type CompanySettingsTab = ReturnType<typeof settingsItems>[number]["value"];
 
 /** Tab values suppressed when their page is operator-hidden. */
 const hiddenSettingKeyByTab: Partial<Record<CompanySettingsTab, string>> = {
@@ -98,6 +102,8 @@ export function getCompanySettingsTab(pathname: string): CompanySettingsTab {
 }
 
 export function CompanySettingsNav() {
+  const { t } = useTranslation();
+  const items = settingsItems(t);
   const location = useLocation();
   const navigate = useNavigate();
   const { hidden: hiddenSettings } = useHiddenSettings();

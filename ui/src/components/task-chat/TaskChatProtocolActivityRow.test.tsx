@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -21,6 +22,7 @@ describe("TaskChatProtocolActivityRow", () => {
   afterEach(() => {
     act(() => root.unmount());
     container.remove();
+    act(() => { void i18n.changeLanguage("en"); });
   });
 
   function render(item: TaskChatProtocolItem) {
@@ -85,6 +87,20 @@ describe("TaskChatProtocolActivityRow", () => {
 
     const showMore = Array.from(detail?.querySelectorAll("button") ?? []).find((button) => button.textContent?.includes("Show 1 more result"));
     act(() => showMore?.click());
+    expect(detail?.querySelectorAll('ol[aria-label="Research sources"] li')).toHaveLength(6);
+    const links = Array.from(detail!.querySelectorAll("a"));
+    const hrefs = links.map(link => link.getAttribute("href"));
+    act(() => { void i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="task-chat-protocol-activity-row"] button')).toBe(row);
+    expect(row?.getAttribute("aria-expanded")).toBe("true");
+    expect(detail?.querySelectorAll("ol li")).toHaveLength(6);
+    expect(Array.from(detail!.querySelectorAll("a"))).toEqual(links);
+    expect(links.map(link => link.getAttribute("href"))).toEqual(hrefs);
+    expect(row?.textContent).toContain("smoked pork shoulder");
+    expect(detail?.textContent).toContain("Next.js configuration result 6");
+    expect(detail?.querySelector("ol")?.getAttribute("aria-label")).toBe("Источники исследования");
+    act(() => { void i18n.changeLanguage("en"); });
+    expect(row?.getAttribute("aria-expanded")).toBe("true");
     expect(detail?.querySelectorAll('ol[aria-label="Research sources"] li')).toHaveLength(6);
   });
 

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 /**
  * Attachment-chip helpers for the task-chat redesign (PAP-351): map a filename
  * to a kind icon + label for the shadcn base/attachment chips, and extract the
@@ -114,13 +116,29 @@ export function isImageAttachment(ref: AttachmentRef): boolean {
 }
 
 /** Kind icon + short label for a filename; unknown extensions get File/"File". */
-export function fileKindForName(name: string): FileKind {
-  return KIND_BY_EXTENSION[extensionOf(name)] ?? { icon: FileIcon, label: "File" };
+function localizedFileKind(kind: FileKind, t: TFunction): FileKind {
+  switch (kind.label) {
+    case "File": return { ...kind, label: t("taskChatUi.attachment.file") };
+    case "Doc": return { ...kind, label: t("taskChatUi.attachment.doc") };
+    case "Text": return { ...kind, label: t("taskChatUi.attachment.text") };
+    case "Sheet": return { ...kind, label: t("taskChatUi.attachment.sheet") };
+    case "Archive": return { ...kind, label: t("taskChatUi.attachment.archive") };
+    case "Audio": return { ...kind, label: t("taskChatUi.attachment.audio") };
+    case "Video": return { ...kind, label: t("taskChatUi.attachment.video") };
+    case "Code": return { ...kind, label: t("taskChatUi.attachment.code") };
+    case "Log": return { ...kind, label: t("taskChatUi.attachment.log") };
+    case "Patch": return { ...kind, label: t("taskChatUi.attachment.patch") };
+    default: return kind;
+  }
 }
 
-export function fileKindForAttachment(ref: AttachmentRef): FileKind {
-  const byName = fileKindForName(ref.name);
-  if (byName.label !== "File") return byName;
+export function fileKindForName(name: string, t: TFunction = i18n.getFixedT("en")): FileKind {
+  return localizedFileKind(KIND_BY_EXTENSION[extensionOf(name)] ?? { icon: FileIcon, label: "File" }, t);
+}
+
+export function fileKindForAttachment(ref: AttachmentRef, t: TFunction = i18n.getFixedT("en")): FileKind {
+  const byName = KIND_BY_EXTENSION[extensionOf(ref.name)];
+  if (byName) return localizedFileKind(byName, t);
 
   const contentType = normalizedContentType(ref.contentType);
   if (contentType === "application/pdf") return { icon: FileText, label: "PDF" };
@@ -130,21 +148,21 @@ export function fileKindForAttachment(ref: AttachmentRef): FileKind {
   if (contentType === "text/csv" || contentType === "application/csv") {
     return { icon: FileSpreadsheet, label: "CSV" };
   }
-  if (contentType.startsWith("text/")) return { icon: FileText, label: "Text" };
-  if (contentType.startsWith("audio/")) return { icon: FileAudio, label: "Audio" };
-  if (contentType.startsWith("video/")) return { icon: FileVideo, label: "Video" };
+  if (contentType.startsWith("text/")) return { icon: FileText, label: t("taskChatUi.attachment.text") };
+  if (contentType.startsWith("audio/")) return { icon: FileAudio, label: t("taskChatUi.attachment.audio") };
+  if (contentType.startsWith("video/")) return { icon: FileVideo, label: t("taskChatUi.attachment.video") };
   if (contentType.includes("zip") || contentType.includes("archive")) {
-    return { icon: FileArchive, label: "Archive" };
+    return { icon: FileArchive, label: t("taskChatUi.attachment.archive") };
   }
-  return byName;
+  return { icon: FileIcon, label: t("taskChatUi.attachment.file") };
 }
 
 /** "2.4 MB"-style size for chip descriptions (same tiers as IssueChatThread). */
-export function formatFileSize(bytes: number | undefined): string {
+export function formatFileSize(bytes: number | undefined, t: TFunction = i18n.getFixedT("en")): string {
   if (bytes === undefined || !Number.isFinite(bytes) || bytes <= 0) return "";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1024) return t("taskChatUi.resource.bytes", { value: bytes });
+  if (bytes < 1024 * 1024) return t("taskChatUi.resource.kilobytes", { value: bytes / 1024, formatParams: { value: { minimumFractionDigits: 1, maximumFractionDigits: 1 } } });
+  return t("taskChatUi.resource.megabytes", { value: bytes / (1024 * 1024), formatParams: { value: { minimumFractionDigits: 1, maximumFractionDigits: 1 } } });
 }
 
 export interface AttachmentRef {

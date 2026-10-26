@@ -146,3 +146,19 @@ describe("chief-of-staff persona", () => {
     });
   });
 });
+
+
+describe("Russian first-task assets", () => {
+  it("localizes the real assets while preserving protocol IDs and the skill policy", async () => {
+    const payload = await buildOnboardingFirstTaskOpeningQuestion("ru");
+    expect(payload.submitLabel).toBe("Продолжить");
+    expect(payload.questions[0]).toMatchObject({ id: "first-task-opening", prompt: "С чего начнём?", selectionMode: "single", required: true });
+    expect(payload.questions[0].options.map(({ id, freeText }) => ({ id, freeText }))).toEqual([{ id: "interview", freeText: undefined }, { id: "task", freeText: true }]);
+    expect(await renderOnboardingFirstTaskGreeting({ agentName: "CLI & API" }, "ru")).toContain("Я — CLI & API, ваш первый агент.");
+    expect(await renderOnboardingFirstTaskGreeting({}, "ru")).toContain("Я — ваш первый агент.");
+    const englishBrief = await buildOnboardingFirstTaskBrief({ usePlanProposal: true });
+    const russianBrief = await buildOnboardingFirstTaskBrief({ usePlanProposal: true, locale: "ru" });
+    expect(russianBrief.startsWith(englishBrief)).toBe(true);
+    expect(russianBrief).toContain("Respond in Russian unless the user requests another language.");
+  });
+});

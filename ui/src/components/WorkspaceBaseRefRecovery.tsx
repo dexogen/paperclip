@@ -1,9 +1,16 @@
+import { useTranslation } from "@/i18n";
 import { createContext, useContext, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Agent, Issue, IssueCommentMetadata } from "@paperclipai/shared";
 import { heartbeatsApi } from "../api/heartbeats";
 import { issuesApi } from "../api/issues";
 import type { WorkspaceBaseRefRecoveryNoticeProps } from "./WorkspaceBaseRefRecoveryNotice";
+
+export class WorkspaceRecoveryReceiptError extends Error {
+  constructor(readonly kind: "retry" | "repair") {
+    super(kind === "retry" ? "The task changed. Refresh and try again." : "The task changed while saving. Refresh to check its current state.");
+  }
+}
 
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -40,6 +47,7 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
   onRepaired: () => void;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
   const action = issue.activeRecoveryAction;
   const recordedRunId = action?.evidence?.latestRunId ?? action?.evidence?.runId;
   const runId = typeof recordedRunId === "string" ? recordedRunId : null;
@@ -58,17 +66,17 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
     const stale = action.status !== "active" || issue.status !== "blocked" || action.ownerType !== "board"
       || !issue.assigneeAgentId || issue.assigneeAgentId !== action.returnOwnerAgentId || run.agentId !== issue.assigneeAgentId;
     retry = { actionId: action.id, runId,
-      unavailableReason: stale ? "Refresh the task to retry."
+      unavailableReason: stale ? t("runUi.workspace.refresh")
         : unavailableReason
-        ?? (issue.executionRunId || issue.checkoutRunId ? "Wait for the current run to finish." : null)
-        ?? (agent?.status === "paused" || agent?.status === "terminated" ? "The assigned agent is unavailable." : null)
-        ?? (issue.executionState?.status === "pending" ? "Complete the pending review or approval before retrying." : null)
-        ?? (issue.blockedBy?.some(b => b.status !== "done" && b.status !== "cancelled") ? "Resolve the task’s blockers before retrying." : null),
+        ?? (issue.executionRunId || issue.checkoutRunId ? t("runUi.workspace.wait") : null)
+        ?? (agent?.status === "paused" || agent?.status === "terminated" ? t("runUi.workspace.agentUnavailable") : null)
+        ?? (issue.executionState?.status === "pending" ? t("runUi.workspace.pendingReview") : null)
+        ?? (issue.blockedBy?.some(b => b.status !== "done" && b.status !== "cancelled") ? t("runUi.workspace.blockers") : null),
       onRetry: async () => {
         try {
           const receipt = await issuesApi.resolveRecoveryAction(issue.id, { actionId: action.id, outcome: "restored", sourceIssueStatus: "todo" });
           if (receipt.issue.status !== "todo" || receipt.issue.assigneeAgentId !== issue.assigneeAgentId) {
-            throw new Error("The task changed. Refresh and try again.");
+            throw new WorkspaceRecoveryReceiptError("retry");
           }
         } finally { onRepaired(); }
       },
@@ -81,7 +89,7 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
     const requestedRef = failure.requestedRef;
     const workspace = issue.project?.workspaces?.find(w => w.id === issue.projectWorkspaceId)
       ?? issue.project?.primaryWorkspace;
-    let repository = "The task’s repository";
+    let repository = t("runUi.workspace.repository");
     if (workspace?.repoUrl) {
       try { const url = new URL(workspace.repoUrl); if (url.protocol === "https:" || url.protocol === "http:") repository = `${url.hostname}${url.pathname.replace(/\.git$/, "")}`; } catch { /* Keep local paths and credentials out of the card. */ }
     }
@@ -89,15 +97,15 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
     const currentRef = record(settings.workspaceStrategy).baseRef;
     const stale = action.status !== "active" || issue.status !== "blocked" || issue.assigneeAgentId !== action.returnOwnerAgentId
       || run.agentId !== issue.assigneeAgentId || (typeof currentRef === "string" && Boolean(currentRef.trim()) && currentRef !== requestedRef);
-    const reason = stale ? "This repair no longer matches the task. Refresh to review its current state."
+    const reason = stale ? t("runUi.workspace.stale")
       : baseRefUnavailableReason ?? unavailableReason
-      ?? (issue.executionRunId || issue.checkoutRunId ? "Wait for the current run to finish." : null)
-      ?? (agent?.status === "paused" || agent?.status === "terminated" ? "The assigned agent is unavailable." : null)
-      ?? (issue.executionState?.status === "pending" ? "Complete the pending review or approval before retrying." : null)
-      ?? (issue.blockedBy?.some(b => b.status !== "done" && b.status !== "cancelled") ? "Resolve the task’s blockers before retrying." : null);
+      ?? (issue.executionRunId || issue.checkoutRunId ? t("runUi.workspace.wait") : null)
+      ?? (agent?.status === "paused" || agent?.status === "terminated" ? t("runUi.workspace.agentUnavailable") : null)
+      ?? (issue.executionState?.status === "pending" ? t("runUi.workspace.pendingReview") : null)
+      ?? (issue.blockedBy?.some(b => b.status !== "done" && b.status !== "cancelled") ? t("runUi.workspace.blockers") : null);
     value = { actionId: action.id, runId, props: {
       requestedRef, repository, taskOverride: currentRef === requestedRef, defaultBranch: typeof failure.defaultBranch === "string" ? failure.defaultBranch : null,
-      agentName: agent?.name ?? "The assigned agent", unavailableReason: reason,
+      agentName: agent?.name ?? t("runUi.workspace.agent"), unavailableReason: reason,
       failureKind: typeof failure.fetchError === "string" && failure.fetchError.includes(`couldn't find remote ref refs/heads/${requestedRef}`) ? "missing_branch" : "unresolved_ref",
       onRepair: async branch => {
         try {
@@ -106,7 +114,7 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
           });
           if (receipt.issue.status !== "todo" || receipt.issue.assigneeAgentId !== issue.assigneeAgentId
             || record(record(receipt.issue.executionWorkspaceSettings).workspaceStrategy).baseRef !== branch) {
-            throw new Error("The task changed while saving. Refresh to check its current state.");
+            throw new WorkspaceRecoveryReceiptError("repair");
           }
         } finally { onRepaired(); }
       },

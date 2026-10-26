@@ -1,3 +1,8 @@
+import { localizeOnboardingGreeting, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
+import type { TFunction } from "i18next";
+import { i18n, Trans, useTranslation } from "@/i18n";
+import { TaskChatUiError, formatTaskChatError } from "./task-chat/task-chat-errors";
+import { formatFileSize } from "./task-chat/task-chat-attachments";
 import { resolveIssueChatHumanAuthor } from "@/lib/issue-chat-human-author";
 import { useCurrentWorkspaceRetry, useWorkspaceBaseRefRecovery, useWorkspaceRetry } from "./WorkspaceBaseRefRecovery";
 import { WorkspaceBaseRefRecoveryNotice } from "./WorkspaceBaseRefRecoveryNotice";
@@ -84,6 +89,9 @@ import { CommentSubmissionUnknownError } from "../lib/comment-submit-result";
 import {
   buildIssueChatMessages,
   formatDurationWords,
+  formatIssueChatDisplayText,
+  formatIssueChatPartText,
+  issueChatProviderTitle,
   isCoTSegmentActive,
   stabilizeThreadMessages,
   type IssueChatComment,
@@ -411,12 +419,13 @@ function useLiveElapsed(
   startMs: number | null | undefined,
   active: boolean,
 ): string | null {
+  const { t } = useTranslation();
   // Drive the 1s refresh from the shared page-wide ticker instead of a
   // per-instance setInterval, so a thread with many live elements uses one
   // timer rather than one per element.
   useSecondTick(Boolean(active && startMs));
   if (!active || !startMs) return null;
-  return formatDurationWords(Date.now() - startMs);
+  return formatDurationWords(Date.now() - startMs, t, "elapsed");
 }
 
 function readCustomString(
@@ -441,6 +450,7 @@ function IssueChatLiveRunStatusLine({
   active: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const currentStatusMessage = readCustomString(custom, "currentStatusMessage");
   const currentToolName = readCustomString(custom, "currentToolName");
   const lastAssistantSnippet = readCustomString(custom, "lastAssistantSnippet");
@@ -452,14 +462,14 @@ function IssueChatLiveRunStatusLine({
   if (!active) return null;
 
   const primary = currentToolName
-    ? `Using ${currentToolName}`
+    ? t("taskChatUi.classic.using", { tool: currentToolName })
     : lastAssistantSnippet
       ? lastAssistantSnippet
       : currentStatusMessage;
   const activityText = lastActivityElapsed
     ? lastActivityAgeMs !== null && lastActivityAgeMs >= 15_000
-      ? `no output for ${lastActivityElapsed} - still running`
-      : `${lastActivityElapsed} ago`
+      ? t("taskChatUi.classic.silent", { duration: lastActivityElapsed })
+      : t("taskChatUi.classic.ago", { duration: lastActivityElapsed })
     : "";
   const text = [primary, activityText].filter(Boolean).join(" · ");
   if (!text) return null;
@@ -809,16 +819,17 @@ export function IssueAssigneePausedNotice({
   onResume?: () => Promise<void> | void;
   resuming?: boolean;
 }) {
+  const { t } = useTranslation();
   if (!agent || agent.status !== "paused" || issueStatusIsTerminalDisposition(issueStatus)) return null;
 
   const pauseDetail =
     agent.pauseReason === "budget"
-      ? "It was paused by a budget hard stop."
+      ? t("taskChatUi.classic.pauseBudget")
       : agent.pauseReason === "import"
-        ? "It arrived paused from an organization import — imported agents stay parked until you resume them."
+        ? t("taskChatUi.classic.pauseImport")
         : agent.pauseReason === "system"
-          ? "It was paused by the system."
-          : "It was paused manually.";
+          ? t("taskChatUi.classic.pauseSystem")
+          : t("taskChatUi.classic.pauseManual");
   // Budget pauses clear on their own when the budget resets; resuming by hand
   // would fight the hard stop, so the action is only offered for the rest.
   const canResume = Boolean(onResume) && agent.pauseReason !== "budget";
@@ -831,7 +842,7 @@ export function IssueAssigneePausedNotice({
         compact
         title={
           <>
-            <span className="font-medium">{agent.name}</span> is paused.
+            <Trans i18nKey="taskChatUi.classic.pausedAgent" values={{ name: agent.name }} components={{ agent: <span className="font-medium" /> }} tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape />
           </>
         }
         actions={
@@ -843,29 +854,29 @@ export function IssueAssigneePausedNotice({
               disabled={resuming}
               data-testid="issue-assignee-paused-resume"
             >
-              {resuming ? "Resuming…" : "Resume agent"}
+              {resuming ? t("taskChatUi.classic.resuming") : t("taskChatUi.classic.resumeAgent")}
             </Button>
           ) : undefined
         }
       >
-        New runs will not start until the agent is resumed. {pauseDetail}
+        {t("taskChatUi.classic.pauseHint", { detail: pauseDetail })}
       </InlineBanner>
     </div>
   );
 }
 
-function fallbackAuthorLabel(message: ThreadMessage) {
+function fallbackAuthorLabel(message: ThreadMessage, t: TFunction = i18n.getFixedT("en")) {
   const custom = message.metadata?.custom as
     Record<string, unknown> | undefined;
   if (typeof custom?.["authorName"] === "string") return custom["authorName"];
   if (typeof custom?.["runAgentName"] === "string")
     return custom["runAgentName"];
-  if (message.role === "assistant") return "Agent";
-  if (message.role === "user") return "You";
-  return "System";
+  if (message.role === "assistant") return t("taskChatUi.classic.agent");
+  if (message.role === "user") return t("taskChatUi.classic.you");
+  return t("taskChatUi.classic.system");
 }
 
-function fallbackTextParts(message: ThreadMessage) {
+function fallbackTextParts(message: ThreadMessage, t: TFunction = i18n.getFixedT("en")) {
   const contentLines: string[] = [];
   for (const part of message.content) {
     if (part.type === "text" || part.type === "reasoning") {
@@ -873,10 +884,10 @@ function fallbackTextParts(message: ThreadMessage) {
       continue;
     }
     if (part.type === "tool-call") {
-      const lines = [`Tool: ${part.toolName}`];
-      if (part.argsText?.trim()) lines.push(`Args:\n${part.argsText}`);
+      const lines = [t("taskChatUi.classic.fallbackTool", { name: part.toolName })];
+      if (part.argsText?.trim()) lines.push(t("taskChatUi.classic.fallbackArgs", { args: part.argsText }));
       if (typeof part.result === "string" && part.result.trim())
-        lines.push(`Result:\n${part.result}`);
+        lines.push(t("taskChatUi.classic.fallbackResult", { result: part.result }));
       contentLines.push(lines.join("\n\n"));
     }
   }
@@ -904,6 +915,7 @@ function IssueChatFallbackThread({
   variant: "full" | "embedded";
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
   return (
     <div className={cn(variant === "embedded" ? "space-y-3" : "space-y-4")}>
       <div className="rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/20 dark:text-amber-200">
@@ -911,11 +923,10 @@ function IssueChatFallbackThread({
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="space-y-1">
             <p className="font-medium">
-              Chat renderer hit an internal state error.
+              {t("taskChatUi.classic.renderError")}
             </p>
             <p className="text-xs opacity-80">
-              Showing a safe fallback transcript instead of crashing the tasks
-              page.
+              {t("taskChatUi.classic.fallbackDescription")}
             </p>
           </div>
         </div>
@@ -935,7 +946,7 @@ function IssueChatFallbackThread({
       ) : (
         <div className={cn(variant === "embedded" ? "space-y-3" : "space-y-4")}>
           {messages.map((message) => {
-            const lines = fallbackTextParts(message);
+            const lines = fallbackTextParts(message, t);
             return (
               <Card
                 key={message.id}
@@ -943,11 +954,11 @@ function IssueChatFallbackThread({
               >
                 <div className="mb-2 flex items-center gap-2 text-sm">
                   <span className="font-medium text-foreground">
-                    {fallbackAuthorLabel(message)}
+                    {fallbackAuthorLabel(message, t)}
                   </span>
                   {message.createdAt ? (
                     <span className="text-(length:--text-micro) text-muted-foreground">
-                      {commentDateLabel(message.createdAt)}
+                      {commentDateLabel(message.createdAt, t)}
                     </span>
                   ) : null}
                 </div>
@@ -963,7 +974,7 @@ function IssueChatFallbackThread({
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No message content.
+                      {t("taskChatUi.classic.noContent")}
                     </p>
                   )}
                 </div>
@@ -988,18 +999,15 @@ type ComposerAttachmentItem = {
   status: "uploading" | "attached" | "error";
   inline: boolean;
   contentPath?: string;
-  error?: string;
+  error?: { cause: unknown };
 };
 
 function hasFilePayload(evt: ReactDragEvent<HTMLDivElement>) {
   return Array.from(evt.dataTransfer?.types ?? []).includes("Files");
 }
 
-function formatAttachmentSize(bytes: number) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return "";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+function formatAttachmentSize(bytes: number, t: TFunction = i18n.getFixedT("en")) {
+  return formatFileSize(bytes, t);
 }
 
 function toIsoString(value: string | Date | null | undefined): string | null {
@@ -1055,10 +1063,10 @@ function isUnassignedReassignValue(value: string): boolean {
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-function commentDateLabel(date: Date | string | undefined): string {
+function commentDateLabel(date: Date | string | undefined, t: TFunction = i18n.getFixedT("en")): string {
   if (!date) return "";
   const then = new Date(date).getTime();
-  if (Date.now() - then < WEEK_MS) return timeAgo(date);
+  if (Date.now() - then < WEEK_MS) return timeAgo(date, t);
   return formatShortDate(date);
 }
 
@@ -1140,9 +1148,18 @@ export function SuccessfulRunHandoffCommentCallout({
   );
 }
 
-function humanizeValue(value: string | null) {
-  if (!value) return "None";
-  return value.replace(/_/g, " ");
+function humanizeValue(value: string | null, t: TFunction = i18n.getFixedT("en")) {
+  if (!value) return t("taskChatUi.classic.none");
+  switch (value) {
+    case "backlog": return t("statuses.backlog").toLowerCase();
+    case "todo": return t("statuses.todo").toLowerCase();
+    case "in_progress": return t("statuses.in_progress").toLowerCase();
+    case "in_review": return t("statuses.in_review").toLowerCase();
+    case "done": return t("statuses.done").toLowerCase();
+    case "cancelled": return t("statuses.cancelled").toLowerCase();
+    case "blocked": return t("statuses.blocked").toLowerCase();
+    default: return value.replace(/_/g, " ");
+  }
 }
 
 function initialsForName(name: string) {
@@ -1159,22 +1176,22 @@ function formatInteractionActorLabel(args: {
   agentMap?: Map<string, Agent>;
   currentUserId?: string | null;
   userLabelMap?: ReadonlyMap<string, string> | null;
-}) {
+}, t: TFunction = i18n.getFixedT("en")) {
   const { agentId, userId, agentMap, currentUserId, userLabelMap } = args;
   if (agentId) return agentMap?.get(agentId)?.name ?? agentId.slice(0, 8);
   if (userId) {
     return (
       userLabelMap?.get(userId) ??
-      formatAssigneeUserLabel(userId, currentUserId, userLabelMap) ??
-      "Board"
+      formatAssigneeUserLabel(userId, currentUserId, userLabelMap, t) ??
+      t("taskChatUi.handoff.board")
     );
   }
-  return "System";
+  return t("taskChatUi.classic.system");
 }
 
 export { resolveIssueChatHumanAuthor } from "@/lib/issue-chat-human-author";
 
-function toolCountSummary(toolParts: ToolCallMessagePart[]): string | null {
+function toolCountSummary(toolParts: ToolCallMessagePart[], t: TFunction = i18n.getFixedT("en")): string | null {
   if (toolParts.length === 0) return null;
   let commands = 0;
   let other = 0;
@@ -1184,17 +1201,17 @@ function toolCountSummary(toolParts: ToolCallMessagePart[]): string | null {
   }
   const parts: string[] = [];
   if (commands > 0)
-    parts.push(`ran ${commands} command${commands === 1 ? "" : "s"}`);
-  if (other > 0) parts.push(`called ${other} tool${other === 1 ? "" : "s"}`);
+    parts.push(t("taskChatUi.classic.commands", { count: commands }));
+  if (other > 0) parts.push(t("taskChatUi.classic.tools", { count: other }));
   return parts.join(", ");
 }
 
-function cleanToolDisplayText(tool: ToolCallMessagePart): string {
-  const name = displayToolName(tool.toolName, tool.args);
+function cleanToolDisplayText(tool: ToolCallMessagePart, t?: TFunction): string {
+  const name = displayToolName(tool.toolName, tool.args, t);
   if (isCommandTool(tool.toolName, tool.args)) return name;
   const summary =
     tool.result === undefined
-      ? summarizeToolInput(tool.toolName, tool.args)
+      ? summarizeToolInput(tool.toolName, tool.args, undefined, t)
       : null;
   return summary ? `${name} ${summary}` : name;
 }
@@ -1208,6 +1225,7 @@ function IssueChatChainOfThought({
   message: ThreadMessage;
   cotParts: readonly IssueChatCoTPart[];
 }) {
+  const { t } = useTranslation();
   const { agentMap } = useContext(IssueChatCtx);
   const custom = message.metadata.custom as Record<string, unknown>;
   const runAgentId =
@@ -1235,13 +1253,10 @@ function IssueChatChainOfThought({
     [message.content, cotParts],
   );
 
-  const allReasoningText = cotParts
-    .filter(
-      (p): p is { type: "reasoning"; text: string } =>
-        p.type === "reasoning" && !!p.text,
-    )
-    .map((p) => p.text)
-    .join("\n");
+  const reasoningParts = useMemo(() => cotParts.filter(
+    (part): part is ReasoningMessagePart => part.type === "reasoning" && !!part.text,
+  ), [cotParts]);
+  const allReasoningText = reasoningParts.map((part) => part.text).join("\n");
   const toolParts = cotParts.filter(
     (p): p is ToolCallMessagePart => p.type === "tool-call",
   );
@@ -1265,18 +1280,18 @@ function IssueChatChainOfThought({
   let headerVerb: string;
   let headerSuffix: string | null = null;
   if (isActive) {
-    headerVerb = "Working";
-    if (liveElapsed) headerSuffix = `for ${liveElapsed}`;
+    headerVerb = t("taskChatUi.classic.working");
+    if (liveElapsed) headerSuffix = t("taskChatUi.classic.liveDuration", { duration: liveElapsed });
   } else if (segmentTiming) {
     const durationMs = segmentTiming.endMs - segmentTiming.startMs;
-    const durationText = formatDurationWords(durationMs);
-    headerVerb = "Worked";
-    if (durationText) headerSuffix = `for ${durationText}`;
+    const durationText = formatDurationWords(durationMs, t, "elapsed");
+    headerVerb = t("taskChatUi.classic.worked");
+    if (durationText) headerSuffix = t("taskChatUi.classic.forDuration", { duration: durationText });
   } else {
-    headerVerb = "Worked";
+    headerVerb = t("taskChatUi.classic.worked");
   }
 
-  const toolSummary = toolCountSummary(toolParts);
+  const toolSummary = toolCountSummary(toolParts, t);
   const hasContent = allReasoningText.trim().length > 0 || toolParts.length > 0;
 
   return (
@@ -1335,12 +1350,13 @@ function IssueChatChainOfThought({
           {isActive && isVerboseStreamingBackend ? (
             <>
               {allReasoningText ? (
-                <IssueChatVerboseLiveReasoningPart text={allReasoningText} />
+                <IssueChatVerboseLiveReasoningPart text={allReasoningText} parts={reasoningParts} />
               ) : null}
               {toolParts.map((tool) => (
                 <IssueChatToolPart
                   key={tool.toolCallId}
                   toolName={tool.toolName}
+                  providerTitle={issueChatProviderTitle(tool, t)}
                   args={tool.args}
                   argsText={tool.argsText}
                   result={tool.result}
@@ -1351,7 +1367,7 @@ function IssueChatChainOfThought({
           ) : isActive ? (
             <>
               {allReasoningText ? (
-                <IssueChatReasoningPart text={allReasoningText} />
+                <IssueChatReasoningPart text={allReasoningText} parts={reasoningParts} />
               ) : null}
               {toolParts.length > 0 ? (
                 <IssueChatRollingToolPart toolParts={toolParts} />
@@ -1360,12 +1376,13 @@ function IssueChatChainOfThought({
           ) : (
             <>
               {allReasoningText ? (
-                <IssueChatReasoningPart text={allReasoningText} />
+                <IssueChatReasoningPart text={allReasoningText} parts={reasoningParts} />
               ) : null}
               {toolParts.map((tool) => (
                 <IssueChatToolPart
                   key={tool.toolCallId}
                   toolName={tool.toolName}
+                  providerTitle={issueChatProviderTitle(tool, t)}
                   args={tool.args}
                   argsText={tool.argsText}
                   result={tool.result}
@@ -1385,8 +1402,10 @@ function IssueChatChainOfThought({
 // reasoning in a scrollable box that auto-follows the newest line unless the
 // reader has scrolled up to review earlier thinking. All other adapters keep
 // the ticker (IssueChatReasoningPart below), which is unchanged.
-function IssueChatVerboseLiveReasoningPart({ text }: { text: string }) {
-  const lines = text.split("\n").filter((l) => l.trim());
+function IssueChatVerboseLiveReasoningPart({ text, parts }: { text: string; parts?: readonly ReasoningMessagePart[] }) {
+  const { t } = useTranslation();
+  const displayText = parts ? parts.map(part => formatIssueChatPartText(part, t)).join("\n") : text;
+  const lines = displayText.split("\n").filter((l) => l.trim());
   const scrollRef = useRef<HTMLDivElement>(null);
   const pinnedToBottomRef = useRef(true);
   useEffect(() => {
@@ -1398,7 +1417,7 @@ function IssueChatVerboseLiveReasoningPart({ text }: { text: string }) {
   }, [text]);
 
   if (lines.length <= 1) {
-    return <IssueChatReasoningPart text={text} />;
+    return <IssueChatReasoningPart text={text} parts={parts} />;
   }
 
   return (
@@ -1429,23 +1448,30 @@ function IssueChatVerboseLiveReasoningPart({ text }: { text: string }) {
   );
 }
 
-function IssueChatReasoningPart({ text }: { text: string }) {
-  const lines = text.split("\n").filter((l) => l.trim());
+function IssueChatReasoningPart({ text, parts }: { text: string; parts?: readonly ReasoningMessagePart[] }) {
+  const { t } = useTranslation();
+  const lines = text.split("\n").filter((line) => line.trim());
   const lastLine = lines[lines.length - 1] ?? text.slice(-200);
-  const prevRef = useRef(lastLine);
+  const previous = useRef({ lastLine, text, parts });
   const [ticker, setTicker] = useState<{
     key: number;
-    current: string;
-    exiting: string | null;
-  }>({ key: 0, current: lastLine, exiting: null });
+    current: { text: string; parts?: readonly ReasoningMessagePart[] };
+    exiting: { text: string; parts?: readonly ReasoningMessagePart[] } | null;
+  }>({ key: 0, current: { text, parts }, exiting: null });
 
   useEffect(() => {
-    if (lastLine !== prevRef.current) {
-      const prev = prevRef.current;
-      prevRef.current = lastLine;
-      setTicker((t) => ({ key: t.key + 1, current: lastLine, exiting: prev }));
+    if (lastLine !== previous.current.lastLine) {
+      const exiting = previous.current;
+      previous.current = { lastLine, text, parts };
+      setTicker(state => ({ key: state.key + 1, current: { text, parts }, exiting }));
     }
-  }, [lastLine]);
+  }, [lastLine, text, parts]);
+
+  const displayLine = (value: { text: string; parts?: readonly ReasoningMessagePart[] }) => {
+    const formatted = value.parts ? value.parts.map(part => formatIssueChatPartText(part, t)).join("\n") : value.text;
+    const formattedLines = formatted.split("\n").filter(line => line.trim());
+    return formattedLines[formattedLines.length - 1] ?? formatted.slice(-200);
+  };
 
   return (
     <div className="flex gap-2 px-1">
@@ -1457,9 +1483,9 @@ function IssueChatReasoningPart({ text }: { text: string }) {
           <span
             key={`out-${ticker.key}`}
             className="cot-line-exit absolute inset-x-0 truncate text-(length:--text-compact) italic leading-5 text-muted-foreground/70"
-            onAnimationEnd={() => setTicker((t) => ({ ...t, exiting: null }))}
+            onAnimationEnd={() => setTicker(state => ({ ...state, exiting: null }))}
           >
-            {ticker.exiting}
+            {displayLine(ticker.exiting)}
           </span>
         )}
         <span
@@ -1469,7 +1495,7 @@ function IssueChatReasoningPart({ text }: { text: string }) {
             ticker.key > 0 && "cot-line-enter",
           )}
         >
-          {ticker.current}
+          {displayLine(ticker.current)}
         </span>
       </div>
     </div>
@@ -1481,25 +1507,26 @@ function IssueChatRollingToolPart({
 }: {
   toolParts: ToolCallMessagePart[];
 }) {
+  const { t } = useTranslation();
   const latest = toolParts[toolParts.length - 1];
   if (!latest) return null;
 
   const fullText = cleanToolDisplayText(latest);
 
-  const prevRef = useRef(fullText);
+  const prevRef = useRef({ text: fullText, tool: latest });
   const [ticker, setTicker] = useState<{
     key: number;
-    current: string;
-    exiting: string | null;
-  }>({ key: 0, current: fullText, exiting: null });
+    current: ToolCallMessagePart;
+    exiting: ToolCallMessagePart | null;
+  }>({ key: 0, current: latest, exiting: null });
 
   useEffect(() => {
-    if (fullText !== prevRef.current) {
-      const prev = prevRef.current;
-      prevRef.current = fullText;
-      setTicker((t) => ({ key: t.key + 1, current: fullText, exiting: prev }));
+    if (fullText !== prevRef.current.text) {
+      const prev = prevRef.current.tool;
+      prevRef.current = { text: fullText, tool: latest };
+      setTicker((state) => ({ key: state.key + 1, current: latest, exiting: prev }));
     }
-  }, [fullText]);
+  }, [fullText, latest]);
 
   const ToolIcon = getToolIcon(latest.toolName);
   const isRunning = latest.result === undefined;
@@ -1520,7 +1547,7 @@ function IssueChatRollingToolPart({
             className="cot-line-exit absolute inset-x-0 truncate text-(length:--text-compact) leading-5 text-muted-foreground/70"
             onAnimationEnd={() => setTicker((t) => ({ ...t, exiting: null }))}
           >
-            {ticker.exiting}
+            {cleanToolDisplayText(ticker.exiting, t)}
           </span>
         )}
         <span
@@ -1530,7 +1557,7 @@ function IssueChatRollingToolPart({
             ticker.key > 0 && "cot-line-enter",
           )}
         >
-          {ticker.current}
+          {cleanToolDisplayText(ticker.current, t)}
         </span>
       </div>
     </div>
@@ -1544,6 +1571,7 @@ function CopyablePreBlock({
   children: string;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const toastActions = useOptionalToastActions();
   return (
@@ -1555,8 +1583,8 @@ function CopyablePreBlock({
           "absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded-md bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-opacity hover:text-foreground group-hover/pre:opacity-100",
           copied && "opacity-100",
         )}
-        title="Copy"
-        aria-label="Copy"
+        title={t("taskChatUi.classic.copy")}
+        aria-label={t("taskChatUi.classic.copy")}
         onClick={() => {
           void copyTextToClipboard(children)
             .then(() => {
@@ -1565,11 +1593,11 @@ function CopyablePreBlock({
             })
             .catch((error) => {
               toastActions?.pushToast({
-                title: "Copy failed",
+                title: t("taskChatUi.classic.copyFailed"),
                 body:
                   error instanceof Error
                     ? error.message
-                    : "Unable to copy text",
+                    : t("taskChatUi.classic.copyTextFailed"),
                 tone: "error",
               });
             });
@@ -1596,22 +1624,26 @@ function getToolIcon(
 
 function IssueChatToolPart({
   toolName,
+  providerTitle,
   args,
   argsText,
   result,
   isError,
 }: {
   toolName: string;
+  providerTitle?: string;
   args?: unknown;
   argsText?: string;
   result?: unknown;
   isError?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   if (toolName === "paperclip_provider_activity") {
     return (
       <IssueChatProviderActivity
         args={args}
+        generatedTitle={providerTitle}
         running={result === undefined}
         open={open}
         onToggle={() => setOpen((current) => !current)}
@@ -1626,14 +1658,14 @@ function IssueChatToolPart({
       : result === undefined
         ? ""
         : formatToolPayload(result);
-  const inputDetails = describeToolInput(toolName, parsedArgs);
-  const displayName = displayToolName(toolName, parsedArgs);
+  const inputDetails = describeToolInput(toolName, parsedArgs, t);
+  const displayName = displayToolName(toolName, parsedArgs, t);
   const isCommand = isCommandTool(toolName, parsedArgs);
   const summary = isCommand
     ? null
     : result === undefined
-      ? summarizeToolInput(toolName, parsedArgs)
-      : summarizeToolResult(resultText, false);
+      ? summarizeToolInput(toolName, parsedArgs, undefined, t)
+      : summarizeToolResult(resultText, false, undefined, t);
   const ToolIcon = getToolIcon(toolName);
 
   const intentDetail = inputDetails.find((d) => d.label === "Intent");
@@ -1675,13 +1707,13 @@ function IssueChatToolPart({
             {nonIntentDetails.length > 0 ? (
               <div>
                 <div className="mb-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground/60">
-                  Input
+                  {t("taskChatUi.classic.input")}
                 </div>
                 <dl className="space-y-1.5">
                   {nonIntentDetails.map((detail) => (
                     <div key={`${detail.label}:${detail.value}`}>
                       <dt className="text-(length:--text-nano) font-medium text-muted-foreground/60">
-                        {detail.label}
+                        {detail.display?.label ?? detail.label}
                       </dt>
                       <dd
                         className={cn(
@@ -1690,7 +1722,7 @@ function IssueChatToolPart({
                             "font-mono text-(length:--text-micro)",
                         )}
                       >
-                        {detail.value}
+                        {detail.display?.value ?? detail.value}
                       </dd>
                     </div>
                   ))}
@@ -1699,7 +1731,7 @@ function IssueChatToolPart({
             ) : rawArgsText ? (
               <div>
                 <div className="mb-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground/60">
-                  Input
+                  {t("taskChatUi.classic.input")}
                 </div>
                 <CopyablePreBlock className="overflow-x-auto rounded-md bg-accent/30 p-2 text-(length:--text-micro) leading-4 text-foreground/70">
                   {rawArgsText}
@@ -1709,7 +1741,7 @@ function IssueChatToolPart({
             {result !== undefined ? (
               <div>
                 <div className="mb-1 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground/60">
-                  Result
+                  {t("taskChatUi.classic.result")}
                 </div>
                 <CopyablePreBlock className="overflow-x-auto rounded-md bg-accent/30 p-2 text-(length:--text-micro) leading-4 text-foreground/70">
                   {resultText}
@@ -1725,15 +1757,18 @@ function IssueChatToolPart({
 
 function IssueChatProviderActivity({
   args,
+  generatedTitle,
   running,
   open,
   onToggle,
 }: {
   args: unknown;
+  generatedTitle?: string;
   running: boolean;
   open: boolean;
   onToggle: () => void;
 }) {
+  const { t } = useTranslation();
   const value =
     typeof args === "object" && args !== null && !Array.isArray(args)
       ? (args as Record<string, unknown>)
@@ -1744,8 +1779,7 @@ function IssueChatProviderActivity({
     !Array.isArray(value.payload)
       ? (value.payload as Record<string, unknown>)
       : {};
-  const title =
-    typeof value.title === "string" ? value.title : "Provider activity";
+  const title = generatedTitle ?? (typeof value.title === "string" ? value.title : t("taskChatUi.classic.providerActivity"));
   const summary = typeof value.summary === "string" ? value.summary : "";
   const steps = Array.isArray(payload.steps) ? payload.steps.slice(0, 256) : [];
   const children = Array.isArray(payload.children)
@@ -1827,9 +1861,9 @@ function IssueChatProviderActivity({
               return (
                 <div key={String(child.childId ?? index)}>
                   <span className="font-medium">
-                    {String(child.role ?? "Child agent")}
+                    {String(child.role ?? t("taskChatUi.classic.childAgent"))}
                   </span>{" "}
-                  · {String(child.status ?? "unknown")}
+                  · {String(child.status ?? t("taskChatUi.classic.unknown"))}
                   {child.summary ? ` — ${String(child.summary)}` : ""}
                 </div>
               );
@@ -1856,17 +1890,17 @@ function IssueChatProviderActivity({
                       {String(source.title ?? href)}
                     </a>
                   ) : (
-                    <span>{String(source.title ?? "Unavailable source")}</span>
+                    <span>{String(source.title ?? t("taskChatUi.classic.unavailableSource"))}</span>
                   )}{" "}
                   <span className="text-muted-foreground">
-                    (provider-reported)
+                    {t("taskChatUi.classic.providerReported")}
                   </span>
                 </div>
               );
             })}
             {effectiveModel ? (
               <div>
-                <span className="text-muted-foreground">Model</span>{" "}
+                <span className="text-muted-foreground">{t("taskChatUi.classic.model")}</span>{" "}
                 {requestedModel && requestedModel !== effectiveModel
                   ? `${requestedModel} → `
                   : ""}
@@ -1964,6 +1998,9 @@ const IssueChatAssistantParts = memo(function IssueChatAssistantParts({
   message: ThreadMessage;
   hasCoT: boolean;
 }) {
+  const { t } = useTranslation();
+  const custom = message.metadata.custom as Record<string, unknown>;
+  const display = custom.display && typeof custom.display === "object" ? custom.display as Record<string, unknown> : null;
   const groupedParts = useMemo(
     () => groupAssistantParts(message.content),
     [message.content],
@@ -1975,7 +2012,7 @@ const IssueChatAssistantParts = memo(function IssueChatAssistantParts({
           return (
             <IssueChatTextPart
               key={`${message.id}:text:${group.index}`}
-              text={group.part.text}
+              text={display?.waitingContent === true && group.index === 0 ? formatIssueChatDisplayText("waitingText", group.part.text, custom, t) : group.part.text}
               recessed={hasCoT}
             />
           );
@@ -1999,6 +2036,7 @@ function IssueChatUserMessage({
   message: ThreadMessage;
   isInterruptingQueuedRun: boolean;
 }) {
+  const { t } = useTranslation();
   const {
     onInterruptQueued,
     onCancelQueued,
@@ -2026,7 +2064,7 @@ function IssueChatUserMessage({
   const queueReason =
     typeof custom.queueReason === "string" ? custom.queueReason : null;
   const queueBadgeLabel =
-    queueReason === "hold" ? "\u23f8 Deferred wake" : "Queued";
+    queueReason === "hold" ? t("taskChatUi.classic.deferred") : t("taskChatUi.classic.queued");
   const pending = custom.clientStatus === "pending";
   const deleted = Boolean(custom.deletedAt);
   const queueTargetRunId =
@@ -2038,7 +2076,7 @@ function IssueChatUserMessage({
   const toastActions = useOptionalToastActions();
   const {
     isCurrentUser,
-    authorName: resolvedAuthorName,
+    authorName: rawResolvedAuthorName,
     avatarUrl,
   } = resolveIssueChatHumanAuthor({
     authorName,
@@ -2046,6 +2084,8 @@ function IssueChatUserMessage({
     currentUserId,
     userProfileMap,
   });
+  const resolvedAuthorName = userProfileMap?.get(authorUserId ?? "")?.label?.trim()
+    ? rawResolvedAuthorName : formatIssueChatDisplayText("authorName", rawResolvedAuthorName, custom, t);
   const authorAvatar = (
     <Avatar size="sm" className="shrink-0">
       {avatarUrl ? (
@@ -2088,7 +2128,7 @@ function IssueChatUserMessage({
             variant="outline"
             className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow)"
           >
-            Follow-up
+            {t("taskChatUi.classic.followup")}
           </Badge>
         ) : null}
       </div>
@@ -2126,7 +2166,7 @@ function IssueChatUserMessage({
                 disabled={isInterruptingQueuedRun}
                 onClick={() => void onInterruptQueued(queueTargetRunId)}
               >
-                {isInterruptingQueuedRun ? "Interrupting..." : "Interrupt"}
+                {isInterruptingQueuedRun ? t("taskChatUi.classic.interrupting") : t("taskChatUi.classic.interrupt")}
               </Button>
             ) : null}
             {onCancelQueued ? (
@@ -2136,14 +2176,14 @@ function IssueChatUserMessage({
                 className="h-6 border-amber-300 px-2 text-(length:--text-micro) text-amber-900 hover:bg-amber-100/80 hover:text-amber-950 dark:border-amber-500/40 dark:text-amber-100 dark:hover:bg-amber-500/10"
                 onClick={() => onCancelQueued(commentId)}
               >
-                Cancel
+                {t("taskChatUi.classic.cancel")}
               </Button>
             ) : null}
           </div>
         ) : null}
         {deleted ? (
           <div className="text-sm italic text-muted-foreground">
-            Comment deleted
+            {t("taskChatUi.classic.commentDeleted")}
           </div>
         ) : (
           <div className="min-w-0 max-w-full space-y-3">
@@ -2157,7 +2197,7 @@ function IssueChatUserMessage({
 
       {sentFromIMessage && !deleted ? (
         <div className="mt-1 px-1 text-xs text-muted-foreground">
-          Sent from iMessage
+          {t("taskChatUi.classic.sentIMessage")}
         </div>
       ) : null}
       {pending ? (
@@ -2167,7 +2207,7 @@ function IssueChatUserMessage({
             isCurrentUser ? "justify-end" : "justify-start",
           )}
         >
-          Sending...
+          {t("taskChatUi.classic.sending")}
         </div>
       ) : (
         <div
@@ -2182,7 +2222,7 @@ function IssueChatUserMessage({
                 href={anchorId ? `#${anchorId}` : undefined}
                 className="text-(length:--text-micro) text-muted-foreground hover:text-foreground hover:underline"
               >
-                {message.createdAt ? commentDateLabel(message.createdAt) : ""}
+                {message.createdAt ? commentDateLabel(message.createdAt, t) : ""}
               </a>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="text-xs">
@@ -2193,8 +2233,8 @@ function IssueChatUserMessage({
             <button
               type="button"
               className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-              title="Copy message"
-              aria-label="Copy message"
+              title={t("taskChatUi.classic.copyMessage")}
+              aria-label={t("taskChatUi.classic.copyMessage")}
               onClick={() => {
                 const text = message.content
                   .filter(
@@ -2210,11 +2250,11 @@ function IssueChatUserMessage({
                   })
                   .catch((error) => {
                     toastActions?.pushToast({
-                      title: "Copy failed",
+                      title: t("taskChatUi.classic.copyFailed"),
                       body:
                         error instanceof Error
                           ? error.message
-                          : "Unable to copy message",
+                          : t("taskChatUi.classic.copyMessageFailed"),
                       tone: "error",
                     });
                   });
@@ -2231,8 +2271,8 @@ function IssueChatUserMessage({
             <button
               type="button"
               className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-destructive"
-              title="Delete comment"
-              aria-label="Delete comment"
+              title={t("taskChatUi.classic.deleteComment")}
+              aria-label={t("taskChatUi.classic.deleteComment")}
               onClick={handleDeleteComment}
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -2268,9 +2308,9 @@ function IssueChatUserMessage({
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete comment?</DialogTitle>
+            <DialogTitle>{t("taskChatUi.classic.deleteTitle")}</DialogTitle>
             <DialogDescription>
-              This will replace the comment with a deleted-comment marker.
+              {t("taskChatUi.classic.deleteDescription")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -2278,10 +2318,10 @@ function IssueChatUserMessage({
               variant="outline"
               onClick={() => setDeleteDialogOpen(false)}
             >
-              Cancel
+              {t("taskChatUi.classic.cancel")}
             </Button>
             <Button variant="destructive" onClick={confirmDeleteComment}>
-              Delete comment
+              {t("taskChatUi.classic.deleteComment")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2301,6 +2341,7 @@ function IssueChatAssistantMessage({
   isRunActive: boolean;
   isStoppingRun: boolean;
 }) {
+  const { t } = useTranslation();
   const {
     feedbackDataSharingPreference,
     feedbackTermsUrl,
@@ -2322,7 +2363,7 @@ function IssueChatAssistantMessage({
       ? custom.authorName
       : typeof custom.runAgentName === "string"
         ? custom.runAgentName
-        : "Agent";
+        : t("taskChatUi.classic.agent");
   const authorAgentId =
     typeof custom.authorAgentId === "string" ? custom.authorAgentId : null;
   const runId = typeof custom.runId === "string" ? custom.runId : null;
@@ -2352,8 +2393,7 @@ function IssueChatAssistantMessage({
           typeof notice === "string" && notice.length > 0,
       )
     : [];
-  const waitingText =
-    typeof custom.waitingText === "string" ? custom.waitingText : "";
+  const waitingText = formatIssueChatDisplayText("waitingText", typeof custom.waitingText === "string" ? custom.waitingText : "", custom, t);
   const isRunning =
     message.role === "assistant" && message.status?.type === "running";
   const runHref =
@@ -2361,10 +2401,7 @@ function IssueChatAssistantMessage({
   const canStopRun =
     Boolean(runId) &&
     (isRunActive || runStatus === "queued" || runStatus === "running");
-  const chainOfThoughtLabel =
-    typeof custom.chainOfThoughtLabel === "string"
-      ? custom.chainOfThoughtLabel
-      : null;
+  const chainOfThoughtLabel = formatIssueChatDisplayText("chainOfThoughtLabel", typeof custom.chainOfThoughtLabel === "string" ? custom.chainOfThoughtLabel : "", custom, t);
   const hasCoT = message.content.some(
     (p) => p.type === "reasoning" || p.type === "tool-call",
   );
@@ -2433,8 +2470,8 @@ function IssueChatAssistantMessage({
       <button
         type="button"
         className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-        title="Copy message"
-        aria-label="Copy message"
+        title={t("taskChatUi.classic.copyMessage")}
+        aria-label={t("taskChatUi.classic.copyMessage")}
         onClick={() => {
           void copyTextToClipboard(copyText)
             .then(() => {
@@ -2443,11 +2480,11 @@ function IssueChatAssistantMessage({
             })
             .catch((error) => {
               toastActions?.pushToast({
-                title: "Copy failed",
+                title: t("taskChatUi.classic.copyFailed"),
                 body:
                   error instanceof Error
                     ? error.message
-                    : "Unable to copy message",
+                    : t("taskChatUi.classic.copyMessageFailed"),
                 tone: "error",
               });
             });
@@ -2473,7 +2510,7 @@ function IssueChatAssistantMessage({
             href={anchorId ? `#${anchorId}` : undefined}
             className="text-(length:--text-micro) text-muted-foreground hover:text-foreground hover:underline"
           >
-            {message.createdAt ? commentDateLabel(message.createdAt) : ""}
+            {message.createdAt ? commentDateLabel(message.createdAt, t) : ""}
           </a>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="text-xs">
@@ -2486,30 +2523,30 @@ function IssueChatAssistantMessage({
             variant="ghost"
             size="icon-xs"
             className="text-muted-foreground hover:text-foreground"
-            title="More actions"
-            aria-label="More actions"
+            title={t("taskChatUi.classic.moreActions")}
+            aria-label={t("taskChatUi.classic.moreActions")}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {custom.origin === "fast_response" && <div className="max-w-xs px-2 py-2 text-xs text-muted-foreground">Platform-generated acknowledgement. The agent’s substantive response follows separately.</div>}
+          {custom.origin === "fast_response" && <div className="max-w-xs px-2 py-2 text-xs text-muted-foreground">{t("taskChatUi.classic.platformAcknowledgement")}</div>}
           <DropdownMenuItem
             onClick={() => {
               void copyTextToClipboard(copyText).catch((error) => {
                 toastActions?.pushToast({
-                  title: "Copy failed",
+                  title: t("taskChatUi.classic.copyFailed"),
                   body:
                     error instanceof Error
                       ? error.message
-                      : "Unable to copy message",
+                      : t("taskChatUi.classic.copyMessageFailed"),
                   tone: "error",
                 });
               });
             }}
           >
             <Copy className="mr-2 h-3.5 w-3.5" />
-            Copy message
+            {t("taskChatUi.classic.copyMessage")}
           </DropdownMenuItem>
           {canStopRun && onStopRun && runId ? (
             <DropdownMenuItem
@@ -2535,7 +2572,7 @@ function IssueChatAssistantMessage({
             <DropdownMenuItem asChild>
               <Link to={runHref} target="_blank" rel="noreferrer noopener">
                 <Search className="mr-2 h-3.5 w-3.5" />
-                View run
+                {t("taskChatUi.classic.viewRun")}
               </Link>
             </DropdownMenuItem>
           ) : null}
@@ -2582,7 +2619,7 @@ function IssueChatAssistantMessage({
                 variant="outline"
                 className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow)"
               >
-                Follow-up
+                {t("taskChatUi.classic.followup")}
               </Badge>
             ) : null}
           </div>
@@ -2598,7 +2635,7 @@ function IssueChatAssistantMessage({
           >
             {deleted ? (
               <div className="text-sm italic text-muted-foreground">
-                Comment deleted
+                {t("taskChatUi.classic.commentDeleted")}
               </div>
             ) : (
               <div className="min-w-0 max-w-full space-y-3">
@@ -2655,7 +2692,7 @@ function IssueChatAssistantMessage({
               />
               {message.createdAt ? (
                 <span className="ml-auto text-(length:--text-micro) text-muted-foreground/50">
-                  {commentDateLabel(message.createdAt)}
+                  {commentDateLabel(message.createdAt, t)}
                 </span>
               ) : null}
             </button>
@@ -2673,7 +2710,7 @@ function IssueChatAssistantMessage({
                   variant="outline"
                   className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow)"
                 >
-                  Follow-up
+                  {t("taskChatUi.classic.followup")}
                 </Badge>
               ) : null}
               {isRunning ? (
@@ -2687,7 +2724,7 @@ function IssueChatAssistantMessage({
                   )}
                 >
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Running
+                  {t("taskChatUi.classic.running")}
                 </Badge>
               ) : null}
             </div>
@@ -2695,7 +2732,7 @@ function IssueChatAssistantMessage({
 
           {deleted ? (
             <div className="rounded-sm bg-muted/40 px-3 py-2 text-sm italic text-muted-foreground">
-              Comment deleted
+              {t("taskChatUi.classic.commentDeleted")}
             </div>
           ) : !folded ? (
             <>
@@ -2757,6 +2794,7 @@ function IssueChatFeedbackButtons({
     options?: { allowSharing?: boolean; reason?: string },
   ) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
   const [optimisticVote, setOptimisticVote] =
     useState<FeedbackVoteValue | null>(null);
@@ -2838,8 +2876,8 @@ function IssueChatFeedbackButtons({
             ? "text-green-600 dark:text-green-400"
             : "text-muted-foreground hover:bg-accent hover:text-foreground",
         )}
-        title="Helpful"
-        aria-label="Helpful"
+        title={t("taskChatUi.classic.helpful")}
+        aria-label={t("taskChatUi.classic.helpful")}
         onClick={handleThumbsUp}
       >
         <ThumbsUp className="h-3.5 w-3.5" />
@@ -2855,8 +2893,8 @@ function IssueChatFeedbackButtons({
                 ? "text-amber-600 dark:text-amber-400"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground",
             )}
-            title="Needs work"
-            aria-label="Needs work"
+            title={t("taskChatUi.classic.needsWork")}
+            aria-label={t("taskChatUi.classic.needsWork")}
             onClick={handleThumbsDown}
           >
             <ThumbsDown className="h-3.5 w-3.5" />
@@ -2864,12 +2902,12 @@ function IssueChatFeedbackButtons({
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-80 p-3">
           <div className="mb-2 text-sm font-medium">
-            What could have been better?
+            {t("taskChatUi.classic.feedbackPrompt")}
           </div>
           <Textarea
             value={downvoteReason}
             onChange={(event) => setDownvoteReason(event.target.value)}
-            placeholder="Add a short note"
+            placeholder={t("taskChatUi.classic.feedbackPlaceholder")}
             className="min-h-20 resize-y bg-background text-sm"
             disabled={isSaving}
           />
@@ -2884,7 +2922,7 @@ function IssueChatFeedbackButtons({
                 setDownvoteReason("");
               }}
             >
-              Dismiss
+              {t("taskChatUi.classic.dismiss")}
             </Button>
             <Button
               type="button"
@@ -2892,7 +2930,7 @@ function IssueChatFeedbackButtons({
               disabled={isSaving || !downvoteReason.trim()}
               onClick={handleSubmitReason}
             >
-              {isSaving ? "Saving..." : "Save note"}
+              {isSaving ? t("taskChatUi.classic.saving") : t("taskChatUi.classic.saveNote")}
             </Button>
           </div>
         </PopoverContent>
@@ -2909,23 +2947,17 @@ function IssueChatFeedbackButtons({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save your feedback sharing preference</DialogTitle>
+            <DialogTitle>{t("taskChatUi.classic.sharingTitle")}</DialogTitle>
             <DialogDescription>
-              Choose whether voted AI outputs can be shared with Paperclip Labs.
-              This answer becomes the default for future thumbs up and thumbs
-              down votes.
+              {t("taskChatUi.classic.sharingDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>This vote is always saved locally.</p>
+            <p>{t("taskChatUi.classic.voteLocal")}</p>
             <p>
-              Choose{" "}
-              <span className="font-medium text-foreground">Always allow</span>{" "}
-              to share this vote and future voted AI outputs. Choose{" "}
-              <span className="font-medium text-foreground">Don't allow</span>{" "}
-              to keep this vote and future votes local.
+              <Trans i18nKey="taskChatUi.classic.sharingExplanation" components={{ allow: <span className="font-medium text-foreground" />, deny: <span className="font-medium text-foreground" /> }} />
             </p>
-            <p>You can change this later in Settings &gt; General.</p>
+            <p>{t("taskChatUi.classic.sharingSettings")}</p>
             {termsUrl ? (
               <a
                 href={termsUrl}
@@ -2933,7 +2965,7 @@ function IssueChatFeedbackButtons({
                 rel="noreferrer"
                 className="inline-flex text-sm text-foreground underline underline-offset-4"
               >
-                Read our terms of service
+                {t("taskChatUi.classic.terms")}
               </a>
             ) : null}
           </div>
@@ -2952,7 +2984,7 @@ function IssueChatFeedbackButtons({
                 ).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Don't allow"}
+              {isSaving ? t("taskChatUi.classic.saving") : t("taskChatUi.classic.deny")}
             </Button>
             <Button
               type="button"
@@ -2967,7 +2999,7 @@ function IssueChatFeedbackButtons({
                 }).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Always allow"}
+              {isSaving ? t("taskChatUi.classic.saving") : t("taskChatUi.classic.allow")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2985,6 +3017,7 @@ function ExpiredRequestConfirmationActivity({
   anchorId?: string;
   interaction: RequestConfirmationInteraction;
 }) {
+  const { t } = useTranslation();
   const {
     agentMap,
     currentUserId,
@@ -3011,7 +3044,7 @@ function ExpiredRequestConfirmationActivity({
     agentMap,
     currentUserId,
     userLabelMap,
-  });
+  }, t);
   const actorIcon = actorAgentId
     ? agentMap?.get(actorAgentId)?.icon
     : undefined;
@@ -3032,12 +3065,12 @@ function ExpiredRequestConfirmationActivity({
         )}
       >
         <span className="font-medium text-foreground">{actorName}</span>
-        <span className="text-muted-foreground">updated this task</span>
+        <span className="text-muted-foreground">{t("taskChatUi.classic.updatedTask")}</span>
         <a
           href={anchorId ? `#${anchorId}` : undefined}
           className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
         >
-          {timeAgo(message.createdAt)}
+          {timeAgo(message.createdAt, t)}
         </a>
         <button
           type="button"
@@ -3052,7 +3085,7 @@ function ExpiredRequestConfirmationActivity({
               expanded && "rotate-180",
             )}
           />
-          {expanded ? "Hide confirmation" : "Expired confirmation"}
+          {expanded ? t("taskChatUi.classic.hideConfirmation") : t("taskChatUi.classic.expiredConfirmation")}
         </button>
       </div>
       {expanded ? (
@@ -3301,20 +3334,23 @@ function isTimelineWorkspaceChange(
 
 function StaleDispositionWarningDetails({
   sections,
+  displaySections,
 }: {
   sections: SystemNoticeMetadataSection[];
+  displaySections: SystemNoticeMetadataSection[];
 }) {
+  const { t } = useTranslation();
   if (sections.length === 0) {
     return (
       <div className="text-xs leading-5 text-muted-foreground">
-        No additional details.
+        {t("taskChatUi.classic.noDetails")}
       </div>
     );
   }
 
   return (
     <div className="space-y-3 text-left">
-      {sections.map((section) => (
+      {sections.map((section, sectionIndex) => (
         <div key={metadataSectionKey(section)} className="space-y-1.5">
           {section.title ? (
             <div className="text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
@@ -3322,10 +3358,10 @@ function StaleDispositionWarningDetails({
             </div>
           ) : null}
           <div className="space-y-1">
-            {section.rows.map((row) => (
+            {section.rows.map((row, rowIndex) => (
               <StaleDispositionWarningMetadataRow
                 key={metadataRowKey(row)}
-                row={row}
+                row={displaySections[sectionIndex]?.rows[rowIndex] ?? row}
               />
             ))}
           </div>
@@ -3346,11 +3382,13 @@ function StaleDispositionWarningRow({
   metadata: IssueCommentMetadata | null;
   runAgentId?: string | null;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const detailsId = useId();
   const sections = mapCommentMetadataToSystemNoticeSections(metadata, {
     runAgentId,
   });
+  const displaySections = mapCommentMetadataToSystemNoticeSections(metadata, { runAgentId }, t);
 
   return (
     <div id={anchorId} data-testid="stale-disposition-warning">
@@ -3365,7 +3403,7 @@ function StaleDispositionWarningRow({
             onClick={() => setOpen((value) => !value)}
           >
             <span className="text-sm font-medium text-foreground/80">
-              Stale disposition warning
+              {t("taskChatUi.classic.staleWarning")}
             </span>
             <span className="ml-auto flex items-center gap-1.5">
               {message.createdAt ? (
@@ -3373,7 +3411,7 @@ function StaleDispositionWarningRow({
                   data-testid="stale-disposition-warning-time"
                   className="text-(length:--text-micro) text-muted-foreground/50"
                 >
-                  {commentDateLabel(message.createdAt)}
+                  {commentDateLabel(message.createdAt, t)}
                 </span>
               ) : null}
               <ChevronDown
@@ -3385,7 +3423,7 @@ function StaleDispositionWarningRow({
             </span>
           </button>
           <div id={detailsId} hidden={!open} className="space-y-1 py-1">
-            <StaleDispositionWarningDetails sections={sections} />
+            <StaleDispositionWarningDetails sections={sections} displaySections={displaySections} />
           </div>
         </div>
       </div>
@@ -3424,6 +3462,7 @@ function CompactSystemNoticeRow({
   noticeProps: SystemNoticeProps;
   defaultOpen?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(defaultOpen);
   const detailsId = useId();
 
@@ -3462,7 +3501,7 @@ function CompactSystemNoticeRow({
                   data-testid="compact-system-notice-time"
                   className="whitespace-nowrap text-(length:--text-micro) text-muted-foreground/50"
                 >
-                  {commentDateLabel(message.createdAt)}
+                  {commentDateLabel(message.createdAt, t)}
                 </span>
               ) : null}
               <ChevronDown
@@ -3494,6 +3533,7 @@ function SystemNoticeCommentContent({
   message: ThreadMessage;
   anchorId?: string;
 }) {
+  const { t } = useTranslation();
   const { onImageClick, agentMap, issueStatus, successfulRunHandoff } =
     useContext(IssueChatCtx);
   const toastActions = useOptionalToastActions();
@@ -3563,7 +3603,7 @@ function SystemNoticeCommentContent({
     timestamp: toValidIsoString(message.createdAt),
     source,
     runAgentId,
-  });
+  }, t);
 
   const handleCopy = () => {
     void copyTextToClipboard(bodyText)
@@ -3573,11 +3613,11 @@ function SystemNoticeCommentContent({
       })
       .catch((error) => {
         toastActions?.pushToast({
-          title: "Copy failed",
+          title: t("taskChatUi.classic.copyFailed"),
           body:
             error instanceof Error
               ? error.message
-              : "Unable to copy system notice",
+              : t("taskChatUi.classic.copyNoticeFailed"),
           tone: "error",
         });
       });
@@ -3593,11 +3633,11 @@ function SystemNoticeCommentContent({
       })
       .catch((error) => {
         toastActions?.pushToast({
-          title: "Copy failed",
+          title: t("taskChatUi.classic.copyFailed"),
           body:
             error instanceof Error
               ? error.message
-              : "Unable to copy system notice link",
+              : t("taskChatUi.classic.copyNoticeLinkFailed"),
           tone: "error",
         });
       });
@@ -3625,7 +3665,7 @@ function SystemNoticeCommentContent({
   // without `density` (old comments / old data) keep today's full card.
   if (presentation?.density === "compact") {
     const tone = presentation.tone ?? "neutral";
-    const title = systemNoticeLabelForTone(tone, presentation.title);
+    const title = systemNoticeLabelForTone(tone, presentation.title, t);
     return (
       <CompactSystemNoticeRow
         anchorId={anchorId}
@@ -3650,7 +3690,7 @@ function SystemNoticeCommentContent({
                 href={anchorId ? `#${anchorId}` : undefined}
                 className="text-(length:--text-micro) text-muted-foreground hover:text-foreground hover:underline"
               >
-                {message.createdAt ? commentDateLabel(message.createdAt) : ""}
+                {message.createdAt ? commentDateLabel(message.createdAt, t) : ""}
               </a>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="text-xs">
@@ -3661,8 +3701,8 @@ function SystemNoticeCommentContent({
             <button
               type="button"
               className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-              title="Copy link"
-              aria-label="Copy link to system notice"
+              title={t("taskChatUi.classic.copyLink")}
+              aria-label={t("taskChatUi.classic.copyNoticeLink")}
               onClick={handleCopyLink}
             >
               {copiedLink ? (
@@ -3675,8 +3715,8 @@ function SystemNoticeCommentContent({
           <button
             type="button"
             className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-            title="Copy notice text"
-            aria-label="Copy system notice"
+            title={t("taskChatUi.classic.copyNoticeText")}
+            aria-label={t("taskChatUi.classic.copyNotice")}
             onClick={handleCopy}
           >
             {copied ? (
@@ -3720,6 +3760,7 @@ function IssueChatMetadataRow({
 }
 
 function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
+  const { t } = useTranslation();
   const {
     agentMap,
     currentUserId,
@@ -3742,8 +3783,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
     typeof custom.runAgentName === "string" ? custom.runAgentName : null;
   const runStatus =
     typeof custom.runStatus === "string" ? custom.runStatus : null;
-  const actorName =
-    typeof custom.actorName === "string" ? custom.actorName : null;
+  const actorName = formatIssueChatDisplayText("actorName", typeof custom.actorName === "string" ? custom.actorName : "", custom, t);
   const actorType =
     typeof custom.actorType === "string" ? custom.actorType : null;
   const actorId = typeof custom.actorId === "string" ? custom.actorId : null;
@@ -3816,7 +3856,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
       agentMap,
       currentUserId,
       resolveUserLabel: (userId) =>
-        formatAssigneeUserLabel(userId, null, userLabelMap),
+        formatAssigneeUserLabel(userId, null, userLabelMap, t),
     };
 
     return (
@@ -3825,28 +3865,28 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
           <span className="font-medium text-foreground">{actorName}</span>
           <span className="text-muted-foreground">
             {custom.followUpRequested === true
-              ? "requested follow-up"
-              : "updated this task"}
+              ? t("taskChatUi.classic.requestedFollowup")
+              : t("taskChatUi.classic.updatedTask")}
           </span>
           <a
             href={anchorId ? `#${anchorId}` : undefined}
             className="text-xs text-muted-foreground/70 transition-colors hover:text-foreground hover:underline"
           >
-            {timeAgo(message.createdAt)}
+            {timeAgo(message.createdAt, t)}
           </a>
         </div>
 
         {statusChange ? (
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="text-(length:--text-nano) font-medium uppercase tracking-wider text-muted-foreground/70">
-              Status
+              {t("taskChatUi.classic.status")}
             </span>
             <span className="text-muted-foreground">
-              {humanizeValue(statusChange.from)}
+              {humanizeValue(statusChange.from, t)}
             </span>
             <ArrowRight className="h-3 w-3 text-muted-foreground/70" />
             <span className="font-medium text-foreground">
-              {humanizeValue(statusChange.to)}
+              {humanizeValue(statusChange.to, t)}
             </span>
           </div>
         ) : null}
@@ -3860,7 +3900,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
               )}
             >
               <span className="text-(length:--text-nano) font-medium uppercase tracking-wider text-muted-foreground/70">
-                Assignee
+                {t("taskChatUi.classic.assignee")}
               </span>
               <AssigneeChip
                 assignee={assigneeChange.from}
@@ -3885,14 +3925,14 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         {workspaceChange ? (
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="text-(length:--text-nano) font-medium uppercase tracking-wider text-muted-foreground/70">
-              Workspace
+              {t("taskChatUi.classic.workspace")}
             </span>
             <span className="text-muted-foreground">
-              {formatTimelineWorkspaceLabel(workspaceChange.from)}
+              {formatTimelineWorkspaceLabel(workspaceChange.from, t)}
             </span>
             <ArrowRight className="h-3 w-3 text-muted-foreground/70" />
             <span className="font-medium text-foreground">
-              {formatTimelineWorkspaceLabel(workspaceChange.to)}
+              {formatTimelineWorkspaceLabel(workspaceChange.to, t)}
             </span>
           </div>
         ) : null}
@@ -3918,7 +3958,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
           >
             {displayedRunAgentName}
           </Link>
-          <span className="text-muted-foreground">run</span>
+          <span className="text-muted-foreground">{t("taskChatUi.classic.run")}</span>
           <Link
             to={`/agents/${runAgentId}/runs/${runId}`}
             className="inline-flex items-center rounded-md border border-border bg-accent/40 px-1.5 py-0.5 font-mono text-(length:--text-nano) text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
@@ -3933,7 +3973,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
             href={anchorId ? `#${anchorId}` : undefined}
             className="text-xs text-muted-foreground/70 transition-colors hover:text-foreground hover:underline"
           >
-            {timeAgo(message.createdAt)}
+            {timeAgo(message.createdAt, t)}
           </a>
         </div>
       </IssueChatMetadataRow>
@@ -4535,11 +4575,12 @@ function IssueChatDeletedComment({
   message: ThreadMessage;
   deletedAt: string;
 }) {
+  const { t } = useTranslation();
   const custom = issueChatMessageCustom(message);
   const anchorId =
     typeof custom.anchorId === "string" ? custom.anchorId : undefined;
   const authorName =
-    typeof custom.authorName === "string" ? custom.authorName : "Comment";
+    typeof custom.authorName === "string" ? custom.authorName : t("taskChatUi.classic.comment");
   const deletedDate = new Date(deletedAt);
   const deletedDateLabel = Number.isNaN(deletedDate.getTime())
     ? ""
@@ -4552,7 +4593,7 @@ function IssueChatDeletedComment({
       </div>
       <div className="min-w-0 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-sm text-muted-foreground">
         <span className="font-medium text-foreground/80">{authorName}</span>
-        <span> deleted this comment</span>
+        <span> {t("taskChatUi.classic.deletedBy")}</span>
         {deletedDateLabel ? (
           <span className="text-xs"> · {deletedDateLabel}</span>
         ) : null}
@@ -4677,7 +4718,8 @@ const IssueChatComposer = forwardRef<
   },
   forwardedRef,
 ) {
-  const stopControl = useComposerStop(onStop, stopPending);
+  const { t } = useTranslation();
+  const stopControl = useComposerStop(onStop, stopPending, t);
   const restoredRecovery = useMemo(() => {
     const key = sharedDraftKey && loadDraftRecoveryKey(sharedDraftKey);
     return key ? { sourceKey: sharedDraftKey!, key, persisted: true } : null;
@@ -5151,7 +5193,7 @@ const IssueChatComposer = forwardRef<
       } else if (onAttachImage) {
         const attachment = await onAttachImage(file);
         if (!attachment?.contentPath)
-          throw new Error("Upload did not return a file URL");
+          throw new TaskChatUiError("uploadNoUrl");
         if (
           !composerAttachmentsRef.current.some(
             (item) => item.id === attachmentId,
@@ -5183,7 +5225,7 @@ const IssueChatComposer = forwardRef<
               ? {
                   ...item,
                   status: "error",
-                  error: "This file type cannot be attached here",
+                  error: { cause: new TaskChatUiError("fileTypeUnsupported") },
                 }
               : item,
           ),
@@ -5196,7 +5238,7 @@ const IssueChatComposer = forwardRef<
             ? {
                 ...item,
                 status: "error",
-                error: err instanceof Error ? err.message : "Upload failed",
+                error: { cause: err },
               }
             : item,
         ),
@@ -5287,9 +5329,9 @@ const IssueChatComposer = forwardRef<
       agentMap,
       currentUserId,
       resolveUserLabel: (userId: string) =>
-        formatAssigneeUserLabel(userId, null, userLabelMap),
+        formatAssigneeUserLabel(userId, null, userLabelMap, t),
     }),
-    [agentMap, currentUserId, userLabelMap],
+    [agentMap, currentUserId, userLabelMap, t],
   );
   const mentionedAgentIds = useMemo(() => extractAgentMentionIds(body), [body]);
   const plainNameCandidate = useMemo(
@@ -5308,8 +5350,9 @@ const IssueChatComposer = forwardRef<
         bodyHasAgentMention: mentionedAgentIds.length > 0,
         mentionedAgentId: mentionedAgentIds[0] ?? null,
         plainNameCandidate,
-      }),
+      }, t),
     [
+      t,
       reassignTarget,
       currentAssigneeValue,
       hasActiveRun,
@@ -5403,11 +5446,10 @@ const IssueChatComposer = forwardRef<
             </span>
             <div className="min-w-0">
               <div className="text-sm font-medium text-foreground">
-                Drop to upload
+                {t("taskChatUi.classic.dropUpload")}
               </div>
               <div className="mt-0.5 text-xs leading-5 text-muted-foreground">
-                Images insert into the reply. Other files are added to this
-                task.
+                {t("taskChatUi.classic.dropHint")}
               </div>
             </div>
           </div>
@@ -5416,8 +5458,8 @@ const IssueChatComposer = forwardRef<
 
       {draftRecovery && draftRecovery.sourceKey === sharedDraftKey ? (
         <p role="status" className="mb-3 text-sm text-muted-foreground">
-          Another tab changed the saved draft. This draft is kept separately in this tab.
-          {!draftRecovery.persisted ? " Browser storage is unavailable; copy your text before leaving." : " It will be restored if you reload this tab."}
+          {t("taskChatUi.classic.draftConflict")}
+          {!draftRecovery.persisted ? t("taskChatUi.classic.draftUnavailable") : t("taskChatUi.classic.draftRestored")}
         </p>
       ) : null}
       {uncertainSubmission ? (
@@ -5426,8 +5468,7 @@ const IssueChatComposer = forwardRef<
           className="mb-3 space-y-2 rounded-md border border-border bg-muted p-3 text-sm"
         >
           <p>
-            We couldn’t confirm whether this comment was saved. It may already
-            be in the conversation. Review it before starting another draft.
+            {t("taskChatUi.classic.uncertain")}
           </p>
           <Button
             type="button"
@@ -5453,16 +5494,15 @@ const IssueChatComposer = forwardRef<
               }
             }}
           >
-            Review conversation
+            {t("taskChatUi.classic.reviewConversation")}
           </Button>
           {reviewError ? (
-            <p>Couldn’t refresh the conversation. Try reviewing it again.</p>
+            <p>{t("taskChatUi.classic.reviewFailed")}</p>
           ) : null}
           {uncertainSubmission.reviewed ? (
             <>
               <p>
-                Discarding this draft does not remove any saved comment or
-                uploaded file.
+                {t("taskChatUi.classic.discardHint")}
               </p>
               <Button
                 type="button"
@@ -5477,7 +5517,7 @@ const IssueChatComposer = forwardRef<
                   setUncertainSubmission(null);
                 }}
               >
-                Discard draft and start new
+                {t("taskChatUi.classic.discardDraft")}
               </Button>
             </>
           ) : null}
@@ -5488,14 +5528,14 @@ const IssueChatComposer = forwardRef<
         readOnly={!!uncertainSubmission}
         value={body}
         onChange={changeBody}
-        placeholder="Reply"
+        placeholder={t("taskChatUi.classic.reply")}
         mentions={mentions}
         onSubmit={handleSubmit}
         imageUploadHandler={
           canAcceptFiles
             ? async (file) => {
                 const url = await attachFile(file, false);
-                if (!url) throw new Error("Upload did not return a file URL");
+                if (!url) throw new TaskChatUiError("uploadNoUrl");
                 return url;
               }
             : undefined
@@ -5530,15 +5570,15 @@ const IssueChatComposer = forwardRef<
           className="mb-3 mt-2 space-y-1.5 rounded-md border border-dashed border-border/80 bg-muted/20 p-2"
         >
           {composerAttachments.map((attachment) => {
-            const sizeLabel = formatAttachmentSize(attachment.size);
+            const sizeLabel = formatAttachmentSize(attachment.size, t);
             const statusLabel =
               attachment.status === "uploading"
-                ? "Uploading to task"
+                ? t("taskChatUi.classic.uploadingTask")
                 : attachment.status === "error"
-                  ? (attachment.error ?? "Upload failed")
+                  ? formatTaskChatError(attachment.error?.cause, "uploadFailed", t)
                   : attachment.inline
-                    ? "Inserted inline"
-                    : "Attached to task";
+                    ? t("taskChatUi.classic.insertedInline")
+                    : t("taskChatUi.classic.attachedTask");
             return (
               <div
                 key={attachment.id}
@@ -5572,7 +5612,7 @@ const IssueChatComposer = forwardRef<
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Remove ${attachment.name}`}
+                    aria-label={t("taskChatUi.classic.removeAttachment", { name: attachment.name })}
                     disabled={!!uncertainSubmission}
                     onClick={() =>
                       setComposerAttachments((current) =>
@@ -5637,16 +5677,16 @@ const IssueChatComposer = forwardRef<
             ref={reassignTriggerRef}
             value={reassignTarget}
             options={reassignOptions}
-            placeholder="Responsible"
-            noneLabel="No responsible"
-            searchPlaceholder="Search responsible..."
-            emptyMessage="No responsible found."
+            placeholder={t("taskChatUi.classic.responsible")}
+            noneLabel={t("taskChatUi.classic.noResponsible")}
+            searchPlaceholder={t("taskChatUi.classic.searchResponsible")}
+            emptyMessage={t("taskChatUi.classic.noneResponsible")}
             onChange={selectAssignee}
             className="h-8 text-xs"
             renderTriggerValue={(option) => {
               if (!option)
                 return (
-                  <span className="text-muted-foreground">Responsible</span>
+                  <span className="text-muted-foreground">{t("taskChatUi.classic.responsible")}</span>
                 );
               const agentId = option.id.startsWith("agent:")
                 ? option.id.slice("agent:".length)
@@ -5685,8 +5725,8 @@ const IssueChatComposer = forwardRef<
             size="icon-sm"
             disabled={stopControl.stopping}
             onClick={() => void stopControl.stop()}
-            aria-label={stopControl.stopping ? "Stopping…" : "Stop"}
-            title="Stop response"
+            aria-label={stopControl.stopping ? t("taskChatUi.classic.stopping") : t("taskChatUi.classic.stop")}
+            title={t("taskChatUi.classic.stopResponse")}
           >
             {stopControl.stopping ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
@@ -5700,7 +5740,7 @@ const IssueChatComposer = forwardRef<
             disabled={!canSubmit}
             onClick={() => void handleSubmit()}
           >
-            {submitting ? "Posting..." : "Send"}
+            {submitting ? t("taskChatUi.classic.posting") : t("taskChatUi.classic.send")}
           </Button>
         )}
       </div>
@@ -5726,11 +5766,9 @@ const IssueChatComposer = forwardRef<
           }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>No responsible selected</AlertDialogTitle>
+            <AlertDialogTitle>{t("taskChatUi.classic.noResponsibleTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This comment will be posted without an assignee, so no agent will
-              be woken to act on it. Go back to pick a responsible, or send
-              anyway.
+              {t("taskChatUi.classic.noResponsibleDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -5740,7 +5778,7 @@ const IssueChatComposer = forwardRef<
                 focusAssigneeOnDialogCloseRef.current = true;
               }}
             >
-              Go back
+              {t("taskChatUi.classic.goBack")}
             </AlertDialogCancel>
             <AlertDialogAction
               data-testid="issue-chat-no-assignee-send-anyway"
@@ -5748,7 +5786,7 @@ const IssueChatComposer = forwardRef<
                 void submitComment();
               }}
             >
-              Send anyway
+              {t("taskChatUi.classic.sendAnyway")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -5857,6 +5895,7 @@ export function IssueChatThread({
   externalReferences,
   linkCaseReferences = false,
 }: IssueChatThreadProps) {
+  const { t } = useTranslation();
   const workspaceRetry = useCurrentWorkspaceRetry();
   const location = useLocation();
   const lastScrolledHashRef = useRef<string | null>(null);
@@ -5967,10 +6006,14 @@ export function IssueChatThread({
   });
   const resolvedTranscriptByRun = transcriptsByRunId ?? transcriptByRun;
   const resolvedHasOutputForRun = hasOutputForRunOverride ?? hasOutputForRun;
+  const onboardingTask = useOnboardingTask();
   const rawMessages = useMemo(
     () =>
       buildIssueChatMessages({
-        comments,
+        comments: comments.map((comment) => ({
+          ...comment,
+          body: localizeOnboardingGreeting(comment, onboardingTask, agentMap?.get(comment.authorAgentId ?? "")?.name, t),
+        })),
         interactions,
         timelineEvents,
         linkedRuns,
@@ -5988,6 +6031,8 @@ export function IssueChatThread({
       }),
     [
       comments,
+      onboardingTask,
+      t,
       interactions,
       timelineEvents,
       linkedRuns,
@@ -6590,8 +6635,8 @@ export function IssueChatThread({
   const resolvedEmptyMessage =
     emptyMessage ??
     (variant === "embedded"
-      ? "No run output yet."
-      : "This task conversation is empty. Start with a message below.");
+      ? t("taskChatUi.classic.noRunOutput")
+      : t("taskChatUi.classic.emptyConversation"));
   const previousErrorBoundaryMessagesRef = useRef<
     readonly ThreadMessage[] | null
   >(null);
@@ -6613,7 +6658,7 @@ export function IssueChatThread({
                 onClick={handleJumpToLatest}
                 className="text-xs text-muted-foreground transition-colors hover:text-foreground"
               >
-                Jump to latest
+                {t("taskChatUi.classic.jumpLatest")}
               </button>
             </div>
           ) : null}
@@ -6708,11 +6753,10 @@ export function IssueChatThread({
                     {legacyRecoverySourceIssue ? (
                       <SystemNotice
                         tone="info"
-                        label="Legacy recovery task"
+                        label={t("taskChatUi.classic.legacyRecovery")}
                         body={
                           <span>
-                            Legacy recovery task. Newer recovery actions live on
-                            the source task
+                            {t("taskChatUi.classic.legacyRecoveryDescription")}
                             {legacyRecoverySourceIssue.identifier ? (
                               <>
                                 {" — "}

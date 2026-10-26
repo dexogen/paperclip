@@ -1,11 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { i18n } from "../i18n";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   environmentDisplayLabel,
+  environmentDriverLabel,
   filterManagedSandboxSelectableEnvironments,
   isPlatformManagedEnvironment,
 } from "./managed-sandbox-environment";
 
 describe("managed sandbox environment helpers", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
   it("identifies platform-managed rows by the provisioner marker", () => {
     expect(isPlatformManagedEnvironment({ metadata: { managedByPaperclip: true } })).toBe(true);
     expect(isPlatformManagedEnvironment({ metadata: { managedByPaperclip: false } })).toBe(false);
@@ -14,7 +17,8 @@ describe("managed sandbox environment helpers", () => {
     expect(isPlatformManagedEnvironment(null)).toBe(false);
   });
 
-  it("labels platform-managed rows by name alone and keeps the driver suffix elsewhere", () => {
+  it("labels platform-managed rows by name alone and keeps the driver suffix elsewhere", async () => {
+    await i18n.changeLanguage("ru");
     expect(
       environmentDisplayLabel({
         name: "Paperclip Computer",
@@ -28,6 +32,11 @@ describe("managed sandbox environment helpers", () => {
     expect(
       environmentDisplayLabel({ name: "Build box", driver: "ssh", metadata: {} }),
     ).toBe("Build box · ssh");
+    const ru = i18n.getFixedT("ru");
+    expect(environmentDisplayLabel({ name: "Local", driver: "sandbox", metadata: null }, ru)).toBe("Local · песочница");
+    expect(environmentDisplayLabel({ name: "Local", driver: "sandbox", metadata: { managedByPaperclip: true } }, ru)).toBe("Local");
+    expect(environmentDriverLabel("ssh", ru)).toBe("SSH");
+    expect(environmentDriverLabel("toString", ru)).toBe("toString");
   });
 
   it("filters the local environment only under managed-sandbox-only", () => {

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -51,6 +53,49 @@ function tree(children: string, queryClient: QueryClient, resolveLinkHref?: (hre
 }
 
 describe("MarkdownBody re-render stability (PAP-10767)", () => {
+  it("changes control language without losing code, wrapping, table scroll or selection", async () => {
+    const previousLanguage = i18n.language;
+    await act(async () => { await i18n.changeLanguage("en"); });
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const source = `${SAMPLE}\n\n| Название | Значение |\n| --- | --- |\n| Пользователь | Исходные данные |`;
+    try {
+      await act(async () => { root?.render(tree(source, queryClient)); });
+      const pre = container.querySelector("pre")!;
+      const code = pre.querySelector("code")!;
+      const table = container.querySelector<HTMLElement>(".paperclip-markdown-table-scroll")!;
+      const wrap = container.querySelector<HTMLButtonElement>(".paperclip-markdown-codeblock-wrap")!;
+      const text = container.querySelector("p")!.firstChild!;
+      expect(table.getAttribute("aria-label")).toBe("Scrollable table");
+      table.scrollLeft = 61;
+      await act(async () => { wrap.click(); });
+      const range = document.createRange();
+      range.setStart(text, 0);
+      range.setEnd(text, "Some text".length);
+      window.getSelection()?.removeAllRanges();
+      window.getSelection()?.addRange(range);
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("pre")).toBe(pre);
+      expect(container.querySelector("pre code")).toBe(code);
+      expect(code.textContent).toBe("const answer = 42;\n");
+      expect(container.querySelector(".paperclip-markdown-table-scroll")).toBe(table);
+      expect(table.scrollLeft).toBe(61);
+      expect(table.getAttribute("aria-label")).toBe("Таблица с прокруткой");
+      expect(wrap.getAttribute("aria-label")).toBe("Отключить перенос строк");
+      expect(wrap.getAttribute("aria-pressed")).toBe("true");
+      expect(window.getSelection()?.toString()).toBe("Some text");
+      expect(container.textContent).toContain("Исходные данные");
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector("pre")).toBe(pre);
+      expect(wrap.getAttribute("aria-label")).toBe("Unwrap lines");
+      expect(table.scrollLeft).toBe(61);
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previousLanguage); });
+    }
+  });
+
   it("uses the current file resolver when the same viewer opens another file", () => {
     container = document.createElement("div");
     document.body.appendChild(container);

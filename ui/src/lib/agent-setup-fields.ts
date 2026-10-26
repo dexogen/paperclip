@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { DEFAULT_CODEX_LOCAL_MODEL } from "@paperclipai/adapter-codex-local";
 import { claudeLocalReasoningEffortsForModel, DEFAULT_CLAUDE_LOCAL_MODEL } from "@paperclipai/adapter-claude-local";
 import { grokLocalReasoningEffortsForModel } from "@paperclipai/adapter-grok-local";
@@ -43,15 +45,80 @@ export function setupEfforts(adapter: string, model = ""): string[] {
   }
 }
 
+export function setupLoginHint(adapter: string, t: TFunction = i18n.getFixedT("en")): string | undefined {
+  switch (adapter) {
+    case "cursor": return t("agentSetupUi.login.cursor");
+    case "gemini_local": return t("agentSetupUi.login.gemini_local");
+    case "kimi_local": return t("agentSetupUi.login.kimi_local");
+    case "grok_local": return t("agentSetupUi.login.grok_local");
+    case "hermes_local": return t("agentSetupUi.login.hermes_local");
+    default: return undefined;
+  }
+}
+
 export const SETUP_LOGIN_HINTS: Record<string, string> = {
-  cursor:
-    "Use a Cursor API key, or run agent login on the selected environment's host.",
-  gemini_local:
-    "Use a Gemini API key, or an existing supported Gemini CLI login on the selected environment's host.",
-  kimi_local:
-    "Use a Kimi API key and model settings below, or run kimi login on the selected environment's host.",
-  grok_local:
-    "Grok Build uses its CLI sign-in. Run grok login on the selected environment's host, then test the connection here.",
-  hermes_local:
-    "Use a provider API key, or the existing Hermes provider configuration on the selected environment's host.",
+  cursor: setupLoginHint("cursor")!,
+  gemini_local: setupLoginHint("gemini_local")!,
+  kimi_local: setupLoginHint("kimi_local")!,
+  grok_local: setupLoginHint("grok_local")!,
+  hermes_local: setupLoginHint("hermes_local")!,
 };
+
+export function setupEffortLabel(value: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (value) {
+    case "off": return t("agentSetupUi.effort.off");
+    case "none": return t("agentSetupUi.effort.none");
+    case "minimal": return t("agentSetupUi.effort.minimal");
+    case "low": return t("agentSetupUi.effort.low");
+    case "medium": return t("agentSetupUi.effort.medium");
+    case "high": return t("agentSetupUi.effort.high");
+    case "xhigh": return t("agentSetupUi.effort.xhigh");
+    case "max": return t("agentSetupUi.effort.max");
+    case "ultra": return t("agentSetupUi.effort.ultra");
+    default: return value;
+  }
+}
+
+type AgentSetupErrorCode =
+  | "selectOrganization"
+  | "noAdapters"
+  | "save"
+  | "create"
+  | "test"
+  | "copilotModel"
+  | "dotBilling"
+  | "modelFormat"
+  | "githubRepo"
+  | "cursorKey"
+  | "credentialKey"
+  | "hermesUrl"
+  | "kimiModel"
+  | "credentialCleanup";
+
+export class AgentSetupError extends Error {
+  constructor(readonly code: AgentSetupErrorCode, readonly envKey = "", options?: ErrorOptions) {
+    super("", options);
+    this.name = "AgentSetupError";
+    this.message = formatAgentSetupError(this);
+  }
+}
+
+export function formatAgentSetupError(error: Error, t: TFunction = i18n.getFixedT("en")): string {
+  if (!(error instanceof AgentSetupError)) return error.message;
+  switch (error.code) {
+    case "selectOrganization": return t("agentSetupUi.errors.selectOrganization");
+    case "noAdapters": return t("agentSetupUi.errors.noAdapters");
+    case "save": return t("agentSetupUi.errors.save");
+    case "create": return t("agentSetupUi.errors.create");
+    case "test": return t("agentSetupUi.errors.test");
+    case "copilotModel": return t("agentSetupUi.errors.copilotModel");
+    case "dotBilling": return t("agentSetupUi.errors.dotBilling");
+    case "modelFormat": return t("agentSetupUi.errors.modelFormat");
+    case "githubRepo": return t("agentSetupUi.errors.githubRepo");
+    case "cursorKey": return t("agentSetupUi.errors.cursorKey");
+    case "credentialKey": return t("agentSetupUi.errors.credentialKey", { envKey: error.envKey });
+    case "hermesUrl": return t("agentSetupUi.errors.hermesUrl");
+    case "kimiModel": return t("agentSetupUi.errors.kimiModel");
+    case "credentialCleanup": return t("agentSetupUi.errors.credentialCleanup", { message: formatAgentSetupError(error.cause instanceof Error ? error.cause : new AgentSetupError("save"), t) });
+  }
+}

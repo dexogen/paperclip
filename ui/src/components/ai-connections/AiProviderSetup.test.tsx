@@ -3,6 +3,8 @@ import { act, type ComponentProps } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
+import { AccessStepContent, connectionDefaultSummarySentence } from "@/features/connections/ConnectionSetupFlow";
 import { AiProviderSetup } from "./AiProviderSetup";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -137,4 +139,94 @@ it.each(["google", "openai", "anthropic", "xai"] as const)("allows an ordinary m
   } finally {
     await act(async () => root.unmount()); client.clear();
   }
+});
+
+
+it("preserves gateway drafts and access choices across English and Russian without saving until submit", async () => {
+  await i18n.changeLanguage("en");
+  vi.mocked(aiConnectionsApi.create).mockClear();
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+  client.setQueryData(["ai-connections", "company", undefined], { canManageConnections: true, connections: [] });
+  client.setQueryData(["agents", "company", "provider-access"], []);
+  const container = document.createElement("div");
+  document.body.append(container);
+  const root = createRoot(container);
+  try {
+    await act(async () => root.render(<QueryClientProvider client={client}><TooltipProvider><AiProviderSetup companyId="company" initialProvider="gateway" onCancel={() => {}} onComplete={() => {}} /></TooltipProvider></QueryClientProvider>));
+    const button = (text: string) => Array.from(container.querySelectorAll("button")).find(item => item.textContent === text)!;
+    await act(async () => button("Change").click());
+    await act(async () => (Array.from(container.querySelectorAll('[role="radio"]')).find(item => item.textContent?.includes("Just me")) as HTMLButtonElement).click());
+    const url = container.querySelector('input[aria-label="Provider URL"]') as HTMLInputElement;
+    const key = container.querySelector('input[aria-label="API key"]') as HTMLInputElement;
+    const models = container.querySelector('input[aria-label="Model IDs"]') as HTMLInputElement;
+    await act(async () => {
+      for (const [input, value] of [[url, "https://gateway.example.test/v1"], [key, "draft-key-not-sent"], [models, "model/custom, alias-fast"]] as const) {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, value);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    });
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Подключить: Собственный шлюз");
+    expect(container.textContent).toContain("Подключение от вашего имени, доступно всем агентам.");
+    expect(container.querySelector('input[aria-label="URL провайдера"]')).toBe(url);
+    expect(container.querySelector('input[aria-label="API-ключ"]')).toBe(key);
+    expect(url.value).toBe("https://gateway.example.test/v1");
+    expect(key.value).toBe("draft-key-not-sent");
+    expect(models.value).toBe("model/custom, alias-fast");
+    expect((Array.from(container.querySelectorAll('[role="radio"]')).find(item => item.textContent?.includes("Только я")) as HTMLButtonElement).getAttribute("aria-checked")).toBe("true");
+    expect(aiConnectionsApi.create).not.toHaveBeenCalled();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector('input[aria-label="API key"]')).toBe(key);
+    expect(container.textContent).toContain("Connects as you, available to all agents.");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await act(async () => container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+    expect(aiConnectionsApi.create).toHaveBeenCalledExactlyOnceWith("company", expect.objectContaining({
+      name: "My gateway.example.test", provider: "openai", method: "api_key", ownership: "personal", allAgents: true, agentIds: [], apiKey: "draft-key-not-sent",
+      routing: { kind: "gateway", protocol: "responses", auth: "bearer", baseUrl: "https://gateway.example.test/v1", models: [{ id: "model/custom" }, { id: "alias-fast" }] },
+    }));
+  } finally {
+    await act(async () => root.unmount());
+    container.remove(); client.clear(); await i18n.changeLanguage("en");
+  }
+});
+
+it("describes selected agent access using Russian plural forms and preserves English scope", async () => {
+  const scope = { grantKind: "user", authKind: "api_key", installChoice: "specific" } as const;
+  try {
+    await i18n.changeLanguage("ru");
+    expect(connectionDefaultSummarySentence({ ...scope, installCount: 0 })).toBe("Подключение от вашего имени, агенты пока не выбраны.");
+    for (const [count, ending] of [[1, "выбранному агенту"], [2, "выбранным агентам"], [5, "выбранным агентам"], [11, "выбранным агентам"], [21, "выбранному агенту"], [22, "выбранным агентам"], [25, "выбранным агентам"], [1.5, "выбранного агента"]] as const) {
+      expect(connectionDefaultSummarySentence({ ...scope, installCount: count })).toBe(`Подключение от вашего имени, доступно ${count} ${ending}.`);
+    }
+    expect(connectionDefaultSummarySentence({ ...scope, installCount: 2, preserveAgentAccess: true })).toBe("Подключение от вашего имени, доступ агентов остаётся прежним.");
+    await i18n.changeLanguage("en");
+    expect(connectionDefaultSummarySentence({ ...scope, installCount: 1 })).toBe("Connects as you, available to 1 selected agent.");
+    expect(connectionDefaultSummarySentence({ ...scope, installCount: 2 })).toBe("Connects as you, available to 2 selected agents.");
+  } finally { await i18n.changeLanguage("en"); }
+});
+
+
+it("keeps a locked agent name literal across languages without changing granted access", async () => {
+  const name = 'Agent <strong>literal</strong> & "<agent>"';
+  const ids = new Set(["locked-agent"]);
+  const setGrantKind = vi.fn(), setInstallChoice = vi.fn(), setInstallAgentIds = vi.fn(), onContinue = vi.fn();
+  const container = document.createElement("div");
+  const root = createRoot(container);
+  try {
+    await act(async () => root.render(<TooltipProvider><AccessStepContent agents={[{ id: "locked-agent", name }]} lockedAgentId="locked-agent" authKind="api_key" grantKind="user" grantKinds={["user"]} setGrantKind={setGrantKind} installChoice="specific" setInstallChoice={setInstallChoice} installAgentIds={ids} setInstallAgentIds={setInstallAgentIds} submitLabel="Continue" onBack={() => {}} onContinue={onContinue} /></TooltipProvider>));
+    for (const language of ["ru", "en", "ru"] as const) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      const agent = container.querySelector("span.font-medium.text-foreground")!;
+      expect(agent.textContent).toBe(name);
+      expect(agent.childElementCount).toBe(0);
+      expect(container.textContent).toContain(language === "ru" ? "Текущий доступ к подключению остаётся без изменений." : "Existing connection access is left unchanged.");
+      expect(setGrantKind).not.toHaveBeenCalled();
+      expect(setInstallChoice).not.toHaveBeenCalled();
+      expect(setInstallAgentIds).not.toHaveBeenCalled();
+      expect(onContinue).not.toHaveBeenCalled();
+      expect([...ids]).toEqual(["locked-agent"]);
+    }
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Continue")!.click());
+    expect(onContinue).toHaveBeenCalledTimes(1);
+  } finally { await act(async () => root.unmount()); await i18n.changeLanguage("en"); }
 });

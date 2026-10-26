@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SubscriptionCostReport } from "@paperclipai/shared";
 import { SubscriptionCostCard } from "./SubscriptionCostCard";
+import { i18n } from "../i18n";
 
 const mocks = vi.hoisted(() => ({ update: vi.fn(), link: vi.fn() }));
 vi.mock("../api/subscriptions", () => ({ subscriptionsApi: mocks }));
@@ -27,12 +28,13 @@ describe("subscription costs", () => {
   let root: ReturnType<typeof createRoot>;
   let client: QueryClient;
   const changed = vi.fn();
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div"); document.body.appendChild(container); root = createRoot(container);
     client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
     mocks.update.mockResolvedValue({}); mocks.link.mockResolvedValue({}); changed.mockClear();
   });
-  afterEach(() => { act(() => root.unmount()); container.remove(); client.clear(); vi.clearAllMocks(); });
+  afterEach(async () => { act(() => root.unmount()); container.remove(); client.clear(); vi.clearAllMocks(); await i18n.changeLanguage("en"); });
   async function render(report?: SubscriptionCostReport, error?: unknown) {
     await act(async () => root.render(<QueryClientProvider client={client}><SubscriptionCostCard companyId="company" report={report} error={error} onChanged={changed} /></QueryClientProvider>));
   }
@@ -77,20 +79,47 @@ describe("subscription costs", () => {
     expect(container.textContent).toContain("$100.00/month");
     expect(container.textContent).toContain("1 unconfirmed account identity");
   });
-  it("saves an annual price with the expected revision and selected currency", async () => {
-    await render(fixture()); await click("View details"); await click("Edit price");
+  it("preserves a dirty annual price and pending revision through locale changes", async () => {
+    let finish!: (value: unknown) => void;
+    mocks.update.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+    const report = fixture();
+    report.accounts[0].price.revision = 7;
+    await render(report); await click("View details"); await click("Edit price");
+    const plan = document.querySelector<HTMLInputElement>("#subscription-plan")!;
+    const amount = document.querySelector<HTMLInputElement>("#subscription-price")!;
+    const cadence = document.querySelector<HTMLSelectElement>("#subscription-cadence")!;
+    const currency = document.querySelector<HTMLSelectElement>("#subscription-currency")!;
     await act(async () => {
-      const amount = document.querySelector<HTMLInputElement>("#subscription-price")!;
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(amount, "1200");
-      amount.dispatchEvent(new Event("input", { bubbles: true }));
-      const cadence = document.querySelector<HTMLSelectElement>("#subscription-cadence")!;
+      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
+      set.call(plan, "Plan <raw> & {{keep}}"); plan.dispatchEvent(new Event("input", { bubbles: true }));
+      set.call(amount, "1200.125"); amount.dispatchEvent(new Event("input", { bubbles: true }));
       cadence.value = "year"; cadence.dispatchEvent(new Event("change", { bubbles: true }));
-      const currency = document.querySelector<HTMLSelectElement>("#subscription-currency")!;
       currency.value = "EUR"; currency.dispatchEvent(new Event("change", { bubbles: true }));
+      amount.focus();
     });
     await act(async () => document.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
-    await vi.waitFor(() => expect(mocks.update).toHaveBeenCalledWith("company", "account-1", expect.objectContaining({ amountCents: "120000.0000000", currency: "EUR", cadence: "year", expectedRevision: 0 })));
-    expect(changed).toHaveBeenCalled();
+    await act(async () => vi.waitFor(() => expect(mocks.update).toHaveBeenCalledTimes(1)));
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(document.body.textContent).toContain("Сохранение…");
+    expect(document.querySelector("#subscription-price")).toBe(amount);
+    expect(document.querySelector("#subscription-plan")).toBe(plan);
+    expect(document.activeElement).toBe(amount);
+    expect(plan.value).toBe("Plan <raw> & {{keep}}");
+    expect(amount.value).toBe("1200.125");
+    expect(currency.value).toBe("EUR");
+    expect(cadence.value).toBe("year");
+    expect(changed).not.toHaveBeenCalled();
+    expect(mocks.link).not.toHaveBeenCalled();
+    expect(mocks.update).toHaveBeenCalledExactlyOnceWith("company", "account-1", {
+      expectedRevision: 7, plan: "Plan <raw> & {{keep}}", amountCents: "120012.5000000", currency: "EUR", cadence: "year", status: "active",
+    });
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(document.body.textContent).toContain("Saving…");
+    expect(document.querySelector("#subscription-price")).toBe(amount);
+    expect(document.activeElement).toBe(amount);
+    expect(mocks.update).toHaveBeenCalledTimes(1);
+    await act(async () => finish({}));
+    await act(async () => vi.waitFor(() => expect(changed).toHaveBeenCalledTimes(1)));
   });
   it("hides editing when the viewer does not own the account", async () => {
     const report = fixture(); report.accounts[0].canEdit = false;

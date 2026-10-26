@@ -1,3 +1,5 @@
+import { Trans, useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { QueryKey } from "@tanstack/react-query";
@@ -21,13 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function getRevisionLabel(revision: DocumentRevision) {
+function getRevisionLabel(revision: DocumentRevision, t: TFunction) {
   const actor = revision.createdByUserId
-    ? "board"
+    ? t("taskPanels.diff.board")
     : revision.createdByAgentId
-      ? "agent"
-      : "system";
-  return `rev ${revision.revisionNumber} — ${relativeTime(revision.createdAt)} • ${actor}`;
+      ? t("taskPanels.diff.agent")
+      : t("taskPanels.diff.system");
+  return t("taskPanels.diff.revision", { revision: revision.revisionNumber, time: relativeTime(revision.createdAt), actor });
 }
 
 export function DocumentDiffModal({
@@ -47,6 +49,7 @@ export function DocumentDiffModal({
   revisionsQueryKey?: QueryKey;
   revisionsQueryFn?: () => Promise<DocumentRevision[]>;
 }) {
+  const { t } = useTranslation();
   const { data: revisions } = useQuery({
     queryKey: revisionsQueryKey ?? queryKeys.issues.documentRevisions(issueId ?? "", documentKey),
     queryFn: () => revisionsQueryFn ? revisionsQueryFn() : issuesApi.listDocumentRevisions(issueId ?? "", documentKey),
@@ -95,42 +98,42 @@ export function DocumentDiffModal({
         <div className="flex items-center justify-between gap-4">
           <DialogHeader className="shrink-0">
             <DialogTitle>
-              Diff — <span className="font-mono text-sm">{documentKey}</span>
+              <Trans t={t} i18nKey="taskPanels.diff.title" values={{ key: documentKey }} tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape components={{ key: <span className="font-mono text-sm" /> }} />
             </DialogTitle>
           </DialogHeader>
 
           <div className="flex items-center gap-4 shrink-0">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-red-500/30 bg-red-500/10 text-(length:--text-nano) uppercase tracking-wider text-red-400">Old</Badge>
+              <Badge variant="outline" className="border-red-500/30 bg-red-500/10 text-(length:--text-nano) uppercase tracking-wider text-red-400">{t("taskPanels.diff.old")}</Badge>
               <Select
                 value={effectiveLeftId ?? ""}
                 onValueChange={(value) => setLeftRevisionId(value)}
               >
                 <SelectTrigger className="h-7 w-60 text-xs border-border/60">
-                  <SelectValue placeholder="Select revision" />
+                  <SelectValue placeholder={t("taskPanels.diff.select")} />
                 </SelectTrigger>
                 <SelectContent>
                   {sortedRevisions.map((revision) => (
                     <SelectItem key={revision.id} value={revision.id} className="text-xs">
-                      {getRevisionLabel(revision)}
+                      {getRevisionLabel(revision, t)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-green-500/30 bg-green-500/10 text-(length:--text-nano) uppercase tracking-wider text-green-400">New</Badge>
+              <Badge variant="outline" className="border-green-500/30 bg-green-500/10 text-(length:--text-nano) uppercase tracking-wider text-green-400">{t("taskPanels.diff.new")}</Badge>
               <Select
                 value={effectiveRightId ?? ""}
                 onValueChange={(value) => setRightRevisionId(value)}
               >
                 <SelectTrigger className="h-7 w-60 text-xs border-border/60">
-                  <SelectValue placeholder="Select revision" />
+                  <SelectValue placeholder={t("taskPanels.diff.select")} />
                 </SelectTrigger>
                 <SelectContent>
                   {sortedRevisions.map((revision) => (
                     <SelectItem key={revision.id} value={revision.id} className="text-xs">
-                      {getRevisionLabel(revision)}
+                      {getRevisionLabel(revision, t)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -141,18 +144,18 @@ export function DocumentDiffModal({
 
         <div className="overflow-auto flex-1 rounded-md border border-border text-xs">
           {!revisions ? (
-            <div className="p-6 text-center text-muted-foreground text-sm">Loading revisions...</div>
+            <div className="p-6 text-center text-muted-foreground text-sm">{t("taskPanels.documentHeader.loading")}</div>
           ) : !leftRevision || !rightRevision ? (
-            <div className="p-6 text-center text-muted-foreground text-sm">Select two revisions to compare.</div>
+            <div className="p-6 text-center text-muted-foreground text-sm">{t("taskPanels.diff.chooseTwo")}</div>
           ) : leftRevision.id === rightRevision.id ? (
-            <div className="p-6 text-center text-muted-foreground text-sm">Both sides are the same revision.</div>
+            <div className="p-6 text-center text-muted-foreground text-sm">{t("taskPanels.diff.same")}</div>
           ) : (
             <div className="font-mono text-xs leading-6">
               <div className="grid grid-cols-(--gtc-1) border-b border-border/60 bg-muted/30 px-3 py-2 text-(length:--text-micro) uppercase tracking-wide text-muted-foreground">
-                <span>Old</span>
-                <span>New</span>
+                <span>{t("taskPanels.diff.old")}</span>
+                <span>{t("taskPanels.diff.new")}</span>
                 <span />
-                <span>Content</span>
+                <span>{t("taskPanels.diff.content")}</span>
               </div>
               {diffRows.map((row, index) => (
                 <div

@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
+import { i18n, t, useTranslation } from "@/i18n";
 import type {
   ToolRiskLevel,
   ToolConnectionHealthStatus,
@@ -11,15 +13,26 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { ApiError } from "@/api/client";
 
 /** Risk classification badge for a catalog tool. */
-export function RiskBadge({ risk }: { risk: ToolRiskLevel | null | undefined }) {
-  if (!risk) return <Badge variant="outline">unknown</Badge>;
+export function RiskBadge({ risk, t = i18n.getFixedT("en") }: { risk: ToolRiskLevel | null | undefined; t?: TFunction }) {
+  if (!risk) return <Badge variant="outline">{t("agentToolsUi.risk.unknown")}</Badge>;
+  let label: string;
+  switch (risk) {
+    case "low": label = t("agentToolsUi.risk.low"); break;
+    case "medium": label = t("agentToolsUi.risk.medium"); break;
+    case "high": label = t("agentToolsUi.risk.high"); break;
+    case "critical": label = t("agentToolsUi.risk.critical"); break;
+    case "read": label = t("agentToolsUi.risk.read"); break;
+    case "write": label = t("agentToolsUi.risk.write"); break;
+    case "destructive": label = t("agentToolsUi.risk.destructive"); break;
+    default: label = risk;
+  }
   const variant =
     risk === "high" || risk === "critical"
       ? "destructive"
       : risk === "medium"
         ? "secondary"
         : "outline";
-  return <Badge variant={variant}>{risk}</Badge>;
+  return <Badge variant={variant}>{label}</Badge>;
 }
 
 /** Read/Write/Destructive capability chips. */
@@ -27,16 +40,18 @@ export function CapabilityBadges({
   isReadOnly,
   isWrite,
   isDestructive,
+  t = i18n.getFixedT("en"),
 }: {
   isReadOnly?: boolean;
   isWrite?: boolean;
   isDestructive?: boolean;
+  t?: TFunction;
 }) {
   return (
     <span className="inline-flex flex-wrap gap-1">
-      {isReadOnly ? <Badge variant="outline">read-only</Badge> : null}
-      {isWrite ? <Badge variant="secondary">write</Badge> : null}
-      {isDestructive ? <Badge variant="destructive">destructive</Badge> : null}
+      {isReadOnly ? <Badge variant="outline">{t("agentToolsUi.capability.readOnly")}</Badge> : null}
+      {isWrite ? <Badge variant="secondary">{t("agentToolsUi.capability.write")}</Badge> : null}
+      {isDestructive ? <Badge variant="destructive">{t("agentToolsUi.capability.destructive")}</Badge> : null}
     </span>
   );
 }
@@ -67,6 +82,21 @@ function healthToStatusKey(status: string): string {
   }
 }
 
+function healthDisplayLabel(status: string): string {
+  switch (status) {
+    case "healthy": return t("surfacesGap.health.healthy");
+    case "ok": return t("surfacesGap.health.ok");
+    case "degraded": return t("surfacesGap.health.degraded");
+    case "warning": return t("surfacesGap.health.warning");
+    case "error": return t("surfacesGap.health.error");
+    case "unhealthy": return t("surfacesGap.health.unhealthy");
+    case "critical": return t("surfacesGap.health.critical");
+    case "unchecked": return t("surfacesGap.health.unchecked");
+    case "unknown": return t("surfacesGap.health.unknown");
+    default: return status;
+  }
+}
+
 /** Connection / runtime health badge, mapped onto canonical status colors. */
 export function HealthBadge({
   status,
@@ -75,33 +105,34 @@ export function HealthBadge({
   status: ToolConnectionHealthStatus | string | null | undefined;
   label?: string;
 }) {
+  useTranslation();
   const raw = (status ?? "unknown").toString();
-  return <StatusBadge status={healthToStatusKey(raw)} label={label ?? raw} />;
+  return <StatusBadge status={healthToStatusKey(raw)} label={label ?? healthDisplayLabel(raw)} />;
 }
 
 function decisionToStatusKey(decision: string): { key: string; label: string } {
   switch (decision) {
     case "allow":
     case "allowed":
-      return { key: "allowed", label: "allowed" };
+      return { key: "allowed", label: t("surfacesGap.decisions.allowed") };
     case "deny":
     case "denied":
-      return { key: "denied", label: "denied" };
+      return { key: "denied", label: t("surfacesGap.decisions.denied") };
     case "block":
-      return { key: "block", label: "block" };
+      return { key: "block", label: t("surfacesGap.decisions.block") };
     case "require_approval":
     case "requires_approval":
-      return { key: "require-approval", label: "require approval" };
+      return { key: "require-approval", label: t("surfacesGap.decisions.requireApproval") };
     case "redact":
     case "redacted":
-      return { key: "redacted", label: "redacted" };
+      return { key: "redacted", label: t("surfacesGap.decisions.redacted") };
     case "rate_limited":
-      return { key: "rate-limit", label: "rate limited" };
+      return { key: "rate-limit", label: t("surfacesGap.decisions.rateLimited") };
     case "defer":
     case "deferred":
-      return { key: "deferred", label: "deferred" };
+      return { key: "deferred", label: t("surfacesGap.decisions.deferred") };
     case "hidden":
-      return { key: "hidden", label: "hidden" };
+      return { key: "hidden", label: t("surfacesGap.decisions.hidden") };
     default:
       return { key: decision, label: decision };
   }
@@ -109,14 +140,15 @@ function decisionToStatusKey(decision: string): { key: string; label: string } {
 
 /** Policy/gateway decision badge — canonical status colors. */
 export function DecisionBadge({ decision }: { decision: ToolPolicyDecision | string | null | undefined }) {
+  useTranslation();
   if (!decision) return <Badge variant="outline">—</Badge>;
   const { key, label } = decisionToStatusKey(decision.toString());
   return <StatusBadge status={key} label={label} />;
 }
 
 /** Compact relative time, falling back to absolute. */
-export function RelativeTime({ value }: { value: Date | string | null | undefined }) {
-  if (!value) return <span className="text-muted-foreground">never</span>;
+export function RelativeTime({ value, t = i18n.getFixedT("en"), locale }: { value: Date | string | null | undefined; t?: TFunction; locale?: string }) {
+  if (!value) return <span className="text-muted-foreground">{t("surfacesGap.relative.never")}</span>;
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return <span className="text-muted-foreground">—</span>;
   const diffMs = Date.now() - date.getTime();
@@ -124,14 +156,12 @@ export function RelativeTime({ value }: { value: Date | string | null | undefine
   const mins = Math.round(abs / 60000);
   const isFuture = diffMs < 0;
   let text: string;
-  if (mins < 1) text = "just now";
-  else {
-    const value =
-      mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.round(mins / 60)}h` : `${Math.round(mins / 1440)}d`;
-    text = isFuture ? `in ${value}` : `${value} ago`;
-  }
+  if (mins < 1) text = t("format.justNow");
+  else if (mins < 60) text = isFuture ? t("surfacesGap.relative.minutesAhead", { value: mins }) : t("format.minutesAgo", { value: mins });
+  else if (mins < 1440) text = isFuture ? t("surfacesGap.relative.hoursAhead", { value: Math.round(mins / 60) }) : t("format.hoursAgo", { value: Math.round(mins / 60) });
+  else text = isFuture ? t("surfacesGap.relative.daysAhead", { value: Math.round(mins / 1440) }) : t("format.daysAgo", { value: Math.round(mins / 1440) });
   return (
-    <span title={date.toLocaleString()} className="text-muted-foreground">
+    <span title={date.toLocaleString(locale)} className="text-muted-foreground">
       {text}
     </span>
   );
@@ -157,31 +187,32 @@ export function ToolsPageHeader({
   );
 }
 
-export function LoadingState({ label = "Loading…" }: { label?: string }) {
+export function LoadingState({ label }: { label?: string }) {
+  useTranslation();
   return (
     <div className="flex items-center gap-2 py-10 text-sm text-muted-foreground">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground" />
-      {label}
+      {label ?? t("surfacesGap.audit.loading")}
     </div>
   );
 }
 
 /** Actionable error surface — surfaces the server message and HTTP status. */
-export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
+export function ErrorState({ error, onRetry, t = i18n.getFixedT("en") }: { error: unknown; onRetry?: () => void; t?: TFunction }) {
   let message: string;
   if (error instanceof ApiError) {
     if (error.status === 403) {
-      message = "You do not have permission to view this. Tools & Access requires board/admin access.";
+      message = t("agentToolsUi.error.forbidden");
     } else if (error.status === 404 || /route not found/i.test(error.message)) {
       // Snapshot-skew window: the route exists in this build but not on the live server snapshot yet.
-      message = "Tools & Access isn't available on this server yet — try refreshing after the next deployment.";
+      message = t("agentToolsUi.error.unavailable");
     } else {
       message = error.message;
     }
   } else if (error instanceof Error) {
     message = error.message;
   } else {
-    message = "Something went wrong.";
+    message = t("agentToolsUi.error.unknown");
   }
   return (
     <Card className="border-destructive/40">
@@ -189,7 +220,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
         <div className="flex items-start gap-2 text-sm text-destructive">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <p className="font-medium">Could not load this view</p>
+            <p className="font-medium">{t("agentToolsUi.error.title")}</p>
             <p className="text-destructive/80">{message}</p>
           </div>
         </div>
@@ -199,7 +230,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
             onClick={onRetry}
             className="self-start rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent"
           >
-            Retry
+            {t("agentToolsUi.error.retry")}
           </button>
         ) : null}
       </CardContent>
@@ -221,6 +252,7 @@ export function PendingBackendNotice({
   body: ReactNode;
   issue?: { identifier: string; href: string };
 }) {
+  useTranslation();
   return (
     <Card className="border-dashed">
       <CardContent className="flex flex-col gap-2 py-8">
@@ -231,7 +263,7 @@ export function PendingBackendNotice({
         <p className="max-w-2xl text-sm text-muted-foreground">{body}</p>
         {issue ? (
           <a href={issue.href} className="text-sm font-medium text-primary hover:underline">
-            Tracked in {issue.identifier} →
+            {t("surfacesGap.trackedIn", { identifier: issue.identifier })}
           </a>
         ) : null}
       </CardContent>

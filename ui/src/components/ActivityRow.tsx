@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { AgentAvatar } from "./AgentAvatar";
 import { Link } from "@/lib/router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,7 +35,8 @@ export interface ActivityRowProps {
 }
 
 export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, entityTitleMap, className, appearance = "default", density = "comfortable" }: ActivityRowProps) {
-  const verb = formatActivityVerb(event.action, event.details, { agentMap, userProfileMap });
+  const { t } = useTranslation();
+  const verb = formatActivityVerb(event.action, event.details, { agentMap, userProfileMap }, t);
 
   const isHeartbeatEvent = event.entityType === "heartbeat_run";
   const heartbeatAgentId = isHeartbeatEvent
@@ -54,7 +56,7 @@ export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, en
 
   const actor = event.actorType === "agent" ? agentMap.get(event.actorId) : null;
   const userProfile = event.actorType === "user" ? userProfileMap?.get(event.actorId) : null;
-  const actorName = actor?.name ?? (event.actorType === "system" ? "System" : userProfile?.label ?? (event.actorType === "user" ? "Board" : event.actorId || "Unknown"));
+  const actorName = actor?.name ?? (event.actorType === "system" ? t("activityUi.actor.system") : userProfile?.label ?? (event.actorType === "user" ? t("activityUi.actor.board") : event.actorId || t("activityUi.actor.unknown")));
   const actorAvatarUrl = userProfile?.image ?? null;
   const avatar = event.actorType === "agent" ? (
     <AgentAvatar agent={actor} name={actorName} size={24} className="@xl:self-center" />
@@ -66,7 +68,7 @@ export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, en
   );
 
   if (appearance === "refreshed") {
-    const subject = event.entityType === "issue" ? entityTitle || name || "Task" : [name, entityTitle].filter(Boolean).join(" — ");
+    const subject = event.entityType === "issue" ? entityTitle || name || t("activityUi.subject.task") : [name, entityTitle].filter(Boolean).join(" — ");
     return <RefreshedActivityRow event={event} avatar={avatar} actorName={actorName} verb={verb} subject={subject} identifier={event.entityType === "issue" ? name ?? undefined : undefined} link={link} density={density} className={className} />;
   }
 
@@ -96,7 +98,7 @@ export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, en
           </div>
           <div className="flex min-h-6 min-w-0 items-center @xl:contents">
             <span className="ml-auto w-(--dashboard-list-time-width) shrink-0 whitespace-nowrap text-right text-xs text-muted-foreground">
-              {timeAgo(event.createdAt)}
+              {timeAgo(event.createdAt, t)}
             </span>
           </div>
         </div>
@@ -130,6 +132,7 @@ function RefreshedActivityRow({ event, avatar, actorName, verb, subject, identif
   event: ActivityEvent; avatar: ReactNode; actorName: string; verb: string; subject: string;
   identifier?: string; link: string | null; density: "comfortable" | "compact"; className?: string;
 }) {
+  const { t } = useTranslation();
   const { hoveredCell, onMouseMove, clearHoveredCell } = useCellMarqueeHover();
   const [focused, setFocused] = useState(false);
   const rowProps = {
@@ -150,7 +153,7 @@ function RefreshedActivityRow({ event, avatar, actorName, verb, subject, identif
     </span>
     <span data-slot="task-row-trailing" className="ml-auto flex shrink-0 items-center">
       {identifier ? <span data-slot="task-row-identifier" data-marquee-cell="identifier" className="shrink-0 text-right text-muted-foreground"><CellMarquee cell="identifier">{identifier}</CellMarquee></span> : null}
-      <span data-slot="task-row-timestamp" data-marquee-cell="timestamp" className="shrink-0 text-right text-muted-foreground"><CellMarquee cell="timestamp">{timeAgo(event.createdAt)}</CellMarquee></span>
+      <span data-slot="task-row-timestamp" data-marquee-cell="timestamp" className="shrink-0 text-right text-muted-foreground"><CellMarquee cell="timestamp">{timeAgo(event.createdAt, t)}</CellMarquee></span>
     </span>
   </>;
   return <HoveredCellContext.Provider value={hoveredCell}>

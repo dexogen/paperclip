@@ -759,6 +759,21 @@ the development server's unbundled module graph on each navigation. Browser
 assertion deadlines and retries remain unchanged. Use `pnpm dev` separately when
 verifying Vite/HMR behavior.
 
+The default Playwright server receives `SIGTERM` on teardown, with ten seconds
+to stop its embedded PostgreSQL cluster. The Linux-only shutdown regression
+starts that same server command with a fresh home and database:
+
+```sh
+node --test tests/e2e/fixtures/web-server-shutdown.test.mjs
+```
+
+Run this check from a prepared source checkout with workspace dependencies and
+build outputs available. It builds the UI, checks real server health, then
+requires an orderly database stop, removal of `postmaster.pid`, and no remaining
+owned processes or listeners. This is an opt-in integration check, separate from
+the fast fixture contracts. It keeps private diagnostic files under the
+temporary directory printed in its output, including on failure.
+
 For normal issue work, start with the smallest targeted check that proves the change. Reserve repo-wide typecheck/build/test runs for PR-ready handoff or changes broad enough that narrow checks do not cover the risk.
 
 #### Embedded Postgres template cache
@@ -1982,6 +1997,14 @@ settings normalize to native Codex on configuration updates and before fresh
 runs; immutable run descriptors remain readable. The **Paperclip Runner**
 experimental setting applies to other native providers. Native Codex, OpenCode,
 ACPX Claude, and ACPX Pi do not require it. Company access checks still apply.
+
+Native Codex preserves an explicit `adapterConfig.search: false` when converting
+or saving an agent. The disabled hosted-search policy is recorded in the native
+execution input and launch requirements, so prepared launches and recovery keep
+it. An absent setting retains the provider default; this does not add support
+for converting a Legacy agent with `search: true`. Authentication hello probes
+always disable hosted web search because they only verify the selected account
+and model.
 
 OpenCode requires an explicit `provider/model` before testing or finishing setup.
 An inactive setup draft can be saved before choosing a model. Automatic native

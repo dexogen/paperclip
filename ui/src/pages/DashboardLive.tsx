@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "@/i18n";
 import { ArrowLeft, RadioTower } from "lucide-react";
 import { Link } from "@/lib/router";
 import { ActiveAgentsPanel } from "../components/ActiveAgentsPanel";
@@ -9,21 +10,22 @@ import { useCompany } from "../context/CompanyContext";
 const DASHBOARD_LIVE_RUN_LIMIT = 50;
 
 export function DashboardLive() {
+  const { t } = useTranslation();
   const { selectedCompanyId, companies } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Live runs" },
+      { label: t("liveDashboardUi.page.dashboard"), href: "/dashboard" },
+      { label: t("liveDashboardUi.page.liveRuns") },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   if (!selectedCompanyId) {
     return (
       <EmptyState
         icon={RadioTower}
-        message={companies.length === 0 ? "Create an organization to view live runs." : "Select an organization to view live runs."}
+        message={companies.length === 0 ? t("liveDashboardUi.page.createCompany") : t("liveDashboardUi.page.selectCompany")}
       />
     );
   }
@@ -37,23 +39,23 @@ export function DashboardLive() {
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Dashboard
+            {t("liveDashboardUi.page.dashboard")}
           </Link>
-          <h1 className="mt-2 text-2xl font-semibold tracking-normal text-foreground">Live agent runs</h1>
+          <h1 className="mt-2 text-2xl font-semibold tracking-normal text-foreground">{t("liveDashboardUi.page.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Active runs first, followed by the most recent completed runs.
+            {t("liveDashboardUi.page.description")}
           </p>
         </div>
-        <div className="text-sm text-muted-foreground">Showing up to {DASHBOARD_LIVE_RUN_LIMIT}</div>
+        <div className="text-sm text-muted-foreground">{t("liveDashboardUi.page.limit", { limit: DASHBOARD_LIVE_RUN_LIMIT })}</div>
       </div>
 
       <ActiveAgentsPanel
         companyId={selectedCompanyId}
-        title="Active / recent"
+        title={t("liveDashboardUi.page.activeRecent")}
         minRunCount={DASHBOARD_LIVE_RUN_LIMIT}
         fetchLimit={DASHBOARD_LIVE_RUN_LIMIT}
         cardLimit={DASHBOARD_LIVE_RUN_LIMIT}
-        emptyMessage="No active or recent agent runs."
+        emptyMessage={t("liveDashboardUi.page.empty")}
         queryScope="dashboard-live"
         showMoreLink={false}
       />

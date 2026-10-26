@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
 import type { Environment } from "@paperclipai/shared";
 
 /**
@@ -22,9 +24,10 @@ export function isPlatformManagedEnvironment(
  */
 export function environmentDisplayLabel(
   environment: Pick<Environment, "name" | "driver" | "metadata">,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   if (isPlatformManagedEnvironment(environment)) return environment.name;
-  return `${environment.name} · ${environment.driver}`;
+  return `${environment.name} · ${environmentDriverLabel(environment.driver, t)}`;
 }
 
 /**
@@ -39,4 +42,13 @@ export function filterManagedSandboxSelectableEnvironments<
   return managedSandboxOnly
     ? environments.filter((environment) => environment.driver !== "local")
     : [...environments];
+}
+
+export function environmentDriverLabel(driver: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (driver) {
+    case "local": return t("environmentsUi.driver.local");
+    case "ssh": return t("environmentsUi.driver.ssh");
+    case "sandbox": return t("environmentsUi.driver.sandbox");
+    default: return driver;
+  }
 }

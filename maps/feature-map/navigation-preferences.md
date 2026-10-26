@@ -20,6 +20,7 @@ Agent access: [companion](../agent-access-map/navigation-preferences.md).
 - `announcements`: `navigation-preferences/announcements` — inspect and dismiss an announcement with its intended instance-wide user scope.
 - `fallbacks`: `navigation-preferences/fallbacks` — handle missing resources and old deep links without presenting another resource as the target.
 - `command-palette`: `navigation-preferences/command-palette` — open quick search and creation actions with keyboard shortcuts, then carry query/filter intent into full search.
+- `locale`: `navigation-preferences/locale` — choose English or Russian for supported UI surfaces and retain the choice in this browser.
 
 ## How to get to it (user POV)
 
@@ -60,9 +61,60 @@ Manual: Change a disposable user’s display details, reload, and inspect an att
 
 Automated: [Command palette](../../ui/src/components/CommandPalette.test.tsx), [shortcut hook](../../ui/src/hooks/useKeyboardShortcuts.test.tsx), [shortcut rules](../../ui/src/lib/keyboardShortcuts.test.ts), and [cheatsheet](../../ui/src/components/KeyboardShortcutsCheatsheet.test.tsx) test components and keyboard rules. [Company search](../../server/src/__tests__/company-search-service.test.ts) covers search contracts; browser focus and identity transitions still need a live check.
 
+[Localized command palette](../../ui/src/components/CommandPalette.locale.test.tsx)
+uses real Cmdk and dialog controls. It checks English/Russian command and role
+search, canonical selection, literal queries and the selected Enter action.
+Exact-name projects remain above prefix, substring and description matches after
+query and language changes. Ctrl/Cmd+Enter keeps the canonical full-search route.
+These tests mock the API; live keyboard navigation still needs separate evidence.
+
 Manual: Use uniquely named visible and private task/project fixtures. Open the palette, find a permitted result, follow it, and reload the destination. Enter text with quick-filter chips such as `assignee:me`, `is:open`, and `updated:>7d`; use Search all and Cmd/Ctrl+Enter in separate attempts and verify the resulting query and filters. Switch person/company and confirm private results do not leak. Test `/` on a page with search and a page without it; inspect `?`, `c`, and `g i`. Type those keys inside an editor and a modal: they must not unexpectedly navigate or create work. Test a create action through its normal dialog and inspect the actual saved resource separately.
 
 Sources: [Command palette](../../ui/src/components/CommandPalette.tsx), [shortcut hook](../../ui/src/hooks/useKeyboardShortcuts.ts), [query parser](../../ui/src/lib/search-query-parser.ts), and [search routes](../../server/src/routes/issues.ts).
+
+### `locale`
+
+Use the language control at sign-in, first-administrator bootstrap, the active
+onboarding wizard, or in either active sidebar account menu. The fork starts
+in Russian unless `VITE_DEFAULT_LOCALE` overrides it; a saved `paperclip.locale`
+preference wins. This is browser-local presentation, not an account-wide setting.
+
+Automated: [locale preferences](../../ui/src/i18n/locale-preferences.test.ts),
+[language control](../../ui/src/components/LocaleSwitcher.test.tsx),
+[both account-menu variants](../../ui/src/components/SidebarAccountMenu.test.tsx),
+[profile](../../ui/src/pages/ProfileSettings.test.tsx), and
+[formatting](../../ui/src/lib/utils.localization.test.ts) cover storage failure,
+language changes, draft preservation, and display contracts with fixtures.
+
+[Bootstrap](../../ui/src/components/BootstrapPendingPage.test.tsx),
+[onboarding](../../ui/src/components/onboarding/OnboardingLocalization.test.tsx),
+[provider setup](../../ui/src/components/ai-connections/AiProviderSetup.test.tsx),
+[local provider login](../../ui/src/components/ai-connections/useLocalAiLogin.test.tsx),
+and [instance access](../../ui/src/pages/InstanceAccess.test.tsx) check that a
+language change preserves drafts, selected permission values, and local errors
+without starting a claim, reconnecting, or submitting a form.
+
+[Task display localization](../../ui/src/lib/task-display-localization.test.tsx)
+checks Russian plural forms, active dependency and retry meaning, unchanged user
+text, and mounted status/preview controls. Task list, board, row, and column tests
+exercise language changes with existing search and view state. These are component
+checks, not proof of task persistence or full task-detail translation.
+
+[Task side-panel tests](../../ui/src/components/task-side-panel/TaskSidePanel.test.tsx)
+check translated built-in tabs while preserving stored IDs, order, selection,
+scroll position and literal custom titles. Closing the last tab focuses the
+launcher through a language-independent selector. [Browser panel](../../ui/src/components/task-side-panel/TaskBrowserPanel.test.tsx)
+and [viewport tests](../../ui/src/hooks/useBrowserViewport.test.tsx) keep the same
+viewer and request counts across EN/RU. These are component checks; browser
+activity and the complete chat/composer are outside this localization slice.
+
+Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
+document language, labels, accessible names, dates, and currency. Verify both UI
+variants and a narrow viewport. Account-menu clicks can trigger the normal blur
+save of an active inline editor; test focused draft retention separately through
+the locale API. Language changes themselves must not submit forms, change
+identifiers, convert currency, or change the time zone. Component checks do not
+establish complete UI translation coverage; consult the localization audit report.
 
 ## Gotchas
 

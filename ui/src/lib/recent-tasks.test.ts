@@ -38,6 +38,21 @@ describe("recent task persistence", () => {
     );
   });
 
+  it("learns owned origin from a full task without translating stored titles or inferring legacy provenance", () => {
+    const storageKey = getRecentTasksStorageKey("company-1", "user-1");
+    const legacy = { ...issue("1"), title: "Paperclip onboarding", updatedAt: new Date(10) };
+    recordRecentTask(legacy, "user-1");
+    expect(readRecentTasks(storageKey, "company-1")[0].originKind).toBeUndefined();
+    recordRecentTask({ ...legacy, originKind: "onboarding_first_task" }, "user-1");
+    expect(readRecentTasks(storageKey, "company-1")[0]).toMatchObject({ title: "Paperclip onboarding", originKind: "onboarding_first_task" });
+    // Summary API rows omit origin; they must not erase previously verified provenance.
+    updateRecentTaskSnapshots(storageKey, "company-1", [{ ...legacy, title: "User rename", updatedAt: new Date(20) }]);
+    expect(readRecentTasks(storageKey, "company-1")[0]).toMatchObject({ title: "User rename", originKind: "onboarding_first_task" });
+    updateRecentTaskSnapshots(storageKey, "company-1", [{ ...legacy, originKind: "manual", companyId: "other-company", updatedAt: new Date(30) }]);
+    recordRecentTask({ ...legacy, originKind: "manual", updatedAt: new Date(5) }, "user-1");
+    expect(readRecentTasks(storageKey, "company-1")[0]).toMatchObject({ title: "User rename", originKind: "onboarding_first_task" });
+  });
+
   it("deduplicates, only promotes newer activity, and stays bounded", () => {
     for (let index = 0; index < RECENT_TASKS_LIMIT + 2; index += 1) {
       recordRecentTask(issue(String(index)), "user-1", index);

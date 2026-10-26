@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -86,12 +88,14 @@ const RENAME_HINT =
 describe("CompanySettings rename hint", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await setLocale("en");
     container = document.createElement("div");
     document.body.appendChild(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await setLocale("en");
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
@@ -143,4 +147,38 @@ describe("CompanySettings rename hint", () => {
     expect(hintText()).toBeUndefined();
     flushSync(() => root.unmount());
   });
+
+  it("keeps organization drafts and API payloads unchanged while switching Russian and English", async () => {
+    mockCompaniesApi.update.mockResolvedValue(SELECTED_COMPANY);
+    const page = render(SELF_HOSTED_HEALTH);
+    try {
+      const [name, description] = Array.from(container.querySelectorAll<HTMLInputElement>('input[type="text"]'));
+      await act(async () => {
+        for (const [input, value] of [[name, "  Research & разработка  "], [description, "  User draft <keep>  "]] as const) {
+          Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, value);
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+        await setLocale("ru");
+      });
+      expect(container.querySelector("h1")?.textContent).toBe("Общие");
+      expect(name.value).toBe("  Research & разработка  ");
+      expect(description.value).toBe("  User draft <keep>  ");
+      expect(description.placeholder).toBe("Описание организации (необязательно)");
+      expect(mockCompaniesApi.update).not.toHaveBeenCalled();
+      const save = Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Сохранить изменения");
+      expect(save).toBeDefined();
+      await act(async () => save!.click());
+      await vi.waitFor(() => expect(mockCompaniesApi.update).toHaveBeenCalledWith(SELECTED_COMPANY.id, {
+        name: "Research & разработка",
+        description: "User draft <keep>",
+      }));
+      await act(async () => setLocale("en"));
+      expect(container.querySelector("h1")?.textContent).toBe("General");
+      expect(name.value).toBe("  Research & разработка  ");
+      expect(description.value).toBe("  User draft <keep>  ");
+    } finally {
+      await act(async () => page.unmount());
+    }
+  });
+
 });

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type {
   IssueCommentMetadata,
   IssueCommentMetadataRow,
@@ -10,14 +12,6 @@ import type {
   SystemNoticeTone,
 } from "../components/SystemNotice";
 
-const TONE_LABEL: Record<SystemNoticeTone, string> = {
-  neutral: "System notice",
-  info: "System notice",
-  success: "System notice",
-  warning: "System warning",
-  danger: "System alert",
-};
-
 function metadataRowText(row: { label?: string | null }, fallback: string) {
   const label = row.label?.trim();
   return label && label.length > 0 ? label : fallback;
@@ -26,22 +20,23 @@ function metadataRowText(row: { label?: string | null }, fallback: string) {
 function mapMetadataRow(
   row: IssueCommentMetadataRow,
   ctx: { runAgentId?: string | null },
+  t: TFunction,
 ): SystemNoticeMetadataRow | null {
   switch (row.type) {
     case "text":
-      return { kind: "text", label: metadataRowText(row, "Detail"), value: row.text };
+      return { kind: "text", label: metadataRowText(row, t("runUi.system.detail")), value: row.text };
     case "code":
-      return { kind: "code", label: metadataRowText(row, "Code"), value: row.code };
+      return { kind: "code", label: metadataRowText(row, t("runUi.system.code")), value: row.code };
     case "key_value":
       return { kind: "text", label: row.label, value: row.value };
     case "issue_link": {
       const identifier = row.identifier ?? null;
       if (!identifier) {
-        return { kind: "text", label: metadataRowText(row, "Task"), value: row.title ?? "unknown" };
+        return { kind: "text", label: metadataRowText(row, t("runUi.system.task")), value: row.title ?? t("runUi.system.unknown") };
       }
       return {
         kind: "issue",
-        label: metadataRowText(row, "Task"),
+        label: metadataRowText(row, t("runUi.system.task")),
         identifier,
         href: `/issues/${identifier}`,
         title: row.title ?? undefined,
@@ -51,7 +46,7 @@ function mapMetadataRow(
       const name = row.name?.trim() || row.agentId.slice(0, 8);
       return {
         kind: "agent",
-        label: metadataRowText(row, "Agent"),
+        label: metadataRowText(row, t("runUi.system.agent")),
         name,
         href: `/agents/${row.agentId}`,
       };
@@ -61,7 +56,7 @@ function mapMetadataRow(
       const href = runAgentId ? `/agents/${runAgentId}/runs/${row.runId}` : undefined;
       return {
         kind: "run",
-        label: metadataRowText(row, "Run"),
+        label: metadataRowText(row, t("runUi.system.run")),
         runId: row.runId,
         href,
         status: row.title ?? undefined,
@@ -75,12 +70,13 @@ function mapMetadataRow(
 export function mapCommentMetadataToSystemNoticeSections(
   metadata: IssueCommentMetadata | null | undefined,
   ctx: { runAgentId?: string | null } = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): SystemNoticeMetadataSection[] {
   if (!metadata || !Array.isArray(metadata.sections)) return [];
   return metadata.sections
     .map((section) => {
       const rows = section.rows
-        .map((row) => mapMetadataRow(row, ctx))
+        .map((row) => mapMetadataRow(row, ctx, t))
         .filter((r): r is SystemNoticeMetadataRow => r !== null);
       if (rows.length === 0) return null;
       const out: SystemNoticeMetadataSection = { rows };
@@ -93,10 +89,11 @@ export function mapCommentMetadataToSystemNoticeSections(
 export function systemNoticeLabelForTone(
   tone: SystemNoticeTone,
   presentationTitle?: string | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   const trimmed = presentationTitle?.trim();
   if (trimmed && trimmed.length > 0) return trimmed;
-  return TONE_LABEL[tone];
+  return tone === "danger" ? t("runUi.system.alert") : tone === "warning" ? t("runUi.system.warning") : t("runUi.system.notice");
 }
 
 export function buildSystemNoticeProps(input: {
@@ -106,13 +103,13 @@ export function buildSystemNoticeProps(input: {
   timestamp?: string;
   source?: SystemNoticeProps["source"];
   runAgentId?: string | null;
-}): SystemNoticeProps {
+}, t: TFunction = i18n.getFixedT("en")): SystemNoticeProps {
   const tone: SystemNoticeTone = input.presentation?.tone ?? "neutral";
-  const label = systemNoticeLabelForTone(tone, input.presentation?.title);
+  const label = systemNoticeLabelForTone(tone, input.presentation?.title, t);
   const detailsDefaultOpen = Boolean(input.presentation?.detailsDefaultOpen);
   const sections = mapCommentMetadataToSystemNoticeSections(input.metadata, {
     runAgentId: input.runAgentId ?? null,
-  });
+  }, t);
   return {
     tone,
     label,

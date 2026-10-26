@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
 
 import { createRoot } from "react-dom/client";
+import { act as reactAct, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryKeys } from "../lib/queryKeys";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { SidebarAccountMenu as ProductionSidebarAccountMenu } from "./SidebarAccountMenu.production";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { LOCALE_STORAGE_KEY, setLocale, useTranslation } from "@/i18n";
 
 const mockAuthApi = vi.hoisted(() => ({
   getSession: vi.fn(),
@@ -153,6 +155,68 @@ describe("SidebarAccountMenu", () => {
     document.body.innerHTML = "";
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  it("switches the legacy account menu live without losing drafts, identity or access boundaries", async () => {
+    await setLocale("en");
+    localStorage.removeItem(LOCALE_STORAGE_KEY);
+    mockGetCurrentBoardAccess.mockResolvedValue(boardAccess("viewer"));
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const root = createRoot(container);
+    function Harness() {
+      const { t } = useTranslation();
+      const [draft, setDraft] = useState("");
+      return <>
+        <span>{t("localeSwitcher.language")}</span>
+        <input aria-label="Task draft" value={draft} onChange={(event) => setDraft(event.target.value)} />
+        <ProductionSidebarAccountMenu deploymentMode="authenticated" open />
+      </>;
+    }
+    try {
+      await reactAct(async () => root.render(
+        <QueryClientProvider client={queryClient}><TooltipProvider><Harness /></TooltipProvider></QueryClientProvider>,
+      ));
+      await flushReact();
+      await flushReact();
+      const draft = container.querySelector<HTMLInputElement>('input[aria-label="Task draft"]')!;
+      const text = "Несохранённая задача <b> & текст";
+      await reactAct(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(draft, text);
+        draft.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      const profile = document.body.querySelector<HTMLAnchorElement>('a[aria-label="View profile"]')!;
+      const profileHref = profile.getAttribute("href");
+      const sessionRequests = mockAuthApi.getSession.mock.calls.length;
+      const select = document.body.querySelector<HTMLSelectElement>("select");
+      expect(select).not.toBeNull();
+      for (const locale of ["ru", "en"] as const) {
+        await reactAct(async () => {
+          select!.value = locale;
+          select!.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        expect(document.documentElement.lang).toBe(locale);
+        expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe(locale);
+        expect(select!.labels?.[0]?.textContent).toContain(locale === "ru" ? "Язык" : "Language");
+        expect(container.querySelector(`button[aria-label="${locale === "ru" ? "Открыть меню учётной записи" : "Open account menu"}"]`)).not.toBeNull();
+        expect(document.body.querySelector("select")).toBe(select);
+        expect(container.querySelector('input[aria-label="Task draft"]')).toBe(draft);
+        expect(draft.value).toBe(text);
+        expect(profile.isConnected).toBe(true);
+        expect(profile.getAttribute("href")).toBe(profileHref);
+        expect(document.body.textContent).toContain("Jane Example");
+        expect(document.body.textContent).toContain("jane@example.com");
+        expect(document.body.querySelector('a[href="/company/settings/members?tab=invites"]')).toBeNull();
+        expect(mockAuthApi.getSession).toHaveBeenCalledTimes(sessionRequests);
+        expect(mockAuthApi.updateProfile).not.toHaveBeenCalled();
+        expect(mockAuthApi.signOut).not.toHaveBeenCalled();
+        expect(mockNavigateTopLevel).not.toHaveBeenCalled();
+      }
+    } finally {
+      await reactAct(async () => root.unmount());
+      queryClient.clear();
+      await setLocale("en");
+      localStorage.removeItem(LOCALE_STORAGE_KEY);
+    }
   });
 
   describe.each([SidebarAccountMenu, ProductionSidebarAccountMenu])("staging commit (%#)", (AccountMenu) => {

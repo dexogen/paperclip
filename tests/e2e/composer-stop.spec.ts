@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, unlink, writeFile } from "node:fs/promises";
 import {
   test,
   expect,
@@ -6,6 +6,22 @@ import {
   type APIResponse,
   type Page,
 } from "@playwright/test";
+import { composerStopWorkLog } from "./fixtures/composer-stop-provider";
+import { cleanupComposerStopCompany } from "./fixtures/composer-stop-cleanup";
+
+async function workCalls(runId: string) {
+  return readFile(composerStopWorkLog(process.env.PAPERCLIP_STOP_WORK_LOG_DIR!, runId), "utf8")
+    .catch((error: NodeJS.ErrnoException) => {
+      if (error.code === "ENOENT") return "";
+      throw error;
+    });
+}
+
+async function expectWorkTurns(runIds: string[]) {
+  await expect.poll(async () => Promise.all(runIds.map(async (id) =>
+    (await workCalls(id)).split("\n").filter((line) => line === "turn/start").length > 0,
+  )), { timeout: 30_000 }).toEqual(runIds.map(() => true));
+}
 
 async function json(response: APIResponse) {
   const text = await response.text();
@@ -150,6 +166,9 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       await request.get("/api/instance/settings/experimental"),
     );
     const statusMetadata: Record<string, string | null>[] = [];
+    const ownedAgentIds: string[] = [];
+    let testFailure: { error: unknown } | undefined;
+    let ownedHoldFile: string | undefined;
     page.on("websocket", (socket) => {
       socket.on("framereceived", ({ payload: frame }) => {
         try {
@@ -191,7 +210,7 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
         }),
       );
       async function agent(name: string) {
-        return json(
+        const created = await json(
           await request.post(`/api/companies/${company.id}/agents`, {
             data: {
               name,
@@ -217,10 +236,32 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
             },
           }),
         );
+        ownedAgentIds.push(created.id);
+        return created;
       }
       const owner = await agent("Stop fixture parent");
       const childOwner = await agent("Stop fixture child");
       const otherOwner = await agent("Stop fixture unrelated");
+      if (adapter === "paperclip_runner") {
+        const expected = [owner, childOwner, otherOwner].map(({ id }) => ({
+          id, companyId: company.id, lifecycleState: "ready", status: "idle",
+          lifecycleHolds: [], lifecycleError: null,
+        }));
+        let readyAgents: Record<string, unknown>[] = [];
+        await expect.poll(async () => {
+          readyAgents = await Promise.all(expected.map(async ({ id }) => {
+            const current = await json(await request.get(`/api/agents/${id}`));
+            expect(current).not.toHaveProperty("lifecycleOperation");
+            return Object.fromEntries(Object.keys(expected[0]).map((key) => [key, current[key]]));
+          }));
+          return readyAgents;
+        }, { timeout: 30_000 }).toEqual(expected);
+        await testInfo.attach("native-ready-agents", { body: JSON.stringify(readyAgents), contentType: "application/json" });
+        const holdFile = process.env.PAPERCLIP_STOP_HOLD_FILE;
+        expect(holdFile).toBeTruthy();
+        await writeFile(holdFile!, "hold\n", { flag: "wx", mode: 0o600 });
+        ownedHoldFile = holdFile;
+      }
       const parent = await task(request, company.id, {
         assigneeAgentId: owner.id,
       });
@@ -248,20 +289,7 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       const childRun = await running(request, child.id, adapter);
       const otherRun = await running(request, other.id, adapter);
       if (adapter === "paperclip_runner") {
-        // A run row becomes live before its provider turn starts. Prove that the
-        // deterministic provider is active before attempting interruption.
-        await expect
-          .poll(
-            async () => {
-              const calls = await readFile(
-                process.env.PAPERCLIP_STOP_CODEX_LOG!,
-                "utf8",
-              ).catch(() => "");
-              return calls.split("turn/start").length - 1;
-            },
-            { timeout: 30_000 },
-          )
-          .toBeGreaterThanOrEqual(3);
+        await expectWorkTurns([parentRun.id, childRun.id, otherRun.id]);
       }
       expect(parentRun.runtimeMode).toBe(
         adapter === "process" ? "legacy" : "native",
@@ -319,7 +347,7 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
           "acknowledged",
         );
         expect(
-          await readFile(process.env.PAPERCLIP_STOP_CODEX_LOG!, "utf8"),
+          await workCalls(parentRun.id),
         ).toContain("turn/interrupt");
       }
       await testInfo.attach(`${adapter}-timing`, {
@@ -361,9 +389,18 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
         page.getByRole("button", { name: "Dismiss notification" }),
       ).toHaveCount(0);
       if (adapter === "paperclip_runner") {
-        await expect(
-          page.getByRole("button", { name: /^Run cancelled/ }),
-        ).toHaveClass(/text-muted-foreground/);
+        const parentTurn = page.getByTestId("task-chat-runner-turn").filter({
+          has: page.getByTestId("task-chat-runner-identity-row")
+            .getByTestId("task-chat-agent-identity")
+            .getByText(owner.name, { exact: true }),
+        });
+        await expect(parentTurn).toHaveCount(1);
+        const parentStatus = parentTurn.getByTestId("task-chat-turn-status-header");
+        await expect(parentStatus).toHaveCount(1);
+        await expect(parentStatus).toBeVisible();
+        await expect(parentStatus).toHaveText(/^Stopped(?: after|$)/);
+        await expect(parentStatus).toHaveClass(/text-muted-foreground/);
+        await expect(parentStatus).not.toHaveClass(/text-destructive/);
       }
       await page.reload();
       await expect(
@@ -380,7 +417,16 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
         ).toEqual([]);
       }
       await menu(page, "Resume subtree");
-      await page.getByRole("dialog").getByRole("checkbox").check();
+      const resumeWake = page.getByRole("dialog").getByRole("checkbox");
+      if (adapter === "process") {
+        // Stopped legacy work is blocked pending reconciliation. Removing the
+        // pause must not promise or request a wake through that recovery gate.
+        await expect(resumeWake).toHaveAccessibleName("Wake affected agents (0)");
+        await expect(resumeWake).toBeDisabled();
+        await expect(resumeWake).not.toBeChecked();
+      } else {
+        await resumeWake.check();
+      }
       await page
         .getByRole("dialog")
         .getByRole("button", { name: "Resume subtree", exact: true })
@@ -401,10 +447,7 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       expect(resumedParentRun.id).not.toBe(parentRun.id);
       expect(resumedChildRun.id).not.toBe(childRun.id);
       if (adapter === "paperclip_runner") {
-        await expect.poll(async () => {
-          const calls = await readFile(process.env.PAPERCLIP_STOP_CODEX_LOG!, "utf8");
-          return calls.split("turn/start").length - 1;
-        }, { timeout: 30_000 }).toBeGreaterThanOrEqual(5);
+        await expectWorkTurns([resumedParentRun.id, resumedChildRun.id]);
         await page.screenshot({ path: testInfo.outputPath("native-resumed.png"), fullPage: true });
       }
       await menu(page, "Pause subtree");
@@ -471,22 +514,33 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       await page.screenshot({
         path: testInfo.outputPath(`${adapter}-cancelled.png`),
       });
+    } catch (error) {
+      testFailure = { error };
     } finally {
-      const statusEvidence = JSON.stringify(statusMetadata, null, 2);
-      // The company is disposable and scoped to this test invocation.
-      await request.patch(`/api/companies/${company.id}`, {
-        data: { status: "archived" },
-      });
-      await request.patch("/api/instance/settings/experimental", {
-        data: {
-          enableClassicTaskInterface:
-            originalSettings.enableClassicTaskInterface,
-          enableNativeRunner: originalSettings.enableNativeRunner,
+      await cleanupComposerStopCompany({
+        request,
+        companyId: company.id,
+        agentIds: ownedAgentIds,
+        json,
+        poll: probe => expect.poll(probe).toBe(true),
+        failure: testFailure,
+        restore: async () => {
+          await json(await request.patch("/api/instance/settings/experimental", {
+            data: {
+              enableClassicTaskInterface: originalSettings.enableClassicTaskInterface,
+              enableNativeRunner: originalSettings.enableNativeRunner,
+            },
+          }));
         },
-      });
-      await testInfo.attach("owned-company-status-metadata", {
-        body: statusEvidence,
-        contentType: "application/json",
+        attach: async (cleanup) => {
+          await testInfo.attach("owned-company-status-metadata", {
+            body: JSON.stringify(statusMetadata, null, 2), contentType: "application/json",
+          });
+          await testInfo.attach("owned-company-cleanup", {
+            body: JSON.stringify(cleanup, null, 2), contentType: "application/json",
+          });
+        },
+        removeMarker: async () => { if (ownedHoldFile) await unlink(ownedHoldFile); },
       });
     }
   });

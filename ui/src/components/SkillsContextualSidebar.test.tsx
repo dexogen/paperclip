@@ -3,6 +3,8 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
+import { reservedRootLabel } from "./folders/skill-folder-tree";
 import { SkillsContextualSidebar } from "./SkillsContextualSidebar";
 import { contextualSidebarStyles } from "./contextual-sidebar-styles";
 
@@ -113,4 +115,27 @@ describe("SkillsContextualSidebar", () => {
 
     act(() => root.unmount());
   });
+
+  it("switches skills navigation and system folders without changing names or routes", async () => {
+    const root = render();
+    const links = () => Array.from(container.querySelectorAll("a")).map(link => link.getAttribute("href"));
+    const englishLinks = links();
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('[aria-current="page"]')?.textContent).toBe("Установленные");
+      expect(container.textContent).toContain("Мои навыки");
+      expect(container.textContent).toContain("Источники");
+      expect(container.querySelector('nav[aria-label="Навыки"]')).not.toBeNull();
+      expect(links()).toEqual(englishLinks);
+      expect(reservedRootLabel({ systemKey: "my", name: "My Skills" })).toBe("Мои навыки");
+      expect(reservedRootLabel({ systemKey: null, name: "Release Engineering" })).toBe("Release Engineering");
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector('[aria-current="page"]')?.textContent).toBe("Installed");
+      expect(reservedRootLabel({ systemKey: "my", name: "My Skills" })).toBe("My Skills");
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+      act(() => root.unmount());
+    }
+  });
+
 });

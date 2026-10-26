@@ -1,3 +1,4 @@
+import { useTranslation } from "../i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Project } from "@paperclipai/shared";
@@ -67,6 +68,7 @@ function sortProjects(projects: Project[], sortField: ProjectSortField, sortDir:
 }
 
 export function Projects() {
+  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const { openNewProject } = useDialogActions();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -75,8 +77,8 @@ export function Projects() {
   const [sortDir, setSortDir] = useState<ProjectSortDir>("asc");
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Projects" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("projects.title") }]);
+  }, [setBreadcrumbs, t]);
 
   const { data: allProjects, isLoading, error } = useQuery({
     queryKey: queryKeys.projects.list(selectedCompanyId!),
@@ -116,7 +118,7 @@ export function Projects() {
   }, [membershipsQuery.data, sortedProjects]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Hexagon} message="Select an organization to view projects." />;
+    return <EmptyState icon={Hexagon} message={t("projects.selectOrganization")} />;
   }
 
   if (isLoading) {
@@ -133,28 +135,28 @@ export function Projects() {
       {!isLoading && projects.length === 0 && (
         <EmptyState
           icon={Hexagon}
-          message="No projects yet."
-          action="Add Project"
+          message={t("projects.empty")}
+          action={t("projects.add")}
           onAction={openNewProject}
         />
       )}
 
-      {projects.length > 0 && sortedProjects.length === 0 && <p className="text-sm text-muted-foreground">No projects match your search.</p>}
+      {projects.length > 0 && sortedProjects.length === 0 && <p className="text-sm text-muted-foreground">{t("projects.noSearchMatch")}</p>}
 
       {sortedProjects.length > 0 && (
         <div className="space-y-6">
           {([
-            ["My Projects", groupedProjects.mine],
-            ["Other Projects", groupedProjects.other],
-          ] as const).map(([label, sectionProjects]) => {
+            ["mine", t("projects.mine"), groupedProjects.mine],
+            ["other", t("projects.other"), groupedProjects.other],
+          ] as const).map(([groupKey, label, sectionProjects]) => {
             if (sectionProjects.length === 0) return null;
 
             return (
-              <section key={label} className="space-y-2">
+              <section key={groupKey} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-medium">{label}</h2>
                   <span className="text-xs text-muted-foreground">
-                    {sectionProjects.length} project{sectionProjects.length === 1 ? "" : "s"}
+                    {t("projects.count", { count: sectionProjects.length, formattedCount: formatNumber(sectionProjects.length) })}
                   </span>
                 </div>
                 <Card className="block py-0 overflow-hidden divide-y divide-border">
@@ -177,12 +179,12 @@ export function Projects() {
                         className={state === "left" ? "group text-foreground/55" : "group"}
                         trailing={
                           <div className="flex items-center gap-3">
-                            {project.visibility === "private" ? <Lock className="size-4 shrink-0 text-muted-foreground" aria-label="Private project" /> : null}
+                            {project.visibility === "private" ? <Lock className="size-4 shrink-0 text-muted-foreground" aria-label={t("projects.private")} /> : null}
                             <span
                               className="hidden text-xs text-muted-foreground tabular-nums sm:inline"
-                              title={`${formatNumber(project.taskCount ?? 0)} task${(project.taskCount ?? 0) === 1 ? "" : "s"}`}
+                              title={t("projects.tasks", { count: project.taskCount ?? 0, formattedCount: formatNumber(project.taskCount ?? 0) })}
                             >
-                              {formatNumber(project.taskCount ?? 0)} task{(project.taskCount ?? 0) === 1 ? "" : "s"}
+                              {t("projects.tasks", { count: project.taskCount ?? 0, formattedCount: formatNumber(project.taskCount ?? 0) })}
                             </span>
                             {project.budget && (
                               <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">

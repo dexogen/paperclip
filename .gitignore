@@ -29,6 +29,7 @@ cli/tmp/
 
 # Scratch/seed scripts (but not scripts/ dir)
 check-*.mjs
+!scripts/upstream-sync/check-workflows.mjs
 !.github/scripts/check-*.mjs
 !.github/scripts/tests/check-*.mjs
 !scripts/check-*.mjs

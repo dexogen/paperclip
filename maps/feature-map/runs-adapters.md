@@ -145,6 +145,16 @@ is released before failure returns. Repeat a warm follow-up and retain its actua
 reply time. The [executor controls](../../server/src/services/native-runtime/native-session-executor.test.ts)
 cover ordering, failure drain and credential projection; they do not qualify a
 live response-time target.
+For native OpenCode with assigned connections, inspect the provider tool surface
+on both local and sandbox execution. It should contain bounded assigned-tool
+search/call schemas. Discover an allowed tool, call its returned alias, revoke
+its grant, and confirm discovery and execution enforce that revocation. Repeat
+in planning/ask mode with a write tool and confirm denial. The controller must
+retain the assigned gateway URL and token. An older direct-catalog OpenCode
+checkpoint must refresh without changing another provider's fingerprint. The
+[assigned-tool](../../server/src/services/native-runtime/assigned-mcp-tools.test.ts)
+and executor controls cover source behavior; live sandbox discovery and a real
+call remain separate acceptance evidence.
 Missing dependencies, failed authentication, invalid models and
 incompatible custom settings must remain actionable errors without silent runner
 switching. Saved unchanged execution can still be tested without applying new
@@ -178,6 +188,14 @@ a separate acceptance requirement.
 ### `run-history`
 
 Automated: [live run routes](../../server/src/__tests__/agent-live-run-routes.test.ts) and [run event sequencing](../../server/src/__tests__/heartbeat-run-event-sequencing.test.ts) cover run data contracts.
+
+The [agent run-log locale cases](../../ui/src/pages/AgentDetail.log-visibility.test.tsx)
+retain stored log errors and offsets without new reads on a language change.
+Owned fallback errors translate; identical provider text stays literal. Closed
+workspace-operation status captions translate, while unknown values retain the
+existing display fallback. Accounting checks keep the currency and recorded
+values; formatting follows the active locale. These are component checks with
+mocked API responses, not evidence of a live provider run.
 
 Manual: Start a disposable task, open its running transcript, and follow it to a terminal outcome. Reload and compare task/run IDs, status, output, and cost. Verify a failed run remains distinguishable from a completed run with useful output.
 

@@ -2,6 +2,8 @@
 
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
+import { act as reactAct } from "react";
+import { i18n } from "../i18n";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Issue } from "@paperclipai/shared";
 import {
@@ -78,6 +80,21 @@ describe("IssueColumnPicker presentation options", () => {
 });
 
 describe("InboxIssueMetaLeading live state", () => {
+  it("updates the running descendant description without replacing the task identifier", async () => {
+    renderLeading(<InboxIssueMetaLeading issue={makeIssue({ identifier: "PAP-1", status: "done" })} isLive={false} subtreeLiveCount={22} />);
+    const identifier = Array.from(container!.querySelectorAll("span")).find(span => span.textContent === "PAP-1");
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container!.querySelector('[title="Выполняются 22 подзадачи"]')).not.toBeNull();
+      expect(container!.textContent).toContain("Выполняется подзадач: 22");
+      expect(identifier?.isConnected).toBe(true);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container!.querySelector('[title="22 sub-tasks running below"]')).not.toBeNull();
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
   it("describes the canonical identifier at the trailing edge", () => {
     expect(issueColumnDescription("id", "task")).toContain("trailing edge");
     expect(issueColumnDescription("id", "legacy")).not.toContain("trailing edge");

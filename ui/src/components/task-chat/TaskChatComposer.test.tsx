@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { act, StrictMode, useState, type ComponentProps, type ReactElement } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
@@ -175,7 +176,8 @@ let container: HTMLDivElement;
 let root: Root | null = null;
 let originalRangeRect: typeof Range.prototype.getBoundingClientRect;
 
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   localStorage.clear();
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -196,12 +198,13 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => {
+afterEach(async () => {
   flushSync(() => root?.unmount());
   root = null;
   container.remove();
   Range.prototype.getBoundingClientRect = originalRangeRect;
   window.getSelection()?.removeAllRanges();
+  await i18n.changeLanguage("en");
 });
 
 function render(ui: ReactElement) {
@@ -301,6 +304,43 @@ function renderComposer(props: ComponentProps<typeof TaskChatComposer>) {
 }
 
 describe("TaskChatComposer", () => {
+  it("preserves the focused dirty draft, selection and pending attachment across locale changes before one explicit send", async () => {
+    const onAdd = vi.fn().mockResolvedValue(undefined);
+    let finishUpload!: (receipt: unknown) => void;
+    const onAttachImage = vi.fn().mockImplementation(() => new Promise((resolve) => { finishUpload = resolve; }));
+    const draft = "Literal <b>draft</b> & {{name}}";
+    const filename = "notes [draft].txt";
+    renderComposer({ onAdd, workMode: "standard", onAttachImage, draftKey: "locale-pending-attachment" });
+    typeText(draft);
+    pasteFiles([new File(["bytes"], filename, { type: "text/plain" })]);
+    await flushAsync();
+    const editor = editable(); editor.focus();
+    const text = editor.firstChild!; const selection = window.getSelection()!;
+    const range = document.createRange(); range.setStart(text, 2); range.setEnd(text, 12);
+    selection.removeAllRanges(); selection.addRange(range);
+    const chip = container.querySelector('[data-testid="task-chat-composer-attachments"]');
+    expect(chip).not.toBeNull();
+    const uploadSnapshot = onAttachImage.mock.calls[0];
+    for (const language of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      expect(editable()).toBe(editor); expect(editor.textContent).toBe(draft);
+      expect(document.activeElement).toBe(editor); expect(selection.anchorNode).toBe(text);
+      expect(selection.anchorOffset).toBe(2); expect(selection.focusOffset).toBe(12);
+      expect(container.querySelector('[data-testid="task-chat-composer-attachments"]')).toBe(chip);
+      expect(container.textContent).toContain(filename);
+      expect(container.textContent).toContain(language === "ru" ? "Загрузка…" : "Uploading…");
+      expect(sendButton().disabled).toBe(true); expect(onAdd).not.toHaveBeenCalled();
+      expect(onAttachImage).toHaveBeenCalledTimes(1); expect(onAttachImage.mock.calls[0]).toBe(uploadSnapshot);
+    }
+    const id = "5e5f9946-c706-4785-8988-d4d6f0f499ab";
+    await act(async () => { finishUpload({ id, contentPath: `/api/attachments/${id}/content`, originalFilename: filename }); });
+    await flushAsync(); expect(sendButton().disabled).toBe(false); expect(onAdd).not.toHaveBeenCalled();
+    flushSync(() => sendButton().click()); await flushAsync();
+    expect(onAdd).toHaveBeenCalledTimes(1);
+    expect(onAdd).toHaveBeenCalledWith(`${draft}\n\n[notes \\[draft\\].txt](/api/attachments/${id}/content)`, undefined, undefined, [id], expect.any(String));
+    expect(onAttachImage).toHaveBeenCalledTimes(1); expect(editable().textContent).toBe("");
+  });
+
   it("keeps creation images inline and prevents submission during their upload", async () => {
     let resolveUpload!: (url: string) => void;
     const onImageUpload = vi.fn().mockReturnValue(new Promise<string>((resolve) => { resolveUpload = resolve; }));
@@ -856,7 +896,7 @@ describe("TaskChatComposer", () => {
     render(<TaskChatComposer onAdd={vi.fn()} workMode="standard" mobile />);
 
     expect(editable().dataset.contentClassName).toContain("min-h-(--sz-48px)");
-    expect(editable().dataset.contentClassName).toContain("max-h-(--sz-28dvh)");
+    expect(editable().dataset.contentClassName).toContain("max-h-(--tc-composer-editor-max-height)");
   });
 
   it("submits the trimmed body on Cmd+Enter and clears the draft", async () => {

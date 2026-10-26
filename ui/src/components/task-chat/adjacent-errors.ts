@@ -1,4 +1,5 @@
 import type { TaskChatItem, TaskChatMarkerItem, TaskChatMessageItem } from "./task-chat-model";
+import { isRetryableFailureMarker } from "./task-chat-display";
 
 export function isNoLiveExecutionPathNotice(item: TaskChatMessageItem): boolean {
   if (item.author !== "system") return false;
@@ -54,8 +55,7 @@ export function compactAdjacentErrors(items: readonly TaskChatItem[]): {
     const latest = items[end - 1];
     if (mixed && errorKind(latest) === "recovery") {
       const marker = items.slice(start, end).reverse().find(
-        (item): item is TaskChatMarkerItem => item.kind === "marker"
-          && (item.label === "Run failed" || item.label === "Usage limit reached"),
+        (item): item is TaskChatMarkerItem => item.kind === "marker" && isRetryableFailureMarker(item),
       );
       // Preserve the retry target separately from the surviving error's text.
       // The renderer still applies the parent's permission and pending state.

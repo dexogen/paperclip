@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
 import { CompanyProvider, useCompany } from "@/context/CompanyContext";
 import { InstanceAccess } from "./InstanceAccess";
+import { i18n } from "@/i18n";
 
 const mocks = vi.hoisted(() => ({
   list: vi.fn(), directory: vi.fn(), detachInflightList: vi.fn(), detachInflightDirectory: vi.fn(),
@@ -21,7 +22,7 @@ vi.mock("@/context/ToastContext", () => ({ useToast: () => mocks }));
 
 const companyA = { id: "company-a", name: "Company A", issuePrefix: "CPA", status: "active" };
 const companyB = { id: "company-b", name: "Company B", issuePrefix: "CPB", status: "active" };
-const user = { id: "admin", name: "Admin", email: "admin@example.com", isInstanceAdmin: true };
+const user = { id: "admin", name: "Admin", email: "admin@example.com", isInstanceAdmin: true, activeCompanyMembershipCount: 22 };
 const membershipA = {
   id: "membership-a", companyId: companyA.id, companyName: companyA.name,
   status: "active", membershipRole: "owner", updatedAt: "2020-01-01T00:00:00Z",
@@ -57,7 +58,8 @@ function button(text: string) {
   return [...container.querySelectorAll("button")].find((element) => element.textContent === text);
 }
 
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   vi.resetAllMocks();
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   localStorage.clear();
@@ -75,6 +77,7 @@ beforeEach(() => {
 
 afterEach(async () => {
   await act(async () => root.unmount());
+  await i18n.changeLanguage("en");
   client.clear();
   container.remove();
 });
@@ -123,5 +126,54 @@ describe("InstanceAccess company directory", () => {
     await renderPage();
     await eventually(() => expect(container.textContent).toContain("Instance admin access is required"));
     expect(mocks.directory).not.toHaveBeenCalled();
+  });
+
+  it("keeps unsaved membership choices and API identifiers when switching Russian and English", async () => {
+    await renderPage();
+    await eventually(() => expect(button("Save organization access")).toBeDefined());
+    const searchInput = container.querySelector<HTMLInputElement>("input")!;
+    const otherCompany = [...container.querySelectorAll("label")].find((label) => label.textContent?.includes("Company B"));
+    const checkbox = otherCompany!.querySelector<HTMLButtonElement>('[role="checkbox"]')!;
+    await act(async () => checkbox.click());
+    expect(checkbox.getAttribute("aria-checked")).toBe("true");
+    const directoryRequests = mocks.directory.mock.calls.length;
+    const accessRequests = mocks.getUserCompanyAccess.mock.calls.length;
+
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector("input")).toBe(searchInput);
+    expect(searchInput.placeholder).toBe("Поиск по имени или электронной почте");
+    expect(container.querySelector("h1")?.textContent).toBe("Доступ к экземпляру");
+    expect(container.textContent).toContain("Активный доступ: 22 организации");
+    expect(container.textContent).toContain("владелец • активен");
+    expect(container.textContent).toContain(user.email);
+    expect(checkbox.getAttribute("aria-checked")).toBe("true");
+    expect(mocks.setBreadcrumbs).toHaveBeenLastCalledWith([
+      { label: "Настройки", href: "/company/settings" },
+      { label: "Настройки экземпляра", href: "/company/settings/instance/general" },
+      { label: "Доступ" },
+    ]);
+
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(button("Save organization access")).toBeDefined();
+    expect(checkbox.getAttribute("aria-checked")).toBe("true");
+    expect(mocks.directory).toHaveBeenCalledTimes(directoryRequests);
+    expect(mocks.getUserCompanyAccess).toHaveBeenCalledTimes(accessRequests);
+    expect(mocks.setUserCompanyAccess).not.toHaveBeenCalled();
+
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await act(async () => button("Сохранить доступ к организациям")!.click());
+    await eventually(() => {
+      expect(mocks.setUserCompanyAccess).toHaveBeenCalledWith(user.id, [companyA.id, companyB.id]);
+      expect(mocks.pushToast).toHaveBeenCalledWith({ title: "Доступ к организациям обновлён", tone: "success" });
+    });
+  });
+
+  it("explains forbidden administration in Russian without requesting the organization directory", async () => {
+    await i18n.changeLanguage("ru");
+    mocks.searchAdminUsers.mockRejectedValue(new ApiError("Forbidden", 403, {}));
+    await renderPage();
+    await eventually(() => expect(container.textContent).toContain("Для управления пользователями нужны права администратора экземпляра."));
+    expect(mocks.directory).not.toHaveBeenCalled();
+    expect(mocks.setUserCompanyAccess).not.toHaveBeenCalled();
   });
 });

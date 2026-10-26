@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 export type {
   AskUserQuestionsAnswer,
   AskUserQuestionsInteraction,
@@ -157,25 +159,26 @@ export function getItemVerdictProgress(args: {
 
 export function buildItemVerdictsSummary(
   interaction: RequestItemVerdictsInteraction,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   const progress = getItemVerdictProgress({
     payload: interaction.payload,
     result: interaction.result,
   });
   if (interaction.status === "answered") {
-    const parts = [`${progress.decided} decided`];
-    if (progress.approved > 0) parts.push(`${progress.approved} approved`);
-    if (progress.rejected > 0) parts.push(`${progress.rejected} rejected`);
-    if (progress.deferred > 0) parts.push(`${progress.deferred} deferred`);
+    const parts = [t("taskChatUi.compactInteraction.decided", { count: progress.decided })];
+    if (progress.approved > 0) parts.push(t("taskChatUi.compactInteraction.summaryApproved", { count: progress.approved }));
+    if (progress.rejected > 0) parts.push(t("taskChatUi.compactInteraction.summaryRejected", { count: progress.rejected }));
+    if (progress.deferred > 0) parts.push(t("taskChatUi.compactInteraction.summaryDeferred", { count: progress.deferred }));
     return parts.join(" · ");
   }
   if (interaction.status === "expired") {
     const outcome = interaction.result?.outcome;
-    if (outcome === "superseded_by_comment") return "Verdicts expired after comment";
-    if (outcome === "stale_target") return "Verdicts expired after target changed";
-    return "Verdicts expired";
+    if (outcome === "superseded_by_comment") return t("taskChatUi.compactInteraction.summaryVerdictsComment");
+    if (outcome === "stale_target") return t("taskChatUi.compactInteraction.summaryVerdictsTarget");
+    return t("taskChatUi.compactInteraction.summaryVerdictsExpired");
   }
-  return `${progress.decided} of ${progress.total} decided`;
+  return t("taskChatUi.compactInteraction.summaryDecidedOf", { count: progress.decided, total: progress.total });
 }
 
 export function getCheckboxConfirmationSelectedLabels(args: {
@@ -219,95 +222,92 @@ export function getRequestConfirmationTargetHref({
 
 export function buildIssueThreadInteractionSummary(
   interaction: IssueThreadInteraction,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
   const administrativeOutcome = interaction.result && "outcome" in interaction.result
     ? interaction.result.outcome
     : null;
-  if (administrativeOutcome === "skipped") return "Skipped interaction";
-  if (administrativeOutcome === "withdrawn") return "Withdrawn interaction";
-  if (administrativeOutcome === "issue_closed") return "Expired when issue closed";
-  if (administrativeOutcome === "addressee_deleted") return "Cancelled when addressee was deleted";
+  if (administrativeOutcome === "skipped") return t("taskChatUi.compactInteraction.summarySkipped");
+  if (administrativeOutcome === "withdrawn") return t("taskChatUi.compactInteraction.summaryWithdrawn");
+  if (administrativeOutcome === "issue_closed") return t("taskChatUi.compactInteraction.summaryIssueClosed");
+  if (administrativeOutcome === "addressee_deleted") return t("taskChatUi.compactInteraction.summaryAddresseeDeleted");
   if (interaction.kind === "suggest_tasks") {
     const count = interaction.payload.tasks.length;
     if (interaction.status === "accepted") {
       const createdCount = interaction.result?.createdTasks?.length ?? 0;
       const skippedCount = interaction.result?.skippedClientKeys?.length ?? 0;
       if (skippedCount > 0) {
-        return `Accepted ${createdCount} of ${count} tasks`;
+        return t("taskChatUi.compactInteraction.summaryAcceptedOf", { count: createdCount, total: count });
       }
-      return createdCount === 1 ? "Accepted 1 task" : `Accepted ${createdCount} tasks`;
+      return t("taskChatUi.compactInteraction.summaryAcceptedTasks", { count: createdCount });
     }
     if (interaction.status === "rejected") {
-      return count === 1 ? "Rejected 1 task" : `Rejected ${count} tasks`;
+      return t("taskChatUi.compactInteraction.summaryRejectedTasks", { count });
     }
-    return count === 1 ? "Suggested 1 task" : `Suggested ${count} tasks`;
+    return t("taskChatUi.compactInteraction.summarySuggestedTasks", { count });
   }
 
   if (interaction.kind === "request_confirmation") {
-    if (interaction.status === "accepted") return "Confirmed request";
+    if (interaction.status === "accepted") return t("taskChatUi.compactInteraction.summaryConfirmed");
     if (interaction.status === "rejected") {
       const rejectLabel = interaction.payload.rejectLabel?.trim();
-      return rejectLabel ? `Selected “${rejectLabel}”` : "Declined request";
+      return rejectLabel ? t("taskChatUi.compactInteraction.summarySelectedLabel", { label: rejectLabel }) : t("taskChatUi.compactInteraction.summaryDeclined");
     }
     if (interaction.status === "expired") {
       const outcome = interaction.result?.outcome;
-      if (outcome === "superseded_by_comment") return "Confirmation expired after comment";
-      if (outcome === "stale_target") return "Confirmation expired after target changed";
-      return "Confirmation expired";
+      if (outcome === "superseded_by_comment") return t("taskChatUi.compactInteraction.summaryConfirmationComment");
+      if (outcome === "stale_target") return t("taskChatUi.compactInteraction.summaryConfirmationTarget");
+      return t("taskChatUi.compactInteraction.summaryConfirmationExpired");
     }
-    return "Requested confirmation";
+    return t("taskChatUi.compactInteraction.summaryRequestedConfirmation");
   }
 
   if (interaction.kind === "request_checkbox_confirmation") {
     const optionCount = interaction.payload.options.length;
     if (interaction.status === "accepted") {
       const selectedCount = interaction.result?.selectedOptionIds?.length ?? 0;
-      if (selectedCount === 0) return "Confirmed with no options selected";
-      return selectedCount === 1
-        ? `Confirmed 1 of ${optionCount} options`
-        : `Confirmed ${selectedCount} of ${optionCount} options`;
+      if (selectedCount === 0) return t("taskChatUi.compactInteraction.summaryNoOptions");
+      return t("taskChatUi.compactInteraction.summaryConfirmedOptions", { count: selectedCount, total: optionCount });
     }
-    if (interaction.status === "rejected") return "Declined selection";
+    if (interaction.status === "rejected") return t("taskChatUi.compactInteraction.summaryDeclinedSelection");
     if (interaction.status === "expired") {
       const outcome = interaction.result?.outcome;
-      if (outcome === "superseded_by_comment") return "Selection expired after comment";
-      if (outcome === "stale_target") return "Selection expired after target changed";
-      return "Selection expired";
+      if (outcome === "superseded_by_comment") return t("taskChatUi.compactInteraction.summarySelectionComment");
+      if (outcome === "stale_target") return t("taskChatUi.compactInteraction.summarySelectionTarget");
+      return t("taskChatUi.compactInteraction.summarySelectionExpired");
     }
-    return optionCount === 1
-      ? "Requested a selection from 1 option"
-      : `Requested a selection from ${optionCount} options`;
+    return t("taskChatUi.compactInteraction.summaryRequestedSelection", { count: optionCount });
   }
 
   if (interaction.kind === "request_item_verdicts") {
-    return buildItemVerdictsSummary(interaction);
+    return buildItemVerdictsSummary(interaction, t);
   }
 
   if (interaction.kind === "connection_intent") {
-    if (interaction.status === "accepted") return `${interaction.payload.serviceName} connected`;
-    if (interaction.status === "rejected") return `${interaction.payload.serviceName} declined`;
+    if (interaction.status === "accepted") return t("taskChatUi.compactInteraction.summaryConnected", { service: interaction.payload.serviceName });
+    if (interaction.status === "rejected") return t("taskChatUi.compactInteraction.summaryConnectionDeclined", { service: interaction.payload.serviceName });
     if (interaction.status === "expired") {
       return interaction.result?.outcome === "superseded"
-        ? `${interaction.payload.serviceName} request superseded`
-        : `${interaction.payload.serviceName} request expired`;
+        ? t("taskChatUi.compactInteraction.summaryConnectionSuperseded", { service: interaction.payload.serviceName })
+        : t("taskChatUi.compactInteraction.summaryConnectionExpired", { service: interaction.payload.serviceName });
     }
-    return `Connect ${interaction.payload.serviceName}`;
+    return t("taskChatUi.compactInteraction.summaryConnect", { service: interaction.payload.serviceName });
   }
 
   const count = interaction.payload.questions.length;
   if (interaction.status === "answered") {
-    return count === 1 ? "Answered 1 question" : `Answered ${count} questions`;
+    return t("taskChatUi.compactInteraction.summaryAnsweredQuestions", { count });
   }
   if (interaction.status === "cancelled") {
-    return count === 1 ? "Cancelled 1 question" : `Cancelled ${count} questions`;
+    return t("taskChatUi.compactInteraction.summaryCancelledQuestions", { count });
   }
   if (interaction.status === "expired") {
     if (interaction.result?.expirationReason === "superseded_by_comment") {
-      return count === 1 ? "Question expired after comment" : "Questions expired after comment";
+      return t("taskChatUi.compactInteraction.summaryQuestionsComment", { count });
     }
-    return count === 1 ? "Question expired" : "Questions expired";
+    return t("taskChatUi.compactInteraction.summaryQuestionsExpired", { count });
   }
-  return count === 1 ? "Asked 1 question" : `Asked ${count} questions`;
+  return t("taskChatUi.compactInteraction.summaryAskedQuestions", { count });
 }
 
 /** Readable model input for a durable answer delivered into a successor run. */

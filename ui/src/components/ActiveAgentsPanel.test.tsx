@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ActiveAgentsPanel, AgentRunCard } from "./ActiveAgentsPanel";
+import { i18n } from "@/i18n";
 
 const mockHeartbeatsApi = vi.hoisted(() => ({
   liveRunsForCompany: vi.fn(),
@@ -115,14 +116,16 @@ function createIssue(id: string, identifier: string, title: string) {
 describe("ActiveAgentsPanel", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     mockHeartbeatsApi.liveRunsForCompany.mockResolvedValue([1, 2, 3, 4, 5].map(createRun));
     mockIssuesApi.get.mockRejectedValue(new Error("Issue not found"));
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
@@ -355,4 +358,62 @@ describe("ActiveAgentsPanel", () => {
     expect(container.querySelectorAll(".motion-safe\\:animate-spin")).toHaveLength(0);
     await act(async () => root.unmount());
   });
+  it("retains run identity, deduplication and explicit captions across EN/RU/EN without additional reads", async () => {
+    const name = "Running <strong>literal</strong>";
+    const entries = [
+      { ...createIssueRun(1, "raw-issue"), agentName: name },
+      { ...createIssueRun(2, "raw-issue"), status: "succeeded" },
+      { ...createRun(3), status: "future_status" },
+      createRun(4), createRun(5), createRun(6),
+    ];
+    mockHeartbeatsApi.liveRunsForCompany.mockImplementation((companyId: string) => Promise.resolve(companyId === "company-1" ? entries : []));
+    mockIssuesApi.get.mockResolvedValue(createIssue("raw-issue", "RAW-7", "Task unavailable <strong>literal</strong>"));
+    const root = createRoot(container);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+    try {
+      await act(async () => root.render(<QueryClientProvider client={client}>
+        <ActiveAgentsPanel companyId="company-1" dedupeLinkedTasks />
+        <ActiveAgentsPanel companyId="company-2" title="Agents" emptyMessage="No recent agent runs." />
+      </QueryClientProvider>));
+      await waitForMicrotaskAssertion(() => expect(container.querySelector('a[href="/issues/RAW-7"]')).not.toBeNull());
+      const cards = [...container.querySelectorAll(".dashboard-agent-card")];
+      const links = cards.map(card => card.querySelector<HTMLAnchorElement>("a")!);
+      const task = container.querySelector<HTMLAnchorElement>('a[href="/issues/RAW-7"]')!;
+      const reads = [mockHeartbeatsApi.liveRunsForCompany.mock.calls.length, mockIssuesApi.get.mock.calls.length];
+      const queryKeys = client.getQueryCache().getAll().map(query => query.queryKey);
+      expect(links.map(link => link.getAttribute("href"))).toEqual([
+        "/agents/agent-1/runs/run-1", "/agents/agent-3/runs/run-3", "/agents/agent-4/runs/run-4", "/agents/agent-5/runs/run-5",
+      ]);
+      links[0].focus();
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect([...container.querySelectorAll("h3")].map(x => x.textContent?.trim())).toEqual(["Агенты", "Agents"]);
+      expect(container.textContent).toContain("No recent agent runs.");
+      expect(container.textContent).toContain("Ещё 1 активный или недавний запуск");
+      expect(links[0].getAttribute("aria-label")).toBe(`${name} — Выполняется. Открыть запуск`);
+      expect(links[1].getAttribute("aria-label")).toContain("future status");
+      expect(container.querySelector('a[href="/issues/RAW-7"]')).toBe(task);
+      expect(task.textContent).toContain("Task unavailable <strong>literal</strong>");
+      expect(task.querySelector("strong")).toBeNull();
+      expect(document.activeElement).toBe(links[0]);
+      expect([...container.querySelectorAll(".dashboard-agent-card")]).toEqual(cards);
+      expect(cards.map(x => x.getAttribute("data-run-status"))).toEqual(["running", "future_status", "running", "running"]);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(links[0].getAttribute("aria-label")).toBe(`${name} — Running. View run`);
+      expect(document.activeElement).toBe(links[0]);
+      expect(client.getQueryCache().getAll().map(query => query.queryKey)).toEqual(queryKeys);
+      expect([mockHeartbeatsApi.liveRunsForCompany.mock.calls.length, mockIssuesApi.get.mock.calls.length]).toEqual(reads);
+      const key = queryKeys.find(key => key.includes("dashboard") && key.includes("company-1"))
+        ?? client.getQueryCache().getAll().find(query => query.state.data === entries)!.queryKey;
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      for (const [count, expected] of [[1, "Ещё 1 активный или недавний запуск"], [2, "Ещё 2 активных или недавних запуска"], [5, "Ещё 5 активных или недавних запусков"], [21, "Ещё 21 активный или недавний запуск"]] as const) {
+        await act(async () => { client.setQueryData(key, Array.from({ length: count + 4 }, (_, index) => ({ ...createRun(index), createdAt: "2026-04-24T12:00:00.000Z" }))); });
+        await waitForMicrotaskAssertion(() => expect(container.textContent).toContain(expected));
+      }
+      expect([mockHeartbeatsApi.liveRunsForCompany.mock.calls.length, mockIssuesApi.get.mock.calls.length]).toEqual(reads);
+    } finally {
+      await act(async () => root.unmount());
+      client.clear();
+    }
+  });
+
 });

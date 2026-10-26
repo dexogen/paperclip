@@ -72,6 +72,12 @@ cover durable ordering, authorization, steering acknowledgements, interrupt
 recovery, and concurrent dispatch. [Composer](../../ui/src/components/task-chat/TaskChatComposer.test.tsx)
 covers drafts and uncertain saves.
 
+Locale regressions preserve the same editor, pending request, selected queued
+message and canonical revision through English/Russian changes. In a live check,
+switch language before sending or steering and verify that the change itself
+does not submit, stop, resume or reorder work. Submit once, then inspect the
+persisted queue receipt separately from the translated acknowledgement.
+
 [Task-detail delivery races](../../ui/src/pages/IssueDetail.test.tsx) cover a
 consumed message whose send response and queue snapshot arrive late. A started
 run's input receipt removes that message from pending, while a separate unsent
@@ -89,6 +95,11 @@ Automated stop coverage is separate:
 [its configuration](../../tests/e2e/playwright-composer-stop.config.ts) and
 [ACP stop/continuation](../../tests/e2e/acp-stop-continuation.spec.ts). Inspect their
 fixture and opt-in prerequisites; skipped native cases are not native proof.
+The deterministic Stop provider lets setup hello finish before the native agents
+reach ready/idle. An owned marker then holds work turns. Evidence must name each
+actual parent, child and resumed run; setup calls cannot satisfy that check.
+[Fixture regressions](../../tests/e2e/fixtures/composer-stop-provider.test.mjs)
+exercise the shell boundary and isolated logs, not real Runner execution.
 The explicit [follow-up/Stop/resume journey](../../tests/runner-e2e/followup-stop-resume-flow.ts)
 requires a later user message before continuation. The
 [database Stop accounting regression](../../server/src/services/native-runtime/native-stop-accounting.integration.test.ts)

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import {
   Check,
@@ -13,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { timeAgo } from "@/lib/timeAgo";
 import { copyTextToClipboard } from "@/lib/clipboard";
 
 export type WorkspaceServiceControlState =
@@ -35,9 +38,11 @@ export type WorkspaceServiceControlEntry = {
   port?: number | null;
   /** Short human-readable failure summary, e.g. "dev exited with code 1, 12s ago". */
   failureDetail?: string | null;
+  failureDisplay?: { kind: "service_failed"; stoppedAt: Date | string | null };
   /** HTTPS exposure lifecycle, intentionally separate from process health. */
   exposureState?: "pending" | "ready" | "failed" | "cleanup_pending" | "removed" | null;
   exposureDetail?: string | null;
+  exposureDisplay?: "workspace_https";
   canStart?: boolean;
 };
 
@@ -64,24 +69,24 @@ function formatServiceUrl(url: string | null | undefined) {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-function statusMeta(entry: WorkspaceServiceControlEntry): { label: string; unhealthy: boolean } {
+function statusMeta(entry: WorkspaceServiceControlEntry, t: TFunction): { label: string; unhealthy: boolean } {
   switch (entry.state) {
     case "provisioning":
-      return { label: "Provisioning…", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.provisioning"), unhealthy: false };
     case "starting":
-      return { label: "Starting…", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.starting"), unhealthy: false };
     case "stopping":
-      return { label: "Stopping…", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.stopping"), unhealthy: false };
     case "restarting":
-      return { label: "Restarting…", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.restarting"), unhealthy: false };
     case "failed":
-      return { label: "Failed", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.failed"), unhealthy: false };
     case "running":
       return entry.healthStatus === "unhealthy"
-        ? { label: "Unhealthy", unhealthy: true }
-        : { label: "Running", unhealthy: false };
+        ? { label: t("projectWorkspacesUi.bar.unhealthy"), unhealthy: true }
+        : { label: t("projectWorkspacesUi.bar.running"), unhealthy: false };
     default:
-      return { label: "Stopped", unhealthy: false };
+      return { label: t("projectWorkspacesUi.bar.stopped"), unhealthy: false };
   }
 }
 
@@ -109,12 +114,13 @@ function StatusIndicator({ entry, className }: { entry: WorkspaceServiceControlE
 }
 
 function CopyUrlButton({ url, disabled }: { url: string; disabled?: boolean }) {
+  const { t } = useTranslation();
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }, []);
-  const copyLabel = copyState === "copied" ? "URL copied" : copyState === "failed" ? "Copy failed" : "Copy URL";
+  const copyLabel = copyState === "copied" ? t("projectWorkspacesUi.bar.urlCopied") : copyState === "failed" ? t("projectWorkspacesUi.bar.copyFailed") : t("projectWorkspacesUi.bar.copyUrl");
   return (
     <Button
       variant="ghost"
@@ -147,11 +153,12 @@ function CopyUrlButton({ url, disabled }: { url: string; disabled?: boolean }) {
 }
 
 function UrlSegment({ entry, compact }: { entry: WorkspaceServiceControlEntry; compact?: boolean }) {
+  const { t } = useTranslation();
   const displayUrl = formatServiceUrl(entry.url) ?? (entry.port ? `:${entry.port}` : null);
   const live = entry.state === "running" && Boolean(entry.url);
 
   if (!displayUrl) {
-    return <span className="font-mono text-xs text-muted-foreground/70">no url</span>;
+    return <span className="font-mono text-xs text-muted-foreground/70">{t("projectWorkspacesUi.bar.noUrl")}</span>;
   }
   return (
     <>
@@ -181,10 +188,10 @@ function UrlSegment({ entry, compact }: { entry: WorkspaceServiceControlEntry; c
           size="icon-xs"
           disabled={!live}
           className="text-muted-foreground hover:text-foreground"
-          title="Open in new tab"
+          title={t("projectWorkspacesUi.bar.openTab")}
         >
           {live ? (
-            <a href={entry.url ?? undefined} target="_blank" rel="noreferrer" aria-label="Open in new tab">
+            <a href={entry.url ?? undefined} target="_blank" rel="noreferrer" aria-label={t("projectWorkspacesUi.bar.openTab")}>
               <ExternalLink className="size-3" />
             </a>
           ) : (
@@ -203,6 +210,7 @@ function ActionSlots({
   entry: Pick<WorkspaceServiceControlEntry, "state" | "canStart">;
   onAction: (action: WorkspaceServiceControlAction) => void;
 }) {
+  const { t } = useTranslation();
   const transitional = isTransitional(entry.state);
   const canStart = entry.canStart ?? true;
 
@@ -211,15 +219,13 @@ function ActionSlots({
       <Button
         variant="cta"
         size="xs"
-        className="w-13 justify-center"
+        className="min-w-13 justify-center"
         disabled={!canStart}
         onClick={() => onAction("start")}
-        aria-label="Start"
-        title="Start"
+        aria-label={t("projectWorkspacesUi.actions.start")}
+        title={t("projectWorkspacesUi.actions.start")}
       >
-        <Play className="size-3" />
-        Start
-      </Button>
+        <Play className="size-3" />{t("projectWorkspacesUi.actions.start")}</Button>
     );
   }
 
@@ -231,8 +237,8 @@ function ActionSlots({
           size="icon-xs"
           disabled={!canStart}
           onClick={() => onAction("start")}
-          aria-label="Start"
-          title="Start"
+          aria-label={t("projectWorkspacesUi.actions.start")}
+          title={t("projectWorkspacesUi.actions.start")}
         >
           <Play className="size-3" />
         </Button>
@@ -241,8 +247,8 @@ function ActionSlots({
           size="icon-xs"
           disabled={!canStart}
           onClick={() => onAction("restart")}
-          aria-label="Restart"
-          title="Restart"
+          aria-label={t("projectWorkspacesUi.actions.restart")}
+          title={t("projectWorkspacesUi.actions.restart")}
           className="border border-border text-foreground"
         >
           <RotateCcw className="size-3" />
@@ -258,8 +264,8 @@ function ActionSlots({
         size="icon-xs"
         disabled={transitional}
         onClick={() => onAction("stop")}
-        aria-label="Stop"
-        title="Stop"
+        aria-label={t("projectWorkspacesUi.actions.stop")}
+        title={t("projectWorkspacesUi.actions.stop")}
         className="border border-border text-foreground"
       >
         <Square className="size-3" />
@@ -269,8 +275,8 @@ function ActionSlots({
         size="icon-xs"
         disabled={transitional || !canStart}
         onClick={() => onAction("restart")}
-        aria-label="Restart"
-        title="Restart"
+        aria-label={t("projectWorkspacesUi.actions.restart")}
+        title={t("projectWorkspacesUi.actions.restart")}
         className="border border-border text-foreground"
       >
         <RotateCcw className="size-3" />
@@ -286,7 +292,8 @@ function ServiceDetail({
   entry: WorkspaceServiceControlEntry;
   onViewLogs?: () => void;
 }) {
-  const detail = entry.exposureDetail ?? (entry.state === "failed" ? entry.failureDetail : null);
+  const { t } = useTranslation();
+  const detail = exposureDetailLabel(entry, t) ?? (entry.state === "failed" ? failureDetailLabel(entry, t) : null);
   if (!detail) return null;
   const exposureFailed = entry.exposureState === "failed" || entry.exposureState === "cleanup_pending";
   return (
@@ -299,9 +306,7 @@ function ServiceDetail({
             type="button"
             onClick={onViewLogs}
             className="font-medium text-foreground underline underline-offset-2 hover:text-foreground/80"
-          >
-            View logs
-          </button>
+          >{t("projectWorkspacesUi.bar.viewLogs")}</button>
         </>
       ) : null}
     </div>
@@ -319,7 +324,8 @@ function SingleServiceBar({
   onViewLogs?: () => void;
   className?: string;
 }) {
-  const meta = statusMeta(entry);
+  const { t } = useTranslation();
+  const meta = statusMeta(entry, t);
   return (
     <div className={cn("flex w-full flex-col items-stretch gap-1 sm:w-auto sm:items-end", className)}>
       <div className="rounded-lg border border-border bg-background">
@@ -356,19 +362,21 @@ function ServicePopoverRow({
   entry: WorkspaceServiceControlEntry;
   onAction: (action: WorkspaceServiceControlAction, serviceKey: string | null) => void;
 }) {
-  const meta = statusMeta(entry);
+  const { t } = useTranslation();
+  const meta = statusMeta(entry, t);
   const displayUrl = formatServiceUrl(entry.url);
   const live = entry.state === "running" && Boolean(entry.url);
   const exposureFailed = entry.exposureState === "failed" || entry.exposureState === "cleanup_pending";
-  const secondary = entry.exposureDetail
-    ? entry.exposureDetail
+  const exposureDetail = exposureDetailLabel(entry, t);
+  const secondary = exposureDetail
+    ? exposureDetail
     : live
       ? displayUrl
     : entry.state === "starting" && entry.port
-      ? `starting on :${entry.port}…`
+      ? t("projectWorkspacesUi.bar.startingPort", { port: entry.port })
       : entry.state === "failed" && entry.failureDetail
-        ? entry.failureDetail
-        : `${meta.label.toLowerCase().replace(/…$/, "")}${entry.port ? ` · :${entry.port}` : ""}`;
+        ? failureDetailLabel(entry, t)
+        : entry.port ? t("projectWorkspacesUi.bar.statusPort", { status: meta.label.toLowerCase().replace(/…$/, ""), port: entry.port }) : meta.label.toLowerCase().replace(/…$/, "");
 
   return (
     <div className="flex items-center gap-3 py-2.5">
@@ -423,6 +431,7 @@ function MultiServiceBar({
   defaultServicesOpen?: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(defaultServicesOpen ?? false);
   const runningCount = services.filter((entry) => entry.state === "running").length;
   const anyTransitional = services.some((entry) => isTransitional(entry.state));
@@ -432,7 +441,7 @@ function MultiServiceBar({
 
   const aggregateEntry: WorkspaceServiceControlEntry = {
     key: "__all__",
-    name: "All services",
+    name: t("projectWorkspacesUi.bar.allServices"),
     state: anyTransitional
       ? "starting"
       : anyFailed
@@ -454,16 +463,16 @@ function MultiServiceBar({
               <button
                 type="button"
                 className="flex h-full items-center gap-2 rounded-l-lg pr-1 text-xs font-medium text-foreground hover:bg-accent"
-                aria-label={`${runningCount} of ${services.length} services running — show services`}
+                aria-label={t("projectWorkspacesUi.bar.showServices", { running: runningCount, total: services.length })}
               >
                 <StatusIndicator entry={aggregateEntry} />
-                <span className="whitespace-nowrap">{runningCount}/{services.length} running</span>
+                <span className="whitespace-nowrap">{t("projectWorkspacesUi.bar.runningCount", { running: runningCount, total: services.length })}</span>
                 <ChevronDown className="size-3 text-muted-foreground" />
               </button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-96 p-0" onOpenAutoFocus={(event) => event.preventDefault()}>
               <div className="px-4 pb-1 pt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Services · {services.length}
+                {t("projectWorkspacesUi.bar.servicesCount", { count: services.length })}
               </div>
               <div className="divide-y divide-border px-4">
                 {services.map((entry) => (
@@ -471,18 +480,16 @@ function MultiServiceBar({
                 ))}
               </div>
               <div className="flex items-center gap-1 border-t border-border px-4 py-2">
-                <Button variant="ghost" size="xs" onClick={() => onAction("start", null)}>Start all</Button>
-                <Button variant="ghost" size="xs" onClick={() => onAction("stop", null)}>Stop all</Button>
-                <Button variant="ghost" size="xs" onClick={() => onAction("restart", null)}>Restart all</Button>
+                <Button variant="ghost" size="xs" onClick={() => onAction("start", null)}>{t("projectWorkspacesUi.bar.startAll")}</Button>
+                <Button variant="ghost" size="xs" onClick={() => onAction("stop", null)}>{t("projectWorkspacesUi.bar.stopAll")}</Button>
+                <Button variant="ghost" size="xs" onClick={() => onAction("restart", null)}>{t("projectWorkspacesUi.bar.restartAll")}</Button>
                 {onManageServices ? (
                   <Button
                     variant="link"
                     size="xs"
                     className="ml-auto text-muted-foreground"
                     onClick={onManageServices}
-                  >
-                    Manage in Services tab →
-                  </Button>
+                  >{t("projectWorkspacesUi.bar.manage")}</Button>
                 ) : null}
               </div>
             </PopoverContent>
@@ -495,7 +502,7 @@ function MultiServiceBar({
                 <UrlSegment entry={primary} />
               </>
             ) : (
-              <span className="font-mono text-xs text-muted-foreground/70">no url</span>
+              <span className="font-mono text-xs text-muted-foreground/70">{t("projectWorkspacesUi.bar.noUrl")}</span>
             )}
           </div>
           <div className="mx-3 hidden h-5 w-px bg-border sm:block" />
@@ -549,4 +556,22 @@ export function WorkspaceServiceControlBar({
       className={className}
     />
   );
+}
+
+function failureDetailLabel(entry: WorkspaceServiceControlEntry, t: TFunction) {
+  if (entry.failureDisplay?.kind !== "service_failed") return entry.failureDetail;
+  return entry.failureDisplay.stoppedAt
+    ? t("projectWorkspacesUi.runtime.serviceFailedAt", { time: timeAgo(entry.failureDisplay.stoppedAt, t) })
+    : t("projectWorkspacesUi.runtime.serviceFailed");
+}
+
+function exposureDetailLabel(entry: WorkspaceServiceControlEntry, t: TFunction) {
+  if (entry.exposureDisplay !== "workspace_https") return entry.exposureDetail;
+  switch (entry.exposureState) {
+    case "pending": return t("projectWorkspacesUi.runtime.httpsProvisioning");
+    case "ready": return t("projectWorkspacesUi.runtime.httpsReady");
+    case "failed": return `${t("projectWorkspacesUi.runtime.httpsUnavailable")} · ${t("projectWorkspacesUi.runtime.httpsUnavailableHint")}`;
+    case "cleanup_pending": return `${t("projectWorkspacesUi.runtime.httpsCleanup")} · ${t("projectWorkspacesUi.runtime.httpsCleanupHint")}`;
+    default: return entry.exposureDetail;
+  }
 }

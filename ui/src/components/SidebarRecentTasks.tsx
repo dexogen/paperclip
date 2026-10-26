@@ -1,3 +1,5 @@
+import { localizeOnboardingTaskTitle } from "@/lib/onboarding-first-task-localization";
+import { t, useTranslation, i18n } from "@/i18n";
 import { useState, type FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Archive, MoreHorizontal, Pencil, RefreshCw } from "lucide-react";
@@ -63,7 +65,14 @@ function setRestartWakeRetryPending(storageKey: string | null, issueId: string, 
   }
 }
 
+class RecentTaskActionError extends Error {
+  constructor(readonly code: "wakeSkipped" | "parentPause") {
+    super(code === "wakeSkipped" ? i18n.getFixedT("en")("surfacesGap.recent.wakeSkipped") : i18n.getFixedT("en")("surfacesGap.recent.parentPause"));
+  }
+}
+
 function errorMessage(error: unknown, fallback: string) {
+  if (error instanceof RecentTaskActionError) return error.code === "wakeSkipped" ? t("surfacesGap.recent.wakeSkipped") : t("surfacesGap.recent.parentPause");
   return error instanceof Error && error.message.trim() ? error.message : fallback;
 }
 
@@ -102,6 +111,7 @@ function RecentTasksList({
   liveIssueIds: ReadonlySet<string>;
   rail: boolean;
 }) {
+  useTranslation();
   const { entries, storageKey } = useRecentTasks({ companyId, userId });
   const queryClient = useQueryClient();
   const toastActions = useOptionalToastActions();
@@ -140,11 +150,11 @@ function RecentTasksList({
       if (storageKey) updateRecentTaskSnapshots(storageKey, companyId, [updated]);
       await refreshIssueQueries(renameEntry.id);
       setRenameEntry(null);
-      toastActions?.pushToast({ title: "Task renamed", tone: "success" });
+      toastActions?.pushToast({ title: t("surfacesGap.recent.renamed"), tone: "success" });
     } catch (error) {
       toastActions?.pushToast({
-        title: "Task rename failed",
-        body: errorMessage(error, "Unable to rename this task."),
+        title: t("surfacesGap.recent.renameFailed"),
+        body: errorMessage(error, t("surfacesGap.recent.renameError")),
         tone: "error",
       });
     } finally {
@@ -160,11 +170,11 @@ function RecentTasksList({
       await queryClient.invalidateQueries({
         queryKey: queryKeys.sidebarBadges(companyId),
       });
-      toastActions?.pushToast({ title: "Task archived from inbox", tone: "success" });
+      toastActions?.pushToast({ title: t("surfacesGap.recent.archived"), tone: "success" });
     } catch (error) {
       toastActions?.pushToast({
-        title: "Task archive failed",
-        body: errorMessage(error, "Unable to archive this task from the inbox."),
+        title: t("surfacesGap.recent.archiveFailed"),
+        body: errorMessage(error, t("surfacesGap.recent.archiveError")),
         tone: "error",
       });
     } finally {
@@ -194,13 +204,13 @@ function RecentTasksList({
             restartIssue.companyId,
           );
           if (!("id" in wakeResult)) {
-            throw new Error(wakeResult.message ?? "The assignee wake was skipped.");
+            throw wakeResult.message == null ? new RecentTaskActionError("wakeSkipped") : new Error(wakeResult.message);
           }
         }
         setRestartWakeRetryPending(restartRetryStorageKey, entry.id, false);
-        toastActions?.pushToast({ title: "Task restarted", tone: "success" });
+        toastActions?.pushToast({ title: t("surfacesGap.recent.restarted"), tone: "success" });
       } else if (state.activePauseHold) {
-        throw new Error("This task is paused by a parent task. Restart it from the pause root.");
+        throw new RecentTaskActionError("parentPause");
       } else if (readRestartWakeRetryIssueIds(restartRetryStorageKey).has(entry.id)) {
         const restartIssue = await issuesApi.get(entry.id);
         if (restartIssue.assigneeAgentId) {
@@ -215,18 +225,18 @@ function RecentTasksList({
             restartIssue.companyId,
           );
           if (!("id" in wakeResult)) {
-            throw new Error(wakeResult.message ?? "The assignee wake was skipped.");
+            throw wakeResult.message == null ? new RecentTaskActionError("wakeSkipped") : new Error(wakeResult.message);
           }
         }
         setRestartWakeRetryPending(restartRetryStorageKey, entry.id, false);
-        toastActions?.pushToast({ title: "Task restarted", tone: "success" });
+        toastActions?.pushToast({ title: t("surfacesGap.recent.restarted"), tone: "success" });
       } else {
         await issuesApi.createTreeHold(entry.id, {
           mode: "pause",
           reason: "Paused from Recent Tasks.",
           releasePolicy: { strategy: "manual" },
         });
-        toastActions?.pushToast({ title: "Task paused", tone: "success" });
+        toastActions?.pushToast({ title: t("surfacesGap.recent.paused"), tone: "success" });
       }
       await queryClient.invalidateQueries({
         queryKey: ["issues", "tree-control-state", entry.id],
@@ -234,8 +244,8 @@ function RecentTasksList({
       await queryClient.invalidateQueries({ queryKey: queryKeys.issues.summaries(companyId) });
     } catch (error) {
       toastActions?.pushToast({
-        title: "Task pause update failed",
-        body: errorMessage(error, "Unable to pause or restart this task."),
+        title: t("surfacesGap.recent.pauseFailed"),
+        body: errorMessage(error, t("surfacesGap.recent.pauseError")),
         tone: "error",
       });
     } finally {
@@ -245,15 +255,15 @@ function RecentTasksList({
 
   return (
     <>
-      <SidebarSection label="Recent Tasks">
+      <SidebarSection label={t("surfacesGap.recent.title")}>
         {entries.map((entry) => (
           <div key={entry.id} className="sidebar-action-row group/recent-task relative">
             <SidebarNavItem
               to={`/issues/${entry.id}`}
-              label={entry.title}
+              label={localizeOnboardingTaskTitle({ title: entry.title, originKind: entry.originKind }, i18n.t)}
               trailing={entry.status === "in_review" && entry.externalConversationState === "waiting"
-                ? <span className="text-xs text-muted-foreground">Idle</span> : undefined}
-              trailingLabel={entry.status === "in_review" && entry.externalConversationState === "waiting" ? "Idle" : undefined}
+                ? <span className="text-xs text-muted-foreground">{t("surfacesGap.recent.idle")}</span> : undefined}
+              trailingLabel={entry.status === "in_review" && entry.externalConversationState === "waiting" ? t("surfacesGap.recent.idle") : undefined}
               className={rail ? undefined : "sidebar-action-link pointer-coarse:pr-8"}
               liveCount={liveIssueIds.has(entry.id) ? 1 : undefined}
             />
@@ -264,7 +274,7 @@ function RecentTasksList({
                     type="button"
                     variant="ghost"
                     size="icon-xs"
-                    aria-label={`More actions for ${entry.title}`}
+                    aria-label={t("surfacesGap.recent.actions", { name: localizeOnboardingTaskTitle({ title: entry.title, originKind: entry.originKind }, i18n.t) })}
                     className="sidebar-action-menu absolute right-2 top-(--pct-50) z-10 -translate-y-(--pct-50) text-muted-foreground pointer-events-none opacity-0 transition-opacity hover:bg-sidebar-accent dark:hover:bg-sidebar-accent hover:text-foreground focus-visible:pointer-events-auto focus-visible:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:before:hidden group-hover/recent-task:pointer-events-auto group-hover/recent-task:opacity-100 group-focus-within/recent-task:pointer-events-auto group-focus-within/recent-task:opacity-100 data-[state=open]:pointer-events-auto data-[state=open]:bg-sidebar-accent data-[state=open]:text-foreground data-[state=open]:opacity-100"
                   >
                     <MoreHorizontal aria-hidden="true" />
@@ -280,7 +290,7 @@ function RecentTasksList({
                     onSelect={() => beginRename(entry)}
                   >
                     <Pencil aria-hidden="true" />
-                    Rename
+                    {t("surfacesGap.recent.rename")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className={RECENT_TASK_MENU_ITEM_CLASS}
@@ -288,7 +298,7 @@ function RecentTasksList({
                     onSelect={() => void archiveTask(entry)}
                   >
                     <Archive aria-hidden="true" />
-                    Archive
+                    {t("surfacesGap.recent.archive")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className={RECENT_TASK_MENU_ITEM_CLASS}
@@ -296,7 +306,7 @@ function RecentTasksList({
                     onSelect={() => void toggleTaskPause(entry)}
                   >
                     <RefreshCw aria-hidden="true" />
-                    Pause/Restart
+                    {t("surfacesGap.recent.pauseRestart")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -314,12 +324,12 @@ function RecentTasksList({
         <DialogContent className="sm:max-w-md">
           <form className="grid gap-4" onSubmit={(event) => void submitRename(event)}>
             <DialogHeader>
-              <DialogTitle>Rename task</DialogTitle>
-              <DialogDescription>Choose a short, clear name for this task.</DialogDescription>
+              <DialogTitle>{t("surfacesGap.recent.renameTitle")}</DialogTitle>
+              <DialogDescription>{t("surfacesGap.recent.renameHint")}</DialogDescription>
             </DialogHeader>
             <Input
               autoFocus
-              aria-label="Task name"
+              aria-label={t("surfacesGap.recent.taskName")}
               value={renameValue}
               disabled={pendingAction === "rename"}
               onChange={(event) => setRenameValue(event.target.value)}
@@ -331,13 +341,13 @@ function RecentTasksList({
                 disabled={pendingAction === "rename"}
                 onClick={() => setRenameEntry(null)}
               >
-                Cancel
+                {t("surfacesGap.recent.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={pendingAction === "rename" || !renameValue.trim()}
               >
-                {pendingAction === "rename" ? "Saving..." : "Save"}
+                {pendingAction === "rename" ? t("surfacesGap.recent.saving") : t("surfacesGap.recent.save")}
               </Button>
             </DialogFooter>
           </form>

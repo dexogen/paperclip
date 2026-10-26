@@ -143,6 +143,12 @@ remaining operations before qualifying the whole capability.
 Gaps: General company search and dedicated task search are different result sets; use
 the appropriate one.
 
+Unicode task matching uses the same prepared search helper in these two service
+paths. Real database tests cover company/read conditions and hidden/deleted
+content, but do not qualify the native agent surface or replace its credential
+and run-context checks. Unsupported database collations return HTTP 503 with
+`unicode_search_unavailable`; see [search requirements](../../doc/SEARCH.md#unicode-task-queries).
+
 
 ## `toasts`
 

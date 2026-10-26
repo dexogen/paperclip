@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { Trans, i18n, t, t as currentT, useTranslation } from "@/i18n";
 import { StepHeader } from "./ConnectionSetupHeader";
 import { GoogleWorkspaceServicesDialog } from "./GoogleWorkspaceServices";
 import type { GoogleWorkspaceServiceSelection } from "@paperclipai/shared";
@@ -68,6 +70,7 @@ import { RadioCardGroup } from "@/components/ui/radio-card";
 import { ApiError } from "@/api/client";
 import { toolsApi } from "@/api/tools";
 import { agentsApi } from "@/api/agents";
+import { githubConnectionMethodLabel, githubConnectionFieldLabel, githubConnectionFieldHelp } from "@/lib/github-connection-display";
 import { appCopyFor, credentialFieldLabel } from "@/lib/app-gallery-copy";
 import { AgentMultiSelect, type AgentMultiSelectOption } from "@/components/AgentMultiSelect";
 import { InlineBanner } from "@/components/InlineBanner";
@@ -81,7 +84,7 @@ import { cn } from "@/lib/utils";
 import { useCopyAction } from "@/lib/use-copy-action";
 import { resolveAuthorizationTarget } from "@/lib/authorizationUrl";
 import { navigateTopLevel } from "@/lib/browserNavigation";
-import { prepareOAuthNavigation, savePendingCloudHandoff } from "@/lib/oauthHandoff";
+import { OAuthHandoffError, prepareOAuthNavigation, savePendingCloudHandoff } from "@/lib/oauthHandoff";
 import { redactUrlSecrets } from "@/lib/redact-url-secrets";
 import { askFirstCatalogEntryIdsFor } from "./connection-defaults";
 import { AppLogo } from "@/pages/apps/AppLogo";
@@ -183,14 +186,77 @@ function githubRecoveryUrl(value: string | null): string | null {
   }
 }
 
-function oauthCallbackErrorMessage(outcome: string | null, code: string | null): string {
+type ConnectionSetupErrorCode = "callbackDenied" | "githubAccessRequired" | "callbackIncomplete" | "popupBlocked" | "popupClosed" | "preserveFailed" | "startFailed" | "cancelled" | "incomplete" | "githubPopupClosed" | "finishInWindow" | "confirmFailed" | "enrollmentTab" | "enrollmentLinkMissing" | "cloudUnreachable" | "expired" | "lookupFailed" | "existingFailed";
+
+class ConnectionSetupError extends Error {
+  constructor(readonly code: ConnectionSetupErrorCode) {
+    super(setupErrorCodeText(code, i18n.getFixedT("en")));
+  }
+}
+
+function setupFailure(cause: unknown, fallback: ConnectionSetupErrorCode): string | ConnectionSetupError | OAuthHandoffError {
+  return cause instanceof ConnectionSetupError || cause instanceof OAuthHandoffError ? cause : cause instanceof Error ? cause.message : new ConnectionSetupError(fallback);
+}
+
+function setupFailureText(failure: string | ConnectionSetupError | OAuthHandoffError | null, t: TFunction): string | null {
+  return failure instanceof ConnectionSetupError ? setupErrorCodeText(failure.code, t)
+    : failure instanceof OAuthHandoffError ? handoffFailureText(failure, t) : failure;
+}
+
+function handoffFailureText(failure: OAuthHandoffError, t: TFunction): string {
+  if (failure.display?.kind === "handoff") {
+    switch (failure.display.code) {
+      case "invalid_handoff": return t("githubSetupUi.handoff.invalid_handoff");
+      case "expired": return t("githubSetupUi.handoff.expired");
+      case "forbidden": return t("githubSetupUi.handoff.forbidden");
+      case "unavailable": return t("githubSetupUi.handoff.unavailable");
+      case "invalid_provider_address": return t("githubSetupUi.handoff.invalid_provider_address");
+    }
+  }
+  if (failure.display?.kind === "authorization") {
+    switch (failure.display.code) {
+      case "missing": return t("githubSetupUi.authorization.missing");
+      case "malformed": return t("githubSetupUi.authorization.malformed");
+      case "unsupported_scheme": return t("githubSetupUi.authorization.unsupported_scheme");
+      case "insecure_transport": return t("githubSetupUi.authorization.insecure_transport");
+      case "embedded_credentials": return t("githubSetupUi.authorization.embedded_credentials");
+      case "fragment": return t("githubSetupUi.authorization.fragment");
+    }
+  }
+  return failure.message;
+}
+
+function setupErrorCodeText(code: ConnectionSetupErrorCode, t: TFunction): string {
+  switch (code) {
+    case "callbackDenied": return t("githubSetupUi.errors.callbackDenied");
+    case "githubAccessRequired": return t("githubSetupUi.errors.githubAccessRequired");
+    case "callbackIncomplete": return t("githubSetupUi.errors.callbackIncomplete");
+    case "popupBlocked": return t("githubSetupUi.errors.popupBlocked");
+    case "popupClosed": return t("githubSetupUi.errors.popupClosed");
+    case "preserveFailed": return t("githubSetupUi.errors.preserveFailed");
+    case "startFailed": return t("githubSetupUi.errors.startFailed");
+    case "cancelled": return t("githubSetupUi.errors.cancelled");
+    case "incomplete": return t("githubSetupUi.errors.incomplete");
+    case "githubPopupClosed": return t("githubSetupUi.errors.githubPopupClosed");
+    case "finishInWindow": return t("githubSetupUi.errors.finishInWindow");
+    case "confirmFailed": return t("githubSetupUi.errors.confirmFailed");
+    case "enrollmentTab": return t("githubSetupUi.errors.enrollmentTab");
+    case "enrollmentLinkMissing": return t("githubSetupUi.errors.enrollmentLinkMissing");
+    case "cloudUnreachable": return t("githubSetupUi.errors.cloudUnreachable");
+    case "expired": return t("githubSetupUi.errors.expired");
+    case "lookupFailed": return t("githubSetupUi.errors.lookupFailed");
+    case "existingFailed": return t("githubSetupUi.errors.existingFailed");
+  }
+}
+
+function oauthCallbackErrorMessage(outcome: string | null, code: string | null): ConnectionSetupError {
   if (outcome === "denied") {
-    return "Authorization was cancelled or declined. Your saved connection was not changed.";
+    return new ConnectionSetupError("callbackDenied");
   }
   if (code === "github_installation_required") {
-    return "GitHub access is required. Install Paperclip and grant at least one repository, then try again.";
+    return new ConnectionSetupError("githubAccessRequired");
   }
-  return "Authorization did not complete. Your saved connection is still here, so you can try again.";
+  return new ConnectionSetupError("callbackIncomplete");
 }
 
 const ROUTE_STAGE_BY_STEP: Partial<Record<Step, string>> = {
@@ -345,7 +411,6 @@ type AppAccessSelection = "all_agents" | { agentIds: string[] };
 // PAP-659: identity and agent reach are no longer a step. They are resolved to
 // a default, stated in one line above the primary action, and changed either in
 // the Advanced disclosure on this screen or on the Permissions tab afterwards.
-const STEP_LABELS = ["Pick app", "Add your key"];
 const STEP_INDEX: Record<Exclude<Step, "success">, number> = {
   gallery: 0,
   key: 1,
@@ -353,12 +418,10 @@ const STEP_INDEX: Record<Exclude<Step, "success">, number> = {
 const SELECTED_APP_STEP_INDEX: Record<Exclude<Step, "gallery" | "success">, number> = {
   key: 0,
 };
-const ZAPIER_STEP_LABELS = ["Add MCP URL"];
 // Waiting for browser sign-in happens *inside* the flow's last step, so the
 // waiting screen reuses the step model of the flow that opened it. It must not
 // append a trailing step the flow never lands on: a stepper that grows from one
 // dot to two the moment you press Connect reads as a step you missed.
-const OAUTH_SIGN_IN_STEP_LABELS = ["Sign in"];
 
 /**
  * Which identity a fresh connection should default to (PAP-17835).
@@ -582,6 +645,7 @@ export interface ConnectionSetupFlowProps {
  * here so a provider can never drift between entry points.
  */
 export function ConnectionSetupFlow(props: ConnectionSetupFlowProps = {}) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const params = useParams<{ appKey?: string }>();
   const { selectedCompanyId } = useCompany();
@@ -611,17 +675,17 @@ export function ConnectionSetupFlow(props: ConnectionSetupFlowProps = {}) {
   const gatedDefinitions = [persistedDefinition, requestedDefinition].filter(app => app?.experimentalFeatureKey);
   const provider = source || existing.data?.config?.sourceTemplateKey;
   const method = searchParams.get("method") || existing.data?.config?.connectionMethodKey;
-  if (lookup && existing.isPending) return <p className="p-6 text-sm text-muted-foreground">Loading connection…</p>;
-  if (lookup && existing.isError) return <div role="alert" className="space-y-3 p-6"><p>Could not load this connection. Your saved access and credentials have not changed.</p><Button variant="outline" onClick={() => void existing.refetch()}>Try again</Button></div>;
+  if (lookup && existing.isPending) return <p className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.loading")}</p>;
+  if (lookup && existing.isError) return <div role="alert" className="space-y-3 p-6"><p>{t("githubSetupUi.lookup.loadFailed")}</p><Button variant="outline" onClick={() => void existing.refetch()}>{t("githubSetupUi.retry")}</Button></div>;
   if (gatedDefinitions.length) {
-    if (!availability.loaded) return <p role="status" className="p-6 text-sm text-muted-foreground">Loading connection settings…</p>;
-    if (availability.failed) return <p role="alert" className="p-6 text-destructive text-sm">Could not load connector availability. Refresh to try again.</p>;
+    if (!availability.loaded) return <p role="status" className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.settingsLoading")}</p>;
+    if (availability.failed) return <p role="alert" className="p-6 text-destructive text-sm">{t("githubSetupUi.lookup.availabilityFailed")}</p>;
     const disabled = gatedDefinitions.find(app => !availability.enabled(app));
-    if (disabled) return <p role="status" className="p-6 text-sm text-muted-foreground">{disabled.name} is not available on this instance.</p>;
+    if (disabled) return <p role="status" className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.unavailable", { name: disabled.name })}</p>;
   }
   if (isMemoryConnectorId(provider) && !(existing.data && existing.data.status !== "draft" && existing.data.config?.sourceTemplateKey === provider)) {
-    if (!memory.loaded) return <p className="p-6 text-sm text-muted-foreground">Loading connection settings…</p>;
-    if (!memory.enabled) return <p role="status" className="p-6 text-sm text-muted-foreground">Enable memory connectors in Settings → Experimental to set up this connection.</p>;
+    if (!memory.loaded) return <p className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.settingsLoading")}</p>;
+    if (!memory.enabled) return <p role="status" className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.memoryDisabled")}</p>;
   }
   if (!props.byoOnly && (props.credentialSource ?? "paperclip_vault") === "paperclip_vault"
     && isRemoteMcpConnectorId(provider) && (!method || isRemoteMcpConnectorMethod(provider, method))) {
@@ -653,6 +717,7 @@ function StandardConnectionSetupFlow({
   onCancel,
   renderCredentialStep,
 }: ConnectionSetupFlowProps = {}) {
+  const { t } = useTranslation();
   const workspaceSelectionRef = useRef<GoogleWorkspaceServiceSelection | null>(null);
   const [workspaceConsent, setWorkspaceConsent] = useState<(() => void) | null>(null);
   const [workspaceConnection, setWorkspaceConnection] = useState<ToolConnection | undefined>();
@@ -779,7 +844,7 @@ function StandardConnectionSetupFlow({
   const [oauthPhase, setOAuthPhase] = useState<OAuthConnectPhase>(
     resumingAfterOAuthFailure ? "error" : "entry",
   );
-  const [oauthError, setOAuthError] = useState<string | null>(() => {
+  const [oauthError, setOAuthError] = useState<string | ConnectionSetupError | OAuthHandoffError | null>(() => {
     if (!resumingAfterOAuthFailure) return null;
     return oauthCallbackErrorMessage(oauthCallbackOutcome, oauthCallbackCode);
   });
@@ -804,7 +869,7 @@ function StandardConnectionSetupFlow({
     existingConnections.length > 0 && Boolean(onUseExisting),
   );
   const [existingConnectionPendingId, setExistingConnectionPendingId] = useState<string | null>(null);
-  const [existingConnectionError, setExistingConnectionError] = useState<string | null>(null);
+  const [existingConnectionError, setExistingConnectionError] = useState<string | ConnectionSetupError | OAuthHandoffError | null>(null);
   const [unavailableReconnectId, setUnavailableReconnectId] = useState<string | null>(null);
 
   const reserveOAuthPopup = useCallback(() => {
@@ -825,7 +890,7 @@ function StandardConnectionSetupFlow({
     const popup = oauthPopupRef.current;
     if (!popup || popup.closed) {
       setOAuthPhase("error");
-      setOAuthError("Paperclip couldn’t open the sign-in window. Open sign-in in a new tab to continue.");
+      setOAuthError(new ConnectionSetupError("popupBlocked"));
       onPhaseChange?.("needs_retry");
       return;
     }
@@ -847,7 +912,7 @@ function StandardConnectionSetupFlow({
     const timer = window.setInterval(() => {
       if (!oauthPopupRef.current?.closed) return;
       setOAuthPhase("error");
-      setOAuthError("The sign-in window closed. If authorization did not finish, try again.");
+      setOAuthError(new ConnectionSetupError("popupClosed"));
       setAuthorizationFallbackUrl(null);
       onPhaseChange?.("needs_retry");
     }, 1_000);
@@ -865,7 +930,7 @@ function StandardConnectionSetupFlow({
       if (target.kind === "reauthentication") {
         const destination = host === "dialog" ? oauthPopupRef.current : window;
         if (!destination || destination.closed || !start.handoff) {
-          throw new Error("Paperclip couldn’t preserve this sign-in while refreshing your account.");
+          throw new ConnectionSetupError("preserveFailed");
         }
         savePendingCloudHandoff(start.handoff.session, destination.sessionStorage);
         setOAuthPhase("starting");
@@ -877,7 +942,7 @@ function StandardConnectionSetupFlow({
     } catch (error) {
       if (controller.signal.aborted) return;
       setOAuthPhase("error");
-      setOAuthError(error instanceof Error ? error.message : "Paperclip couldn’t start secure sign-in. Try again.");
+      setOAuthError(setupFailure(error, "startFailed"));
       onPhaseChange?.("needs_retry");
     } finally {
       if (oauthHandoffAbortRef.current === controller) oauthHandoffAbortRef.current = null;
@@ -898,13 +963,13 @@ function StandardConnectionSetupFlow({
       }
       if (outcome === "declined") {
         setOAuthPhase("error");
-        setOAuthError("Authorization was cancelled. You can try again.");
+        setOAuthError(new ConnectionSetupError("cancelled"));
         onPhaseChange?.("needs_retry");
         return;
       }
       if (outcome !== "failed") return;
       setOAuthPhase("error");
-      setOAuthError("Authorization did not complete. Try again when you’re ready.");
+      setOAuthError(new ConnectionSetupError("incomplete"));
     };
     window.addEventListener("message", receiveOAuthOutcome);
     return () => window.removeEventListener("message", receiveOAuthOutcome);
@@ -923,7 +988,7 @@ function StandardConnectionSetupFlow({
       if (!popup || popup.closed) {
         setDialogOAuthConnectionId(null);
         setOAuthPhase("error");
-        setOAuthError("The sign-in window closed. Try again to finish connecting GitHub.");
+        setOAuthError(new ConnectionSetupError("githubPopupClosed"));
         return;
       }
       let returned: URL;
@@ -932,7 +997,7 @@ function StandardConnectionSetupFlow({
       if (returned.searchParams.has("oauth")) {
         setDialogOAuthConnectionId(null);
         setOAuthPhase("error");
-        setOAuthError("Authorization did not complete. Finish setup in the sign-in window or try again.");
+        setOAuthError(new ConnectionSetupError("finishInWindow"));
         return;
       }
       if (returned.searchParams.get("success") !== "1") return;
@@ -948,7 +1013,7 @@ function StandardConnectionSetupFlow({
         if (!cancelled) {
           setDialogOAuthConnectionId(null);
           setOAuthPhase("error");
-          setOAuthError("Could not confirm the connection. Try again.");
+          setOAuthError(new ConnectionSetupError("confirmFailed"));
         }
       } finally { checking = false; }
     }, 1000);
@@ -1037,11 +1102,11 @@ function StandardConnectionSetupFlow({
   useEffect(() => {
     if (host !== "page") return;
     setBreadcrumbs([
-      { label: "Connectors", href: "/apps" },
-      { label: vercelConnectMode ? "Vercel Connect" : byoOnly ? "Connect your own tool" : "Connect an app" },
+      { label: t("githubSetupUi.breadcrumbs.connectors"), href: "/apps" },
+      { label: vercelConnectMode ? "Vercel Connect" : byoOnly ? t("githubSetupUi.breadcrumbs.custom") : t("githubSetupUi.breadcrumbs.app") },
     ]);
     return () => setBreadcrumbs([]);
-  }, [byoOnly, host, setBreadcrumbs, vercelConnectMode]);
+  }, [byoOnly, host, setBreadcrumbs, vercelConnectMode, t]);
 
   const galleryQuery = useQuery({
     queryKey: queryKeys.apps.gallery(selectedCompanyId ?? "__none__"),
@@ -1112,7 +1177,7 @@ function StandardConnectionSetupFlow({
       && !entryAdvertisesManagedConnector
     ),
   });
-  const [connectorEnrollmentError, setConnectorEnrollmentError] = useState<string | null>(null);
+  const [connectorEnrollmentError, setConnectorEnrollmentError] = useState<string | ConnectionSetupError | OAuthHandoffError | null>(null);
   const closeEnrollmentPopup = useCallback(() => {
     oauthPopupRef.current?.close();
     oauthPopupRef.current = null;
@@ -1130,7 +1195,7 @@ function StandardConnectionSetupFlow({
     const target = resolveAuthorizationTarget(verificationUrl);
     if (!target.ok) {
       closeEnrollmentPopup();
-      setConnectorEnrollmentError(target.message);
+      setConnectorEnrollmentError(target.displayCode ? new OAuthHandoffError(target.message, "invalid_handoff", { kind: "authorization", code: target.displayCode }) : target.message);
       return;
     }
     if (host === "dialog") {
@@ -1140,7 +1205,7 @@ function StandardConnectionSetupFlow({
         popup.location.assign(target.url);
         popup.focus();
       } else {
-        setConnectorEnrollmentError("Open authorization in a new tab to continue.");
+        setConnectorEnrollmentError(new ConnectionSetupError("enrollmentTab"));
       }
       return;
     }
@@ -1169,7 +1234,7 @@ function StandardConnectionSetupFlow({
     onSuccess: (status) => {
       if (!status.verificationUrl) {
         closeEnrollmentPopup();
-        setConnectorEnrollmentError("Paperclip Cloud did not return an enrollment link. Try again.");
+        setConnectorEnrollmentError(new ConnectionSetupError("enrollmentLinkMissing"));
         return;
       }
       openConnectorEnrollment(status.verificationUrl);
@@ -1177,7 +1242,7 @@ function StandardConnectionSetupFlow({
     onError: (error) => {
       closeEnrollmentPopup();
       setConnectorEnrollmentError(
-        error instanceof Error ? error.message : "Paperclip couldn’t reach Paperclip Cloud. Try again.",
+        setupFailure(error, "cloudUnreachable"),
       );
     },
   });
@@ -1365,10 +1430,8 @@ function StandardConnectionSetupFlow({
       onPhaseChange?.("needs_retry");
       setOAuthError(
         details?.code === "invalid_grant"
-          ? "Your authorization expired or was revoked. Reconnect to continue."
-          : error instanceof Error
-            ? error.message
-            : "Paperclip couldn’t start secure sign-in. Try again.",
+          ? new ConnectionSetupError("expired")
+          : setupFailure(error, "startFailed"),
       );
     },
   });
@@ -1553,10 +1616,8 @@ function StandardConnectionSetupFlow({
         onPhaseChange?.("needs_retry");
         setOAuthError(
           details?.code === "invalid_grant"
-            ? "Your authorization expired or was revoked. Reconnect to continue."
-            : error instanceof Error
-              ? error.message
-              : "Paperclip couldn’t start secure sign-in. Try again.",
+            ? new ConnectionSetupError("expired")
+            : setupFailure(error, "startFailed"),
         );
         return;
       }
@@ -1577,8 +1638,8 @@ function StandardConnectionSetupFlow({
         return;
       }
       pushToast({
-        title: "Couldn’t connect",
-        body: error instanceof Error ? error.message : "Please check your key and try again.",
+        title: currentT("githubSetupUi.connectFailed"),
+        body: error instanceof Error ? error.message : currentT("githubSetupUi.keyInvalid"),
         tone: "error",
       });
     },
@@ -1752,7 +1813,7 @@ function StandardConnectionSetupFlow({
     if (automaticOAuth && directOAuthRetryingRef.current) return;
     if (automaticOAuth && (applicationsQuery.isError || connectionsQuery.isError)) {
       setOAuthPhase("error");
-      setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
+      setOAuthError(new ConnectionSetupError("lookupFailed"));
       setStep("key");
       return;
     }
@@ -1915,15 +1976,15 @@ function StandardConnectionSetupFlow({
       // rather than stranding them on a half-made connection.
       setAppStep("key");
       pushToast({
-        title: "Couldn’t finish setup",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: currentT("githubSetupUi.finishFailed"),
+        body: error instanceof Error ? error.message : currentT("githubSetupUi.tryAgain"),
         tone: "error",
       });
     },
   });
 
   if (!selectedCompanyId) {
-    return <div className="p-6 text-sm text-muted-foreground">Select an organization to connect apps.</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.selectCompany")}</div>;
   }
 
   if (
@@ -1932,9 +1993,9 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">Couldn’t load connection setup</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.loadFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip couldn’t check the retained connection. The retained connection was not changed.
+          {t("githubSetupUi.loadFailedBody")}
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           <Button
@@ -1950,10 +2011,10 @@ function StandardConnectionSetupFlow({
               }
             }}
           >
-            Try again
+            {t("githubSetupUi.retry")}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/apps")}>
-            Back to apps
+            {t("githubSetupUi.backToApps")}
           </Button>
         </div>
       </div>
@@ -1963,12 +2024,12 @@ function StandardConnectionSetupFlow({
   if (resumeConnectionId && connectionsQuery.isFetchedAfterMount && !resumeConnection) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This setup can’t be resumed</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.resumeFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The saved connection no longer exists or is not available to this organization.
+          {t("githubSetupUi.resumeMissing")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("githubSetupUi.backToApps")}
         </Button>
       </div>
     );
@@ -1983,12 +2044,12 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This setup can’t be resumed</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.resumeFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          This saved draft does not match the requested provider. The connection was not changed.
+          {t("githubSetupUi.resumeMismatch")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("githubSetupUi.backToApps")}
         </Button>
       </div>
     );
@@ -2002,14 +2063,14 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This connection can’t be reconnected</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.reconnectFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {!reconnectConnection
-            ? "The retained connection no longer exists or is not available to this organization."
-            : "This reconnect link does not match the retained connection's provider."}
+            ? t("githubSetupUi.reconnectMissing")
+            : t("githubSetupUi.reconnectMismatch")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("githubSetupUi.backToApps")}
         </Button>
       </div>
     );
@@ -2018,16 +2079,16 @@ function StandardConnectionSetupFlow({
   if ((resumeConnectionId || reconnectConnectionId) && galleryQuery.isError) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">Couldn’t load connection setup</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.loadFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip couldn’t load the provider details needed to restore this connection. The retained connection was not changed.
+          {t("githubSetupUi.providerLoadFailed")}
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           <Button type="button" onClick={() => void galleryQuery.refetch()}>
-            Try again
+            {t("githubSetupUi.retry")}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/apps")}>
-            Back to apps
+            {t("githubSetupUi.backToApps")}
           </Button>
         </div>
       </div>
@@ -2037,12 +2098,12 @@ function StandardConnectionSetupFlow({
   if (reconnectConnectionId && unavailableReconnectId === reconnectConnectionId) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This connection can’t be reconnected</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.reconnectFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip no longer has a supported setup method for this retained connection. The retained connection was not changed.
+          {t("githubSetupUi.methodUnavailable")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("githubSetupUi.backToApps")}
         </Button>
       </div>
     );
@@ -2055,7 +2116,7 @@ function StandardConnectionSetupFlow({
     || hydratedResumeConnectionId !== resumeConnection?.id
   )) {
     return (
-      <div className="mx-auto max-w-xl space-y-4" aria-label="Loading saved connection setup">
+      <div className="mx-auto max-w-xl space-y-4" aria-label={t("githubSetupUi.loadingSaved")}>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -2069,7 +2130,7 @@ function StandardConnectionSetupFlow({
     || Boolean(requestedAppKey && !entry)
   )) {
     return (
-      <div className="mx-auto max-w-xl space-y-4" aria-label="Loading retained connection setup">
+      <div className="mx-auto max-w-xl space-y-4" aria-label={t("githubSetupUi.loadingRetained")}>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -2081,16 +2142,16 @@ function StandardConnectionSetupFlow({
       <div className="max-w-5xl" data-testid="connection-existing-choice">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">
-            Use an existing {requestedAppKey ? "connection" : "app connection"}
+            {requestedAppKey ? t("githubSetupUi.existingTitle") : t("githubSetupUi.existingAppTitle")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Reuse a connection without changing who already has access, or connect a new one.
+            {t("githubSetupUi.existingHint")}
           </p>
         </div>
         <ConnectionChoiceList
           choices={existingConnections.map((connection) => ({
             id: connection.id, name: connection.name,
-            description: connection.status === "active" && connection.enabled ? "Ready to use" : "Setup needs attention",
+            description: connection.status === "active" && connection.enabled ? t("githubSetupUi.existingReady") : t("githubSetupUi.existingAttention"),
           }))}
           pendingId={existingConnectionPendingId}
           onSelect={async (id) => {
@@ -2098,19 +2159,19 @@ function StandardConnectionSetupFlow({
             setExistingConnectionError(null);
             try { await onUseExisting(id); }
             catch (error) {
-              setExistingConnectionError(error instanceof Error ? error.message : "Couldn’t use this connection.");
+              setExistingConnectionError(setupFailure(error, "existingFailed"));
               setExistingConnectionPendingId(null);
             }
           }}
         />
         {existingConnectionError ? (
-          <InlineBanner tone="danger" className="mt-4">{existingConnectionError}</InlineBanner>
+          <InlineBanner tone="danger" className="mt-4">{setupFailureText(existingConnectionError, t)}</InlineBanner>
         ) : null}
         <div className="mt-5 flex flex-wrap gap-2">
           <Button type="button" variant="outline" onClick={() => setShowConnectionChoice(false)}>
-            {configuredConnection ? "Review connection setup" : "Connect new"}
+            {configuredConnection ? t("githubSetupUi.reviewSetup") : t("githubSetupUi.connectNew")}
           </Button>
-          {onCancel ? <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button> : null}
+          {onCancel ? <Button type="button" variant="ghost" onClick={onCancel}>{t("githubSetupUi.cancel")}</Button> : null}
         </div>
       </div>
     );
@@ -2156,13 +2217,13 @@ function StandardConnectionSetupFlow({
       notice={[
         galleryQuery.data?.capabilities?.canCreateOrganizationGrant === false
           ? galleryQuery.data.capabilities.organizationGrantReason
-            ?? "Only a connection manager can share this credential with the organization."
+            ?? t("githubSetupUi.managerOnly")
           : null,
         galleryQuery.data?.capabilities?.canSetCompanyInstall === false
           ? galleryQuery.data.capabilities.companyInstallReason
-            ?? "Only someone who can configure this connection can give every agent access."
+            ?? t("githubSetupUi.configurerOnly")
           : null,
-        requestedAgentId ? "This task grants access only to the agent that asked for it." : null,
+        requestedAgentId ? t("githubSetupUi.requestingAgentOnly") : null,
       ].filter((reason): reason is string => Boolean(reason))}
       authKind={accessStepAuthKind}
       grantKinds={fixedGrantKind ? [fixedGrantKind] : accessStepMethod?.grantKinds}
@@ -2258,7 +2319,7 @@ function StandardConnectionSetupFlow({
         entry={automaticOAuthEntry}
         resuming={Boolean(resumeConnectionId)}
         phase={oauthPhase}
-        error={oauthError}
+        error={setupFailureText(oauthError, t)}
         recoveryActions={oauthCallbackCode === "github_installation_required" ? {
           installationUrl: githubInstallationUrl,
           managementUrl: githubManagementUrl,
@@ -2315,7 +2376,7 @@ function StandardConnectionSetupFlow({
             ]);
             if (applicationsResult.isError || connectionsResult.isError) {
               setOAuthPhase("error");
-              setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
+              setOAuthError(new ConnectionSetupError("lookupFailed"));
               return;
             }
             const refreshedResumeConnection = resumeConnectionId
@@ -2371,14 +2432,14 @@ function StandardConnectionSetupFlow({
     return (
       <OAuthConnectStateScreen
         identity={{
-          name: linkName.trim() || endpointHost(linkUrl) || "this server",
+          name: linkName.trim() || endpointHost(linkUrl) || undefined,
           unverifiedHost: endpointHost(linkUrl),
         }}
         // A pasted endpoint walks the generic three-step wizard, so keep that
         // model rather than dropping to the curated two-step one.
-        steps={{ labels: STEP_LABELS, activeIndex: STEP_INDEX.key }}
+        steps={{ labels: [t("githubSetupUi.steps.pick"), t("githubSetupUi.steps.key")], activeIndex: STEP_INDEX.key }}
         phase={oauthPhase}
-        error={oauthError}
+        error={setupFailureText(oauthError, t)}
         authorizationHost={authorizationHost}
         authorizationUrl={authorizationFallbackUrl}
         defaults={connectionDefaults}
@@ -2439,19 +2500,19 @@ function StandardConnectionSetupFlow({
   /></> : undefined) : undefined;
   // One screen per connector (PAP-659): a selected app has a single step, so
   // its stepper collapses to nothing rather than showing one lonely dot.
-  const stepLabels = reconnectConnection?.connectionPurpose === "ai" ? ["Reconnect account"] : credentialStep !== undefined
-    ? ["Connect account"]
+  const stepLabels = reconnectConnection?.connectionPurpose === "ai" ? [t("githubSetupUi.steps.reconnectAccount")] : credentialStep !== undefined
+    ? [t("githubSetupUi.steps.connectAccount")]
     : zapierSource
-    ? ZAPIER_STEP_LABELS
+    ? [t("githubSetupUi.steps.mcpUrl")]
     : entry && setupCredentialSourceMethods.length > 1
-      ? ["Choose connection"]
+      ? [t("githubSetupUi.steps.chooseConnection")]
     : entry && setupCredentialSourceMethods[0]?.auth === "oauth"
-      ? ["Sign in"]
+      ? [t("githubSetupUi.steps.signIn")]
     : isGoogleSheetsRobotMethod(entry, connectionMethodKey)
-      ? ["Share sheet"]
+      ? [t("githubSetupUi.steps.shareSheet")]
       : entry
-        ? ["Add your key"]
-      : STEP_LABELS;
+        ? [t("githubSetupUi.steps.key")]
+      : [t("githubSetupUi.steps.pick"), t("githubSetupUi.steps.key")];
   const stepIndex = reconnectConnection?.connectionPurpose === "ai" ? 0 : (zapierSource || entry) && step !== "gallery" && step !== "success"
     ? SELECTED_APP_STEP_INDEX[step]
     : step === "success"
@@ -2466,11 +2527,11 @@ function StandardConnectionSetupFlow({
             subtitle={
               step === "gallery"
                 ? vercelConnectMode
-                  ? "Choose a reviewed app to connect through Vercel."
-                  : "Pick the app you want your agents to use."
+                  ? t("githubSetupUi.header.vercel")
+                  : t("githubSetupUi.header.pick")
                 : stepLabels.length <= 1
                   ? undefined
-                  : `Step ${stepIndex + 1} of ${stepLabels.length}`
+                  : t("githubSetupUi.header.step", { step: stepIndex + 1, total: stepLabels.length })
             }
             step={step}
             activeIndex={stepIndex}
@@ -2522,20 +2583,20 @@ function StandardConnectionSetupFlow({
 
       {managedConnectorUnavailable && entry ? (
         <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold text-foreground">{entry.name} sign-in is unavailable</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.cloud.unavailableTitle", { name: entry.name })}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            This instance is connected to Paperclip, but {entry.name} sign-in is not currently available. Try again shortly or contact your instance administrator.
+            {t("githubSetupUi.cloud.unavailableBody", { name: entry.name })}
           </p>
           {customOAuthMethod ? (
             <Button type="button" variant="link" className="mt-4 h-auto p-0 text-xs" onClick={() => setConnectionMethodKey(customOAuthMethod.key)}>
-              Use your own {entry.name} OAuth app
+              {t("githubSetupUi.cloud.customOAuth", { name: entry.name })}
             </Button>
           ) : null}
           <div className="mt-6 flex items-center justify-between gap-3">
-            <Button type="button" variant="ghost" onClick={backToGallery}>Back</Button>
+            <Button type="button" variant="ghost" onClick={backToGallery}>{t("githubSetupUi.back")}</Button>
             <Button type="button" disabled={galleryQuery.isFetching} onClick={() => void galleryQuery.refetch()}>
               {galleryQuery.isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Try again
+              {t("githubSetupUi.retry")}
             </Button>
           </div>
         </div>
@@ -2548,38 +2609,38 @@ function StandardConnectionSetupFlow({
               </div>
               <div className="min-w-0">
                 <h2 className="text-lg font-semibold text-foreground">
-                  Connect with Paperclip
+                  {t("githubSetupUi.cloud.connect")}
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  You must connect this instance to Paperclip to connect to {entry.name} (you only need to do this once).
+                  {t("githubSetupUi.cloud.enrollBody", { name: entry.name })}
                 </p>
               </div>
             </div>
 
             {customOAuthMethod ? (
               <Button type="button" variant="link" className="mt-4 h-auto p-0 text-xs" onClick={() => setConnectionMethodKey(customOAuthMethod.key)}>
-                Use your own {entry.name} OAuth app
+                {t("githubSetupUi.cloud.customOAuth", { name: entry.name })}
               </Button>
             ) : null}
 
             {connectorEnrollmentQuery.isError || connectorEnrollmentError ? (
               <InlineBanner tone="danger" className="mt-4">
-                {connectorEnrollmentError ?? "Paperclip couldn’t check Cloud registration. Try again."}
+                {setupFailureText(connectorEnrollmentError, t) ?? t("githubSetupUi.cloud.checkFailed")}
               </InlineBanner>
             ) : null}
 
             {enrollmentAuthorizationUrl ? (
               <p className="mt-4 text-sm text-muted-foreground">
-                Finish authorization in the opened window.{' '}
+                {t("githubSetupUi.cloud.finish")}{' '}
                 <a className="underline" href={enrollmentAuthorizationUrl} target="_blank" rel="noopener noreferrer">
-                  Open authorization in a new tab
+                  {t("githubSetupUi.cloud.openTab")}
                 </a>
               </p>
             ) : null}
             {connectionDefaults}
             <div className="mt-6 flex items-center justify-between gap-3">
               <Button type="button" variant="ghost" onClick={backToGallery}>
-                Back
+                {t("githubSetupUi.back")}
               </Button>
               <Button
                 type="button"
@@ -2595,8 +2656,8 @@ function StandardConnectionSetupFlow({
               >
                 {startConnectorEnrollment.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                 {connectorEnrollmentQuery.data?.status === "pending"
-                  ? "Continue"
-                  : "Connect with Paperclip"}
+                  ? t("githubSetupUi.continue")
+                  : t("githubSetupUi.cloud.connect")}
               </Button>
             </div>
           </div>
@@ -2605,7 +2666,7 @@ function StandardConnectionSetupFlow({
         <KeyStep
           settingsValid={additionalSettingsValid && instructionsValid}
           entry={entry}
-          error={connectMutation.isError ? (connectMutation.error instanceof Error ? connectMutation.error.message : "Please check your key and try again.") : null}
+          error={connectMutation.isError ? (connectMutation.error instanceof Error ? connectMutation.error.message : t("githubSetupUi.keyInvalid")) : null}
           values={credentials}
           onChange={setCredentials}
           oauthClientId={curatedOAuthClientId}
@@ -2701,7 +2762,7 @@ function StandardConnectionSetupFlow({
           The Access step used to carry that wait; without it the connect screen
           has to show the wait itself rather than render nothing. */}
       {step === "key" && !entry && !linkUrl && !zapierSource && requestedAppKey && (
-        <div className="mx-auto max-w-xl" aria-busy="true" aria-label={`Loading ${requestedAppKey} setup`}>
+        <div className="mx-auto max-w-xl" aria-busy="true" aria-label={t("githubSetupUi.loadingSetup", { name: requestedAppKey })}>
           <Skeleton className="h-6 w-2/3 rounded-md" />
           <Skeleton className="mt-3 h-4 w-full rounded-md" />
           <Skeleton className="mt-8 h-11 w-40 rounded-md" />
@@ -2770,7 +2831,7 @@ function StandardConnectionSetupFlow({
             installChoice,
             installCount: installAgentIds.size,
             enabledCount: Object.values(enabled).filter(Boolean).length,
-          })}
+          }, t)}
           statedDefault={connectionDefaultSummarySentence({
             grantKind: effectiveGrantKind,
             authKind: accessStepAuthKind,
@@ -2798,7 +2859,7 @@ export function OAuthConnectStateScreen({
   recoveryActions,
   authorizationHost,
   authorizationUrl,
-  steps = { labels: OAUTH_SIGN_IN_STEP_LABELS, activeIndex: 0 },
+  steps,
   guidance,
   defaults,
   onRetry,
@@ -2810,7 +2871,7 @@ export function OAuthConnectStateScreen({
   /** A curated app. Omit for a generic endpoint and pass `identity` instead. */
   entry?: AppDefinition | null;
   /** Identity for an unknown remote MCP server: its own name plus its host. */
-  identity?: { name: string; unverifiedHost: string | null };
+  identity?: { name?: string; unverifiedHost: string | null };
   /** This screen is continuing a durable draft rather than creating a new one. */
   resuming?: boolean;
   phase: OAuthConnectPhase;
@@ -2840,41 +2901,43 @@ export function OAuthConnectStateScreen({
   onBack: () => void;
   onCancel: () => void;
 }) {
-  const serverName = entry?.name ?? identity?.name ?? "this server";
+  const { t } = useTranslation();
+  const serverName = entry?.name ?? identity?.name;
+  const hasServerName = serverName !== undefined;
   const unverifiedHost = entry ? null : identity?.unverifiedHost ?? null;
   const status = phase === "entry"
     ? {
         title: resuming
-          ? `Finish connecting ${serverName}`
-          : `Connect ${serverName} to Paperclip`,
+          ? (hasServerName ? t("githubSetupUi.oauth.resumeTitle", { name: serverName }) : t("githubSetupUi.oauth.resumeTitleGeneric"))
+          : (hasServerName ? t("githubSetupUi.oauth.entryTitle", { name: serverName }) : t("githubSetupUi.oauth.entryTitleGeneric")),
         body: resuming
-          ? `Your connection is saved. Continue in ${serverName} to approve access; its identity and agent access will stay the same.`
-          : `Paperclip will open ${serverName} so you can choose a workspace and approve access.`,
+          ? (hasServerName ? t("githubSetupUi.oauth.resumeBody", { name: serverName }) : t("githubSetupUi.oauth.resumeBodyGeneric"))
+          : (hasServerName ? t("githubSetupUi.oauth.entryBody", { name: serverName }) : t("githubSetupUi.oauth.entryBodyGeneric")),
       }
     : phase === "starting"
       ? {
-          title: "Preparing secure sign-in",
-          body: `Paperclip is creating a secure ${serverName} connection.`,
+          title: t("githubSetupUi.oauth.preparingTitle"),
+          body: (hasServerName ? t("githubSetupUi.oauth.preparingBody", { name: serverName }) : t("githubSetupUi.oauth.preparingBodyGeneric")),
         }
       : phase === "redirecting"
         ? {
-            title: `Opening ${serverName}`,
+            title: (hasServerName ? t("githubSetupUi.oauth.openingTitle", { name: serverName }) : t("githubSetupUi.oauth.openingTitleGeneric")),
             body: authorizationHost
-              ? `Continue at ${authorizationHost} to choose a workspace and approve access. Only approve access if you recognize that address.`
-              : `Continue in ${serverName} to choose a workspace and approve access.`,
+              ? t("githubSetupUi.oauth.openingHost", { host: authorizationHost })
+              : (hasServerName ? t("githubSetupUi.oauth.openingBody", { name: serverName }) : t("githubSetupUi.oauth.openingBodyGeneric")),
           }
         : {
-            title: `${serverName} couldn’t connect`,
-            body: error ?? "Paperclip couldn’t start secure sign-in. Try again.",
+            title: (hasServerName ? t("githubSetupUi.oauth.failedTitle", { name: serverName }) : t("githubSetupUi.oauth.failedTitleGeneric")),
+            body: error ?? t("githubSetupUi.errors.startFailed"),
           };
 
   return (
     <div className="max-w-5xl">
       <StepHeader
-        subtitle="Secure MCP sign-in"
+        subtitle={t("githubSetupUi.oauth.subtitle")}
         step="key"
-        activeIndex={steps.activeIndex}
-        labels={steps.labels}
+        activeIndex={steps?.activeIndex ?? 0}
+        labels={steps?.labels ?? [t("githubSetupUi.steps.signIn")]}
         appIdentity={entry ? { name: entry.name, logoUrl: entry.branding.logoUrl, darkLogoUrl: entry.branding.darkLogoUrl } : undefined}
         unverifiedHost={unverifiedHost}
         onCancel={onCancel}
@@ -2905,7 +2968,7 @@ export function OAuthConnectStateScreen({
             {recoveryActions.installationUrl ? (
               <Button type="button" variant="outline" asChild>
                 <a href={recoveryActions.installationUrl} target="_blank" rel="noreferrer">
-                  Install Paperclip on GitHub
+                  {t("githubSetupUi.oauth.installGithub")}
                   <ArrowUpRight className="ml-1.5 h-3.5 w-3.5" />
                 </a>
               </Button>
@@ -2913,7 +2976,7 @@ export function OAuthConnectStateScreen({
             {recoveryActions.managementUrl ? (
               <Button type="button" variant="ghost" asChild>
                 <a href={recoveryActions.managementUrl} target="_blank" rel="noreferrer">
-                  Manage repositories on GitHub
+                  {t("githubSetupUi.oauth.manageRepositories")}
                 </a>
               </Button>
             ) : null}
@@ -2924,17 +2987,17 @@ export function OAuthConnectStateScreen({
           {phase === "error" || phase === "entry" ? (
             <Button type="button" onClick={onRetry} disabled={!settingsValid}>
               {phase === "entry"
-                ? resuming ? `Finish with ${serverName}` : `Continue to ${serverName}`
-                : "Try again"}
+                ? resuming ? (hasServerName ? t("githubSetupUi.oauth.finishWith", { name: serverName }) : t("githubSetupUi.oauth.finishWithGeneric")) : (hasServerName ? t("githubSetupUi.oauth.continueTo", { name: serverName }) : t("githubSetupUi.oauth.continueToGeneric"))
+                : t("githubSetupUi.retry")}
               {phase === "entry" ? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /> : null}
             </Button>
           ) : (
             <Button type="button" disabled>
-              {phase === "redirecting" ? `Opening ${serverName}…` : "Preparing…"}
+              {phase === "redirecting" ? (hasServerName ? t("githubSetupUi.oauth.opening", { name: serverName }) : t("githubSetupUi.oauth.openingGeneric")) : t("githubSetupUi.oauth.preparing")}
             </Button>
           )}
-          {authorizationUrl ? <Button variant="outline" asChild><a href={authorizationUrl} target="_blank" rel="noopener noreferrer" onClick={onOpenAuthorization}>Open sign-in in a new tab</a></Button> : null}
-          <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
+          {authorizationUrl ? <Button variant="outline" asChild><a href={authorizationUrl} target="_blank" rel="noopener noreferrer" onClick={onOpenAuthorization}>{t("githubSetupUi.oauth.openTab")}</a></Button> : null}
+          <Button type="button" variant="ghost" onClick={onBack}>{t("githubSetupUi.back")}</Button>
         </div>
       </div>
     </div>
@@ -3641,6 +3704,7 @@ function KeyStep({
   onBack: () => void;
   onConnect: () => void;
 }) {
+  const { t } = useTranslation();
   const methods = useMemo(
     () => connectionMethodsForCredentialSource(entry, credentialSource),
     [credentialSource, entry],
@@ -3739,9 +3803,9 @@ function KeyStep({
   const hasAlternateMethods = capabilityGroups.length > 1 || capabilityMethods.length > 1;
   const capabilitySelection = capabilityGroups.length > 1 ? (
     <div>
-      <label className="text-sm font-medium text-foreground">What should Paperclip be able to do?</label>
+      <label className="text-sm font-medium text-foreground">{t("githubSetupUi.key.chooseCapability")}</label>
       <RadioCardGroup
-        ariaLabel={`Access level for ${entry.name}`}
+        ariaLabel={t("githubSetupUi.key.capabilityAria", { name: entry.name })}
         className="mt-2"
         value={capabilityKey}
         onValueChange={(nextKey) => {
@@ -3756,7 +3820,7 @@ function KeyStep({
           description: group.description,
         }))}
       />
-      {!capabilityKey && <p className="mt-2 text-xs text-muted-foreground">Choose an access level to continue.</p>}
+      {!capabilityKey && <p className="mt-2 text-xs text-muted-foreground">{t("githubSetupUi.key.chooseCapabilityHint")}</p>}
     </div>
   ) : null;
   const managedOAuthMethod = capabilityMethods.find((candidate) =>
@@ -3778,16 +3842,16 @@ function KeyStep({
       disabled={submitting}
       onClick={() => onMethodChange(usingCustomOAuth ? managedOAuthMethod : customerOAuthMethod)}
     >
-      {usingCustomOAuth ? "Use Paperclip instead" : `Use your own ${isGoogleWorkspaceConnectorProfileId(managedOAuthMethod.connectorProfile ?? "") ? "Google" : entry.name} OAuth app`}
+      {usingCustomOAuth ? t("githubSetupUi.key.paperclipInstead") : t("githubSetupUi.key.customOAuth", { name: isGoogleWorkspaceConnectorProfileId(managedOAuthMethod.connectorProfile ?? "") ? "Google" : entry.name })}
     </Button>
   ) : capabilityMethods.length > 1 ? (
     // PAP-659 C1: the ranked default is already selected. This stays as the
     // way to pick something else, one disclosure away, rather than a question
     // the screen opens with.
     <div>
-      <label className="text-sm font-medium text-foreground">How do you want to connect?</label>
+      <label className="text-sm font-medium text-foreground">{t("githubSetupUi.key.method")}</label>
       <RadioCardGroup
-        ariaLabel={`How to connect ${entry.name}`}
+        ariaLabel={t("githubSetupUi.key.methodAria", { name: entry.name })}
         className="mt-2"
         value={methodKey}
         onValueChange={(nextKey) => {
@@ -3796,10 +3860,10 @@ function KeyStep({
         }}
         options={capabilityMethods.map((candidate) => ({
           value: candidate.key,
-          title: candidate.label ?? (candidate.auth === "oauth" ? `Sign in with ${entry.name}` : "Use an API key"),
+          title: githubConnectionMethodLabel(entry, candidate, t) ?? (candidate.auth === "oauth" ? t("githubSetupUi.key.signInWith", { name: entry.name }) : t("githubSetupUi.key.apiKey")),
         }))}
       />
-      {!method && <p className="mt-2 text-xs text-muted-foreground">Choose a connection method to continue.</p>}
+      {!method && <p className="mt-2 text-xs text-muted-foreground">{t("githubSetupUi.key.chooseMethodHint")}</p>}
     </div>
   ) : null;
   const hasAdvancedSettings = advancedConfigFields.length > 0
@@ -3887,11 +3951,11 @@ function KeyStep({
 
         <div className="mt-8 flex items-center justify-between">
           <Button variant="ghost" onClick={onBack} disabled={submitting}>
-            Back
+            {t("githubSetupUi.back")}
           </Button>
           <Button onClick={onConnect} disabled={submitting || !canConnect}>
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {submitting ? "Checking…" : "Connect"}
+            {submitting ? t("githubSetupUi.key.checking") : t("githubSetupUi.key.connect")}
           </Button>
         </div>
       </div>
@@ -3911,7 +3975,7 @@ function KeyStep({
             rel="noreferrer"
             className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
           >
-            Review requirements
+            {t("githubSetupUi.key.requirements")}
             <ArrowUpRight className="h-3 w-3" />
           </a>
         </div>
@@ -3975,7 +4039,7 @@ function KeyStep({
 
 
         {!usingVercel && method?.auth === "oauth" && customerOAuthClientRequired ? (
-          <div id={customOAuthFieldsId} role="region" aria-label="Your OAuth app">
+          <div id={customOAuthFieldsId} role="region" aria-label={t("githubSetupUi.key.oauthApp")}>
             <OAuthClientFields
               entry={entry}
               method={method}
@@ -3993,11 +4057,11 @@ function KeyStep({
           fields.map((field) => (
             <div key={field.configPath}>
               <label className="text-sm font-medium text-foreground">
-                {credentialFieldLabel(entry.name, field.label, fields.length)}
+                {githubConnectionFieldLabel(entry, method, field.key, t) ?? credentialFieldLabel(entry.name, field.label, fields.length)}
               </label>
               <Input
                 type={field.type === "text" && field.secret === false ? "text" : "password"}
-                aria-label={credentialFieldLabel(entry.name, field.label, fields.length)}
+                aria-label={githubConnectionFieldLabel(entry, method, field.key, t) ?? credentialFieldLabel(entry.name, field.label, fields.length)}
                 autoComplete="off"
                 value={values[field.configPath] ?? ""}
                 onChange={(e) => onChange({ ...values, [field.configPath]: e.target.value })}
@@ -4005,7 +4069,7 @@ function KeyStep({
                 className="mt-2 h-11 font-mono"
               />
               {field.helperMd && <p className="mt-2 text-xs text-muted-foreground">
-                {field.helperMd}
+                {githubConnectionFieldHelp(entry, method, field.key, t)}
               </p>}
               {field.helpUrl && (
                 <a
@@ -4014,7 +4078,7 @@ function KeyStep({
                   rel="noreferrer"
                   className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-foreground underline underline-offset-2"
                 >
-                  Where do I find this?
+                  {t("githubSetupUi.key.where")}
                   <ArrowUpRight className="h-3 w-3" />
                 </a>
               )}
@@ -4028,17 +4092,17 @@ function KeyStep({
 
       <div className="mt-8 flex items-center justify-between">
         <Button variant="ghost" onClick={onBack} disabled={submitting}>
-          Back
+          {t("githubSetupUi.back")}
         </Button>
         <Button onClick={onConnect} disabled={submitting || !settingsValid || !hasMethodSelection || !allFilled || !oauthClientFilled || !vercelConnectorFilled || !configFilled || !configRequirementMet}>
           {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {submitting
-            ? "Checking…"
+            ? t("githubSetupUi.key.checking")
             : usingVercel
-              ? method?.auth === "oauth" ? "Validate and continue" : "Validate and connect"
+              ? method?.auth === "oauth" ? t("githubSetupUi.key.validateContinue") : t("githubSetupUi.key.validateConnect")
               : method?.auth === "oauth"
-                ? entry.slug === "github" ? "Continue to GitHub" : "Continue to sign in"
-                : "Connect"}
+                ? entry.slug === "github" ? t("githubSetupUi.key.continueGithub") : t("githubSetupUi.key.continueSignIn")
+                : t("githubSetupUi.key.connect")}
         </Button>
       </div>
     </div>
@@ -4292,6 +4356,7 @@ export function AccessStepContent({
   // "Only agents I choose" / "Just agents I pick" means agents this person may actually edit. When the server
   // has not told us, fall back to every live agent rather than an empty list —
   // an empty picker would read as "you have no agents".
+  const { t } = useTranslation();
   const editableAgentIds = capabilities?.editableAgentIds;
   const agents = editableAgentIds
     ? allAgents.filter((agent) => editableAgentIds.includes(agent.id))
@@ -4317,17 +4382,17 @@ export function AccessStepContent({
     ? canSetCompanyInstall
     : installAgentIds.size > 0);
   const lockedAgentName = lockedAgentId
-    ? allAgents.find((agent) => agent.id === lockedAgentId)?.name ?? "the requesting agent"
+    ? allAgents.find((agent) => agent.id === lockedAgentId)?.name ?? t("providerSetup.access.requestingAgent")
     : null;
-  const identityHeading = githubIdentity ? "Connect GitHub as" : "Which humans can use this credential?";
+  const identityHeading = githubIdentity ? t("providerSetup.access.gitHubIdentityHeading") : t("providerSetup.access.identityHeading");
   const agentAccessHeading = grantKind === "agent"
-    ? "Which agent owns this GitHub account?"
+    ? t("providerSetup.access.ownerAgentHeading")
     : githubIdentity && grantKind === "user"
-      ? "Which agents may use your GitHub when you’re responsible?"
+      ? t("providerSetup.access.personalAgentsHeading")
       : githubIdentity
-        ? "Which agents may use the shared GitHub account?"
-        : "Which agents can use this connection?";
-  const agentAccessLabel = githubIdentity ? agentAccessHeading : "Which agents can use this connection?";
+        ? t("providerSetup.access.sharedAgentsHeading")
+        : t("providerSetup.access.agentsHeading");
+  const agentAccessLabel = githubIdentity ? agentAccessHeading : t("providerSetup.access.agentsHeading");
 
   return (
     <div className={bare ? "" : "mx-auto max-w-2xl"}>
@@ -4336,10 +4401,10 @@ export function AccessStepContent({
           <section className="p-6">
             <h2 className="text-sm font-semibold text-foreground">{identityHeading}</h2>
             {githubIdentity && grantKind === "agent" ? (
-              <p className="mt-2 text-sm text-muted-foreground">This agent uses this GitHub account for everyone’s work, instead of the person giving instructions.</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("providerSetup.access.dedicatedExplanation")}</p>
             ) : null}
             {identityLoading ? (
-              <div className="mt-4 grid gap-2 sm:grid-cols-2" aria-label="Loading connection identity">
+              <div className="mt-4 grid gap-2 sm:grid-cols-2" aria-label={t("providerSetup.access.loadingIdentity")}>
                 <Skeleton className="h-20 w-full rounded-md" />
                 <Skeleton className="h-20 w-full rounded-md" />
               </div>
@@ -4355,25 +4420,25 @@ export function AccessStepContent({
                 <div>
                   <div className="text-sm font-medium text-foreground">
                     {allowedGrantKinds[0] === "user"
-                      ? githubIdentity ? "My GitHub account" : "Just me"
+                      ? githubIdentity ? t("providerSetup.access.myGitHub") : t("providerSetup.access.justMe")
                       : allowedGrantKinds[0] === "agent"
-                        ? "A dedicated account for an agent"
-                        : githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"}
+                        ? t("providerSetup.access.dedicatedAgent")
+                        : githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman")}
                   </div>
                   {githubIdentity ? (
                     <p className="mt-1 text-xs text-muted-foreground">
                       {allowedGrantKinds[0] === "user"
-                        ? "Agents use it only for runs where you are the responsible person."
+                        ? t("providerSetup.access.personalHint")
                         : allowedGrantKinds[0] === "agent"
-                          ? "That agent always uses this account, regardless of who starts the run."
-                          : "Eligible agents use one shared credential, regardless of who starts the run."}
+                          ? t("providerSetup.access.dedicatedHint")
+                          : t("providerSetup.access.sharedHint")}
                     </p>
                   ) : null}
                 </div>
               </div>
             ) : needsIdentityChoice ? (
               <RadioCardGroup
-                ariaLabel={githubIdentity ? identityHeading : "Which humans can use this credential?"}
+                ariaLabel={githubIdentity ? identityHeading : t("providerSetup.access.identityHeading")}
                 className="mt-4 sm:grid-cols-2"
                 value={grantKind}
                 onValueChange={(next) => {
@@ -4387,35 +4452,34 @@ export function AccessStepContent({
                 options={[
                   {
                     value: "user",
-                    title: githubIdentity ? "My GitHub account" : "Just me",
+                    title: githubIdentity ? t("providerSetup.access.myGitHub") : t("providerSetup.access.justMe"),
                     description: githubIdentity
-                      ? "Agents use it only for runs where you are the responsible person."
+                      ? t("providerSetup.access.personalHint")
                       : undefined,
                     icon: <UserRound className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "agent",
-                    title: "A dedicated account for an agent",
+                    title: t("providerSetup.access.dedicatedAgent"),
                     description: githubIdentity
-                      ? "That agent always uses this account, regardless of who starts the run."
+                      ? t("providerSetup.access.dedicatedHint")
                       : undefined,
                     icon: <Bot className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "organization",
-                    title: githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization",
+                    title: githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman"),
                     description: githubIdentity
-                      ? "Eligible agents use one shared credential, regardless of who starts the run."
+                      ? t("providerSetup.access.sharedHint")
                       : undefined,
                     icon: <UsersRound className="h-4 w-4" aria-hidden="true" />,
                     accessibleLabel: canCreateOrganizationGrant
-                      ? githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"
-                      : `${githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"}. Unavailable: ${capabilities?.organizationGrantReason ??
-                        "Only a connection manager can share this credential with the organization."}`,
+                      ? githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman")
+                      : t("providerSetup.access.unavailableChoice", { label: githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman"), reason: capabilities?.organizationGrantReason ?? t("providerSetup.access.managerOnly") }),
                     tooltip: canCreateOrganizationGrant
                       ? undefined
                       : capabilities?.organizationGrantReason ??
-                        "Only a connection manager can share this credential with the organization.",
+                        t("providerSetup.access.managerOnly"),
                     disabled: !canCreateOrganizationGrant,
                   },
                 ].filter((option) => allowedGrantKinds.includes(option.value as ConnectionGrantKind))}
@@ -4423,7 +4487,7 @@ export function AccessStepContent({
             ) : (
               // A connection with no credential has no identity to choose, so
               // asking would be a meaningless decision.
-              <p className="mt-4 text-sm text-muted-foreground">No identity required</p>
+              <p className="mt-4 text-sm text-muted-foreground">{t("providerSetup.access.noIdentity")}</p>
             )}
           </section>
 
@@ -4433,20 +4497,19 @@ export function AccessStepContent({
               <div className="mt-4 flex items-start gap-3 rounded-md border border-border bg-muted/40 p-4">
                 <UsersRound className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                 <div>
-                  <div className="text-sm font-medium text-foreground">Existing agent access stays the same</div>
+                  <div className="text-sm font-medium text-foreground">{t("providerSetup.access.accessPreserved")}</div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Reconnecting replaces the credential without changing which agents can use it.
+                    {t("providerSetup.access.reconnectHint")}
                   </p>
                 </div>
               </div>
             ) : lockedAgentId ? (
               <p className="mt-2 text-sm text-muted-foreground">
-                This task grants access only to <span className="font-medium text-foreground">{lockedAgentName}</span>.
-                Existing connection access is left unchanged.
+                <Trans i18nKey="providerSetup.access.lockedAgent" tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape values={{ name: lockedAgentName }} components={{ agent: <span className="font-medium text-foreground" /> }} />
               </p>
             ) : (
               grantKind === "agent" ? (
-                <p className="mt-2 text-sm text-muted-foreground">Choose exactly one agent. This identity cannot be shared with other agents.</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t("providerSetup.access.chooseOne")}</p>
               ) : <RadioCardGroup
                 ariaLabel={agentAccessLabel}
                 className="mt-4 sm:grid-cols-2"
@@ -4455,31 +4518,30 @@ export function AccessStepContent({
                 options={[
                   {
                     value: "specific",
-                    title: githubIdentity ? "Only agents I choose" : "Just agents I pick",
+                    title: githubIdentity ? t("providerSetup.access.onlyChosen") : t("providerSetup.access.justChosen"),
                     description: githubIdentity
                       ? grantKind === "user"
-                        ? "Only selected agents may use your GitHub when you’re responsible."
-                        : "Only selected agents may use the shared account."
+                        ? t("providerSetup.access.chosenPersonalHint")
+                        : t("providerSetup.access.chosenSharedHint")
                       : undefined,
                     icon: <Bot className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "all",
-                    title: "Any agent",
+                    title: t("providerSetup.access.anyAgent"),
                     description: githubIdentity
                       ? grantKind === "user"
-                        ? "Every agent may use your GitHub when you’re responsible."
-                        : "Every agent may use the shared account."
+                        ? t("providerSetup.access.allPersonalHint")
+                        : t("providerSetup.access.allSharedHint")
                       : undefined,
                     icon: <BotGroupIcon />,
                     accessibleLabel: canSetCompanyInstall
-                      ? "Any agent"
-                      : `Any agent. Unavailable: ${capabilities?.companyInstallReason ??
-                        "Only someone who can configure this connection can choose this."}`,
+                      ? t("providerSetup.access.anyAgent")
+                      : t("providerSetup.access.anyAgentUnavailable", { reason: capabilities?.companyInstallReason ?? t("providerSetup.access.configurerOnly") }),
                     tooltip: canSetCompanyInstall
                       ? undefined
                       : capabilities?.companyInstallReason ??
-                        "Only someone who can configure this connection can choose this.",
+                        t("providerSetup.access.configurerOnly"),
                     disabled: !canSetCompanyInstall,
                   },
                 ]}
@@ -4494,7 +4556,7 @@ export function AccessStepContent({
                     grantKind === "agent" && next.size > 1 ? new Set([[...next].at(-1)!]) : next,
                   )}
                   loading={agentsLoading}
-                  emptyMessage="You cannot edit any agents yet."
+                  emptyMessage={t("providerSetup.access.noEditableAgents")}
                   showSelectionPreview={false}
                 />
               </div>
@@ -4507,7 +4569,7 @@ export function AccessStepContent({
           reading order; desktop keeps Back on the left. */}
       {hideFooter ? null : <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
         <Button variant="ghost" className="w-full sm:w-auto" onClick={onBack} disabled={pending}>
-          Back
+          {t("providerSetup.access.back")}
         </Button>
         <Button
           className="w-full sm:w-auto"
@@ -4539,23 +4601,32 @@ export function connectionDefaultSummarySentence(input: {
   lockedAgentId?: string | null;
   preserveAgentAccess?: boolean;
 }): string {
-  const identity = input.authKind === "none"
-    ? "No sign-in needed"
-    : input.grantKind === "user"
-      ? "Connects as you"
-      : input.grantKind === "agent"
-        ? "Connects as a dedicated agent account"
-        : "Connects for everyone in your organization";
-  const reach = input.preserveAgentAccess
-    ? "agent access stays as it is"
-    : input.lockedAgentId
-      ? "available to the agent that asked for it"
-      : input.installChoice === "all"
-        ? "available to all agents"
-        : input.installCount === 0
-          ? "no agents selected yet"
-          : `available to ${input.installCount} selected ${input.installCount === 1 ? "agent" : "agents"}`;
-  return `${identity}, ${reach}.`;
+  if (input.authKind === "none") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.none.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.none.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.none.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.none.empty");
+    return t("providerSetup.access.summary.none.selected", { count: input.installCount });
+  }
+  if (input.grantKind === "user") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.user.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.user.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.user.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.user.empty");
+    return t("providerSetup.access.summary.user.selected", { count: input.installCount });
+  }
+  if (input.grantKind === "agent") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.agent.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.agent.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.agent.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.agent.empty");
+    return t("providerSetup.access.summary.agent.selected", { count: input.installCount });
+  }
+  if (input.preserveAgentAccess) return t("providerSetup.access.summary.organization.preserved");
+  if (input.lockedAgentId) return t("providerSetup.access.summary.organization.requested");
+  if (input.installChoice === "all") return t("providerSetup.access.summary.organization.all");
+  if (input.installCount === 0) return t("providerSetup.access.summary.organization.empty");
+  return t("providerSetup.access.summary.organization.selected", { count: input.installCount });
 }
 
 /**
@@ -4594,6 +4665,7 @@ export function ConnectionAccessDefaults({
   forceOpen?: boolean;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const expanded = open || forceOpen;
   return (
@@ -4606,7 +4678,7 @@ export function ConnectionAccessDefaults({
           className="h-auto p-0 text-xs font-semibold underline underline-offset-2"
           disabled={disabled}
         >
-          Change
+          {t("providerSetup.access.change")}
         </Button></CollapsibleTrigger>
       </div>
       {(notice ?? []).map((reason) => (
@@ -4643,24 +4715,21 @@ export function accessSummaryLines(input: {
   installChoice: "specific" | "all";
   installCount: number;
   enabledCount: number;
-}): Array<{ label: string; value: string }> {
+}, t: TFunction = i18n.getFixedT("en")): Array<{ label: string; value: string }> {
   const identity = input.authKind === "none"
-    ? "No identity required"
+    ? t("githubSetupUi.summary.noIdentity")
     : input.grantKind === "user"
-      ? "Your identity"
+      ? t("githubSetupUi.summary.yourIdentity")
       : input.grantKind === "agent"
-        ? "Dedicated agent identity"
-      : "Organization identity";
+        ? t("githubSetupUi.summary.agentIdentity")
+        : t("githubSetupUi.summary.organizationIdentity");
   const availableTo = input.installChoice === "all"
-    ? "Any agent"
-    : `${input.installCount} selected ${input.installCount === 1 ? "agent" : "agents"}`;
+    ? t("githubSetupUi.summary.anyAgent")
+    : t("githubSetupUi.summary.selected", { count: input.installCount });
   return [
-    { label: "Identity", value: identity },
-    { label: "Available to", value: availableTo },
-    {
-      label: "Actions",
-      value: `${input.enabledCount} ${input.enabledCount === 1 ? "action" : "actions"} on`,
-    },
+    { label: t("githubSetupUi.summary.identity"), value: identity },
+    { label: t("githubSetupUi.summary.available"), value: availableTo },
+    { label: t("githubSetupUi.summary.actions"), value: t("githubSetupUi.summary.enabled", { count: input.enabledCount }) },
   ];
 }
 
@@ -4697,6 +4766,7 @@ export function ConnectionSetupCompletionScreen({
   statedDefault?: string;
   onDone: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="mx-auto max-w-md py-10 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-500/10">
@@ -4704,12 +4774,12 @@ export function ConnectionSetupCompletionScreen({
       </div>
       <div className="mt-6 flex items-center justify-center gap-2">
         <AppLogo name={appName} logoUrl={logoUrl} darkLogoUrl={darkLogoUrl} size={28} />
-        <h2 className="text-2xl font-bold tracking-tight">{appName} is ready.</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t("githubSetupUi.completion.ready", { name: appName })}</h2>
       </div>
       {statedDefault ? <p className="mt-3 text-sm text-muted-foreground">{statedDefault}</p> : null}
       <dl className="mx-auto mt-6 max-w-xs space-y-1 text-left">
-        {summary.map((line) => (
-          <div key={line.label} className="flex items-baseline justify-between gap-4">
+        {summary.map((line, index) => (
+          <div key={index} className="flex items-baseline justify-between gap-4">
             <dt className="text-xs font-medium text-muted-foreground">{line.label}</dt>
             <dd className="text-sm text-foreground">{line.value}</dd>
           </div>
@@ -4717,7 +4787,7 @@ export function ConnectionSetupCompletionScreen({
       </dl>
       <div className="mt-8">
         <Button size="lg" className="px-10" onClick={onDone}>
-          View connection
+          {t("githubSetupUi.completion.view")}
         </Button>
       </div>
     </div>

@@ -45,7 +45,14 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Seed
 
 ### `inbox`
 
-Automated: [archive routes](../../server/src/__tests__/inbox-archive-routes.test.ts) cover server mutations. [Task-list helpers](../../ui/src/pages/Issues.test.tsx) cover search URLs, pagination, and presentation constants; they do not render the combined Inbox/Tasks page. Reading, archiving, and navigating that page remain manual checks.
+Automated: [archive routes](../../server/src/__tests__/inbox-archive-routes.test.ts)
+cover server mutations. [Inbox component tests](../../ui/src/pages/Inbox.test.tsx)
+render standalone, legacy and combined-host props. English/Russian checks preserve
+Undo position, IDs, collapsed groups, search input/results and request counts.
+They verify approval/join payloads, mark-read task IDs, local error updates and
+selected retry requests. These use fixture APIs and do not establish live access
+control or the App redirect. [Task-list helpers](../../ui/src/pages/Issues.test.tsx)
+cover search URLs, pagination and presentation constants.
 
 Automated: [Issue service regressions](../../server/src/__tests__/issues-service.test.ts)
 cover exclusion of historical automatic read cleanup from user participation,
@@ -58,6 +65,18 @@ human assignee. They check unread lists, flags, and counts, plus exclusion of
 historical questions and closed requests while preserving authorization requests.
 
 Manual: Seed GitHub, Slack, scheduled routine, and manual routine tasks. Attribution, imported comments, and reading alone keep them outside Mine. Direct board/API comments, human assignment, and open addressed requests admit them. Resolve the request and check that another valid reason is needed. Inbox discovery and Blocked hide unrelated automation by default; the **show agent-created tasks** checkbox reveals it without subscribing the user. Reload and verify membership, unread badges, archive/resurfacing, and preference persistence.
+
+[Blocked view](../../ui/src/components/BlockedInboxView.test.tsx) checks translated
+reason groups, collapsed state, search and explicit retry. Known reason and approval
+captions remain searchable in both English and Russian. [Swipe controls](../../ui/src/components/SwipeToArchive.test.tsx)
+preserve their active offset and action across language changes. Helper tests keep
+the original grouping order, date membership and raw user-provided names.
+
+Manual: With an Undo offer and collapsed group visible, switch English/Russian,
+then undo the archive and reload. Confirm the same task and group return to their
+positions. Search a known approval or Blocked caption in each language, switch
+language while the query remains active, and confirm the same IDs stay visible.
+Retry a selected failed run once and inspect the persisted request separately.
 
 Manual: Read an unread task, return to Unread, archive a handled item, and reload. Verify personal triage state changes while task status stays correct. Switch users and companies to check isolation.
 
@@ -77,7 +96,34 @@ Manual: Open a pending decision, follow its source, resolve it through the suppo
 
 Automated: [search page](../../ui/src/pages/Search.test.tsx) and [company search service](../../server/src/__tests__/company-search-service.test.ts) cover UI and server search separately.
 
+[Search filter controls](../../ui/src/components/search/SearchFilterSheet.test.tsx)
+exercise the real mobile sheet and desktop menus across English/Russian changes.
+They preserve the pending filter draft and canonical sort, Cancel and Apply behavior.
+[Localized results and recovery](../../ui/src/components/search/SearchResults.locale.test.tsx)
+check count forms, literal names/snippets, anchors, highlights and removal of the
+selected filter. Search-page tests also render the mobile branch and check query,
+URL, recent-search and request stability. These use API fixtures, not a live server.
+
+Manual: Switch English/Russian with an active query, an open desktop filter and a
+pending mobile filter draft. Confirm that switching language makes no search
+request, changes no URL or selected ID, and keeps text selection. Cancel a draft,
+reopen it, then Apply a deliberate filter change. Search for names containing
+literal `<strong>` or `<filter>` text; the text must remain literal in result and
+recovery controls. Verify 1, 2, 5 and 21 results and filtered-out recovery.
+
+[Task search quality](../../server/src/__tests__/task-search-quality.test.ts)
+also exercises mixed-case Cyrillic titles and short words against a real
+embedded PostgreSQL database with locale `C`. Company-search regressions cover
+literal wildcards, private/foreign results, pagination and comment/document
+evidence. These service tests do not establish an authenticated agent journey.
+See the [Unicode capability and performance limits](../../doc/SEARCH.md#unicode-task-queries).
+
 Manual: Search a unique task title and content phrase, open the result, and compare the actual record. Test filters, no results, and a second company. Verify stale results do not expose inaccessible data.
+
+Repeat with a title `Проверка языка ЁЖ`: search using lower, upper and mixed case
+in both the task-list input and full search. Confirm the intended IDs and literal
+title, then check a quoted phrase and a short `ёж` query. Record database version,
+collation and request timing separately from translation and browser layout.
 
 ### `toasts`
 

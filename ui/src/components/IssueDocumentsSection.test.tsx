@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
+import { ApiError } from "../api/client";
 import { act as reactAct } from "react";
 import type { ComponentProps } from "react";
 import { flushSync } from "react-dom";
@@ -1053,4 +1055,56 @@ describe("IssueDocumentsSection", () => {
     });
     queryClient.clear();
   });
+
+  it("keeps a conflicted local draft across RU/EN without retrying autosave", async () => {
+    const local = createIssueDocument({ key: "report", title: "Original title", body: "Literal **source** <draft>", latestRevisionId: "r1", latestRevisionNumber: 1 });
+    const remote = { ...local, title: "Remote title", body: "Remote body", latestRevisionId: "r2", latestRevisionNumber: 2 };
+    const listDocuments = vi.fn(async () => [local]);
+    const upsertDocument = vi.fn().mockRejectedValue(new ApiError("Document changed", 409, {}));
+    const getDocument = vi.fn(async () => remote);
+    const subject = {
+      id: "case-locale", documentsQueryKey: ["locale-documents"], idleDocumentRevisionsQueryKey: ["locale-revisions-idle"],
+      documentRevisionsQueryKey: (key: string) => ["locale-revisions", key],
+      listDocuments, listDocumentRevisions: vi.fn(async () => []), getDocument, upsertDocument, annotations: null,
+    };
+    const root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+    try {
+      await act(async () => root.render(<QueryClientProvider client={queryClient}><IssueDocumentsSection subject={subject} canDeleteDocuments={false} forceEditDocumentKey="report" /></QueryClientProvider>));
+      await flush();
+      await flush();
+      const input = container.querySelector<HTMLInputElement>('input[placeholder="Optional title"]')!;
+      expect(input).not.toBeNull();
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "My <literal> & draft");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await act(async () => input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", ctrlKey: true, bubbles: true })));
+      await flush();
+      await flush();
+      expect(upsertDocument).toHaveBeenCalledExactlyOnceWith("report", { title: "My <literal> & draft", format: "markdown", body: local.body, baseRevisionId: "r1" });
+      expect(getDocument).toHaveBeenCalledExactlyOnceWith("report");
+      await act(async () => { queryClient.setQueryData(["locale-documents"], [remote]); });
+      expect(container.textContent).toContain("Out of date");
+      const editor = container.querySelector('[data-testid="markdown-editor"]');
+      vi.useFakeTimers();
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Версия устарела");
+      expect(container.textContent).toContain("Remote body");
+      expect(container.querySelector('input[placeholder="Необязательный заголовок"]')).toBe(input);
+      expect(input.value).toBe("My <literal> & draft");
+      expect(container.querySelector('[data-testid="markdown-editor"]')).toBe(editor);
+      expect(editor?.textContent).toBe(local.body);
+      await act(async () => { await vi.advanceTimersByTimeAsync(1000); await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Out of date");
+      expect(upsertDocument).toHaveBeenCalledTimes(1);
+      expect(input.value).toBe("My <literal> & draft");
+    } finally {
+      vi.useRealTimers();
+      await act(async () => root.unmount());
+      await i18n.changeLanguage("en");
+      queryClient.clear();
+    }
+  });
+
 });

@@ -97,6 +97,22 @@ pnpm exec vitest run ui/src/pages/apps/Browse.test.tsx ui/src/pages/apps/AppsCon
 pnpm exec playwright test -c tests/e2e/playwright.config.ts tests/e2e/connection-intents.spec.ts
 ```
 
+The shared [instruction editor checks](../../ui/src/features/connections/ConnectionInstructions.test.tsx)
+cover live English/Russian captions while retaining raw provider names, template
+text and unsaved edits. Existing AppsConnect cases preserve the exact Honcho
+instruction payload and optional Notion template. This coverage does not translate
+template prose or establish live connector setup.
+
+The GitHub setup locale cases in AppsConnect preserve a pending OAuth request,
+access selection, the token input node, draft, focus and selection through
+English/Russian changes. Owned URL failures change language without another
+request or navigation; provider diagnostics and literal names remain unchanged.
+The [registry display contract](../../ui/src/lib/github-connection-display.test.ts)
+checks built-in provenance, raw custom/unknown captions and upstream copy drift.
+The real PostgreSQL [gallery-route fixture](../../server/src/__tests__/remote-mcp-connectors.test.ts)
+checks serialized built-in metadata and removal of a spoofed plugin marker.
+These checks do not qualify a live GitHub grant, callback or tool execution.
+
 Manual: connect from an unconnected provider landing. Select the intended
 identity and agent access, complete authentication, reload, and inspect the
 saved connection. Run a permitted read-only action with an eligible agent and

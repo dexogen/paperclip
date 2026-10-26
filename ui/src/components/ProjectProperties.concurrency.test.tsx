@@ -8,6 +8,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProjectProperties } from "./ProjectProperties";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { setLocale } from "@/i18n";
 import { queryKeys } from "../lib/queryKeys";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -170,4 +171,43 @@ describe("ProjectProperties — workspace storage selection", () => {
     expect(container.querySelector('[role="alert"]')?.textContent).toContain("Select a storage provider");
     expect(storageSelect().disabled).toBe(false);
   });
+});
+
+it("keeps project field drafts, policy IDs and a validation receipt through EN/RU/EN", async () => {
+  const update = vi.fn();
+  const project = makeProject({ name: "Raw <b>project</b>", executionWorkspacePolicy: { enabled:true,defaultMode:"shared_workspace",sharedWorkspaceConcurrency:"serialize" } });
+  render(project, update);
+  const name = container.querySelector<HTMLInputElement>('[placeholder="Project name"]')!;
+  act(() => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(name,"Dirty <i>project</i>");name.dispatchEvent(new Event("input",{bubbles:true})); });
+  name.focus();name.setSelectionRange(2,5);
+  const calls = update.mock.calls.length;
+  const select = concurrencySelect();
+  try {
+    await setLocale("ru");act(()=>{});
+    expect(container.querySelector('[placeholder="Название проекта"]')).toBe(name);
+    expect(document.activeElement).toBe(name);
+    expect([name.selectionStart,name.selectionEnd]).toEqual([2,5]);
+    expect(name.value).toBe("Dirty <i>project</i>");
+    expect(container.querySelector('[aria-label="Параллельная работа в общем рабочем пространстве"]')).toBe(select);
+    expect(select.value).toBe("serialize");
+    expect(update).toHaveBeenCalledTimes(calls);
+    act(()=>{ select.value="allow";select.dispatchEvent(new Event("change",{bubbles:true})); });
+    expect(update).toHaveBeenLastCalledWith("execution_workspace_shared_concurrency",{executionWorkspacePolicy:{enabled:true,defaultMode:"shared_workspace",sharedWorkspaceConcurrency:"allow"}});
+    await setLocale("en");act(()=>{});
+    const setLocal=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent?.trim()==="Set local folder")!;
+    act(()=>setLocal.click());
+    const path=container.querySelector<HTMLInputElement>('[placeholder="/absolute/path/to/workspace"]')!;
+    act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(path,"relative/path");path.dispatchEvent(new Event("input",{bubbles:true}));});
+    act(()=>[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent?.trim()==="Save")!.click());
+    expect(container.textContent).toContain("Local folder must be a full absolute path.");
+    path.focus();path.setSelectionRange(1,4);
+    const afterAction=update.mock.calls.length;
+    await setLocale("ru");act(()=>{});
+    expect(container.textContent).toContain("Укажите полный абсолютный путь к локальной папке.");
+    expect(container.querySelector('[placeholder="/absolute/path/to/workspace"]')).toBe(path);
+    expect(path.value).toBe("relative/path");
+    expect(document.activeElement).toBe(path);
+    expect([path.selectionStart,path.selectionEnd]).toEqual([1,4]);
+    expect(update).toHaveBeenCalledTimes(afterAction);
+  } finally {await setLocale("en");act(()=>{});}
 });

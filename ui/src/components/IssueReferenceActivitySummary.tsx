@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { ActivityEvent } from "@paperclipai/shared";
 import { Plus, Minus } from "lucide-react";
 import { IssueReferencePill } from "./IssueReferencePill";
@@ -16,11 +17,13 @@ function readIssueReferences(details: Record<string, unknown> | null | undefined
 
 function Section({
   label,
+  kind,
   icon,
   items,
   strikethrough,
 }: {
   label: string;
+  kind: "added" | "removed";
   icon: React.ReactNode;
   items: ActivityIssueReference[];
   strikethrough?: boolean;
@@ -37,7 +40,7 @@ function Section({
       </span>
       {items.map((issue) => (
         <IssueReferencePill
-          key={`${label}:${issue.id}`}
+          key={`${kind}:${issue.id}`}
           strikethrough={strikethrough}
           issue={{
             id: issue.id,
@@ -51,6 +54,7 @@ function Section({
 }
 
 export function IssueReferenceActivitySummary({ event }: { event: Pick<ActivityEvent, "details"> }) {
+  const { t } = useTranslation();
   const added = readIssueReferences(event.details, "addedReferencedIssues");
   const removed = readIssueReferences(event.details, "removedReferencedIssues");
   if (added.length === 0 && removed.length === 0) return null;
@@ -58,12 +62,14 @@ export function IssueReferenceActivitySummary({ event }: { event: Pick<ActivityE
   return (
     <div className="mt-2 space-y-1">
       <Section
-        label="Added references"
+        kind="added"
+        label={t("activityUi.references.added")}
         icon={<Plus className="h-3 w-3 text-green-600 dark:text-green-400" aria-hidden="true" />}
         items={added}
       />
       <Section
-        label="Removed references"
+        kind="removed"
+        label={t("activityUi.references.removed")}
         icon={<Minus className="h-3 w-3 text-red-600 dark:text-red-400" aria-hidden="true" />}
         items={removed}
         strikethrough

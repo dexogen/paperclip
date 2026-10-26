@@ -1,3 +1,4 @@
+import type { WorkspaceCloseMessage, WorkspaceCloseActionDisplay } from "../types/workspace-runtime.js";
 import { z } from "zod";
 import {
   WORKSPACE_OVERVIEW_DEFAULT_LIMIT,
@@ -70,7 +71,28 @@ export const executionWorkspaceCloseActionKindSchema = z.enum([
   "remove_local_directory",
 ]);
 
+const workspaceCloseMessageSchema = z.discriminatedUnion("code", [
+  z.object({ code: z.enum(["no_local_path", "git_unverified", "shared_session", "storage_unavailable"]) }).strict(),
+  z.object({ code: z.enum(["missing_path", "keep_project_directory"]), params: z.object({ path: z.string() }).strict() }).strict(),
+  z.object({ code: z.enum(["git_inspection_failed", "git_status_failed"]), params: z.object({ path: z.string(), error: z.string() }).strict() }).strict(),
+  z.object({ code: z.literal("git_comparison_failed"), params: z.object({ baseRef: z.string(), error: z.string() }).strict() }).strict(),
+  z.object({ code: z.enum(["open_issues", "shared_open_issues", "stop_services", "dirty_files", "untracked_files"]), params: z.object({ count: z.number().int().nonnegative() }).strict() }).strict(),
+  z.object({ code: z.enum(["ahead", "behind"]), params: z.object({ count: z.number().int().nonnegative(), baseRef: z.string().nullable() }).strict() }).strict(),
+]) satisfies z.ZodType<WorkspaceCloseMessage>;
+
+const workspaceCloseIndexedMessageSchema = z.object({
+  index: z.number().int().nonnegative(),
+  message: workspaceCloseMessageSchema,
+}).strict();
+
+const workspaceCloseActionDisplaySchema = z.discriminatedUnion("code", [
+  z.object({ code: z.enum(["archive_record", "workspace_cleanup", "project_cleanup", "teardown_command", "remove_provider_workspace", "git_branch_delete"]) }).strict(),
+  z.object({ code: z.literal("stop_runtime_services"), params: z.object({ count: z.number().int().nonnegative(), serviceName: z.string().nullable() }).strict() }).strict(),
+  z.object({ code: z.enum(["git_worktree_remove", "remove_local_directory"]), params: z.object({ path: z.string() }).strict() }).strict(),
+]) satisfies z.ZodType<WorkspaceCloseActionDisplay>;
+
 export const executionWorkspaceCloseActionSchema = z.object({
+  display: workspaceCloseActionDisplaySchema.optional(),
   kind: executionWorkspaceCloseActionKindSchema,
   label: z.string(),
   description: z.string(),
@@ -132,6 +154,10 @@ export const workspaceRuntimeServiceSchema = z.object({
   updatedAt: z.coerce.date(),
 }).strict();
 export const executionWorkspaceCloseReadinessSchema = z.object({
+  messageDescriptors: z.object({
+    blockingReasons: z.array(workspaceCloseIndexedMessageSchema),
+    warnings: z.array(workspaceCloseIndexedMessageSchema),
+  }).strict().optional(),
   workspaceId: z.string().guid(),
   deliveryState: executionWorkspaceDeliveryStateSchema,
   state: executionWorkspaceCloseReadinessStateSchema,

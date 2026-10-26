@@ -9,7 +9,10 @@ import type {
   ToolProfileEffectiveSummary,
 } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createElement } from "react";
+import { act as reactAct, createElement } from "react";
+import { i18n } from "@/i18n";
+import { AgentToolsTab, mergeInstallDraft } from "./AgentToolsTab";
+import { queryKeys } from "../lib/queryKeys";
 
 const mockToolsApi = vi.hoisted(() => ({
   getEffectiveProfilesForAgent: vi.fn(),
@@ -105,7 +108,8 @@ describe("AgentToolsTab", () => {
   let container: HTMLDivElement;
   let root: ReturnType<typeof createRoot>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     mockToolsApi.getEffectiveProfilesForAgent.mockReset();
@@ -129,13 +133,13 @@ describe("AgentToolsTab", () => {
       root?.unmount();
     });
     container.remove();
+    await i18n.changeLanguage("en");
     vi.clearAllMocks();
   });
 
-  async function renderTab() {
-    const { AgentToolsTab } = await import("./AgentToolsTab");
+  async function renderTab(agentName = "Coder") {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-    const agent = { id: "agent-1", name: "Coder" } as never;
+    const agent = { id: "agent-1", name: agentName } as never;
     await act(async () => {
       root = createRoot(container);
       root.render(
@@ -147,11 +151,10 @@ describe("AgentToolsTab", () => {
       );
     });
     await flushReact();
+    return client;
   }
 
   it("preserves checkbox changes made after the last saved install state", async () => {
-    const { mergeInstallDraft } = await import("./AgentToolsTab");
-
     expect(
       mergeInstallDraft(
         { "conn-1": true, "conn-2": false },
@@ -237,6 +240,7 @@ describe("AgentToolsTab", () => {
           enabled: true,
           selectors: { agentId: "someone-else" },
         }),
+        makePolicy({ id: "pol-custom", name: "allow", description: "Saved", policyType: "constructor" as ToolPolicy["policyType"] }),
       ],
     });
     mockToolsApi.listCatalog.mockResolvedValue({ catalog: [allowed, denied] });
@@ -258,6 +262,16 @@ describe("AgentToolsTab", () => {
     expect(text).not.toContain("Block other agent");
     // Unavailable tool surfaced from the full tool list minus allowed.
     expect(text).toContain("github.delete_repo");
+    const profile = container.querySelector('a[href="/apps/advanced/profiles/prof-1"]');
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Требовать согласования");
+    expect(container.textContent).toContain("constructor");
+    expect(container.textContent).toContain("#3 allow");
+    expect(container.textContent).toContain("Saved");
+    expect(container.textContent).toContain("All write tools need board approval");
+    expect(container.querySelector('a[href="/apps/advanced/profiles/prof-1"]')).toBe(profile);
+    expect(profile?.textContent).toBe("GitHub safe");
+    expect(mockToolsApi.putConnectionInstalls).not.toHaveBeenCalled();
   });
 
   it("shows the empty allow-list message when no profile applies", async () => {
@@ -338,6 +352,14 @@ describe("AgentToolsTab", () => {
     expect(text).toContain("takes precedence over the responsible person's GitHub");
     expect(container.querySelector('a[href="/apps/conn-github/permissions"]')?.textContent).toBe("Manage GitHub identity");
     expect(text).not.toContain("Connect my GitHub");
+    const reads = mockToolsApi.listConnectionGrants.mock.calls.length;
+    const link = container.querySelector('a[href="/apps/conn-github/permissions"]');
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("@dottabot");
+    expect(container.textContent).toContain("имеет приоритет перед GitHub ответственного за задачу");
+    expect(container.querySelector('a[href="/apps/conn-github/permissions"]')).toBe(link);
+    expect(link?.textContent).toBe("Настроить учётную запись GitHub");
+    expect(mockToolsApi.listConnectionGrants).toHaveBeenCalledTimes(reads);
   });
 
   it("does not display a grant from a disabled or uninstalled GitHub connection", async () => {
@@ -406,41 +428,109 @@ describe("AgentToolsTab", () => {
     expect(text).toContain("Your existing setup was not changed");
     expect(text).not.toContain("Connect my GitHub");
     expect(Array.from(container.querySelectorAll("button")).some((button) => button.textContent === "Retry")).toBe(true);
+    const readCount = mockToolsApi.listConnectionGrants.mock.calls.length;
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Не удалось загрузить учётную запись GitHub");
+    expect(mockToolsApi.listConnectionGrants).toHaveBeenCalledTimes(readCount);
+    mockToolsApi.listConnectionGrants.mockResolvedValue({ grants: [], currentUserId: "user-1", members: [], capabilities: {} });
+    await reactAct(async () => { Array.from(container.querySelectorAll("button")).find((button) => button.textContent === "Повторить")!.click(); });
+    await vi.waitFor(() => expect(container.textContent).toContain("Подключить мой GitHub"));
+    expect(mockToolsApi.listConnectionGrants).toHaveBeenCalledTimes(readCount + 1);
+    expect(mockToolsApi.listConnectionGrants).toHaveBeenLastCalledWith("conn-github");
+    expect(mockToolsApi.putConnectionInstalls).not.toHaveBeenCalled();
   });
 
-  it("autosaves installed apps for the current agent", async () => {
-    const allowed = makeCatalogEntry({ id: "cat-allow", toolName: "github.read_repo" });
-    mockToolsApi.getEffectiveProfilesForAgent.mockResolvedValue({
-      agentId: "agent-1",
-      profiles: [],
-      entries: [],
-      bindings: [],
-      allowedTools: [allowed],
-      allowedToolNames: ["github.read_repo"],
-      installedConnections: [],
-    } satisfies ToolProfileEffectiveSummary);
-    mockToolsApi.listConnections.mockResolvedValue({
-      connections: [{ id: "conn-1", companyId: "company-1", name: "Production GitHub", installs: [] }],
-    });
+  it("renders Russian counts for the actual allowed tool rows without changing their identities", async () => {
+    const effective = { agentId: "agent-1", profiles: [], entries: [], bindings: [], allowedTools: [] as ToolCatalogEntry[], allowedToolNames: [] as string[], installedConnections: [] } satisfies ToolProfileEffectiveSummary;
+    mockToolsApi.getEffectiveProfilesForAgent.mockResolvedValue(effective);
+    mockToolsApi.listConnections.mockResolvedValue({ connections: [] });
     mockToolsApi.listPolicies.mockResolvedValue({ policies: [] });
-    mockToolsApi.listCatalog.mockResolvedValue({ catalog: [allowed] });
+    const client = await renderTab();
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    for (const [count, phrase] of [[1, "1 инструмент"], [2, "2 инструмента"], [5, "5 инструментов"], [21, "21 инструмент"]] as const) {
+      const tools = Array.from({ length: count }, (_, index) => makeCatalogEntry({ id: `tool-${index}`, toolName: `tool.${index}`, title: "Read <strong>raw</strong>" }));
+      await reactAct(async () => { client.setQueryData(queryKeys.tools.effectiveProfilesForAgent("company-1", "agent-1"), { ...effective, allowedTools: tools, allowedToolNames: tools.map((tool) => tool.toolName) }); });
+      await vi.waitFor(() => expect(container.querySelectorAll("tbody tr")).toHaveLength(count));
+      const heading = Array.from(container.querySelectorAll("h3")).find((item) => item.textContent === "Разрешённые инструменты")!;
+      expect(heading.parentElement?.textContent).toBe(`Разрешённые инструменты${phrase}`);
+      expect(container.textContent).toContain("Read <strong>raw</strong>");
+      expect(container.querySelectorAll("strong")).toHaveLength(0);
+    }
+    const firstRow = container.querySelector("tbody tr");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("21 tools");
+    expect(container.querySelector("tbody tr")).toBe(firstRow);
+    expect(mockToolsApi.getEffectiveProfilesForAgent).toHaveBeenCalledOnce();
+    expect(mockToolsApi.putConnectionInstalls).not.toHaveBeenCalled();
+  });
 
-    await renderTab();
-
-    expect(container.textContent).toContain("Installed apps");
-    expect(container.textContent).toContain("Permitted only");
+  it("preserves pending and queued install drafts across locales without retrying a failed draft", async () => {
+    const agentName = "Coder <strong>A&B</strong>";
+    const appName = "Production <strong>GitHub</strong>";
+    const allowed = [
+      makeCatalogEntry({ id: "cat-1", connectionId: "conn-1" }),
+      makeCatalogEntry({ id: "cat-2", connectionId: "conn-2", toolName: "service.write", title: "Installed" }),
+      makeCatalogEntry({ id: "cat-all", connectionId: "conn-all", toolName: "service.shared" }),
+    ];
+    let connections = [
+      { id: "conn-1", companyId: "company-1", name: appName, installs: [] as Array<{ targetType: string; targetId: string }> },
+      { id: "conn-2", companyId: "company-1", name: "Saved", installs: [] as Array<{ targetType: string; targetId: string }> },
+      { id: "conn-all", companyId: "company-1", name: "All Agents", installs: [{ targetType: "company", targetId: "company-1" }] },
+    ];
+    mockToolsApi.getEffectiveProfilesForAgent.mockResolvedValue({
+      agentId: "agent-1", profiles: [], entries: [], bindings: [], allowedTools: allowed,
+      allowedToolNames: allowed.map((tool) => tool.toolName), installedConnections: [],
+    } satisfies ToolProfileEffectiveSummary);
+    mockToolsApi.listConnections.mockImplementation(async () => ({ connections }));
+    mockToolsApi.listPolicies.mockResolvedValue({ policies: [] });
+    mockToolsApi.listCatalog.mockImplementation(async (connectionId: string) => ({ catalog: allowed.filter((tool) => tool.connectionId === connectionId) }));
+    let completeFirst!: () => void;
+    let failSecond!: (cause: unknown) => void;
+    mockToolsApi.putConnectionInstalls
+      .mockImplementationOnce(() => new Promise<void>((resolve) => { completeFirst = resolve; }))
+      .mockImplementationOnce(() => new Promise<void>((_resolve, reject) => { failSecond = reject; }));
+    await renderTab(agentName);
+    const first = container.querySelector<HTMLElement>(`[aria-label="Install ${appName} on ${agentName}"]`)!;
+    const second = container.querySelector<HTMLElement>(`[aria-label="Install Saved on ${agentName}"]`)!;
+    const all = container.querySelector<HTMLElement>(`[aria-label="Install All Agents on ${agentName}"]`)!;
+    expect(first).toBeTruthy();
+    expect(second).toBeTruthy();
+    expect(all.hasAttribute("disabled")).toBe(true);
     expect(container.textContent).toContain("Permitted but not installed — tools will not appear in runs.");
     expect(container.querySelector('a[href="/apps/conn-1/permissions"]')?.textContent).toBe("Open permissions");
-    const installCheckbox = container.querySelector<HTMLElement>('[aria-label="Install Production GitHub on Coder"]');
-    expect(installCheckbox).toBeTruthy();
-    await act(async () => {
-      installCheckbox!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-      await new Promise((resolve) => window.setTimeout(resolve, 300));
-    });
-    await flushReact();
-
-    expect(mockToolsApi.putConnectionInstalls).toHaveBeenCalledWith("conn-1", [
-      { targetType: "agent", targetId: "agent-1" },
-    ]);
+    expect(mockToolsApi.putConnectionInstalls).not.toHaveBeenCalled();
+    await reactAct(async () => { first.click(); });
+    await vi.waitFor(() => expect(mockToolsApi.putConnectionInstalls).toHaveBeenCalledTimes(1));
+    expect(mockToolsApi.putConnectionInstalls).toHaveBeenNthCalledWith(1, "conn-1", [{ targetType: "agent", targetId: "agent-1" }]);
+    await reactAct(async () => { second.click(); });
+    const reads = [mockToolsApi.listConnections.mock.calls.length, mockToolsApi.getEffectiveProfilesForAgent.mock.calls.length, mockToolsApi.listPolicies.mock.calls.length, mockToolsApi.listCatalog.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Установленные приложения");
+    expect(first.getAttribute("aria-label")).toBe(`Установить «${appName}» для агента «${agentName}»`);
+    expect(first.isConnected).toBe(true);
+    expect(second.isConnected).toBe(true);
+    expect(second.getAttribute("data-state")).toBe("checked");
+    expect(container.querySelectorAll("strong")).toHaveLength(0);
+    expect(container.textContent).toContain(agentName);
+    expect(container.textContent).toContain(appName);
+    expect(container.textContent).toContain("Installed");
+    expect(all.hasAttribute("disabled")).toBe(true);
+    await reactAct(async () => { await i18n.changeLanguage("en"); await new Promise((resolve) => window.setTimeout(resolve, 300)); });
+    expect(mockToolsApi.putConnectionInstalls).toHaveBeenCalledTimes(1);
+    expect([mockToolsApi.listConnections.mock.calls.length, mockToolsApi.getEffectiveProfilesForAgent.mock.calls.length, mockToolsApi.listPolicies.mock.calls.length, mockToolsApi.listCatalog.mock.calls.length]).toEqual(reads);
+    connections = connections.map((connection) => connection.id === "conn-1" ? { ...connection, installs: [{ targetType: "agent", targetId: "agent-1" }] } : connection);
+    await reactAct(async () => { completeFirst(); });
+    await vi.waitFor(() => expect(mockToolsApi.putConnectionInstalls).toHaveBeenCalledTimes(2));
+    expect(mockToolsApi.putConnectionInstalls).toHaveBeenNthCalledWith(2, "conn-2", [{ targetType: "agent", targetId: "agent-1" }]);
+    await reactAct(async () => { await i18n.changeLanguage("ru"); failSecond(null); });
+    await vi.waitFor(() => expect(container.textContent).toContain("Не удалось сохранить"));
+    expect(second.getAttribute("data-state")).toBe("checked");
+    const readsAfterFailure = mockToolsApi.listConnections.mock.calls.length;
+    await reactAct(async () => { await i18n.changeLanguage("en"); await new Promise((resolve) => window.setTimeout(resolve, 300)); });
+    expect(container.textContent).toContain("Could not save");
+    expect(mockToolsApi.putConnectionInstalls).toHaveBeenCalledTimes(2);
+    expect(mockToolsApi.listConnections).toHaveBeenCalledTimes(readsAfterFailure);
+    expect(second.isConnected).toBe(true);
+    expect(all.hasAttribute("disabled")).toBe(true);
   });
 });

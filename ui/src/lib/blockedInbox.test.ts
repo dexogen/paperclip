@@ -1,5 +1,6 @@
 // @vitest-environment node
 
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import type {
   Issue,
@@ -272,4 +273,32 @@ describe("blockedInbox", () => {
     expect(formatStoppedAge("2026-05-07T00:00:00.000Z", now)).toBe("stopped 3d");
     expect(formatStoppedAge("2026-04-15T00:00:00.000Z", now)).toBe("stopped 3w");
   });
+});
+
+describe("blocked locale presentation", () => {
+  it("keeps machine reasons and severity while searching the displayed Russian variant", () => {
+    const issue = makeIssue({ id: "literal-id", title: "User <tag>title</tag>" }, makeAttention({ reason: "open_recovery_issue" }));
+    const en = buildBlockedInboxRows([issue]);
+    const ru = buildBlockedInboxRows([issue], i18n.getFixedT("ru"));
+    expect(ru[0]!.issue).toBe(issue);
+    expect(ru[0]!.attention).toBe(en[0]!.attention);
+    expect(ru[0]!.variant).toBe("recovery_required");
+    expect(blockedRowMatchesSearch(ru[0]!, "Требуется восстановление", i18n.getFixedT("ru"))).toBe(true);
+    expect(groupBlockedInboxRows(ru, "urgency", i18n.getFixedT("ru"))[0]!.variant).toBe("recovery_required");
+  });
+  it.each([1, 2, 5, 21])("formats stopped minutes %s without changing the time bucket", (count) => {
+    const now = Date.parse("2026-10-26T12:00:00Z");
+    const stopped = new Date(now - count * 60_000).toISOString();
+    expect(formatStoppedAge(stopped, now)).toBe(`stopped ${count}m`);
+    expect(formatStoppedAge(stopped, now, i18n.getFixedT("ru"))).toBe(`без работы ${count} мин`);
+  });
+});
+
+it.each(["Needs decision", "Нужно решение", "Pending board decision", "Ожидается решение оператора"])("retains reason search IDs across EN/RU/EN for %s", (query) => {
+  const issues = [makeIssue({ id: "decision" }, makeAttention({ reason: "pending_board_decision" })), makeIssue({ id: "recovery" }, makeAttention({ reason: "open_recovery_issue" }))];
+  for (const language of ["en", "ru", "en"]) {
+    const t = i18n.getFixedT(language);
+    const rows = buildBlockedInboxRows(issues, t);
+    expect(rows.filter((row) => blockedRowMatchesSearch(row, query, t)).map((row) => row.issue.id)).toEqual(["decision"]);
+  }
 });

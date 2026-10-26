@@ -39,7 +39,7 @@ Open `/issues` or a project’s Issues view; legacy `/tasks` links redirect.
 
 ### `task-detail`
 
-Open `/issues/:issueId` from a row, mention, or direct link.
+Open `/issues/:issueId` from a row, mention, or direct link. Cold opens show the instruction and recent exchange first. **More messages** loads earlier messages and run activity; incoming messages remain visible while the task stays open.
 
 ### `task-sharing`
 
@@ -81,13 +81,48 @@ Use a human/unassigned task to verify persistence without invoking a model.
 
 Automated: [task-list helpers](../../ui/src/pages/Issues.test.tsx) cover search URLs, pagination, deduplication, and presentation constants. The suite does not render the page or exercise filtering, grouping, opening a task, and returning; those interactions still need a running-browser check.
 
+[List](../../ui/src/components/IssuesList.test.tsx),
+[board](../../ui/src/components/KanbanBoard.test.tsx),
+[columns](../../ui/src/components/IssueColumns.test.tsx), and
+[display boundaries](../../ui/src/lib/task-display-localization.test.tsx) cover
+English/Russian presentation with fixtures. In a browser, repeat the organize
+journey with both standard and legacy task lists: switch language with a search
+or column/status menu open, retain the entered text and selected view, then make
+one explicit authorized change and verify its canonical value after reload.
+Inspect narrow layouts and keyboard drag announcements separately. Component
+results do not establish full-stack persistence or a complete Russian detail page.
+
 Manual: Seed human-created, agent-created, scheduled routine, human-initiated chat-channel, and creator-less tasks. Confirm automation is hidden by default, **show agent-created tasks** reveals it, reload preserves the choice, and Clear filters hides it again. Verify list and board search with automation newer than the human results, and expand contextual ancestors/subtasks without promoting unrelated automated roots. Repeat in project task lists. Agent profiles and task-detail subtasks retain complete history.
 
 Manual: Filter by status and assignee, change grouping/sort, open a task, and return. Verify the correct records and selected view survive navigation and reload. Include an empty result and a failed request.
 
 ### `task-detail`
 
-Automated: [task detail](../../ui/src/pages/IssueDetail.test.tsx) covers component behavior, while [issue service](../../server/src/__tests__/issues-service.test.ts) covers server contracts.
+Manual: Open a long task with slow historical requests. Read the instruction and recent reply before those requests finish. Edit the title/status while enrichment is pending and verify saves and rollbacks. Expand **More messages**, verify scroll position and no duplicate replies, return to the task, and follow an older comment link. Leave a task open across new messages and runs and confirm none disappear. Reconnect after several turns and verify watched runs settle. Reopen after steering with more than 50 newer activity rows; the delivered message must not reappear in the queue.
+
+Automated: [cold-open reads](../../server/src/__tests__/task-cold-open.test.ts) cover bounded reads, event filtering and company denial. [Task detail](../../ui/src/pages/IssueDetail.test.tsx) covers component behavior, while [issue service](../../server/src/__tests__/issues-service.test.ts) covers server contracts.
+
+Russian presentation covers the task-detail shell, properties, sharing/privacy,
+relations, subtask controls and common editors. Component locale regressions in
+the task-detail suite, [sharing sheet](../../ui/src/components/IssueShareSheet.test.tsx),
+[task tree](../../ui/src/components/TaskTreeControls.test.tsx),
+[inline editor](../../ui/src/components/InlineEditor.test.tsx) and
+[Markdown renderer](../../ui/src/components/MarkdownBody.rerender.test.tsx)
+check preserved drafts, literal names, selected items, markup, and explicit
+mutation counts. These checks use mocked requests. They do not prove live
+persistence, privacy isolation or complete translation of unconverted child
+panels. In a live check, switch languages with an unsaved draft
+and sharing dialog open, then save one intended change and reload it separately.
+
+The standard and classic thread component suites also exercise English/Russian
+changes with dirty composer text, pending attachment uploads and selected
+controls. Protocol and resource tests retain raw provider content, stable message
+identity and exact decision payloads. Run ledger, inspector and transcript tests
+keep selected IDs, expanded details and explicit diagnostic-access controls.
+In a live discussion check, repeat the locale switch in both thread variants,
+submit one intended message with its attachment, then reload and inspect the
+saved body and receipt. Test provider execution and authenticated trace access
+separately; these component fixtures do not prove either boundary.
 
 Failure markers have no dashed divider rules. An adjacent run error and
 no-live-execution-path notice show only the last error, with its details and

@@ -16,6 +16,9 @@ import * as executionContinuation from "../services/execution-continuation.js";
 import * as environmentOrchestrator from "../services/environment-run-orchestrator.js";
 import { remoteTerminationReceipt } from "../services/remote-execution-termination.js";
 import { legacyDispositionFingerprint, LEGACY_DISPOSITION_REPAIR_INSTRUCTION } from "../services/recovery/legacy-continuation.js";
+import * as nativeProcessStop from "../services/native-local-process-stop.js";
+import { NativeControllerDetachedForRestartError } from "../services/native-runtime/native-session-executor.js";
+import { NativeWorkspaceFinalizationBusyError } from "../services/native-runtime/native-workspace-finalization-ownership.js";
 import * as controllerLeases from "../services/legacy-controller-lease.js";
 import * as instructionWorkingCopies from "../services/agent-instruction-working-copies.js";
 import * as runEvents from "../services/heartbeat-run-events.js";
@@ -3649,7 +3652,7 @@ describeEmbeddedPostgres("heartbeat orphaned process recovery", () => {
 
   it("does not dispatch when cancellation wins after native selection", async () => {
     await withTempPaperclipHome(async () => {
-      const { agentId, issueId, runId } = await seedQueuedIssueRunFixture();
+      const { companyId, agentId, issueId, runId } = await seedQueuedIssueRunFixture();
       await db.update(agents).set({ adapterType: "paperclip_runner",
         adapterConfig: { provider: "codex", model: "gpt-5.6-luna" },
       }).where(eq(agents.id, agentId));
@@ -3662,7 +3665,11 @@ describeEmbeddedPostgres("heartbeat orphaned process recovery", () => {
           if (stage !== "dispatch") return;
           reachedDispatch = true;
           expect((await heartbeat.getRun(id))?.runtimeMode).toBe("native");
+          const [preparer] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, id));
+          expect(preparer.controllerBootId).toBe(controllerLeases.legacyControllerBootId);
+          expect(preparer.controllerLeaseExpiresAt!.getTime()).toBeGreaterThan(Date.now());
           await heartbeat.cancelRun(id);
+          expect(await heartbeat.stopInvocationsForAgents([agentId], "Owned fixture cleanup")).toBe(false);
         },
       });
       await heartbeat.resumeQueuedRuns();
@@ -3671,11 +3678,151 @@ describeEmbeddedPostgres("heartbeat orphaned process recovery", () => {
       expect(await heartbeat.getRun(runId)).toMatchObject({ status: "cancelled", runtimeMode: "native",
         resultJson: { startupPreparationSettledAt: expect.any(String) },
       });
+      const [settled] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, runId));
+      expect(settled.companyId).toBe(companyId);
+      expect(settled.controllerLeaseExpiresAt).toBeNull();
+      expect(await heartbeat.stopInvocationsForAgents([agentId], "Owned fixture cleanup")).toBe(true);
       expect(factory).not.toHaveBeenCalled();
       const [coordinator] = await db.select().from(nativeRunFinalizations).where(eq(nativeRunFinalizations.runId, runId));
       expect(coordinator).toMatchObject({ attempt: 0, leaseOwner: null });
       const [task] = await db.select().from(issues).where(eq(issues.id, issueId));
       expect(task.executionRunId).toBeNull();
+    });
+  });
+
+  it("releases the native preparer after dispatched work and verified process cleanup settle", async () => {
+    await withTempPaperclipHome(async () => {
+      const { companyId, agentId, runId } = await seedQueuedIssueRunFixture();
+      await db.update(agents).set({ adapterType: "paperclip_runner",
+        adapterConfig: { provider: "codex", model: "gpt-5.6-luna" } }).where(eq(agents.id, agentId));
+      const original = mockExecutePaperclipNativeSession.getMockImplementation();
+      const settlement = vi.spyOn(nativeProcessStop, "settleNativeRunProcess");
+      const exitedPid = 2_000_000_000;
+      expect(() => process.kill(exitedPid, 0)).toThrow();
+      mockExecutePaperclipNativeSession.mockImplementationOnce(async input => {
+        expect(input.execution.binding).toMatchObject({ companyId, agentId, runId });
+        await input.onSpawn?.({ pid: exitedPid, processGroupId: exitedPid, startedAt: new Date().toISOString() });
+        await db.update(heartbeatRuns).set({ status: "cancelled", finishedAt: new Date(),
+          runnerProfileJson: sql`coalesce(${heartbeatRuns.runnerProfileJson}, '{}'::jsonb) || '{"sessionCheckpoint":{"sessionId":"fixture-stopped-session"}}'::jsonb`,
+        }).where(eq(heartbeatRuns.id, runId));
+        await db.update(nativeRunFinalizations).set({ phase: "terminal_failure", leaseOwner: null, leaseExpiresAt: null })
+          .where(eq(nativeRunFinalizations.runId, runId));
+        throw new Error("Fixture work cancelled after native dispatch");
+      });
+      const heartbeat = heartbeatService(db);
+      try {
+        await heartbeat.resumeQueuedRuns();
+        await heartbeat.drainActiveRunExecutions();
+        expect(mockExecutePaperclipNativeSession).toHaveBeenCalledOnce();
+        expect(settlement).toHaveResolvedWith("released");
+        const [run] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, runId));
+        expect(run).toMatchObject({ companyId, status: "cancelled", runtimeMode: "native",
+          controllerBootId: controllerLeases.legacyControllerBootId, controllerLeaseExpiresAt: null,
+          processPid: null, processGroupId: null, processStartedAt: null });
+        expect(await nativeProcessStop.hasNativeLocalProcessStop(db, companyId, runId)).toBe(true);
+        expect(await heartbeat.stopInvocationsForAgents([agentId], "Owned fixture cleanup")).toBe(true);
+      } finally {
+        mockExecutePaperclipNativeSession.mockImplementation(original!);
+        settlement.mockRestore();
+      }
+    });
+  });
+
+  it.each(["delayed_release", "release_throw", "release_error", "release_pending", "runtime_error", "process_error", "process_pending", "foreign_boot", "nonterminal"] as const)(
+    "preserves native preparer ownership across cleanup boundary: %s", async scenario => {
+      await withTempPaperclipHome(async () => {
+        const { companyId, agentId, runId } = await seedQueuedIssueRunFixture();
+        await db.update(agents).set({ adapterType: "paperclip_runner",
+          adapterConfig: { provider: "codex", model: "gpt-5.6-luna" } }).where(eq(agents.id, agentId));
+        await db.update(heartbeatRuns).set({ invocationSource: "automation" }).where(eq(heartbeatRuns.id, runId));
+        const read = () => db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, runId)).then(rows => rows[0]!);
+        let release!: () => void;
+        const gate = new Promise<void>(resolve => { release = resolve; });
+        let entered!: () => void;
+        const enteredCleanup = new Promise<void>(resolve => { entered = resolve; });
+        const originalFactory = environmentOrchestrator.environmentRunOrchestrator;
+        const factory = vi.spyOn(environmentOrchestrator, "environmentRunOrchestrator").mockImplementation((...args) => {
+          const original = originalFactory(...args);
+          return { ...original, releaseForRun: async input => {
+            if (scenario === "delayed_release") { entered(); await gate; }
+            if (scenario === "release_throw") throw new Error("Fixture release failed");
+            const result = await original.releaseForRun(input);
+            if (scenario === "release_error") result.errors.push({ leaseId: "owned", error: new Error("Fixture lease failed") });
+            if (scenario === "release_pending") await db.insert(environmentLeases).values({
+              companyId, heartbeatRunId: runId, provider: "local", status: "pending_cleanup", cleanupStatus: "failed",
+            });
+            return result;
+          } };
+        });
+        const runtime = scenario === "runtime_error"
+          ? vi.spyOn(workspaceRuntime, "releaseRuntimeServicesForRun").mockRejectedValue(new Error("Fixture runtime cleanup failed")) : null;
+        const originalSettle = nativeProcessStop.settleNativeRunProcess;
+        const settle = vi.spyOn(nativeProcessStop, "settleNativeRunProcess").mockImplementation(async (...args) => {
+          if (scenario === "process_error") throw new Error("Fixture process settlement failed");
+          if (scenario === "process_pending") return "pending";
+          const result = await originalSettle(...args);
+          if (scenario === "foreign_boot") await db.update(heartbeatRuns).set({ controllerBootId: randomUUID() }).where(eq(heartbeatRuns.id, runId));
+          if (scenario === "nonterminal") await db.update(heartbeatRuns).set({ status: "running", finishedAt: null }).where(eq(heartbeatRuns.id, runId));
+          return result;
+        });
+        const provider = vi.fn(() => { throw new Error("provider must not start"); });
+        const heartbeat = heartbeatService(db, { nativeSessionBackendFactory: provider,
+          beforeChatControlRecoveryCheck: async ({ stage, runId: id }) => {
+            if (stage === "dispatch") await heartbeat.cancelRun(id);
+          },
+        });
+        try {
+          await heartbeat.resumeQueuedRuns();
+          if (scenario === "delayed_release") {
+            await enteredCleanup;
+            const preparing = await read();
+            expect(preparing.runtimeMode).toBe("native");
+            expect(preparing.controllerLeaseExpiresAt!.getTime()).toBeGreaterThan(Date.now());
+            release();
+          }
+          await heartbeat.drainActiveRunExecutions();
+          const settled = await read();
+          expect(settled.runtimeMode).toBe("native");
+          if (scenario === "delayed_release") {
+            expect(settled.controllerLeaseExpiresAt).toBeNull();
+            expect(await heartbeat.stopInvocationsForAgents([agentId], "Owned fixture cleanup")).toBe(true);
+          } else {
+            expect(settled.controllerLeaseExpiresAt!.getTime()).toBeGreaterThan(Date.now());
+            expect(await heartbeat.stopInvocationsForAgents([agentId], "Owned fixture cleanup")).toBe(false);
+          }
+          expect(provider).not.toHaveBeenCalled();
+        } finally {
+          release();
+          await heartbeat.drainActiveRunExecutions();
+          factory.mockRestore(); runtime?.mockRestore(); settle.mockRestore();
+        }
+      });
+    },
+  );
+
+  it.each(["held", "resume", "finalization"] as const)("retains the preparer lease when native %s owns unfinished execution", async mode => {
+    await withTempPaperclipHome(async () => {
+      const { agentId, runId } = await seedQueuedIssueRunFixture();
+      await db.update(agents).set({ adapterType: "paperclip_runner",
+        adapterConfig: { provider: "codex", model: "gpt-5.6-luna" } }).where(eq(agents.id, agentId));
+      const originalFactory = environmentOrchestrator.environmentRunOrchestrator;
+      const released = vi.fn();
+      const factory = vi.spyOn(environmentOrchestrator, "environmentRunOrchestrator").mockImplementation((...args) => {
+        const original = originalFactory(...args);
+        return { ...original, releaseForRun: async input => { released(); return original.releaseForRun(input); } };
+      });
+      const provider = vi.fn(() => { throw mode === "held" ? new NativeRunnerOwnershipUnverifiedError()
+        : mode === "resume" ? new NativeControllerDetachedForRestartError() : new NativeWorkspaceFinalizationBusyError(); });
+      const heartbeat = heartbeatService(db, { nativeSessionBackendFactory: provider });
+      try {
+        await heartbeat.resumeQueuedRuns();
+        await heartbeat.drainActiveRunExecutions();
+        const [run] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, runId));
+        expect(provider).toHaveBeenCalledOnce();
+        expect(run).toMatchObject({ status: "running", runtimeMode: "native", controllerBootId: controllerLeases.legacyControllerBootId });
+        expect(run.controllerLeaseExpiresAt!.getTime()).toBeGreaterThan(Date.now());
+        expect(released).not.toHaveBeenCalled();
+      } finally { factory.mockRestore(); }
     });
   });
 

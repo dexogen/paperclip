@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 /**
  * Whimsical gerunds for the live status pill when the label carries no real
  * signal ("Running"/"Working"). Two curated pools: Paperclip's analog-office
@@ -91,7 +92,42 @@ function fnv1a(str: string): number {
  * pool and each elapsed `WHIMSY_ROTATE_MS` advances one word. Same seed and
  * elapsed always yield the same word.
  */
-export function whimsyWord(seed: string, elapsedMs = 0): string {
+export function whimsyWord(seed: string, elapsedMs = 0, t?: TFunction): string {
   const tick = Math.floor(Math.max(0, elapsedMs) / WHIMSY_ROTATE_MS);
-  return WHIMSY_WORDS[(fnv1a(seed) + tick) % WHIMSY_WORDS.length];
+  const index = (fnv1a(seed) + tick) % WHIMSY_WORDS.length;
+  if (!t) return WHIMSY_WORDS[index];
+  switch (index) {
+    case 0: return t("runUi.whimsy.clipping", { defaultValue: WHIMSY_WORDS[index] });
+    case 1: return t("runUi.whimsy.brewing", { defaultValue: WHIMSY_WORDS[index] });
+    case 2: return t("runUi.whimsy.organizing", { defaultValue: WHIMSY_WORDS[index] });
+    case 3: return t("runUi.whimsy.tinkering", { defaultValue: WHIMSY_WORDS[index] });
+    case 4: return t("runUi.whimsy.sorting", { defaultValue: WHIMSY_WORDS[index] });
+    case 5: return t("runUi.whimsy.distilling", { defaultValue: WHIMSY_WORDS[index] });
+    case 6: return t("runUi.whimsy.synthesizing", { defaultValue: WHIMSY_WORDS[index] });
+    case 7: return t("runUi.whimsy.deliberating", { defaultValue: WHIMSY_WORDS[index] });
+    case 8: return t("runUi.whimsy.analyzing", { defaultValue: WHIMSY_WORDS[index] });
+    case 9: return t("runUi.whimsy.filing", { defaultValue: WHIMSY_WORDS[index] });
+    case 10: return t("runUi.whimsy.collating", { defaultValue: WHIMSY_WORDS[index] });
+    case 11: return t("runUi.whimsy.stapling", { defaultValue: WHIMSY_WORDS[index] });
+    case 12: return t("runUi.whimsy.indexing", { defaultValue: WHIMSY_WORDS[index] });
+    case 13: return t("runUi.whimsy.annotating", { defaultValue: WHIMSY_WORDS[index] });
+    case 14: return t("runUi.whimsy.drafting", { defaultValue: WHIMSY_WORDS[index] });
+    case 15: return t("runUi.whimsy.proofreading", { defaultValue: WHIMSY_WORDS[index] });
+    case 16: return t("runUi.whimsy.alphabetizing", { defaultValue: WHIMSY_WORDS[index] });
+    case 17: return t("runUi.whimsy.photocopying", { defaultValue: WHIMSY_WORDS[index] });
+    case 18: return t("runUi.whimsy.laminating", { defaultValue: WHIMSY_WORDS[index] });
+    case 19: return t("runUi.whimsy.holePunching", { defaultValue: WHIMSY_WORDS[index] });
+    case 20: return t("runUi.whimsy.bookmarking", { defaultValue: WHIMSY_WORDS[index] });
+    case 21: return t("runUi.whimsy.highlighting", { defaultValue: WHIMSY_WORDS[index] });
+    case 22: return t("runUi.whimsy.typing", { defaultValue: WHIMSY_WORDS[index] });
+    case 23: return t("runUi.whimsy.trimming", { defaultValue: WHIMSY_WORDS[index] });
+    case 24: return t("runUi.whimsy.aligning", { defaultValue: WHIMSY_WORDS[index] });
+    case 25: return t("runUi.whimsy.combining", { defaultValue: WHIMSY_WORDS[index] });
+    case 26: return t("runUi.whimsy.whiteboarding", { defaultValue: WHIMSY_WORDS[index] });
+    case 27: return t("runUi.whimsy.diagramming", { defaultValue: WHIMSY_WORDS[index] });
+    case 28: return t("runUi.whimsy.sketching", { defaultValue: WHIMSY_WORDS[index] });
+    case 29: return t("runUi.whimsy.labeling", { defaultValue: WHIMSY_WORDS[index] });
+    case 30: return t("runUi.whimsy.stickyNoting", { defaultValue: WHIMSY_WORDS[index] });
+    default: return WHIMSY_WORDS[index];
+  }
 }

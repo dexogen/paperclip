@@ -8,6 +8,7 @@ import type { Agent, AgentInstructionsBundle, AgentInstructionsFileDetail, Agent
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFileRunNotice, PromptsTab } from "./AgentDetail";
 import { queryKeys } from "../lib/queryKeys";
+import { setLocale } from "@/i18n";
 
 const mockAgentsApi = vi.hoisted(() => ({
   instructionsBundle: vi.fn(),
@@ -252,6 +253,7 @@ describe("PromptsTab instruction editor", () => {
   });
 
   afterEach(async () => {
+    await setLocale("en");
     if (root) {
       await act(async () => {
         root?.unmount();
@@ -299,6 +301,40 @@ describe("PromptsTab instruction editor", () => {
     });
     await flushReact();
   }
+
+  it("preserves the dirty instruction and pinned revision while changing its visible language", async () => {
+    const summary = makeSummary("AGENTS.md", "AGENTS.md");
+    const revision = { id: "revision:raw", entryFile: "AGENTS.md" } as NonNullable<AgentInstructionsFileDetail["revision"]>;
+    await renderPromptsTab(makeBundle("AGENTS.md", [summary]), {
+      "AGENTS.md": makeDetail(summary, "# Original", { revision }),
+    });
+    await selectInstructionMode("Edit");
+    const editor = await waitFor(() => {
+      const input = container.querySelector<HTMLTextAreaElement>('[data-testid="markdown-editor"]');
+      expect(input).not.toBeNull();
+      return input!;
+    });
+    await act(async () => {
+      editor.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }));
+      setNativeValue(editor, "# User <b>literal</b> & draft");
+    });
+    editor.focus();
+    editor.setSelectionRange(3, 8);
+    const reads = [mockAgentsApi.instructionsBundle.mock.calls.length, mockAgentsApi.instructionsFile.mock.calls.length];
+    await act(async () => setLocale("ru"));
+    expect(container.textContent).toContain("История");
+    expect(container.querySelector('[data-testid="markdown-editor"]')).toBe(editor);
+    expect(document.activeElement).toBe(editor);
+    expect([editor.selectionStart, editor.selectionEnd]).toEqual([3, 8]);
+    expect(editor.value).toBe("# User <b>literal</b> & draft");
+    expect([mockAgentsApi.instructionsBundle.mock.calls.length, mockAgentsApi.instructionsFile.mock.calls.length]).toEqual(reads);
+    expect(mockAgentsApi.saveInstructionsFile).not.toHaveBeenCalled();
+    await act(async () => setLocale("en"));
+    await act(async () => { saveAction?.(); });
+    await waitFor(() => expect(mockAgentsApi.saveInstructionsFile).toHaveBeenCalledExactlyOnceWith("agent-1", {
+      path: "AGENTS.md", content: "# User <b>literal</b> & draft", baseRevisionId: "revision:raw", clearLegacyPromptTemplate: false,
+    }, "company-1"));
+  });
 
   it("uses server markdown metadata for extensionless files and saves MarkdownEditor drafts", async () => {
     const summary = makeSummary("AGENTS", "AGENTS", {

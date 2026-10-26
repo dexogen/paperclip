@@ -1,16 +1,17 @@
 // @vitest-environment jsdom
 import { act } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot } from "react-dom/client";
-import type { HeartbeatRun } from "@paperclipai/shared";
+import type { HeartbeatRun, WorkspaceOperation } from "@paperclipai/shared";
 import { afterEach, expect, it, vi } from "vitest";
 import { LogViewer } from "./AgentDetail";
 import { LogViewer as ProductionLogViewer } from "./AgentDetail.production";
 
-const { log, events, empty } = vi.hoisted(() => ({ log: vi.fn(), events: vi.fn(async () => []), empty: [] }));
+const { log, events, empty, workspace } = vi.hoisted(() => ({ log: vi.fn(), events: vi.fn(async () => []), empty: [], workspace: { operations: [] as WorkspaceOperation[] } }));
 vi.mock("../api/heartbeats", () => ({ heartbeatsApi: { log, events } }));
 vi.mock("@tanstack/react-query", async (original) => ({
   ...await original<typeof import("@tanstack/react-query")>(),
-  useQuery: () => ({ data: empty }),
+  useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => ({ data: queryKey[2] === "workspace-operations" ? workspace.operations : empty }),
 }));
 vi.mock("../adapters", () => ({
   getUIAdapter: () => null,
@@ -21,7 +22,7 @@ vi.mock("../components/transcript/RunTranscriptView", () => ({
   RunTranscriptView: ({ entries }: { entries: Array<{ chunk: string }> }) => <div>{entries.map(line => line.chunk).join(" ")}</div>,
 }));
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); log.mockReset(); events.mockClear(); });
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); log.mockReset(); events.mockClear(); workspace.operations = []; });
 
 it.each([LogViewer, ProductionLogViewer])("retains legacy history and reads only the next offset on visibility recovery (%#)", async (Viewer) => {
   const visibility = vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
@@ -91,4 +92,51 @@ it.each([LogViewer, ProductionLogViewer])("polls logs when WebSocket constructio
     await act(async () => root.unmount());
   }
   expect(sockets[0].close).toHaveBeenCalled();
+});
+
+it("keeps a failed log receipt and raw provider errors without new reads when the locale changes", async () => {
+  vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
+  log.mockRejectedValueOnce(null);
+  const run = { id: "run:raw", companyId: "company:raw", agentId: "agent:raw", status: "succeeded", logRef: "log" } as HeartbeatRun;
+  const container = document.createElement("div"); document.body.append(container);
+  const root = createRoot(container);
+  try {
+    await act(async () => { await setLocale("en"); root.render(<LogViewer run={run} adapterType="codex_local" />); });
+    expect(container.textContent).toContain("Failed to load run log");
+    const reads = log.mock.calls.length;
+    const eventsRead = events.mock.calls.length;
+    await act(async () => { await setLocale("ru"); });
+    expect(container.textContent).toContain("Не удалось загрузить журнал запуска");
+    expect(log).toHaveBeenCalledTimes(reads); expect(events).toHaveBeenCalledTimes(eventsRead);
+    await act(async () => { await setLocale("en"); });
+    expect(container.textContent).toContain("Failed to load run log");
+    expect(log).toHaveBeenCalledTimes(reads);
+    log.mockRejectedValueOnce(new Error("Failed to load run log"));
+    await act(async () => { root.render(<LogViewer run={{ ...run, id: "run:next" }} adapterType="codex_local" />); });
+    expect(log).toHaveBeenLastCalledWith("run:next", 0, expect.any(Number));
+    await act(async () => { await setLocale("ru"); });
+    expect(container.textContent).toContain("Failed to load run log");
+    expect(container.textContent).not.toContain("Не удалось загрузить журнал запуска");
+    expect(log).toHaveBeenCalledTimes(reads + 1);
+  } finally { await act(async () => { root.unmount(); await setLocale("en"); }); container.remove(); }
+});
+
+it.each(["toString", "__proto__"])("renders unknown workspace operation status %s without using inherited object properties", async (status) => {
+  vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
+  workspace.operations = [{ id: "operation:raw", phase: "worktree_cleanup", status, startedAt: "2026-10-26T12:00:00Z", command: "echo <raw>", metadata: { branchName: "branch:raw" } } as unknown as WorkspaceOperation];
+  log.mockResolvedValue({ content: JSON.stringify({ ts: "2026-10-26T12:00:00Z", stream: "stdout", chunk: "Raw output" }) + "\n", nextOffset: 1 });
+  const run = { id: "run:raw", companyId: "company:raw", agentId: "agent:raw", status: "succeeded", logRef: "log" } as HeartbeatRun;
+  const container = document.createElement("div"); document.body.append(container); const root = createRoot(container);
+  try {
+    await act(async () => { await setLocale("en"); root.render(<LogViewer run={run} adapterType="codex_local" />); });
+    await vi.waitFor(() => expect(container.textContent).toContain("Raw output"));
+    expect(container.textContent).toContain(status.replace("_", " "));
+    expect(container.textContent).toContain("Worktree cleanup");
+    const reads = log.mock.calls.length;
+    await act(async () => { await setLocale("ru"); });
+    expect(container.textContent).toContain(status.replace("_", " "));
+    expect(container.textContent).toContain("echo <raw>");
+    expect(container.textContent).toContain("branch:raw");
+    expect(log).toHaveBeenCalledTimes(reads);
+  } finally { await act(async () => { root.unmount(); await setLocale("en"); }); container.remove(); }
 });

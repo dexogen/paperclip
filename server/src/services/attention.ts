@@ -29,6 +29,9 @@ import {
 import { deriveProjectUrlKey } from "@paperclipai/shared";
 import type {
   AttentionDecisionVerb,
+  AttentionTitleMessage,
+  AttentionWhyNowMessage,
+  AttentionJoinTitleMessage,
   AttentionFeed,
   AttentionFeedQuery,
   AttentionDetailImage,
@@ -255,8 +258,9 @@ function issueImages(imageMap: ReadonlyMap<string, AttentionDetailImage[]>, issu
   return issueId ? imageMap.get(issueId) ?? [] : [];
 }
 
-function genericDetail(summary: unknown, images: AttentionDetailImage[]): AttentionItemDetail {
-  return { kind: "generic", summaryExcerpt: excerpt(summary), images };
+function genericDetail(summary: unknown, images: AttentionDetailImage[], message?: AttentionJoinTitleMessage): AttentionItemDetail {
+  return { kind: "generic", summaryExcerpt: excerpt(summary), images,
+    ...(message ? { display: { summaryExcerpt: message } } : {}) };
 }
 
 function approvalDetail(type: string, payload: Record<string, unknown>): AttentionItemDetail {
@@ -280,6 +284,7 @@ function interactionDetail(input: {
       kind: "plan_approval",
       issueTitle: input.issue?.title ?? null,
       planTitle: input.planDocument?.title ?? "Plan",
+      ...(input.planDocument?.title == null ? { display: { planTitle: { code: "detail.plan.defaultTitle" as const } } } : {}),
       summaryExcerpt: excerpt(input.planDocument?.body ?? input.payload.detailsMarkdown ?? input.payload.prompt),
       images: input.images,
     };
@@ -652,28 +657,35 @@ function betterDuplicate(left: AttentionItem, right: AttentionItem) {
   return compareAttentionItems(left, right) <= 0 ? left : right;
 }
 
-function approvalTitle(type: string, payload: Record<string, unknown>) {
+function approvalTitle(type: string, payload: Record<string, unknown>): Pick<AttentionSubject, "title" | "display"> {
   const title = typeof payload.title === "string" ? payload.title.trim() : "";
-  if (title) return title;
+  if (title) return { title };
   const summary = typeof payload.summary === "string" ? payload.summary.trim() : "";
-  if (summary) return summary;
-  return type.replaceAll("_", " ");
+  if (summary) return { title: summary };
+  const fallback = type.replaceAll("_", " ");
+  switch (type) {
+    case "hire_agent": return { title: fallback, display: { title: { code: "title.approval.hireAgent" } } };
+    case "approve_ceo_strategy": return { title: fallback, display: { title: { code: "title.approval.ceoStrategy" } } };
+    case "budget_override_required": return { title: fallback, display: { title: { code: "title.approval.budgetOverride" } } };
+    case "request_board_approval": return { title: fallback, display: { title: { code: "title.approval.boardApproval" } } };
+    default: return { title: fallback };
+  }
 }
 
-function interactionLabel(kind: string) {
+function interactionLabel(kind: string): { label: string; title: AttentionTitleMessage; whyNow: AttentionWhyNowMessage } {
   switch (kind) {
     case "request_confirmation":
-      return "Confirmation requested";
+      return { label: "Confirmation requested", title: { code: "title.interaction.confirmation" }, whyNow: { code: "why.interaction.confirmation" } };
     case "request_checkbox_confirmation":
-      return "Selection confirmation requested";
+      return { label: "Selection confirmation requested", title: { code: "title.interaction.checkbox" }, whyNow: { code: "why.interaction.checkbox" } };
     case "ask_user_questions":
-      return "Questions need answers";
+      return { label: "Questions need answers", title: { code: "title.interaction.questions" }, whyNow: { code: "why.interaction.questions" } };
     case "suggest_tasks":
-      return "Suggested tasks need a decision";
+      return { label: "Suggested tasks need a decision", title: { code: "title.interaction.tasks" }, whyNow: { code: "why.interaction.tasks" } };
     case "request_item_verdicts":
-      return "Item verdicts need a decision";
+      return { label: "Item verdicts need a decision", title: { code: "title.interaction.verdicts" }, whyNow: { code: "why.interaction.verdicts" } };
     default:
-      return "Interaction needs a decision";
+      return { label: "Interaction needs a decision", title: { code: "title.interaction.generic" }, whyNow: { code: "why.interaction.generic" } };
   }
 }
 
@@ -683,25 +695,28 @@ function interactionVerbs(kind: string, payload: Record<string, unknown>) {
       id: "respond",
       label: "Respond",
       description: "Submit answers to the pending questions.",
+      display: { label: { code: "verb.respond" }, description: { code: "description.questions.respond" } },
     });
   }
   if (kind === "request_confirmation") {
-    const acceptLabel = typeof payload.acceptLabel === "string" && payload.acceptLabel.trim()
-      ? payload.acceptLabel.trim()
-      : "Confirm";
-    const rejectLabel = typeof payload.rejectLabel === "string" && payload.rejectLabel.trim()
-      ? payload.rejectLabel.trim()
-      : "Decline";
+    const customAcceptLabel = typeof payload.acceptLabel === "string" ? payload.acceptLabel.trim() : "";
+    const customRejectLabel = typeof payload.rejectLabel === "string" ? payload.rejectLabel.trim() : "";
+    const acceptLabel = customAcceptLabel || "Confirm";
+    const rejectLabel = customRejectLabel || "Decline";
     return decisionVerbs(
       {
         id: "accept",
         label: acceptLabel,
         description: "Accept the pending confirmation.",
+        display: { ...(!customAcceptLabel ? { label: { code: "verb.confirm" as const } } : {}),
+          description: { code: "description.confirmation.accept" } },
       },
       {
         id: "reject",
         label: rejectLabel,
         description: "Decline the pending confirmation.",
+        display: { ...(!customRejectLabel ? { label: { code: "verb.decline" as const } } : {}),
+          description: { code: "description.confirmation.reject" } },
       },
     );
   }
@@ -710,11 +725,13 @@ function interactionVerbs(kind: string, payload: Record<string, unknown>) {
       id: "accept",
       label: "Accept",
       description: "Accept the pending interaction.",
+      display: { label: { code: "verb.accept" }, description: { code: "description.interaction.accept" } },
     },
     {
       id: "reject",
       label: "Reject",
       description: "Reject the pending interaction and provide a reason when required.",
+      display: { label: { code: "verb.reject" }, description: { code: "description.interaction.reject" } },
     },
   );
 }
@@ -1234,7 +1251,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             kind: "approval",
             id: approval.id,
             companyId,
-            title,
+            ...title,
             identifier: null,
             status: approval.status,
             href: `/${prefix}/approvals/${approval.id}`,
@@ -1246,10 +1263,11 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             },
           },
           whyNow: "Approval is pending a board decision.",
+          display: { whyNow: { code: "why.approval.pending" } },
           decisionVerbs: decisionVerbs(
-            { id: "approve", label: "Approve", description: "Approve the request." },
-            { id: "reject", label: "Reject", description: "Reject the request." },
-            { id: "request_revision", label: "Request revision", description: "Send the request back for changes." },
+            { id: "approve", label: "Approve", description: "Approve the request.", display: { label: { code: "verb.approve" }, description: { code: "description.approval.approve" } } },
+            { id: "reject", label: "Reject", description: "Reject the request.", display: { label: { code: "verb.reject" }, description: { code: "description.approval.reject" } } },
+            { id: "request_revision", label: "Request revision", description: "Send the request back for changes.", display: { label: { code: "verb.requestRevision" }, description: { code: "description.approval.revision" } } },
           ),
           inlineResolvable: approval.type !== "request_board_approval",
           entryRule: "approvals.status = 'pending'",
@@ -1333,6 +1351,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
           images: issueImages(interactionImageMap, interaction.issueId),
         });
         const isPlanTarget = detail.kind === "plan_approval";
+        const interactionCopy = interactionLabel(interaction.kind);
         const dedupKey = `interaction:${interaction.id}`;
         add(createItem({
           companyId,
@@ -1341,7 +1360,10 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             kind: "interaction",
             id: interaction.id,
             companyId,
-            title: isPlanTarget && issue ? `Plan approval - ${issue.title}` : interaction.title ?? interaction.summary ?? interactionLabel(interaction.kind),
+            title: isPlanTarget && issue ? `Plan approval - ${issue.title}` : interaction.title ?? interaction.summary ?? interactionCopy.label,
+            ...(isPlanTarget && issue
+              ? { display: { title: { code: "title.planApproval" as const, args: { issueTitle: issue.title } } } }
+              : interaction.title == null && interaction.summary == null ? { display: { title: interactionCopy.title } } : {}),
             identifier: null,
             status: interaction.status,
             href: issue ? `${issueHref(prefix, issue)}#interaction-${interaction.id}` : null,
@@ -1353,7 +1375,8 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
               targetDocumentKey: isPlanTarget ? "plan" : null,
             },
           },
-          whyNow: `${interactionLabel(interaction.kind)} on an issue thread.`,
+          whyNow: `${interactionCopy.label} on an issue thread.`,
+          display: { whyNow: interactionCopy.whyNow },
           decisionVerbs: interactionVerbs(interaction.kind, payload),
           inlineResolvable: true,
           entryRule: "issue_thread_interactions.status = 'pending'",
@@ -1413,7 +1436,8 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             metadata: { originIssueId: decision.originIssueId, originAgentId: decision.originAgentId, bundleId: decision.bundleId,
               bundleTitle: decision.bundleId ? bundleTitleMap.get(decision.bundleId) ?? null : null } },
           whyNow: "An agent decision is waiting for a board response.",
-          decisionVerbs: decisionVerbs({ id: "decide", label: "Review", description: "Review and choose an option." }),
+          display: { whyNow: { code: "why.decision.pending" } },
+          decisionVerbs: decisionVerbs({ id: "decide", label: "Review", description: "Review and choose an option.", display: { label: { code: "verb.review" }, description: { code: "description.decision.review" } } }),
           inlineResolvable: true,
           entryRule: "decisions.status = 'open'",
           exitRule: "Decision is decided, expired, or cancelled.",
@@ -1455,6 +1479,9 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
         const label = join.requestType === "agent"
           ? join.agentName ?? "Agent join request"
           : join.requestEmailSnapshot ?? join.requestingUserId ?? "Human join request";
+        const titleMessage: AttentionJoinTitleMessage | undefined = join.requestType === "agent"
+          ? join.agentName == null ? { code: "title.join.agent" } : undefined
+          : join.requestEmailSnapshot == null && join.requestingUserId == null ? { code: "title.join.human" } : undefined;
         const dedupKey = `join:${join.id}`;
         add(createItem({
           companyId,
@@ -1464,6 +1491,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             id: join.id,
             companyId,
             title: label,
+            ...(titleMessage ? { display: { title: titleMessage } } : {}),
             identifier: null,
             status: join.status,
             href: `/${prefix}/settings/access`,
@@ -1474,9 +1502,10 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             },
           },
           whyNow: "Join request is pending approval.",
+          display: { whyNow: { code: "why.join.pending" } },
           decisionVerbs: decisionVerbs(
-            { id: "approve", label: "Approve", description: "Approve this join request." },
-            { id: "reject", label: "Reject", description: "Reject this join request." },
+            { id: "approve", label: "Approve", description: "Approve this join request.", display: { label: { code: "verb.approve" }, description: { code: "description.join.approve" } } },
+            { id: "reject", label: "Reject", description: "Reject this join request.", display: { label: { code: "verb.reject" }, description: { code: "description.join.reject" } } },
           ),
           inlineResolvable: true,
           entryRule: "join_requests.status = 'pending_approval'",
@@ -1487,7 +1516,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
           createdAt: toIso(join.createdAt),
           updatedAt: toIso(join.updatedAt),
           relatedIssue: null,
-          detail: genericDetail(label, []),
+          detail: genericDetail(label, [], titleMessage),
         }));
       }
 
@@ -1535,13 +1564,14 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
               recoveryIssueId: recovery.recoveryIssueId,
             },
           },
+          display: { whyNow: { code: recovery.status === "escalated" ? "why.recovery.escalated" : "why.recovery.assigned" } },
           whyNow: recovery.status === "escalated"
             ? "Recovery action escalated to a human owner."
             : "Recovery action is assigned to a human owner.",
           decisionVerbs: decisionVerbs(
-            { id: "resolve", label: "Resolve", description: "Record the recovery outcome." },
-            { id: "reassign", label: "Reassign", description: "Move the recovery to another owner." },
-            { id: "cancel", label: "Cancel", description: "Cancel the recovery action." },
+            { id: "resolve", label: "Resolve", description: "Record the recovery outcome.", display: { label: { code: "verb.resolve" }, description: { code: "description.recovery.resolve" } } },
+            { id: "reassign", label: "Reassign", description: "Move the recovery to another owner.", display: { label: { code: "verb.reassign" }, description: { code: "description.recovery.reassign" } } },
+            { id: "cancel", label: "Cancel", description: "Cancel the recovery action.", display: { label: { code: "verb.cancel" }, description: { code: "description.recovery.cancel" } } },
           ),
           inlineResolvable: false,
           entryRule: "issue_recovery_actions.status in ('active','escalated') and owner_type in ('user','board')",
@@ -1603,8 +1633,8 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             subject: issueSubject(prefix, issueSummary ?? issue),
             whyNow: descriptor.action,
             decisionVerbs: decisionVerbs(
-              { id: "unblock", label: "Unblock", description: descriptor.action },
-              { id: "reassign", label: "Reassign", description: "Route this blocked issue to another owner." },
+              { id: "unblock", label: "Unblock", description: descriptor.action, display: { label: { code: "verb.unblock" } } },
+              { id: "reassign", label: "Reassign", description: "Route this blocked issue to another owner.", display: { label: { code: "verb.reassign" }, description: { code: "description.blocker.route" } } },
             ),
             inlineResolvable: false,
             entryRule: "blocked issue has a human-owned unblockDescriptor",
@@ -1651,13 +1681,16 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
           companyId,
           sourceKind: "blocker_attention",
           subject: issueSubject(prefix, candidate.terminalSummary),
+          ...(Number.isSafeInteger(blockedTaskCount) && blockedTaskCount >= 0
+            ? { display: { whyNow: { code: candidate.state === "needs_attention" ? "why.blocker.needsAttention" as const : "why.blocker.stalled" as const, args: { count: blockedTaskCount } } } }
+            : {}),
           whyNow: candidate.state === "needs_attention"
             ? `Blocks ${blockedTaskCount} ${taskLabel} and needs human attention.`
             : `Blocks ${blockedTaskCount} ${taskLabel}; choose the next owner or action.`,
           decisionVerbs: decisionVerbs(
-            { id: "unblock", label: "Unblock", description: "Repair or replace the stalled blocker path." },
-            { id: "reassign", label: "Reassign", description: "Assign the stalled blocker to a live owner." },
-            { id: "nudge", label: "Nudge", description: "Wake or prompt the current owner." },
+            { id: "unblock", label: "Unblock", description: "Repair or replace the stalled blocker path.", display: { label: { code: "verb.unblock" }, description: { code: "description.blocker.repair" } } },
+            { id: "reassign", label: "Reassign", description: "Assign the stalled blocker to a live owner.", display: { label: { code: "verb.reassign" }, description: { code: "description.blocker.reassign" } } },
+            { id: "nudge", label: "Nudge", description: "Wake or prompt the current owner.", display: { label: { code: "verb.nudge" }, description: { code: "description.blocker.nudge" } } },
           ),
           inlineResolvable: false,
           entryRule: `terminal blocker has a non-live blockerAttention.state = '${candidate.state}'`,
@@ -1742,6 +1775,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
           subject: stalled
             ? { ...reviewSubject, metadata: { ...reviewSubject.metadata, reviewAttentionState: "stalled" } }
             : reviewSubject,
+          display: { whyNow: { code: stalled ? "why.review.stalled" : pendingApprovalId ? "why.review.approval" : hasHumanParticipant ? "why.review.participant" : "why.review.assigned" } },
           whyNow: stalled
             ? "Issue is in review without a maintained reviewer, interaction, approval, monitor, run, wake, or recovery path."
             : pendingApprovalId
@@ -1751,12 +1785,12 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
               : "Issue is in review and assigned to a user.",
           decisionVerbs: stalled
             ? decisionVerbs(
-                { id: "choose_review_path", label: "Choose review path", description: "Add a reviewer or waiting path, return the issue to work, or accept it." },
-                { id: "request_changes", label: "Request changes", description: "Return the issue to the assignee with changes requested." },
+                { id: "choose_review_path", label: "Choose review path", description: "Add a reviewer or waiting path, return the issue to work, or accept it.", display: { label: { code: "verb.chooseReviewPath" }, description: { code: "description.review.path" } } },
+                { id: "request_changes", label: "Request changes", description: "Return the issue to the assignee with changes requested.", display: { label: { code: "verb.requestChanges" }, description: { code: "description.review.changes" } } },
               )
             : decisionVerbs(
-                { id: "approve", label: "Approve", description: "Approve the review and advance the issue." },
-                { id: "request_changes", label: "Request changes", description: "Return the issue to the assignee with changes requested." },
+                { id: "approve", label: "Approve", description: "Approve the review and advance the issue.", display: { label: { code: "verb.approve" }, description: { code: "description.review.approve" } } },
+                { id: "request_changes", label: "Request changes", description: "Return the issue to the assignee with changes requested.", display: { label: { code: "verb.requestChanges" }, description: { code: "description.review.changes" } } },
               ),
           inlineResolvable: stalled,
           entryRule: stalled
@@ -1806,6 +1840,9 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             id: run.id,
             companyId,
             title: `${run.agentName} run ${run.status}`,
+            ...(run.status === "failed" || run.status === "timed_out"
+              ? { display: { title: { code: run.status === "failed" ? "title.run.failed" as const : "title.run.timedOut" as const, args: { agentName: run.agentName } } } }
+              : {}),
             identifier: null,
             status: run.status,
             href: `/${prefix}/agents/${run.agentId}/runs/${run.id}`,
@@ -1819,10 +1856,11 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             },
           },
           whyNow: "Run failed after automatic retries were exhausted.",
+          display: { whyNow: { code: "why.run.exhausted" } },
           decisionVerbs: decisionVerbs(
-            { id: "retry", label: "Retry", description: "Retry the failed run or issue." },
-            { id: "reassign", label: "Reassign", description: "Move the work to another owner." },
-            { id: "dismiss", label: "Dismiss", description: "Dismiss this failed-run attention row." },
+            { id: "retry", label: "Retry", description: "Retry the failed run or issue.", display: { label: { code: "verb.retry" }, description: { code: "description.run.retry" } } },
+            { id: "reassign", label: "Reassign", description: "Move the work to another owner.", display: { label: { code: "verb.reassign" }, description: { code: "description.run.reassign" } } },
+            { id: "dismiss", label: "Dismiss", description: "Dismiss this failed-run attention row.", display: { label: { code: "verb.dismiss" }, description: { code: "description.run.dismiss" } } },
           ),
           inlineResolvable: true,
           entryRule: "latest failed/timed_out run has a Bounded retry exhausted lifecycle event.",
@@ -1856,6 +1894,7 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             id: incident.id,
             companyId,
             title: `${incident.scopeName} budget ${incident.thresholdType === "hard" ? "hard stop" : "warning"}`,
+            display: { title: { code: incident.thresholdType === "hard" ? "title.budget.hardStop" : "title.budget.warning", args: { scopeName: incident.scopeName } } },
             identifier: null,
             status: incident.status,
             href: `/${prefix}/costs`,
@@ -1871,12 +1910,13 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
               approvalStatus: incident.approvalStatus,
             },
           },
+          display: { whyNow: { code: incident.thresholdType === "hard" ? "why.budget.hardStop" : "why.budget.warning" } },
           whyNow: incident.thresholdType === "hard"
             ? "Budget hard stop was reached."
             : "Budget crossed the 85% warning threshold.",
           decisionVerbs: decisionVerbs(
-            { id: "raise_budget_and_resume", label: "Raise budget", description: "Raise the budget and resume paused work." },
-            { id: "keep_paused", label: "Keep paused", description: "Dismiss or keep the budget stop in place." },
+            { id: "raise_budget_and_resume", label: "Raise budget", description: "Raise the budget and resume paused work.", display: { label: { code: "verb.raiseBudget" }, description: { code: "description.budget.raise" } } },
+            { id: "keep_paused", label: "Keep paused", description: "Dismiss or keep the budget stop in place.", display: { label: { code: "verb.keepPaused" }, description: { code: "description.budget.keepPaused" } } },
           ),
           inlineResolvable: true,
           entryRule: "open budget incident is hard, or soft with observed spend >= 85% of limit.",
@@ -1928,9 +1968,10 @@ export function attentionService(db: Db, serviceOptions: AttentionServiceOptions
             metadata: { role: agent.role, errorReason: agent.errorReason },
           },
           whyNow: "Agent is in error status and needs operator action or dismissal.",
+          display: { whyNow: { code: "why.agent.error" } },
           decisionVerbs: decisionVerbs(
-            { id: "inspect", label: "Inspect", description: "Inspect the agent error." },
-            { id: "dismiss", label: "Dismiss", description: "Dismiss this alert." },
+            { id: "inspect", label: "Inspect", description: "Inspect the agent error.", display: { label: { code: "verb.inspect" }, description: { code: "description.agent.inspect" } } },
+            { id: "dismiss", label: "Dismiss", description: "Dismiss this alert.", display: { label: { code: "verb.dismiss" }, description: { code: "description.agent.dismiss" } } },
           ),
           inlineResolvable: true,
           entryRule: "agents.status = 'error'",

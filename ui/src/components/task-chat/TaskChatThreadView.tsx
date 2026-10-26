@@ -1,3 +1,4 @@
+import { isRetryableFailureMarker } from "./task-chat-display";
 import { TaskBrowserActivity } from "../task-side-panel/TaskBrowserActivity";
 import { TaskChatProjectCreatedCard } from "./TaskChatProjectCreatedCard";
 import { TaskChatSkillCreatedCard } from "./TaskChatSkillCreatedCard";
@@ -101,7 +102,7 @@ function renderItem(
   onOpenBrowser?: (browserId: string) => void,
 ) {
   switch (item.kind) {
-    case "browser": return <TaskBrowserActivity browser={item.browser} label={item.label} onOpen={onOpenBrowser} />;
+    case "browser": return <TaskBrowserActivity browser={item.browser} label={item.label} labelDisplay={item.display?.label} onOpen={onOpenBrowser} />;
     case "project_created": return <TaskChatProjectCreatedCard item={item} />;
     case "skill_created": return <TaskChatSkillCreatedCard item={item} onOpen={onOpenSkill} />;
     case "message": {
@@ -326,8 +327,7 @@ export function TaskChatThreadView({
           .find(
             (item) => {
               const marker = item.kind === "marker" ? item : retryMarkers.get(item.id);
-              return marker?.variant === "interrupted" &&
-                (marker.label === "Run failed" || marker.label === "Usage limit reached");
+              return marker !== undefined && isRetryableFailureMarker(marker);
             },
           )?.id
       : undefined;
@@ -435,7 +435,7 @@ export function TaskChatThreadView({
 
 // Cheap content signature so streaming growth (text lengthening without the
 // item count changing) still advances the auto-follow key. Shared by the
-// desktop scroller above and the mobile window-scroll follow (TaskChatThread).
+// shared message scroller on desktop and mobile (TaskChatThread).
 function signatureOf(it: TaskChatItem): number {
   if (it.kind === "message") return it.text.length + (it.attachedTurn ? 1 : 0);
   if (it.kind === "thinking") return it.lines.reduce((n, l) => n + l.length, 0);

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act as reactAct, useState } from "react";
+import { i18n, useTranslation } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { buildIssueReferenceHref, buildProjectMentionHref, buildRoutineMentionHref, buildSkillMentionHref } from "@paperclipai/shared";
@@ -20,6 +22,7 @@ import {
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 
 const mdxEditorMockState = vi.hoisted(() => ({
+  imageHandlers: [] as Array<(file: File) => Promise<string>>,
   emitMountEmptyReset: false,
   emitMountParseError: false,
   emitMountSilentEmptyState: false,
@@ -195,7 +198,10 @@ vi.mock("@mdxeditor/editor", async () => {
     codeMirrorPlugin: () => ({}),
     createRootEditorSubscription$: Symbol("createRootEditorSubscription$"),
     headingsPlugin: () => ({}),
-    imagePlugin: () => ({}),
+    imagePlugin: (options: { imageUploadHandler: (file: File) => Promise<string> }) => {
+      mdxEditorMockState.imageHandlers.push(options.imageUploadHandler);
+      return {};
+    },
     linkDialogPlugin: () => ({}),
     linkPlugin: () => ({}),
     listsPlugin: () => ({}),
@@ -306,6 +312,112 @@ describe("MarkdownEditor", () => {
   let container: HTMLDivElement;
   let originalRangeRect: typeof Range.prototype.getBoundingClientRect;
 
+  it("renders an owned upload failure in the current language without recreating plugins or losing a dirty document", async () => {
+    class MissingCompany extends Error {}
+    const previousLanguage = i18n.language;
+    const changed = vi.fn();
+    let rejectUpload!: (error: unknown) => void;
+    const upload = vi.fn(() => new Promise<string>((_resolve, reject) => { rejectUpload = reject; }));
+    function Harness() {
+      const { t } = useTranslation();
+      const [value, setValue] = useState("Original draft");
+      return <MarkdownEditor value={value} onChange={(next) => { setValue(next); changed(next); }}
+        imageUploadHandler={upload}
+        renderImageUploadError={(cause) => cause instanceof MissingCompany
+          ? t("agentDetailUi.error.companyMissing")
+          : cause instanceof Error ? cause.message : t("taskDetailCommon.editor.uploadFailed")} />;
+    }
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("en"); root.render(<Harness />); });
+      await flush();
+      const editor = container.querySelector<HTMLElement>('[data-testid="mdx-editor"]')!;
+      await reactAct(async () => {
+        editor.textContent = "Dirty & literal [draft]";
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      editor.focus();
+      const selection = window.getSelection()!;
+      const range = document.createRange();
+      range.setStart(editor.firstChild!, 3); range.setEnd(editor.firstChild!, 8);
+      selection.removeAllRanges(); selection.addRange(range);
+      const imageHandler = mdxEditorMockState.imageHandlers.at(-1)!;
+      const pluginCount = mdxEditorMockState.imageHandlers.length;
+      const changeCount = changed.mock.calls.length;
+      const file = new File(["image"], "literal.png", { type: "image/png" });
+      const pending = imageHandler(file).catch((error: unknown) => error);
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      await reactAct(async () => { rejectUpload(new MissingCompany("Select an organization to upload images")); await pending; });
+      expect(container.textContent).toContain("Выберите организацию для загрузки изображений");
+      expect(container.querySelector('[data-testid="mdx-editor"]')).toBe(editor);
+      expect(editor.textContent).toBe("Dirty & literal [draft]");
+      expect(document.activeElement).toBe(editor);
+      expect(selection.toString()).toBe("ty & ");
+      expect(changed).toHaveBeenCalledTimes(changeCount);
+      expect(upload).toHaveBeenCalledExactlyOnceWith(file);
+      expect(mdxEditorMockState.imageHandlers).toHaveLength(pluginCount);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Select an organization to upload images");
+      expect(mdxEditorMockState.imageHandlers).toHaveLength(pluginCount);
+      const raw = new Error("Select an organization to upload images");
+      const rawPending = imageHandler(file).catch((error: unknown) => error);
+      await reactAct(async () => { rejectUpload(raw); await rawPending; await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain(raw.message);
+      expect(container.textContent).not.toContain("Выберите организацию для загрузки изображений");
+      const unknownPending = imageHandler(file).catch((error: unknown) => error);
+      await reactAct(async () => { rejectUpload(undefined); await unknownPending; });
+      expect(container.textContent).toContain(i18n.t("taskDetailCommon.editor.uploadFailed"));
+      const emptyPending = imageHandler(file).catch((error: unknown) => error);
+      await reactAct(async () => { rejectUpload(new Error("")); await emptyPending; });
+      expect(container.textContent).toBe("Dirty & literal [draft]");
+      expect(upload).toHaveBeenCalledTimes(4);
+      expect(changed).toHaveBeenCalledTimes(changeCount);
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage(previousLanguage); });
+    }
+  });
+
+  it("keeps fallback source and draft identity when its controls change language", async () => {
+    const previousLanguage = i18n.language;
+    const onChange = vi.fn();
+    const onSubmit = vi.fn();
+    const source = "## Черновик\n\nИсходный <custom> & $& текст";
+    mdxEditorMockState.emitMountParseError = true;
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => {
+        await i18n.changeLanguage("en");
+        root.render(<MarkdownEditor value={source} onChange={onChange} onSubmit={onSubmit} />);
+      });
+      await flush();
+      await vi.waitFor(() => {
+        expect(container.querySelector("textarea")).not.toBeNull();
+      });
+      const textarea = container.querySelector("textarea");
+      expect(textarea).not.toBeNull();
+      expect(textarea!.value).toBe(source);
+      expect(fallbackCode(container)).toBe("MDE-PARSE");
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea!.value).toBe(source);
+      expect(container.textContent).toContain("Показан исходный текст.");
+      expect(container.querySelector("button")?.textContent).toContain("Повторить открытие визуального редактора");
+      expect(onChange).not.toHaveBeenCalled();
+      expect(onSubmit).not.toHaveBeenCalled();
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea!.value).toBe(source);
+      expect(onChange).not.toHaveBeenCalled();
+      await reactAct(async () => { textarea!.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", ctrlKey: true, bubbles: true })); });
+      expect(onSubmit).toHaveBeenCalledOnce();
+    } finally {
+      await reactAct(async () => {
+        root.unmount();
+        await i18n.changeLanguage(previousLanguage);
+      });
+    }
+  });
+
   beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -327,6 +439,7 @@ describe("MarkdownEditor", () => {
     container.remove();
     Range.prototype.getBoundingClientRect = originalRangeRect;
     vi.clearAllMocks();
+    mdxEditorMockState.imageHandlers = [];
     mdxEditorMockState.emitMountEmptyReset = false;
     mdxEditorMockState.emitMountParseError = false;
     mdxEditorMockState.emitMountSilentEmptyState = false;
@@ -362,7 +475,9 @@ describe("MarkdownEditor", () => {
       );
     });
 
-    await flush();
+    await reactAct(async () => {
+      await flush();
+    });
     expect(container.textContent).toContain("Loaded plan body");
 
     await act(async () => {

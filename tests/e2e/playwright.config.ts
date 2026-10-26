@@ -62,6 +62,7 @@ export default defineConfig({
   // `onboard --yes --run` works in a non-interactive temp PAPERCLIP_HOME.
   webServer: {
     cwd: path.resolve(import.meta.dirname, "../.."),
+    gracefulShutdown: { signal: "SIGTERM", timeout: 10_000 },
     // Exercise the shipped UI. Source-checkout onboarding otherwise enables
     // Vite middleware: every reload traverses thousands of modules, including
     // service-worker-intercepted requests, before React can even start.

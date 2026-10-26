@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { readThreadScrollAnchor, threadScrollAnchorDelta, type ThreadScrollAnchor } from "./scroll-anchor";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ interface TaskMessageScrollerProps {
  * while pinned stays instant, so no reflow/jump happens during streaming.
  */
 export function TaskMessageScroller({ children, contentKey, className }: TaskMessageScrollerProps) {
+  const { t } = useTranslation();
   const streamlined = useStreamlinedTaskChatPresentation();
   const navigation = useTaskChatScrollNavigation();
   const initialPositionApplied = useRef(false);
@@ -116,12 +118,17 @@ export function TaskMessageScroller({ children, contentKey, className }: TaskMes
     return true;
   }, [scrollToBottom]);
 
-  const rememberAnchor = useCallback(() => {
+  const rememberAnchor = useCallback((capture = true) => {
     const el = ref.current;
     if (!el || el.clientHeight === 0) return;
-    const rect = el.getBoundingClientRect();
-    anchorRef.current = readThreadScrollAnchor(el, rect.top, rect.bottom);
-    if (initialPositionApplied.current) navigation.remember(el.scrollTop, anchorRef.current);
+    if (pinnedRef.current) {
+      // Following the bottom needs only an offset, not a scan of every old row.
+      anchorRef.current = null;
+    } else if (capture) {
+      const rect = el.getBoundingClientRect();
+      anchorRef.current = readThreadScrollAnchor(el, rect.top, rect.bottom);
+    }
+    if (initialPositionApplied.current) navigation.remember(el.scrollTop, anchorRef.current, pinnedRef.current);
   }, [navigation.key, navigation.hash, navigation.ready]);
 
   const reconcileContent = useCallback(() => {
@@ -140,18 +147,20 @@ export function TaskMessageScroller({ children, contentKey, className }: TaskMes
       const delta = threadScrollAnchorDelta(el, anchorRef.current, el.getBoundingClientRect().top);
       if (delta) el.scrollTop += delta;
     }
-    rememberAnchor();
+    // Compensation preserves the existing reading anchor. Recapture only when
+    // the reader scrolls or navigation selects a different position.
+    rememberAnchor(false);
   }, [rememberAnchor, scrollToBottom, hidePill]);
 
   const handleScroll = useCallback(() => {
     if (!ref.current?.clientHeight) return;
-    rememberAnchor();
     showScrollbarWhileScrolling();
     // A growing composer shrinks this viewport. Some browsers dispatch the
     // resulting scroll event before ResizeObserver, so preserve the previous
     // pinned state here instead of mistaking the layout change for a user
     // scroll away from the bottom.
     if (followViewportResize()) {
+      rememberAnchor(false);
       hidePill();
       return;
     }
@@ -164,9 +173,11 @@ export function TaskMessageScroller({ children, contentKey, className }: TaskMes
         pinnedRef.current = true;
         hidePill();
       }
+      rememberAnchor();
       return;
     }
     pinnedRef.current = pinned;
+    rememberAnchor();
     if (pinned) hidePill();
     else showPill();
   }, [
@@ -284,7 +295,7 @@ export function TaskMessageScroller({ children, contentKey, className }: TaskMes
       {pillPhase !== "hidden" ? (
         <button
           type="button"
-          aria-label="Scroll to latest"
+          aria-label={t("taskChatUi.common.scrollLatest")}
           onClick={handleJumpToLatest}
           onAnimationEnd={() => {
             if (pillPhase === "out") setPillPhase("hidden");

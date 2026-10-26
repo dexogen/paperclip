@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 /**
  * Work Timeline layout — pure transform from the Phase B endpoint contract
  * (`WorkTimelineResult`) into a renderable view model for the custom-SVG Gantt.
@@ -407,9 +409,9 @@ export function chooseTickStepMs(pxPerMinute: number): number {
   return steps[steps.length - 1] * 60000;
 }
 
-export function formatDuration(startMs: number, endMs: number): string {
+export function formatDuration(startMs: number, endMs: number, t: TFunction = i18n.getFixedT("en")): string {
   const mins = Math.max(0, Math.round((endMs - startMs) / 60000));
-  if (mins >= 1440) return `${Math.floor(mins / 1440)}d ${Math.floor((mins % 1440) / 60)}h`;
-  if (mins >= 60) return `${Math.floor(mins / 60)}h ${mins % 60}m`;
-  return `${mins}m`;
+  if (mins >= 1440) return t("surfacesGap.timeline.durationDays", { days: Math.floor(mins / 1440), hours: Math.floor((mins % 1440) / 60) });
+  if (mins >= 60) return t("surfacesGap.timeline.durationHours", { hours: Math.floor(mins / 60), minutes: mins % 60 });
+  return t("surfacesGap.timeline.durationMinutes", { minutes: mins });
 }

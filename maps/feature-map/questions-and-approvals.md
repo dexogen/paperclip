@@ -112,6 +112,18 @@ cover authority and durable continuation. Run a targeted set with:
 pnpm exec vitest run ui/src/components/TaskChatThread.test.tsx server/src/__tests__/question-response-delivery.test.ts
 ```
 
+Locale regressions in the interaction-card, [decision-card](../../ui/src/components/DecisionCard.test.tsx),
+[question-form](../../ui/src/components/task-chat/QuestionForm.test.tsx) and
+[rich-input](../../ui/src/components/task-chat/TaskChatRichInput.test.tsx) suites
+preserve drafts, selected IDs, focus and upload/request counts across EN/RU/EN.
+They check translated validation, permanent denials, literal custom labels and
+explicit decision payloads. These tests mock APIs and rich editors; they do not
+establish server authorization or installed-editor/browser acceptance.
+
+Manual: repeat the question and confirmation journeys in Russian and English.
+Change language with unsent text and selected checkboxes. Confirm that only the
+explicit submit/accept action creates a request and the same selected IDs persist.
+
 Manual: answer a multi-page question, go back, edit, then submit. Reload and
 confirm the saved answers and one agent continuation. On a fresh request,
 dismiss, reload, reopen, and verify the draft. Send a new comment while a
@@ -136,6 +148,14 @@ Automated: [attention resolver](../../ui/src/components/AttentionInteractionReso
 covers preparing-request refresh without accepting it. The resolution-route
 tests above cover the API, not every Decisions or Inbox navigation path.
 
+Locale coverage in [decision pages](../../ui/src/pages/DecisionPages.locale.test.tsx),
+[queue rows](../../ui/src/components/AttentionQueueRow.locale.test.tsx) and
+[display metadata](../../ui/src/lib/attention-display.test.ts) checks canonical
+filter/action values, fixed bilingual search aliases, literal custom text, open
+controls and drafts across EN/RU/EN. The [attention service](../../server/src/__tests__/attention-service.test.ts)
+checks app-owned metadata and company/private-task boundaries on PostgreSQL.
+These component and service tests do not establish a complete browser journey.
+
 Manual: open the same pending request in an attention row and task tab. Resolve
 from the row; both surfaces must settle after refresh. Check an empty queue,
 loading, permission denial, and a stale request. Repeat with combined Inbox/Tasks
@@ -146,7 +166,11 @@ manual coverage gap.
 
 Automated: [approval service](../../server/src/__tests__/approvals-service.test.ts)
 and [idempotency routes](../../server/src/__tests__/approval-routes-idempotency.test.ts)
-cover persistence and duplicate decisions. They do not drive the approval pages.
+cover persistence and duplicate decisions. [Approval pages](../../ui/src/pages/ApprovalDetail.test.tsx)
+and [payloads](../../ui/src/components/ApprovalPayload.test.tsx) check locale changes,
+raw content, focused comment drafts, relative time, budget gates, explicit resolution
+payloads and delete confirmation. Their APIs are mocked; they do not establish
+server permission or browser acceptance.
 
 Manual: create disposable formal approval requests; approve one from the list,
 reject another from details, and request revision on a third. Resubmit that

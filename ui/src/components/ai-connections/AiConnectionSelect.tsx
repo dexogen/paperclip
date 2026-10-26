@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useId } from "react";
 import { Plus, UserRound } from "lucide-react";
 import {
@@ -14,15 +15,15 @@ import {
 } from "@/components/ui/select";
 import { AppLogo } from "@/pages/apps/AppLogo";
 import { Button } from "@/components/ui/button";
-import { aiConnectionProblem, personalAiDefault } from "./model";
+import { aiConnectionDisplayLabel, aiConnectionProblem, personalAiDefault } from "./model";
 import type { AiConnectionPickerProps } from "./AiConnectionPicker";
 import type { AiConnectionSummary } from "./model";
 
-function ConnectionLabel({ connection, label }: { connection: AiConnectionSummary; label?: string }) {
+function ConnectionLabel({ connection, label, wrap = false }: { connection: AiConnectionSummary; label?: string; wrap?: boolean }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
       <AppLogo name={connection.name} brandKey={aiConnectionCatalogSlug(connection.provider, connection.routing)} size={20} compact />
-      <span className="truncate">{label ?? connection.name}</span>
+      <span className={wrap ? "min-w-0 break-words whitespace-normal" : "truncate"}>{label ?? aiConnectionDisplayLabel(connection)}</span>
     </span>
   );
 }
@@ -43,6 +44,7 @@ export function AiConnectionSelect({
   adapterType,
   model,
 }: AiConnectionPickerProps & { adapterType: string; model?: string }) {
+  const { t } = useTranslation();
   const selectId = useId();
   const personal = personalAiDefault(connections, requirement, currentUserId);
   const selected =
@@ -108,7 +110,7 @@ export function AiConnectionSelect({
   return (
     <div className="space-y-2">
       <label className="text-xs text-muted-foreground" htmlFor={selectId}>
-        Connection
+        {t("providerSetup.select.connection")}
       </label>
       <Select
         value={
@@ -119,23 +121,23 @@ export function AiConnectionSelect({
         onValueChange={change}
         disabled={readOnly || loading || Boolean(error)}
       >
-        <SelectTrigger id={selectId} aria-label="Connection" className="w-full">
+        <SelectTrigger id={selectId} aria-label={t("providerSetup.select.connection")} title={selected ? aiConnectionDisplayLabel(selected) : undefined} className="w-full">
           <SelectValue
             placeholder={
-              loading ? "Loading connections…" : "Choose a connection"
+              loading ? t("providerSetup.select.loading") : t("providerSetup.select.choose")
             }
           >
             {selected
-              ? <ConnectionLabel connection={selected} label={value?.mode === "responsible_user" ? "Responsible user’s default" : undefined} />
+              ? <ConnectionLabel connection={selected} label={value?.mode === "responsible_user" ? t("providerSetup.select.responsibleDefault") : undefined} />
               : value?.mode === "responsible_user"
-                ? "Responsible user’s default"
-                : value ? "Unavailable connection" : undefined}
+                ? t("providerSetup.select.responsibleDefault")
+                : value ? t("providerSetup.select.unavailable") : undefined}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {incompatible && selected && (
             <SelectItem value={selected.id} disabled>
-              <ConnectionLabel connection={selected} label={`${selected.name} · Incompatible`} />
+              <ConnectionLabel connection={selected} label={t("providerSetup.select.incompatibleName", { name: aiConnectionDisplayLabel(selected) })} wrap />
             </SelectItem>
           )}
           {compatible.map((c) => (
@@ -144,23 +146,23 @@ export function AiConnectionSelect({
               value={c.id}
               disabled={Boolean(aiConnectionProblem(c))}
             >
-              <ConnectionLabel connection={c} label={`${c.name}${c.status !== "connected" ? " · Reconnect" : ""}`} />
+              <ConnectionLabel connection={c} label={c.status !== "connected" ? t("providerSetup.select.reconnectName", { name: aiConnectionDisplayLabel(c) }) : aiConnectionDisplayLabel(c)} wrap />
             </SelectItem>
           ))}
           {(canUseDefault || value?.mode === "responsible_user") && (
             <SelectItem value="responsible_user" disabled={!canUseDefault}>
               <span className="flex size-5 shrink-0 items-center justify-center"><UserRound className="size-4" /></span>
-              Responsible user’s default
+              {t("providerSetup.select.responsibleDefault")}
             </SelectItem>
           )}
           <SelectItem value="connect">
             <span className="flex size-5 shrink-0 items-center justify-center"><Plus className="size-4" /></span>
-            Connect an account…
+            {t("providerSetup.select.connectAccount")}
           </SelectItem>
         </SelectContent>
       </Select>
       {!readOnly && onReconnect && !loading && !error && (
-        <Button type="button" variant="outline" onClick={onReconnect}>Reconnect account</Button>
+        <Button type="button" variant="outline" onClick={onReconnect}>{t("providerSetup.select.reconnectAccount")}</Button>
       )}
       {error && (
         <div className="space-y-2">
@@ -168,22 +170,21 @@ export function AiConnectionSelect({
             {error}
           </p>
           <Button type="button" variant="outline" onClick={onRetry}>
-            Retry connections
+            {t("providerSetup.select.retry")}
           </Button>
         </div>
       )}
       {value?.mode === "responsible_user" && !personal && !loading && !error ? (
         <p role="alert" className="text-sm text-destructive">
-          You have no default account for this provider. Connect an account or choose another connection.
+          {t("providerSetup.select.noDefault")}
         </p>
       ) : unavailable ? (
         <p role="alert" className="text-sm text-destructive">
-          This connection is unavailable. Choose another connection.
+          {t("providerSetup.select.unavailableHint")}
         </p>
       ) : incompatible ? (
         <p role="alert" className="text-sm text-destructive">
-          This connection does not support the selected harness. Choose a
-          compatible connection.
+          {t("providerSetup.select.incompatibleHint")}
         </p>
       ) : selected && aiConnectionProblem(selected) ? (
         <p role="alert" className="text-sm text-destructive">

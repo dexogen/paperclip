@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -253,4 +255,26 @@ describe("SwipeToArchive", () => {
       root.unmount();
     });
   });
+  it("keeps the active swipe offset when its action changes language", async () => {
+    const onArchive = vi.fn();
+    const root = createRoot(container);
+    await reactAct(async () => { root.render(<SwipeToArchive onArchive={onArchive}>Literal task</SwipeToArchive>); });
+    try {
+      const wrapper = container.firstElementChild as HTMLDivElement;
+      Object.defineProperty(wrapper, "offsetWidth", { configurable: true, value: 200 });
+      Object.defineProperty(wrapper, "offsetHeight", { configurable: true, value: 48 });
+      act(() => { dispatchTouchEvent(wrapper, "touchstart", { x: 180, y: 20 }); dispatchTouchEvent(wrapper, "touchmove", { x: 80, y: 22 }); });
+      const surface = container.querySelector<HTMLElement>("[data-inbox-row-surface]")!;
+      const offset = surface.style.transform;
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Архивировать");
+      expect(surface.style.transform).toBe(offset);
+      expect(onArchive).not.toHaveBeenCalled();
+      act(() => { dispatchTouchEvent(wrapper, "touchend", { x: 80, y: 22 }); vi.advanceTimersByTime(140); });
+      expect(onArchive).toHaveBeenCalledTimes(1);
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+    }
+  });
+
 });

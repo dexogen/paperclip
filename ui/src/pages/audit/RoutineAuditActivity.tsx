@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Activity } from "lucide-react";
 import { routinesApi } from "@/api/routines";
@@ -13,6 +14,7 @@ export function RoutineAuditActivity({
   companyId: string;
   routineId: string;
 }) {
+  useTranslation();
   const activity = useQuery({
     queryKey: [...queryKeys.routines.activity(companyId, routineId), "audit"],
     queryFn: async () => {
@@ -30,7 +32,7 @@ export function RoutineAuditActivity({
   if (activity.isLoading) {
     return (
       <div className="border-y border-border py-14 text-center text-sm text-muted-foreground">
-        Loading routine activity…
+        {t("surfacesGap.routine.loading")}
       </div>
     );
   }
@@ -39,10 +41,10 @@ export function RoutineAuditActivity({
     return (
       <div className="flex flex-col items-center gap-3 border-y border-border py-14 text-center">
         <p className="text-sm text-muted-foreground">
-          {activity.error instanceof Error ? activity.error.message : "Failed to load routine activity."}
+          {activity.error instanceof Error ? activity.error.message : t("surfacesGap.routine.loadError")}
         </p>
         <Button variant="outline" size="sm" onClick={() => activity.refetch()}>
-          Try again
+          {t("surfacesGap.routine.retry")}
         </Button>
       </div>
     );
@@ -50,11 +52,11 @@ export function RoutineAuditActivity({
 
   const events = activity.data ?? [];
   if (events.length === 0) {
-    return <EmptyState icon={Activity} message="No routine activity yet." />;
+    return <EmptyState icon={Activity} message={t("surfacesGap.routine.empty")} />;
   }
 
   return (
-    <div className="border-y border-border" aria-label="Routine activity">
+    <div className="border-y border-border" aria-label={t("surfacesGap.routine.activity")}>
       {events.map((event) => (
         <RoutineActivityRow key={event.id} event={event} />
       ))}

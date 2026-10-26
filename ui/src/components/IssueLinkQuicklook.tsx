@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import { statusLabel as translatedStatusLabel } from "@/i18n/ui-labels";
 import * as React from "react";
 import { useMemo } from "react";
 import * as RouterDom from "react-router-dom";
@@ -130,8 +132,7 @@ function QuicklookSeparator({ className }: { className?: string }) {
 
 /** "in_review" -> "In review". The card states the status as a word, not a chip. */
 function statusLabel(status: string): string {
-  const words = status.replace(/_/g, " ");
-  return words.charAt(0).toUpperCase() + words.slice(1);
+  return translatedStatusLabel(status, "sentence");
 }
 
 /**
@@ -170,6 +171,7 @@ export function IssueQuicklookCard({
   linkState?: unknown;
   compact?: boolean;
 }) {
+  const { t } = useTranslation();
   const appearance = useFlyoutAppearance();
   const description = useMemo(() => summarizeIssueDescription(issue.description), [issue.description]);
   const projectName = issue.project?.name;
@@ -197,7 +199,7 @@ export function IssueQuicklookCard({
           ) : null}
         </div>
         <span data-slot="task-preview-time" className="shrink-0 text-(length:--text-micro) text-muted-foreground">
-          {timeAgo(new Date(issue.updatedAt))}
+          {timeAgo(new Date(issue.updatedAt), t)}
         </span>
       </div>
 
@@ -249,6 +251,7 @@ export const IssueLinkQuicklook = React.forwardRef<
   },
   ref,
 ) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const instanceId = React.useMemo(() => Symbol("issue-quicklook"), []);
   const open = useIsQuicklookOpen(instanceId);
@@ -445,7 +448,7 @@ export const IssueLinkQuicklook = React.forwardRef<
             <div className="h-4 w-full rounded bg-accent/40" />
             <div className="h-4 w-3/4 rounded bg-accent/30" />
             {!isLoading ? (
-              <p className="text-xs text-muted-foreground">Unable to load task preview.</p>
+              <p className="text-xs text-muted-foreground">{t("taskDisplay.quicklook.loadError")}</p>
             ) : null}
           </div>
         )}

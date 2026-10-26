@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { DotPairing } from "@paperclipai/shared";
@@ -11,6 +12,7 @@ import { queryKeys } from "@/lib/queryKeys";
 
 /** Configuration writes update the authoritative binding, never an unsaved agent form. */
 export function GrokBotConnection({ companyId, agentId }: { companyId?: string; agentId?: string }) {
+  const { t, i18n } = useTranslation();
   const pairingCodeId = useId();
   const cache = useQueryClient();
   const key = ["grok-binding", companyId, agentId];
@@ -48,52 +50,52 @@ export function GrokBotConnection({ companyId, agentId }: { companyId?: string; 
     const timer = window.setTimeout(() => setPairing(null), Math.max(0, Date.parse(pairing.expiresAt) - Date.now()));
     return () => window.clearTimeout(timer);
   }, [pairing]);
-  if (!agentId) return <p className="text-sm text-muted-foreground">Save the Grok Bot agent before connecting it.</p>;
+  if (!agentId) return <p className="text-sm text-muted-foreground">{t("grokSetupUi.connection.saveFirst")}</p>;
   const busy = pair.isPending || configure.isPending || verify.isPending || disconnect.isPending || recover.isPending || stop.isPending || retryDelivery.isPending;
   const error = state.error ?? pair.error ?? configure.error ?? verify.error ?? disconnect.error ?? recover.error ?? stop.error ?? retryDelivery.error;
   const recovering = state.data?.recoveryNeeded || routine?.recoveryNeeded;
   const pending = exchange && ["prepared", "sending", "accepted"].includes(exchange.status) && Date.parse(exchange.expiresAt) > Date.now();
-  return <section aria-label="Grok Bot connection" className="space-y-4 text-sm">
-    <p className="text-muted-foreground">Runs in Grok Bot. The Bot retains its apps and persistent context. Paperclip supplies task coordination and first-party tools. Usage and spending are not reported.</p>
-    {state.isPending && <p role="status">Loading connection…</p>}
+  return <section aria-label={t("grokSetupUi.connection.label")} className="space-y-4 text-sm">
+    <p className="text-muted-foreground">{t("grokSetupUi.connection.description")}</p>
+    {state.isPending && <p role="status">{t("grokSetupUi.connection.loading")}</p>}
     {error && <p role="alert" className="text-destructive">{error.message}</p>}
-    {state.data && !state.data.enabled && <p className="text-muted-foreground">Enable Grok Bot, Assistant connections (MCP), and Paperclip Runner on an authenticated public HTTPS instance.</p>}
+    {state.data && !state.data.enabled && <p className="text-muted-foreground">{t("grokSetupUi.connection.enable")}</p>}
     {binding?.connected ? <>
-      <p>Agent access connected. {routine?.verified && !recovering ? "Routine round trip verified." : "Assignments require a verified routine round trip."}</p>
-      <dl className="space-y-2 text-muted-foreground"><div><dt>Bot</dt><dd>{routine?.botName ?? "Not configured"}</dd></div><div><dt>Last verified exchange</dt><dd>{routine?.verifiedAt ? new Date(routine.verifiedAt).toLocaleString() : "Not yet verified"}</dd></div><div><dt>Last authenticated contact</dt><dd>{routine?.lastContactAt ? new Date(routine.lastContactAt).toLocaleString() : "Not yet observed"}</dd></div></dl>
-      {exchange && <p>Assignment delivered: {["accepted", "acknowledged"].includes(exchange.status) ? "Yes" : "Unconfirmed"}. Reply received: {exchange.acknowledgedAt ? "Yes" : "No"}.</p>}
-      {exchange?.status === "rejected" && <div className="space-y-2"><p>The routine rejected this delivery. Check the routine in Grok before retrying.</p><Button variant="outline" disabled={busy || recovering} onClick={() => retryDelivery.mutate(exchange.id)}>Retry rejected delivery</Button></div>}
+      <p>{routine?.verified && !recovering ? t("grokSetupUi.connection.accessVerified") : t("grokSetupUi.connection.accessUnverified")}</p>
+      <dl className="space-y-2 text-muted-foreground"><div><dt>{t("grokSetupUi.connection.bot")}</dt><dd>{routine?.botName ?? t("grokSetupUi.connection.notConfigured")}</dd></div><div><dt>{t("grokSetupUi.connection.lastExchange")}</dt><dd>{routine?.verifiedAt ? new Date(routine.verifiedAt).toLocaleString(i18n.resolvedLanguage) : t("grokSetupUi.connection.notVerified")}</dd></div><div><dt>{t("grokSetupUi.connection.lastContact")}</dt><dd>{routine?.lastContactAt ? new Date(routine.lastContactAt).toLocaleString(i18n.resolvedLanguage) : t("grokSetupUi.connection.notObserved")}</dd></div></dl>
+      {exchange && <p>{["accepted", "acknowledged"].includes(exchange.status) ? exchange.acknowledgedAt ? t("grokSetupUi.connection.deliveredReply") : t("grokSetupUi.connection.deliveredNoReply") : exchange.acknowledgedAt ? t("grokSetupUi.connection.unconfirmedReply") : t("grokSetupUi.connection.unconfirmedNoReply")}</p>}
+      {exchange?.status === "rejected" && <div className="space-y-2"><p>{t("grokSetupUi.connection.rejectedHelp")}</p><Button variant="outline" disabled={busy || recovering} onClick={() => retryDelivery.mutate(exchange.id)}>{t("grokSetupUi.connection.retry")}</Button></div>}
       {!routine?.configured || replace ? <div className="space-y-3">
-        <label className="block space-y-2"><span>Bot name in Grok</span><Input value={botName} onChange={e => setBotName(e.target.value)} maxLength={100} /></label>
-        <AgentSetupPrompt prompt={buildGrokRoutinePrompt(binding.id, botName || "your Bot")} label="Copy routine instructions" title="Enable assignments" description="Ask the Bot for a Webhook URL navigation link if clicking its routine does nothing." />
-        <label className="block space-y-2"><span>Webhook URL</span><Input type="password" autoComplete="off" value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)} /></label>
-        <label className="block space-y-2"><span>Webhook key</span><Input type="password" autoComplete="off" value={webhookKey} onChange={e => setWebhookKey(e.target.value)} /></label>
-        <Button disabled={busy || recovering || !botName.trim() || !webhookUrl || !webhookKey} onClick={() => configure.mutate()}>Save routine</Button>
+        <label className="block space-y-2"><span>{t("grokSetupUi.common.botName")}</span><Input value={botName} onChange={e => setBotName(e.target.value)} maxLength={100} /></label>
+        <AgentSetupPrompt prompt={buildGrokRoutinePrompt(binding.id, botName || "your Bot")} label={t("grokSetupUi.common.copyRoutine")} title={t("grokSetupUi.common.enableAssignments")} description={t("grokSetupUi.connection.routineDescription")} />
+        <label className="block space-y-2"><span>{t("grokSetupUi.common.webhookUrl")}</span><Input type="password" autoComplete="off" value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)} /></label>
+        <label className="block space-y-2"><span>{t("grokSetupUi.common.webhookKey")}</span><Input type="password" autoComplete="off" value={webhookKey} onChange={e => setWebhookKey(e.target.value)} /></label>
+        <Button disabled={busy || recovering || !botName.trim() || !webhookUrl || !webhookKey} onClick={() => configure.mutate()}>{t("grokSetupUi.connection.saveRoutine")}</Button>
       </div> : <div className="flex flex-wrap gap-2">
-        <Button disabled={busy || !!pending || recovering || !!binding.assignment} onClick={() => verify.mutate()}>Verify connection</Button>
-        <Button variant="outline" disabled={busy || recovering || !!binding.assignment} onClick={() => setReplace(true)}>Replace routine credentials</Button>
+        <Button disabled={busy || !!pending || recovering || !!binding.assignment} onClick={() => verify.mutate()}>{t("grokSetupUi.common.verify")}</Button>
+        <Button variant="outline" disabled={busy || recovering || !!binding.assignment} onClick={() => setReplace(true)}>{t("grokSetupUi.common.replace")}</Button>
       </div>}
     </> : <>
-      <Button disabled={busy || !state.data?.enabled || !state.data.canConfigureConnection} onClick={() => pair.mutate()}>Reconnect agent access</Button>
+      <Button disabled={busy || !state.data?.enabled || !state.data.canConfigureConnection} onClick={() => pair.mutate()}>{t("grokSetupUi.connection.reconnect")}</Button>
       {pairing && state.data?.resourceUrl && <>
-        <AgentSetupPrompt prompt={buildGrokAccessPrompt(state.data.resourceUrl, botName || "your Bot")} label="Copy connection instructions" title="Reconnect Grok Bot" description="Complete OAuth in the browser. Keep this code out of Bot chat." />
+        <AgentSetupPrompt prompt={buildGrokAccessPrompt(state.data.resourceUrl, botName || "your Bot")} label={t("grokSetupUi.common.copyConnection")} title={t("grokSetupUi.connection.accessTitle")} description={t("grokSetupUi.connection.accessDescription")} />
         <div className="space-y-2">
-          <label htmlFor={pairingCodeId}>One-use pairing code</label>
+          <label htmlFor={pairingCodeId}>{t("grokSetupUi.common.code")}</label>
           <div className="flex items-center gap-2">
             <Input id={pairingCodeId} type="password" autoComplete="off" readOnly value={pairing.pairingCode} onFocus={e => e.target.select()} />
-            <CopyText text={pairing.pairingCode} ariaLabel="Copy pairing code" className={buttonVariants({ variant: "outline", size: "sm" })}>Copy code</CopyText>
+            <CopyText text={pairing.pairingCode} ariaLabel={t("grokSetupUi.common.copyCodeAria")} className={buttonVariants({ variant: "outline", size: "sm" })}>{t("grokSetupUi.common.copyCode")}</CopyText>
           </div>
-          <p className="text-xs text-muted-foreground">Copy this code into Paperclip’s authorization page. Keep it out of Bot chat.</p>
+          <p className="text-xs text-muted-foreground">{t("grokSetupUi.connection.codeHelp")}</p>
         </div>
       </>}
     </>}
-    {binding?.assignment && <div className="space-y-2"><p>{binding.assignment.status === "offered" ? "Awaiting acknowledgement" : "Working in a Paperclip work session"}</p><Button variant="outline" disabled={busy} onClick={() => stop.mutate(binding.assignment!.runId)}>Stop Paperclip work</Button><p className="text-xs text-muted-foreground">Revokes this session’s Paperclip authority and stops future dispatch. Remote execution may continue. Open Grok Bot to inspect it.</p></div>}
+    {binding?.assignment && <div className="space-y-2"><p>{binding.assignment.status === "offered" ? t("grokSetupUi.connection.awaitingAck") : t("grokSetupUi.connection.working")}</p><Button variant="outline" disabled={busy} onClick={() => stop.mutate(binding.assignment!.runId)}>{t("grokSetupUi.connection.stop")}</Button><p className="text-xs text-muted-foreground">{t("grokSetupUi.connection.stopHelp")}</p></div>}
     {recovering && <div className="space-y-3 rounded-md border border-border p-3">
-      <p className="font-medium">Recovery needed</p><p className="text-muted-foreground">Paperclip cannot determine whether Grok is still working. Open Grok Bot, inspect this Bot and stop the old work before clearing the hold. The session must be stopped in Paperclip too.</p>
-      <label className="flex items-start gap-2"><input type="checkbox" checked={inspected} onChange={e => setInspected(e.target.checked)} /><span>I inspected Grok and resolved the old work.</span></label>
-      <Button variant="outline" disabled={busy || !inspected || !!binding?.assignment} onClick={() => recover.mutate()}>Clear recovery hold</Button>
-      <p className="text-xs text-muted-foreground">This records your inspection. It does not confirm remote termination. Verify the routine again before new work.</p>
+      <p className="font-medium">{t("grokSetupUi.connection.recoveryTitle")}</p><p className="text-muted-foreground">{t("grokSetupUi.connection.recoveryHelp")}</p>
+      <label className="flex items-start gap-2"><input type="checkbox" checked={inspected} onChange={e => setInspected(e.target.checked)} /><span>{t("grokSetupUi.connection.inspection")}</span></label>
+      <Button variant="outline" disabled={busy || !inspected || !!binding?.assignment} onClick={() => recover.mutate()}>{t("grokSetupUi.connection.clearHold")}</Button>
+      <p className="text-xs text-muted-foreground">{t("grokSetupUi.connection.recoveryReceipt")}</p>
     </div>}
-    {binding?.connected && <Button variant="outline" disabled={busy} onClick={() => disconnect.mutate()}>Disconnect agent access</Button>}
+    {binding?.connected && <Button variant="outline" disabled={busy} onClick={() => disconnect.mutate()}>{t("grokSetupUi.connection.disconnect")}</Button>}
   </section>;
 }

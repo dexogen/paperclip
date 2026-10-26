@@ -2,6 +2,7 @@ import type { MouseEvent } from "react";
 import { Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "../lib/utils";
+import { useTranslation } from "../i18n";
 
 export interface StarToggleProps {
   /** Whether the resource is currently starred (post-optimistic value). */
@@ -51,7 +52,8 @@ export function StarToggle({
   className,
   revealClassName,
 }: StarToggleProps) {
-  const ariaLabel = starred ? `Unstar ${resourceName}` : `Star ${resourceName}`;
+  const { t } = useTranslation();
+  const ariaLabel = starred ? t("star.remove", { name: resourceName }) : t("star.add", { name: resourceName });
   const Icon = pending ? Loader2 : Star;
 
   function handleClick(event: MouseEvent<HTMLButtonElement>) {
@@ -73,7 +75,7 @@ export function StarToggle({
         aria-busy={pending ? "true" : undefined}
         disabled={pending}
         onClick={handleClick}
-        title={error ? "Couldn't save — retry" : undefined}
+        title={error ? t("star.retry") : undefined}
         className={cn(
           error
             ? "text-red-500 hover:text-red-500"
@@ -109,7 +111,7 @@ export function StarToggle({
       aria-busy={pending ? "true" : undefined}
       disabled={pending}
       onClick={handleClick}
-      title={error ? "Couldn't save — retry" : undefined}
+      title={error ? t("star.retry") : undefined}
       className={cn(
         "h-6 w-6 shrink-0",
         visible ? "opacity-100" : revealClassName ?? DEFAULT_ROW_REVEAL,

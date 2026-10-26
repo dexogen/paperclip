@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -141,4 +142,59 @@ describe("SecretBindingPicker", () => {
     expect(container.textContent).toContain("no longer available");
     expect(container.querySelector("select")?.className).toContain("border-destructive");
   });
+
+  it("retains dirty secret fields and one pending creation through locale changes", async () => {
+    const change = vi.fn();
+    let finish!: (value: { id: string }) => void;
+    mockSecretsApi.create.mockReset().mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    try {
+      await setLocale("en");
+      await act(async () => {
+        root = createRoot(container);
+        root.render(<QueryClientProvider client={queryClient}><SecretBindingPicker value={null} onChange={change} /></QueryClientProvider>);
+      });
+      await act(async () => container.querySelector<HTMLButtonElement>('[aria-label="Create secret"]')!.click());
+      const name = document.querySelector<HTMLInputElement>('#secret-name')!;
+      const value = document.querySelector<HTMLTextAreaElement>('#secret-value')!;
+      const description = document.querySelector<HTMLInputElement>('#secret-description')!;
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(name, "my_key");
+        name.dispatchEvent(new Event("input", { bubbles: true }));
+        Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!.call(value, "literal<&>value");
+        value.dispatchEvent(new Event("input", { bubbles: true }));
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(description, "Name <b>raw</b>");
+        description.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      value.focus(); value.setSelectionRange(2, 6);
+      await act(async () => setLocale("ru"));
+      expect(document.querySelector('#secret-value')).toBe(value);
+      expect(value.value).toBe("literal<&>value");
+      expect(document.activeElement).toBe(value);
+      expect([value.selectionStart, value.selectionEnd]).toEqual([2, 6]);
+      expect(mockSecretsApi.create).not.toHaveBeenCalled();
+      const submit = [...document.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent?.trim() === "Создать и привязать")!;
+      await act(async () => submit.click());
+      expect(mockSecretsApi.create).toHaveBeenCalledExactlyOnceWith("company-1", { name: "my_key", value: "literal<&>value", description: "Name <b>raw</b>" });
+      await act(async () => setLocale("en"));
+      await act(async () => setLocale("ru"));
+      expect(mockSecretsApi.create).toHaveBeenCalledTimes(1);
+      expect(change).not.toHaveBeenCalled();
+      await act(async () => finish({ id: "server-secret" }));
+      expect(change).toHaveBeenCalledExactlyOnceWith({ secretId: "server-secret", version: "latest" });
+    } finally { await act(async () => setLocale("en")); }
+  });
+
+  it("keeps an unknown status that names an object property literal across locales", async () => {
+    try {
+      await render(readyContext("toString"));
+      expect(container.textContent).toContain("This secret is toString;");
+      await act(async () => setLocale("ru"));
+      expect(container.textContent).toContain("Состояние секрета: toString.");
+      expect(container.textContent).toContain("DAYTONA_API_KEY — Other Team");
+      await act(async () => setLocale("en"));
+      expect(container.textContent).toContain("This secret is toString;");
+      expect(mockSecretsApi.list).toHaveBeenCalledTimes(1);
+    } finally { await act(async () => setLocale("en")); }
+  });
+
 });

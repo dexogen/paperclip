@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Project, ResourceMemberships } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SidebarStarredProjects } from "./SidebarStarredProjects";
+import { SidebarStarredProjects as ProductionStarredProjects } from "./SidebarStarredProjects.production";
+import { setLocale } from "@/i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const mockProjectsApi = vi.hoisted(() => ({ list: vi.fn() }));
@@ -153,19 +155,48 @@ describe("SidebarStarredProjects", () => {
     vi.clearAllMocks();
   });
 
-  async function render() {
+  async function render(Component = SidebarStarredProjects) {
     root = createRoot(container);
     await act(async () => {
       root?.render(
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
-            <SidebarStarredProjects />
+            <Component />
           </TooltipProvider>
         </QueryClientProvider>,
       );
     });
     await flushReact();
   }
+
+  it.each([["modern", SidebarStarredProjects], ["production", ProductionStarredProjects]] as const)("retains %s mobile actions and literal project IDs through language changes", async (_name, Component) => {
+    mockSidebarState.isMobile = true;
+    const project = makeProject({ id: "project:raw", name: "Alpha <b>literal</b>", urlKey: "raw", visibility: "private", pauseReason: "budget" });
+    mockProjectsApi.list.mockResolvedValue([project]);
+    memberships = { ...memberships, starredProjectIds: [project.id] };
+    mockResourceMembershipsApi.updateProject.mockImplementation(() => new Promise(() => {}));
+    await render(Component);
+    const original = projectLink(container, "raw");
+    const trigger = container.querySelector<HTMLButtonElement>('[aria-label="Open actions for Alpha <b>literal</b>"]')!;
+    await act(async () => { trigger.dispatchEvent(new PointerEvent("pointerdown", { bubbles:true, button:0 })); trigger.click(); });
+    await flushReact();
+    const reads = [mockProjectsApi.list.mock.calls.length, mockResourceMembershipsApi.listMine.mock.calls.length];
+    try {
+      await setLocale("ru"); await flushReact();
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+      expect(projectLink(container,"raw")).toBe(original);
+      expect(document.body.textContent).toContain(project.name);
+      expect(document.body.querySelector("b")).toBeNull();
+      expect(document.body.textContent).toContain("Покинуть проект");
+      expect(mockResourceMembershipsApi.updateProject).not.toHaveBeenCalled();
+      await act(async () => [...document.body.querySelectorAll<HTMLElement>('[role="menuitem"]')].find(item=>item.textContent?.includes("Покинуть проект"))!.click());
+      await flushReact();
+      expect(mockResourceMembershipsApi.updateProject).toHaveBeenCalledExactlyOnceWith("company-1", project.id, {state:"left",starred:undefined});
+      await setLocale("en"); await flushReact();
+      expect(mockResourceMembershipsApi.updateProject).toHaveBeenCalledTimes(1);
+      expect([mockProjectsApi.list.mock.calls.length,mockResourceMembershipsApi.listMine.mock.calls.length]).toEqual(reads);
+    } finally { await setLocale("en"); }
+  });
 
   it("renders only starred projects returned by the default active project list", async () => {
     mockProjectsApi.list.mockResolvedValue([

@@ -189,6 +189,7 @@ export function collectRunFailureSecretValues(
       (PUBLIC_NUMBER_ENV_KEYS.has(key.toUpperCase()) && /^\d+$/.test(value)) ||
       (key === "BASE_URL" && value === "/") ||
       (key === "MODE" && /^(?:test|development|production)$/.test(value)) ||
+      (key === "XDG_SESSION_CLASS" && value === "user") ||
       (key === "PAPERCLIP_SENTRY_RUN_FAILURES" && /^(?:off|unexpected|all)$/.test(value))
     )) ||
       (PUBLIC_BOOLEAN_ENV_KEYS.has(key.toUpperCase()) && /^(?:0|1|true|false)$/i.test(value));

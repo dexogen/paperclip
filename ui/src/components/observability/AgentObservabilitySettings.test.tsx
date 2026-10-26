@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { createRoot, type Root } from "react-dom/client";
 import { act } from "react";
+import { setLocale } from "@/i18n";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DEFAULT_AGENT_OBSERVABILITY_CAPTURE, type AgentObservabilitySettings } from "@paperclipai/shared";
@@ -28,8 +29,8 @@ function fill(selector: string, value: string) {
   });
 }
 function click(node: HTMLElement) { act(() => node.click()); }
-beforeEach(() => { vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); element = document.createElement("div"); document.body.append(element); root = createRoot(element); onSave.mockReset(); });
-afterEach(() => { act(() => root.unmount()); element.remove(); vi.unstubAllGlobals(); });
+beforeEach(async () => { await setLocale("en"); vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); element = document.createElement("div"); document.body.append(element); root = createRoot(element); onSave.mockReset(); });
+afterEach(async () => { await act(async () => root.unmount()); element.remove(); await setLocale("en"); vi.unstubAllGlobals(); });
 it("keeps saved credentials write-only and erases a cancelled replacement", async () => {
   await render(props()); expect(element.querySelector('input[type="password"]')).toBeNull();
   click(button("Replace API key")); fill('input[type="password"]', "secret-input-canary");
@@ -95,4 +96,26 @@ it("erases the previous company draft and receipt when company changes", async (
 });
 it("hides form controls without management access", async () => {
   await render(props({ canManage: false, settings: null })); expect(element.querySelector("input")).toBeNull(); expect(element.textContent).toContain("Manage connections permission is required");
+});
+
+it("preserves an unsaved credential and project while changing locale and submits their original values", async () => {
+  await render(props());
+  click(button("Replace API key"));
+  fill('input[type="password"]', "locale-draft-credential");
+  fill('#agent-observability-project', "30000000-0000-4000-8000-000000000002");
+  await act(async () => setLocale("ru"));
+  expect(element.querySelector("h2")?.textContent).toBe("Наблюдаемость агентов");
+  expect(element.querySelector<HTMLInputElement>('input[type="password"]')!.value).toBe("locale-draft-credential");
+  expect(element.querySelector<HTMLInputElement>('#agent-observability-project')!.value).toBe("30000000-0000-4000-8000-000000000002");
+  expect(onSave).not.toHaveBeenCalled();
+  click(button("Сохранить изменения"));
+  expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
+    expectedRevision: saved.revision,
+    destination: { provider: "braintrust", projectId: "30000000-0000-4000-8000-000000000002" },
+    credentials: { mode: "replace", apiKey: "locale-draft-credential" },
+  }));
+  expect(element.textContent).not.toContain("locale-draft-credential");
+  await act(async () => setLocale("en"));
+  expect(button("Save changes")).toBeDefined();
+  expect(element.querySelector<HTMLInputElement>('input[type="password"]')!.value).toBe("locale-draft-credential");
 });

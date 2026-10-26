@@ -24,7 +24,8 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { PageTabBar } from "@/components/PageTabBar";
 import {
   JsonSchemaForm,
-  validateJsonSchemaForm,
+  validateJsonSchemaFormIssues,
+  type JsonSchemaFormErrors,
   getDefaultValues,
   type JsonSchemaNode,
 } from "@/components/JsonSchemaForm";
@@ -976,7 +977,7 @@ function PluginConfigForm({ pluginId, companyId, schema, initialValues, isLoadin
     }
   }, [initialValues, schema]);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<JsonSchemaFormErrors>({});
   const [saveMessage, setSaveMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [testResult, setTestResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -1033,7 +1034,7 @@ function PluginConfigForm({ pluginId, companyId, schema, initialValues, isLoadin
 
   const handleSave = useCallback(() => {
     // Validate before saving
-    const validationErrors = validateJsonSchemaForm(schema, values);
+    const validationErrors = validateJsonSchemaFormIssues(schema, values);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -1044,7 +1045,7 @@ function PluginConfigForm({ pluginId, companyId, schema, initialValues, isLoadin
 
   const handleTestConnection = useCallback(() => {
     // Validate before testing
-    const validationErrors = validateJsonSchemaForm(schema, values);
+    const validationErrors = validateJsonSchemaFormIssues(schema, values);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;

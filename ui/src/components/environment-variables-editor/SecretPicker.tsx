@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { Trans, useTranslation } from "@/i18n";
 import { useCallback, useMemo, useState } from "react";
 import { CornerUpLeft, Folder, KeyRound, Plus } from "lucide-react";
 import type { CompanySecret, SecretStatus } from "@paperclipai/shared";
@@ -21,11 +23,12 @@ interface SecretOption extends SearchableSelectOption {
 
 const FOLDER_VALUE_PREFIX = "__secret_folder__:";
 
-function statusBadge(status: SecretStatus | undefined) {
+function statusBadge(status: SecretStatus | undefined, t: TFunction) {
+  const labels: Record<string, string> = { active: t("formsUi.secret.active"), disabled: t("formsUi.secret.disabled"), archived: t("formsUi.secret.archived"), deleted: t("formsUi.secret.deleted") };
   if (!status || status === "active") return null;
   return (
     <Badge variant="outline" className="ml-auto text-(length:--text-nano) font-normal text-muted-foreground">
-      {status}
+      {Object.hasOwn(labels, status) ? labels[status] : status}
     </Badge>
   );
 }
@@ -55,6 +58,7 @@ function buildFolderGroup(
   secrets: readonly CompanySecret[],
   currentPath: readonly string[],
   currentSecretId: string,
+  t: TFunction,
 ): SearchableSelectGroup<string, SecretOption> {
   const currentLength = currentPath.length;
   const folders = new Map<string, SecretOption>();
@@ -107,7 +111,7 @@ function buildFolderGroup(
     options.push({
       key: `folder-up-${pathKey(currentPath)}`,
       value: folderValue(parentPath),
-      label: "Up one folder",
+      label: t("formsUi.picker.up"),
       title: pathLabel(parentPath),
       searchText: pathLabel(parentPath),
       kind: "back",
@@ -119,7 +123,7 @@ function buildFolderGroup(
 
   return {
     id: "browse-secrets",
-    label: currentPath.length > 0 ? pathLabel(currentPath) : "Browse secrets",
+    label: currentPath.length > 0 ? pathLabel(currentPath) : t("formsUi.picker.browse"),
     options,
   };
 }
@@ -154,6 +158,8 @@ export function SecretPicker({
   triggerClassName,
   disablePortal,
 }: SecretPickerProps) {
+  const { t } = useTranslation();
+  const statusLabels: Record<string, string> = { active: t("formsUi.secret.active"), disabled: t("formsUi.secret.disabled"), archived: t("formsUi.secret.archived"), deleted: t("formsUi.secret.deleted") };
   const [currentPathKey, setCurrentPathKey] = useState("");
   const boundSecret = useMemo(
     () => secrets.find((secret) => secret.id === secretId) ?? null,
@@ -171,13 +177,13 @@ export function SecretPicker({
     if (boundMissing) {
       result.push({
         id: "current-missing",
-        label: "Current",
+        label: t("formsUi.picker.current"),
         options: [
           {
             key: `missing-${secretId}`,
             value: secretId,
-            label: `Missing secret (${secretId.slice(0, 8)}…)`,
-            title: `Missing secret (${secretId})`,
+            label: t("formsUi.picker.missing", { id: secretId.slice(0, 8) }),
+            title: t("formsUi.picker.missingFull", { id: secretId }),
             missing: true,
             disabled: true,
           },
@@ -191,7 +197,7 @@ export function SecretPicker({
     if (recent.length > 0) {
       result.push({
         id: "recently-used",
-        label: "Recently used",
+        label: t("formsUi.picker.recent"),
         options: recent.map((secret) => ({
           key: `recent-${secret.id}`,
           value: secret.id,
@@ -207,7 +213,7 @@ export function SecretPicker({
 
     result.push({
       id: "all-secrets",
-      label: recent.length > 0 ? "All secrets" : undefined,
+      label: recent.length > 0 ? t("formsUi.picker.all") : undefined,
       options: secrets.map((secret) => ({
         key: `all-${secret.id}`,
         value: secret.id,
@@ -224,18 +230,18 @@ export function SecretPicker({
     });
 
     return result;
-  }, [boundMissing, recentlyUsedSecrets, secretId, secrets]);
+  }, [boundMissing, recentlyUsedSecrets, secretId, secrets, t]);
 
   const deriveGroups = useCallback(
     (query: string, baseGroups: readonly SearchableSelectGroup<string, SecretOption>[]) => {
       if (!hasFolderPaths) return baseGroups;
       if (normalizeSearchText(query)) return baseGroups;
 
-      const browseGroup = buildFolderGroup(secrets, currentPath, secretId);
+      const browseGroup = buildFolderGroup(secrets, currentPath, secretId, t);
       const stableGroups = baseGroups.filter((group) => group.id === "current-missing" || group.id === "recently-used");
       return browseGroup.options.length > 0 ? [...stableGroups, browseGroup] : stableGroups;
     },
-    [currentPath, hasFolderPaths, secretId, secrets],
+    [currentPath, hasFolderPaths, secretId, secrets, t],
   );
 
   return (
@@ -253,9 +259,9 @@ export function SecretPicker({
       deriveGroups={deriveGroups}
       disabled={disabled}
       disablePortal={disablePortal}
-      placeholder="Select secret…"
-      searchPlaceholder="Search secrets…"
-      emptyMessage="No matching secrets"
+      placeholder={t("formsUi.picker.select")}
+      searchPlaceholder={t("formsUi.picker.search")}
+      emptyMessage={t("formsUi.picker.empty")}
       triggerClassName={cn(
         "h-(--sz-34px) min-h-(--sz-34px) font-mono text-sm",
         boundMissing && "border-destructive text-destructive",
@@ -264,7 +270,7 @@ export function SecretPicker({
       )}
       renderValue={(option) => {
         if (!option) {
-          return <span className="text-muted-foreground">Select secret…</span>;
+          return <span className="text-muted-foreground">{t("formsUi.picker.select")}</span>;
         }
         if (option.missing) {
           return (
@@ -279,7 +285,7 @@ export function SecretPicker({
           <span className="flex w-full min-w-0 items-center gap-1.5" title={option.title}>
             <KeyRound className={cn("size-3.5 shrink-0", nonActive ? "text-amber-600" : "text-muted-foreground")} />
             <span className="min-w-0 flex-1 truncate">{option.label}</span>
-            {nonActive ? <span className="text-amber-600">({option.status})</span> : null}
+            {nonActive ? <span className="text-amber-600">({Object.hasOwn(statusLabels, option.status!) ? statusLabels[option.status!] : option.status})</span> : null}
           </span>
         );
       }}
@@ -313,7 +319,7 @@ export function SecretPicker({
                 <span className="truncate font-mono text-(length:--text-micro) text-muted-foreground">{option.pathHint}</span>
               ) : null}
             </span>
-            {statusBadge(option.status)}
+            {statusBadge(option.status, t)}
           </span>
         );
       }}
@@ -324,10 +330,10 @@ export function SecretPicker({
                 <Plus className="size-3.5 shrink-0" />
                 {query.trim() ? (
                   <span>
-                    Create secret <span className="font-mono">&ldquo;{query.trim()}&rdquo;</span>…
+                    <Trans t={t} i18nKey="formsUi.picker.createNamed" tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape values={{ name: query.trim() }} components={{ name: <span className="font-mono" /> }} />
                   </span>
                 ) : (
-                  <span>Create new secret…</span>
+                  <span>{t("formsUi.picker.createNew")}</span>
                 )}
               </span>
             ),

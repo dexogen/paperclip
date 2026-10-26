@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, StrictMode } from "react";
+import { setLocale } from "../i18n";
 import { buildClaudeLocalConfig } from "../../../packages/adapters/claude-local/src/ui/build-config";
 import type { CreateConfigValues } from "@paperclipai/adapter-utils";
 import type { LocalAiLoginStatus } from "@paperclipai/shared";
@@ -1429,6 +1430,46 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       for (let tick = 0; tick < 8; tick++) await flushReact();
       return { ...handles, draft };
     }
+
+    it("renders the completed first-agent setup in Russian without translating the saved identity", async () => {
+      await setLocale("ru");
+      const { root, draft } = await openSavedReview("/SC/onboarding");
+      try {
+        expect(document.body.textContent).toContain("Можно начинать…");
+        expect(document.body.textContent).toContain("Saved lead готов к работе!");
+        expect([...document.querySelectorAll("button")].some(button => button.textContent?.trim() === "Начать работу")).toBe(true);
+        expect(JSON.parse(window.localStorage.getItem(ONBOARDING_STORAGE_KEY)!)).toMatchObject(draft);
+        expect(mockAgentsApi.hire).not.toHaveBeenCalled();
+      } finally {
+        await act(async () => root.unmount());
+        await setLocale("en");
+      }
+    });
+
+    it("captures the Russian launch locale before asynchronous project creation", async () => {
+      await setLocale("ru");
+      const { root } = await openSavedReview("/SC/onboarding");
+      let resolveProjects!: (projects: never[]) => void;
+      mockProjectsApi.list.mockImplementationOnce(() => new Promise((resolve) => { resolveProjects = resolve; }));
+      mockProjectsApi.create.mockResolvedValueOnce({ id: "project-ru" });
+      mockIssuesApi.create.mockResolvedValueOnce({ id: "task-ru", identifier: "SC-1" });
+      try {
+        const launch = [...document.querySelectorAll("button")].find((button) => button.textContent?.trim() === "Начать работу")!;
+        await act(async () => { launch.click(); });
+        await vi.waitFor(() => expect(resolveProjects).toBeTypeOf("function"));
+        await setLocale("en");
+        await act(async () => { resolveProjects([]); });
+        await vi.waitFor(() => expect(mockIssuesApi.create).toHaveBeenCalledWith("c1", {
+          title: "Начало работы с Paperclip", assigneeAgentId: "saved-agent", projectId: "project-ru", status: "todo", onboardingFirstTask: true, onboardingLocale: "ru",
+        }));
+        expect(mockProjectsApi.create).toHaveBeenCalledWith("c1", { name: "Начало работы", status: "in_progress" });
+        expect(mockAgentsApi.hire).not.toHaveBeenCalled();
+      } finally {
+        resolveProjects?.([]);
+        await act(async () => { root.unmount(); });
+        await setLocale("en");
+      }
+    });
 
     it.each([
       ["/onboarding", "auto"], ["/SC/onboarding", "auto"],

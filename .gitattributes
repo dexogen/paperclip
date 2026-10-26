@@ -1,1 +1,2 @@
 patches/*.patch whitespace=-space-before-tab
+doc/localization/baseline.json linguist-generated=true

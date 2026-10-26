@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -218,10 +219,10 @@ export function isValidSelectionSlug(selection: SkillSelection): boolean {
 
 function readableErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
-    return error.message || `Request failed: ${error.status}`;
+    return error.message || t("skillsGap.requestFailed", { status: error.status });
   }
   if (error instanceof Error) return error.message;
-  return "Unexpected error";
+  return t("skillsGap.unexpectedError");
 }
 
 export function isGrantError(error: unknown): boolean {
@@ -234,6 +235,7 @@ function CandidateStatusBadge({
 }: {
   status: CompanySkillProjectScanCandidate["status"];
 }) {
+  useTranslation();
   switch (status) {
     case "already_imported":
       return (
@@ -241,8 +243,7 @@ function CandidateStatusBadge({
           variant="outline"
           className="gap-1 px-1.5 py-0 font-normal text-muted-foreground border-border/60"
         >
-          <Link2 className="h-3 w-3" /> Imported
-        </Badge>
+          <Link2 className="h-3 w-3" />{" "}{t("skillsGap.imported")}</Badge>
       );
     case "conflict":
       return (
@@ -250,8 +251,7 @@ function CandidateStatusBadge({
           variant="outline"
           className="gap-1 px-1.5 py-0 font-normal text-amber-600 border-amber-500/40 dark:text-amber-400"
         >
-          <AlertTriangle className="h-3 w-3" /> Conflict
-        </Badge>
+          <AlertTriangle className="h-3 w-3" />{" "}{t("skillsGap.conflict")}</Badge>
       );
     case "skipped":
       return (
@@ -259,8 +259,7 @@ function CandidateStatusBadge({
           variant="outline"
           className="gap-1 px-1.5 py-0 font-normal text-muted-foreground border-border/60"
         >
-          <FileWarning className="h-3 w-3" /> Skipped
-        </Badge>
+          <FileWarning className="h-3 w-3" />{" "}{t("skillsGap.skipped")}</Badge>
       );
     case "new":
     default:
@@ -269,8 +268,7 @@ function CandidateStatusBadge({
           variant="outline"
           className="gap-1 px-1.5 py-0 font-normal text-emerald-600 border-emerald-500/40 dark:text-emerald-400"
         >
-          <CheckCircle2 className="h-3 w-3" /> New
-        </Badge>
+          <CheckCircle2 className="h-3 w-3" />{" "}{t("skillsGap.new")}</Badge>
       );
   }
 }
@@ -281,6 +279,7 @@ export function ImportSkillsFromProjectDialog({
   companyId,
   onImportFromPath,
 }: ImportSkillsFromProjectDialogProps) {
+  useTranslation();
   const queryClient = useQueryClient();
   const toast = useToastActions();
 
@@ -350,7 +349,7 @@ export function ImportSkillsFromProjectDialog({
 
   const importMutation = useMutation({
     mutationFn: () => {
-      if (!selectedProject) throw new Error("No project selected.");
+      if (!selectedProject) throw new Error(t("skillsGap.noProjectSelected"));
       const selectionInput = Array.from(selection.values());
       return companySkillsApi.scanProjects(companyId, {
         projectIds: [selectedProject.id],
@@ -367,17 +366,17 @@ export function ImportSkillsFromProjectDialog({
       const importedCount = result.imported.length;
       toast.pushToast({
         tone: importedCount > 0 ? "success" : "warn",
-        title: importedCount > 0 ? "Skills imported" : "Nothing imported",
+        title: importedCount > 0 ? t("skillsGap.skillsImported") : t("skillsGap.nothingImported"),
         body:
           importedCount > 0
-            ? `${importedCount} skill${importedCount === 1 ? "" : "s"} imported as references from ${selectedProject?.name ?? "the project"}.`
-            : "No skills were imported.",
+            ? t("skillsGap.projectSkillsImported", { count: importedCount, project: selectedProject?.name ?? t("skillsGap.project") })
+            : t("skillsGap.noSkillsWereImported"),
       });
     },
     onError: (error) => {
       toast.pushToast({
         tone: "error",
-        title: "Import failed",
+        title: t("skillsGap.importFailed"),
         body: readableErrorMessage(error),
       });
     },
@@ -463,12 +462,12 @@ export function ImportSkillsFromProjectDialog({
       } else {
         toast.pushToast({
           tone: "warn",
-          title: candidate?.status === "already_imported" ? "Skill already imported" : "Skill could not be added",
-          body: candidate?.reason ?? "The selected folder does not contain a valid SKILL.md file.",
+          title: candidate?.status === "already_imported" ? t("skillsGap.skillAlreadyImported") : t("skillsGap.skillCouldNotBeAdded"),
+          body: candidate?.reason ?? t("skillsGap.theSelectedFolderDoesNotContainA"),
         });
       }
     } catch (error) {
-      toast.pushToast({ tone: "error", title: "Could not inspect skill", body: readableErrorMessage(error) });
+      toast.pushToast({ tone: "error", title: t("skillsGap.couldNotInspectSkill"), body: readableErrorMessage(error) });
     } finally {
       setBrowseAddingKey(null);
     }
@@ -512,18 +511,14 @@ export function ImportSkillsFromProjectDialog({
       >
         <header className="flex shrink-0 items-start justify-between gap-3 border-b border-border/60 px-5 py-4">
           <div className="flex flex-col gap-1">
-            <DialogTitle className="text-base font-semibold">
-              Import skills from project
-            </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
-              Pick a project, scan its workspaces for skills, and import them as references.
-            </DialogDescription>
+            <DialogTitle className="text-base font-semibold">{t("skillsGap.importSkillsFromProject")}</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">{t("skillsGap.pickAProjectScanItsWorkspacesFor")}</DialogDescription>
           </div>
           <button
             type="button"
             className="rounded-sm text-muted-foreground opacity-70 transition-opacity hover:opacity-100"
             onClick={handleClose}
-            aria-label="Close import dialog"
+            aria-label={t("skillsGap.closeImportDialog")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -569,9 +564,7 @@ export function ImportSkillsFromProjectDialog({
           {step === "select" && !scanError && candidates.length > 0 ? (
             <div className="min-w-0 flex-1 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <Link2 className="h-3.5 w-3.5 shrink-0" />
-                Files stay in the project — Studio edits save directly to them.
-              </span>
+                <Link2 className="h-3.5 w-3.5 shrink-0" />{t("skillsGap.filesStayInTheProjectStudioEdits")}</span>
             </div>
           ) : (
             <div className="hidden min-w-0 flex-1 sm:block" />
@@ -587,23 +580,18 @@ export function ImportSkillsFromProjectDialog({
                       onClick={selectAll}
                       disabled={selectableCandidates.length === 0}
                       data-testid="select-all"
-                    >
-                      Select all
-                    </Button>
+                    >{t("skillsGap.selectAll")}</Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={deselectAll}
                       disabled={selectedCount === 0}
                       data-testid="deselect-all"
-                    >
-                      Deselect all
-                    </Button>
+                    >{t("skillsGap.deselectAll")}</Button>
                   </div>
                 )}
                 <Button variant="outline" size="sm" onClick={backToPick}>
-                  <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back
-                </Button>
+                  <ArrowLeft className="mr-1 h-3.5 w-3.5" />{" "}{t("skillsGap.back")}</Button>
                 {!scanError && candidates.length > 0 && (
                   <Button
                     size="sm"
@@ -613,24 +601,19 @@ export function ImportSkillsFromProjectDialog({
                   >
                     {importMutation.isPending ? (
                       <>
-                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Importing…
-                      </>
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />{" "}{t("skillsGap.importing")}</>
                     ) : (
-                      `Import ${selectedCount} skill${selectedCount === 1 ? "" : "s"}`
+                      t("skillsGap.importSkills", { count: selectedCount })
                     )}
                   </Button>
                 )}
               </>
             )}
             {step === "pick" && (
-              <Button variant="ghost" size="sm" onClick={handleClose}>
-                Cancel
-              </Button>
+              <Button variant="ghost" size="sm" onClick={handleClose}>{t("skillsGap.cancel")}</Button>
             )}
             {step === "result" && (
-              <Button size="sm" onClick={handleClose}>
-                Done
-              </Button>
+              <Button size="sm" onClick={handleClose}>{t("skillsGap.done")}</Button>
             )}
           </div>
         </footer>
@@ -658,6 +641,7 @@ function PickProjectStep({
   onFilterChange,
   onPick,
 }: PickProjectStepProps) {
+  useTranslation();
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-border/60 px-5 py-3">
@@ -666,16 +650,16 @@ function PickProjectStep({
           <Input
             value={filter}
             onChange={(event) => onFilterChange(event.target.value)}
-            placeholder="Filter projects"
+            placeholder={t("skillsGap.filterProjects")}
             className="pl-7 text-xs"
-            aria-label="Filter projects"
+            aria-label={t("skillsGap.filterProjects")}
             data-testid="project-filter"
           />
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {loading ? (
-          <div className="p-6 text-center text-sm text-muted-foreground">Loading projects…</div>
+          <div className="p-6 text-center text-sm text-muted-foreground">{t("skillsGap.loadingProjects")}</div>
         ) : error ? (
           <div
             className="m-5 flex items-start gap-3 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"
@@ -685,9 +669,9 @@ function PickProjectStep({
             <div>{readableErrorMessage(error)}</div>
           </div>
         ) : totalProjects === 0 ? (
-          <EmptyState icon={Layers} message="This organization has no projects yet." />
+          <EmptyState icon={Layers} message={t("skillsGap.thisOrganizationHasNoProjectsYet")} />
         ) : projects.length === 0 ? (
-          <EmptyState icon={Search} message={`No projects match "${filter}".`} />
+          <EmptyState icon={Search} message={t("skillsGap.noProjectsMatch", { query: filter })} />
         ) : (
           <ul className="divide-y divide-border/60" data-testid="project-list">
             {projects.map((project) => {
@@ -713,19 +697,16 @@ function PickProjectStep({
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{project.name}</div>
                       <div className="mt-0.5 text-xs text-muted-foreground">
-                        {project.workspaces.length} workspace
-                        {project.workspaces.length === 1 ? "" : "s"}
+                        {t("skillsGap.workspaceCount", { count: project.workspaces.length })}
                         {kinds ? ` · ${kinds}` : ""}
                       </div>
                       {disabled && (
-                        <div className="mt-1 text-(length:--text-micro) text-muted-foreground">
-                          Remote-only project — no locally scannable workspaces to import from.
-                        </div>
+                        <div className="mt-1 text-(length:--text-micro) text-muted-foreground">{t("skillsGap.remoteOnlyProjectNoLocallyScannableWorkspaces")}</div>
                       )}
                     </div>
                     {!disabled && (
                       <Badge variant="outline" className="shrink-0 px-1.5 py-0 font-normal">
-                        {scannable.length} scannable
+                        {t("skillsGap.scannableCount", { count: scannable.length })}
                       </Badge>
                     )}
                   </button>
@@ -739,7 +720,8 @@ function PickProjectStep({
   );
 }
 
-function ScanningStep({ projectName }: { projectName: string }) {
+export function ScanningStep({ projectName }: { projectName: string }) {
+  useTranslation();
   return (
     <div
       className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-8 text-center"
@@ -750,10 +732,8 @@ function ScanningStep({ projectName }: { projectName: string }) {
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-medium">Scanning {projectName || "project"} for skills…</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Looking in well-known skill folders across each workspace.
-        </p>
+        <p className="text-sm font-medium">{projectName ? t("skillsGap.scanningProjectSkills", { name: projectName }) : t("skillsGap.scanningUnnamedProjectSkills")}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{t("skillsGap.lookingInWellKnownSkillFoldersAcross")}</p>
       </div>
       <div className="flex max-w-md flex-wrap justify-center gap-1.5">
         {HIGHLIGHTED_SCAN_FOLDERS.map((folder) => (
@@ -769,8 +749,7 @@ function ScanningStep({ projectName }: { projectName: string }) {
           variant="outline"
           className="px-1.5 py-0 text-(length:--text-micro) font-normal text-muted-foreground"
         >
-          +{APPROX_TOTAL_SCAN_FOLDERS - HIGHLIGHTED_SCAN_FOLDERS.length} more
-        </Badge>
+          +{APPROX_TOTAL_SCAN_FOLDERS - HIGHLIGHTED_SCAN_FOLDERS.length}{" "}{t("skillsGap.more")}</Badge>
       </div>
     </div>
   );
@@ -790,6 +769,7 @@ function ProjectSkillBrowser({
   onAddSkill: (workspaceId: string, path: string) => void;
   addingKey: string | null;
 }) {
+  useTranslation();
   const workspaces = scannableWorkspaces(project);
   const initialWorkspace = workspaces.find((workspace) => workspace.isPrimary) ?? workspaces[0] ?? null;
   const [workspaceId, setWorkspaceId] = useState(initialWorkspace?.id ?? "");
@@ -815,15 +795,14 @@ function ProjectSkillBrowser({
       <div className="shrink-0 border-b border-border/60 px-5 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-medium">Browse project folders</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">Open any folder and add directories or individual SKILL.md files.</p>
+            <p className="text-sm font-medium">{t("skillsGap.browseProjectFolders")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{t("skillsGap.openAnyFolderAndAddDirectoriesOr")}</p>
           </div>
           <Button variant="outline" size="sm" onClick={onBack}>
-            <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Discovered skills
-          </Button>
+            <ArrowLeft className="mr-1 h-3.5 w-3.5" />{" "}{t("skillsGap.discoveredSkills")}</Button>
         </div>
         {workspaces.length > 1 && (
-          <div className="mt-3 flex flex-wrap gap-1.5" aria-label="Project workspace">
+          <div className="mt-3 flex flex-wrap gap-1.5" aria-label={t("skillsGap.projectWorkspace")}>
             {workspaces.map((workspace) => (
               <Button
                 key={workspace.id}
@@ -844,7 +823,7 @@ function ProjectSkillBrowser({
           size="sm"
           onClick={() => result?.parentPath && setFolderPath(result.parentPath)}
           disabled={!result?.parentPath}
-          aria-label="Open parent folder"
+          aria-label={t("skillsGap.openParentFolder")}
         >
           <ArrowLeft className="h-3.5 w-3.5" />
         </Button>
@@ -853,8 +832,7 @@ function ProjectSkillBrowser({
       <div className="min-h-0 flex-1 overflow-y-auto">
         {browseQuery.isLoading ? (
           <div className="flex items-center justify-center gap-2 p-8 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading folder…
-          </div>
+            <Loader2 className="h-4 w-4 animate-spin" />{" "}{t("skillsGap.loadingFolder")}</div>
         ) : browseQuery.error ? (
           <div className="p-6 text-sm text-destructive">{readableErrorMessage(browseQuery.error)}</div>
         ) : result?.entries.length ? (
@@ -881,7 +859,7 @@ function ProjectSkillBrowser({
                   </button>
                   {entry.isSkill ? (
                     <Button size="sm" onClick={() => onAddSkill(workspaceId, entry.path)} disabled={addingKey === key}>
-                      {addingKey === key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Add skill"}
+                      {addingKey === key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : t("skillsGap.addSkill")}
                     </Button>
                   ) : entry.kind === "directory" ? (
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -891,10 +869,10 @@ function ProjectSkillBrowser({
             })}
           </ul>
         ) : (
-          <div className="p-8 text-center text-sm text-muted-foreground">This folder is empty.</div>
+          <div className="p-8 text-center text-sm text-muted-foreground">{t("skillsGap.thisFolderIsEmpty")}</div>
         )}
         {result?.truncated && (
-          <p className="border-t border-border/60 px-5 py-2 text-xs text-muted-foreground">Showing the first 250 entries.</p>
+          <p className="border-t border-border/60 px-5 py-2 text-xs text-muted-foreground">{t("skillsGap.showingTheFirst250Entries")}</p>
         )}
       </div>
     </div>
@@ -920,7 +898,7 @@ interface SelectStepProps {
   browseAddingKey: string | null;
 }
 
-function SelectStep({
+export function SelectStep({
   scanError,
   onRetry,
   onImportFromPath,
@@ -938,6 +916,7 @@ function SelectStep({
   onAddBrowsedSkill,
   browseAddingKey,
 }: SelectStepProps) {
+  useTranslation();
   if (scanError) {
     const grant = isGrantError(scanError);
     return (
@@ -951,17 +930,15 @@ function SelectStep({
             )}
           </div>
           <p className="text-base font-semibold">
-            {grant ? "You can't import skills here" : "Scan failed"}
+            {grant ? t("skillsGap.youCanTImportSkillsHere") : t("skillsGap.scanFailed")}
           </p>
           <p className="mt-1.5 text-sm text-muted-foreground">
             {grant
-              ? "Your account doesn't have permission to add skills to this organization. Ask an owner to grant the skills permission, then try again."
+              ? t("skillsGap.yourAccountDoesnTHavePermissionTo")
               : readableErrorMessage(scanError)}
           </p>
           {!grant && (
-            <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
-              Try again
-            </Button>
+            <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>{t("skillsGap.tryAgain")}</Button>
           )}
         </div>
       </div>
@@ -990,14 +967,11 @@ function SelectStep({
           <div className="mx-auto mb-4 w-fit bg-muted/50 p-4">
             <FolderSearch className="h-10 w-10 text-muted-foreground/50" />
           </div>
-          <p className="text-base font-semibold">No skills found</p>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            None of the well-known skill folders in this project's workspaces contain a{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">SKILL.md</code>. We searched{" "}
-            {HIGHLIGHTED_SCAN_FOLDERS.join(", ")} and {APPROX_TOTAL_SCAN_FOLDERS -
-              HIGHLIGHTED_SCAN_FOLDERS.length}{" "}
-            other agent-harness folders.
-          </p>
+          <p className="text-base font-semibold">{t("skillsGap.noSkillsFound")}</p>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t("skillsGap.noneOfTheWellKnownSkillFolders")}{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">SKILL.md</code>{t("skillsGap.weSearched")}{" "}
+            {HIGHLIGHTED_SCAN_FOLDERS.join(", ")}{" "}{t("skillsGap.and")}{" "}{APPROX_TOTAL_SCAN_FOLDERS -
+              HIGHLIGHTED_SCAN_FOLDERS.length}{" "}{t("skillsGap.otherAgentHarnessFolders")}</p>
           <Button
             variant="outline"
             size="sm"
@@ -1005,18 +979,14 @@ function SelectStep({
             onClick={() => onBrowseOpenChange(true)}
             data-testid="browse-project-folders-empty"
           >
-            <FolderOpen className="mr-1.5 h-3.5 w-3.5" /> Browse project folders
-          </Button>
+            <FolderOpen className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.browseProjectFolders")}</Button>
           {onImportFromPath && (
-            <p className="mt-3 text-sm text-muted-foreground">
-              For skills in non-standard folders, use{" "}
+            <p className="mt-3 text-sm text-muted-foreground">{t("skillsGap.forSkillsInNonStandardFoldersUse")}{" "}
               <button
                 type="button"
                 className="font-medium text-foreground underline underline-offset-2"
                 onClick={onImportFromPath}
-              >
-                Import from path or URL
-              </button>
+              >{t("skillsGap.importFromPathOrUrl")}</button>
               .
             </p>
           )}
@@ -1028,10 +998,9 @@ function SelectStep({
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="candidate-list">
       <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border/60 px-5 py-2.5">
-        <p className="text-xs text-muted-foreground">Choose discovered skills, or browse any workspace folder.</p>
+        <p className="text-xs text-muted-foreground">{t("skillsGap.chooseDiscoveredSkillsOrBrowseAnyWorkspace")}</p>
         <Button variant="outline" size="sm" onClick={() => onBrowseOpenChange(true)} data-testid="browse-project-folders">
-          <FolderOpen className="mr-1.5 h-3.5 w-3.5" /> Browse folders
-        </Button>
+          <FolderOpen className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.browseFolders")}</Button>
       </div>
       <div className="shrink-0 border-b border-border/60 px-5 py-2.5">
         <div className="relative">
@@ -1039,24 +1008,21 @@ function SelectStep({
           <Input
             value={filter}
             onChange={(event) => onFilterChange(event.target.value)}
-            placeholder="Search discovered skills…"
+            placeholder={t("skillsGap.searchDiscoveredSkills")}
             className="h-8 pl-8 text-xs"
-            aria-label="Search discovered skills"
+            aria-label={t("skillsGap.searchDiscoveredSkills_f90196")}
           />
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {groups.length === 0 ? (
-          <div className="flex h-full items-center justify-center p-6 text-sm text-muted-foreground">
-            No skills match “{filter.trim()}”.
+          <div className="flex h-full items-center justify-center p-6 text-sm text-muted-foreground">{t("skillsGap.noSkillsMatchQuery", { query: filter.trim() })}
           </div>
         ) : (
           groups.map((group, groupIndex) => (
             <section key={group.key}>
               {groupIndex > 0 && !group.isPrimary && groups[groupIndex - 1]?.isPrimary && (
-                <header className="border-y border-border/60 bg-muted/30 px-5 py-2 text-xs uppercase tracking-wide text-muted-foreground">
-                  Other Workspaces
-                </header>
+                <header className="border-y border-border/60 bg-muted/30 px-5 py-2 text-xs uppercase tracking-wide text-muted-foreground">{t("skillsGap.otherWorkspaces")}</header>
               )}
               <header className="sticky top-0 z-10 border-b border-border/60 bg-background px-5 py-2 text-sm font-medium text-foreground">
                 {group.workspaceName}
@@ -1090,7 +1056,7 @@ function SelectStep({
                               checked={isSelected}
                               onCheckedChange={() => toggleCandidate(candidate)}
                               disabled={!selectable}
-                              aria-label={`Select ${candidate.name}`}
+                              aria-label={t("skillsGap.select", { name: candidate.name })}
                             />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -1128,9 +1094,7 @@ function SelectStep({
                                 <label
                                   htmlFor={`rename-${candidate.workspaceId}-${candidate.slug}`}
                                   className="shrink-0 text-xs text-muted-foreground"
-                                >
-                                  Import as
-                                </label>
+                                >{t("skillsGap.importAs")}</label>
                                 <Input
                                   id={`rename-${candidate.workspaceId}-${candidate.slug}`}
                                   value={selectedValue?.slug ?? ""}
@@ -1138,7 +1102,7 @@ function SelectStep({
                                     renameCandidate(candidate, event.target.value)
                                   }
                                   className="h-7 max-w-xs font-mono text-xs"
-                                  aria-label={`Rename ${candidate.name}`}
+                                  aria-label={t("skillsGap.rename_4a18fa", { name: candidate.name })}
                                   aria-invalid={
                                     selectedValue
                                       ? !isValidSelectionSlug(selectedValue)
@@ -1146,9 +1110,7 @@ function SelectStep({
                                   }
                                 />
                                 {selectedValue && !isValidSelectionSlug(selectedValue) && (
-                                  <span className="text-xs text-destructive">
-                                    Use a lowercase URL-safe slug.
-                                  </span>
+                                  <span className="text-xs text-destructive">{t("skillsGap.useALowercaseUrlSafeSlug")}</span>
                                 )}
                               </div>
                             )}
@@ -1172,6 +1134,7 @@ interface ResultStepProps {
 }
 
 function ResultStep({ result }: ResultStepProps) {
+  useTranslation();
   const importedSkills: CompanySkill[] = useMemo(
     () => [...result.imported, ...result.updated],
     [result],
@@ -1183,24 +1146,20 @@ function ResultStep({ result }: ResultStepProps) {
         <div className="flex items-start gap-3 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-3">
           <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <div className="text-xs leading-relaxed text-muted-foreground">
-            <span className="font-medium text-foreground">No files were copied.</span> These skills
-            reference the files in the project workspace — editing them in Skill Studio saves
-            directly back to those files.
-          </div>
+            <span className="font-medium text-foreground">{t("skillsGap.noFilesWereCopied")}</span>{" "}{t("skillsGap.theseSkillsReferenceTheFilesInThe")}</div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span className="text-emerald-600 dark:text-emerald-400">
-            ✓ {result.imported.length} imported
+            ✓ {t("skillsGap.scanImported", { count: result.imported.length })}
           </span>
-          {result.updated.length > 0 && <span>↻ {result.updated.length} updated</span>}
-          {result.skipped.length > 0 && <span>⊘ {result.skipped.length} skipped</span>}
+          {result.updated.length > 0 && <span>↻ {t("skillsGap.scanUpdated", { count: result.updated.length })}</span>}
+          {result.skipped.length > 0 && <span>⊘ {t("skillsGap.scanSkipped", { count: result.skipped.length })}</span>}
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {importedSkills.length > 0 && (
           <section>
-            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-              Imported · {importedSkills.length}
+            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">{t("skillsGap.imported_a70641")}{" "}{importedSkills.length}
             </header>
             <ul className="divide-y divide-border/60" data-testid="result-imported">
               {importedSkills.map((skill) => (
@@ -1219,8 +1178,7 @@ function ResultStep({ result }: ResultStepProps) {
                   <Link
                     to={skillStudioRoute(skill.id)}
                     className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-foreground no-underline hover:underline"
-                  >
-                    Open <ExternalLink className="h-3 w-3" />
+                  >{t("skillsGap.open")}{" "}<ExternalLink className="h-3 w-3" />
                   </Link>
                 </li>
               ))}
@@ -1229,8 +1187,7 @@ function ResultStep({ result }: ResultStepProps) {
         )}
         {result.skipped.length > 0 && (
           <section>
-            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-              Skipped · {result.skipped.length}
+            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">{t("skillsGap.skipped_5c7a4b")}{" "}{result.skipped.length}
             </header>
             <ul className="divide-y divide-border/60" data-testid="result-skipped">
               {result.skipped.map((row, index) => (
@@ -1252,8 +1209,7 @@ function ResultStep({ result }: ResultStepProps) {
         )}
         {result.warnings.length > 0 && (
           <section>
-            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-              Warnings · {result.warnings.length}
+            <header className="bg-muted/30 px-5 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">{t("skillsGap.warnings")}{" "}{result.warnings.length}
             </header>
             <ul className="divide-y divide-border/60" data-testid="result-warnings">
               {result.warnings.map((warning, index) => (

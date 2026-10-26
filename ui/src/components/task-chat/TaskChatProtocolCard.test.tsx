@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 // @vitest-environment jsdom
 
 import { act, forwardRef, useImperativeHandle, type ForwardedRef } from "react";
@@ -108,15 +109,89 @@ describe("TaskChatProtocolCard", () => {
   let container: HTMLDivElement;
   let root: Root;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     root = createRoot(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
+  });
+
+  it("translates proven resource captions without changing a custom equal caption, link or row", async () => {
+    const item: TaskChatProtocolItem = { id: "resource:doc:1", kind: "protocol", surface: "resource", resourceKind: "document",
+      title: "<b>Document</b> {{name}}", subtitle: "Document · rev 21", href: "#document-notes",
+      display: { subtitle: { code: "resource.documentRevision", revision: 21 } } };
+    renderCard(root, item); const card = container.querySelector("article"); const link = container.querySelector("a");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(card?.textContent).toContain("Документ · ред. 21"); expect(card?.textContent).toContain(item.title);
+    expect(container.querySelector("article")).toBe(card); expect(container.querySelector("a")).toBe(link);
+    expect(link?.getAttribute("href")).toBe(item.href); expect(container.querySelector("b")).toBeNull();
+    renderCard(root, { ...item, display: undefined });
+    expect(card?.textContent).toContain("Document · rev 21"); expect(container.querySelector("article")).toBe(card);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(card?.textContent).toContain("Document · rev 21");
+  });
+
+  it("keeps provider detail nodes and literal equal labels while translating proven labels and booleans", async () => {
+    const item: TaskChatProtocolItem = { id: "provider:test", kind: "protocol", surface: "provider_activity", family: "context", eventType: "context", status: "completed",
+      title: "Summary <b>literal</b>", details: [
+        { label: "Available", value: "Yes", display: { label: { code: "providerDetail", field: "available" }, value: { code: "boolean", value: true } } },
+        { label: "Summary", value: "Yes" },
+      ], steps: [], links: [], children: [] };
+    renderCard(root, item); const details = container.querySelector("details")!; details.open = true;
+    const nodes = [...container.querySelectorAll("dt")]; const values = [...container.querySelectorAll("dd")];
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect([...container.querySelectorAll("dt")]).toEqual(nodes); expect([...container.querySelectorAll("dd")]).toEqual(values);
+    expect(nodes[0].textContent).toBe("Доступно"); expect(values[0].textContent).toBe("Да");
+    expect(nodes[1].textContent).toBe("Summary"); expect(values[1].textContent).toBe("Yes");
+    expect(details.open).toBe(true); expect(container.textContent).toContain(item.title); expect(container.querySelector("b")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(nodes[0].textContent).toBe("Available"); expect(values[0].textContent).toBe("Yes");
+    expect(container.querySelector("details")).toBe(details);
+  });
+
+  it("translates generated child status without replacing a literal equal provider status", async () => {
+    renderCard(root, { id: "provider:children", kind: "protocol", surface: "provider_activity", family: "delegation", eventType: "subagent", status: "completed", title: "Children",
+      details: [], steps: [], links: [], children: [
+        { id: "generated", title: "Worker", status: "unknown", display: { status: { code: "childUnknown" } } },
+        { id: "literal", title: "Named worker", status: "unknown" },
+      ] });
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Worker");
+    expect(container.textContent).toContain("неизвестно");
+    expect(container.textContent).toContain("unknown");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent?.match(/unknown/g)).toHaveLength(2);
+  });
+
+  it("retains a runtime input draft and exact request decision through locale changes and a forbidden response", async () => {
+    const raw = "Answer <b>literal</b> {{id}}";
+    const item: TaskChatProtocolItem = { id: "runtime:r:q", kind: "protocol", surface: "runtime_request", runId: "run-original", requestId: "request-original",
+      requestKind: "runtime", turnId: "turn-original", requestType: "input", status: "pending", prompt: "Response", choices: [], fields: [] };
+    const cause = Object.assign(new Error("The runtime request could not be resolved."), { status: 403 });
+    const onDecision = vi.fn().mockRejectedValue(cause);
+    renderCard(root, item, onDecision);
+    const input = container.querySelector("textarea")!;
+    await act(async () => { Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!.call(input, raw); input.dispatchEvent(new Event("input", { bubbles: true })); });
+    input.focus(); input.setSelectionRange(2, 9);
+    for (const language of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      expect(container.querySelector("textarea")).toBe(input); expect(input.value).toBe(raw); expect(document.activeElement).toBe(input);
+      expect(input.selectionStart).toBe(2); expect(input.selectionEnd).toBe(9); expect(onDecision).not.toHaveBeenCalled();
+      expect(container.textContent).toContain(language === "ru" ? "Ввод для среды выполнения" : "Runtime input");
+      expect(container.textContent).toContain("Response");
+    }
+    const submit = [...container.querySelectorAll("button")].find(button => button.textContent === "Отправить ответ")!;
+    await act(async () => { submit.click(); });
+    expect(onDecision).toHaveBeenCalledTimes(1); expect(onDecision).toHaveBeenCalledWith({ action: "submit", values: { answer: raw } });
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector('[role="alert"]')?.textContent).toBe(cause.message); expect(onDecision).toHaveBeenCalledTimes(1);
+    expect(input.value).toBe(raw); expect(item.runId).toBe("run-original"); expect(item.requestId).toBe("request-original");
   });
 
   it("renders a rich deliverable card without a completed chip", () => {

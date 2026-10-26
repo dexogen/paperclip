@@ -1,0 +1,637 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "6f808fad7601b361cefceec235b362c016a64f1e9c987a568d956dc52384ebf2",
+      "reason": "AiConnectionSelect compares c.status against the technical connection-status enum connected. The label output is a translated reconnectName message or the saved user-provided c.name; the enum literal itself is never rendered."
+    },
+    {
+      "id": "7ddb757c8df346a677f723955d8c0f04cc59cc3d0e6d7770c9fdbbd2a2d618d7",
+      "reason": "AiProviderSetup displayLabel compares the provider ID against gateway. This technical provider discriminator selects the translated providerSetup.setup.gateway message; gateway is not rendered by this conditional."
+    },
+    {
+      "id": "d9104aaf6a8e8736a5cee7f989429b5d7d98489b8aa188a1079470dc91689666",
+      "reason": "AiProviderSetup displayLabel compares the provider ID against local. This technical provider discriminator selects the translated providerSetup.setup.local message; local is not rendered by this conditional."
+    },
+    {
+      "id": "e49298cacac59aadf280afe1ab54df9ba2bcccdd45fe38a852f926708f3cd2a3",
+      "reason": "useLocalAiLogin errorMessage uses the message property name in a TypeScript union guard (\"message\" in error). The property name is never rendered; output preserves the provider diagnostic or selects an already translated localErrors entry."
+    },
+    {
+      "id": "f23a3dd8efec52232cc4ea889d70de56f17eea4acbbeb431771ec0a8b7b42bec",
+      "reason": "AgentProviderConnection errorMessage uses the message property name in a TypeScript union guard (\"message\" in error). The property name is never rendered; output preserves the provider diagnostic or selects an already translated localErrors entry."
+    },
+    {
+      "id": "1db1e910801f67a3038f12c373beaecd20a3237598feb54851dae8f03c98fc71",
+      "reason": "ExternalObjectStatusIcon compares the canonical liveness enum against fresh; output is the translated status label and optional translated liveness. The enum value is not rendered."
+    },
+    {
+      "id": "466054b4f91c10f3af1f6bcf4eecab478938d2b61b21d4ce4aeea3fc43d4e302",
+      "reason": "ExternalObjectStatusIcon compares the canonical liveness enum against unknown; output is the translated status label and optional translated liveness. The enum value is not rendered."
+    },
+    {
+      "id": "aeb7c84aacecc0bf78aa51d1310ac23b4e3605a575e4c8647a09402f99870385",
+      "reason": "SiblingLink compares the navigation direction against previous to select one of two translated aria labels. The technical direction value is not rendered."
+    },
+    {
+      "id": "6a33eda5f24969dc4a14612324e78dffa64d4b6b3823e39181d65ab1a7825414",
+      "reason": "TaskTreeControlDialog compares its action mode against restore to select the translated restore-tasks plural family. The action discriminator is not rendered."
+    },
+    {
+      "id": "9f646d6f6232970922bf734c9cbb55a00c3f3f7ff8fbf93941ed9a4c442146e4",
+      "reason": "IssueProperties compares the execution stage type against review to select translated reviewer or approver search placeholders. The stage enum is not rendered."
+    },
+    {
+      "id": "d9fc6eea111f931024c8c74db49c245925939f3211301d1b5ea1cfb60f889734",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical run action to display its translated completion notice. The action identifier is not rendered."
+    },
+    {
+      "id": "1c19b10ffd23f3d65981d8ee6005c08f2972931f6b6d7727b61f3f5855cd5f36",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical stop action to display its translated service notice. The action identifier is not rendered."
+    },
+    {
+      "id": "84d6ff05919ee5a991e259cf7828123bc1cec9ef8f74102177df494003f1c385",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical restart action to display its translated service notice. The action identifier is not rendered."
+    },
+    {
+      "id": "d8cab01c161f7784f13ea9a9394f5c728a6ad39b44409f487b7baf6fd576af88",
+      "reason": "AttributionAvatar compares the technical role against assignee to select the translated assignee or originating-agent label. This is a discriminator, not visible copy."
+    },
+    {
+      "id": "9804cce7d273547277b9827ed7e91ea62d147fe86f3050b31a9b42f5ca850e28",
+      "reason": "IssueDetailActivityTab checks the BCP 47 locale identifier ru to select Russian USD number formatting. The locale code is not rendered."
+    },
+    {
+      "id": "415f2d62e9b2cb27dfdb47d13db08d2beb694ac01630a7a7ff3ebe287c4d4acd",
+      "reason": "IssueDetailActivityTab preserves the original four-decimal English USD amount format. Russian uses Intl currency formatting; the dollar symbol and number are monetary data, not an untranslated sentence."
+    },
+    {
+      "id": "da06d1581df0ed57107275876f74bf78955f488856eca274dcda561e0a3b346a",
+      "reason": "TaskDetailSurface compares the canonical workMode against ask to select a translated mode tooltip. The mode identifier is not rendered."
+    },
+    {
+      "id": "d7efb15dd038742f93a76f2941188d8ef55c47d1353776d2a6e9de94ec2ffc18",
+      "reason": "CsvPreview compares the parser diagnostic against its existing canonical incomplete-quoted-field message. The matching branch renders taskPanels.csv.incomplete; unknown diagnostic text remains literal. The comparison operand is not displayed."
+    },
+    {
+      "id": "e0a5d92936bf84f3357d043090174aa959cba77f076fcb782dfa67c6f9037cd3",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum text to select taskPanels.viewer.kind.text. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "d659823a649d4ebe6490971564ec48bd9a277dce26cf3c52a2c9ea955d856950",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum image to select taskPanels.viewer.kind.image. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "650957df488fa2997040565bca01dd38c1490cd939bec40080cb53b0de46c0fb",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum video to select taskPanels.viewer.kind.video. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "608b95a07433e17802d13e10ee0049e0384319cc8e26c8c1e590236c134e930c",
+      "reason": "FileViewerMetadataRow compares the canonical previewKind enum unsupported to select taskPanels.viewer.kind.unsupported. The enum remains unchanged; the displayed label is translated."
+    },
+    {
+      "id": "4ffd6d1af3a6eaa984917e6c8fb8db883b8af254e731d6e15b894870f157728b",
+      "reason": "FileViewerSheet.handleCopyContent stores the CopyFeedback code dataCopied for a base64 payload. copyMessages resolves it to taskPanels.viewer.copy.dataCopied during render; storing the code preserves live locale changes without repeating clipboard work."
+    },
+    {
+      "id": "53fff63b13fa84421fa644ab935e657279fe47a66085e14fb44a6dd45954393a",
+      "reason": "FileViewerSheet.handleCopyContent stores the CopyFeedback code contentsCopied for a text payload. copyMessages resolves it to taskPanels.viewer.copy.contentsCopied during render; the code is not user-visible copy."
+    },
+    {
+      "id": "a1f91eb4efc9ae65722589b30dfb9fcb30537614d493dee237c45a43fcaf5bbc",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind copy to select the translated copyMessages entry. The discriminator itself is never rendered."
+    },
+    {
+      "id": "80c56531f7cbf5b6a44b8aa2c759f139122636eec8abc3f8fc5ce2c88061703f",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind loaded. That branch renders the current load message supplied by FileContentViewer, not this technical discriminator."
+    },
+    {
+      "id": "4ad890ba7495fe4b0be1ebab6a3aef65535cd35858344142dabbdb9d520bef59",
+      "reason": "FileViewerSheet.announcementText compares the announcement kind error before resolving a local translated fallback or preserving a raw diagnostic. The discriminator is not display text."
+    },
+    {
+      "id": "c44ed418380f9a46960a1ea99531a1b7f4c13b20eca6cce15f10137925f39c38",
+      "reason": "IssueDocumentsSection.errorMessage uses the property-presence guard message in error to distinguish a raw server diagnostic from a local error code. It renders error.message or the translated errorMessages entry; the property name is not shown."
+    },
+    {
+      "id": "91aaa8effdc6ee1e7869a501e68230f23df5cb44c08050ef47560d5d8050ff91",
+      "reason": "DocumentCard displays Markdown as the technical format name when no revision is supplied. It is intentionally unchanged in Russian; the revision-bearing sentence uses taskPanels.card.markdownRevision."
+    },
+    {
+      "id": "839e78a553b2d0371434d797f02ed8a23a82bad6b7b7720528687015dc1e0c1f",
+      "reason": "SidePanelTabs compares its live-announcement kind moved and renders taskPanels.tabs.moved with the current tab label and position. This internal discriminator is not displayed or persisted as a translated label."
+    },
+    {
+      "id": "880303def534eee96eaccd4e33b23fbdaa62e204278469d13a7c3b5f3ad7c5be",
+      "reason": "SidePanelTabs compares its live-announcement kind closed and renders taskPanels.tabs.closed. The state code itself is not user-facing text."
+    },
+    {
+      "id": "26a549c63950dd7ab52c49c1f9dc72aa9cddc5637f41c2b17d3637880544bf98",
+      "reason": "SidePanelTabs compares its live-announcement kind lastClosed and renders taskPanels.tabs.lastClosed. The state code preserves the last-tab focus behavior independently of language."
+    },
+    {
+      "id": "ba37794c5ea19961b03e3d5cb0a913e6389b94c50a5e0e48b0de4407ed97121a",
+      "reason": "TaskBrowserPanel.load stores the local failure code disconnected rather than translated prose. The message expression renders taskPanels.browser.disconnected; retaining the code lets language changes update the error without another viewer request."
+    },
+    {
+      "id": "72eee3275856289d40938340f30f7fa635f39793c6cec5d0cbffa3fc4be5a7a9",
+      "reason": "TaskBrowserPanel.action stores the local failure code actionFailed. The message expression renders taskPanels.browser.actionFailed without repeating the browser control mutation."
+    },
+    {
+      "id": "eb3e396473554428f664d9c9316de5a469f517ce6b88a69a579d2e14f0f599d3",
+      "reason": "TaskBrowserPanel.message compares the local error code disconnected to select taskPanels.browser.disconnected. The comparison operand is not rendered; raw browser.error remains literal."
+    },
+    {
+      "id": "5b85ec3ae9dd9d1dd5812c254469cacbb74a1a13f23a01f47bbb097d68a7b301",
+      "reason": "TaskBrowserPanel.message compares the local error code actionFailed to select taskPanels.browser.actionFailed. The comparison operand is not rendered; raw browser.error remains literal."
+    },
+    {
+      "id": "7d5debaa3ff0d1b60a9c076e6ef83d58fb826ed63928a630a874b4add9ad6ff1",
+      "reason": "SnippetLine compares the canonical snippet field with document to select its title tooltip. The literal is a discriminator, not rendered copy. The tooltip preserves the user-provided fallbackLabel; the visible document chip uses searchUi.result.document."
+    },
+    {
+      "id": "3c2966cbd3f8db30b309c5dbb111660cf3a398e3af32f4146f8395366b3b9234",
+      "reason": "groupInboxWorkItems compares groupBy with the canonical workspace value to choose its display-label resolver. The discriminator is not rendered. Translation happens after canonical grouping and sorting, preserving group keys, order and custom names."
+    },
+    {
+      "id": "03b794e59d833d1f9257a4d8187155ef12a5f99671e3ac6bae2ec54c41e50b7c",
+      "reason": "groupInboxWorkItems compares groupBy with the canonical assignee value to choose its display-label resolver. The discriminator is not rendered. Translation happens after canonical grouping and sorting, preserving group keys, order and custom names."
+    },
+    {
+      "id": "d182a7106415713fd681e2577fb366818149dd3426ad441744a0fb539a97a6ae",
+      "reason": "ItemVerdictSegmentedControl compares the canonical verdict enum against approve to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "41321ee916b7be73405742b896ac814465b8eb799e86e02e71f6aa89bec27452",
+      "reason": "ItemVerdictSegmentedControl compares the canonical verdict enum against reject to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "54a2b3888ec93d888323216dfc8019aad9382009b6bd5f20acbdba8fc0583a4a",
+      "reason": "RequestItemVerdictsCard compares the canonical verdict enum against approve to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "368db9519fe33a91a164903450562ac618a1b90d9b65b92bab4af61fc18eab4b",
+      "reason": "RequestItemVerdictsCard compares the canonical verdict enum against reject to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "f3d886f9bef3a3fc957db8f796450214e53d6af3888c1b01f6b046b155b15634",
+      "reason": "QuestionForm compares the stored action discriminator against submit to select the translated submit or cancel failure. The action identifier is not rendered."
+    },
+    {
+      "id": "725f55b8e30441d36ca6418d7dda5a0ab3f761a91cf1901fae323df53940214d",
+      "reason": "TaskChatRichInput uses the message property name in a union guard to preserve a provider diagnostic or select a translated upload fallback. The property name is not rendered."
+    },
+    {
+      "id": "357413733f71f1456eda6a321eb963e740be306bea7b263d9d3791c8f835a9a2",
+      "reason": "CompactDecisionActions compares the canonical action discriminator request_revision to select a translated toast title. The discriminator is never rendered."
+    },
+    {
+      "id": "3bacf6d4cb05e6e0bdb1b4c0ddecd2c18ecc67ae1d16017271635938469e5fda",
+      "reason": "CompactDecisionActions compares the canonical action discriminator reject to select a translated toast title. The discriminator is never rendered."
+    },
+    {
+      "id": "716b8f005d7fa87664d1c84d44d0337ea08da61df17e87cc7cc4b2165e69d30b",
+      "reason": "StalledReviewActions compares the canonical review action approve to select a translated completed-action toast. The action identifier is not rendered."
+    },
+    {
+      "id": "d6dcad15d6a739a597ac5221f65a46fb3ac8211ae83329abcb45196626db50fe",
+      "reason": "StalledReviewActions compares the canonical review action request_changes to select a translated completed-action toast. The action identifier is not rendered."
+    },
+    {
+      "id": "539da01f772b0e58074b7b87dd0fcfb646a207e8b208bfe45d51e07b003b401c",
+      "reason": "Approvals compares the stored action-error discriminator against approve while rendering its translated fallback. The canonical action identifier is not rendered."
+    },
+    {
+      "id": "eafcc5f114c75e52eca53c2e5967f5de76ed7ff6d660b2bbdbc7915e39afaaa8",
+      "reason": "The canonical cancelled run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "f981fb670406e68f5828c30daba4a625ed239b50c43563c3860de31f6d775618",
+      "reason": "The canonical interrupted run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "3e6446dc595cac4d1639d5cbeb4b282a7bd1d61e0a5295066184662d72bfebbd",
+      "reason": "The canonical native_provider_runtime_missing run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "66a85ad94c12a6e47785467557288e20672f69d3409b50e498d9aeae3aeb4593",
+      "reason": "The canonical native_provider_approval_required run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "e3e5bb0cb69aa5a23a39d6d52b75e3b4057461123ee0fcf1ea4d4d02f1fc1ab7",
+      "reason": "The canonical native_provider_model_rejected run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "dd9648d2ec1fc7216d6bc25a349b0bf26613c4abd6ea4f62a2a5be154fff74b3",
+      "reason": "The canonical native_provider_usage_limit run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "30327aafb17405db7480f9a119400a45c815884a1e31f7f31efdf3e5a7a15f1d",
+      "reason": "The canonical failed run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "06aa9fb1ae6f87e9a30293d31271387e2127509d66f2bbced76d2b93a2fdfbfd",
+      "reason": "The canonical provider_frame_too_large run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "af4ce38528e88061299c390a6220432a43f63d9bd2d174e3230f6e0c248a0229",
+      "reason": "The canonical timed_out run-status/error-code discriminator selects a closed RunMarkerDetailMessage descriptor. The renderer translates that descriptor; this comparison value is not displayed."
+    },
+    {
+      "id": "f5abe23d31e6b3f44d0c89f0d77370aba44946c93a235a34c45bff05b310959c",
+      "reason": "The canonical pending-input kind durable selects durableInputLabel with the active translator. The discriminator is not displayed."
+    },
+    {
+      "id": "19b9633e3ae772f80502ddf397b6990cb8c7963acdb71c9684f931e8e5e2c4de",
+      "reason": "The canonical runtime request type permission selects the translated runtime permission/input fallback. The discriminator is not displayed."
+    },
+    {
+      "id": "6beff08e273c2a477a018cc08f83f303ea084111f4fe569d1ae853bb0a223411",
+      "reason": "The canonical priority value high selects the translated statuses caption. Its stored value and priority styling remain unchanged; the comparison is not visible copy."
+    },
+    {
+      "id": "8e49456c0df8f7f1ea0d556ba9097f6c1c1902d561d82ab12da986c035486f11",
+      "reason": "The canonical priority value medium selects the translated statuses caption. Its stored value and priority styling remain unchanged; the comparison is not visible copy."
+    },
+    {
+      "id": "771cfc571637b1ae80c1bc65e1d1dbc91fcc6103a45ee67f11d57fbc9f09cc10",
+      "reason": "The closed resource.agentAttachment provenance code selects a translated application fallback. Custom resource titles keep their original text; the code itself is not displayed."
+    },
+    {
+      "id": "96a251bfe030113c702796942213fa030996a054652fbbf7d8a48b7cea931e48",
+      "reason": "The closed browser.label provenance code selects a translated application caption. Custom browser labels keep their original text; the code itself is not displayed."
+    },
+    {
+      "id": "1dd20afd10d60b2b208a4b5b0a533477e4b32ea8d6c5d8ac8efdd2e4e005c56f",
+      "reason": "Title joins a literal task identifier with statusLabel(status), which already resolves the current locale; only colon punctuation is added."
+    },
+    {
+      "id": "e5baf9852aa63bfb12d0907ace5ab6b2a338827a90b10024ce9a7d131f928e75",
+      "reason": "Punctuation-only separator before formatTimeShort(action.resolvedAt, t); the date is already formatted with the current translator."
+    },
+    {
+      "id": "df6f34a0df567cb0847567d288617d7a64218dfb9ad01f1ed9fe8f3aead4bf14",
+      "reason": "Canonical provider-trace state comparison; the selected caption is translated with the explicit runUi.trace.requested key."
+    },
+    {
+      "id": "ce8a36451eb7440132ab84fb3ee60fff6a4ab9c3e51dd63101381e02f187c8bb",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "2c4a48482bd659a0e9a0b2fc0c8ed1b4b34fc73d5cb040b5fe87622b5b409458",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "9a8796e8cff4d6e706aa01595c94b767a4c32a8055b9c6662384b79240514927",
+      "reason": "Canonical local error/receipt discriminant used to select an explicit translated error caption; raw server Error.message remains literal."
+    },
+    {
+      "id": "b0a1ecaf93a6d41aecf10bf754fd197a8f8b9834c1f49984fbdd15cc9c43399f",
+      "reason": "Canonical WorkspaceRecoveryReceiptError kind comparison, selecting explicit translated retry/repair captions rather than displaying the enum."
+    },
+    {
+      "id": "0d7f8f04e94a68de9bc84240b558c6377f7a6744ae1e5405c532e980a89d1dd2",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "70fe4ef158de11b210349a58187f25dc2d14d081806407cad02671122f39cb8d",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "03379648882adcf19dec6713dcae48e8230076e160ca01f96f9e3c4773eaa73d",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "48741a680872912f3a944b5d086a873a1f497f1d0b7517df1f876880d0c1f96a",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "46d650689cb88711ba4fff9aa141dd23f01d9d1edfc545cebc0e9d6de866b49a",
+      "reason": "Canonical workspace file operation discriminator used to select an explicit runUi.protocol.operation translation; operation and source paths remain unchanged."
+    },
+    {
+      "id": "679f18677444db358ffa4ecb911e66f8d0a4cf33cbcd41b94e3540c3637405a8",
+      "reason": "Canonical permission decision comparison; allowed/rejected captions are translated after the raw decision is read."
+    },
+    {
+      "id": "5eefb486cd67c50b1385e609bcdea6860472d07699eb05dfdbb5974dfb3e32c4",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "281882a29e48b1c60420d0597c8ebf1e8362dbbac2ec743fe9eb48d78db973d4",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "ff4660ec4afe1986e751ae25faf5780978dea66be9528841b22590bd67d40794",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "98cfc95829e8eeedad7913a8b2cf21d207acbeed2e7d088eb18fb86aa8005c3d",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "62ab5771b20084727ff38905e40a6d764e40f17465a8ecc88b28161ea2397423",
+      "reason": "Runtime validation of optional waiting-provider display provenance: phase, typeof, code and provider enum remain canonical; valid data selects runUi.turn.waitingForProvider, malformed/unknown data preserves the raw label."
+    },
+    {
+      "id": "bfda4065acb7357b2661e80b522e307dd0b733eb289d209fb5297334f1dbfac0",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "cc7c079a8c5899d40e500897e133ba40163200e98838f03e63ee4f805def7820",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "b5e666ea7b53764a58514e77f53a6e6ff85b90a30f0a320c7be0f0fc6ca8cbdd",
+      "reason": "App-owned status provenance code used to select localized status whimsy after raw run classification; provider status strings without provenance remain literal."
+    },
+    {
+      "id": "e0e363d9ecf9e19aa3958fe32d429cff1c308ad031674e7ce47aec545aae4f23",
+      "reason": "Canonical reasoning channel discriminator detail, selecting separate explicit localized detail/reasoning captions and accessible labels; not display prose."
+    },
+    {
+      "id": "309780434cda4a004ea9ac0e4b1d5774f72fa98b691de7e5a8ccfa920e6562a9",
+      "reason": "Canonical reasoning channel discriminator detail, selecting separate explicit localized detail/reasoning captions and accessible labels; not display prose."
+    },
+    {
+      "id": "d09b9ec90557324ae6dc140764c889ec90019a5ebfcda825cc5095e549572869",
+      "reason": "Canonical permission decision comparison; allowed/rejected captions are translated after the raw decision is read."
+    },
+    {
+      "id": "68721480ffe1937fbec2cfffa6aa3ded649c02e0e05dca568a435a22c70be72e",
+      "reason": "Fixed English default for the optional-translator helper, retained for raw/default consumers. The only production caller TaskChatRunnerActivityGroup passes current t after raw category deduplication and ordering; translated path uses runUi.completed.more."
+    },
+    {
+      "id": "38b490c69d436ae5b50b29d7c8736cb975703201889f995feef1b8f3ff4c7492",
+      "reason": "Canonical legacy raw thought-duration label retained in adapter model. The same producer attaches summaryLabel code thoughtDuration with numeric seconds; the only display consumer TaskChatThinking resolves it through validated formatRunDisplayText(thinkingSummary, ..., t). No inference from equal provider strings."
+    },
+    {
+      "id": "641175ee73f9d150c35724d8178c077f5dddc7b5fc638ac111509350aa4a74c4",
+      "reason": "Canonical legacy raw thought-duration label retained in adapter model. The same producer attaches summaryLabel code thoughtDuration with numeric seconds; the only display consumer TaskChatThinking resolves it through validated formatRunDisplayText(thinkingSummary, ..., t). No inference from equal provider strings."
+    },
+    {
+      "id": "a49be9799874f87076a377872366083ee25faf42f9d6d2c35a2ead8886f96fee",
+      "reason": "The fixed-English rawRelative sentinel now selects the due-now caption. The rendered title comes from scheduledRetry translation keys; this comparison never renders the sentinel."
+    },
+    {
+      "id": "58b3a1999b3f6b0d46c63f0ddd502f3647b1efc2b101db63ff5f8a9407a03c06",
+      "reason": "The message property name is a union guard that preserves external diagnostics. It is not visible copy."
+    },
+    {
+      "id": "a6d8a0d8fd169194d4f860fa331296984551582a490b90f1f0bf1cacf93c3df5",
+      "reason": "The inspection discriminant selects the translated local error caption and is not rendered."
+    },
+    {
+      "id": "5f98d910ccc1be6525433ed6537ff46f41f5ef851644acc53c394324d2f7f0a7",
+      "reason": "The canonical overview view ID selects the existing panel without changing URL or component identity. Visible tab text is translated separately."
+    },
+    {
+      "id": "883cfd2342b2d67da1acd44780c789185929a07ec04706b528145044c4b6ebcc",
+      "reason": "The canonical pipeline view ID selects the existing panel without changing URL or component identity. Visible tab text is translated separately."
+    },
+    {
+      "id": "b0414f3dd219ee4d48fab3dbf8aa75c57280826f3f339627b9e9303a051532c5",
+      "reason": "Angle brackets are literal delimiters around the translated transcriptView.empty caption in a text node, not an untranslated message or markup tag."
+    },
+    {
+      "id": "f5940bb5faa9e576b9f3bdb8bce979857af8d62bb62f7ef526da7ff5020d45e3",
+      "reason": "Angle brackets are literal delimiters around the translated transcriptView.empty caption in a text node, not an untranslated message or markup tag."
+    },
+    {
+      "id": "b1f370ba75d95ec32ec5199748e3a06c7eaac64e2cd780baa15feab38377f298",
+      "reason": "The canonical event tone error selects the translated app-owned fallback. Provider event text remains literal; the discriminant is not rendered."
+    },
+    {
+      "id": "b015f6d629e463d3f63cc1b4caef8ffcd1f7b16854bfcd250c0af3cc0df19ff8",
+      "reason": "Only two raw source fields joined by an em dash; the missing company-name fallback is already translated by formsUi.binding.otherOrganization. User-provided secret and company names remain literal."
+    },
+    {
+      "id": "a72f90c8c0ee403552742d899a2717138888151c8004e12ba16f36037d028e39",
+      "reason": "Parentheses wrap a known canonical status mapped to localized presentation; unknown status strings intentionally remain literal. No untranslated application caption."
+    },
+    {
+      "id": "50d521acb6bdd786147413ddd577c39ed32683f767d7358ddd677b36bfb15ed1",
+      "reason": "Closed AgentSetupError code 'create' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "11b0acaad5d8f4a7e663cc0d0e3f11e076ec2f1a16883f72abdce110ed1c7bb6",
+      "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "91e040d3f0386f18dd57a521f06b91795f1bed7324790a7ee1fcda354e264b03",
+      "reason": "Closed AgentSetupError code 'test' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "04dd796056b2b206389f7a2e1900d9e78fa0d9eb288b5b43627f6997eb56dc25",
+      "reason": "Closed AgentSetupError code 'create' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "1b2655945c4785b63a7f0ab65ddc1ba3bf4d1dcadabe1a613f19df373c6a888c",
+      "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "d667b816b3cd308bffff0ffa5c42ee56cc8f71834e15df2b5bfaf8effb97c99c",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "dff590572ed1ff8f949340db2a41f583e12b985884e9b3b2114aa42ffe683a5c",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "3fda716cc1e5e8e5e48c1d46efd058f36de33a74d339f40aef9d3a4acdb0b6a7",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "5530e9bf504fe397cfbbe5786adf0dfe893b065ea7ac7a959c098ed476623ac5",
+      "reason": "Unknown future HTTPS exposure state fallback preserves the original protocol label and raw state spelling; all five known RuntimeExposureState captions are translated before this fallback."
+    },
+    {
+      "id": "c03f8c25a3abeac16b7a7280abd5e20c7c3cccb4191a02c04083ec93ce69fab9",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "5559071c09de2dbd32d60cae766517387ac1f3bc5eab17dbd3d66eac7a2ea81d",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "4c6c021fc8cb72d8b355a01956225cf96c99aee5838f9359fff531c1ea84f1a4",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "df5bd041e74200a6e3c6484a19fbc3479e3307c5a6aab23d10a958a4b962e95d",
+      "reason": "Codex config compares the canonical runner-provider ID acpx to select the translated ACP agents caption. The provider discriminator is not rendered or changed."
+    },
+    {
+      "id": "de1b1494ce28abf8ee36ba3653e98f2f171f7305a7ecea0e4f76c2e95d42ebc9",
+      "reason": "AgentConfigForm checks the shared normalizer warning code runner_option_ignored before translating known ignored-option fields. This canonical code is not rendered; unknown diagnostics remain literal."
+    },
+    {
+      "id": "a590b4de0112fed6ad3a577724f88c365254bb2d68af648bc9ce291be968bfd9",
+      "reason": "AgentConfigForm checks the shared normalizer warning code runner_option_ignored before translating known ignored-option fields. This canonical code is not rendered; unknown diagnostics remain literal."
+    },
+    {
+      "id": "947c0f6a8873157a8ebbdf09298855f262f4636ad87c7cfe57bf4a9694d7f3cc",
+      "reason": "The helpKeys.title property contains a semantic message ID, not visible title prose. getAgentConfigHelp resolves the closed key map using the current translator."
+    },
+    {
+      "id": "1178c275784a1d9a02c59e94c95140f3b6afc0ee950f2ad72a6011f8cbaef968",
+      "reason": "Codex permissions select message IDs from a closed local provider/mode map with Object.hasOwn guards. Unknown provider option labels remain literal; canonical option values are unchanged."
+    },
+    {
+      "id": "fd6e6413e1ac8f604e9ad07cffdc042c71613abb045535b4e3156355701f38bb",
+      "reason": "Codex permission descriptions use the closed local provider map with an own-property guard. Unknown provider descriptions remain literal and do not become translation keys."
+    },
+    {
+      "id": "7589d37636140831a68a8024cb3543dd86b086d8cda9c7ce4ccd68b5bf4609e7",
+      "reason": "Only the local AgentConfigError instance supplies a code from the closed configErrorMessages union. Provider Error messages remain literal even when their text equals the English app message."
+    },
+    {
+      "id": "038f30d1d01a47b1b9cd82ef9c54925e191566e660ac685c07cd457ba640db0d",
+      "reason": "The fallback argument is a keyof the closed configErrorMessages map, supplied by local call sites. External error text is never used as a translation key."
+    },
+    {
+      "id": "f9ec61e88a334067b68e1c3905df4c3a2af38e90fea99d0ff68dce3c042cc260",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "c95d76a99d2408d27912d83ce268b553b61bb30011fa8a9e2c132e6c17a5f2c8",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "1b29dfcf46480039689ec97f8b3570ca943a1e195c7852d3fe54c08b95c68a7a",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "9459d1f35395d6e658cf8d1b07f9cfcd0d1aa673ff3573cdf56707907427e856",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "79f9042fe4ae86503b70921c2e7968dcd766562fd8e13b874f6a8df815cb4f7e",
+      "reason": "AgentConfigForm resolves a closed local reasoning-effort message map only after Object.hasOwn. An unknown effort ID remains literal."
+    },
+    {
+      "id": "e7f6bed8f4d644f3d7b995ab058855f966b459b392ad1d53e318fcbd38fb5517",
+      "reason": "AgentConfigForm reasoning-effort captions resolve only static labelKey entries in its local cursor/OpenCode/Kimi/Pi/Claude option arrays. Stable option IDs remain unchanged."
+    },
+    {
+      "id": "29e02dd3b7c12038a012a7c2cca38c670a68b640b6a1bc65335efaf9ed86a4a1",
+      "reason": "Only shared runner_option_ignored warnings with an own property in the four-field local warningKeys map receive translated captions. Unknown code/field messages remain literal."
+    },
+    {
+      "id": "c3988ed4fea26a4ae7b4ae28f736631ded33b9d565bbcb8f394dbd1deccc8806",
+      "reason": "Only shared runner_option_ignored warnings with an own property in the four-field local warningKeys map receive translated captions. Unknown code/field messages remain literal."
+    },
+    {
+      "id": "0f7dfe62a4b5388cacb1a0af9be26bea9edb2331fdbc393e49f02e8c53db6144",
+      "reason": "Built-in display names come from the local four-key map matching the server briefs/learning/reflection-coach/summarizer registry, guarded by Object.hasOwn. Stored agent names and unknown definition labels remain literal."
+    },
+    {
+      "id": "252cad37335e4df51635e49b9a68c55dd2ff370725bf3c127c7f5de5d6e28b06",
+      "reason": "Built-in short purposes come from the local four-key map matching the server briefs/learning/reflection-coach/summarizer registry, guarded by Object.hasOwn. Stored instructions and unknown definitions remain literal."
+    },
+    {
+      "id": "0e2c1ccc407f046fa58072f2e514569bb6d713460c57cfc73353584ad14fcb9a",
+      "reason": "getAgentConfigHelp iterates only the closed local helpKeys as-const map. Template examples are literal interpolation values and are not resolved again as translation keys."
+    },
+    {
+      "id": "4f3796967255b0ba6285b49130cfce0fe74d77da0a817537261fabe7d33f9d9c",
+      "reason": "agentConfigRoleLabel uses the closed local agent-role message map guarded by Object.hasOwn. Unknown role IDs remain literal; stored role values do not change."
+    },
+    {
+      "id": "9af521646943d5aaeac4220961a8ab831a0a33aba5cfb17637062e6ef3da3b22",
+      "reason": "AgentOverview joins the closed knownRunStatusLabel display helper and locale-aware relativeTime with a middle-dot separator. Unknown status values remain raw; this expression contains no English application prose."
+    },
+    {
+      "id": "b4fd3a7aab4a44c7914f231ada3c1747fcd407c8aa027a925cd5139e3c8f92b1",
+      "reason": "LogViewer compares canonical transcript mode to nice before selecting localized nice/raw captions. The enum and React key remain unchanged; the comparator literal is not displayed."
+    },
+    {
+      "id": "2128647e779fde5346591ed7fab69b12a61e9ba72092166de929f47d6deea17b",
+      "reason": "TrustPresetSection compares the canonical boundary target type against project. The conditional renders the translated noProjects or noIssues message; the schema discriminator is never displayed."
+    },
+    {
+      "id": "06d01dd056558d6925de17c198b503b0d5ad71aab84a4ca50c6c0f49ed4d7f4e",
+      "reason": "Canonical preset comparison selecting the Hermes-specific whole display message; the predicate and onSelect/prompt payload remain hermes. The visible result is externalAgentUi.content.hermesInstructions."
+    },
+    {
+      "id": "da36a0300e7fbca9e258e3b7667da55f5b1bf919b96d74e348a357fe9c5fb608",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "e647f0254edbe8f808e627e3d8e379d854e782b5324876c49c635c3e2db7ce54",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "029dba1b9a7fc6394260522713e2f32ca121778b6fba44bbc46416dbe9edd7ce",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "0acced1802cbc5b8f8f23fccdb9dd34efb326746edc5b7611e760283cb48c11e",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "c8df807704560ebd542e022bac7f14b7445f1dc758c80770d145638fa4262112",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "d2b586070a5de6f7ee79b6387c8337f25c03f15353dd3d32e31602a23b0418a2",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "8087763918a43c37c8f94286c93bc207d2404e74cd5803d2c22e2ef4724525a3",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "0950855864811501c32a7fd9b80fc0cc1916382883d3062dbd5ffbce8d22ee13",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "6c330bf87597b72e35988d9da94965d50a612185de8799b1a0143218c693a76f",
+      "reason": "ProjectWorkspaceSummaryCard compares the canonical summary kind to decide whether to show the close action. The technical discriminator is not rendered; the button label is translated separately."
+    },
+    {
+      "id": "d9773a3c9928f9615cdb51535d685ec4cdf68934c753db1762f98fa558e17864",
+      "reason": "CommandSection adds a language-neutral middle-dot separator before the lifecycle label already translated by workspaceRuntimeLabel with current t. No untranslated words are present."
+    },
+    {
+      "id": "331d86972ae5909706f503a8a2e1bf4bc7f70e94cd84aaa51fa32038b6905cd1",
+      "reason": "CommandSection compares the app-owned disabledReasonCode discriminator to select projectWorkspacesUi.runtime.missingCommand. The code is not rendered and external disabledReason text remains literal."
+    },
+    {
+      "id": "4d79ede8f508e810760fd1479f50961d16b3ee4805087c64b21154254353a225",
+      "reason": "CommandSection compares the app-owned disabledReasonCode discriminator to select projectWorkspacesUi.runtime.unmatched. The code is not rendered and external disabledReason text remains literal."
+    },
+    {
+      "id": "3780402f8e374c28f2f8b12ca9331d1f54aac0a5a5d335c89c7265ea7561a2a8",
+      "reason": "REVIEWED_TOKEN_FIELD_LABEL is a raw canonical GitHub registry caption used only as a copy-drift guard after trusted built-in provenance is established. The existing visible caption remains githubSetupUi.registry.keyLabel (Your GitHub key). A changed registry label is shown literally and a five-caption canonical contract test fails until its translation is reviewed; this sentinel does not infer ownership."
+    },
+    {
+      "id": "2405e7e53bd4790beb1b5cf3655fc81e8ddf6310a6a4ffdf46691dd7c96444a7",
+      "reason": "InviteLandingPage compares the technical inviteType discriminator bootstrap_ceo to select a translated bootstrap label. The discriminator is never rendered as UI text."
+    },
+    {
+      "id": "ca53e845d1100c99e1eaaa1484bd57bb2df44f9b321c9d82af119c5b4fbce1dc",
+      "reason": "WorkTimelineChart compares the canonical connectorHint discriminator dashed to select the translated dashed/solid relationship explanation. This predicate is never rendered."
+    },
+    {
+      "id": "e0b06392c42acb2dc0dca8697059c1bc6f9b3f80ebc991fdf9e8e105096a786c",
+      "reason": "Frozen English seed submitLabel used only to recognize the exact server-owned onboarding question after company, issue, author and idempotency checks. Rendering uses onboardingGap.question.submit; unknown or edited payloads remain literal."
+    },
+    {
+      "id": "7f963c04af98f9f39865afb45b7e648e069f10198e6a7d81449a2eb3f6da434b",
+      "reason": "Frozen Russian seed submitLabel used only to recognize the exact server-owned onboarding question after company, issue, author and idempotency checks. Rendering uses onboardingGap.question.submit; unknown or edited payloads remain literal."
+    },
+    {
+      "id": "6c11243227785ccc04c1566d56710e49deaecbfed06d1fa26cd8e5baa03499b5",
+      "reason": "The stable onboarding option ID interview selects the translated option label only after exact canonical payload and server provenance match. Mutation handlers retain the original IDs and payload."
+    },
+    {
+      "id": "4e8dc73ce00f5ff934c860b5a3a3493215ccea606130d8f5721f527e5c7dbe92",
+      "reason": "The stable onboarding option ID interview selects the translated option description only after exact canonical payload and server provenance match. The predicate is not displayed."
+    },
+    {
+      "id": "4c99cac91b275bb052096813b9de121e0728ae702a5b92f597893aa1f24c6c8f",
+      "reason": "AgentCommentary compares the canonical entry.kind suggestion to select one of the translated readSuggestion/readComplaint accessible labels. The discriminator is not visible copy."
+    }
+  ]
+}

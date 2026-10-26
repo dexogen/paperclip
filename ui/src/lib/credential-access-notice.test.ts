@@ -25,4 +25,12 @@ describe("credential access notice", () => {
     expect(credentialAccessNotice({ ...run, resultJson: { configurationIncomplete: { selectionFailure: "ai_connection_unavailable" } } }, "nicky")).toBeUndefined();
     expect(credentialAccessNotice({ ...run, resultJson: null, error: "Provider returned a credential problem" }, "nicky")).toBeUndefined();
   });
+  it("keeps a named you distinct from the current viewer and absent directory data", () => {
+    expect(credentialAccessNotice({ ...run, agentName: "This agent" }, "another-user", new Map([["nicky", "you"]])))
+      .toMatchObject({ agentName: "This agent", agentKind: "named", deniedUser: "you", deniedUserKind: "named" });
+    expect(credentialAccessNotice(run, "nicky", new Map([["nicky", "you"]])))
+      .toMatchObject({ deniedUser: "you", deniedUserKind: "viewer" });
+    expect(credentialAccessNotice({ ...run, agentName: "" }, null))
+      .toMatchObject({ agentName: "This agent", agentKind: "fallback", deniedUserKind: "unknown" });
+  });
 });

@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
+import { act as reactAct } from "react";
 import type { ComponentProps } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
@@ -921,6 +923,32 @@ describe("WorkspaceFileBrowser", () => {
     const latestListCall = useQueryMock.mock.calls.filter(([options]) => options.queryKey?.[3] === "list").at(-1);
     expect(latestListCall?.[0].queryKey[4]).toMatchObject({ path: "content-os" });
   });
+  it("keeps the selected resource and query identity when switching Russian and English", async () => {
+    const item = createItem();
+    const response = ok(availableResponse([item]));
+    useQueryMock.mockReturnValue(response);
+    const onOpen = vi.fn();
+    renderBrowser(onOpen, { initialQuery: "IssueDetail", selectedPath: item.relativePath, initialFolderPath: null });
+    const search = container.querySelector<HTMLInputElement>('input[aria-label="Search workspace files"]')!;
+    const query = changedListQueryOptions()?.queryKey;
+    const selected = container.querySelector('[role="treeitem"][aria-selected="true"]');
+    const cancellations = cancelQueriesMock.mock.calls.length;
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('input[aria-label="Поиск файлов рабочего пространства"]')).toBe(search);
+      expect(search.value).toBe("IssueDetail");
+      expect(container.querySelector('[role="treeitem"][aria-selected="true"]')).toBe(selected);
+      expect(changedListQueryOptions()?.queryKey).toEqual(query);
+      expect(response.refetch).not.toHaveBeenCalled();
+      expect(cancelQueriesMock).toHaveBeenCalledTimes(cancellations);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      act(() => { selected?.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+      expect(onOpen).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ path: item.relativePath, workspace: "auto", browseQuery: "IssueDetail" }));
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
 });
 
 describe("describeUnavailable", () => {
@@ -939,4 +967,6 @@ describe("describeUnavailable", () => {
       expect(body).not.toMatch(/^[a-z_]+$/);
     }
   });
+
+
 });

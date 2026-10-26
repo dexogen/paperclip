@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { Download, ExternalLink } from "lucide-react";
 import { useContext, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -40,6 +41,7 @@ export function ArtifactFileRow({
   now?: Date;
   testId?: string;
 }) {
+  const { t } = useTranslation();
   const { id, attachmentId, filename, contentType, contentPath, openPath, downloadPath, byteSize } = source;
   const openGallery = useContext(IssueGalleryContext);
   const openTextAttachment = useContext(TextAttachmentContext);
@@ -51,7 +53,7 @@ export function ArtifactFileRow({
   const tooLarge = byteSize !== null && byteSize > CSV_PREVIEW_MAX_BYTES;
   const localCsv = csv && /^\/api\/attachments\/[a-zA-Z0-9-]+\/content$/.test(contentPath);
   const data = useQuery({
-    queryKey: ["artifact-csv", id, contentPath, updatedAtLabel],
+    queryKey: ["artifact-csv", id, contentPath, subject.updatedAt ?? updatedAtLabel],
     queryFn: ({ signal }) => loadArtifactCsv(contentPath, signal),
     enabled: localCsv && !tooLarge && csvRequested,
     retry: false,
@@ -63,16 +65,16 @@ export function ArtifactFileRow({
       {statusBadge}
       {localCsv && !tooLarge && !data.data && !data.isError ? (
         <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={data.isFetching} onClick={() => setCsvRequested(true)}>
-          {data.isFetching ? "Loading preview…" : "Preview data"}
+          {data.isFetching ? t("taskPanels.preview.loadingPreview") : t("taskPanels.preview.data")}
         </Button>
       ) : null}
       {openPath ? (
-        <a href={openPath} target="_blank" rel="noreferrer" aria-label={`Open raw ${filename}`} title="Open raw" className={ROW_ACTION_CLASS}>
+        <a href={openPath} target="_blank" rel="noreferrer" aria-label={t("taskPanels.file.openRawName", { filename })} title={t("taskPanels.file.openRaw")} className={ROW_ACTION_CLASS}>
           <ExternalLink className="h-3 w-3" aria-hidden />
         </a>
       ) : null}
       {downloadPath ? (
-        <a href={downloadPath} download={filename} aria-label={`Download ${filename}`} title="Download" className={ROW_ACTION_CLASS}>
+        <a href={downloadPath} download={filename} aria-label={t("taskPanels.file.download", { filename })} title={t("taskPanels.download")} className={ROW_ACTION_CLASS}>
           <Download className="h-3 w-3" aria-hidden />
         </a>
       ) : null}
@@ -98,10 +100,10 @@ export function ArtifactFileRow({
       ) : null}
       {csv && (tooLarge || data.isError) ? (
         <div className="px-2 text-xs text-muted-foreground" role="status">
-          {tooLarge ? "CSV is too large to preview. Download the file to view it." : data.error?.message}
+          {tooLarge ? t("taskPanels.csv.tooLarge") : data.error?.message}
           {data.isError ? (
             <Button variant="ghost" size="sm" onClick={() => void data.refetch()}>
-              Retry preview
+              {t("taskPanels.preview.retry")}
             </Button>
           ) : null}
         </div>

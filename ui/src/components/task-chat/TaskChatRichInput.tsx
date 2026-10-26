@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
 import {
@@ -36,14 +37,15 @@ export function TaskChatRichInput({
   onUploadingChange,
   ariaLabelledBy,
   testId = "task-chat-rich-input",
-  attachAriaLabel = "Attach image",
+  attachAriaLabel,
   showImageAttachControls = false,
 }: TaskChatRichInputProps) {
+  const { t } = useTranslation();
   const editorRef = useRef<MarkdownEditorRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadCountRef = useRef(0);
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<{ message: string } | { code: "failed" } | null>(null);
 
   useEffect(() => {
     if (!autoFocus) return;
@@ -57,7 +59,7 @@ export function TaskChatRichInput({
   }
 
   async function uploadImage(file: File): Promise<string> {
-    if (!imageUploadHandler) throw new Error("Image uploads are unavailable.");
+    if (!imageUploadHandler) throw new Error(t("decisionForms.richInput.unavailable"));
     uploadCountRef.current += 1;
     updateUploading(true);
     setUploadError(null);
@@ -66,8 +68,8 @@ export function TaskChatRichInput({
     } catch (error) {
       setUploadError(
         error instanceof Error
-          ? error.message
-          : "The image could not be uploaded.",
+          ? { message: error.message }
+          : { code: "failed" },
       );
       throw error;
     } finally {
@@ -113,7 +115,7 @@ export function TaskChatRichInput({
             type="file"
             accept="image/*"
             className="hidden"
-            aria-label={attachAriaLabel}
+            aria-label={attachAriaLabel ?? t("decisionForms.richInput.attach")}
             onChange={(event) => {
               void chooseImage(event.target.files?.[0] ?? null);
               event.target.value = "";
@@ -132,14 +134,14 @@ export function TaskChatRichInput({
             ) : (
               <ImagePlus aria-hidden className="h-3.5 w-3.5" />
             )}
-            Attach image
+            {t("decisionForms.richInput.attach")}
           </Button>
-          <span>or drop/paste an image into the note</span>
+          <span>{t("decisionForms.richInput.dropHint")}</span>
         </div>
       ) : null}
       {uploadError ? (
         <p className="mt-1 text-xs text-destructive" role="alert">
-          {uploadError}
+          {"message" in uploadError ? uploadError.message : t("decisionForms.richInput.uploadFailed")}
         </p>
       ) : null}
     </div>

@@ -39,7 +39,34 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Prep
 
 Automated: [dashboard service](../../server/src/__tests__/dashboard-service.test.ts) covers server aggregation; [dashboard helpers](../../ui/src/pages/Dashboard.test.ts) is narrower UI helper coverage.
 
+The [dashboard locale check](../../ui/src/pages/Dashboard.locale.test.tsx) switches
+EN/RU/EN during a pending import-resume action. It retains the sequential writes,
+partial-failure handling, query identities and raw task links. Nested panels are
+mocked; this does not verify live agent resumption, chart internals or activity
+rows. For browser acceptance, switch language before and during an explicit
+resume in a disposable imported company, then reload and inspect each agent.
+
 Manual: Compare the dashboard with the known fixture tasks and runs. Start and finish a small task, refresh/reload, and verify the summary changes and links reach the right records. Exercise empty data and a failed fetch.
+
+Locale checks cover the actual [live page](../../ui/src/pages/DashboardLive.test.tsx)
+and [agent-run cards](../../ui/src/components/ActiveAgentsPanel.test.tsx), including
+stable links/focus, deduplication, query scope, 50-run limit and omitted-only caption
+defaults. [Charts](../../ui/src/components/ActivityCharts.test.tsx) retain date buckets,
+geometry, legend nodes and literal diagnostic codes; the
+[smoke card](../../ui/src/components/SmokeLabDashboardCard.test.tsx) retains its flag,
+request identities and raw path IDs. Switch EN/RU/EN with a focused run link and
+known daily totals, checking that only display captions/dates change. These mocked
+component checks do not prove real cross-tab polling or provider health, nor do
+they cover the recent-activity feed or optional transcript child.
+
+Recent-activity localization: [both row layouts](../../ui/src/components/ActivityRow.locale.test.tsx)
+and [event formatting](../../ui/src/lib/activity-format.test.ts) cover live
+EN/RU/EN captions, unchanged actor/title text, reference IDs and links, focus,
+raw event order, known/unknown event branches and relation counts 1/2/5/21.
+The list only translates an omitted default label. The formatter's omitted
+translator remains English for [AuditFeed](../../ui/src/pages/audit/AuditFeed.test.tsx);
+its full host and IssueDetail's legacy action wording remain separate work.
+These read-only component checks do not qualify event delivery or permissions.
 
 ### `activity-audit`
 

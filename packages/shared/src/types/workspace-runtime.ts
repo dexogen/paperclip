@@ -122,7 +122,26 @@ export interface WorkspaceRuntimeControlTarget {
   serviceIndex?: number | null;
 }
 
+export type WorkspaceCloseMessage =
+  | { code: "no_local_path" | "git_unverified" | "shared_session" | "storage_unavailable" }
+  | { code: "missing_path" | "keep_project_directory"; params: { path: string } }
+  | { code: "git_inspection_failed" | "git_status_failed"; params: { path: string; error: string } }
+  | { code: "git_comparison_failed"; params: { baseRef: string; error: string } }
+  | { code: "open_issues" | "shared_open_issues" | "stop_services" | "dirty_files" | "untracked_files"; params: { count: number } }
+  | { code: "ahead" | "behind"; params: { count: number; baseRef: string | null } };
+
+export interface WorkspaceCloseIndexedMessage {
+  index: number;
+  message: WorkspaceCloseMessage;
+}
+
+export type WorkspaceCloseActionDisplay =
+  | { code: "archive_record" | "workspace_cleanup" | "project_cleanup" | "teardown_command" | "remove_provider_workspace" | "git_branch_delete" }
+  | { code: "stop_runtime_services"; params: { count: number; serviceName: string | null } }
+  | { code: "git_worktree_remove" | "remove_local_directory"; params: { path: string } };
+
 export interface ExecutionWorkspaceCloseAction {
+  display?: WorkspaceCloseActionDisplay;
   kind: ExecutionWorkspaceCloseActionKind;
   label: string;
   description: string;
@@ -160,6 +179,10 @@ export interface ExecutionWorkspaceCloseReadiness {
   state: ExecutionWorkspaceCloseReadinessState;
   blockingReasons: string[];
   warnings: string[];
+  messageDescriptors?: {
+    blockingReasons: WorkspaceCloseIndexedMessage[];
+    warnings: WorkspaceCloseIndexedMessage[];
+  };
   linkedIssues: ExecutionWorkspaceCloseLinkedIssue[];
   plannedActions: ExecutionWorkspaceCloseAction[];
   isDestructiveCloseAllowed: boolean;

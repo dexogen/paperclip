@@ -1,3 +1,5 @@
+import { statusLabel as localizedStatusLabel } from "../i18n/ui-labels";
+import { useTranslation } from "../i18n";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { useMemo, useState } from "react";
 import { Link } from "@/lib/router";
@@ -10,6 +12,7 @@ import {
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
+  type Announcements,
 } from "@dnd-kit/core";
 import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
@@ -133,7 +136,7 @@ export function getKanbanColumnTone(status: IssueStatus) {
 }
 
 function statusLabel(status: string): string {
-  return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return localizedStatusLabel(status, "title");
 }
 
 export function resolveKanbanTargetStatus(overId: string, issues: Issue[]): IssueStatus | null {
@@ -186,6 +189,7 @@ function KanbanColumn({
   revealIncrement: number;
   onShowMore: () => void;
 }) {
+  const { t } = useTranslation();
   const { setNodeRef, isOver } = useDroppable({ id: status });
 
   const isEmpty = issues.length === 0;
@@ -203,7 +207,7 @@ function KanbanColumn({
           tone.rail,
           isOver && tone.railOver,
         )}
-        title={`${statusLabel(status)}: ${issues.length}`}
+        title={t("taskViews.statusCount", { status: statusLabel(status), amount: issues.length })}
       >
         <StatusIcon status={status} />
         <span className={cn("mt-2 [writing-mode:vertical-rl] rotate-180 text-(length:--text-nano) font-semibold uppercase tracking-wide", tone.header)}>
@@ -257,12 +261,12 @@ function KanbanColumn({
             className="mt-1 flex w-full items-center justify-center rounded-md border border-dashed border-border bg-background/70 px-2 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
             onClick={onShowMore}
           >
-            Show {nextRevealCount} more
+            {t("taskViews.showMore", { amount: nextRevealCount })}
           </button>
         ) : null}
         {issues.length > 0 && (hiddenCount > 0 || issues.length >= visibleCount) ? (
           <p className="px-1 pt-1 text-(length:--text-micro) text-muted-foreground">
-            Showing {visibleIssues.length} of {issues.length}
+            {t("taskViews.showing", { shown: visibleIssues.length, total: issues.length })}
           </p>
         ) : null}
       </div>
@@ -289,6 +293,7 @@ function KanbanCard({
   compact?: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -296,7 +301,7 @@ function KanbanCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: issue.id, data: { issue } });
+  } = useSortable({ id: issue.id, data: { issue }, attributes: { roleDescription: t("taskViews.sortable") } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -338,11 +343,11 @@ function KanbanCard({
           {isSuccessfulRunHandoffRequired(issue) ? (
             <Badge variant="outline"
               className="border-amber-400/45 bg-amber-50/60 px-1.5 text-(length:--text-nano) text-amber-700 dark:border-amber-300/35 dark:bg-amber-400/10 dark:text-amber-300"
-              title="This task needs a next step"
-              aria-label="Needs next step"
+              title={t("taskViews.nextStepHint")}
+              aria-label={t("taskViews.needsNextStep")}
             >
               <AlertTriangle className="h-3 w-3" />
-              Next step
+              {t("taskViews.nextStep")}
             </Badge>
           ) : null}
           {isLive && (
@@ -351,16 +356,16 @@ function KanbanCard({
                 <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
               </span>
-              {compact ? "Live" : null}
+              {compact ? t("taskViews.live") : null}
             </span>
           )}
           {!isLive && subtreeLiveCount > 0 && (
             <Badge variant="outline"
               className="border-border px-1.5 text-(length:--text-nano) text-muted-foreground"
-              title={`${subtreeLiveCount} sub-task${subtreeLiveCount === 1 ? "" : "s"} running below`}
+              title={t("taskViews.runningBelow", { count: subtreeLiveCount })}
             >
               <span className="h-2 w-2 shrink-0 rounded-full border border-muted-foreground/60" aria-hidden="true" />
-              {subtreeLiveCount} live below
+              {t("taskViews.liveBelow", { count: subtreeLiveCount })}
             </Badge>
           )}
         </div>
@@ -397,6 +402,17 @@ export function KanbanBoard({
   showOverflowFades = false,
   onUpdateIssue,
 }: KanbanBoardProps) {
+  const { t } = useTranslation();
+  const announcements = useMemo<Announcements>(() => ({
+    onDragStart: ({ active }) => t("taskViews.dragPickedUp", { id: active.id }),
+    onDragOver: ({ active, over }) => over
+      ? t("taskViews.dragOver", { id: active.id, target: over.id })
+      : t("taskViews.dragOutside", { id: active.id }),
+    onDragEnd: ({ active, over }) => over
+      ? t("taskViews.dragDroppedOver", { id: active.id, target: over.id })
+      : t("taskViews.dragDropped", { id: active.id }),
+    onDragCancel: ({ active }) => t("taskViews.dragCancelled", { id: active.id }),
+  }), [t]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const paginationKey = `${initialVisibleCount}:${revealIncrement}`;
   const [visibleState, setVisibleState] = useState<{
@@ -483,13 +499,14 @@ export function KanbanBoard({
 
   return (
     <DndContext
+      accessibility={{ announcements, screenReaderInstructions: { draggable: t("taskViews.dragInstructions") } }}
       sensors={sensors}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       {showOverflowFades
-        ? <HorizontalScrollViewport label="Task board columns" contentClassName="flex gap-3 pb-4 px-2">{columns}</HorizontalScrollViewport>
+        ? <HorizontalScrollViewport label={t("taskViews.boardColumns")} contentClassName="flex gap-3 pb-4 px-2">{columns}</HorizontalScrollViewport>
         : <div className="flex gap-3 overflow-x-auto pb-4 -mx-2 px-2">{columns}</div>}
       <DragOverlay>
         {activeIssue ? (

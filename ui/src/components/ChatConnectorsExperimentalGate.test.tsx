@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act } from "react";
+import { i18n } from "../i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -42,7 +44,8 @@ describe("Chat connectors visibility gate", () => {
   let container: HTMLDivElement;
   let root: Root;
   let client: QueryClient;
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.append(container);
     root = createRoot(container);
@@ -54,11 +57,12 @@ describe("Chat connectors visibility gate", () => {
     api.endpointId = undefined;
     api.binding.mockResolvedValue(null);
   });
-  afterEach(() => {
-    flushSync(() => root.unmount());
+  afterEach(async () => {
+    await act(async () => root.unmount());
     client.clear();
     container.remove();
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
   async function render(withClient = true) {
     const content = (
@@ -118,16 +122,79 @@ describe("Chat connectors visibility gate", () => {
     await vi.waitFor(() => expect(api.get).toHaveBeenCalledWith("endpoint-1"));
     await vi.waitFor(() => expect(Boolean(container.querySelector("[data-chat-setup]"))).toBe(provider === "github"));
   });
-  it("keeps GitHub agent channels visible while hiding Slack under the independent flag", async () => {
+  it("keeps GitHub agent channels and raw identities across EN/RU/EN without exposing filtered channels", async () => {
     api.settings.mockResolvedValue({ enableChatConnectors: false, enableGitHubReviewBots: true });
     api.list.mockResolvedValue([
-      { provider: "github", id: "github", assignedAgentId: "agent-1", status: "active" },
+      { provider: "github", id: "github", assignedAgentId: "agent-1", status: "active", botLabel: "Review <raw> & team" },
+      { provider: "github", id: "paused", assignedAgentId: "agent-1", status: "paused", providerAccountLabel: "Provider identity" },
       { provider: "slack", id: "slack", assignedAgentId: "agent-1", status: "active" },
+      { provider: "github", id: "foreign", assignedAgentId: "agent-2", status: "active" },
+      { provider: "github", id: "archived", assignedAgentId: "agent-1", status: "archived" },
     ]);
-    flushSync(() => root.render(<QueryClientProvider client={client}><AgentChannelsPanel companyId="company-1" agentId="agent-1" /></QueryClientProvider>));
-    await flushReact();
-    expect(container.querySelector('a[href="/apps/chat/github/settings"]')).not.toBeNull();
-    expect(container.querySelector('a[href="/apps/chat/slack/settings"]')).toBeNull();
+    await act(async () => root.render(<QueryClientProvider client={client}><AgentChannelsPanel companyId="company-1" agentId="agent-1" /></QueryClientProvider>));
+    await vi.waitFor(() => expect(container.querySelector('a[href="/apps/chat/github/settings"]')).not.toBeNull());
+    const link = container.querySelector('a[href="/apps/chat/github/settings"]');
+    const connect = container.querySelector('a[href="/apps?chatAgentId=agent-1"]');
+    for (const id of ["slack", "foreign", "archived"]) expect(container.querySelector(`a[href="/apps/chat/${id}/settings"]`)).toBeNull();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector("h2")?.textContent).toBe("Каналы");
+    expect(container.textContent).toContain("активен");
+    expect(container.textContent).toContain("приостановлен");
+    expect(container.textContent).toContain("Review <raw> & team");
+    expect(container.textContent).toContain("Provider identity");
+    expect(container.textContent).toContain("GitHub Code Review Bot");
+    expect(container.querySelector("raw")).toBeNull();
+    expect(container.querySelector('a[href="/apps/chat/github/settings"]')).toBe(link);
+    expect(connect?.textContent).toBe("Подключить канал");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector('a[href="/apps/chat/github/settings"]')).toBe(link);
+    expect(container.querySelector('a[href="/apps?chatAgentId=agent-1"]')).toBe(connect);
+    expect(link?.textContent).toContain("Open connection");
+    for (const id of ["slack", "foreign", "archived"]) expect(container.querySelector(`a[href="/apps/chat/${id}/settings"]`)).toBeNull();
+    expect(api.settings).toHaveBeenCalledTimes(1);
+    expect(api.list).toHaveBeenCalledExactlyOnceWith("company-1");
+    expect(api.get).not.toHaveBeenCalled();
+  });
+
+  it("keeps the pending channel query across languages and preserves default email, status and nullish identity boundaries", async () => {
+    let resolve!: (rows: unknown[]) => void;
+    api.list.mockReturnValue(new Promise(done => { resolve = done; }));
+    await act(async () => root.render(<QueryClientProvider client={client}><AgentChannelsPanel companyId="company-1" agentId="agent-1" /></QueryClientProvider>));
+    await vi.waitFor(() => expect(api.list).toHaveBeenCalledExactlyOnceWith("company-1"));
+    expect(container.textContent).toContain("Loading channels…");
+    const connect = container.querySelector('a[href="/apps?chatAgentId=agent-1"]');
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Загрузка каналов…");
+    expect(container.querySelector('a[href="/apps?chatAgentId=agent-1"]')).toBe(connect);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Loading channels…");
+    const statuses = [
+      ["draft", "черновик"], ["verifying", "проверяется"], ["active", "активен"],
+      ["paused", "приостановлен"], ["attention", "требует внимания"], ["revoked", "доступ отозван"],
+      ["future_state", "future state"], ["toString", "toString"], ["constructor", "constructor"],
+    ] as const;
+    await act(async () => resolve([
+      ...statuses.map(([status], index) => ({
+        provider: "agentmail", id: status, assignedAgentId: "agent-1", status,
+        botLabel: index === 0 ? "Provider identity" : index === 1 ? "" : null,
+        providerAccountLabel: index === 1 ? "Must not replace an empty label" : null,
+      })),
+      { provider: "slack", id: "hidden-chat", assignedAgentId: "agent-1", status: "active" },
+      { provider: "agentmail", id: "foreign-email", assignedAgentId: "agent-2", status: "active" },
+      { provider: "agentmail", id: "archived-email", assignedAgentId: "agent-1", status: "archived" },
+    ]));
+    await vi.waitFor(() => expect(container.querySelector('a[href="/apps/chat/draft/settings"]')).not.toBeNull());
+    for (const [status] of statuses) expect(container.querySelector(`a[href="/apps/chat/${status}/settings"]`)?.parentElement?.textContent).toContain(status.replace(/[_-]/g, " "));
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    for (const [status, label] of statuses) expect(container.querySelector(`a[href="/apps/chat/${status}/settings"]`)?.parentElement?.textContent).toContain(label);
+    expect(container.textContent).toContain("AgentMail");
+    expect(container.textContent).toContain("Provider identity");
+    expect(container.textContent).toContain("Учётная запись сервиса");
+    expect(container.textContent).not.toContain("Must not replace an empty label");
+    for (const id of ["hidden-chat", "foreign-email", "archived-email"]) expect(container.querySelector(`a[href="/apps/chat/${id}/settings"]`)).toBeNull();
+    expect(api.settings).toHaveBeenCalledTimes(1);
+    expect(api.list).toHaveBeenCalledExactlyOnceWith("company-1");
+    expect(api.get).not.toHaveBeenCalled();
   });
   it("waits without exposing setup, then enables the route after explicit opt-in", async () => {
     let resolve!: (value: unknown) => void;
@@ -195,6 +262,10 @@ describe("Chat connectors visibility gate", () => {
     );
     await flushReact();
     expect(container.textContent).toContain("Connect AgentMail from Connectors.");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Нет подключённых каналов");
+    expect(container.textContent).toContain("Подключите AgentMail в разделе «Подключения».");
+    expect(container.querySelector('a[href="/apps"]')?.textContent).toBe("Открыть подключения");
     expect(container.querySelector('a[href="/apps/chat/endpoint-1/settings"]')).toBeNull();
     expect(api.list).toHaveBeenCalledWith("company-1");
     expect(api.binding).not.toHaveBeenCalled();

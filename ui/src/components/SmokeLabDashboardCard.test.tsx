@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
-import type { ReactNode } from "react";
+import { act as reactAct, type ReactNode } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -66,7 +67,8 @@ describe("SmokeLabDashboardCard", () => {
   let container: HTMLDivElement;
   let root: ReturnType<typeof createRoot>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     getExperimentalMock.mockResolvedValue({ enableSmokeLab: true });
@@ -91,9 +93,10 @@ describe("SmokeLabDashboardCard", () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => root?.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
     vi.clearAllMocks();
   });
 
@@ -127,5 +130,17 @@ describe("SmokeLabDashboardCard", () => {
     expect(card?.getAttribute("href")).toBe("/apps/advanced/smoke-lab");
     expect(container.textContent).toContain("Integration smoke");
     expect(container.textContent).toContain("Failing paths: P3");
+    const reads = [getExperimentalMock.mock.calls.length, listRunsMock.mock.calls.length, getRunMock.mock.calls.length];
+    const english = card?.textContent;
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="smoke-lab-dashboard-card"]')).toBe(card);
+    expect(card?.textContent).toContain("Проверка интеграций");
+    expect(card?.textContent).toContain("Сценарии с ошибками: P3");
+    expect(card?.textContent).toContain(new Intl.DateTimeFormat("ru-RU", { dateStyle: "medium", timeStyle: "short" }).format(new Date(RUN.startedAt)));
+    expect(card?.getAttribute("href")).toBe("/apps/advanced/smoke-lab");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(card?.textContent).toBe(english);
+    expect([getExperimentalMock.mock.calls.length, listRunsMock.mock.calls.length, getRunMock.mock.calls.length]).toEqual(reads);
+    expect(getRunMock).toHaveBeenCalledWith("company-1", "run-1");
   });
 });

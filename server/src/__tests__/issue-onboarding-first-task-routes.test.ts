@@ -19,7 +19,7 @@ import {
   issueThreadInteractions,
   issues,
 } from "@paperclipai/db";
-import { ONBOARDING_FIRST_TASK_ORIGIN_KIND } from "@paperclipai/shared";
+import { createIssueSchema, updateIssueSchema, ONBOARDING_FIRST_TASK_ORIGIN_KIND } from "@paperclipai/shared";
 import {
   getEmbeddedPostgresTestSupport,
   startEmbeddedPostgresTestDatabase,
@@ -173,6 +173,40 @@ describeEmbeddedPostgres("issue create onboarding first-task routes", () => {
       .where(eq(issueComments.issueId, created.body.id));
     expect(comments).toHaveLength(1);
     expect(comments[0]).toMatchObject({ authorType: "agent", authorAgentId: agentId });
+  });
+
+  it("seeds Russian first-task copy without changing identity, permissions or wake policy", async () => {
+    const companyId = await seedCompany();
+    const agentId = await seedAgent(companyId);
+    const app = createApp();
+    const created = await request(app).post(`/api/companies/${companyId}/issues`)
+      .send({ title: "Начало работы с Paperclip", onboardingFirstTask: true, onboardingLocale: "ru", assigneeAgentId: agentId })
+      .expect(201);
+    expect(created.body.originKind).toBe(ONBOARDING_FIRST_TASK_ORIGIN_KIND);
+    expect(created.body).not.toHaveProperty("onboardingLocale");
+    expect(created.body.description).toContain("Respond in Russian unless the user requests another language.");
+    const comments = await db.select().from(issueComments).where(eq(issueComments.issueId, created.body.id));
+    expect(comments).toHaveLength(1);
+    expect(comments[0]).toMatchObject({ companyId, authorType: "agent", authorAgentId: agentId, authorUserId: null, metadata: { authorizationReason: "onboarding first-task greeting" } });
+    expect(comments[0].body).toContain("Я — CEO, ваш первый агент.");
+    const cards = await db.select().from(issueThreadInteractions).where(eq(issueThreadInteractions.issueId, created.body.id));
+    expect(cards).toHaveLength(1);
+    expect(cards[0]).toMatchObject({ companyId, createdByAgentId: agentId, createdByUserId: null, idempotencyKey: `onboarding-first-task:${created.body.id}:opening-question`, continuationPolicy: "wake_assignee", payload: { submitLabel: "Продолжить", questions: [{ id: "first-task-opening", prompt: "С чего начнём?", options: [{ id: "interview" }, { id: "task", freeText: true }] }] } });
+    await drainHeartbeatRunsToQuiescence(db, heartbeatService(db));
+    expect(mockAdapterExecute).not.toHaveBeenCalled();
+    expect(await db.select().from(agentWakeupRequests).where(eq(agentWakeupRequests.companyId, companyId))).toHaveLength(0);
+    // Locale alone cannot claim the privileged first-task path or replace content.
+    const ordinary = await request(app).post(`/api/companies/${companyId}/issues`)
+      .send({ title: "Literal user title", description: "Literal user description", onboardingLocale: "ru" }).expect(201);
+    expect(ordinary.body).toMatchObject({ title: "Literal user title", description: "Literal user description", originKind: "manual" });
+    expect(await db.select().from(issueComments).where(eq(issueComments.issueId, ordinary.body.id))).toHaveLength(0);
+  });
+
+  it("rejects an unsupported onboarding locale before creating any first task", async () => {
+    const companyId = await seedCompany();
+    await request(createApp()).post(`/api/companies/${companyId}/issues`)
+      .send({ title: "Get started", onboardingFirstTask: true, onboardingLocale: "../../ru" }).expect(400);
+    expect(await listOnboardingIssues(companyId)).toHaveLength(0);
   });
 
   it("seeds the two-option opening question card as the assignee on the first task", async () => {
@@ -360,5 +394,15 @@ describeEmbeddedPostgres("issue create onboarding first-task routes", () => {
     // An ordinary assigned create still queues the assignment wake for the agent.
     expect(wakeups.length).toBeGreaterThan(0);
     expect(wakeups.some((row) => row.agentId === agentId)).toBe(true);
+  });
+});
+
+
+describe("onboarding locale contract", () => {
+  it("allows only supported create-time preferences and leaves updates outside the seam", () => {
+    for (const locale of ["en", "ru"]) expect(createIssueSchema.parse({ title: "Task", onboardingFirstTask: true, onboardingLocale: locale }).onboardingLocale).toBe(locale);
+    for (const locale of ["fr", "../ru", "", true, null]) expect(createIssueSchema.safeParse({ title: "Task", onboardingLocale: locale }).success).toBe(false);
+    expect(createIssueSchema.parse({ title: "Task" })).not.toHaveProperty("onboardingLocale");
+    expect(updateIssueSchema.parse({ title: "User rename", onboardingLocale: "ru" })).not.toHaveProperty("onboardingLocale");
   });
 });

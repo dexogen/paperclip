@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
 import { pendingRequestConfirmationInteraction } from "../fixtures/issueThreadInteractionFixtures";
 import {
   buildAnsweredQuestionsDeliveryText,
@@ -736,5 +737,30 @@ describe("interaction readiness polling", () => {
     expect(interactionReadinessRefetchInterval([pendingRequestConfirmationInteraction], 20_000)).toBe(20_000);
     expect(interactionReadinessRefetchInterval([{ ...preparing, status: "expired" }])).toBe(false);
     expect(interactionReadinessRefetchInterval(undefined)).toBe(false);
+  });
+});
+
+
+describe("localized interaction summaries", () => {
+  it("keeps machine callers in English while rendering Russian task plurals without mutating data", async () => {
+    await i18n.changeLanguage("ru");
+    try {
+      for (const [count, expected] of [[1, "Предложена 1 задача"], [2, "Предложены 2 задачи"], [5, "Предложено 5 задач"], [21, "Предложена 21 задача"]] as const) {
+        const interaction = {
+          ...pendingRequestConfirmationInteraction,
+          kind: "suggest_tasks",
+          payload: { version: 1, tasks: Array.from({ length: count }, (_, index) => ({ clientKey: `raw-${index}`, title: "Literal <span>{{title}}</span>" })) },
+        } as IssueThreadInteraction;
+        const before = JSON.stringify(interaction);
+        expect(buildIssueThreadInteractionSummary(interaction, i18n.getFixedT("ru"))).toBe(expected);
+        expect(buildIssueThreadInteractionSummary(interaction)).toBe(`Suggested ${count} task${count === 1 ? "" : "s"}`);
+        expect(JSON.stringify(interaction)).toBe(before);
+      }
+      const interaction = { ...pendingRequestConfirmationInteraction, status: "rejected", payload: { ...pendingRequestConfirmationInteraction.payload, rejectLabel: "<literal>{{label}}</literal>" } } as IssueThreadInteraction;
+      expect(buildIssueThreadInteractionSummary(interaction, i18n.getFixedT("ru"))).toBe("Выбрано: «<literal>{{label}}</literal>»");
+      expect(buildIssueThreadInteractionSummary(interaction)).toBe("Selected “<literal>{{label}}</literal>”");
+    } finally {
+      await i18n.changeLanguage("en");
+    }
   });
 });

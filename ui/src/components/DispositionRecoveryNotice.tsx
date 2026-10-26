@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n, useTranslation } from "@/i18n";
 import { createContext, useContext, useId, useRef, useState, type ReactNode } from "react";
 import { Check, ChevronDown, Loader2, RotateCcw, TriangleAlert } from "lucide-react";
 import type { Agent, Issue, IssueCommentMetadata, IssueRecoveryAction } from "@paperclipai/shared";
@@ -37,34 +39,32 @@ export function useDispositionRecoverySnapshot(metadata: IssueCommentMetadata | 
 }
 
 /** UI affordance only; the server rechecks the current action and all execution gates. */
-export function dispositionRetryUnavailableReason(snapshot: DispositionRecoverySnapshot, context: DispositionRecoveryContextValue | null): string | null {
-  if (!context) return "Open the task to review its current state.";
+export function dispositionRetryUnavailableReason(snapshot: DispositionRecoverySnapshot, context: DispositionRecoveryContextValue | null, t: TFunction = i18n.getFixedT("en")): string | null {
+  if (!context) return t("runUi.disposition.openTask");
   const { issue } = context;
   const action = issue.activeRecoveryAction;
-  if (!action || action.id !== snapshot.actionId || action.status !== "active") return "This recovery notice is no longer active.";
-  if (issue.status !== "blocked") return "The task’s state has changed. Review its current state before retrying.";
-  if (action.kind !== "deliberate_wait_without_target" || action.ownerType !== "board" || action.wakePolicy?.type !== "board_escalation") return "The task’s recovery state has changed. Refresh to see the current action.";
-  if (!snapshot.assigneeAgentId || issue.assigneeAgentId !== snapshot.assigneeAgentId || action.returnOwnerAgentId !== snapshot.assigneeAgentId) return "The assigned agent has changed. Review the task before retrying.";
+  if (!action || action.id !== snapshot.actionId || action.status !== "active") return t("runUi.disposition.inactive");
+  if (issue.status !== "blocked") return t("runUi.disposition.changed");
+  if (action.kind !== "deliberate_wait_without_target" || action.ownerType !== "board" || action.wakePolicy?.type !== "board_escalation") return t("runUi.disposition.recoveryChanged");
+  if (!snapshot.assigneeAgentId || issue.assigneeAgentId !== snapshot.assigneeAgentId || action.returnOwnerAgentId !== snapshot.assigneeAgentId) return t("runUi.disposition.agentChanged");
   if (context.unavailableReason) return context.unavailableReason;
-  if (context.hasPendingInteraction) return "Respond to the pending question or confirmation before retrying.";
-  if (issue.executionRunId || issue.checkoutRunId) return "The task already has an active run. Wait for it to finish.";
-  if (issue.executionState?.status === "pending") return "The task is waiting for a review or approval.";
-  if (issue.blockedBy?.some(blocker => blocker.status !== "done" && blocker.status !== "cancelled")) return "Resolve the task’s blockers before retrying.";
+  if (context.hasPendingInteraction) return t("runUi.disposition.pendingInteraction");
+  if (issue.executionRunId || issue.checkoutRunId) return t("runUi.disposition.activeRun");
+  if (issue.executionState?.status === "pending") return t("runUi.disposition.pendingReview");
+  if (issue.blockedBy?.some(blocker => blocker.status !== "done" && blocker.status !== "cancelled")) return t("runUi.disposition.blockers");
   const agent = context.agentMap?.get(snapshot.assigneeAgentId);
-  if (agent?.status === "paused") return "The assigned agent is paused. Resume the agent before retrying.";
-  if (agent?.status === "terminated") return "The assigned agent is no longer available.";
+  if (agent?.status === "paused") return t("runUi.disposition.paused");
+  if (agent?.status === "terminated") return t("runUi.disposition.terminated");
   return null;
 }
 
-function descriptionFor(snapshot: DispositionRecoverySnapshot) {
-  const start = "The agent stopped without recording an outcome or a next step.";
-  if (snapshot.reason === "owner_budget_blocked") return `${start} Automatic recovery stopped because a spending or pause limit prevents the agent from running.`;
-  if (snapshot.reason === "owner_not_invokable") return `${start} Automatic recovery stopped because the assigned agent is unavailable.`;
+function descriptionFor(snapshot: DispositionRecoverySnapshot, t: TFunction) {
+  if (snapshot.reason === "owner_budget_blocked") return t("runUi.disposition.budget");
+  if (snapshot.reason === "owner_not_invokable") return t("runUi.disposition.unavailable");
   if (snapshot.reason === "unchanged_source_state_exhausted") {
-    const attempts = snapshot.attemptCount === 2 ? "Two" : String(snapshot.attemptCount);
-    return `${start} ${attempts} automatic ${snapshot.attemptCount === 1 ? "attempt" : "attempts"} to resolve this failed.`;
+    return t("runUi.disposition.attempts", { count: snapshot.attemptCount, attempts: snapshot.attemptCount === 2 ? t("runUi.disposition.two") : String(snapshot.attemptCount) });
   }
-  return `${start} Automatic recovery stopped. Review the details before trying again.`;
+  return t("runUi.disposition.generic");
 }
 
 /** Same component in both task interfaces and Storybook; no prose controls actions. */
@@ -73,18 +73,19 @@ export function DispositionRecoveryNotice({ snapshot, createdAt, defaultExpanded
   createdAt?: string;
   defaultExpanded?: boolean;
 }) {
+  const { t } = useTranslation();
   const context = useContext(RecoveryContext);
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [pending, setPending] = useState(false);
   const [requested, setRequested] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ cause: unknown } | null>(null);
   const inFlight = useRef(false);
   const detailsId = useId();
   const titleId = useId();
   const unavailableId = useId();
-  const unavailableReason = dispositionRetryUnavailableReason(snapshot, context);
+  const unavailableReason = dispositionRetryUnavailableReason(snapshot, context, t);
   const historical = Boolean(context && context.issue.activeRecoveryAction?.id !== snapshot.actionId);
-  const agentName = (snapshot.assigneeAgentId && context?.agentMap?.get(snapshot.assigneeAgentId)?.name) || "the assigned agent";
+  const agentName = (snapshot.assigneeAgentId && context?.agentMap?.get(snapshot.assigneeAgentId)?.name) || t("runUi.disposition.agent");
   const HeadingIcon = requested || historical ? Check : TriangleAlert;
 
   async function retry() {
@@ -96,7 +97,7 @@ export function DispositionRecoveryNotice({ snapshot, createdAt, defaultExpanded
       await context.onRetry(snapshot.actionId);
       setRequested(true);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Refresh the task to check its current state, then try again.");
+      setError({ cause });
     } finally {
       inFlight.current = false;
       setPending(false);
@@ -109,40 +110,40 @@ export function DispositionRecoveryNotice({ snapshot, createdAt, defaultExpanded
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <div className="flex flex-col gap-1" role="status" aria-live="polite">
           <h2 id={titleId} className="break-words text-sm font-medium text-foreground">
-            {requested ? "Retry requested" : historical ? "Agent needed attention" : "Agent needs attention"}
+            {requested ? t("runUi.disposition.requested") : historical ? t("runUi.disposition.historical") : t("runUi.disposition.attention")}
           </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            {requested ? `The task was returned to To do for ${agentName}.` : descriptionFor(snapshot)}
+            {requested ? t("runUi.disposition.returned", { agentName }) : descriptionFor(snapshot, t)}
           </p>
         </div>
         {unavailableReason && !requested ? (
           <p id={unavailableId} className="text-xs leading-relaxed text-muted-foreground">
-            {!historical && <span className="font-medium text-foreground">Retry unavailable. </span>}{unavailableReason}
+            {!historical && <span className="font-medium text-foreground">{t("runUi.disposition.retryUnavailable")}</span>}{unavailableReason}
           </p>
         ) : null}
-        {error ? <p role="alert" className="text-sm text-destructive">Couldn’t confirm the retry. {error}</p> : null}
+        {error ? <p role="alert" className="text-sm text-destructive">{t("runUi.disposition.error", { error: error.cause instanceof Error ? error.cause.message : t("runUi.workspace.refreshAfterError") })}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           {!requested && !historical ? (
             <Button size="xs" variant="outline" disabled={pending || Boolean(unavailableReason)} aria-describedby={unavailableReason ? unavailableId : undefined} onClick={() => void retry()}>
               {pending ? <Loader2 aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" /> : <RotateCcw aria-hidden="true" className="size-3" />}
-              {pending ? "Requesting retry…" : "Retry agent"}
+              {pending ? t("runUi.disposition.requesting") : t("runUi.disposition.retry")}
             </Button>
           ) : null}
           <Button size="xs" variant="ghost" className="text-muted-foreground" aria-expanded={expanded} aria-controls={detailsId} onClick={() => setExpanded(current => !current)}>
-            {expanded ? "Hide details" : "View details"}
+            {expanded ? t("runUi.disposition.hide") : t("runUi.disposition.view")}
             <ChevronDown aria-hidden="true" className={cn("size-3", expanded && "rotate-180")} />
           </Button>
-          {createdAt ? <time dateTime={createdAt} className="font-mono text-xs text-muted-foreground sm:ml-auto">{timeAgo(createdAt)}</time> : null}
+          {createdAt ? <time dateTime={createdAt} className="font-mono text-xs text-muted-foreground sm:ml-auto">{timeAgo(createdAt, t)}</time> : null}
         </div>
         {expanded ? (
           <div id={detailsId} className="flex flex-col gap-3 rounded-lg border border-border bg-muted/20 p-3">
             <dl className="flex flex-col gap-2 text-xs">
-              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">Assigned when recovery stopped</dt><dd>{agentName}</dd></div>
-              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">Automatic attempts</dt><dd className="font-mono">{snapshot.attemptCount} of {snapshot.maxAttempts}</dd></div>
-              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">Automatic retries for this recovery</dt><dd>Stopped</dd></div>
+              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">{t("runUi.disposition.assigned")}</dt><dd>{agentName}</dd></div>
+              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">{t("runUi.disposition.attemptCount")}</dt><dd className="font-mono">{t("runUi.disposition.attemptsOf", { count: snapshot.attemptCount, max: snapshot.maxAttempts })}</dd></div>
+              <div className="flex flex-wrap justify-between gap-1"><dt className="text-muted-foreground">{t("runUi.disposition.automaticRetries")}</dt><dd>{t("runUi.disposition.stopped")}</dd></div>
             </dl>
-            <p className="text-xs leading-relaxed text-muted-foreground">Recovery asked the assigned agent to record an outcome or a next step. Retrying keeps the same task and agent, and checks the task’s current controls before continuing.</p>
-            <div className="flex flex-col gap-1"><span className="text-xs text-muted-foreground">Technical reason</span><code className="break-all font-mono text-xs">{snapshot.reason}</code></div>
+            <p className="text-xs leading-relaxed text-muted-foreground">{t("runUi.disposition.explanation")}</p>
+            <div className="flex flex-col gap-1"><span className="text-xs text-muted-foreground">{t("runUi.disposition.technical")}</span><code className="break-all font-mono text-xs">{snapshot.reason}</code></div>
           </div>
         ) : null}
       </div>

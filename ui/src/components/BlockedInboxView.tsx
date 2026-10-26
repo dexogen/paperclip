@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -67,6 +68,7 @@ export function BlockedInboxView({
   showUpdatedColumn,
   presentation = "legacy",
 }: BlockedInboxViewProps) {
+  const { t } = useTranslation();
   const [collapsedVariants, setCollapsedVariants] = useState<Set<string>>(() => new Set());
 
   const {
@@ -90,10 +92,10 @@ export function BlockedInboxView({
       }),
   });
 
-  const allRows = useMemo(() => buildBlockedInboxRows(issues), [issues]);
+  const allRows = useMemo(() => buildBlockedInboxRows(issues, t), [issues, t]);
   const filteredRows = useMemo(
-    () => allRows.filter((row) => blockedRowMatchesSearch(row, searchQuery)),
-    [allRows, searchQuery],
+    () => allRows.filter((row) => blockedRowMatchesSearch(row, searchQuery, t)),
+    [allRows, searchQuery, t],
   );
   const issueFilteredRows = useMemo(() => {
     const visibleIssueIds = new Set(
@@ -110,8 +112,8 @@ export function BlockedInboxView({
   }, [currentUserId, filteredRows, issueFilters, liveIssueIds, workspaceFilterContext]);
   const sortedRows = useMemo(() => sortBlockedInboxRows(issueFilteredRows, sortBy), [issueFilteredRows, sortBy]);
   const groups = useMemo(
-    () => groupBlockedInboxRows(issueFilteredRows, sortBy),
-    [issueFilteredRows, sortBy],
+    () => groupBlockedInboxRows(issueFilteredRows, sortBy, t),
+    [issueFilteredRows, sortBy, t],
   );
 
   const toggleVariant = (variant: string) => {
@@ -152,7 +154,7 @@ export function BlockedInboxView({
 
   if (error) {
     const message =
-      error instanceof Error ? error.message : "Couldn't load the Blocked tab.";
+      error instanceof Error ? error.message : t("inboxUi.blocked.loadFailed");
     return (
       <div
         data-testid="blocked-inbox-error"
@@ -162,9 +164,9 @@ export function BlockedInboxView({
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium">Couldn't load the Blocked tab.</p>
+            <p className="text-sm font-medium">{t("inboxUi.blocked.loadFailed")}</p>
             <p className="text-xs opacity-80">
-              Other Inbox tabs still work. {message}
+              {t("inboxUi.blocked.otherTabs", { message })}
             </p>
           </div>
           <Button
@@ -175,7 +177,7 @@ export function BlockedInboxView({
             onClick={() => void refetch()}
             disabled={isFetching}
           >
-            {isFetching ? "Trying…" : "Try again"}
+            {isFetching ? t("inboxUi.blocked.trying") : t("inboxUi.blocked.tryAgain")}
           </Button>
         </div>
       </div>
@@ -192,9 +194,9 @@ export function BlockedInboxView({
           <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
         </span>
         <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">No work is stopped.</p>
+          <p className="text-sm font-medium text-foreground">{t("inboxUi.blocked.empty")}</p>
           <p className="text-xs text-muted-foreground">
-            Tasks that need a decision, recovery, or external action will appear here.
+            {t("inboxUi.blocked.emptyHint")}
           </p>
         </div>
       </Card>
@@ -208,7 +210,7 @@ export function BlockedInboxView({
           data-testid="blocked-inbox-no-search-results"
           className="block border-border/70 bg-card/40 px-4 py-6 text-center text-sm text-muted-foreground"
         >
-          No stopped items match your search.
+          {t("inboxUi.blocked.noResults")}
         </Card>
       </div>
     );
@@ -240,7 +242,7 @@ export function BlockedInboxView({
               <div key={group.variant} data-testid={`blocked-inbox-group-${group.variant}`}>
                 <div className={presentation === "task" ? "rounded-lg px-3 sm:pl-0 sm:pr-4" : "px-3 sm:px-4"}>
                   <IssueGroupHeader
-                    label={`${group.label} · ${group.rows.length}`}
+                    label={t("inboxUi.blocked.groupCount", { label: group.label, count: group.rows.length })}
                     collapsible
                     collapsed={isCollapsed}
                     onToggle={() => toggleVariant(group.variant)}
@@ -317,8 +319,9 @@ function BlockedInboxRow({
   showUpdatedColumn,
   presentation,
 }: BlockedInboxRowProps) {
+  const { t } = useTranslation();
   const { label: ownerName, isAgent } = resolveOwnerName(row, agentNameById, userLabelById);
-  const stoppedAge = formatStoppedAge(row.attention.stoppedSinceAt);
+  const stoppedAge = formatStoppedAge(row.attention.stoppedSinceAt, undefined, t);
   const blockerAttention = resolveInboxIssueBlockerAttention(row.issue, {
     isLive: liveIssueIds.has(row.issue.id),
     loadedSubtreeLiveCount: subtreeLiveCounts.get(row.issue.id) ?? 0,

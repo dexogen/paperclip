@@ -5,6 +5,7 @@ import { act, forwardRef, useImperativeHandle, type ForwardedRef } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { setLocale } from "@/i18n";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TaskChatThread } from "./TaskChatThread";
@@ -117,7 +118,8 @@ let container: HTMLDivElement;
 let root: Root | null = null;
 let queryClient: QueryClient;
 
-beforeEach(() => {
+beforeEach(async () => {
+  await setLocale("en");
   localStorage.clear();
   transcriptState.transcriptByRun.clear();
   transcriptState.isInitialHydrating = false;
@@ -142,7 +144,8 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => {
+afterEach(async () => {
+  await setLocale("en");
   flushSync(() => root?.unmount());
   queryClient.clear();
   root = null;
@@ -359,6 +362,16 @@ it.each([true, false])("defers hidden content until history is ready and keeps i
   ).toBeNull();
   expect(container.querySelector('[data-testid="mock-editor"]')).toBe(composer);
   expect(container.querySelector('.task-chat-history-pending')).toBeNull();
+});
+
+it.each([true, false])("keeps cold-open messages readable while history is pending (mobile=%s)", (mobile) => {
+  sidebarState.isMobile = mobile;
+  render(<TaskChatThread issueId="cold-issue" compactHistory initialHistoryPending
+    comments={createLongThreadComments()} historyControl={<button>More messages</button>} onAdd={async () => {}} />);
+  expect(container.querySelector('[data-testid="task-chat-history-loading"]')).toBeNull();
+  expect(container.textContent).toContain("Thread message 1");
+  expect(container.textContent).toContain("More messages");
+  expect(container.querySelector('[data-testid="mock-editor"]')).not.toBeNull();
 });
 
 it("defers initial history for a saved conversation with its own draft key", () => {
@@ -1707,6 +1720,32 @@ describe("TaskChatThread runtime transcript selection", () => {
     revealUsage();
     expect(container.textContent).toContain("↑20");
     expect(container.textContent).not.toContain("↑10");
+  });
+
+  it("keeps generated failure marker, raw provider text and retry identity across EN RU EN", async () => {
+    const retry = vi.fn(async () => {});
+    const raw = "Run failed <strong>literal</strong> & Ошибка";
+    nativeTranscriptState.transcriptByRun.set("locale-failed", [assistantEntry("2026-08-25T18:00:01.000Z", raw, "progress")]);
+    renderThread({ comments: [], onAdd: async () => {}, issueStatus: "blocked", onRetryFailedRun: retry, linkedRuns: [{
+      runId: "locale-failed", runtimeMode: "native", status: "failed", errorCode: "provider_transport_failed", agentId: "agent-1", agentName: "Run failed", adapterType: "paperclip_runner",
+      createdAt: "2026-08-25T18:00:00.000Z", startedAt: "2026-08-25T18:00:00.000Z", finishedAt: "2026-08-25T18:00:02.000Z",
+    }] });
+    const marker = container.querySelector('[data-testid="task-chat-collapsible-marker"]')!;
+    const button = container.querySelector<HTMLButtonElement>('[data-testid="task-chat-run-failed-try-again"]')!;
+    const nativeSource = transcriptHookRuns.native.at(-1);
+    const queryKeys = queryClient.getQueryCache().getAll().map(query => JSON.stringify(query.queryKey));
+    for (const locale of ["ru", "en", "ru"] as const) {
+      await act(async () => { await setLocale(locale); });
+      expect(container.querySelector('[data-testid="task-chat-collapsible-marker"]')).toBe(marker);
+      expect(container.querySelector('[data-testid="task-chat-run-failed-try-again"]')).toBe(button);
+      expect(marker.textContent).toContain(locale === "ru" ? "Запуск завершился с ошибкой" : "Run failed");
+      expect(container.textContent).toContain(raw);
+      expect(transcriptHookRuns.native.at(-1)).toBe(nativeSource);
+      expect(queryClient.getQueryCache().getAll().map(query => JSON.stringify(query.queryKey))).toEqual(queryKeys);
+      expect(retry).not.toHaveBeenCalled();
+    }
+    await act(async () => button.click());
+    expect(retry).toHaveBeenCalledExactlyOnceWith("locale-failed");
   });
 
   it("keeps a failed native run actionable after progress was rendered", async () => {
@@ -3525,7 +3564,7 @@ describe("TaskChatThread composer alignment", () => {
 
     const dock = container
       .querySelector('[data-testid="mock-editor"]')
-      ?.closest("div.sticky") as HTMLElement | null;
+      ?.closest('[data-testid="task-chat-composer-dock"]') as HTMLElement | null;
 
     expect(dock?.className).toContain("w-full");
     expect(dock?.className).toContain("max-w-(--tc-shell-max-w)");
@@ -4309,26 +4348,22 @@ describe("TaskChatThread Paperclip Runner queue", () => {
   });
 });
 
-describe("TaskChatThread mobile composer dock (PAP-495)", () => {
-  it("pins the composer to the nav-aware bottom offset so its action row clears the auto-hiding bottom nav", () => {
+describe("TaskChatThread mobile composer dock", () => {
+  it("scrolls messages independently of the composer on mobile", () => {
     sidebarState.isMobile = true;
 
     renderThread({
-      comments: [],
+      comments: createLongThreadComments(),
       onAdd: async () => {},
       draftKey: "task-chat-draft:issue-mobile",
     });
 
-    const dock = container
-      .querySelector('[data-testid="mock-editor"]')
-      ?.closest("div.sticky") as HTMLElement | null;
-
+    const dock = container.querySelector('[data-testid="task-chat-composer-dock"]');
+    const scroller = container.querySelector('[data-testid="task-chat-scroller"]');
     expect(dock).not.toBeNull();
-    // Bottom offset comes from --tc-composer-bottom (Layout raises it to the nav
-    // height while the nav is on screen) — NOT the raw safe-area dock, which is
-    // what let the nav occlude the action row before PAP-495.
-    expect(dock?.className).toContain("bottom-(--tc-composer-bottom)");
-    expect(dock?.className).not.toContain("bottom-(--sz-calc-8)");
+    expect(scroller).not.toBeNull();
+    expect(scroller?.textContent).toContain("Thread message 1");
+    expect(scroller?.contains(dock)).toBe(false);
   });
 });
 

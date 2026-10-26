@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useState, type ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Loader2, RotateCcw, Undo2 } from "lucide-react";
@@ -27,11 +28,6 @@ interface StalledReviewActionsProps {
   className?: string;
 }
 
-const ACTION_PAST_TENSE: Record<StalledReviewDecisionAction, string> = {
-  approve: "Review approved — issue marked done.",
-  request_changes: "Changes requested — issue returned to the assignee.",
-  send_back: "Sent back to work — issue returned to the assignee.",
-};
 
 /**
  * The three review verbs an operator can take on a *stalled* in-review issue —
@@ -51,6 +47,7 @@ export function StalledReviewActions({
   reviewPolicy,
   className,
 }: StalledReviewActionsProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
   const [note, setNote] = useState("");
@@ -66,13 +63,13 @@ export function StalledReviewActions({
       queryClient.invalidateQueries({ queryKey: queryKeys.issues.detail(issueId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.issues.activity(issueId) });
       setNote("");
-      pushToast({ title: ACTION_PAST_TENSE[action], tone: "success" });
+      pushToast({ title: action === "approve" ? t("decisionsUi.review.approved") : action === "request_changes" ? t("decisionsUi.review.changesRequested") : t("decisionsUi.review.sentBack"), tone: "success" });
       onResolved?.(action);
     },
     onError: (error) => {
       pushToast({
-        title: "Could not record the review decision",
-        body: error instanceof Error ? error.message : "Please try again.",
+        title: t("decisionsUi.review.error"),
+        body: error instanceof Error ? error.message : t("decisionsUi.common.tryAgain"),
         tone: "error",
       });
     },
@@ -82,7 +79,7 @@ export function StalledReviewActions({
   const noteEmpty = note.trim().length === 0;
   const runningFor = (action: StalledReviewDecisionAction) =>
     pending && decide.variables === action;
-  const policyBadge = issueReviewPolicyBadge(reviewPolicy);
+  const policyBadge = issueReviewPolicyBadge(reviewPolicy, t);
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
@@ -104,7 +101,7 @@ export function StalledReviewActions({
       <Textarea
         value={note}
         onChange={(event) => setNote(event.target.value)}
-        placeholder="Add a note — required to request changes, optional otherwise…"
+        placeholder={t("decisionsUi.review.note")}
         className="min-h-16 text-sm"
         data-testid="stalled-review-note"
         disabled={pending}
@@ -126,7 +123,7 @@ export function StalledReviewActions({
             ) : (
               <Undo2 className="h-3.5 w-3.5" aria-hidden />
             )}
-            Send back to work
+            {t("decisionsUi.review.sendBack")}
           </Button>
           <Button
             type="button"
@@ -134,7 +131,7 @@ export function StalledReviewActions({
             size="sm"
             className="w-full border-amber-400/70 text-amber-900 hover:bg-amber-100 dark:border-amber-500/50 dark:text-amber-100 dark:hover:bg-amber-500/15 sm:w-auto sm:flex-1 @xl:flex-none"
             disabled={pending || noteEmpty}
-            title={noteEmpty ? "Add a note to request changes" : undefined}
+            title={noteEmpty ? t("decisionsUi.review.noteRequired") : undefined}
             onClick={() => decide.mutate("request_changes")}
             data-testid="stalled-review-request-changes"
           >
@@ -143,7 +140,7 @@ export function StalledReviewActions({
             ) : (
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
             )}
-            Request changes
+            {t("decisionsUi.review.requestChanges")}
           </Button>
           <Button
             type="button"
@@ -158,7 +155,7 @@ export function StalledReviewActions({
             ) : (
               <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
             )}
-            Approve
+            {t("decisionsUi.review.approve")}
           </Button>
         </div>
       </div>

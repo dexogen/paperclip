@@ -101,6 +101,53 @@ new extension in this change.
 PostgreSQL documents the existing index support in
 [pg_trgm](https://www.postgresql.org/docs/17/pgtrgm.html).
 
+## Unicode task queries
+
+Embedded PostgreSQL initializes with locale `C`. Its default character rules
+do not lowercase Cyrillic letters. A normalized query such as `проверка языка`
+could therefore miss a stored title `Проверка языка`. PostgreSQL applies
+collations to case conversion, pattern matching and character classes, so the
+query can select suitable rules without rebuilding the database. See
+[PostgreSQL collation support](https://www.postgresql.org/docs/18/collation.html).
+
+Both task-list search and company search prepare non-ASCII task queries through
+`prepareTaskSearch`. The first such request on a database handle selects a
+deterministic, encoding-compatible collation from a fixed `pg_catalog` whitelist.
+Preference is `pg_unicode_fast`, `pg_c_utf8`, ICU `unicode`/`und-x-icu`, then libc
+`C.utf8`/`C.UTF-8`. PostgreSQL 18 provides `pg_unicode_fast`; PostgreSQL 17 provides
+`pg_c_utf8`. Older supported installations can use ICU or an installed UTF-8
+libc locale. Availability depends on the database build and installed locales;
+see the [PostgreSQL 17](https://www.postgresql.org/docs/17/collation.html) and
+[PostgreSQL 14](https://www.postgresql.org/docs/14/collation.html) documentation.
+
+Successful resolution is cached per database handle. Concurrent requests share
+the probe. Failed or unsupported probes are not cached, so the next request can
+recover after the database capability is corrected. A database with no supported
+collation returns HTTP 503 with code `unicode_search_unavailable` for these
+queries. Check its catalog and supported PostgreSQL/locale installation; changing
+the browser language does not change database capabilities. ASCII queries perform
+no capability probe and retain their previous SQL. No schema, initialization
+locale, stored text or indexes are changed.
+
+The selected collation covers task text, current comments/documents, short-word
+boundaries, title typo matching and snippet ranking. It does not add stemming,
+accent folding or a new algorithm for agents, projects or artifacts. Explicit
+collation can change the available query plans for non-ASCII queries; existing
+default-collation indexes are not a guarantee of equivalent Unicode performance.
+Measure the deployment's data separately from the small correctness corpus.
+
+The fork's 2026-10-26 scale run used PostgreSQL 18.1 on WSL2, an Intel i9-13900H
+and 16 GiB RAM, with 10,035 tasks and 30,000 added comments. Each query had one
+first request and 20 warm samples, excluding HTTP and UI debounce. For
+`проверка языка`, warm p95 was 281 ms for full search and 1,080 ms for quick
+search. The same run's broad ASCII `routine` query measured 474 ms and 971 ms.
+The 250 ms target was not met. Query plans confirmed scans for explicitly
+collated Unicode predicates; the existing default-`C` trigram indexes do not
+establish equivalent performance. A separate comparison of 20 ASCII queries
+against the prior helper found identical SQL and parameters. These measurements
+are a correctness/performance tradeoff, not production capacity evidence or a
+claim that Unicode matching has no cost. No index migration is included.
+
 ## Reproduce the evaluation
 
 ```sh

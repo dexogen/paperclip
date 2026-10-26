@@ -6,8 +6,8 @@ import { agentsApi } from "@/api/agents";
 import { queryKeys } from "@/lib/queryKeys";
 import { GrokBotSetupContent, type GrokSetupStep } from "./GrokBotSetupContent";
 
-export function GrokBotSetup({ companyId, companyName, onBack, onClose }: {
-  companyId: string; companyName: string; onBack: () => void; onClose: () => void;
+export function GrokBotSetup({ companyId, companyName, companyNameIsFallback, onBack, onClose }: {
+  companyId: string; companyName: string; companyNameIsFallback?: boolean; onBack: () => void; onClose: () => void;
 }) {
   const cache = useQueryClient();
   const [invitation, setInvitation] = useState<GrokInvitation | null>(null);
@@ -76,7 +76,7 @@ export function GrokBotSetup({ companyId, companyName, onBack, onClose }: {
     else if (ready) onClose();
     else verify.mutate();
   };
-  return <GrokBotSetupContent step={step} companyName={companyName} details={details} created={!!invitation}
+  return <GrokBotSetupContent step={step} companyName={companyName} companyNameIsFallback={companyNameIsFallback} details={details} created={!!invitation}
     managers={(managers.data ?? []).filter(agent => agent.status !== "terminated" && agent.id !== invitation?.agent.id)}
     loading={resume.isPending} busy={busy} error={error?.message} connection={connection.data} pairing={binding?.connected ? null : pairing}
     approvalHref={invitation?.approvalId && (connection.data?.agentStatus ?? invitation.agent.status) === "pending_approval" ? `/approvals/${invitation.approvalId}` : undefined}

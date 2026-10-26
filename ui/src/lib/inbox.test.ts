@@ -1,5 +1,6 @@
 // @vitest-environment node
 
+import { i18n } from "@/i18n";
 import { beforeEach, describe, expect, it } from "vitest";
 import type {
   Approval,
@@ -1604,4 +1605,19 @@ describe("inbox helpers", () => {
     expect(shouldResetInboxWorkspaceGrouping("workspace", true, true)).toBe(false);
     expect(shouldResetInboxWorkspaceGrouping("none", false, true)).toBe(false);
   });
+});
+
+it("projects translated groups without changing canonical tie order or create defaults", () => {
+  const issueA = { ...makeIssue("a", false), projectId: null };
+  const issueB = { ...makeIssue("b", false), projectId: "literal-project" };
+  const items = getInboxWorkItems({ issues: [issueA, issueB], approvals: [makeApproval("pending")] });
+  const options = { projectById: new Map([["literal-project", { name: "Project <tag>literal</tag>" }]]) };
+  const en = groupInboxWorkItems(items, "project", options);
+  const ru = groupInboxWorkItems(items, "project", options, i18n.getFixedT("ru"));
+  expect(ru.map(({ key, items }) => ({ key, items }))).toEqual(en.map(({ key, items }) => ({ key, items })));
+  expect(ru.find((group) => group.key === "project:none")?.label).toBe("Без проекта");
+  expect(ru.find((group) => group.key === "project:literal-project")?.label).toBe("Project <tag>literal</tag>");
+  expect(ru.find((group) => group.key === "kind:approval")?.label).toBe("Согласования");
+  for (const group of ru) expect(buildInboxIssueGroupCreateDefaults(group.key, "project", group.items, options))
+    .toEqual(buildInboxIssueGroupCreateDefaults(group.key, "project", en.find((candidate) => candidate.key === group.key)!.items, options));
 });

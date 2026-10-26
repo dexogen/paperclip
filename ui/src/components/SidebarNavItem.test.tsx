@@ -4,6 +4,8 @@ import { act } from "react";
 import type { ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { setLocale, useTranslation } from "@/i18n";
+import { SidebarNavItem as ProductionNavItem } from "./SidebarNavItem.production";
 import { Inbox } from "lucide-react";
 import { SidebarNavItem, SidebarNavExpandedProvider } from "./SidebarNavItem";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -71,6 +73,32 @@ describe("SidebarNavItem", () => {
   function classTokens(element: Element | null | undefined) {
     return element?.className.toString().split(/\s+/).filter(Boolean) ?? [];
   }
+
+  it.each([["modern", SidebarNavItem], ["production", ProductionNavItem]] as const)("keeps the %s rail identity and raw custom badges with localized whole count phrases", async (_name, Component) => {
+    sidebarState.collapsed = true;
+    function Fixture({ count }: { count: number }) {
+      const { t } = useTranslation();
+      return <><Component to="/inbox" label="Raw <b>name</b>" badge={count} badgeText={t("projectConfigUi.sidebar.unread", { count })} />
+        <Component to="/decisions" label="Decisions" badge={count} badgeText={t("projectConfigUi.sidebar.decisions", { count })} />
+        <Component to="/live" label="Agent" liveCount={count} />
+        <Component to="/custom" label="Custom" badge={count} badgeLabel="unread" /></>;
+    }
+    try {
+      for (const [count, unread, decision, live] of [[1,"1 непрочитанный элемент","1 решение","1 активный запуск"],[2,"2 непрочитанных элемента","2 решения","2 активных запуска"],[5,"5 непрочитанных элементов","5 решений","5 активных запусков"],[21,"21 непрочитанный элемент","21 решение","21 активный запуск"]] as const) {
+        render(<Fixture count={count} />);
+        const original = container.querySelector('a[href="/inbox"]')!;
+        await act(async () => setLocale("ru"));
+        expect(container.querySelector('a[href="/inbox"]')).toBe(original);
+        expect(original.getAttribute("aria-label")).toBe(`Raw <b>name</b>, ${unread}`);
+        expect(container.querySelector('a[href="/decisions"]')?.getAttribute("aria-label")).toBe(`Decisions, ${decision}`);
+        expect(container.querySelector('a[href="/live"]')?.getAttribute("aria-label")).toBe(`Agent, ${live}`);
+        expect(container.querySelector('a[href="/custom"]')?.getAttribute("aria-label")).toBe(`Custom, ${count} unread`);
+        expect(container.querySelector("b")).toBeNull();
+        await act(async () => setLocale("en"));
+        expect(original.getAttribute("aria-label")).toBe(`Raw <b>name</b>, ${count} unread`);
+      }
+    } finally { await act(async () => setLocale("en")); }
+  });
 
   it("shows the full label and numeric badge when expanded", () => {
     render(<SidebarNavItem to="/inbox" label="Inbox" icon={Inbox} badge={28} badgeLabel="unread" />);

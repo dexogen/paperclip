@@ -39,7 +39,7 @@ import {
 import { companyArtifactsService } from "./company-artifacts.js";
 import { companySearchExtractService } from "./company-search-extract.js";
 import { visibleIssueCondition } from "./issue-visibility.js";
-import { parseTaskSearch, taskSearchCtes, taskSearchScore, taskSearchFieldMatch, taskSearchTermMatch } from "./task-search.js";
+import { parseTaskSearch, prepareTaskSearch, taskSearchCtes, taskSearchScore, taskSearchField, taskSearchFieldMatch, taskSearchTermMatch } from "./task-search.js";
 
 const SNIPPET_MAX_CHARS = 240;
 export const COMPANY_SEARCH_BRANCH_FETCH_LIMIT = COMPANY_SEARCH_MAX_OFFSET + COMPANY_SEARCH_MAX_LIMIT + 1;
@@ -544,7 +544,7 @@ export function companySearchService(db: Db) {
       query: CompanySearchQuery,
       options?: { issueReadCondition?: SQL<boolean>; projectReadCondition?: SQL<boolean> },
     ): Promise<CompanySearchResponse> => {
-      const taskSearch = parseTaskSearch(query.q);
+      const taskSearch = await prepareTaskSearch(db, query.q);
       const normalizedQuery = taskSearch.normalizedQuery;
       const hasSearchText = normalizedQuery.length > 0;
       const tokens = taskSearch.tokens;
@@ -809,7 +809,7 @@ export function companySearchService(db: Db) {
                 ${taskSearchFieldMatch(sql`search_comments.body`, taskSearch)}
               )
             ORDER BY
-              CASE WHEN search_comments.body ILIKE ${containsPattern} THEN 0 ELSE 1 END,
+              CASE WHEN ${taskSearchField(sql`search_comments.body`, taskSearch)} ILIKE ${containsPattern} THEN 0 ELSE 1 END,
               ${sql.join(tokens.map((_, index) => sql`CASE WHEN ${taskSearchTermMatch(sql`search_comments.body`, taskSearch, index)} THEN 1 ELSE 0 END`), sql` + `)} DESC,
               search_comments.updated_at DESC,
               search_comments.id DESC
@@ -829,8 +829,8 @@ export function companySearchService(db: Db) {
               )
             ORDER BY
               CASE
-                WHEN coalesce(search_documents.title, '') ILIKE ${containsPattern} THEN 0
-                WHEN search_documents.latest_body ILIKE ${containsPattern} THEN 1
+                WHEN ${taskSearchField(sql`coalesce(search_documents.title, '')`, taskSearch)} ILIKE ${containsPattern} THEN 0
+                WHEN ${taskSearchField(sql`search_documents.latest_body`, taskSearch)} ILIKE ${containsPattern} THEN 1
                 ELSE 2
               END,
               ${sql.join(tokens.map((_, index) => sql`CASE WHEN ${taskSearchTermMatch(sql`search_documents.title`, taskSearch, index)} OR ${taskSearchTermMatch(sql`search_documents.latest_body`, taskSearch, index)} THEN 1 ELSE 0 END`), sql` + `)} DESC,

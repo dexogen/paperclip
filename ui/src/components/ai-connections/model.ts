@@ -1,3 +1,5 @@
+import { i18n, t } from "@/i18n";
+import type { TFunction } from "i18next";
 /** Redacted presentation contracts shared with the production API. */
 import type { AiProvider, AiAuthMethod, AiManagedConnectionSummary, AiConnectionBinding } from "@paperclipai/shared";
 export type { AiProvider, AiAuthMethod, AiConnectionBinding } from "@paperclipai/shared";
@@ -52,9 +54,27 @@ export function defaultAiConnectionName(ownerName: string | undefined, provider:
 }
 
 export function aiMethodLabel(provider: AiProvider, method: AiAuthMethod) {
-  return method === "subscription"
-    ? (AI_PROVIDERS[provider].subscriptionName ?? "Subscription unavailable")
-    : provider === "github" ? "Personal access token" : "API key";
+  if (method === "subscription") {
+    switch (provider) {
+      case "anthropic": return t("upstreamGap.claudeSubscription");
+      case "openai": return t("upstreamGap.chatGptSubscription");
+      case "xai": return t("upstreamGap.grokSubscription");
+      default: return t("upstreamGap.subscriptionUnavailable");
+    }
+  }
+  return provider === "github"
+    ? t("upstreamGap.personalAccessToken")
+    : t("providerSetup.credentials.apiKey");
+}
+
+export function aiConnectionDisplayLabel(connection: AiConnectionSummary) {
+  const personal = connection.ownership === "personal";
+  return [
+    connection.name,
+    aiMethodLabel(connection.provider, connection.method),
+    personal ? t("upstreamGap.connectionPersonal") : t("upstreamGap.connectionCompanyShared"),
+    connection.accountLabel || connection.ownerName,
+  ].filter(Boolean).join(" · ");
 }
 
 export function matchesAiRequirement(
@@ -85,12 +105,16 @@ export function personalAiDefault(
 
 export function aiConnectionProblem(connection?: AiConnectionSummary) {
   if (!connection)
-    return "No connection selected. Connect an account to continue.";
+    return t("providerSetup.select.noneSelected");
   return (
     connection.unavailableReason ??
     (connection.status === "connected"
       ? null
-      : `${AI_CONNECTION_STATUS[connection.status]}. Reconnect this account to continue.`)
+      : connection.status === "needs_attention"
+        ? t("providerSetup.select.needsAttention")
+        : connection.status === "expired"
+          ? t("providerSetup.select.expired")
+          : t("providerSetup.select.revoked"))
   );
 }
 
@@ -100,12 +124,13 @@ export function bindingProblem(
   connections: AiConnectionSummary[],
   userId: string,
   _agentId: string,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
   if (
     binding.provider !== requirement.provider ||
     (binding.mode !== "responsible_user" && requirement.method !== undefined && binding.method !== requirement.method)
   )
-    return "Choose a connection compatible with this provider and sign-in method.";
+    return t("agentBulkUi.binding.compatible");
   if (binding.mode === "responsible_user")
     return aiConnectionProblem(
       personalAiDefault(connections, requirement, userId),
@@ -118,14 +143,14 @@ export function bindingProblem(
       matchesAiRequirement(item, requirement),
   );
   if (!connection)
-    return "This connection is no longer available for this agent. Choose another connection.";
+    return t("agentBulkUi.binding.missing");
   if (binding.mode === "shared" && connection.ownership !== "shared")
-    return "Choose a company-shared connection.";
+    return t("agentBulkUi.binding.shared");
   if (
     binding.mode === "delegated" &&
     (connection.ownership !== "personal" ||
       connection.ownerUserId !== userId)
   )
-    return "This credential is not shared with you. Choose a connection you can use.";
+    return t("agentBulkUi.binding.delegated");
   return aiConnectionProblem(connection);
 }

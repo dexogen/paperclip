@@ -170,6 +170,19 @@ ten-second scheduler intervals without continuation. It resumes with wakeups,
 pauses from the menu, dismisses and then confirms cancellation, and verifies
 terminal-task exclusions and unrelated execution.
 
+The native setup hello must finish before the hold is enabled. The suite waits
+for all three agent records to report ready/idle with no lifecycle operation,
+hold or error. It then creates its exclusive work marker and removes it in cleanup.
+Provider logs are separate for each task run UUID, including the resumed runs;
+setup calls cannot count as work. The local shell/loader checks are:
+
+```sh
+node --test tests/e2e/fixtures/composer-stop-*.test.mjs
+```
+
+Those checks use an argument recorder. They verify fixture isolation but do not
+replace the native browser journey above.
+
 Timing attachments distinguish click-to-request from request-to-observed-stop.
 Native proof requires provider `turn/start` before the click, `turn/interrupt`
 after it, and durable cancellation acknowledgment. Legacy proof checks the

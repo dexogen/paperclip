@@ -73,10 +73,30 @@ export interface PluginEnvironmentConfig {
   driverConfig: Record<string, unknown>;
 }
 
+export type EnvironmentProbeMessage =
+  | { code: "local_available" }
+  | { code: "sandbox_company_required" }
+  | { code: "sandbox_connected_named"; params: { provider: string; sandboxName: string } }
+  | {
+      code:
+        | "sandbox_connected"
+        | "sandbox_probe_failed"
+        | "sandbox_worker_required"
+        | "sandbox_provider_unavailable"
+        | "sandbox_provider_probe_passed"
+        | "sandbox_provider_probe_failed";
+      params: { provider: string };
+    }
+  | { code: "plugin_worker_required"; params: { pluginKey: string; driverKey: string } }
+  | { code: "ssh_connected" | "ssh_probe_failed"; params: { username: string; host: string } }
+  | { code: "plugin_probe_passed" | "plugin_probe_failed"; params: { providerKey: string } }
+  | { code: "fake_sandbox_ready"; params: { image: string } };
+
 export interface EnvironmentProbeResult {
   ok: boolean;
   driver: EnvironmentDriver;
   summary: string;
+  summaryMessage?: EnvironmentProbeMessage;
   details: Record<string, unknown> | null;
 }
 

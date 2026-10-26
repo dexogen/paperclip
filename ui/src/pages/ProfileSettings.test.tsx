@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sanitizeAssetNamespace } from "@paperclipai/shared";
 import { ProfileSettings } from "./ProfileSettings";
+import { i18n } from "../i18n";
 
 const mockAuthApi = vi.hoisted(() => ({
   getSession: vi.fn(),
@@ -200,5 +201,43 @@ describe("ProfileSettings", () => {
     await act(async () => {
       root.unmount();
     });
+  });
+
+  it("switches English and Russian without losing an unsaved profile or changing its identity", async () => {
+    const root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    await act(async () => {
+      await i18n.changeLanguage("en");
+      root.render(<QueryClientProvider client={queryClient}><ProfileSettings /></QueryClientProvider>);
+    });
+    await flushReact();
+    const input = container.querySelector<HTMLInputElement>("#profile-name")!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "Мой профиль");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const requestsBeforeSwitch = mockAuthApi.getSession.mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Сохранить профиль");
+      expect(container.textContent).toContain("Мой профиль");
+      expect(container.querySelector("#profile-name")).toBe(input);
+      expect(input.value).toBe("Мой профиль");
+      expect(mockSetBreadcrumbs).toHaveBeenLastCalledWith([
+        { label: "Настройки", href: "/company/settings" },
+        { label: "Профиль" },
+      ]);
+      expect(mockAuthApi.getSession).toHaveBeenCalledTimes(requestsBeforeSwitch);
+      expect(mockAuthApi.updateProfile).not.toHaveBeenCalled();
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Save profile");
+      expect(input.value).toBe("Мой профиль");
+      await act(async () => {
+        container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      });
+      expect(mockAuthApi.updateProfile).toHaveBeenCalledWith({ name: "Мой профиль", image: "https://example.com/jane.png" });
+    } finally {
+      await act(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+    }
   });
 });

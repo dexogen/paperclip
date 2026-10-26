@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { setLocale } from "../i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -219,7 +220,66 @@ describe("OnboardingWizard — which step it lands on", () => {
     queryClient.clear();
     container.remove();
     document.body.innerHTML = "";
+    await setLocale("en");
     vi.clearAllMocks();
+  });
+
+  it("creates an organization with Russian controls and preserves its name after a failure", async () => {
+    await setLocale("ru");
+    routerState.pathname = "/onboarding";
+    mockCompaniesApi.create.mockRejectedValueOnce(null);
+    await render();
+    await settle();
+    expect(document.body.textContent).toContain("Как называется ваша организация?");
+    expect(document.body.textContent).toContain("Шаг 1 из 4");
+    const name = document.querySelector<HTMLInputElement>("#onboarding-company-name")!;
+    expect(name.placeholder).toBe("Например, Northwind Labs");
+    await act(async () => setControlledValue(name, "Owner's original name"));
+    const next = [...document.querySelectorAll("button")].find(button => button.textContent?.trim() === "Продолжить")!;
+    await act(async () => next.click());
+    await settle();
+    expect(mockCompaniesApi.create).toHaveBeenCalledWith({ name: "Owner's original name" });
+    expect(document.body.textContent).toContain("Не удалось создать организацию");
+    expect(name.value).toBe("Owner's original name");
+  });
+
+  it("switches the first-agent journey between English and Russian without losing its draft", async () => {
+    routerState.pathname = "/PC1/onboarding";
+    await render();
+    await settle();
+    const name = document.querySelector<HTMLInputElement>("#onboarding-agent-name")!;
+    await act(async () => setControlledValue(name, "Ada — owner draft"));
+    const language = [...document.querySelectorAll("label")].find(label => label.textContent?.includes("Language"))!.querySelector("select")!;
+    await act(async () => {
+      language.value = "ru";
+      language.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await settle();
+    expect(document.body.textContent).toContain("Создайте первого агента");
+    expect(document.body.textContent).toContain("Шаг 1 из 3");
+    expect(name.value).toBe("Ada — owner draft");
+    expect(document.querySelector('[aria-label="Подключите модель"]')).not.toBeNull();
+    const next = [...document.querySelectorAll("button")].find(button => button.textContent?.trim() === "Далее")!;
+    await act(async () => next.click());
+    await settle();
+    expect(document.body.textContent).toContain("Подключите модель");
+    expect(document.body.textContent).toContain("Paperclip работает с вашей подпиской или API-ключами.");
+    expect(document.querySelector('[role="radiogroup"][aria-label="Источник модели"]')).not.toBeNull();
+    const creationCount = mockAgentsApi.create.mock.calls.length;
+    const updateCount = mockAgentsApi.update.mock.calls.length;
+    await act(async () => {
+      language.value = "en";
+      language.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await settle();
+    expect(document.body.textContent).toContain("Connect a model");
+    expect(document.body.textContent).toContain("Step 2 of 3");
+    expect(mockAgentsApi.create).toHaveBeenCalledTimes(creationCount);
+    expect(mockAgentsApi.update).toHaveBeenCalledTimes(updateCount);
+    const back = [...document.querySelectorAll("button")].find(button => button.textContent?.trim() === "Back")!;
+    await act(async () => back.click());
+    await settle();
+    expect(document.querySelector<HTMLInputElement>("#onboarding-agent-name")?.value).toBe("Ada — owner draft");
   });
 
   /**

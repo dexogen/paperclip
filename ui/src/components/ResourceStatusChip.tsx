@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { brandChipBadge, type BrandChipColor } from "@/lib/status-colors";
@@ -32,43 +34,43 @@ interface VariantSpec {
   title: string;
 }
 
-const VARIANTS: Record<ResourceStatusVariant, VariantSpec> = {
-  ready: { color: "green", glyph: "●", label: "Ready", title: "Materialized and matches the shipped default" },
-  needs_setup: { color: "amber", glyph: "⚠", label: "Needs setup", title: "Present but not usable yet" },
-  missing: { color: "amber", glyph: "⚠", label: "Missing", title: "Expected resource absent; reconcile will recreate it" },
-  error: { color: "red", glyph: "✕", label: "Error", title: "Failed to load or reconcile" },
+function variants(t: TFunction): Record<ResourceStatusVariant, VariantSpec> { return {
+  ready: { color: "green", glyph: "●", label: t("agentDetailUi.resource.ready"), title: t("agentDetailUi.resource.readyHelp") },
+  needs_setup: { color: "amber", glyph: "⚠", label: t("agentDetailUi.resource.needsSetup"), title: t("agentDetailUi.resource.needsSetupHelp") },
+  missing: { color: "amber", glyph: "⚠", label: t("agentDetailUi.resource.missing"), title: t("agentDetailUi.resource.missingHelp") },
+  error: { color: "red", glyph: "✕", label: t("agentDetailUi.resource.error"), title: t("agentDetailUi.resource.errorHelp") },
   update_available: {
     color: "blue",
     glyph: "↑",
-    label: "Update available",
-    title: "Unedited — a newer shipped default can be applied",
+    label: t("agentDetailUi.resource.update"),
+    title: t("agentDetailUi.resource.updateHelp"),
   },
   drifted: {
     color: "gray",
     glyph: "✎",
-    label: "Drifted",
-    title: "You've edited this; your changes are kept, not overwritten",
+    label: t("agentDetailUi.resource.drifted"),
+    title: t("agentDetailUi.resource.driftedHelp"),
   },
   schedule_off: {
     color: "gray",
     glyph: "◌",
-    label: "Schedule off",
-    title: "No background work runs until you enable it — costs zero tokens",
+    label: t("agentDetailUi.resource.off"),
+    title: t("agentDetailUi.resource.offHelp"),
   },
-  schedule_on: { color: "green", glyph: "●", label: "Weekly", title: "Runs on the weekly schedule" },
+  schedule_on: { color: "green", glyph: "●", label: t("agentDetailUi.resource.weekly"), title: t("agentDetailUi.resource.weeklyHelp") },
   pending_approval: {
     color: "amber",
     glyph: "⚠",
-    label: "Pending approval",
-    title: "Waiting on board hire approval before it can run",
+    label: t("agentDetailUi.resource.approval"),
+    title: t("agentDetailUi.resource.approvalHelp"),
   },
   proposal_pending: {
     color: "blue",
     glyph: "↑",
-    label: "Proposal pending",
-    title: "A proposed update is waiting for your review",
+    label: t("agentDetailUi.resource.proposal"),
+    title: t("agentDetailUi.resource.proposalHelp"),
   },
-};
+}; }
 
 export function ResourceStatusChip({
   variant,
@@ -82,7 +84,8 @@ export function ResourceStatusChip({
   compact?: boolean;
   className?: string;
 }) {
-  const spec = VARIANTS[variant];
+  const { t } = useTranslation();
+  const spec = variants(t)[variant];
   return (
     <Badge
       variant="outline"

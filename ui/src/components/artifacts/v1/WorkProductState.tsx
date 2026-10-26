@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { IssueWorkProduct } from "@paperclipai/shared";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +13,9 @@ import { stateChipFor } from "@/components/task-chat/RichWorkProductCard";
 export function workProductStateBadge(
   workProduct: Pick<IssueWorkProduct, "type" | "status" | "reviewState" | "healthStatus">,
   label?: string | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): ReactNode {
-  if (workProduct.healthStatus === "unhealthy") return <Badge variant="destructive">Unhealthy</Badge>;
-  const text = label ?? stateChipFor(workProduct.type, workProduct.status, workProduct.reviewState)?.label;
+  if (workProduct.healthStatus === "unhealthy") return <Badge variant="destructive">{t("taskPanels.workProduct.unhealthy")}</Badge>;
+  const text = label ?? stateChipFor(workProduct.type, workProduct.status, workProduct.reviewState, t)?.label;
   return text ? <span className="text-xs text-muted-foreground">{text}</span> : undefined;
 }

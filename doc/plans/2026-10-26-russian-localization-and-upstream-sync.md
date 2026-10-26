@@ -1,0 +1,1224 @@
+---
+id: paperclip-russian-localization-and-upstream-sync
+type: decision
+status: accepted
+scope: paperclip
+updated: 2026-10-26
+source: "Repository inspection at 2a45fd95df352b1e9d20ab366181bc715a06fe35; GitHub repository and PR reads on 2026-10-26"
+---
+
+# Russian localization and upstream maintenance
+
+The owner approved this design and requested implementation on 2026-10-26.
+Foundation, detection, Russian translations, and upstream synchronization are in progress.
+Deployment and automatic merge remain separate rollout decisions.
+
+## Outcome and boundaries
+
+Maintain a Russian edition of `dexogen/paperclip` that follows
+`paperclipai/paperclip`, detects translation work when upstream changes, and keeps
+the original application behavior. A successful update must preserve company
+boundaries, permissions, approvals, task ownership, budgets, audit events, and data.
+
+The initial product boundary is the web application: navigation, authentication,
+onboarding, tasks, agents, projects, settings, dialogs, notifications, validation,
+accessible names, and display formatting. Define the exact supported journeys in
+the initial inventory and expand them until the agreed web UI scope is covered.
+Include both active UI variants, including `.production.tsx` components.
+
+User content, agent responses and instructions, skills, commands, paths, protocol
+identifiers, provider diagnostics, and raw logs retain their original values.
+CLI localization, third-party plugin interfaces, and generated prose are separate
+scope decisions. Language selection must not alter execution or stored content.
+
+## Observed starting point
+
+- The fork and upstream `master` both resolved to
+  `2a45fd95df352b1e9d20ab366181bc715a06fe35` during this inspection.
+  The local checkout has only `origin`; no `upstream` remote is configured.
+- GitHub reports that the fork has Issues disabled, auto-merge disabled, and an
+  unprotected `master`. Actions activation, workflow permissions, and an installed
+  automation App have not been checked or configured; verify them during setup.
+- `ui/src/i18n/` already uses i18next and react-i18next. Forty locale files,
+  including Russian, contain three messages each. The selected language is English.
+- Translation calls currently cover only a small part of `App.tsx`.
+  `app.cloudCreateUnavailable` is absent from the catalogs and uses `defaultValue`.
+  The Russian seed still says "company" where English now says "organization".
+- `locale-validation.ts` requires identical keys across every locale;
+  `locales.ts` runs it at import time. Adding English/Russian keys alone can
+  therefore prevent startup. The same literal parity rule cannot express different
+  English and Russian plural categories correctly.
+- Hardcoded text also appears in shared display labels, formatters, attributes,
+  errors, and configuration objects. Catalog parity cannot measure UI coverage.
+
+These are source and metadata findings, not a claim that the app or a proposed
+translation has passed runtime testing.
+
+## Reuse before authoring
+
+Review [PR #17546](https://github.com/paperclipai/paperclip/pull/17546) first as a
+foundation candidate. It is open and unmerged, touches 19 files, and proposes a
+persistent locale choice, language controls, and incremental Russian coverage.
+Its existing-i18next approach and partial-locale validation are relevant; plural
+families and compatibility with the selected integration revision need further work.
+
+[PR #14715](https://github.com/paperclipai/paperclip/pull/14715) isolates the
+partial-locale validator change. It is also open and unmerged.
+[PR #12989](https://github.com/paperclipai/paperclip/pull/12989) contains broad
+English/Russian localization and auditing tools, but changes 956 files against an
+older base. Review useful translations and tools as inputs rather than applying
+the whole patch without reconciling current behavior.
+
+[Paperclip Localizations](https://github.com/DrMaks22/paperclip-localizations)
+publishes version-specific patches. Its README currently associates localization
+`v2026.10.13.1` with upstream `v2026.1012.0` at `bba6a45`; it does not establish
+compatibility with current `master`. Preserve upstream licenses and author credits
+for any reused work. Other authors' test reports are not our verification evidence.
+
+## Localization design
+
+Keep `ui/src/i18n/` as the owner and retain the existing library and catalogs.
+Use stable semantic keys and whole messages with named parameters. Functional
+namespaces may become useful as catalogs grow; a second namespace solely to bypass
+the current validator would create unnecessary parallel contracts.
+
+English remains the canonical source. Validate supplied translations for structure,
+types, placeholders, unexpected markup/URLs, and existing content limits. Permit
+partial catalogs to fall back to English, without copying English placeholders into
+all other languages. Check completeness separately for the supported Russian scope.
+Do not advertise forty fully translated languages merely because their files exist.
+
+Make validation aware of message families and locale plural rules. English usually
+has `one/other`; Russian requires `one/few/many/other`. Compare each family's
+parameter contract rather than requiring identical suffix keys across languages.
+Treat blank translations as missing unless an explicit reviewed exception permits
+them. Missing English keys must fail even when `defaultValue` masks them at runtime.
+
+For each later language, add a catalog with its BCP 47 language tag and validate
+that locale's plural forms and formatting. Use the same source-change and review
+checks as Russian, allowing a partial rollout with English fallback. Add the locale
+to the explicit selectable-language registry only after its declared scope passes
+editorial and UI review; a catalog file alone does not enable a language.
+
+Expose English/Russian choice in an existing account/settings surface and at sign-in.
+Proposed fork behavior: an explicit saved preference wins; otherwise start in Russian.
+Persist locally initially, document that this is a browser preference, and handle
+unavailable storage. Account-wide synchronization can be a later product change.
+Update document language and direction. Resolve labels during rendering so changing
+language updates open screens without remounting forms or losing drafts.
+
+Use locale-aware `Intl` formatting for numbers, dates, relative time, and plural
+selection. Preserve the actual currency and time zone: Russian does not imply RUB
+or a move to Moscow time. Translate shared enum labels in the UI while keeping
+machine values unchanged. Translate recognized API errors through existing stable
+codes and parameters; add missing structured codes in bounded follow-ups, preserving
+raw diagnostics when no reliable mapping exists. Avoid English-message replacement.
+
+## Translation quality
+
+Create a small Russian glossary and editorial guide before bulk work. Distinguish
+organization, project, task, run, approval, and connection consistently. Choose terms
+from the actual product behavior, with examples for ambiguous words. Preserve brand
+names and technical identifiers; do not force a translation where the product uses
+an identifier. Use natural Russian actions, clear errors, and consistent punctuation.
+
+Translate by complete user journeys, reviewing text in its rendered context. Optional
+machine-generated drafts can accelerate work, but a draft does not become reviewed
+merely because it parses or passes tests. Record the actual reviewer or review process;
+do not label an agent review as human review. The initial supported release needs
+editorial acceptance as well as technical verification.
+
+## Detecting upstream translation work
+
+Run two complementary checks, both before merging upstream and against the final
+candidate tree. Compare the last accepted upstream SHA with the new pinned SHA even
+if Git cannot merge them: this still identifies changed original English literals.
+The candidate-tree check catches untranslated code introduced by conflict resolution.
+
+| Check | Detects | Required handling |
+| --- | --- | --- |
+| Catalog references | Added, removed, unknown, or missing keys, including masked defaults | Correct catalogs/references; report removals |
+| Source contract | Changed English text, context, parameters, or plural families | Mark affected translations as needing review |
+| Translation contract | Missing forms, parameters, empty values, invalid content | Block the supported release |
+| Source audit | New hardcoded JSX text, visible attributes, labels, toasts, dialogs, templates, and imported display metadata | Externalize or classify an explicit exception |
+| Dynamic sources | New computed keys or runtime-provided display sources | Require a bounded key manifest or manual classification |
+
+Keep a small review sidecar keyed by locale and semantic message ID. Approval binds
+both the source contract fingerprint and translation fingerprint; editing either
+invalidates the approval. Include context and interpolation/plural contracts in the
+source fingerprint. Renames are removal plus addition unless an explicit mapping
+preserves identity; similarity can suggest reuse but must not approve it.
+
+During gradual migration, record a baseline of existing hardcoded-text debt with
+stable identities and explicit exceptions. Block new debt and shrink the baseline
+as journeys migrate. Neither a sync run nor a generated translation may update the
+baseline or reviewed fingerprints merely to make checks pass.
+
+Use an AST-aware audit rather than grep alone. Cover known render sources and report
+its limits: static analysis cannot prove every arbitrary runtime string is translated.
+Report catalog coverage, audited-source coverage, and verified journeys separately.
+Publish Markdown and JSON reports as workflow artifacts and update one PR comment.
+Include file locations, old/new source, Russian text, category, and the action needed.
+Unchanged repeated runs should not create comments or notifications.
+
+## Git and workflow process
+
+Keep the fork's `master` as its maintained version and default branch. Configure a
+read-only `upstream` remote. Track upstream `master` for integration, pinning a SHA
+for each attempt. A build from that branch is an integration/canary build, not an
+upstream stable release. A stable release channel needs its own pinned upstream tag
+and acceptance policy; it must never relabel an arbitrary master build as stable.
+
+Use normal merges preserving upstream ancestry, including merge commits when the
+sync PR lands. Do not squash upstream syncs or regularly rebase the maintained branch.
+Keep one open `codex/upstream-sync` PR per chosen channel, serialize updates, and
+preserve manual translation/conflict-resolution edits. Do not reset an existing
+integration branch over another contributor's work.
+
+Advance `lastAcceptedUpstreamSha` only after an accepted merge, never on discovery
+or a failed attempt. Once editorial correction or review starts, freeze the PR's
+upstream SHA and collect newer upstream commits in the next batch. Refreshing the
+current report remains idempotent; continuous upstream activity must not invalidate
+an editor's work or prevent an update from finishing review.
+
+| Proposed workflow | Trigger | Result |
+| --- | --- | --- |
+| `upstream-sync.yml` | Daily schedule and manual dispatch | Pin upstream SHA, audit delta, merge into the candidate, create/update one PR and report |
+| `localization-check.yml` | Relevant PR updates and explicit invocation | Validate translation state, audit new source text, run required checks on the candidate SHA |
+| `fork-build.yml` | Accepted verified integration | Build the fork's production image with immutable provenance |
+
+A merge conflict leaves the maintained branch unchanged and produces a specific
+conflict report. Do not automatically choose `ours` or `theirs`. Keep the report
+available as a workflow artifact/summary even when no merge commit can be produced;
+update the existing PR if present. Issues can be enabled later if a dedicated
+maintenance tracker is desired.
+
+Start with automatic preparation and reviewed merging. After dry-run acceptance,
+allow automatic merging only for conflict-free updates with no outstanding translation
+delta and all required checks passing for the current candidate. New or changed copy
+requires editorial disposition. Workflow, release, permission, and other designated
+sensitive changes remain reviewable. Automatic deployment is a separate decision.
+
+## Fork-specific CI setup
+
+Inherited CI is not ready to use unchanged. `pr.yml` calls an upstream reusable
+workflow at mutable `@master`; routing also references the original repository.
+The upstream lockfile policy rejects ordinary PRs containing `pnpm-lock.yaml`, which
+would reject normal sync updates. Other workflows depend on upstream bot credentials,
+publish destinations, source downloads, or CODEOWNERS.
+
+Create a small fork-owned CI entry point using hosted runners and the existing test
+commands. Define an explicit policy for genuine upstream lockfile updates. Guard
+upstream-only publication/deployment/bot workflows by owner and review newly introduced
+workflows on every sync. Keep required checks and protection rules aligned with the
+fork's actual CI; a skipped or never-started check is not successful verification.
+An always-running integration summary gate must report the final required status,
+even when individual lanes are intentionally skipped by selective routing. Avoid
+workflow-level path filters that leave a required check missing or pending.
+
+Prefer a GitHub App restricted to this fork for bot PR creation and updates. Assign
+only the permissions required for contents, PRs, and workflow-file updates; separate
+code-test jobs from credentialed publishing jobs. GitHub documents that `GITHUB_TOKEN`
+pushes do not trigger another workflow, while certain PR events can require approval.
+An App token avoids this obstacle to unattended PR checks; explicit dispatch is an
+alternative only with checks reliably bound to the candidate SHA. See
+[workflow triggering](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+Scheduled workflows must exist on the default branch, Actions needs enabling in a
+new fork, and public schedules can be disabled after 60 days of inactivity. Account
+for those conditions and manual recovery in the runbook; do not promise exact-time
+execution. See [workflow events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows).
+
+## Verification and delivery
+
+Start each implementation slice with targeted checks. Before integration handoff,
+run `pnpm -r typecheck`, `pnpm test:run`, and `pnpm build`; run
+`pnpm check:token-gates` for UI changes. Preserve failures and report unavailable
+checks explicitly. Localization must retain existing English behavior and invariants.
+
+Add focused Russian/English browser journeys for the agreed scope, narrow layouts,
+accessibility names, reload persistence, and EN/RU/EN switching with unsaved drafts.
+Exercise Russian counts `0, 1, 2, 5, 11, 21, 22, 25, 1.5`, formatting, errors, and
+English fallback. Use pseudo-localization to expose truncation and unexternalized text.
+Prove the detector with deliberate new literals, changed English, missing plural
+forms, placeholder mismatches, stale review records, and merge-conflict simulations.
+
+Build Docker target `production` from the fork into `ghcr.io/dexogen/paperclip`.
+Record upstream SHA, fork SHA, translation revision, and image digest in release
+metadata, retaining the last accepted image. Do not republish the whole upstream npm
+release system merely to ship UI translations. Image rollback alone is insufficient
+after incompatible database migrations; deployment needs a tested data/backup plan.
+
+## Proposed implementation sequence and acceptance
+
+1. Review reuse candidates, inventory render sources and journeys, agree terminology.
+2. Add locale selection, partial-locale/plural validation, and drift checks before bulk work.
+3. Translate complete journeys, with editorial and UI verification for each slice.
+4. Configure fork CI and run sync in preparation-only mode, including failure cases.
+5. After acceptance, enable the agreed auto-merge/build policy and maintain the glossary.
+
+Release acceptance requires zero missing, stale, or unreviewed Russian messages in
+the declared scope; no new unexplained hardcoded UI text; reviewed exceptions; passing
+required checks; and preserved actions, drafts, permissions, and canonical data.
+Any remaining untranslated surface must be named rather than hidden in a percentage.
+## Implementation checkpoint (2026-10-26)
+
+The implementation is published as a draft stack:
+[foundation #1](https://github.com/dexogen/paperclip/pull/1),
+[upstream integration #2](https://github.com/dexogen/paperclip/pull/2),
+[setup and administration #3](https://github.com/dexogen/paperclip/pull/3),
+[Russian README #4](https://github.com/dexogen/paperclip/pull/4),
+[task collections #5](https://github.com/dexogen/paperclip/pull/5),
+[Cyrillic search #6](https://github.com/dexogen/paperclip/pull/6),
+[task details #7](https://github.com/dexogen/paperclip/pull/7),
+[task panels #8](https://github.com/dexogen/paperclip/pull/8),
+[upstream refresh #9](https://github.com/dexogen/paperclip/pull/9),
+[search controls #10](https://github.com/dexogen/paperclip/pull/10),
+[Inbox #11](https://github.com/dexogen/paperclip/pull/11),
+[shared decision forms #12](https://github.com/dexogen/paperclip/pull/12),
+[Decisions and approvals #13](https://github.com/dexogen/paperclip/pull/13), and
+[latest upstream #14](https://github.com/dexogen/paperclip/pull/14).
+The canonical checkout remains on `master`. Upstream fetching is configured with
+pushing blocked. Ordinary merges preserve upstream ancestry through
+`1fbbef45a8d399771add7a27a04b12f3a20e264c`; recheck upstream before deployment.
+
+PR #17546 was reviewed at its recorded head and credited in the localization guide.
+Its successful checks are provenance, not verification of this adaptation. The
+foundation retains i18next, adds persistent English/Russian selection and plural
+validation, and detects source/catalog drift. The fork starts in Russian unless
+the browser has an explicit preference. Language changes retain drafts and stored
+canonical values; technical commands, user content, and provider diagnostics stay
+verbatim.
+
+The current combined catalog has 3,427 reviewed semantic families, 3,536 English
+forms, and 3,754 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,112.
+That baseline is migration debt, never a translated-coverage percentage. Strict
+candidate checks and the latest upstream delta have no actionable findings.
+
+Supported surfaces include navigation, organization selection, self-hosted sign-in,
+first-administrator bootstrap, active onboarding/provider controls, organization
+settings, instance general/access settings, and both active task-list/board
+renderers with their shared status, recovery, and preview controls. The Russian
+README includes reciprocal English/Russian flag links and a source quickstart that
+selects this preview. See the [UI localization guide](../../ui/src/i18n/README.md)
+for exact surface boundaries.
+
+Full task/agent/project detail screens, complete routine host pages,
+remaining agent configuration/settings, dashboards, and most Connections remain
+outside the completed translation scope. The design-sandbox-only refreshed filter
+panel is also untranslated. This preview does not meet the full-web-UI release
+acceptance above. Continue with complete journeys and prune only resolved baseline
+entries; synchronization must never approve its own new translations.
+
+### Verification evidence and outstanding work
+
+The full Linux run at `c5c8d13ae6685452e9db05637f90034daf5dde1e` completed every
+server partition and all 20 workspace projects, including supplements after a
+workspace fail-fast. It recorded 43,464 passed, 27 failed, and 109 skipped tests.
+All 9,183 UI and 537 CLI tests passed. The failed full run remains preserved.
+Twenty-three failures required `jq`; two exposed Git diagnostic recognition, one
+exposed inherited session-class redaction, and one depended on Bash SSH startup.
+
+After the prerequisite and source/test corrections, a clean Linux checkout at
+`367a9985debfc603670b3a2eda0d0056af4e647f` passed frozen installation, full Russian
+default build, full workspace typecheck, native fixture preparation, all eight
+affected server files (817 tests), and the complete OpenCode runtime-config file
+(19 tests). Git authority and secret-redaction guards remain enforced; no Git
+discovery override or timeout relaxation was used. Earlier hosted failures and
+superseded local attempts remain in the PR verification records.
+
+Real Chromium journeys against fresh embedded databases passed Russian default,
+RU/EN draft preservation, explicit organization creation, and mobile layout in
+`local_trusted` mode. A separate authenticated/private journey at `367a998` passed
+UI registration, a non-admin session, explicit first-admin claim, reload, and
+sign-in from a fresh browser context; anonymous identity requests remained 401.
+Its first attempt failed because the temporary verifier expected a field omitted
+from anonymous health. The failed attempt was retained and the verifier corrected
+against the existing public/session contracts. Owned servers, listeners, and
+databases stopped after the journeys. These are source-checkout proofs, not HTTPS,
+external identity-provider, agent/model execution, image, or production acceptance.
+
+The task-collection source and latest upstream changes are frozen for Linux
+verification at `0ab7ec7693c62de927b22d3710943372d375242a`. Full Russian-default build
+and workspace typecheck passed, followed by all 800 UI files / 9,201 tests, all 58
+DB files / 259 tests, and all three affected GitHub service files / 1,473 tests.
+Two existing large-tree tests previously timed out in a combined WSL run; the full
+Linux UI run passed with unchanged timeouts. The failed WSL run remains preserved.
+
+The real task-list/board attempt failed before any task writes: it could not find
+the seeded Cyrillic titles. A separate read-only API diagnosis against the reused
+fixture database confirmed that all six tasks exist, an ASCII tag query finds them,
+and both Cyrillic-only and mixed queries return no matches. This is a server search
+problem requiring correction before accepting the Russian task journey; replacing
+the test query with English would not establish acceptance. Both attempts retained
+their original evidence and stopped their owned runtime, database, and listener.
+
+The search repair is published separately in
+[draft PR #6](https://github.com/dexogen/paperclip/pull/6), at
+`cd50089b9c09276506293ee75e82e03a7f20746f`. All four affected files passed 246
+tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
+comparisons passed. Unicode capability selection preserves existing databases.
+The recorded 10k-task timing run missed the 250 ms target; query plans and the
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The original failed result is retained.
+
+The task-detail/properties and common-editor slice adds 650 reviewed families.
+The combined catalog has 1,959 families, 2,003 English forms and 2,091 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,491; twelve
+exact technical exceptions describe enum guards and currency formatting.
+Independent agent reviews found and corrected terminology and two missing
+accessible labels. The actual installed MDXEditor regression first reproduced
+a stale language callback, then passed with live translation updates preserving
+its edited content, DOM and selection. UI typecheck, token gates, focused task,
+sharing, editor and composer tests passed. Combined Linux and browser acceptance
+of this expanded slice remains pending.
+
+A separate search correction at `cd50089b9c09276506293ee75e82e03a7f20746f`
+passed frozen installation, full Russian-default build and workspace typecheck on
+Linux. The real browser retry found Cyrillic titles and applied status filters in
+both active renderers. It then stopped at the language controls: a visible
+announcement covered the standard account menu, and the legacy menu had no
+language selector. No task writes or browser exceptions occurred; owned services
+stopped. The legacy menu now shares the real locale control and translated account
+labels. Its complete component suite passes 37 tests, including a regression that
+first failed with the missing selector. A revised browser recipe dismisses the
+announcement through its ordinary button and records the successful response.
+The complete browser retry on the combined source remains pending.
+
+The document/artifact side-panel slice covers 49 production files and adds 466
+reviewed semantic families (481 English forms and 511 Russian forms). Independent
+agent review corrected two count families for 21/101. Integration verified the
+exact reviewed catalog and source digests, re-examined seven existing drag
+announcements in their tab context, and made six file-link interpolation contracts
+explicit. Nineteen exact exceptions identify technical discriminators, a diagnostic
+comparison and the Markdown format name. The baseline removes 501 resolved
+occurrences and retains 18,990; no new debt is accepted.
+
+The combined catalog has 2,425 families with no actionable localization findings.
+Focused component checks cover stored tabs, browser request counts, pending uploads,
+file selection/copy/media state, and a dirty document conflict across EN/RU without
+replaying mutations. These are fixture-based checks; combined Linux verification
+and real browser acceptance of this expanded slice remain pending. Full
+chat/composer, Activity, advanced annotation tools, and remaining rich-card/viewer
+branches still require separate work.
+
+The detector and sync regressions pass all 47 cases, including conflict cleanup,
+manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition
+coverage. Typed translator helpers now use lexical bindings, preserve namespace
+boundaries and fail on unsupported prefixes. Token gates and map checks pass.
+Static analysis and API-fixture browser
+tests have their documented limits and do not replace real user journeys.
+
+### Upstream refresh through 6336c3404
+
+The next combined candidate includes upstream master through
+`6336c340411809b3a94af1f4a911b30c0275447c`. Two commits narrow bound-conversation
+authorization reads and correct eligible wake targets when resuming tasks. A
+normal merge retains both upstream gates: no selected wake checkbox for zero
+eligible agents, and no wake request for that preview. Resume removes the pause;
+it does not promise that blocked, backlog or unassigned tasks start execution.
+
+The original-upstream detector reports three added source findings and one removed
+finding: separate restore/pause-removal phrases and a technical restore discriminator.
+The existing restore translation, updated resume family and exact enum exception
+address those findings without adding baseline debt. Manual source review also
+identified the server-owned warnings newly exposed by the UI; they are outside the
+configured client source roots. The tracking pin is prospective until the reviewed
+stack reaches the fork default branch.
+
+The dialog receives structured warning codes and translates six known app-owned
+warnings. Unknown warning text remains literal and React-escaped. The existing
+resume count family now describes pause removal in both languages. Independent
+agent review checked the upstream authority/locking changes, all new EN/RU pairs,
+plural case, both wake gates and the unknown fallback. Two complete task-tree
+component tests passed, including the zero-target and live-warning regression.
+A fresh-worktree UI typecheck first stopped on missing generated plugin SDK types;
+the normal SDK prerequisite build resolved that setup error, and UI typecheck and
+token gates passed without a source workaround.
+
+The frozen candidate `6848bcc26aa4d53804a31468e6fc029f2a79169a` passed Linux
+frozen installation, full Russian-default build, full workspace typecheck and native
+fixture preparation. Its complete UI run finished with 9,235 passed and one failed
+test across 806 files, with no skips. The failure was a stale source assertion for
+`Retry queued`, now a catalog entry. The original failed run remains preserved.
+Process and database cleanup passed; the checkout remains clean at that candidate.
+
+The correction changes only two test files. It keeps the original API-binding
+assertions, checks the translation key and unchanged English caption, and exercises
+the selected failed-run callback in English and Russian. Switching language makes
+no retry request; explicit retry submits the selected run, agent and company and
+shows the translated queued notice. Both complete test files passed 172 tests;
+UI typecheck and diff validation also passed. These focused results do not replace
+the failed full run.
+
+Seven affected backend files, fresh Russian list/detail journeys and the six
+shipped paused/composer-stop E2E cases did not start and remain pending. The Stop
+cases must use the deterministic fake provider and real runner binaries; a skipped
+native case does not satisfy the matrix. English E2E builds must follow Russian
+browser proof because they replace generated static UI assets. Recheck upstream
+before actual deployment; this candidate is not production acceptance.
+
+### Search and command palette integration
+
+The search slice adds 158 reviewed semantic families, including the shared Close
+caption. Review also re-examines the eleven reused status/priority families in
+filter context. The 13 production owners cover the full-search page and palette,
+results, desktop/mobile filters, sorting and recovery. One exact exception records
+a `document` field discriminator in a title expression. The baseline removes 158
+resolved occurrences and accepts no new debt.
+
+Real Cmdk regressions found two issues during implementation: normal Enter could
+open full search while an action was selected, and Cmdk could reorder already
+ranked projects. The fixes preserve canonical values and existing project relevance
+order. Final integration also found that markup-shaped queries and project names
+could be interpreted by `Trans`. Both cases failed before explicit escaped
+interpolation and unescaping restored the original literal text. The failed test
+reports remain separate from successful checks. Component tests use API fixtures;
+the complete live full-search journey remains pending. The final seven-file
+component run passed 73 tests. UI typecheck, token gates, the 47 detector/sync
+regressions, map validation and strict localization audit passed.
+
+The prior frozen Linux candidate `6848bcc26aa4d53804a31468e6fc029f2a79169a`
+passed frozen installation, full Russian-default build and full workspace
+typecheck. Its full UI run completed with 9,235 passed and one failed test across
+806 files, with no skips. The failure was an obsolete source assertion for the
+literal `Retry queued` after that caption moved to the catalog. This is a failed
+run, not a green qualification. The focused contract correction and behavioral retry
+regression passed both complete test files (172 tests). Backend and live phases
+did not start on the original candidate; process and database cleanup passed.
+The frozen Inbox candidate `e80fc1532ce417f18c4c864f7d8ddabcc457c874` includes
+that correction. It passed frozen installation, full Russian-default build,
+workspace typecheck, all 810 UI files / 9,299 tests and seven affected backend
+files / 257 tests, with no skips. Fresh Chromium list/detail journeys passed
+12 and 11 checks respectively, including Cyrillic search, both list variants,
+mobile layout and dirty-editor locale changes. Exceptions were absent, but
+25 list and 23 detail ERR_ABORTED requests remain recorded. These local-trusted
+journeys are not authenticated or production acceptance.
+
+Four paused-composer cases and process Stop passed. Native Stop failed before
+the work run because the deterministic provider also held the mandatory setup
+hello. Read-only evidence confirms the pending setup turn. The overall run
+remains failed; later S3/S4 and upstream changes are not covered. Process cleanup
+passed. The E2E database cleanup remains unconfirmed due to retained marker files;
+a separate observation found no active processes or listeners. Earlier failed
+reports remain unchanged.
+
+### Inbox integration
+
+The next slice adds 151 reviewed semantic families (154 English forms and 160
+Russian forms) across ten production owners. Both active Inbox renderers and
+Blocked views translate their controls, actions, group labels, dates and local
+errors. Approval type/subject wrappers are included, but their full payload
+renderer and server-owned action descriptions are not. Existing toasts retain
+the language in which their string snapshot was created.
+
+Grouping first uses the original canonical sort, then translates the display
+labels. IDs, collapsed groups, pinned order and Undo placement remain stable.
+Known approval, blocked and fallback-error captions are searchable in either
+language so changing locale does not remove a matching row. Names, diagnostics,
+custom subjects and API-owned labels remain literal. The unavailable-agent label
+covers missing or ineligible agents as well as paused ones; it does not claim
+that every unavailable agent is paused.
+
+Root review examined all catalog pairs, corrected agent-availability wording and
+fractional-count grammar, and re-examined seven reused message families in their
+new source contexts. Two exact enum exceptions cover display-resolver selection.
+The baseline removes 190 resolved occurrences and accepts no new debt.
+
+The worker's final eleven-file component/helper run passed 187 tests. After merging
+the search slice and adapting the shared retry source contract, all twelve complete
+files passed 199 tests. API-binding checks remain, with separate behavioral tests
+for the selected retry payload, success navigation, error toast and no repeated
+request during a locale change. The combined-host fixture uses real Inbox props;
+it does not establish App redirects, server permissions or a live browser journey.
+The full combined Linux and browser qualification remains pending.
+
+### Shared decision and question forms
+
+This slice adds 356 semantic families (382 English forms and 434 Russian forms)
+across ten production owners. It covers shared decision previews and results,
+interaction cards, paged questions, audience explanations, validation, image-input
+controls and local resolution errors. The secret proposal page only gains its
+justification caption. Decisions queues, the full chat/composer and remaining
+secret management are outside this slice.
+
+Helpers accept an optional translator with an English default. Error state stores
+the original cause; rendering selects the current local message without repeating
+the request. Unknown provider messages, custom action labels, question prompts,
+names and document contents stay literal. Canonical IDs, resolver policies, signed
+snapshots and submitted selections remain unchanged. Completed status changes use
+a separate message from action previews, and task cancellation does not claim to
+be irreversible.
+
+Root review examined all source changes and English/Russian pairs. Corrections
+cover operator/backlog terminology, complete sentences around names that cannot
+be declined, fractional plural forms and completed-action wording. Six exact
+exceptions describe technical verdict/action/property discriminators. The baseline
+removes 286 resolved occurrences and accepts no new debt.
+
+The final ten-file component/helper run passed 194 tests. UI typecheck and token
+gates also passed. Tests preserve dirty text, focus, selected IDs and storage across
+EN/RU/EN changes; explicit decisions send one expected payload. They also cover
+permanent denials without retry, pending uploads, literal markup-shaped names and
+plural counts including fractions. Failed fixture/expectation attempts remain
+separate from the final successful run. APIs and the rich editor are mocked in
+these component tests; they do not prove server authority or a real browser/MDX
+journey. After normal integration with Inbox, the same ten complete files passed
+194 tests again. UI typecheck, all 47 detector/sync regressions, token gates, map
+validation and the strict source/catalog audit passed. These focused checks do
+not replace the pending combined Linux and live qualification.
+
+### Decisions, classic approvals and attention provenance
+
+This slice adds 331 reviewed semantic families: 87 app-owned feed messages,
+182 client captions and 62 classic approval messages. It adds 345 English and
+373 Russian forms. Five exact exceptions describe non-rendered action enums;
+244 resolved occurrences leave the source baseline, without accepting new debt.
+
+Six optional metadata slots identify server-generated text. Closed codes and
+named primitive arguments preserve original raw fields, null/empty behavior,
+authority, SQL, ordering and pagination. The UI rejects unknown, malformed or
+cross-slot descriptors and keeps the raw fallback. Custom text equal to an English
+fallback is still custom text. Stored queue names and recovery/provider prose
+remain literal without provenance. Bilingual search aliases and canonical sorting
+keep matches and rows stable when language changes. Number captions now group
+large English counts too.
+
+Independent source and editorial review corrected a missing relative-time
+translator and distinguished an agent's job title from a request title. Their
+regressions failed first and then passed. Existing Custom date controls lost
+Radix trigger props; the bounded forwarding fix opens the real popover and retains
+its range across locales. A live screenshot also exposed an English task-list
+date separator; its active-translator regression failed before the one-call fix.
+
+The feed's five complete suites passed 97 tests, including company/private-task
+boundaries on real PostgreSQL and both existing 16,400-row fixtures. Teardown
+uses TRUNCATE CASCADE only in its disposable test database. It does not change
+production SQL or relax timeouts. The keyed scale test took 167.58 seconds under
+its existing 180-second limit; a prior body timeout remains evidence of possible
+performance instability. Earlier hook failures remain recorded.
+
+The client owner's six suites passed 117 tests and the helper passed 28. Classic
+approval's final two files passed 15 tests. The combined serial 10-file snapshot
+was 207/211: two genuine classic-approval RED findings were later fixed, while
+two existing large-tree IssuesList cases still exceeded their 5-second limits.
+The separator regression passed. This is not a complete local green run; the next
+frozen Linux qualification must include the complete UI suite. Shared/direct
+server and UI typechecks passed. Component APIs are mocked where stated.
+
+Final source/catalog audit passed with zero pending, missing, invalid or new
+findings and zero source errors. All 47 detector/sync regressions, eight fixture
+checks, UI typecheck, token gates, map and diff checks passed on the integrated
+source. These do not replace the pending full Linux and browser qualification.
+
+The deterministic Stop fixture now lets setup complete, then enables an exclusive
+work marker after authoritative ready/idle checks. Logs must match each actual
+work/resumed run UUID; setup calls cannot satisfy the assertion. Four new shell
+contract tests and four existing loader tests passed, as did narrow strict typing
+and discovery. No real native rerun is claimed by those eight tests. The prior
+failed qualification is retained. No production Runner or Rust code changed.
+
+### Latest upstream candidate
+
+The normal merge from `6336c340411809b3a94af1f4a911b30c0275447c` through
+`1fbbef45a8d399771add7a27a04b12f3a20e264c` includes three upstream commits:
+GitHub response-authority projections (#17686), recovery source/child projections
+and agent-chat E2E cleanup (#17694), and the initial recovery candidate projection
+(#17695). The merge completed without conflicts across 12 files. It adds no schema
+migration, dependency or UI/catalog change.
+
+Source review checked retained authority fields, company/source ownership and
+unchanged recovery dispatch predicates. The new recovery-candidate projection
+omits description from the initial scan; later branches can still load a full row.
+This is not evidence that every recovery query is narrow or that latency improved.
+The tracking pin is prospective until the reviewed stack reaches the default branch.
+
+Frozen dependency installation and all 47 detector/sync regressions passed.
+The original-upstream delta has no added/removed source findings, catalog changes
+or audit errors. The strict merged-tree audit also passed: 3,427 reviewed families,
+zero actionable findings and 18,112 existing debt occurrences. This does not prove
+runtime acceptance.
+
+The merged candidate `3ca7054e3f76d7f4fe02727729ac11cf93444f68` passed frozen
+installation, full Russian build and workspace typecheck. Its complete UI suite
+passed 9,411 tests in 815 files; affected attention tests passed 69 and affected
+upstream GitHub/recovery tests passed 1,992, without skips. Russian list, detail
+and Decisions/classic approval browser journeys passed 12, 11 and 11 checks.
+The first Decisions driver failure remains recorded; its global heading selector
+also matched the hidden command palette. The corrected driver scoped the heading.
+List/detail aborted requests remain recorded. These are local-trusted results,
+not authenticated or production acceptance.
+
+Native Stop failed before work because its readiness assertion expected the
+private `lifecycleOperation` field in the public agent response. The test-only
+fix `ace0c027e70dd934d31ea484e4a239e756c827ff` preserves ready/idle checks and
+asserts that the private field is absent. Its fresh native run passed readiness
+but then failed to observe the three per-run provider `turn/start` receipts.
+Stop itself was not reached. Source review and saved provider state traced this to
+the test wrapper requiring `PAPERCLIP_RUN_ID`, which the Codex provider's filtered
+environment does not supply. A test-only correction reads the run UUID from the
+owned durable state associated with `CODEX_HOME`; its 23 fixture checks pass.
+Candidate `40067580a` passed the fresh 23 fixture checks and native readiness,
+per-run work receipts, parent Stop and explicit subtree Pause. It then failed on
+an obsolete `Run cancelled` button selector; the actual current native status is
+a muted `Stopped` span. The test-only correction `614f75c9` scopes that status to
+the unique parent agent turn. Its native assertions passed, but command completion
+failed because the fixture left its deliberately unrelated run active. Test-only
+cleanup correction `47fbbda9` adds checked archive/cancel calls and waits for owned
+agent lifecycle settlement. All 38 fixture checks pass. The new native attempt
+reached its final functional screenshot, then failed the existing five-second
+cleanup poll: the unrelated agent was paused and live-runs empty, but parent and
+child still reported pausing. Reading an isolated copy of the stopped fixture
+database established a remaining preparer controller lease: both native processes
+had confirmed stop receipts, released environment leases and terminal native
+finalizations, but the old controller deadlines were still in the future.
+The executor clears that deadline only for legacy runs. The affected sources are
+unchanged from upstream `1fbbef45`; a fresh fetch still resolved to that commit.
+A guarded cleanup fix and regression are in progress. The forensic copy was
+stopped and the original content manifest was unchanged. This diagnosis does not
+turn the failed E2E receipt into a pass. Process Stop, paused composer and upstream
+chat journeys have not yet run on that candidate.
+Process cleanup passed; original database cleanup remains unconfirmed with stale markers retained.
+A later read-only observation found no active owned process or database listener.
+The original failed receipts are unchanged. Earlier build/unit/browser evidence
+is carried forward only for byte-identical inputs, with its original SHA stated;
+it is not presented as a rerun on the test-fix SHA.
+
+### Remaining journey packages
+
+The task-chat/composer and run/recovery implementation passed editorial and source
+review. It covers both active thread renderers and translates application captions
+after canonical retry, grouping and identity decisions. Additive provenance keeps
+custom provider text literal. Focused regressions retain drafts, queue revisions,
+selection, uploads, expanded transcript details and privileged diagnostic gates.
+Peer review found duration grammar, current-viewer attribution and two classic
+selector captions to correct; those regressions now pass. The integrated audit
+passes with 5,521 reviewed message families, no pending/missing/invalid messages,
+new findings or source errors. It retains 16,972 existing source findings; catalog
+parity does not establish full application coverage. Detector/sync tests pass
+47/47 and token gates pass. The first full type check found an incomplete test
+upload receipt, now fixed with the complete typed contract. A second check and
+build found an incomplete local Copilot asset installation. The verified installer
+recreated the ignored files from the pinned package. The complete `pnpm build`
+and `pnpm -r typecheck` then passed on checkpoint `1a2bae9c2`. This does not certify
+the later split trees or a complete fresh test suite. Stack integration and live
+qualification remain pending. The source is published in draft
+[run/recovery #15](https://github.com/dexogen/paperclip/pull/15) and
+[chat/composer #16](https://github.com/dexogen/paperclip/pull/16), with 85 and 49
+changed files respectively. Neither has merged or passed hosted verification.
+
+The standalone run/recovery slice retains the older chat/composer consumers and
+includes only their four required helper dependencies. Its 44 affected test files
+pass 727 tests without skips, including 25 real PostgreSQL projection cases.
+The scoped source audit passes with 4,836 reviewed families and 17,481 existing
+source findings. Shared, UI and server type checks, UI/server builds, token gates and map structure
+checks pass on `9fb470fe2`. The first server build populated missing ignored
+Copilot assets; a warm supported build then recorded a valid Runner input stamp
+and the exact commit. All copied source, catalog and lockfile hashes remained
+unchanged. This is scoped standalone verification, not a fresh full monorepo test
+suite. It does not establish full chat/composer or browser acceptance.
+
+The first agent-creation slice ([PR #17](https://github.com/dexogen/paperclip/pull/17))
+adds 142 reviewed EN/RU message pairs across the
+page/dialog, name/adapter selection, setup wizard, local validation and runtime
+test controls. All 151 tests in six related files, UI typecheck/build and token
+gates pass. Source review preserves create/qualification dependencies, canonical IDs,
+credential cleanup and raw provider diagnostics. The integrated audit passes
+with 5,663 reviewed families and 16,848 existing source findings. Additional agent
+detail controls and external invitations remain separate;
+mocked component checks do not prove real provider login or browser acceptance.
+
+The shared-form slice adds 168 reviewed message families for default captions,
+validation, environment variables, secret binding and common controls. Stored
+schema issues retain owned codes and resolve at render time; legacy string APIs
+keep their prior English contract. Three host consumers use the new issue objects
+without changing their save/probe logic. Custom schema and provider text stays
+literal. Locale changes preserve drafts, selection, sources, versions and explicit
+action payloads. The complete 15-file run passed 179 tests. Two later regressions
+for unknown statuses passed complete affected-file reruns, for 181 distinct cases;
+this is not a new all-green 15-file invocation. After integration with agent setup,
+UI typecheck and build passed on `7b75860b5`; all six agent-setup files passed
+151 tests again. An initial test command stopped before discovery because the
+installed Vitest rejected `--minWorkers`; the corrected command changed no source.
+Root review examined every message form and changed source, added two precise
+exceptions, and pruned only resolved source debt. The integrated audit passes
+with 5,831 reviewed families and 16,712 existing source findings, no pending,
+missing, invalid or new findings, and no source errors. Full host-page translation and
+real browser/secret-write acceptance remain separate work.
+
+The agent-configuration slice adds 311 reviewed EN/RU pairs for the main form,
+manager picker, secret aliases, built-in definitions and Claude/Codex controls.
+The complete 12-file affected run passed 381 tests; after editorial corrections,
+the two complete affected suites passed 37 tests. Final standalone UI typecheck,
+build and token gates passed. The first typecheck lacked generated plugin SDK
+declarations; building the declared prerequisite resolved that failure without
+changing the dependency lock. Root and peer review checked all pairs and changed
+sources. Only resolved baseline entries were removed. After integration with the
+shared forms and server import repair, 397 tests passed in 13 files and 41 tests
+passed in three additional form files, without skips. UI typecheck/build, token
+gates and map structure checks passed on `a06a6f9aa`. The integrated source audit
+has 6,142 reviewed families, 16,418 existing debt findings, no pending/missing/
+invalid messages, new findings or source errors. Stored content, provider errors,
+credential and runner payloads remain literal. Live provisioning and external
+invitation acceptance remain outstanding.
+
+The project-configuration slice adds 300 reviewed message families (305 English
+and 315 Russian forms). Root reviewed every form and eight editorial corrections;
+an independent agent reviewed sidebar, membership and icon-picker boundaries.
+Twenty-four existing message contexts were examined and their review records
+refreshed. Seven precise technical exceptions were accepted; only 278 resolved
+baseline entries were removed. The source remains separate from nested workspace,
+environment, connection-setup and summary-card internals.
+
+The latest complete result for each of 19 standalone related suites totals 153
+passes. After integration with agent configuration and CI repairs, one complete
+25-file run passed 387 tests with no skips on `d0f0329718d83ff5ee860796d4dd40e53aaa83b2`.
+UI typecheck, build, token gates and map checks passed. The strict integrated
+audit reports 6,442 reviewed families and 16,140 existing debt findings, with no
+pending/missing/invalid messages, new findings or source errors. The three JSON
+append conflicts were resolved by preserving both reviewed namespaces and the
+exact union of review records and exceptions. Component tests use mocked APIs;
+no live project or secret-write acceptance is claimed.
+
+The project-workspace slice adds 236 reviewed message families (247 English and
+269 Russian forms), plus seven examined existing task-status contexts. It covers
+the detail form, workspace summaries, runtime service/job controls, missing-plugin
+fallback and close-readiness dialog. Four precise technical exceptions were
+accepted. Only 169 resolved debt entries in these seven UI owners were removed.
+
+Five complete UI suites passed 56 tests; the new SDK response suite passed three.
+The complete real-PostgreSQL service and route suites passed 93 tests before the
+small diagnostic single-read cleanup. UI typecheck, build and token gates passed.
+The final three affected warning/cleanup cases passed after that cleanup (78
+other cases intentionally filtered). Standard server preparation/typecheck and
+shared typecheck passed. The final strict audit has 7,352 reviewed families,
+15,419 remaining debt findings and no actionable findings or source errors.
+Map structure checks passed.
+The first server typecheck stopped before compilation because Cargo was absent
+from PATH; the corrected environment uses the installed Rust toolchain.
+
+Optional display descriptors preserve the existing raw arrays, action order,
+commands and close guards. Language changes do not issue a new readiness query or
+repeat a pending mutation. Untagged, unknown or invalid UI descriptors retain raw
+copy. The new strict SDK validator accepts legacy responses and current metadata;
+older strict SDK versions may reject enriched responses, and future unknown codes
+are not guaranteed. Browser acceptance, live service commands, destructive closure,
+provider plugins and the global execution-workspace pages remain separate work.
+
+The agent-detail slice adds 468 reviewed message families (470 English and 474
+Russian forms). Root reviewed the full detail-page diff and all message forms;
+independent reviews covered eleven smaller owners and built-in/primary captions.
+Six existing message contexts were re-examined. Two exact technical exceptions
+and two closed lifecycle dynamic-key declarations were added; only 374 resolved
+baseline entries were removed. The standalone strict audit passed with 6,610
+reviewed families and 16,044 remaining debt findings.
+
+The latest complete result for each of 24 related suites totals 232 passes with
+no skips. UI typecheck, build and token gates passed. Regressions preserve dirty
+instructions, focus, revision pins, hidden key receipts, pending actions and raw
+provider errors across language changes. The optional upload-error formatter
+keeps editor plugins stable; existing action-error callers keep fixed English
+output. Unknown operation statuses use the original display fallback. These are
+component tests, not fresh live agent, key-authentication or plugin acceptance.
+
+After integration with projects and native cleanup, the strict audit passes with
+6,910 reviewed families and 15,766 remaining source debt findings. Both catalogs
+match a structural three-way merge; the baseline contains only the intersection
+of remaining debt. The first combined 30-file test run passed 290 of 291 cases;
+an existing asynchronous editor-loading case also failed in an unchanged repeat.
+Instrumentation showed the editor had accepted the loaded text but React had not
+committed it before the assertion. Wrapping that case's existing flush in React
+`act` fixed the test's synchronization, without changing its assertion, timers or
+production code. The complete 55-case editor suite then passed. The other 29
+complete suites passed in the original run. Integrated UI typecheck, build,
+token gates and map checks passed. The [complete agent-detail CI run](https://github.com/dexogen/paperclip/actions/runs/40307651568)
+then passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`,
+including the workspace build and typecheck, all test partitions, localization
+browser journeys and the integration gate. This does not include later agent-tab
+or external-agent changes, and no live provider acceptance is inferred.
+
+The combined agent-tab package adds 206 reviewed message families: trust and
+project access (69), tools (79), skills (42), and channels (16). Three reused
+adapter-label contexts were reviewed again. The merged strict audit passes with
+7,116 reviewed families and 15,588 remaining source findings, with no pending,
+missing or invalid messages, new findings, source errors or resolved-debt residue.
+The baseline shrinks by 178 entries. One exact exception records a canonical
+project-type comparison; it is not visible copy.
+
+All 168 tests in 20 complete related suites pass together on the combined source
+at `677104493d393bc8362028b361bad3e5ae0076c1`, without skips. Combined UI typecheck,
+build, token gates and map checks pass. Later documentation and review-record
+ordering edits preserve that tested source and all parsed review records.
+The combined tabs are published in [PR #27](https://github.com/dexogen/paperclip/pull/27).
+[Exact-head hosted CI](https://github.com/dexogen/paperclip/actions/runs/40312816178)
+is running on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`; its localization
+job has passed. Complete CI and Greptile review remain pending.
+
+The regressions retain drafts, focus, selected projects, permission payloads,
+tool-install queues, failed-draft suppression, skill version pins and channel
+visibility through EN/RU/EN changes. Autosave timing and eligibility gates are
+unchanged. Names, paths, provider diagnostics and unknown status values keep
+their original display contract. Shared presentation helpers retain English
+defaults for existing consumers. These are component tests with mocked APIs;
+live permission enforcement, provider access and skill materialization require
+separate acceptance. The existing channel-query error-as-empty gap is unchanged.
+
+The connection-instructions/activity-summary slice adds 30 reviewed families
+(31 English and 33 Russian forms) in two production owners. Both genuine locale
+regressions failed before translation; five focused cases then passed. Four
+complete existing consumer suites passed 318 cases, for 323 passes without skips
+across six complete suites in two invocations. UI typecheck, build and token gates
+passed. Drafts, focus, raw text/errors, template versions and save payloads remain
+stable; Grok status priority and polling do not change with the language. Only 32
+resolved baseline entries were removed, with no new exception. This is component
+coverage, not live instruction delivery, Bot availability or external setup.
+The final strict audit passes with 7,088 reviewed families and 15,598 remaining
+source findings; pending/missing/invalid messages, new findings and source errors
+are all zero. Map checks also pass.
+
+The bulk agent slice adds 73 EN/RU message families and three reused adapter-label
+contexts. Both active rosters and the editor preserve selection, canonical order,
+model-input focus, raw names, pending operations and exact runtime-setting patches.
+Stored own errors resolve at render time; provider Error messages remain literal.
+Partial-success retries exclude acknowledged saves, and lost responses trigger a
+read-back before another write. Fixed English helper defaults and the binding
+formatter's existing mixed fallback contract remain compatible.
+
+The latest complete runs of the five affected suites pass 66 tests without skips;
+this total combines the initial unchanged suites and focused complete reruns,
+not one final all-suite invocation. UI typecheck, build and token gates pass.
+The strict audit passes with 7,189 reviewed families, 15,520 remaining source
+findings and no pending/missing/invalid messages, new findings or source errors.
+Only 68 resolved roster/editor baseline entries were pruned; no exception was added.
+These are mocked component checks, not live backend permission, conflict or
+persistence proof. Exact-head hosted CI and Greptile review remain pending.
+
+The Dot/Muse external-invitation slice adds 233 reviewed families (234 English
+and 236 Russian forms) in six production owners, including the shared setup-prompt
+preview. Twelve reused role-label contexts were read again. Two genuine locale
+regressions failed before implementation. Four complete direct suites then passed
+42 cases; ten complete final/consumer suites passed 119. The shared Muse suite is
+counted once: 13 unique suites and 139 unique tests passed, without skips. The final
+company-fallback wording change passed the complete Content suite separately.
+UI typecheck, build and token gates passed before that bounded wording delta;
+final source/catalog validation and map checks cover the final snapshot.
+
+The slice preserves drafts, focus, clipboard state, prompt bytes, pairing expiry,
+role IDs, revision-bound observations and the distinction between contact and
+verified background activity. The owned stale-snapshot error translates late;
+provider errors, including identical English text, remain literal. Five complete
+fallback messages avoid treating a missing company name as a quoted real name.
+Nine exact exceptions cover canonical enum comparisons; 232 resolved baseline
+entries were removed from the six owned files. Component evidence does not qualify real external
+invitations, provider execution or cleanup. Grok setup/connection coverage is
+described separately below. The final strict audit passes with 7,379 reviewed families
+and 15,324 remaining source findings, with no pending/missing/invalid messages,
+new findings, source errors or resolved-debt residue. Map checks pass.
+
+The Grok setup/connection slice adds 97 EN/RU families in two presentation owners
+and a missing-company flag forwarded through two existing controller/wrapper owners.
+Twelve existing role-label contexts were read again. Both new locale regressions
+failed against the unchanged English source before implementation. Three complete
+direct suites then pass eight tests; two existing consumer suites pass 191 tests:
+five unique suites and 199 tests, with no skips. The checks preserve dirty identity,
+role and routine credential drafts, pending writes, raw errors, masked code-copy
+retries and generated instruction bytes through EN/RU/EN. Canonical revisions,
+expiry, idempotency and consent/delivery/reply predicates remain unchanged. These
+mocked component tests do not qualify real OAuth, external delivery, credential
+storage, stop or recovery. Only 103 resolved baseline entries in the two display
+owners were removed; no new exception was introduced.
+
+UI typecheck, build and token gates pass on the final source/catalog snapshot.
+The final strict audit passes with 7,549 reviewed families and 15,153 remaining
+source findings; pending/missing/invalid messages, new findings, source errors and
+resolved-debt residue are zero. Map checks pass. This is scoped UI verification,
+not a fresh full-workspace test/build or live-provider qualification.
+
+The environment-settings UI slice adds 231 reviewed message families (239 English
+and 255 Russian forms). It covers the active editor/list, image setup, terminal
+captions, delete confirmation and both settings sidebars. Component regressions
+preserve dirty SSH/environment values, focus, pending requests, raw provider
+messages and schemas, terminal identity and ordered reassignment before deletion.
+The latest complete runs of five affected suites pass 204 tests, including
+existing agent/project helper consumers; the page was rerun after final edits.
+UI typecheck, build, token gates and map checks pass. The strict audit passes
+with 7,450 reviewed families, 15,288 remaining source findings and zero pending,
+missing, invalid or new findings. Only 200 resolved source entries were removed;
+no exception was added. These mocked checks do not prove live provider or terminal
+behavior. Provider-schema localization remains a later bounded slice. Exact-head
+CI, browser qualification and deployment remain pending for this candidate.
+
+The follow-up environment-probe slice adds 15 reviewed summary families and an
+optional host-issued descriptor alongside the unchanged legacy summary. Three
+existing producers mark only their own messages; provider summaries (including
+empty and English-equal values), diagnostics and metadata stay literal. The UI
+validates optional descriptor shape, driver and status, then formats retained
+saved/draft results at render time and toasts at completion. Existing requests,
+qualification and cleanup order are unchanged. Latest complete runs pass 139
+server tests and 39 UI tests across six suites; the UI total combines the helper
+run and a complete page rerun after correcting a new fixture's button label.
+UI/shared typecheck, UI build, token gates and map checks pass. The strict audit
+passes with 7,465 reviewed families, 15,288 remaining source findings and no other
+findings; baseline and exceptions are unchanged. Standard server typecheck and
+its official Runner release build pass. The cold build adds 111 ignored Copilot
+asset files covered by the input fingerprint, so it does not record a reusable
+Runner cache stamp; this is not a compilation failure. Exact-head CI remains
+pending. These mocked checks do not establish live provider or terminal behavior.
+
+The dashboard page adds 34 independently reviewed message families (37 English
+and 43 Russian forms). It translates summary cards, budget and paused-agent
+banners, chart headings and recent-task headings. The existing sequential resume
+operation, partial-failure handling and query invalidation remain unchanged.
+One new behavioral test failed on the original English-only button, then both
+complete owning suites passed all five tests after translation. They preserve
+raw task content and link identity through EN/RU/EN during a pending resume.
+The nested panels are mocked; their translation, real shared polling and live
+agent resumption remain separate work. The source audit removes only 38 resolved
+findings from Dashboard.tsx, with no new exceptions. The one English budget-
+override phrase now uses its singular form when the count is one.
+UI typecheck, token gates and map checks pass. The strict audit passes with
+7,486 reviewed families, 15,218 remaining findings and no actionable findings.
+A build of the integrated candidate is covered below; browser acceptance remains
+pending.
+
+The combined workspace, environment-settings and dashboard candidate at
+`1c0f188febcefa89a57dd3822220e0513a572b12` passes all 265 tests in 12 complete UI
+files, UI typecheck, UI build, token gates and map checks. The strict localization
+audit passes with 8,050 reviewed families and 14,746 remaining source findings.
+Pending/missing/invalid messages, new findings, source errors and resolved-debt
+residue are zero. This adds 501 reviewed families to the agent-journey candidate
+and removes 407 resolved source findings. The build retains existing chunk-size
+and MarkdownEditor import warnings. Full hosted CI and live browser acceptance
+of this combined candidate remain pending; earlier server checks apply only to
+the unchanged workspace-close source they tested.
+
+The live-dashboard slice translates four connected owners: the live page, shared
+agent-run panel/card, activity charts and integration-smoke card. It adds 56 message
+families (59 EN and 65 RU forms) and rechecks 12 existing status/priority contexts.
+Two genuine regressions failed before implementation. The first complete four-suite
+run passed 15 of 16 tests; a new count-loop assertion read immediately after a
+cache update. TanStack schedules its notifications with a timer; the assertion now
+waits through the existing test helper, preserving the assertion and timeout. The full panel suite then passes all nine tests; the
+other three complete suites retain seven passes. Thus four unique suites and 16
+tests pass without skips, across those invocations. The initial failure is retained.
+Production/catalog hashes did not change for that test-only correction.
+
+UI typecheck, build, token gates and map checks pass. The final strict audit has
+7,605 reviewed families, zero actionable findings and 15,119 remaining baseline
+entries. Stable card/legend identity, query keys,
+leader-only polling, raw counts/statuses, deduplication, chart geometry and date
+buckets remain unchanged; explicit caller captions and raw diagnostics stay literal.
+Only 34 resolved baseline entries in the four owners are pruned; no exception is
+added. Recent-activity/audit and optional transcript children remain separate work.
+These mocked component checks are not live polling, provider or full-repository
+qualification.
+
+The GitHub setup slice adds 158 reviewed families (160 English and 164 Russian
+forms). It covers the shared OAuth shell, saved setup, access summaries, advanced
+token controls and owned URL/handoff errors. Built-in registry captions require
+server-owned provenance or the canonical local object, then a reviewed-copy match.
+Changed or unknown copy stays raw. A canonical five-caption test detects registry
+copy drift without editing `github.json`. Plugin-supplied provenance is removed
+by the gallery route; authorization and request contracts remain unchanged.
+
+Genuine locale, error-descriptor, gallery-provenance and copy-drift regressions
+failed before their repairs. Ten complete UI suites pass 328 tests, and the
+complete PostgreSQL gallery suite passes 10, without skips. UI, shared and server
+typechecks, UI build and token gates pass. Root reviewed every message form and
+an independent agent reviewed all source/test changes. Only 109 resolved owned
+baseline entries are removed; one exact exception records a non-rendered copy
+guard. The final source audit and map checks are recorded with the handoff.
+These results do not certify live GitHub authorization or provider execution.
+Exact-head hosted CI and Greptile review remain pending.
+
+The Costs page slice adds 102 reviewed message families (103 English and 105
+Russian forms). It covers report periods, overview and finance summaries, table
+headings, budget sections and owned failure text. Date-preset and billing-type
+helpers accept an optional translator with fixed English defaults for legacy
+callers. Date bounds, query keys, refresh timers, amount arithmetic, raw names and
+budget payloads remain unchanged. Two new locale cases failed against the original
+English controls; all 38 tests in three complete page/formatting suites then pass.
+They preserve incomplete/custom dates, focused inputs, expanded model rows and
+one pending budget save through EN/RU/EN, including retained drafts after failure.
+UI typecheck, build, token gates and map checks pass. The final strict audit has
+8,152 reviewed families, 14,655 remaining source findings and no actionable
+findings or resolved-debt residue. Only 91 resolved source findings from
+Costs.tsx are pruned; no exception is added. These mocked checks do not prove
+live billing, provider quota or budget enforcement.
+
+The recent-activity slice translates four owners: ActivityRow (both layouts),
+ActivityList, IssueReferenceActivitySummary and the display branch of
+`formatActivityVerb`. Its fourth translator defaults to English; the two
+AuditFeed consumers and `formatIssueActivityAction` retain their legacy output.
+The independent editorial/source reviewer examined all 163 new families (169 EN,
+181 RU forms). Three proposed wording fixes were applied before verification;
+12 existing status/priority contexts were rechecked. Unknown action fallback,
+raw user/provider content, event selection, reference IDs and row order remain
+unchanged. Reference keys now use canonical added/removed IDs.
+
+Two genuine regressions failed before implementation. The complete four-suite
+run then passes all 48 tests without skips, including both row layouts, reference
+DOM/focus, named identities, raw markup, relation counts 1/2/5/21 and unchanged
+AuditFeed/Dashboard consumers. UI typecheck, build and token gates pass. Only
+three resolved baseline entries in the list/reference owners are removed;
+no exception or new baseline entry is added. Final strict audit passes with
+7,768 reviewed families, zero actionable findings and 15,116 baseline entries.
+Map and diff checks also pass. The static baseline did not capture
+the old event verb table, so its small decrease is not the coverage count.
+This scope does not claim full AuditFeed/IssueDetail history translation or live
+API, event-stream, privacy or provider acceptance.
+
+The follow-up card slice adds 199 reviewed families in eleven existing cards and
+optional fixed-English finance/quota helper parameters. It preserves amounts,
+currencies, revisions, raw identities, group order and pending actions. Three
+English singular count forms deliberately correct “runs” to “run”. A seven-suite
+run passed 71 of 72 tests; the new finance/user test then passed after selecting
+the name separately from avatar initials. Two focused cases pass after the final
+static caption-table/punctuation cleanup. No provider child panel is included.
+UI typecheck/build and broader checks are deferred to the combined exact-head CI
+to avoid repeating expensive local gates; no live billing acceptance is claimed.
+
+The remaining major packages are remaining provider setup, global execution-
+workspace pages, environment schema/backend copy, full audit/history and provider quota panels,
+member access/secrets, connections and routines. Skills/teams/portability/plugin
+hosts have additional
+coverage gaps. These are outstanding packages, not a claim that shared translated
+components cover every host. Use the source audit and actual imports to set each
+bounded scope; do not translate sandbox fixtures to reduce the baseline.
+
+### Workflow activation
+
+The three fork workflows prepare reviewed upstream merges, verify source and
+translations, and publish immutable images only from verified `master` commits.
+They do not auto-merge or deploy. Scheduled sync and image publication require
+accepted default-branch integration and a successful first real run.
+
+Actions is enabled. On 2026-10-26 the repository setting permitting Actions to
+create and approve PRs was enabled and read back through the GitHub API
+(`can_approve_pull_request_reviews: true`); the default token remains read-only.
+The sync workflow grants only its declared job permissions. Reverting that setting
+to `false` disables this permission again. No sync App variable/private-key secret
+is configured, and registry publication has not been demonstrated. After
+an earlier `repository invocation blocked` cancellation, the owner re-enabled
+Actions on 2026-10-26. A new exact-SHA dispatch for `07332f25c` started real jobs;
+the [run finished with a failed integration gate](https://github.com/dexogen/paperclip/actions/runs/40291467289).
+The localization lane, complete code job, and two server partitions passed.
+Four server partitions failed from three causes: two could not resolve the UI-only
+`@/i18n` alias, the actual PRP test timed out while delivering escape-heavy 500 KB
+results, and the multilingual route test did not find a Chinese substring.
+A relative import fixes the first cause: existing server policy and persistence
+suites pass 82 tests, and three affected UI suites pass 49 tests.
+The CJK fix preserves substring matching for short Han, Hiragana, Katakana and
+Hangul terms while retaining word-start matching for other short words. The
+original multilingual assertion reproduced the failure. Four complete real-DB
+search suites then passed 115 tests with one expected opt-in scale test skipped.
+The PRP timeout did not reproduce with either release or debug Runner locally.
+The test now reports only safe progress counters on timeout, with its original
+15-second deadline and assertions unchanged; its hosted failure remains unexplained.
+The diagnostic version passed the complete actual-PRP suite locally. These repairs
+are published in [PR #20](https://github.com/dexogen/paperclip/pull/20).
+[Combined hosted run 40301714419](https://github.com/dexogen/paperclip/actions/runs/40301714419)
+checks exact SHA `71f7e5d79dac4e55de63d9df4766342563a9bd34`, including project
+translations and the native cleanup fix. All nine jobs passed, including build,
+workspace typecheck, UI/CLI/shared/adapter tests, all six server partitions and
+the localization gate. The later agent-detail slice is published in
+[PR #24](https://github.com/dexogen/paperclip/pull/24). Its separate
+[exact-SHA run](https://github.com/dexogen/paperclip/actions/runs/40307651568)
+also passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`.
+The agent-skills integration in [PR #27](https://github.com/dexogen/paperclip/pull/27)
+also [passed all nine jobs](https://github.com/dexogen/paperclip/actions/runs/40312816178)
+on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`. The agent-journey candidate in
+[PR #28](https://github.com/dexogen/paperclip/pull/28), at
+`42b699cb093a3817a1ff4cd1674637e7d9644169`, has failed code and general-server lanes (and therefore a failed final gate) in
+[its separate run](https://github.com/dexogen/paperclip/actions/runs/40322370157).
+The UI failure checked the MarkdownEditor fallback before its asynchronous
+transition committed. The locale case now uses the same bounded readiness
+assertion as the existing parser-fallback cases; all 55 tests in the complete
+editor suite pass. Source behavior, assertions and test deadlines are unchanged.
+The actual-PRP large-result case again reached its 15-second deadline, after five
+results (last result 400,014 bytes, escaped wrapper 800,082 bytes), before turn
+completion. That failure remains under investigation; the earlier passing runs
+do not explain it. The failed hosted run is retained, and full CI of the repairs
+remains pending.
+
+The same payload contract passes locally with both native profiles: debug takes
+18.84 seconds overall and release takes 8.30 seconds (6.432 seconds in the
+bounded delivery wait). The test now records bounded progress and queue counters.
+CI explicitly selects its already-built release Runner for this production
+payload test; other native fixtures keep their debug defaults. Assertions and
+the 15-second delivery limit remain unchanged. These measurements do not prove
+the cause of the hosted failure.
+
+The [workspace integration run](https://github.com/dexogen/paperclip/actions/runs/40324609862)
+on `320a21509bedd36c33261ccffeefaf963c5c2cf3` repeats the editor readiness
+failure and also observes the dashboard resume button before its pending-state
+notification commits. The dashboard test now waits for that state and for the
+subsequent agent-cache rendering, retaining its exact payload, count and raw-content
+assertions. Both complete dashboard suites pass five tests locally. These
+test repairs change no production behavior. The native large-result partition
+passes in this hosted run, but that does not resolve its earlier intermittent
+failure.
+Intermediate duplicate runs were cancelled; cancellation is not a passing result.
+The available evidence does not establish why GitHub disabled execution, and
+local passes do not make the failed hosted gate green.
+
+The runtime integration branch also merges upstream
+`a1f77821b9cd5c9c846fdf7a0fa5cc620ad2b6bb`. It preserves compact task history,
+selected-workspace access checks and the revised harness choices. The two new
+history captions are translated, Retry reuses the reviewed caption, and the
+removed Coming soon option no longer has an unused catalog entry. Full CI and
+lab acceptance of this combined candidate remain pending. Further translation
+expansion is deferred until this candidate has been verified in the lab.
+
+The inherited `commitperclip PR Review` workflow was temporarily disabled after
+its unguarded default-branch run failed on unavailable upstream configuration.
+Re-enable it after its owner guard lands; fork verification remains enabled.
+Activation, stack merge order, exact-SHA verification, and recovery are documented
+in [the fork runbook](../localization/UPSTREAM.md).
+
+
+## Native preparer cleanup candidate
+
+The native Stop qualification at `47fbbda95919a7d28e4220d4be6c134aa255094b`
+failed during owned-company archive cleanup. Copy-only database inspection found
+cancelled parent/child runs with process-stop receipts, released environment
+leases and terminal native finalization, but still-live legacy preparer leases.
+The source database remained unchanged. The failed qualification remains failed.
+
+A separate candidate keeps the preparer lease through execution and awaited
+cleanup. It clears only the exact current boot's terminal native run lease after
+environment and process cleanup are confirmed. Failed, pending or unknown
+cleanup, foreign ownership, scheduled resume and finalization retain the lease.
+Existing Stop guards and deadlines remain unchanged. Recovery callers retain
+their prior await-only contract.
+
+The existing assembled cancellation case failed before the fix and passed after
+it. Fourteen assembled cases pass, including real PostgreSQL records and process
+settlement with a controlled executor and an absent PID. Six complete owner
+suites pass 221 tests with no skips. Scoped server typecheck passes. Two agents
+reviewed the four changed source/test files. This is not live Runner proof or a
+full repository verification.
+
+Dispatched work whose process identity was already cleared returns `skipped`
+and conservatively retains the preparer lease. Fresh Linux qualification at
+`82d22e84ec4327a18f779f0a2174d377bf6e16c1` passed frozen install, Russian build,
+workspace typecheck, seven complete server suites (644 tests) and 38 fixture
+contracts. All 30 selected browser cases passed: native Stop, process Stop,
+four paused-composer cases and 24 cases in three complete upstream files.
+The originally failing native archive cleanup passed within its unchanged
+five-second assertion.
+
+The original browser qualification remains failed. Default Playwright webServer
+teardown used SIGKILL, bypassing application shutdown and leaving four PostgreSQL
+marker files. Read-only inspection found no matching processes or listeners.
+A separate test-harness repair in [PR #23](https://github.com/dexogen/paperclip/pull/23)
+at `7a90fbe9ce32bbb74d1be4bf55806fa60426dc6e` enables standard SIGTERM graceful shutdown;
+its real-PostgreSQL control fails before the change and passes after it, including
+marker removal and ordered shutdown. Fresh Linux qualification at `7a90fbe9`
+passes 38 fixture contracts, one real PostgreSQL shutdown check and all 30 browser
+cases with no skips or flaky cases. All four browser runs logged orderly database
+shutdown without a stop error or recovery attempt. Final qualification and
+process/database cleanup passed; no new marker, owned process or listener remains.
+Source build, workspace typecheck and the 644 server tests are inherited from
+identical production inputs at `82d22e84`, not rerun. This is not acceptance of the
+later combined localization. Original failures and forensic evidence are retained.

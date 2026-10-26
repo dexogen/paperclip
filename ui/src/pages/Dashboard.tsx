@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { AgentIdentity } from "../components/AgentIdentity";
 import { TaskSummaryList } from "../components/TaskSummaryList";
 import { useDesignSandbox } from "../context/DesignSandboxContext";
@@ -74,6 +75,7 @@ export function derivePausedAgentBanner(agents: Agent[] | undefined): PausedAgen
 }
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const designSandbox = useDesignSandbox();
   const { selectedCompanyId, companies } = useCompany();
   const { openOnboarding } = useDialogActions();
@@ -159,8 +161,8 @@ export function Dashboard() {
   }, [shouldOpenOnboarding, selectedCompanyId, openOnboarding]);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Dashboard" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("dashboardUi.title") }]);
+  }, [setBreadcrumbs, t]);
 
   const dashboardQueryKey = queryKeys.dashboard(selectedCompanyId!);
   const sharedDashboard = useSharedPollingQuery({
@@ -301,14 +303,14 @@ export function Dashboard() {
       return (
         <EmptyState
           icon={LayoutDashboard}
-          message="Welcome to Paperclip. Set up your first organization and agent to get started."
-          action="Get Started"
+          message={t("dashboardUi.welcome")}
+          action={t("dashboardUi.getStarted")}
           onAction={openOnboarding}
         />
       );
     }
     return (
-      <EmptyState icon={LayoutDashboard} message="Create or select an organization to view the dashboard." />
+      <EmptyState icon={LayoutDashboard} message={t("dashboardUi.selectCompany")} />
     );
   }
 
@@ -332,7 +334,7 @@ export function Dashboard() {
         <InlineBanner
           tone="warning"
           icon={PauseCircle}
-          title={`${pausedImportedCount} imported agent${pausedImportedCount === 1 ? " is" : "s are"} paused and will not run.`}
+          title={t("dashboardUi.imported", { count: pausedImportedCount })}
           actions={
             <Button
               size="sm"
@@ -340,24 +342,24 @@ export function Dashboard() {
               disabled={resumeImportedAgents.isPending}
               data-testid="dashboard-resume-imported-agents"
             >
-              {resumeImportedAgents.isPending ? "Resuming…" : "Resume all"}
+              {resumeImportedAgents.isPending ? t("dashboardUi.resuming") : t("dashboardUi.resumeAll")}
             </Button>
           }
         >
-          Agents from an organization import arrive paused as a safety default. Resume them so assigned tasks can start.
+          {t("dashboardUi.importedHint")}
         </InlineBanner>
       ) : pausedBanner?.kind === "all-paused" ? (
         <InlineBanner
           tone="warning"
           icon={PauseCircle}
-          title="All agents in this organization are paused — nothing will run."
+          title={t("dashboardUi.allPaused")}
           actions={
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/agents">Review agents</Link>
+              <Link to="/agents">{t("dashboardUi.reviewAgents")}</Link>
             </Button>
           }
         >
-          Resume at least one agent to let assigned tasks start.
+          {t("dashboardUi.allPausedHint")}
         </InlineBanner>
       ) : null}
 
@@ -366,14 +368,14 @@ export function Dashboard() {
           <div className="flex items-center gap-2.5">
             <Bot className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
             <p className="text-sm text-amber-900 dark:text-amber-100">
-              You have no agents.
+              {t("dashboardUi.noAgents")}
             </p>
           </div>
           <button
             onClick={() => openOnboarding({ initialStep: 3, companyId: selectedCompanyId! })}
             className="text-sm font-medium text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100 underline underline-offset-2 shrink-0"
           >
-            Create one here
+            {t("dashboardUi.createAgent")}
           </button>
         </div>
       )}
@@ -388,15 +390,15 @@ export function Dashboard() {
                 <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" />
                 <div>
                   <p className="text-sm font-medium text-red-950 dark:text-red-50">
-                    {data.budgets.activeIncidents} active budget incident{data.budgets.activeIncidents === 1 ? "" : "s"}
+                    {t("dashboardUi.budgetIncidents", { count: data.budgets.activeIncidents })}
                   </p>
                   <p className="text-xs text-red-900/70 dark:text-red-100/70">
-                    {data.budgets.pausedAgents} agents paused · {data.budgets.pausedProjects} projects paused · {data.budgets.pendingApprovals} pending budget approvals
+                    {t("dashboardUi.budgetSummary", { agents: data.budgets.pausedAgents, projects: data.budgets.pausedProjects, approvals: data.budgets.pendingApprovals })}
                   </p>
                 </div>
               </div>
               <Link to="/costs" className="text-sm underline underline-offset-2 text-red-900 dark:text-red-100">
-                Open budgets
+                {t("dashboardUi.openBudgets")}
               </Link>
             </div>
           ) : null}
@@ -406,13 +408,11 @@ export function Dashboard() {
               appearance={designSandbox ? "card" : "plain"}
               icon={Bot}
               value={data.agents.active + data.agents.running + data.agents.paused + data.agents.error}
-              label="Agents Enabled"
+              label={t("dashboardUi.agentsEnabled")}
               to="/agents"
               description={
                 <span>
-                  {data.agents.running} running{", "}
-                  {data.agents.paused} paused{", "}
-                  {data.agents.error} errors
+                  {t("dashboardUi.agentSummary", { running: data.agents.running, paused: data.agents.paused, errors: data.agents.error })}
                 </span>
               }
             />
@@ -420,12 +420,11 @@ export function Dashboard() {
               appearance={designSandbox ? "card" : "plain"}
               icon={CircleDot}
               value={data.tasks.inProgress}
-              label="Tasks In Progress"
+              label={t("dashboardUi.tasksInProgress")}
               to="/issues"
               description={
                 <span>
-                  {data.tasks.open} open{", "}
-                  {data.tasks.blocked} blocked
+                  {t("dashboardUi.taskSummary", { open: data.tasks.open, blocked: data.tasks.blocked })}
                 </span>
               }
             />
@@ -433,13 +432,13 @@ export function Dashboard() {
               appearance={designSandbox ? "card" : "plain"}
               icon={DollarSign}
               value={formatCents(data.costs.monthSpendCents)}
-              label="Month Spend"
+              label={t("dashboardUi.monthSpend")}
               to="/costs"
               description={
                 <span>
                   {data.costs.monthBudgetCents > 0
-                    ? `${data.costs.monthUtilizationPercent}% of ${formatCents(data.costs.monthBudgetCents)} budget`
-                    : "Unlimited budget"}
+                    ? t("dashboardUi.budgetUtilization", { percent: data.costs.monthUtilizationPercent, amount: formatCents(data.costs.monthBudgetCents) })
+                    : t("dashboardUi.unlimitedBudget")}
                 </span>
               }
             />
@@ -447,13 +446,13 @@ export function Dashboard() {
               appearance={designSandbox ? "card" : "plain"}
               icon={ShieldCheck}
               value={data.pendingApprovals + data.budgets.pendingApprovals}
-              label="Pending Approvals"
+              label={t("dashboardUi.pendingApprovals")}
               to="/approvals"
               description={
                 <span>
                   {data.budgets.pendingApprovals > 0
-                    ? `${data.budgets.pendingApprovals} budget overrides awaiting board review`
-                    : "Awaiting board review"}
+                    ? t("dashboardUi.budgetOverrides", { count: data.budgets.pendingApprovals })
+                    : t("dashboardUi.awaitingReview")}
                 </span>
               }
             />
@@ -462,19 +461,19 @@ export function Dashboard() {
           <SmokeLabDashboardCard companyId={selectedCompanyId!} />
 
           <div className={cn("grid grid-cols-2 gap-4", SHOW_TASK_PRIORITY_UI ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
-            <ChartCard title="Run Activity" subtitle="Last 14 days">
+            <ChartCard title={t("dashboardUi.runActivity")} subtitle={t("dashboardUi.last14Days")}>
               <RunActivityChart activity={data.runActivity} />
             </ChartCard>
             {/* PAP-411: "Tasks by Priority" chart hidden behind SHOW_TASK_PRIORITY_UI. */}
             {SHOW_TASK_PRIORITY_UI && (
-              <ChartCard title="Tasks by Priority" subtitle="Last 14 days">
+              <ChartCard title={t("dashboardUi.tasksByPriority")} subtitle={t("dashboardUi.last14Days")}>
                 <PriorityChart issues={issues ?? []} />
               </ChartCard>
             )}
-            <ChartCard title="Tasks by Status" subtitle="Last 14 days">
+            <ChartCard title={t("dashboardUi.tasksByStatus")} subtitle={t("dashboardUi.last14Days")}>
               <IssueStatusChart issues={issues ?? []} />
             </ChartCard>
-            <ChartCard title="Success Rate" subtitle="Last 14 days">
+            <ChartCard title={t("dashboardUi.successRate")} subtitle={t("dashboardUi.last14Days")}>
               <SuccessRateChart activity={data.runActivity} />
             </ChartCard>
           </div>
@@ -492,7 +491,7 @@ export function Dashboard() {
             {recentActivity.length > 0 && (
               <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                  Recent Activity
+                  {t("dashboardUi.recentActivity")}
                 </h3>
                 <Card className="@container block py-0 divide-y divide-border overflow-hidden">
                   {designSandbox ? <ActivityList events={recentActivity} agentMap={agentMap} userProfileMap={userProfileMap} entityNameMap={entityNameMap} entityTitleMap={entityTitleMap} rowClassName={event => animatedActivityIds.has(event.id) ? "activity-row-enter" : undefined} /> : recentActivity.map((event) => (
@@ -513,11 +512,11 @@ export function Dashboard() {
             {/* Recent Tasks */}
             <div className="min-w-0">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                Recent Tasks
+                {t("dashboardUi.recentTasks")}
               </h3>
               {recentIssues.length === 0 ? (
                 <Card className="block p-4">
-                  <p className="text-sm text-muted-foreground">No tasks yet.</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboardUi.noTasks")}</p>
                 </Card>
               ) : (
                 designSandbox ? <Card className="block overflow-hidden py-0">
@@ -552,7 +551,7 @@ export function Dashboard() {
                               })()}
                             </span>
                             <span className="ml-auto w-(--dashboard-list-time-width) shrink-0 whitespace-nowrap text-right text-xs text-muted-foreground">
-                              {timeAgo(issue.updatedAt)}
+                              {timeAgo(issue.updatedAt, t)}
                             </span>
                           </span>
                         </span>

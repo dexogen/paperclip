@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { CompanyMember, CompanyUserDirectoryEntry } from "@/api/access";
 import type { InlineEntityOption } from "@/components/InlineEntitySelector";
 import type { MentionOption } from "@/components/MarkdownEditor";
@@ -11,17 +13,17 @@ export interface CompanyUserProfile {
 type CompanyUserRecord = Pick<CompanyMember, "principalId" | "status" | "user">
   | CompanyUserDirectoryEntry;
 
-function fallbackUserLabel(userId: string): string {
-  if (userId === "local-board") return "Board";
+function fallbackUserLabel(userId: string, t: TFunction = i18n.getFixedT("en")): string {
+  if (userId === "local-board") return t("taskDisplay.assignees.board");
   return userId.slice(0, 5);
 }
 
-function baseMemberLabel(member: Pick<CompanyUserRecord, "principalId" | "user">): string {
+function baseMemberLabel(member: Pick<CompanyUserRecord, "principalId" | "user">, t: TFunction = i18n.getFixedT("en")): string {
   const name = member.user?.name?.trim();
   if (name) return name;
   const email = member.user?.email?.trim();
   if (email) return email;
-  return fallbackUserLabel(member.principalId);
+  return fallbackUserLabel(member.principalId, t);
 }
 
 function activeUniqueMembers(members: CompanyUserRecord[] | null | undefined) {
@@ -35,21 +37,22 @@ function activeUniqueMembers(members: CompanyUserRecord[] | null | undefined) {
   return [...byId.values()].sort((left, right) => baseMemberLabel(left).localeCompare(baseMemberLabel(right)));
 }
 
-export function buildCompanyUserLabelMap(members: CompanyUserRecord[] | null | undefined): Map<string, string> {
+export function buildCompanyUserLabelMap(members: CompanyUserRecord[] | null | undefined, t: TFunction = i18n.getFixedT("en")): Map<string, string> {
   const labels = new Map<string, string>();
   for (const member of members ?? []) {
-    labels.set(member.principalId, baseMemberLabel(member));
+    labels.set(member.principalId, baseMemberLabel(member, t));
   }
   return labels;
 }
 
 export function buildCompanyUserProfileMap(
   members: CompanyUserRecord[] | null | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): Map<string, CompanyUserProfile> {
   const profiles = new Map<string, CompanyUserProfile>();
   for (const member of members ?? []) {
     profiles.set(member.principalId, {
-      label: baseMemberLabel(member),
+      label: baseMemberLabel(member, t),
       image: member.user?.image ?? null,
     });
   }

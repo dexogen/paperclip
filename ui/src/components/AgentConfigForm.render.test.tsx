@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { useState } from "react";
+import { setLocale, useTranslation } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -642,6 +643,92 @@ async function flushUntil(check: () => boolean, timeoutMs = 4000) {
 describe("AgentConfigForm environment selector", () => {
   let roots: Root[] = [];
 
+  it("A2 keeps pending runner qualification current through locale changes and translates its own later error", async () => {
+    const environment = makeEnvironment({ id: "daytona-computer", name: "Computer <strong>raw</strong>", driver: "sandbox", status: "active",
+      config: { provider: "daytona", snapshot: "managed-snapshot" } });
+    mockAdaptersApi.list.mockResolvedValue([{ type: "claude_local", supportedRunners: ["legacy"], defaultRunner: "legacy" }, { type: "paperclip_runner", supportedRunners: ["legacy"], defaultRunner: "legacy" }]);
+    let finish!: () => void;
+    mockAgentsApi.qualifyRunner.mockImplementation(() => new Promise(resolve => { finish = () => resolve({ ok: true,
+      details: { platformQualificationRecorded: true, leaseId: "lease" } }); }));
+    const result = await renderForm([environment], { adapterType: "claude_local", defaultEnvironmentId: environment.id });
+    roots.push(result.root);
+    await clickByText(result.container, "Upgrade runner");
+    await act(async () => { await setLocale("ru"); });
+    await flushReact();
+    expect(findButton(result.container, "Переход…")?.disabled).toBe(true);
+    expect(mockAgentsApi.qualifyRunner).toHaveBeenCalledExactlyOnceWith("agent-1", environment.id, "company-1");
+    expect(result.onSave).not.toHaveBeenCalled();
+    await act(async () => finish());
+    await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe("Эта среда не поддерживает Paperclip Runner. Агент продолжает использовать прежнюю среду запуска.");
+    const reads = mockAdaptersApi.list.mock.calls.length;
+    await act(async () => { await setLocale("en"); });
+    await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe("This environment does not support Paperclip Runner. Your agent still uses Legacy runner.");
+    expect(mockAdaptersApi.list).toHaveBeenCalledTimes(reads);
+    expect(mockAgentsApi.qualifyRunner).toHaveBeenCalledTimes(1);
+    expect(result.onSave).not.toHaveBeenCalled();
+  });
+
+  it("keeps explicit model detection captions distinct in both languages without detecting on locale changes", async () => {
+    const detect = vi.fn(async () => "raw/model");
+    const change = vi.fn();
+    const container = document.createElement("div"); document.body.appendChild(container);
+    const root = createRoot(container); roots.push(root);
+    function Fixture() {
+      const { t } = useTranslation();
+      return <ModelDropdown models={[]} value="" onChange={change} open onOpenChange={() => {}}
+        allowDefault required={false} groupByProvider={false} detectedModel="raw/model" onDetectModel={detect}
+        detectModelLabel={t("agentConfigUi.detectModel")} redetectModelLabel={t("agentConfigUi.redetectModel")} />;
+    }
+    await act(async () => root.render(<TooltipProvider><Fixture /></TooltipProvider>));
+    expect(findButton(document.body, "Re-detect model")).toBeDefined();
+    await act(async () => { await setLocale("ru"); });
+    expect(findButton(document.body, "Определить модель повторно")).toBeDefined();
+    expect(detect).not.toHaveBeenCalled();
+    await clickByText(document.body, "Определить модель повторно");
+    expect(detect).toHaveBeenCalledTimes(1);
+    expect(change).toHaveBeenCalledExactlyOnceWith("raw/model");
+  });
+
+  it("keeps an external failure literal even when it equals an app-owned English message", async () => {
+    mockAdaptersApi.list.mockResolvedValueOnce([{ type: "codex_local", supportedRunners: ["legacy", "paperclip"], defaultRunner: "paperclip" }]);
+    const result = await renderForm([]); roots.push(result.root);
+    const raw = "Could not upgrade this agent. Try again.";
+    result.onSave.mockRejectedValueOnce(new Error(raw));
+    await clickByText(result.container, "Upgrade runner");
+    await act(async () => { await setLocale("ru"); }); await flushReact();
+    expect(result.container.querySelector('[role="alert"]')?.textContent).toBe(raw);
+    expect(result.onSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("A2 locale changes preserve a dirty name, focus and canonical save without rediscovery", async () => {
+    const result = await renderForm([], { name: "Agent <strong>raw</strong>", adapterConfig: { model: "provider/model", instructionsFilePath: "/raw/AGENTS.md" } });
+    roots.push(result.root);
+    const name = result.container.querySelector<HTMLInputElement>('[placeholder="Agent name"]')!;
+    await act(async () => setInputValue(name, "Draft <strong>raw</strong>"));
+    name.focus();
+    name.setSelectionRange(2, 5);
+    await flushReact();
+    const reads = [mockAgentsApi.adapterModels.mock.calls.length, mockAdaptersApi.list.mock.calls.length];
+    for (const locale of ["ru", "en"] as const) {
+      await act(async () => { await setLocale(locale); });
+      await flushReact();
+      expect(result.container.textContent).toContain(locale === "ru" ? "Несохранённые изменения" : "Unsaved changes");
+      expect(result.container.querySelector<HTMLInputElement>(locale === "ru" ? '[placeholder="Имя агента"]' : '[placeholder="Agent name"]')).toBe(name);
+      expect(document.activeElement).toBe(name);
+      expect([name.selectionStart, name.selectionEnd]).toEqual([2, 5]);
+      expect(name.value).toBe("Draft <strong>raw</strong>");
+      expect(result.onSave).not.toHaveBeenCalled();
+      expect([mockAgentsApi.adapterModels.mock.calls.length, mockAdaptersApi.list.mock.calls.length]).toEqual(reads);
+      expect(mockAgentsApi.testEnvironment).not.toHaveBeenCalled();
+      expect(mockAgentsApi.qualifyRunner).not.toHaveBeenCalled();
+    }
+    await clickByText(result.container, "Save");
+    expect(result.onSave).toHaveBeenCalledExactlyOnceWith({ name: "Draft <strong>raw</strong>" });
+  });
+
+
   it.each(["paperclip", "legacy"] as const)("uses the resolved %s Claude form to preserve the correct turn limit", async defaultRunner => {
     mockAdaptersApi.list.mockResolvedValue([{ type: "claude_local", supportedRunners: defaultRunner === "paperclip" ? ["paperclip", "legacy"] : ["legacy"], defaultRunner }]);
     try {
@@ -717,6 +804,51 @@ describe("AgentConfigForm environment selector", () => {
     await flushReact();
     await clickByText(result.container, "Save");
     expect(result.onSave).toHaveBeenCalledWith({ name: "Renamed Cody" });
+  });
+
+  it.each([
+    { harness: "claude_local", label: "Claude", profile: { provider: "acpx", acpxAgent: "claude" } },
+    { harness: "pi_local", label: "Pi", profile: { provider: "acpx", acpxAgent: "pi" } },
+    { harness: "codex_local", label: "Codex", profile: { provider: "codex" } },
+    { harness: "opencode_local", label: "OpenCode", profile: { provider: "opencode" } },
+  ])("uses only Harness to choose $label for new and saved native agents", async ({ harness, label, profile }) => {
+    mockAdaptersApi.list.mockResolvedValue([{ type: harness, supportedRunners: ["paperclip", "legacy"], defaultRunner: "paperclip" }]);
+    const created = await renderCreateForm([], { adapterType: harness, runner: "auto" });
+    roots.push(created.root);
+    expect(created.container.querySelector('[aria-label="ACP agent"]')).toBeNull();
+    if (harness === "pi_local") expect(created.container.querySelector('[aria-label="Pi thinking level"]')).not.toBeNull();
+
+    const edited = await renderForm([], { adapterType: "paperclip_runner", adapterConfig: profile }, { showAdapterTypeField: true });
+    roots.push(edited.root);
+    expect(edited.container.querySelector('[aria-label="Harness"]')?.textContent).toContain(label);
+    expect(edited.container.querySelector('[aria-label="ACP agent"]')).toBeNull();
+    if (harness === "pi_local") expect(edited.container.querySelector('[aria-label="Pi thinking level"]')).not.toBeNull();
+    await act(async () => setInputValue(edited.container.querySelector<HTMLInputElement>('[placeholder="Agent name"]')!, "Renamed agent"));
+    await flushReact();
+    await clickByText(edited.container, "Save");
+    expect(edited.onSave).toHaveBeenCalledWith({ name: "Renamed agent" });
+  });
+
+  it.each([
+    { adapterType: "process", label: "Process", adapterConfig: { command: "node", args: ["worker.js"] } },
+    { adapterType: "http", label: "HTTP", adapterConfig: { url: "https://example.com/agent" } },
+  ])("omits coming-soon options but preserves a saved $label agent", async ({ adapterType, label, adapterConfig }) => {
+    const result = await renderForm([], { adapterType, adapterConfig }, { showAdapterTypeField: true });
+    roots.push(result.root);
+    expect(result.container.querySelector('[aria-label="Harness"]')?.textContent).toContain(label);
+    await clickElement(result.container.querySelector('[aria-label="Harness"]'));
+    const options = document.querySelector('[role="listbox"][aria-label="Harness"]');
+    expect(options).not.toBeNull();
+    const values = Array.from(options!.querySelectorAll('[role="option"]'), option => option.getAttribute("data-value"));
+    expect(values).toEqual(expect.arrayContaining(["claude_local", "codex_local", "opencode_local", "pi_local"]));
+    expect(values).not.toContain("process");
+    expect(values).not.toContain("http");
+    expect(options!.textContent).not.toContain("Coming soon");
+    await clickElement(result.container.querySelector('[aria-label="Harness"]'));
+    await act(async () => setInputValue(result.container.querySelector<HTMLInputElement>('[placeholder="Agent name"]')!, "Renamed saved agent"));
+    await flushReact();
+    await clickByText(result.container, "Save");
+    expect(result.onSave).toHaveBeenCalledWith({ name: "Renamed saved agent" });
   });
 
   it.each(["codex_local", "claude_local"])("upgrades a saved %s in one click with pending edits", async adapterType => {
@@ -1134,6 +1266,7 @@ describe("AgentConfigForm environment selector", () => {
     roots = [];
     document.body.innerHTML = "";
     vi.clearAllMocks();
+    await setLocale("en");
   });
 
   it.each([false, true])("uses Grok connection verification without native controls (compact: %s)", async compactTestFeedback => {
@@ -1721,6 +1854,37 @@ describe("AgentConfigForm environment selector", () => {
       await act(() => root.unmount());
       container.remove();
     }
+  });
+
+  it("switches model origin badges without changing model IDs or selection", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    roots.push(root);
+    const onChange = vi.fn();
+    const onOpenChange = vi.fn();
+    await act(async () => {
+      root.render(<TooltipProvider>
+        <ModelDropdown models={[]} value="custom/current-model" onChange={onChange} open
+          onOpenChange={onOpenChange} allowDefault={false} required groupByProvider={false}
+          detectedModel="custom/detected-model" detectedModelCandidates={["custom/config-model"]} />
+      </TooltipProvider>);
+    });
+    expect(document.body.textContent).toContain("custom/current-modelcurrent");
+    expect(document.body.textContent).toContain("custom/detected-modeldetected");
+    expect(document.body.textContent).toContain("custom/config-modelconfig");
+    await act(async () => { await setLocale("ru"); });
+    expect(document.body.textContent).toContain("custom/current-modelтекущая");
+    expect(document.body.textContent).toContain("custom/detected-modelопределена");
+    expect(document.body.textContent).toContain("custom/config-modelиз конфигурации");
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')]
+      .find(item => item.textContent?.includes("custom/config-model"));
+    expect(option).toBeTruthy();
+    await clickElement(option);
+    expect(onChange).toHaveBeenCalledWith("custom/config-model");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it("hides the Login button before Test and shows it after the adapter_auth_missing check for a Codex sandbox", async () => {
@@ -3253,6 +3417,15 @@ describe("AgentConfigForm environment selector", () => {
     // The panel never shows the provider failure message, which could carry a
     // secret.
     expect(result.container.textContent).not.toContain("the provider rejected the browser code");
+    const startsBeforeSwitch = mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length;
+    const cancelsBeforeSwitch = mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length;
+    await act(async () => { await setLocale("ru"); });
+    expect(result.container.textContent).toContain("Вход не завершён. Начните вход заново.");
+    expect(result.container.textContent).not.toContain("The login did not finish");
+    expect(mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length).toBe(startsBeforeSwitch);
+    expect(mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length).toBe(cancelsBeforeSwitch);
+    await act(async () => { await setLocale("en"); });
+    expect(result.container.textContent).toContain("The login did not finish");
   });
 
   it("returns to its start state on a server timed_out state", async () => {
@@ -3674,6 +3847,15 @@ describe("AgentConfigForm environment selector", () => {
       // Advance past the server deadline. The panel enters the timed-out state.
       // Total elapsed after this step is 1 second past `serverDeadlineMs`.
       await advanceFake(serverDeadlineMs - 66_000 + 1_000);
+      expect(container.textContent).toContain("The login timed out");
+      const startsBeforeSwitch = mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length;
+      const cancelsBeforeSwitch = mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length;
+      await act(async () => { await setLocale("ru"); });
+      expect(container.textContent).toContain("Время ожидания входа истекло. Начните вход заново.");
+      expect(container.textContent).not.toContain("The login timed out");
+      expect(mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length).toBe(startsBeforeSwitch);
+      expect(mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length).toBe(cancelsBeforeSwitch);
+      await act(async () => { await setLocale("en"); });
       expect(container.textContent).toContain("The login timed out");
       // The panel released the server session when the cutoff fired. The cancel
       // frees the per-owner reservation now, so an immediate retry by the same

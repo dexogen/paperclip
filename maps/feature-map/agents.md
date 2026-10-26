@@ -47,6 +47,24 @@ save them. Existing projects and other containment restrictions remain intact.
 Cancel discards the draft; a failed save retains it. Reload to verify persistence.
 This does not start or retry a task.
 
+The [project-access locale tests](../../ui/src/components/AgentProjectAccessSettings.test.tsx)
+mount the real editor with mocked APIs. They check pending grant payloads, search
+and focus, cancellation, retry, read-only access, raw names and UUID-only return
+links across English/Russian changes. The [trust controls](../../ui/src/components/TrustPresetSection.test.tsx)
+check an open policy, unsaved boundary type, canonical permission payloads and
+disabled/email gates. These component checks do not prove live authorization or
+persistence; use the reload recipe above for that evidence.
+
+Open **Channels** at `/agents/:agentId/channels` to inspect this agent's connected
+identities and follow a connection's settings link. The
+[channel-list locale cases](../../ui/src/components/ChatConnectorsExperimentalGate.test.tsx)
+retain a pending list request, raw identity labels, links, known/unknown status
+presentation, independent chat/GitHub flags and agent/archive filters through
+EN/RU/EN changes. They use mocked APIs and do not prove provider setup or delivery.
+For browser acceptance, change language while the list loads and after it appears;
+check the same visible identities and destinations. The existing list-query error
+can appear as an empty list; this separate error-surface gap remains unresolved.
+
 In `/agents/all`, select roster checkboxes and choose **Edit connection & model**.
 A mixed selection offers one action per harness. Each field is opt-in. The editor
 previews each changed value and excludes agents already at the target value.
@@ -61,6 +79,16 @@ fields. A concurrent configuration edit must return a conflict. Shared runtime
 validation, access checks, revisions and audit logging still apply. Live runs
 retain their existing settings; model changes can reset saved sessions. Connection
 adoption can require an explicit reset of existing sessions.
+
+The [roster locale cases](../../ui/src/pages/Agents.test.tsx) exercise both active
+layouts with hidden selections, canonical filter order and raw names. The
+[bulk editor cases](../../ui/src/components/agents/AgentBulkSettingsSheet.test.tsx)
+preserve an open model input, pending saves, exact connection/model patches,
+partial success and read-back after a lost response through EN/RU/EN changes.
+Owned errors update their language without another request; provider errors stay
+literal. These use mocked APIs. For browser acceptance, switch language while
+editing and saving, then perform the reload and conflict checks above; component
+results do not prove persistence or authorization.
 
 ### `organization`
 
@@ -86,6 +114,35 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Use 
 ### `hire-agent`
 
 Automated: [new agent page](../../ui/src/pages/NewAgent.test.tsx) and [configuration form](../../ui/src/components/AgentConfigForm.render.test.tsx) cover mocked UI behavior.
+
+The [setup locale regressions](../../ui/src/pages/NewAgent.locale.test.tsx),
+[name dialog](../../ui/src/components/NewAgentDialog.test.tsx) and
+[runtime card](../../ui/src/components/RuntimeTestCard.test.tsx) cover EN/RU/EN
+changes with dirty names, selected model/effort/environment, focus, pending
+create/save state and exact request payloads. Own validation captions change
+language; provider diagnostics remain literal. APIs and selected model/login
+controls are mocked. For live acceptance, repeat the language change before
+submission and during an owned pending request, then verify the same agent ID
+after reload and prove execution with an explicit test. A translated success
+caption alone does not prove provider qualification or permission enforcement.
+
+The [external invitation locale cases](../../ui/src/components/new-agent/ExternalAgentInviteDialog.muse.test.tsx),
+[preset/provenance controls](../../ui/src/components/new-agent/ExternalAgentInviteContent.locale.test.tsx),
+[setup prompt](../../ui/src/components/AgentSetupPrompt.locale.test.tsx),
+[Dot connection](../../ui/src/components/DotRunnerConnection.test.tsx) and
+[Muse connection](../../ui/src/components/MuseRunnerConnection.test.tsx) retain
+EN/RU/EN state with dirty name/role drafts, selected text, pending clipboard and
+create requests, the original pairing deadline and exact detector observations.
+They use mocked APIs and clipboard. Real names, prompt bytes and provider errors
+remain literal; locale changes do not create or attest again. The local stale
+snapshot error is distinct from an identical provider message.
+
+For browser acceptance, choose **Invite an external agent** in a disposable,
+authorized setup and switch languages before and during explicit actions. Check
+the same draft, pairing identity/deadline and observation fields. Verify the saved
+result independently; a translated receiver-contact or completion caption does
+not prove background execution, provider access or remote cleanup. Grok's dedicated
+setup and connection panels have separate translation coverage.
 
 Manual: Hire an agent with a distinct name and role. Complete any required approval, reload the roster, and open its configuration. Confirm manager, adapter, and model persisted; run a small task to prove execution readiness.
 
@@ -127,6 +184,51 @@ from the hiring picker; API fixture creation does not prove this UI journey.
 ### `agent-configuration`
 
 Automated: [instruction service](../../server/src/__tests__/agent-instructions-service.test.ts) and [instruction revisions](../../server/src/__tests__/agent-instruction-revisions.test.ts) cover file/revision contracts.
+
+The [form locale regressions](../../ui/src/components/AgentConfigForm.render.test.tsx),
+[configuration primitives](../../ui/src/components/agent-config-primitives.localization.test.tsx),
+[secret aliases](../../ui/src/components/AgentSecretAccessEditor.test.tsx) and
+[Codex controls](../../ui/src/adapters/codex-local/config-fields.test.tsx) check
+EN/RU/EN changes with dirty inputs, focus, pending qualification and canonical
+save/permission payloads. Owned errors change language without repeating the
+operation; provider messages remain literal. For browser acceptance, repeat this
+while editing an agent, then save explicitly and verify the same values after
+reload. Component fixtures do not establish live provider execution.
+
+The [instruction editor](../../ui/src/pages/AgentDetail.instructions.test.tsx),
+[revision history](../../ui/src/components/InstructionHistory.test.tsx) and
+[shared editor upload](../../ui/src/components/MarkdownEditor.test.tsx) locale
+cases retain dirty content, selection, pinned revisions and pending errors.
+Action/lifecycle, built-in confirmation and primary-agent component tests keep
+canonical callbacks and pending state through EN/RU/EN changes. Provider error
+text stays literal. Repeat these changes in a browser before claiming a live
+instruction save, resource reset or lifecycle transition.
+
+The [skills locale regressions](../../ui/src/pages/agent-skills/AgentSkillsTab.localization.test.tsx)
+use the real skill row and release picker with mocked API requests. They check
+EN/RU/EN changes during a pending toggle or version-pin save, with stable search,
+focus, selection, exact payloads and no extra requests. Own error captions change
+language; provider errors, names, keys and source paths remain literal. Existing
+native legacy-skill, beta-release and automatic read-only gates remain covered.
+For live acceptance, toggle a skill and choose a release through the UI, change
+language while each save is pending, then reload and compare persisted skill keys
+and version pins. These component tests do not prove server permissions or skill
+materialization. Skills Manager, Studio and Store have separate coverage.
+
+[Connection instruction controls](../../ui/src/features/connections/ConnectionInstructions.test.tsx)
+check dirty text, focus, selection, reset template identity, configuration gates
+and exact pending-save payloads through EN/RU/EN changes. The agent source list
+keeps raw names and instruction bodies, filters inactive connections and retries
+the same agent/company after a load failure. These are mocked component checks, not
+proof that a live task received the connection's instructions.
+
+The [AI account field regression](../../ui/src/components/ai-connections/AiConnectionField.test.tsx)
+checks duplicate provider names, account identity in choices and adoption confirmation,
+the exact selected grant, and disabled unavailable accounts with authorized metadata fixtures.
+Manually compare a personal API key and shared subscription with the same name in
+Harness / Runtime. Confirm their method, scope and available identity before saving.
+Reload the saved choice and verify the next eligible task uses it; labels alone
+do not establish credential validity or change account access.
 
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
@@ -171,6 +273,11 @@ or provider execution.
 
 Automated: [org chart](../../ui/src/pages/OrgChart.test.tsx) is component evidence. Built-in setup also has [configuration modal tests](../../ui/src/components/ConfigureBuiltInAgentModal.test.tsx).
 
+Built-in modal locale cases cover all four known definition IDs and literal custom
+definitions, including a name that resembles markup. Language changes retain the
+pending provision and canonical model payload. Stored agent names and instructions
+remain unchanged. These fixtures do not prove a real provision or approval flow.
+
 Manual: Inspect a manager and report, change the relationship through the offered controls, and reload both views. Exercise a rejected invalid relationship. Configure a built-in agent and verify it retains its required identity and restrictions.
 
 ### `personal-primary-agent`
@@ -189,6 +296,11 @@ over the primary fallback. Opening Chat must not start execution.
 ### `agent-api-keys`
 
 Automated: [CLI token tests](../../cli/src/__tests__/token.test.ts) mock create/list/revoke. [Cross-tenant routes](../../server/src/__tests__/agent-cross-tenant-authz-routes.test.ts), [agent permissions](../../server/src/__tests__/agent-permissions-routes.test.ts), and [authentication middleware](../../server/src/__tests__/agent-auth-middleware.test.ts) cover company/key ownership, management permission, responsible-user binding, and denial. They do not prove a browser-created key working against a live instance.
+
+The [key locale regression](../../ui/src/pages/AgentDetail.keys.locale.test.tsx)
+uses mocked APIs to retain a dirty key name, pending creation, hidden token and
+exact copy/revoke payloads across language changes. The default stored key name
+remains `Default`. This does not prove that a live bearer authenticates.
 
 Manual: As an authenticated person with agents:create, create a named key for an eligible disposable agent and copy it privately from the once-only display. Make a harmless same-company agent request with that bearer, then reload the Keys tab and verify only metadata remains. Revoke the key through UI or CLI, reload, and retry the exact same bearer: authentication must fail. Inspect key-created/key-revoked activity without token values. Test a board person lacking agent-management permission, an agent caller, another company’s agent, a different agent’s key ID, and a pending-approval/terminated target. A created key without a real responsible-user binding is a failed acceptance prerequisite, not a working credential.
 
@@ -221,6 +333,24 @@ Choose **Invite an external agent → Grok Bot**, identify the Bot by its deskto
 Prerequisites: authenticated public HTTPS, Assistant connections (MCP), Paperclip Runner and Grok Bot experimental settings. Cloud uses its normal managed Runner environment. Provider usage is unknown. Routine uncertainty blocks new assignments until explicit inspection and recovery; stopping work revokes Paperclip authority without confirming remote termination.
 
 Evidence: source implementation and focused protocol tests; real provider assigned/proactive workflows and deployed managed acceptance remain release gates.
+
+The [activity-summary locale checks](../../ui/src/components/GrokBotWorkSummary.test.tsx)
+preserve recovery/assignment status priority, raw task links and provider errors,
+queued counts and the existing polling schedule. The summary reports observed
+Paperclip activity; it does not certify complete Bot activity or availability.
+These tests use mocked responses and do not qualify invitation or recovery actions.
+
+[Setup locale checks](../../ui/src/components/new-agent/GrokBotSetup.locale.test.tsx)
+exercise the actual wizard/controller and saved connection panel through EN/RU/EN:
+identity/role drafts and credential fields retain focus and values, pending writes
+keep their original company, agent, binding and revision, and provider failures remain
+literal. [Existing setup checks](../../ui/src/components/new-agent/GrokBotSetup.render.test.tsx)
+also preserve masked pairing-code retries and generated instructions when the language
+changes. To inspect locally, switch language with a dirty draft or pending save, then
+retry the explicit action; no additional request should occur merely from the switch.
+The prompt builder remains fixed and these mocked component checks do not qualify
+real pairing, delivery, external cleanup or deployed provider acceptance.
+
 ### Documentation scope: Agents, organization, and runtime setup
 
 Per-harness/model/account capabilities, every instruction-file error, and complete built-in-agent lifecycle variants remain separate qualification matrices.

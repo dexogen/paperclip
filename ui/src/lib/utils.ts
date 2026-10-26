@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n, t } from "../i18n";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { deriveAgentUrlKey, deriveProjectUrlKey, normalizeProjectUrlKey, hasNonAsciiContent } from "@paperclipai/shared";
@@ -33,17 +35,21 @@ export function asFiniteNumber(value: unknown, fallback: number) {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+function displayLocale(): string {
+  return i18n.resolvedLanguage === "ru" ? "ru-RU" : "en-US";
+}
+
 export function formatCents(cents: number, currency = "USD"): string {
   // Older finance writes accepted arbitrary three-character codes. Keep those
   // amounts readable without passing an invalid currency to Intl.
   if (!/^[a-z]{3}$/i.test(currency)) {
-    return `${currency} ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${currency} ${(cents / 100).toLocaleString(displayLocale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   }
-  return (cents / 100).toLocaleString("en-US", { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (cents / 100).toLocaleString(displayLocale(), { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export function formatNumber(n: number, options?: Intl.NumberFormatOptions): string {
-  return n.toLocaleString("en-US", options);
+  return n.toLocaleString(displayLocale(), options);
 }
 
 /**
@@ -52,11 +58,11 @@ export function formatNumber(n: number, options?: Intl.NumberFormatOptions): str
  */
 export function formatProjectBudget(budget: { amountCents: number; windowKind: string }): string {
   const amount = formatCents(budget.amountCents);
-  return budget.windowKind === "calendar_month_utc" ? `${amount}/mo` : amount;
+  return budget.windowKind === "calendar_month_utc" ? t("format.monthly", { amount }) : amount;
 }
 
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("en-US", {
+  return new Date(date).toLocaleDateString(displayLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -67,7 +73,7 @@ export function formatDateTime(
   date: Date | string,
   options: { includeSeconds?: boolean; includeYear?: boolean } = {},
 ): string {
-  return new Date(date).toLocaleString("en-US", {
+  return new Date(date).toLocaleString(displayLocale(), {
     month: "short",
     day: "numeric",
     ...(options.includeYear === false ? {} : { year: "numeric" as const }),
@@ -78,7 +84,7 @@ export function formatDateTime(
 }
 
 export function formatShortDate(date: Date | string): string {
-  return new Date(date).toLocaleString("en-US", {
+  return new Date(date).toLocaleString(displayLocale(), {
     month: "short",
     day: "numeric",
   });
@@ -88,17 +94,20 @@ export function relativeTime(date: Date | string): string {
   const now = Date.now();
   const then = new Date(date).getTime();
   const diffSec = Math.round((now - then) / 1000);
-  if (diffSec < 60) return "just now";
+  if (diffSec < 60) return t("format.justNow");
   const diffMin = Math.round(diffSec / 60);
-  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffMin < 60) return t("format.minutesAgo", { value: diffMin });
   const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
+  if (diffHr < 24) return t("format.hoursAgo", { value: diffHr });
   const diffDay = Math.round(diffHr / 24);
-  if (diffDay < 30) return `${diffDay}d ago`;
+  if (diffDay < 30) return t("format.daysAgo", { value: diffDay });
   return formatDate(date);
 }
 
 export function formatTokens(n: number): string {
+  if (i18n.resolvedLanguage === "ru") {
+    return new Intl.NumberFormat("ru-RU", n >= 1_000 ? { notation: "compact", minimumFractionDigits: 1, maximumFractionDigits: 1 } : {}).format(n);
+  }
   if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
@@ -107,20 +116,20 @@ export function formatTokens(n: number): string {
 
 /** Humanize a millisecond duration into a compact `1h 2m`, `45m 12s`, `12s` string. */
 export function formatDurationMs(ms: number): string {
-  if (!Number.isFinite(ms) || ms <= 0) return "0s";
+  if (!Number.isFinite(ms) || ms <= 0) return t("format.seconds", { value: 0 });
   const totalSeconds = Math.round(ms / 1000);
-  if (totalSeconds < 60) return `${totalSeconds}s`;
+  if (totalSeconds < 60) return t("format.seconds", { value: totalSeconds });
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  if (minutes < 60) return seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
+  if (minutes < 60) return [t("format.minutes", { value: minutes }), ...(seconds > 0 ? [t("format.seconds", { value: seconds })] : [])].join(" ");
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   if (hours < 24) {
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+    return [t("format.hours", { value: hours }), ...(remainingMinutes > 0 ? [t("format.minutes", { value: remainingMinutes })] : [])].join(" ");
   }
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
-  return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+  return [t("format.days", { value: days }), ...(remainingHours > 0 ? [t("format.hours", { value: remainingHours })] : [])].join(" ");
 }
 
 /** Map a raw provider slug to a display-friendly name. */
@@ -138,27 +147,27 @@ export function providerDisplayName(provider: string): string {
   return map[provider.toLowerCase()] ?? provider;
 }
 
-export function billingTypeDisplayName(billingType: BillingType): string {
+export function billingTypeDisplayName(billingType: BillingType, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<BillingType, string> = {
-    metered_api: "Metered API",
-    subscription_included: "Subscription",
-    subscription_overage: "Subscription overage",
-    credits: "Credits",
-    fixed: "Fixed",
-    unknown: "Unknown",
+    metered_api: t("costsUi.billingApi"),
+    subscription_included: t("costsUi.billingSubscription"),
+    subscription_overage: t("costsUi.billingOverage"),
+    credits: t("costsUi.billingCredits"),
+    fixed: t("costsUi.billingFixed"),
+    unknown: t("costsUi.billingUnknown"),
   };
   return map[billingType];
 }
 
-export function quotaSourceDisplayName(source: string): string {
+export function quotaSourceDisplayName(source: string, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<string, string> = {
     "anthropic-oauth": "Anthropic OAuth",
     "claude-cli": "Claude CLI",
     "bedrock": "AWS Bedrock",
-    "codex-rpc": "Codex app server",
+    "codex-rpc": t("costCardsUi.quota.codexServer"),
     "codex-wham": "ChatGPT WHAM",
   };
-  return map[source] ?? source;
+  return Object.hasOwn(map, source) ? map[source] : source;
 }
 
 function coerceBillingType(value: unknown): BillingType | null {
@@ -233,28 +242,28 @@ export function visibleRunCostUsd(
   return readRunCostUsd(usage) ?? readRunCostUsd(result) ?? 0;
 }
 
-export function financeEventKindDisplayName(eventKind: FinanceEventKind): string {
+export function financeEventKindDisplayName(eventKind: FinanceEventKind, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<FinanceEventKind, string> = {
-    inference_charge: "Inference charge",
-    platform_fee: "Platform fee",
-    credit_purchase: "Credit purchase",
-    credit_refund: "Credit refund",
-    credit_expiry: "Credit expiry",
-    byok_fee: "BYOK fee",
-    gateway_overhead: "Gateway overhead",
-    log_storage_charge: "Log storage",
-    logpush_charge: "Logpush",
-    provisioned_capacity_charge: "Provisioned capacity",
-    training_charge: "Training",
-    custom_model_import_charge: "Custom model import",
-    custom_model_storage_charge: "Custom model storage",
-    manual_adjustment: "Manual adjustment",
+    inference_charge: t("costCardsUi.finance.kind.inference_charge"),
+    platform_fee: t("costCardsUi.finance.kind.platform_fee"),
+    credit_purchase: t("costCardsUi.finance.kind.credit_purchase"),
+    credit_refund: t("costCardsUi.finance.kind.credit_refund"),
+    credit_expiry: t("costCardsUi.finance.kind.credit_expiry"),
+    byok_fee: t("costCardsUi.finance.kind.byok_fee"),
+    gateway_overhead: t("costCardsUi.finance.kind.gateway_overhead"),
+    log_storage_charge: t("costCardsUi.finance.kind.log_storage_charge"),
+    logpush_charge: t("costCardsUi.finance.kind.logpush_charge"),
+    provisioned_capacity_charge: t("costCardsUi.finance.kind.provisioned_capacity_charge"),
+    training_charge: t("costCardsUi.finance.kind.training_charge"),
+    custom_model_import_charge: t("costCardsUi.finance.kind.custom_model_import_charge"),
+    custom_model_storage_charge: t("costCardsUi.finance.kind.custom_model_storage_charge"),
+    manual_adjustment: t("costCardsUi.finance.kind.manual_adjustment"),
   };
   return map[eventKind];
 }
 
-export function financeDirectionDisplayName(direction: FinanceDirection): string {
-  return direction === "credit" ? "Credit" : "Debit";
+export function financeDirectionDisplayName(direction: FinanceDirection, t: TFunction = i18n.getFixedT("en")): string {
+  return direction === "credit" ? t("costCardsUi.finance.credit") : t("costCardsUi.finance.debit");
 }
 
 /** Build an issue URL using the human-readable identifier when available. */
@@ -295,5 +304,5 @@ export function projectWorkspaceUrl(
 
 /** Preserve sub-cent inference charges instead of showing a misleading $0.00. */
 export function formatDetailedCents(cents: string | number): string {
-  return (Number(cents) / 100).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 9 });
+  return (Number(cents) / 100).toLocaleString(displayLocale(), { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 9 });
 }

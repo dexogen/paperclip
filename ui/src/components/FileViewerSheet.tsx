@@ -1,3 +1,6 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { CsvPreview } from "./CsvPreview";
 import { isCsvFile } from "@/lib/csv-preview";
 import {
@@ -63,13 +66,20 @@ const FILE_VIEWER_DESCRIBED_BY_ID = "paperclip-file-viewer-description";
 const MIN_FILE_TREE_WIDTH = 220;
 const MAX_FILE_TREE_WIDTH = 520;
 
+type CopyFeedback = "failed" | "contentsUnavailable" | "dataCopied" | "contentsCopied" | "linkCopied";
+
+type ViewerAnnouncement =
+  | { kind: "copy"; code: CopyFeedback }
+  | { kind: "loaded"; message: string }
+  | { kind: "error"; error: unknown; content: boolean };
+
 interface FileViewerErrorShape {
   status: number;
   code: string;
   message: string;
 }
 
-function normalizeError(error: unknown): FileViewerErrorShape {
+function normalizeError(error: unknown, t: TFunction = i18n.getFixedT("en")): FileViewerErrorShape {
   if (error instanceof ApiError) {
     const body = (error.body ?? null) as { error?: string; code?: string } | null;
     const code = typeof body?.code === "string" ? body.code : "";
@@ -82,14 +92,14 @@ function normalizeError(error: unknown): FileViewerErrorShape {
   if (error instanceof Error) {
     return { status: 0, code: "", message: error.message };
   }
-  return { status: 0, code: "", message: "Something went wrong." };
+  return { status: 0, code: "", message: t("taskPanels.viewer.somethingWrong") };
 }
 
-function formatBytes(size: number | null | undefined): string | null {
+function formatBytes(size: number | null | undefined, locale = "en-US"): string | null {
   if (typeof size !== "number" || !Number.isFinite(size) || size < 0) return null;
   if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  if (size < 1024 * 1024) return `${(size / 1024).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1, useGrouping: false })} KB`;
+  return `${(size / (1024 * 1024)).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1, useGrouping: false })} MB`;
 }
 
 function splitContentIntoLines(data: string): string[] {
@@ -121,54 +131,54 @@ function isMarkdownResource(resource: ResolvedWorkspaceResource): boolean {
   return /\.(md|markdown|mdown|mkdn|mkd)$/.test(path);
 }
 
-export function describeDenial(code: string, fallback: string): { title: string; body: string; icon: ReactNode } {
+export function describeDenial(code: string, fallback: string, t: TFunction = i18n.getFixedT("en")): { title: string; body: string; icon: ReactNode } {
   const lower = code.toLowerCase();
   if (lower.includes("policy") || lower.includes("denied") || lower.includes("sensitive")) {
     return {
       icon: <Lock aria-hidden="true" className="h-6 w-6 text-amber-500" />,
-      title: "Viewer blocked for this file",
-      body: "This file is not available through the viewer because it may contain sensitive data.",
+      title: t("taskPanels.viewer.blocked"),
+      body: t("taskPanels.viewer.sensitive"),
     };
   }
   if (lower.includes("outside") || lower.includes("traversal")) {
     return {
       icon: <Ban aria-hidden="true" className="h-6 w-6 text-red-500" />,
-      title: "Path is outside the workspace",
-      body: "The viewer can only open files that live under the issue's workspace.",
+      title: t("taskPanels.viewer.outside"),
+      body: t("taskPanels.viewer.outsideBody"),
     };
   }
   if (lower.includes("archive") || lower.includes("cleaned")) {
     return {
       icon: <FolderOpen aria-hidden="true" className="h-6 w-6 text-muted-foreground" />,
-      title: "Workspace is no longer available",
-      body: "The isolated worktree for this issue has been cleaned up, so files cannot be previewed.",
+      title: t("taskPanels.workspace.cleanedTitle"),
+      body: t("taskPanels.workspace.cleanedBody"),
     };
   }
   if (lower.includes("remote")) {
     return {
       icon: <AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />,
-      title: "Remote workspace preview not supported",
-      body: "This workspace is hosted remotely and is not available for inline preview yet.",
+      title: t("taskPanels.workspace.remoteTitle"),
+      body: t("taskPanels.workspace.remoteBody"),
     };
   }
   if (lower.includes("too_large") || lower.includes("size")) {
     return {
       icon: <AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />,
-      title: "File is too large to preview",
-      body: "This file exceeds the supported preview size.",
+      title: t("taskPanels.viewer.tooLarge"),
+      body: t("taskPanels.viewer.tooLargeBody"),
     };
   }
   if (lower.includes("binary") || lower.includes("unsupported")) {
     return {
       icon: <AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />,
-      title: "Preview not supported for this file type",
-      body: "This file does not have a text, image, or video preview available.",
+      title: t("taskPanels.viewer.unsupported"),
+      body: t("taskPanels.viewer.unsupportedBody"),
     };
   }
   return {
     icon: <Ban aria-hidden="true" className="h-6 w-6 text-red-500" />,
-    title: "Can't preview this file",
-    body: fallback || "The viewer was unable to load this file.",
+    title: t("taskPanels.viewer.cannotPreview"),
+    body: fallback || t("taskPanels.viewer.failed"),
   };
 }
 
@@ -207,29 +217,34 @@ export function FileViewerMetadataRow({
   resolvedResource?: ResolvedWorkspaceResource;
   state: FileViewerUrlState | null;
 }) {
+  const { t, i18n } = useTranslation();
+  const previewKind = resolvedResource?.previewKind;
+  const previewLabel = previewKind === "text" ? t("taskPanels.viewer.kind.text")
+    : previewKind === "image" ? t("taskPanels.viewer.kind.image")
+      : previewKind === "video" ? t("taskPanels.viewer.kind.video")
+        : previewKind === "unsupported" ? t("taskPanels.viewer.kind.unsupported") : previewKind;
   return (
     <div className="flex min-h-(--sz-18px) flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
       {resolvedResource ? (
         <>
-          {resolvedResource.previewKind ? <span className="capitalize">{resolvedResource.previewKind}</span> : null}
-          {formatBytes(resolvedResource.byteSize) ? (
+          {resolvedResource.previewKind ? <span className="capitalize">{previewLabel}</span> : null}
+          {formatBytes(resolvedResource.byteSize, i18n.resolvedLanguage) ? (
             <>
               <span aria-hidden="true" className="opacity-50">·</span>
-              <span>{formatBytes(resolvedResource.byteSize)}</span>
+              <span>{formatBytes(resolvedResource.byteSize, i18n.resolvedLanguage)}</span>
             </>
           ) : null}
           {state?.line ? (
             <>
               <span aria-hidden="true" className="opacity-50">·</span>
               <span>
-                Line {state.line}
-                {state.column ? `, Col ${state.column}` : ""}
+                {state.column ? t("taskPanels.viewer.lineColumn", { line: state.line, column: state.column }) : t("taskPanels.viewer.line", { line: state.line })}
               </span>
             </>
           ) : null}
         </>
       ) : state ? (
-        <span className="h-3 w-28 rounded bg-muted animate-pulse" aria-label="Loading file details" />
+        <span className="h-3 w-28 rounded bg-muted animate-pulse" aria-label={t("taskPanels.viewer.loadingDetails")} />
       ) : null}
     </div>
   );
@@ -246,6 +261,7 @@ interface FileContentViewerProps {
 type MarkdownPreviewMode = "raw" | "rendered";
 
 export function FileContentViewer({ content, highlightedLine, onLoaded, previewMode, htmlMode = "rendered" }: FileContentViewerProps) {
+  const { t } = useTranslation();
   const { resource } = content;
   const isMarkdown = resource.previewKind === "text" && content.content.encoding === "utf8" && isMarkdownResource(resource);
   const isCsv = resource.previewKind === "text" && content.content.encoding === "utf8" && isCsvFile(resource.displayPath || resource.title, resource.contentType ?? "");
@@ -269,8 +285,8 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
 
   useEffect(() => {
     if (!lines) return;
-    onLoaded?.(`File loaded, ${lines.length} ${lines.length === 1 ? "line" : "lines"}.`);
-  }, [lines, onLoaded]);
+    onLoaded?.(t("taskPanels.viewer.loaded", { count: lines.length }));
+  }, [lines, onLoaded, t]);
 
   useEffect(() => {
     if (markdownMode !== "raw") return;
@@ -286,7 +302,7 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
       return (
         <FileViewerStateView
           icon={<AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />}
-          title="Image preview unavailable"
+          title={t("taskPanels.viewer.imageUnavailable")}
         />
       );
     }
@@ -309,7 +325,7 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
       return (
         <FileViewerStateView
           icon={<AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />}
-          title="Video preview unavailable"
+          title={t("taskPanels.viewer.videoUnavailable")}
         />
       );
     }
@@ -320,7 +336,7 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
           controls
           preload="metadata"
           playsInline
-          aria-label={`Video preview: ${resource.title}`}
+          aria-label={t("taskPanels.viewer.video", { title: resource.title })}
           className="max-h-full max-w-full rounded border border-white/10 bg-black"
         />
       </div>
@@ -331,8 +347,8 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
     return (
       <FileViewerStateView
         icon={<AlertTriangle aria-hidden="true" className="h-6 w-6 text-amber-500" />}
-        title="Preview not supported for this file type"
-        body={resource.contentType ? `Content type: ${resource.contentType}` : undefined}
+        title={t("taskPanels.viewer.unsupported")}
+        body={resource.contentType ? t("taskPanels.viewer.contentType", { type: resource.contentType }) : undefined}
       />
     );
   }
@@ -343,7 +359,7 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
     <div
       ref={codeScrollRef}
       role="region"
-      aria-label={`${resource.title} source`}
+      aria-label={t("taskPanels.viewer.source", { title: resource.title })}
       tabIndex={0}
       className="paperclip-file-viewer-code flex-1 overflow-auto bg-(--code-bg-resolved) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
     >
@@ -397,15 +413,15 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
       {previewMode === undefined && <div className="absolute right-3 top-3 z-20">
         <div
           role="group"
-          aria-label={`${previewLabel} preview mode`}
+          aria-label={t("taskPanels.viewer.previewMode", { format: previewLabel })}
           className="inline-flex rounded-md border border-border bg-background/95 p-0.5 shadow-sm backdrop-blur"
         >
           <Button
             type="button"
             variant={markdownMode === "rendered" ? "secondary" : "ghost"}
             size="icon-sm"
-            aria-label={`Show rendered ${previewLabel}`}
-            title={`Rendered ${previewLabel}`}
+            aria-label={t("taskPanels.viewer.showRendered", { format: previewLabel })}
+            title={t("taskPanels.viewer.rendered", { format: previewLabel })}
             aria-pressed={markdownMode === "rendered"}
             onClick={() => setMarkdownMode("rendered")}
             className={cn(
@@ -419,8 +435,8 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
             type="button"
             variant={markdownMode === "raw" ? "secondary" : "ghost"}
             size="icon-sm"
-            aria-label={`Show raw ${previewLabel}`}
-            title={`Raw ${previewLabel}`}
+            aria-label={t("taskPanels.viewer.showRaw", { format: previewLabel })}
+            title={t("taskPanels.viewer.raw", { format: previewLabel })}
             aria-pressed={markdownMode === "raw"}
             onClick={() => setMarkdownMode("raw")}
             className={cn(
@@ -438,7 +454,7 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
       ) : isCsv ? <CsvPreview text={content.content.data} title={resource.title} /> : (
         <div
           role="region"
-          aria-label={`${resource.title} rendered Markdown`}
+          aria-label={t("taskPanels.viewer.renderedMarkdown", { title: resource.title })}
           tabIndex={0}
           className="flex-1 overflow-auto bg-background p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         >
@@ -452,13 +468,14 @@ export function FileContentViewer({ content, highlightedLine, onLoaded, previewM
 }
 
 function LoadingView({ elapsedMs }: { elapsedMs: number }) {
+  const { t } = useTranslation();
   if (elapsedMs < 100) {
     return <div className="flex-1" aria-hidden="true" />;
   }
   if (elapsedMs < 400) {
     return (
       <div className="flex-1 space-y-2 p-6" aria-busy="true" aria-live="polite">
-        <span className="sr-only">Loading file preview</span>
+        <span className="sr-only">{t("taskPanels.viewer.loading")}</span>
         {Array.from({ length: 10 }).map((_, index) => (
           <div key={index} className="h-3 rounded bg-muted animate-pulse" style={{ width: `${90 - index * 6}%` }} />
         ))}
@@ -473,7 +490,7 @@ function LoadingView({ elapsedMs }: { elapsedMs: number }) {
     >
       <div className="flex items-center gap-2 text-muted-foreground">
         <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-        Loading file preview...
+        {t("taskPanels.viewer.loadingProgress")}
       </div>
     </div>
   );
@@ -499,6 +516,7 @@ export function FileViewerSheet({
   open: openProp,
   onOpenChange,
 }: FileViewerSheetProps) {
+  const { t } = useTranslation();
   const viewer = useRequiredFileViewer();
   const state = typeof stateProp !== "undefined" ? stateProp : viewer.state;
   // Browse mode: no file selected, but the sheet was opened to browse/search.
@@ -513,8 +531,8 @@ export function FileViewerSheet({
   useEffect(() => setHtmlMode("rendered"), [state?.path, state?.workspace, state?.workspaceId, state?.projectId]);
   const [copiedField, setCopiedField] = useState<"content" | "link" | null>(null);
   const [copyingField, setCopyingField] = useState<"content" | "link" | null>(null);
-  const [copyFeedback, setCopyFeedback] = useState("");
-  const [announcement, setAnnouncement] = useState<string>("");
+  const [copyFeedback, setCopyFeedback] = useState<CopyFeedback | null>(null);
+  const [announcement, setAnnouncement] = useState<ViewerAnnouncement | null>(null);
   const [fileTreeWidth, setFileTreeWidth] = useState(288);
   const copyFeedbackTimerRef = useRef<number | null>(null);
   const resizeCleanupRef = useRef<(() => void) | null>(null);
@@ -571,15 +589,13 @@ export function FileViewerSheet({
 
   useEffect(() => {
     if (resolveQuery.isError) {
-      const normalized = normalizeError(resolveQuery.error);
-      setAnnouncement(normalized.message || "Unable to load file.");
+      setAnnouncement({ kind: "error", error: resolveQuery.error, content: false });
     }
   }, [resolveQuery.isError, resolveQuery.error]);
 
   useEffect(() => {
     if (contentQuery.isError) {
-      const normalized = normalizeError(contentQuery.error);
-      setAnnouncement(normalized.message || "Unable to load file content.");
+      setAnnouncement({ kind: "error", error: contentQuery.error, content: true });
     }
   }, [contentQuery.isError, contentQuery.error]);
 
@@ -643,25 +659,25 @@ export function FileViewerSheet({
     [viewer],
   );
 
-  const showCopyFeedback = useCallback((field: "content" | "link" | null, message: string) => {
+  const showCopyFeedback = useCallback((field: "content" | "link" | null, message: CopyFeedback) => {
     setCopiedField(field);
     setCopyFeedback(message);
-    setAnnouncement(message);
+    setAnnouncement({ kind: "copy", code: message });
     if (copyFeedbackTimerRef.current) window.clearTimeout(copyFeedbackTimerRef.current);
     copyFeedbackTimerRef.current = window.setTimeout(() => {
       setCopiedField((current) => (current === field ? null : current));
-      setCopyFeedback("");
+      setCopyFeedback(null);
       copyFeedbackTimerRef.current = null;
     }, 1800);
   }, []);
 
-  const copyToClipboard = useCallback(async (value: string, field: "content" | "link", message: string) => {
+  const copyToClipboard = useCallback(async (value: string, field: "content" | "link", message: CopyFeedback) => {
     try {
       setCopyingField(field);
       await copyTextToClipboard(value);
       showCopyFeedback(field, message);
     } catch {
-      showCopyFeedback(null, "Copy failed");
+      showCopyFeedback(null, "failed");
     } finally {
       setCopyingField((current) => (current === field ? null : current));
     }
@@ -676,17 +692,17 @@ export function FileViewerSheet({
         content = result.data;
       }
       if (!content) {
-        showCopyFeedback(null, "File contents unavailable");
+        showCopyFeedback(null, "contentsUnavailable");
         return;
       }
-      const message = content.content.encoding === "base64" ? "Copied file data" : "Copied contents";
+      const message = content.content.encoding === "base64" ? "dataCopied" : "contentsCopied";
       await copyToClipboard(content.content.data, "content", message);
     })();
   }, [canPreview, contentQuery, copyToClipboard, showCopyFeedback, state]);
 
   const handleCopyLink = useCallback(() => {
     if (typeof window === "undefined") return;
-    void copyToClipboard(window.location.href, "link", "Copied link");
+    void copyToClipboard(window.location.href, "link", "linkCopied");
   }, [copyToClipboard]);
 
   const handleRetry = useCallback(() => {
@@ -725,10 +741,28 @@ export function FileViewerSheet({
     });
   }, []);
 
-  const title = state ? basename(state.path) : "Browse workspace";
+  const copyMessages: Record<CopyFeedback, string> = {
+    failed: t("taskPanels.viewer.copy.failed"),
+    contentsUnavailable: t("taskPanels.viewer.copy.contentsUnavailable"),
+    dataCopied: t("taskPanels.viewer.copy.dataCopied"),
+    contentsCopied: t("taskPanels.viewer.copy.contentsCopied"),
+    linkCopied: t("taskPanels.viewer.copy.linkCopied"),
+  };
+  const announcementText = announcement?.kind === "copy"
+    ? copyMessages[announcement.code]
+    : announcement?.kind === "loaded"
+      ? announcement.message
+      : announcement?.kind === "error"
+        ? normalizeError(announcement.error, t).message || (announcement.content ? t("taskPanels.viewer.contentLoadError") : t("taskPanels.viewer.loadError"))
+        : "";
+  const handleFileLoaded = useCallback((message: string) => {
+    setAnnouncement({ kind: "loaded", message });
+  }, []);
+
+  const title = state ? basename(state.path) : t("taskPanels.viewer.browse");
   const description = state
     ? middleTruncatePath(state.path)
-    : "Search and preview files from this issue's workspace.";
+    : t("taskPanels.viewer.browseDescription");
   const showDescription = state ? description !== title : true;
 
   return (
@@ -770,7 +804,7 @@ export function FileViewerSheet({
             </div>
             <div className="flex shrink-0 items-center gap-1 self-start">
               <span className="hidden min-w-28 text-right text-xs text-muted-foreground sm:inline" role="status" aria-live="polite">
-                {copyFeedback}
+                {copyFeedback ? copyMessages[copyFeedback] : ""}
               </span>
               {cameFromBrowse ? (
                 <Button
@@ -779,15 +813,15 @@ export function FileViewerSheet({
                   size="sm"
                   onClick={() => viewer.backToFiles()}
                   className="h-7 gap-1 px-2 text-xs"
-                  aria-label="Back to files"
+                  aria-label={t("taskPanels.viewer.back")}
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
-                  Back to files
+                  {t("taskPanels.viewer.back")}
                 </Button>
               ) : null}
               {contentQuery.data?.resource.previewKind === "text" && contentQuery.data.content.encoding === "utf8"
                 && isHtmlPreview(contentQuery.data.resource.contentType, contentQuery.data.resource.displayPath || contentQuery.data.resource.title) ? (
-                  <FilePreviewModeToggle mode={htmlMode} onChange={setHtmlMode} label="HTML view" />
+                  <FilePreviewModeToggle mode={htmlMode} onChange={setHtmlMode} label={t("taskPanels.preview.html")} />
                 ) : null}
               {state ? (
                 downloadUrl ? (
@@ -800,8 +834,8 @@ export function FileViewerSheet({
                     <a
                       href={downloadUrl}
                       download={resolvedResource?.title ?? basename(state.path)}
-                      aria-label="Download file"
-                      title="Download file"
+                      aria-label={t("taskPanels.preview.download")}
+                      title={t("taskPanels.preview.download")}
                     >
                       <Download className="h-4 w-4" />
                     </a>
@@ -814,8 +848,8 @@ export function FileViewerSheet({
                   variant="ghost"
                   size="icon-sm"
                   onClick={handleCopyContent}
-                  aria-label={copiedField === "content" ? "Copied file contents" : "Copy file contents"}
-                  title={copiedField === "content" ? "Copied contents" : "Copy file contents"}
+                  aria-label={copiedField === "content" ? t("taskPanels.viewer.copiedContents") : t("taskPanels.preview.copy")}
+                  title={copiedField === "content" ? t("taskPanels.viewer.copy.contentsCopied") : t("taskPanels.preview.copy")}
                   className="h-7 w-7"
                 >
                   {copyingField === "content" ? (
@@ -833,8 +867,8 @@ export function FileViewerSheet({
                   variant="ghost"
                   size="icon-sm"
                   onClick={handleCopyLink}
-                  aria-label={copiedField === "link" ? "Copied file view link" : "Copy link to this file view"}
-                  title={copiedField === "link" ? "Copied link" : "Copy link"}
+                  aria-label={copiedField === "link" ? t("taskPanels.viewer.copiedViewLink") : t("taskPanels.viewer.copyViewLink")}
+                  title={copiedField === "link" ? t("taskPanels.viewer.copy.linkCopied") : t("taskPanels.viewer.copyLink")}
                   className="h-7 w-7"
                 >
                   {copyingField === "link" ? (
@@ -852,8 +886,8 @@ export function FileViewerSheet({
                 size="icon-sm"
                 onClick={() => handleOpenChange(false)}
                 className="h-7 w-7"
-                aria-label="Close file viewer"
-                title="Close"
+                aria-label={t("taskPanels.viewer.close")}
+                title={t("taskPanels.close")}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -863,7 +897,7 @@ export function FileViewerSheet({
         </DialogHeader>
         <div className="relative flex min-h-0 flex-1 flex-col">
           <div aria-live="polite" className="sr-only">
-            {announcement}
+            {announcementText}
           </div>
           {state ? (
             <div className="flex min-h-0 flex-1 gap-3 bg-muted/30 p-3">
@@ -893,7 +927,7 @@ export function FileViewerSheet({
               <div
                 role="separator"
                 aria-orientation="vertical"
-                aria-label="Resize file tree"
+                aria-label={t("taskPanels.viewer.resizeTree")}
                 aria-valuemin={MIN_FILE_TREE_WIDTH}
                 aria-valuemax={MAX_FILE_TREE_WIDTH}
                 aria-valuenow={fileTreeWidth}
@@ -911,7 +945,7 @@ export function FileViewerSheet({
                   highlightedLine={state.line ?? null}
                   htmlMode={htmlMode}
                   onRetry={handleRetry}
-                  onSetAnnouncement={setAnnouncement}
+                  onSetAnnouncement={handleFileLoaded}
                   onFallbackToProject={
                     state.workspace !== "project" && !state.projectId && !state.workspaceId
                       ? () =>
@@ -973,27 +1007,28 @@ export function FileViewerBody({
   previewMode,
   htmlMode,
 }: FileViewerBodyProps) {
+  const { t } = useTranslation();
   if (resolveQuery.isFetching && !resolveQuery.data) {
     return <LoadingView elapsedMs={elapsedMs} />;
   }
 
   if (resolveQuery.isError) {
-    const normalized = normalizeError(resolveQuery.error);
+    const normalized = normalizeError(resolveQuery.error, t);
     if (normalized.status === 404) {
       return (
         <FileViewerStateView
           icon={<FileSearch aria-hidden="true" className="h-6 w-6 text-muted-foreground" />}
-          title="File not found"
-          body="That file was not found in the active workspace."
+          title={t("taskPanels.viewer.notFound")}
+          body={t("taskPanels.viewer.notFoundBody")}
           actions={
             <>
               {onFallbackToProject ? (
                 <Button type="button" variant="secondary" size="sm" onClick={onFallbackToProject}>
-                  Try project workspace
+                  {t("taskPanels.viewer.tryProject")}
                 </Button>
               ) : null}
               <Button type="button" variant="ghost" size="sm" onClick={onRetry}>
-                <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> Retry
+                <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> {t("taskPanels.retry")}
               </Button>
             </>
           }
@@ -1004,12 +1039,12 @@ export function FileViewerBody({
       return (
         <FileViewerStateView
           icon={<FolderOpen aria-hidden="true" className="h-6 w-6 text-muted-foreground" />}
-          title="No workspace available"
-          body="This issue does not have a workspace that supports preview yet."
+          title={t("taskPanels.viewer.noWorkspace")}
+          body={t("taskPanels.viewer.noWorkspaceBody")}
         />
       );
     }
-    const denial = describeDenial(normalized.code, normalized.message);
+    const denial = describeDenial(normalized.code, normalized.message, t);
     return (
       <FileViewerStateView
         icon={denial.icon}
@@ -1017,7 +1052,7 @@ export function FileViewerBody({
         body={denial.body}
         actions={
           <Button type="button" variant="ghost" size="sm" onClick={onRetry}>
-            <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> Retry
+            <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> {t("taskPanels.retry")}
           </Button>
         }
       />
@@ -1031,14 +1066,14 @@ export function FileViewerBody({
     return (
       <FileViewerStateView
         icon={<Cloud aria-hidden="true" className="h-6 w-6 text-muted-foreground" />}
-        title="Remote workspace preview coming soon"
-        body="This workspace is hosted remotely; inline previews are not supported yet."
+        title={t("taskPanels.viewer.remoteSoon")}
+        body={t("taskPanels.viewer.remoteSoonBody")}
       />
     );
   }
 
   if (!canPreview) {
-    const denial = describeDenial(resource.denialReason ?? "", "");
+    const denial = describeDenial(resource.denialReason ?? "", "", t);
     return <FileViewerStateView icon={denial.icon} title={denial.title} body={denial.body} />;
   }
 
@@ -1047,8 +1082,8 @@ export function FileViewerBody({
   }
 
   if (contentQuery.isError) {
-    const normalized = normalizeError(contentQuery.error);
-    const denial = describeDenial(normalized.code, normalized.message);
+    const normalized = normalizeError(contentQuery.error, t);
+    const denial = describeDenial(normalized.code, normalized.message, t);
     return (
       <FileViewerStateView
         icon={denial.icon}
@@ -1056,7 +1091,7 @@ export function FileViewerBody({
         body={denial.body}
         actions={
           <Button type="button" variant="ghost" size="sm" onClick={onRetry}>
-            <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> Retry
+            <RefreshCcw aria-hidden="true" className="mr-1 h-3 w-3" /> {t("taskPanels.retry")}
           </Button>
         }
       />

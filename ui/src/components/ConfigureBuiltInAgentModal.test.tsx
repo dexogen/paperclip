@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { setLocale } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -140,6 +141,70 @@ describe("ConfigureBuiltInAgentModal (PAP-12978)", () => {
     });
     root = null;
     container.remove();
+  });
+
+  it.each(["custom", "toString"])("A2 locale changes preserve unknown definition %s text and pending provision exactly once", async key => {
+    let resolveProvision!: (value: BuiltInAgentState) => void;
+    provisionMock.mockImplementation(() => new Promise<BuiltInAgentState>(resolve => { resolveProvision = resolve; }));
+    const rawState = makeState();
+    rawState.definition = { ...rawState.definition, key, displayName: "Briefs Agent <strong>raw</strong>", shortPurpose: "Prepares briefs. <strong>raw</strong>", defaultAdapterConfig: { model: "gpt-custom" } };
+    await renderModal(rawState);
+    const input = document.body.querySelector<HTMLInputElement>('[data-testid="model-input"]')!;
+    input.focus(); input.setSelectionRange(2, 4);
+    const reads = [adapterModelsMock.mock.calls.length, adapterDiscoveryMock.mock.calls.length];
+    try {
+      await setLocale("ru"); await flushReact();
+      expect(document.body.textContent).toContain("Настройка: Briefs Agent <strong>raw</strong>");
+      expect(document.body.textContent).toContain(rawState.definition.shortPurpose);
+      expect(document.activeElement).toBe(input);
+      expect(input.value).toBe("gpt-custom");
+      expect([input.selectionStart, input.selectionEnd]).toEqual([2, 4]);
+      expect(provisionMock).not.toHaveBeenCalled();
+      flushSync(() => findButton("Настроить и включить")!.click());
+      await flushReact();
+      await setLocale("en"); await flushReact();
+      expect(document.body.textContent).toContain("Configuring…");
+      expect([adapterModelsMock.mock.calls.length, adapterDiscoveryMock.mock.calls.length]).toEqual(reads);
+      expect(provisionMock).toHaveBeenCalledExactlyOnceWith("c1", key, { adapterType: "codex_local", adapterConfig: { model: "gpt-custom" } });
+      resolveProvision({ ...rawState, status: "ready", agentId: "a1" }); await flushReact();
+      expect(onConfigured).toHaveBeenCalledTimes(1);
+    } finally { await setLocale("en"); }
+  });
+
+  it.each([
+    ["briefs", "Агент сводок", "Готовит краткие рабочие сводки"],
+    ["learning", "Агент обучения", "Сохраняет полезный опыт организации"],
+    ["reflection-coach", "Наставник по анализу работы", "Анализирует недавнюю работу агентов"],
+    ["summarizer", "Агент обзоров", "По запросу записывает краткие понятные обзоры"],
+  ])("translates only the known built-in definition %s without writing its saved name or instructions", async (key, name, purpose) => {
+    const state = makeState({ definition: { ...makeState().definition, key },
+      agent: makeSavedAgent("codex_local", { model: "custom/model" }) });
+    state.agent!.name = "Briefs Agent <strong>user name</strong>";
+    state.definition.defaultInstructions = "Never translate {{ agent.name }}";
+    const original = structuredClone(state);
+    await renderModal(state);
+    try {
+      await setLocale("ru"); await flushReact();
+      expect(document.body.textContent).toContain(name);
+      expect(document.body.textContent).toContain(purpose);
+      expect(state).toEqual(original);
+      expect(provisionMock).not.toHaveBeenCalled();
+    } finally { await setLocale("en"); }
+  });
+
+  it("relocalizes its stored fallback error without resubmitting", async () => {
+    const rawState = makeState({ definition: { ...makeState().definition, defaultAdapterConfig: { model: "gpt-custom" } } });
+    provisionMock.mockRejectedValueOnce({ opaque: "unknown" });
+    await renderModal(rawState);
+    flushSync(() => findButton("Configure")!.click()); await flushReact();
+    try {
+      await setLocale("ru"); await flushReact();
+      expect(document.body.querySelector('[role="alert"]')?.textContent).toBe("Не удалось настроить встроенного агента.");
+      expect(provisionMock).toHaveBeenCalledTimes(1);
+      await setLocale("en"); await flushReact();
+      expect(document.body.querySelector('[role="alert"]')?.textContent).toBe("Failed to configure the built-in agent.");
+      expect(provisionMock).toHaveBeenCalledTimes(1);
+    } finally { await setLocale("en"); }
   });
 
   it("disables submit until a model is chosen, then provisions with adapter + model", async () => {

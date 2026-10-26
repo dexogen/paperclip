@@ -1,3 +1,4 @@
+import { t, useTranslation, i18n } from "@/i18n";
 import { useCallback, useEffect } from "react";
 import { History } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
@@ -20,6 +21,8 @@ import {
 } from "./audit-navigation";
 
 export function AuditHub({ section }: { section: AuditSection }) {
+  useTranslation();
+  const sectionLabels = { activity: t("surfacesGap.audit.activity"), runs: t("surfacesGap.audit.runs"), commentary: t("surfacesGap.audit.commentary"), costs: t("surfacesGap.audit.costs"), budgets: t("surfacesGap.audit.budgets"), timeline: t("surfacesGap.audit.timeline") };
   const navigate = useNavigate();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -44,10 +47,10 @@ export function AuditHub({ section }: { section: AuditSection }) {
   useEffect(() => {
     const current = AUDIT_SECTIONS.find((candidate) => candidate.value === section);
     setBreadcrumbs([
-      { label: "Audit", href: section === "activity" ? undefined : "/activity" },
-      ...(section === "activity" || !current ? [] : [{ label: current.label }]),
+      { label: t("surfacesGap.audit.audit"), href: section === "activity" ? undefined : "/activity" },
+      ...(section === "activity" || !current ? [] : [{ label: sectionLabels[current.value] }]),
     ]);
-  }, [section, setBreadcrumbs]);
+  }, [section, setBreadcrumbs, i18n.resolvedLanguage]);
 
   const handleModeChange = useCallback(
     (next: AuditFeedMode) => {
@@ -109,13 +112,13 @@ export function AuditHub({ section }: { section: AuditSection }) {
   }, [setSearchParams]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={History} message="Select an organization to view Audit." />;
+    return <EmptyState icon={History} message={t("surfacesGap.audit.selectCompany")} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">Audit</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">{t("surfacesGap.audit.audit")}</h1>
       </div>
 
       <Tabs
@@ -125,7 +128,7 @@ export function AuditHub({ section }: { section: AuditSection }) {
           navigate(auditSectionHref(next, scope));
         }}
       >
-        <PageTabBar items={AUDIT_SECTIONS} value={section} align="start" />
+        <PageTabBar items={AUDIT_SECTIONS.map((item) => ({ ...item, label: sectionLabels[item.value] }))} value={section} align="start" />
       </Tabs>
 
       {section === "commentary" ? (

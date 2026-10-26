@@ -156,3 +156,15 @@ describe("onboarding launch payloads", () => {
     });
   });
 });
+
+
+describe("localized onboarding launch", () => {
+  it("passes locale separately from data and reuses either known project name", () => {
+    const project = { id: "project-ru", name: "Начало работы", status: "in_progress" as const };
+    expect(selectReusableOnboardingProject([project], ["Onboarding", "Начало работы"])).toBe(project);
+    expect(buildOnboardingProjectPayload(null, "Начало работы")).toMatchObject({ name: "Начало работы" });
+    expect(buildOnboardingIssuePayload({ title: "Начало работы с Paperclip", assigneeAgentId: "agent-1", projectId: project.id, goalId: null, locale: "ru" })).toEqual({
+      title: "Начало работы с Paperclip", assigneeAgentId: "agent-1", projectId: "project-ru", status: "todo", onboardingFirstTask: true, onboardingLocale: "ru",
+    });
+  });
+});

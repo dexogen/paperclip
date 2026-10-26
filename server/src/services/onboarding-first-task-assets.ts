@@ -18,6 +18,8 @@ export interface OnboardingFirstTaskPlaceholders {
   organizationName?: string | null;
 }
 
+export type OnboardingFirstTaskLocale = "en" | "ru";
+
 // The opening card seeded on the first task right after the greeting: one
 // single-select question with two options, "interview me" or "I have a task in
 // mind" (free text). The first-task skill refers to these ids, so they are fixed here;
@@ -90,16 +92,17 @@ export function fillFirstTaskPlaceholders(
 // Layer C — the deterministic greeting posted as the agent on the first task.
 export async function renderOnboardingFirstTaskGreeting(
   placeholders: OnboardingFirstTaskPlaceholders,
+  locale: OnboardingFirstTaskLocale = "en",
 ): Promise<string> {
-  const template = await loadFirstTaskAsset("greeting.md");
+  const template = await loadFirstTaskAsset(locale === "ru" ? "ru/greeting.md" : "greeting.md");
   return fillFirstTaskPlaceholders(template, placeholders).trim();
 }
 
 // Layer C — the opening ask_user_questions card seeded as the agent right after
 // the greeting, so the first task is not open-ended: the user either asks to be
 // interviewed or types the task they have in mind. Deterministic, no LLM.
-export async function buildOnboardingFirstTaskOpeningQuestion(): Promise<AskUserQuestionsPayload> {
-  const raw = await loadFirstTaskAsset("opening-question.json");
+export async function buildOnboardingFirstTaskOpeningQuestion(locale: OnboardingFirstTaskLocale = "en"): Promise<AskUserQuestionsPayload> {
+  const raw = await loadFirstTaskAsset(locale === "ru" ? "ru/opening-question.json" : "opening-question.json");
   const file = openingQuestionFileSchema.parse(JSON.parse(raw));
   return askUserQuestionsPayloadSchema.parse({
     version: 1,
@@ -124,9 +127,13 @@ export async function buildOnboardingFirstTaskOpeningQuestion(): Promise<AskUser
 // Capture the toggle as a mode here so later changes do not alter this task.
 export async function buildOnboardingFirstTaskBrief(options: {
   usePlanProposal: boolean;
+  locale?: OnboardingFirstTaskLocale;
 }): Promise<string> {
   const brief = await loadFirstTaskAsset("brief.md");
-  return brief.replace("{{proposalMode}}", options.usePlanProposal ? "plan" : "confirmation").trim();
+  const rendered = brief.replace("{{proposalMode}}", options.usePlanProposal ? "plan" : "confirmation").trim();
+  return options.locale === "ru"
+    ? `${rendered}\n\nThe user selected Russian for onboarding. Respond in Russian unless the user requests another language. Preserve technical identifiers, paths, commands, and brand names.`
+    : rendered;
 }
 
 // Layer B — the chief-of-staff persona seeded over the first agent's entry

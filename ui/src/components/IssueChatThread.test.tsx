@@ -9,11 +9,12 @@ import {
   useState,
 } from "react";
 import { flushSync } from "react-dom";
+import { i18n, setLocale } from "@/i18n";
 import type { ComponentProps, ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Agent } from "@paperclipai/shared";
+import type { Agent, IssueAttachment } from "@paperclipai/shared";
 import { CommentSubmissionUnknownError } from "../lib/comment-submit-result";
 import { loadDraft, preserveDraftInTab, settleDraftSubmission } from "../lib/composer-draft";
 import {
@@ -167,12 +168,12 @@ vi.mock("./MarkdownEditor", () => ({
 }));
 
 vi.mock("./InlineEntitySelector", () => ({
-  InlineEntitySelector: ({ value, onChange }: { value: string; onChange: (value: string) => void }) => (
-    <select aria-label="Test recipient" value={value} onChange={(event) => onChange(event.target.value)}>
+  InlineEntitySelector: ({ value, onChange, noneLabel, searchPlaceholder }: { value: string; onChange: (value: string) => void; noneLabel?: string; searchPlaceholder?: string }) => (
+    <select aria-label="Test recipient" title={searchPlaceholder} value={value} onChange={(event) => onChange(event.target.value)}>
       <option value="agent:first">First agent</option>
       <option value="agent:latest">Latest agent</option>
       <option value="user:me">Me</option>
-      <option value="">No responsible</option>
+      <option value="">{noneLabel}</option>
     </select>
   ),
 }));
@@ -383,6 +384,71 @@ function createFileDragEvent(type: string, files: File[]) {
 describe("IssueChatThread", () => {
   let container: HTMLDivElement;
 
+  it("preserves classic draft focus, selection and pending attachment through EN RU EN and submits one exact receipt", async () => {
+    const root = createRoot(container);
+    let resolveUpload!: (value: IssueAttachment) => void;
+    const onAttachImage = vi.fn(() => new Promise<IssueAttachment>(resolve => { resolveUpload = resolve; }));
+    const onAdd = vi.fn(async () => {});
+    const raw = "Literal <strong>draft</strong> & Привет";
+    const file = new File(["receipt"], "literal[RU].txt", { type: "text/plain" });
+    await act(async () => renderIssueThread(root, { onAdd, onAttachImage, draftKey: "classic-locale-draft" }));
+    const editor = container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Issue chat editor"]')!;
+    act(() => {
+      Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")!.set!.call(editor, raw);
+      editor.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const composer = container.querySelector('[data-testid="issue-chat-composer"]')!;
+    act(() => composer.dispatchEvent(createFileDragEvent("drop", [file])));
+    editor.focus(); editor.setSelectionRange(2, 14);
+    const attachment = container.querySelector('[data-testid="issue-chat-composer-attachments"]')!;
+    for (const locale of ["ru", "en", "ru"] as const) {
+      await act(async () => { await setLocale(locale); });
+      expect(container.querySelector('textarea[aria-label="Issue chat editor"]')).toBe(editor);
+      expect(container.querySelector('[data-testid="issue-chat-composer-attachments"]')).toBe(attachment);
+      expect(document.activeElement).toBe(editor);
+      expect([editor.selectionStart, editor.selectionEnd]).toEqual([2, 14]);
+      expect(editor.value).toBe(raw);
+      expect(attachment.textContent).toContain(locale === "ru" ? "Загрузка" : "Uploading");
+      expect(onAttachImage).toHaveBeenCalledTimes(1);
+      expect(onAdd).not.toHaveBeenCalled();
+    }
+    const receipt = "12345678-1234-4234-8234-123456789abc";
+    const attachmentReceipt: IssueAttachment = {
+      id: receipt, companyId: "company-locale", issueId: "issue-locale", issueCommentId: null,
+      assetId: "asset-locale", provider: "local_disk", objectKey: "locale/literal.txt", contentType: file.type,
+      byteSize: file.size, sha256: "f".repeat(64), originalFilename: file.name,
+      createdByAgentId: null, createdByUserId: "viewer-locale", createdAt: new Date("2026-04-06T12:00:00.000Z"),
+      updatedAt: new Date("2026-04-06T12:00:00.000Z"), contentPath: `/api/attachments/${receipt}/content`,
+    };
+    await act(async () => resolveUpload(attachmentReceipt));
+    const send = [...container.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent === i18n.t("taskChatUi.classic.send"))!;
+    await act(async () => send.click());
+    expect(onAdd).toHaveBeenCalledTimes(1);
+    expect(onAdd).toHaveBeenCalledWith(`${raw}\n\n[literal\\[RU\\].txt](/api/attachments/${receipt}/content)`, undefined, undefined, [receipt], expect.any(String));
+    await act(async () => root.unmount());
+  });
+
+  it("localizes fallback recipient captions without changing the selected canonical recipient", async () => {
+    const root = createRoot(container);
+    const onAdd = vi.fn();
+    act(() => renderIssueThread(root, { enableReassign: true, onAdd,
+      reassignOptions: [{ id: "agent:first", label: "First agent" }],
+      currentAssigneeValue: "agent:first", suggestedAssigneeValue: "agent:first", draftKey: "locale-recipient",
+    }));
+    const selector = container.querySelector<HTMLSelectElement>('select[aria-label="Test recipient"]')!;
+    selector.focus();
+    for (const locale of ["ru", "en"] as const) {
+      await act(async () => { await setLocale(locale); });
+      expect(container.querySelector('select[aria-label="Test recipient"]')).toBe(selector);
+      expect(document.activeElement).toBe(selector);
+      expect(selector.value).toBe("agent:first");
+      expect(selector.title).toBe(locale === "ru" ? "Поиск ответственного..." : "Search responsible...");
+      expect(selector.querySelector('option[value=""]')?.textContent).toBe(locale === "ru" ? "Без ответственного" : "No responsible");
+      expect(onAdd).not.toHaveBeenCalled();
+    }
+    act(() => root.unmount());
+  });
+
   it("updates automatic suggestions but preserves manual choices until the task changes", () => {
     const root = createRoot(container);
     const render = (suggestion: string, draftKey = "task-one") => act(() => root.render(
@@ -426,7 +492,8 @@ describe("IssueChatThread", () => {
     );
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await setLocale("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     window.scrollTo = vi.fn();
@@ -434,7 +501,8 @@ describe("IssueChatThread", () => {
     sessionStorage.clear();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await setLocale("en");
     container.remove();
     vi.useRealTimers();
     appendMock.mockReset();

@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 /**
  * @fileoverview Core Skill Studio permission surfaces (PAP-13865, Phase 3).
  *
@@ -71,10 +72,9 @@ export function SkillPolicyDenialNotice({
   onDismiss?: () => void;
   className?: string;
 }) {
+  useTranslation();
   const actions = onDismiss ? (
-    <Button variant="ghost" size="sm" onClick={onDismiss}>
-      Dismiss
-    </Button>
+    <Button variant="ghost" size="sm" onClick={onDismiss}>{t("skillsGap.dismiss")}</Button>
   ) : undefined;
 
   return (

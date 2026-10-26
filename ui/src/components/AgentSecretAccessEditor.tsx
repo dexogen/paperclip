@@ -1,3 +1,4 @@
+import { useTranslation, Trans } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { KeyRound, Plus, ServerCog, Trash2, Variable } from "lucide-react";
 import type {
@@ -16,7 +17,6 @@ import {
   AGENT_ACCESS_CONFIG_PATH_PREFIX,
   ENV_CONFIG_PATH_PREFIX,
   SECRET_ALIAS_RE,
-  deliveryModeDescription,
 } from "../lib/secret-delivery";
 import { envKeyFromSecretName, secretNameFromKey } from "./environment-variables-editor/model";
 import {
@@ -171,14 +171,14 @@ export interface AgentSecretAccessEditorProps {
 }
 
 function DeliveryBadge({ mode }: { mode: "env" | "api" }) {
+  const { t } = useTranslation();
   if (mode === "env") {
     return (
       <Badge
         variant="outline"
         className="h-5 gap-1 px-1.5 text-(length:--text-nano) font-normal border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300"
       >
-        <Variable className="size-3" /> Env var
-      </Badge>
+        <Variable className="size-3" />{t("agentConfigUi.envVar")}</Badge>
     );
   }
   return (
@@ -186,8 +186,7 @@ function DeliveryBadge({ mode }: { mode: "env" | "api" }) {
       variant="outline"
       className="h-5 gap-1 px-1.5 text-(length:--text-nano) font-normal border-violet-500/30 bg-violet-500/10 text-violet-700 dark:text-violet-300"
     >
-      <ServerCog className="size-3" /> API access
-    </Badge>
+      <ServerCog className="size-3" />{t("agentConfigUi.apiAccess")}</Badge>
   );
 }
 
@@ -201,6 +200,7 @@ export function AgentSecretAccessEditor({
   onApproveProposal,
   onRejectProposal,
 }: AgentSecretAccessEditorProps) {
+  const { t } = useTranslation();
   const bindingProposals = useMemo(
     () => (proposals ?? []).filter((proposal) => proposal.kind === "binding"),
     [proposals],
@@ -285,15 +285,13 @@ export function AgentSecretAccessEditor({
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No secrets are bound to this agent yet.</p>
+        <p className="text-sm text-muted-foreground">{t("agentConfigUi.noSecrets")}</p>
       )}
 
       {/* Pending binding proposals targeting this agent (PAP-14731). */}
       {bindingProposals.length > 0 && onApproveProposal && onRejectProposal ? (
         <div className="space-y-2">
-          <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-            Proposed access
-          </div>
+          <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{t("agentConfigUi.proposedAccess")}</div>
           {bindingProposals.map((proposal) => {
             const secret = bindingSecretLabel(proposal);
             const envKey = bindingEnvKey(proposal);
@@ -312,7 +310,7 @@ export function AgentSecretAccessEditor({
                     {secret.pending ? <ProposedBadge /> : null}
                   </div>
                   <p className="flex flex-wrap items-center gap-1 text-muted-foreground">
-                    <span>proposed by {proposal.proposedBy.name}</span>
+                    <span>{t("agentConfigUi.proposedBy", { name: proposal.proposedBy.name })}</span>
                     <span aria-hidden="true">·</span>
                     <span className="truncate italic">“{proposal.justification}”</span>
                   </p>
@@ -332,9 +330,7 @@ export function AgentSecretAccessEditor({
 
       {/* Editable API-access grants (access.<ALIAS>). */}
       <div className="space-y-2">
-        <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-          API access (no env var)
-        </div>
+        <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{t("agentConfigUi.apiAccessNoEnv")}</div>
         {rows.length > 0 ? (
           <div className="space-y-2">
             {rows.map((row) => {
@@ -357,7 +353,7 @@ export function AgentSecretAccessEditor({
                           }
                         }}
                         placeholder="ALIAS"
-                        aria-label="Access alias"
+                        aria-label={t("agentConfigUi.accessAlias")}
                         disabled={disabled}
                         className={cn(
                           "h-9 font-mono text-sm",
@@ -450,9 +446,9 @@ export function AgentSecretAccessEditor({
                           });
                         }}
                         disabled={disabled || !selectedSecret}
-                        aria-label="Version"
+                        aria-label={t("agentConfigUi.version")}
                       >
-                        <option value="latest">latest</option>
+                        <option value="latest">{t("agentConfigUi.latest")}</option>
                         {selectedSecret
                           ? Array.from({ length: Math.max(0, selectedSecret.latestVersion) }, (_, index) => {
                               const version = selectedSecret.latestVersion - index;
@@ -470,18 +466,16 @@ export function AgentSecretAccessEditor({
                       type="button"
                       onClick={() => removeRow(row.id)}
                       disabled={disabled}
-                      aria-label="Remove API access"
+                      aria-label={t("agentConfigUi.removeAccess")}
                       className="mt-1 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                     >
                       <Trash2 className="size-3.5" />
                     </button>
                   </div>
                   {aliasInvalid ? (
-                    <p className="pl-0.5 text-(length:--text-micro) text-destructive">
-                      Invalid alias — use letters, digits and _
-                    </p>
+                    <p className="pl-0.5 text-(length:--text-micro) text-destructive">{t("agentConfigUi.invalidAlias")}</p>
                   ) : aliasDuplicate ? (
-                    <p className="pl-0.5 text-(length:--text-micro) text-destructive">Duplicate alias</p>
+                    <p className="pl-0.5 text-(length:--text-micro) text-destructive">{t("agentConfigUi.duplicateAlias")}</p>
                   ) : null}
                 </div>
               );
@@ -495,13 +489,11 @@ export function AgentSecretAccessEditor({
           disabled={disabled}
           className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
         >
-          <Plus className="size-3.5" />
-          Add API access
-        </button>
+          <Plus className="size-3.5" />{t("agentConfigUi.addAccess")}</button>
       </div>
 
       <p className="text-(length:--text-micro) text-muted-foreground/70">
-        {deliveryModeDescription("api")} The agent reads them by alias through <code>GET /agents/me/secrets</code>.
+        <Trans t={t} i18nKey="agentConfigUi.apiDelivery" components={{ endpoint: <code /> }} />
       </p>
     </div>
   );

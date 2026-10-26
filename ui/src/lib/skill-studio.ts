@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type {
   CompanySkillLastEditor,
   CompanySkillListItem,
@@ -94,7 +95,7 @@ export function testTaskLinkState(run: {
   harnessIssue?: { id: string } | null;
 }): { enabled: boolean; reason: string | null } {
   if (run.taskExpired || !run.harnessIssue) {
-    return { enabled: false, reason: "Test task expired" };
+    return { enabled: false, reason: t("skillsGap.testExpired") };
   }
   return { enabled: true, reason: null };
 }
@@ -129,19 +130,19 @@ export interface RunGateResult {
  */
 export function evaluateRunGate(input: RunGateInput): RunGateResult {
   if (input.skillFileCount <= 0) {
-    return { disabled: true, reason: "This skill has no files to test" };
+    return { disabled: true, reason: t("skillsGap.noFilesToTest") };
   }
   if (!input.hasAgent) {
-    return { disabled: true, reason: "Pick an agent to run" };
+    return { disabled: true, reason: t("skillsGap.pickAgentToRun") };
   }
   if (!input.hasInput) {
-    return { disabled: true, reason: "Add or paste input text to run" };
+    return { disabled: true, reason: t("skillsGap.addInputToRun") };
   }
   if (input.hasUnsavedSkillEdits) {
-    return { disabled: true, reason: "Save skill edits before running" };
+    return { disabled: true, reason: t("skillsGap.saveBeforeRun") };
   }
   if (input.runInFlight) {
-    return { disabled: true, reason: "A run is already in progress" };
+    return { disabled: true, reason: t("skillsGap.runInProgress") };
   }
   return { disabled: false, reason: null };
 }
@@ -357,9 +358,9 @@ export interface RunMediaGalleryItem {
 }
 
 function runHarnessUnavailableTitle(reason: CompanySkillTestRunHarnessContentUnavailableReason | null) {
-  if (reason === "expired") return "Test task expired";
-  if (reason === "deleted") return "Test task deleted";
-  return "Test task unavailable";
+  if (reason === "expired") return t("skillsGap.testExpired");
+  if (reason === "deleted") return t("skillsGap.testDeleted");
+  return t("skillsGap.testUnavailable");
 }
 
 export function runHarnessUnavailableCopy(
@@ -368,7 +369,7 @@ export function runHarnessUnavailableCopy(
   if (detail.harnessContent.available) return null;
   return {
     title: runHarnessUnavailableTitle(detail.harnessContent.unavailableReason),
-    body: "Stored run snapshots are still shown. Harness documents, attachments, and work products are no longer available.",
+    body: t("skillsGap.snapshotsRemain"),
   };
 }
 
@@ -546,7 +547,7 @@ export function skillEditorAvatar(
   lastEditor: CompanySkillLastEditor | null | undefined,
 ): SkillEditorAvatar | null {
   if (!lastEditor || lastEditor.kind !== "user") return null;
-  const name = lastEditor.name?.trim() || "Unknown editor";
+  const name = lastEditor.name?.trim() || t("skillsGap.unknownEditor");
   return {
     name,
     imageUrl: lastEditor.imageUrl,

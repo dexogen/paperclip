@@ -523,6 +523,32 @@ describe("run failure diagnostics", () => {
     expect(collectRunFailureSecretValues({ CUSTOM_BINDING: "1" }, [], true)).toEqual(["1"]);
     expect(collectRunFailureSecretValues({ PAPERCLIP_DB_BACKUP_ENABLED: "opaque" }, [], true)).toEqual(["opaque"]);
   });
+
+  it("preserves inherited user session class diagnostics while redacting real credentials", () => {
+    const message = "continuation_user_authorization_missing";
+    const values = collectRunFailureSecretValues({
+      XDG_SESSION_CLASS: "user",
+      CUSTOM_BINDING: "fixture-private-credential",
+    }, [], true);
+    expect(redactRunFailureSecretValues({
+      message,
+      stack: `Error: ${message}\ncredential: fixture-private-credential`,
+    }, values)).toEqual({
+      message,
+      stack: `Error: ${message}\ncredential: ***REDACTED***`,
+    });
+  });
+
+  it.each([
+    { name: "unknown session class", env: { XDG_SESSION_CLASS: "private-session-class" }, secretKeys: [], inherited: true, secret: "private-session-class" },
+    { name: "declared session class binding", env: { XDG_SESSION_CLASS: "user" }, secretKeys: ["XDG_SESSION_CLASS"], inherited: true, secret: "user" },
+    { name: "explicit session class setting", env: { XDG_SESSION_CLASS: "user" }, secretKeys: [], inherited: false, secret: "user" },
+    { name: "unrelated inherited binding", env: { CUSTOM_BINDING: "user" }, secretKeys: [], inherited: true, secret: "user" },
+  ])("still redacts $name", ({ env, secretKeys, inherited, secret }) => {
+    const values = collectRunFailureSecretValues(env, secretKeys, inherited);
+    expect(redactRunFailureSecretValues(`credential: ${secret}`, values)).toBe("credential: ***REDACTED***");
+  });
+
   it("preserves generic exceptions, numeric codes and nested network causes", () => {
     const root = Object.assign(new Error("network failed"), { code: "ECONNRESET", statusCode: 502, request_id: "req-123" });
     const outer = Object.assign(new TypeError("adapter failed", { cause: root }), { code: -32000 });

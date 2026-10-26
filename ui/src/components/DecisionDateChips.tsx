@@ -1,7 +1,8 @@
+import { useTranslation } from "@/i18n";
 import { cloneElement, isValidElement, useState } from "react";
 import { CalendarRange } from "lucide-react";
 import {
-  ATTENTION_DATE_RANGE_OPTIONS,
+  attentionDateRangeOptions,
   type AttentionDateRangeId,
 } from "../lib/attention";
 import { cn } from "../lib/utils";
@@ -26,11 +27,12 @@ interface DecisionDateChipsProps {
  * filter on the client. "Custom" opens a from/to range picker.
  */
 export function DecisionDateChips({ value, custom, onChange }: DecisionDateChipsProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
     <div className="flex flex-wrap items-center gap-1.5" data-decision-date-chips>
-      {ATTENTION_DATE_RANGE_OPTIONS.map(([id, label]) => (
+      {attentionDateRangeOptions(t).map(([id, label]) => (
         <ChipButton key={id} active={value === id} onClick={() => onChange(id, custom)}>
           {label}
         </ChipButton>
@@ -42,17 +44,18 @@ export function DecisionDateChips({ value, custom, onChange }: DecisionDateChips
               <CalendarRange className="h-3.5 w-3.5" />
               {value === "custom" && (custom.from || custom.to)
                 ? `${custom.from ?? "…"} → ${custom.to ?? "…"}`
-                : "Custom"}
+                : t("decisionsUi.common.custom")}
             </button>
           </ChipButton>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-auto space-y-2 p-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-(length:--text-nano) font-medium uppercase tracking-wide text-muted-foreground">
-              From
+              {t("decisionsUi.date.from")}
             </label>
             <input
               type="date"
+              aria-label={t("decisionsUi.date.from")}
               value={custom.from ?? ""}
               max={custom.to ?? undefined}
               className="rounded-sm border border-border bg-background px-2 py-1 text-xs"
@@ -61,10 +64,11 @@ export function DecisionDateChips({ value, custom, onChange }: DecisionDateChips
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-(length:--text-nano) font-medium uppercase tracking-wide text-muted-foreground">
-              To
+              {t("decisionsUi.date.to")}
             </label>
             <input
               type="date"
+              aria-label={t("decisionsUi.date.to")}
               value={custom.to ?? ""}
               min={custom.from ?? undefined}
               className="rounded-sm border border-border bg-background px-2 py-1 text-xs"
@@ -81,7 +85,7 @@ export function DecisionDateChips({ value, custom, onChange }: DecisionDateChips
                 setOpen(false);
               }}
             >
-              Clear
+              {t("decisionsUi.common.clear")}
             </Button>
           </div>
         </PopoverContent>
@@ -92,35 +96,36 @@ export function DecisionDateChips({ value, custom, onChange }: DecisionDateChips
 
 function ChipButton({
   active,
-  onClick,
   asChild,
   children,
-}: {
+  className: providedClassName,
+  ...buttonProps
+}: React.ComponentProps<"button"> & {
   active: boolean;
-  onClick?: () => void;
   asChild?: boolean;
-  children: React.ReactNode;
 }) {
   const className = cn(
     "inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
     active
       ? "border-primary bg-primary/10 text-primary"
       : "border-border text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+    providedClassName,
   );
   if (asChild) {
     // The child is a real <button>; merge the chip class straight onto it so the
     // flex layout (icon + label inline) lands on the button, not a wrapper span.
     // A bare wrapper span left the button unstyled → its icon stacked above the
     // label and the chip grew taller than its siblings.
-    if (isValidElement<{ className?: string }>(children)) {
+    if (isValidElement<React.ComponentProps<"button">>(children)) {
       return cloneElement(children, {
+        ...buttonProps,
         className: cn(className, children.props.className),
       });
     }
     return <span className={className}>{children}</span>;
   }
   return (
-    <button type="button" className={className} onClick={onClick} aria-pressed={active}>
+    <button type="button" {...buttonProps} className={className} aria-pressed={active}>
       {children}
     </button>
   );

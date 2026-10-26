@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import { DecisionCard, type DecisionIssueRef } from "./DecisionCard";
 import type { Decision, DecisionEffectExecution } from "../api/decisions";
 import { ThemeProvider } from "../context/ThemeContext";
@@ -320,4 +321,89 @@ describe("DecisionCard", () => {
     expect(expired.textContent).toContain("target issues were completed");
     expect(expired.textContent).not.toContain("expiry deadline");
   });
+});
+
+describe("DecisionCard localization", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
+
+  async function locale(value: "en" | "ru") {
+    await act(async () => { await i18n.changeLanguage(value); });
+  }
+
+  async function enter(field: HTMLInputElement | HTMLTextAreaElement, value: string) {
+    await act(() => {
+      const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, "value")!.set!.call(field, value);
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
+  it("retains inputs and signed cancel-tree confirmation across EN RU EN with literal labels", async () => {
+    const onDecide = vi.fn();
+    const label = "Cancel <b>custom</b> & literal";
+    const name = "Agent <b>literal</b> & <actor>name</actor>";
+    const target = { ...ISSUES["issue-target"]!, identifier: "PAP-<b>456</b>" };
+    const signedChild = { ...ISSUES["issue-parent"]!, title: "Signed child" };
+    const decision = mkDecision({
+      inputs: [{ id: "explanation-id", label: "Raw input", required: true }],
+      options: [{ id: "cancel-id", label, style: "destructive", effects: [{ type: "cancel_issue_tree", targetIssueId: "issue-target", staleness: "strict", reasonComment: "unchanged" }] }],
+      targetSnapshots: { "issue-target": { ...mkDecision().targetSnapshots!["issue-target"]!, descendantIds: [signedChild.id], descendantCount: 1 } },
+    });
+    const snapshot = JSON.stringify(decision);
+    const preview = vi.fn((id: string) => id === target.id ? [target, signedChild] : null);
+    const el = render({ decision, onDecide, originAgentName: name, cancelTreePreview: preview, resolveIssue: (id) => id === target.id ? target : resolveIssue(id) });
+    const input = el.querySelector<HTMLTextAreaElement>("textarea")!;
+    const draft = "Сохранить <b>raw</b> & value";
+    await enter(input, draft);
+    await act(() => { clickButtonWithText(el, label); });
+    const confirmInput = el.querySelector<HTMLInputElement>('input[aria-label="Type the issue identifier to confirm"]')!;
+    await enter(confirmInput, target.identifier!);
+    for (const language of ["ru", "en", "ru"] as const) {
+      await locale(language);
+      expect(el.querySelector("textarea")).toBe(input);
+      expect(el.querySelector("input")).toBe(confirmInput);
+      expect(input.value).toBe(draft);
+      expect(confirmInput.value).toBe(target.identifier);
+      expect(el.textContent).toContain(label);
+      expect(el.querySelector("p")?.textContent).toContain(name);
+      expect(el.textContent).toContain(target.identifier);
+      expect(el.querySelector("b, actor, token")).toBeNull();
+      expect(el.querySelector('[data-decision-state="pending"]')).toBeTruthy();
+      expect(onDecide).not.toHaveBeenCalled();
+    }
+    expect(preview.mock.calls.every(([id]) => id === target.id)).toBe(true);
+    await act(() => { clickButtonWithText(el, "Отменить 2 задачи"); });
+    expect(onDecide).toHaveBeenCalledExactlyOnceWith("cancel-id", { "explanation-id": draft });
+    expect(JSON.stringify(decision)).toBe(snapshot);
+  });
+
+  it.each([[1, "задачу"], [2, "задачи"], [5, "задач"], [11, "задач"], [21, "задачу"], [22, "задачи"], [25, "задач"]] as const)("localizes cancellation of %i tasks without changing option IDs", async (count, noun) => {
+    const onDecide = vi.fn();
+    const rows = Array.from({ length: count }, (_, index) => ({ ...ISSUES["issue-target"]!, id: `signed-${index}`, identifier: `PAP-${index}` }));
+    const el = render({ onDecide, cancelTreePreview: () => rows, decision: mkDecision({ options: [{ id: "cancel-signed", label: "Custom choice", effects: [{ type: "cancel_issue_tree", targetIssueId: "issue-target", staleness: "strict", reasonComment: "unchanged" }] }] }) });
+    await act(() => { clickButtonWithText(el, "Custom choice"); });
+    await locale("ru");
+    expect(el.textContent).toContain(`Отменить ${count} ${noun}`);
+    expect(onDecide).not.toHaveBeenCalled();
+  });
+
+  it("localizes known execution codes while preserving unknown provider failures", async () => {
+    const raw = "Provider <b>failure</b> & unchanged";
+    const el = render({ decision: mkDecision({ status: "decided", executionStatus: "partial" }), executions: [exec({ id: "known", status: "failed", error: "deny_decision_intersection" }), exec({ id: "raw", status: "failed", error: raw })] });
+    await locale("ru");
+    expect(el.textContent).toContain("заблокировано проверкой прав доступа");
+    expect(el.textContent).toContain(raw);
+    expect(el.querySelector("b")).toBeNull();
+    expect(el.querySelector('[data-decision-state="partial"]')).toBeTruthy();
+  });
+});
+
+it("uses completed wording for an executed status change in both locales", async () => {
+  const el = render({ decision: mkDecision({ status: "decided", executionStatus: "succeeded" }), executions: [exec({ effectType: "update_issue_status", status: "executed", result: { status: "done" } })] });
+  expect(el.textContent).toContain("Set PAP-456 to done");
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(el.textContent).toContain("Цель: PAP-456 — установлен статус «завершена»");
+  expect(el.textContent).not.toContain("установить статус");
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(el.textContent).toContain("Set PAP-456 to done");
 });

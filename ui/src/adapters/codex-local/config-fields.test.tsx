@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { setLocale } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { act, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -121,6 +122,24 @@ async function editFields(
 }
 
 describe("Paperclip Runner Codex configuration", () => {
+  it("A2 locale changes preserve runner lifecycle, account binding and permission payload", async () => {
+    await editFields("edit", "paperclip_runner", async (container, saved) => {
+      const original = structuredClone(saved());
+      const control = container.querySelector('[aria-label="Runner lifecycle"]');
+      try {
+        await act(async () => { await setLocale("ru"); });
+        expect(container.textContent).toContain("Жизненный цикл среды запуска");
+        expect(container.querySelector('[aria-label="Жизненный цикл среды запуска"]')).toBe(control);
+        expect(saved()).toEqual(original);
+        await selectField(container, "Жизненный цикл среды запуска", "per_turn");
+        expect(saved()).toEqual({ ...original, lifecycleMode: "per_turn" });
+        await act(async () => { await setLocale("en"); });
+        expect(container.querySelector('[aria-label="Runner lifecycle"]')).toBe(control);
+        expect(saved()).toEqual({ ...original, lifecycleMode: "per_turn" });
+      } finally { await act(async () => { await setLocale("en"); }); }
+    });
+  });
+
   it.each(["", "--sandbox,read-only"])("shows actual automatic Legacy policy and preserves the explicit toggle (%s)", async (extraArgs) => {
     const container = document.createElement("div");
     document.body.appendChild(container);

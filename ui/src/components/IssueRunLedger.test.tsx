@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { RunForIssue } from "../api/activity";
 import type { ActiveRunForIssue } from "../api/heartbeats";
 import { IssueRunLedgerContent } from "./IssueRunLedger";
+import { i18n } from "@/i18n";
 
 vi.mock("@/lib/router", () => ({
   Link: ({ children, to, ...props }: { children: ReactNode; to: string } & ComponentProps<"a">) => (
@@ -29,9 +30,10 @@ beforeEach(() => {
   root = createRoot(container);
 });
 
-afterEach(() => {
+afterEach(async () => {
   act(() => root.unmount());
   container.remove();
+  await i18n.changeLanguage("en");
   vi.useRealTimers();
 });
 
@@ -149,6 +151,39 @@ function createActiveRun(overrides: Partial<ActiveRunForIssue> = {}): ActiveRunF
     ...overrides,
   };
 }
+
+it("preserves live run identity and watchdog intent across locale changes", async () => {
+  const decide = vi.fn();
+  const agent = "Агент <b>{{literal}}</b>";
+  const active = createActiveRun({ agentName: agent });
+  const runs = [createRun({
+    runId: active.id, status: "running", finishedAt: null,
+    livenessState: null, livenessReason: "Provider <b>{{literal}}</b>",
+  })];
+  render(<IssueRunLedgerContent runs={runs} activeRun={active} issueStatus="in_progress"
+    childIssues={[]} agentMap={new Map()} onWatchdogDecision={decide} />);
+  const article = container.querySelector("article");
+  const runLink = container.querySelector(`a[href="/agents/${active.agentId}/runs/${active.id}"]`);
+  const route = window.location.href;
+  for (const [locale, label] of [["ru", "История запусков задачи"], ["en", "Task run ledger"]]) {
+    await act(async () => { await i18n.changeLanguage(locale); });
+    expect(container.querySelector("section")?.getAttribute("aria-label")).toBe(label);
+    expect(container.querySelector("article")).toBe(article);
+    expect(container.querySelector(`a[href="/agents/${active.agentId}/runs/${active.id}"]`)).toBe(runLink);
+    expect(container.textContent).toContain(agent);
+    expect(container.textContent).toContain("Provider <b>{{literal}}</b>");
+    expect(window.location.href).toBe(route);
+    expect(decide).not.toHaveBeenCalled();
+  }
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  const snooze = Array.from(container.querySelectorAll("button")).find((button) => button.textContent?.trim() === "Отложить на 1 ч");
+  expect(snooze).toBeDefined();
+  act(() => snooze!.click());
+  expect(decide).toHaveBeenCalledExactlyOnceWith({
+    runId: active.id, decision: "snooze", evaluationIssueId: "issue-eval-1",
+    snoozedUntil: "2026-04-18T21:00:00.000Z", reason: "Snoozed from issue run ledger",
+  });
+});
 
 function renderLedger(props: Partial<ComponentProps<typeof IssueRunLedgerContent>> = {}) {
   render(
@@ -552,16 +587,34 @@ describe("IssueRunLedger", () => {
     expect(onWatchdogDecision).not.toHaveBeenCalled();
   });
 
-  it("surfaces the responsible user a run acts on behalf of", () => {
+  it("surfaces the responsible user literally across locale changes", async () => {
+    const name = "Ada <b>{{literal}}</b> & Lovelace";
     renderLedger({
       runs: [createRun({ runId: "run-obo-1", responsibleUserId: "user-2" })],
-      resolveUserLabel: (userId) => (userId === "user-2" ? "Ada Lovelace" : null),
+      resolveUserLabel: (userId) => (userId === "user-2" ? name : null),
     });
 
     const chip = container.querySelector('[data-testid="run-on-behalf-of"]');
     expect(chip).not.toBeNull();
     expect(chip?.textContent).toContain("on behalf of");
-    expect(chip?.textContent).toContain("Ada Lovelace");
+    expect(chip?.textContent).toContain(name);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="run-on-behalf-of"]')).toBe(chip);
+    expect(chip?.textContent).toBe(`от имени пользователя «${name}»`);
+    expect(chip?.getAttribute("title")).toBe(`Действует от имени пользователя «${name}»`);
+    expect(chip?.querySelector("b")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(chip?.textContent).toBe(`on behalf of ${name}`);
+  });
+
+  it("uses the unnamed responsible user fallback only when no name is available", async () => {
+    await i18n.changeLanguage("ru");
+    renderLedger({
+      runs: [createRun({ responsibleUserId: "user-2" })],
+      resolveUserLabel: () => "  ",
+    });
+    expect(container.querySelector('[data-testid="run-on-behalf-of"]')?.textContent)
+      .toBe("от имени ответственного пользователя");
   });
 
   it("omits the on-behalf-of chip when the run has no responsible user", () => {

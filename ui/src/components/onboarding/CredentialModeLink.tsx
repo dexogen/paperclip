@@ -1,3 +1,4 @@
+import { useTranslation } from "../../i18n";
 import { AnimatePresence, motion } from "motion/react";
 
 import { cn } from "../../lib/utils";
@@ -17,10 +18,7 @@ import { LINK_LABEL_FADE_IN, LINK_LABEL_FADE_OUT } from "./onboarding-motion";
  * holds up because they are right above it.
  */
 
-const LINK_LABEL: Record<CredentialMode, string> = {
-  subscription: "Use subscription instead",
-  api: "Use API key instead",
-};
+
 const NATIVE_MODES: CredentialMode[] = ["subscription", "api"];
 
 const OTHER_MODE: Record<CredentialMode, CredentialMode> = {
@@ -43,6 +41,11 @@ function ModeLink({ destination, onClick, modes }: {
   onClick: () => void;
   modes: CredentialMode[];
 }) {
+  const { t } = useTranslation();
+  const LINK_LABEL: Record<CredentialMode, string> = {
+    subscription: t("onboarding.credentials.useSubscription"),
+    api: t("onboarding.credentials.useApiKey"),
+  };
   return (
     <button
       type="button"

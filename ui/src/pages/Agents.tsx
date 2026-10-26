@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Bot } from "lucide-react";
 import { AGENT_ROLE_LABELS, type Agent, type Environment, type EnvironmentCapabilities } from "@paperclipai/shared";
 import { usePublishSharedQueryData, useSharedPollingQuery } from "../hooks/useSharedPolling";
+import { t, useTranslation } from "@/i18n";
 
 import { agentDisplayAdapterType, getAdapterLabel } from "../adapters/adapter-display-registry";
 
@@ -56,17 +57,13 @@ interface EnvironmentDescriptor {
   title: string;
 }
 
-const localEnvironmentDescriptor: EnvironmentDescriptor = {
-  label: "Local",
-  detail: "Paperclip host",
-  title: "Local - Paperclip host",
-};
+function localEnvironmentDescriptor(): EnvironmentDescriptor {
+  return { label: t("agents.localEnvironment"), detail: t("agents.paperclipHost"), title: t("agents.localEnvironmentTitle") };
+}
 
-const loadingEnvironmentDescriptor: EnvironmentDescriptor = {
-  label: "—",
-  detail: "Loading environment",
-  title: "Loading environment",
-};
+function loadingEnvironmentDescriptor(): EnvironmentDescriptor {
+  return { label: "—", detail: t("agents.loadingEnvironment"), title: t("agents.loadingEnvironment") };
+}
 
 // Agents in these states never appear in the agents list — `terminated` is
 // hidden like an archived company, and `pending_approval` is a hiring gate that
@@ -117,7 +114,7 @@ function getSandboxProviderLabel(
   const provider = typeof environment.config.provider === "string"
     ? environment.config.provider.trim()
     : "";
-  if (!provider) return "Sandbox";
+  if (!provider) return t("agents.sandbox");
   return capabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
 }
 
@@ -126,11 +123,11 @@ function describeEnvironment(
   capabilities?: EnvironmentCapabilities | null,
 ): EnvironmentDescriptor {
   const detail = isPlatformManagedEnvironment(environment)
-    ? "Managed by Paperclip"
+    ? t("agents.managedEnvironment")
     : environment.driver === "sandbox"
-      ? `${getSandboxProviderLabel(environment, capabilities)} sandbox provider`
+      ? t("agents.sandboxProvider", { provider: getSandboxProviderLabel(environment, capabilities) })
       : environment.driver === "local"
-        ? "Paperclip host"
+        ? t("agents.paperclipHost")
         : formatEnvironmentDriver(environment.driver);
 
   return {
@@ -142,9 +139,9 @@ function describeEnvironment(
 
 function describeMissingEnvironment(environmentId: string): EnvironmentDescriptor {
   return {
-    label: "Unknown environment",
+    label: t("agents.unknownEnvironment"),
     detail: environmentId.slice(0, 8),
-    title: `Unknown environment - ${environmentId}`,
+    title: t("agents.unknownEnvironmentTitle", { id: environmentId }),
   };
 }
 
@@ -155,7 +152,7 @@ function resolveAgentEnvironment(
   capabilities?: EnvironmentCapabilities | null,
 ): EnvironmentDescriptor {
   const environmentId = agent.defaultEnvironmentId ?? instanceDefaultEnvironmentId;
-  if (!environmentId) return localEnvironmentDescriptor;
+  if (!environmentId) return localEnvironmentDescriptor();
   const environment = environmentsById.get(environmentId);
   return environment
     ? describeEnvironment(environment, capabilities)
@@ -186,6 +183,7 @@ export function filterOrgTree(nodes: OrgNode[], tab: FilterTab, builtInAgentIds:
 export type AgentsView = "list" | "org";
 
 export function Agents({ initialView = "list" }: { initialView?: AgentsView } = {}) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const agentChat = useAgentChatEnabled();
   const { selectedCompanyId } = useCompany();
@@ -306,11 +304,11 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
       );
     }
     return map;
-  }, [agents, environmentsById, environmentCapabilities, instanceSettings?.defaultEnvironmentId]);
+  }, [agents, environmentsById, environmentCapabilities, instanceSettings?.defaultEnvironmentId, t]);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Agents" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("agents.title") }]);
+  }, [setBreadcrumbs, t]);
 
   useEffect(() => {
     if (requestedTab !== "all") {
@@ -319,7 +317,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
   }, [navigate, requestedTab]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Bot} message="Select an organization to view agents." />;
+    return <EmptyState icon={Bot} message={t("agents.selectOrganization")} />;
   }
 
   if (isLoading) {
@@ -332,8 +330,8 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
   const showEnvironmentColumn = environmentsEnabled && (environments === undefined || environments.length > 1);
   const resolveRenderedEnvironment = (agentId: string) => (
     environmentDataLoading
-      ? loadingEnvironmentDescriptor
-      : environmentByAgentId.get(agentId) ?? localEnvironmentDescriptor
+      ? loadingEnvironmentDescriptor()
+      : environmentByAgentId.get(agentId) ?? localEnvironmentDescriptor()
   );
 
   const renderAgentRow = (agent: Agent) => {
@@ -357,7 +355,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
               variant="outline"
               onClick={() => setConfigureState(builtInState)}
             >
-              Set up
+              {t("agents.setUp")}
             </Button>
           </span>
         )}
@@ -375,7 +373,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
         to={agentUrl(agent)}
         className="group py-3"
         leading={hasInvalidOrgChain ? (
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" aria-label="Invalid reporting chain" />
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" aria-label={t("agents.invalidReportingChain")} />
         ) : (
           <AgentAvatar agent={agent} size={32} />
         )}
@@ -387,12 +385,12 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
             {showEnvironmentColumn && <span className="text-xs text-muted-foreground" title={resolveRenderedEnvironment(agent.id).title}>
               {resolveRenderedEnvironment(agent.id).label} · {resolveRenderedEnvironment(agent.id).detail}
             </span>}
-            {agent.lastHeartbeatAt && <span className="text-xs text-muted-foreground" title="Last heartbeat">{relativeTime(agent.lastHeartbeatAt)}</span>}
+            {agent.lastHeartbeatAt && <span className="text-xs text-muted-foreground" title={t("agents.lastHeartbeat")}>{relativeTime(agent.lastHeartbeatAt)}</span>}
           </div>
         )}
         trailing={
           <div className="flex items-center gap-3">
-            {agentChat.enabled && <Button variant="ghost" size="sm" onClick={event => { event.preventDefault(); event.stopPropagation(); navigate(`/chats/${agentRouteRef(agent)}`); }}>Chat</Button>}
+            {agentChat.enabled && <Button variant="ghost" size="sm" onClick={event => { event.preventDefault(); event.stopPropagation(); navigate(`/chats/${agentRouteRef(agent)}`); }}>{t("agents.chat")}</Button>}
             <div className="hidden sm:flex items-center gap-3">
               {liveRunByAgent.has(agent.id) && (
                 <LiveRunIndicator
@@ -425,8 +423,8 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
       {agents && agents.length === 0 && (
         <EmptyState
           icon={Bot}
-          message="Create your first agent to get started."
-          action="New Agent"
+          message={t("agents.createFirstAgent")}
+          action={t("agents.newAgent")}
           onAction={openNewAgent}
         />
       )}
@@ -447,13 +445,13 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
 
       {effectiveView === "org" && orgTree && orgTree.length > 0 && filteredOrg.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-8">
-          No agents match your search and selected status.
+          {t("agents.noSearchMatch")}
         </p>
       )}
 
       {effectiveView === "org" && orgTree && orgTree.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-8">
-          No organizational hierarchy defined.
+          {t("agents.noHierarchy")}
         </p>
       )}
       {configureState && selectedCompanyId && (
@@ -494,6 +492,7 @@ function OrgTreeNode({
   builtInByAgentId: Map<string, BuiltInAgentState>;
   onConfigureBuiltIn: (state: BuiltInAgentState) => void;
 }) {
+  const { t } = useTranslation();
   const agent = agentMap.get(node.id);
   const builtInState = builtInByAgentId.get(node.id);
   const showBuiltInLifecycle = builtInState?.status === "needs_setup" || builtInState?.status === "pending_approval";
@@ -506,7 +505,7 @@ function OrgTreeNode({
         className="group flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent/50 transition-colors w-full text-left no-underline text-inherit"
       >
         {hasInvalidOrgChain ? (
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" aria-label="Invalid reporting chain" />
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" aria-label={t("agents.invalidReportingChain")} />
         ) : (
           <AgentAvatar agent={agent ?? node} size={24} />
         )}
@@ -532,7 +531,7 @@ function OrgTreeNode({
                   }}
                 >
                   <Button size="xs" variant="outline" onClick={() => onConfigureBuiltIn(builtInState)}>
-                    Set up
+                    {t("agents.setUp")}
                   </Button>
                 </span>
               )}
@@ -565,8 +564,8 @@ function OrgTreeNode({
                   agent={agent}
                   environment={
                     environmentDataLoading
-                      ? loadingEnvironmentDescriptor
-                      : environmentByAgentId.get(agent.id) ?? localEnvironmentDescriptor
+                      ? loadingEnvironmentDescriptor()
+                      : environmentByAgentId.get(agent.id) ?? localEnvironmentDescriptor()
                   }
                   showEnvironment={showEnvironment}
                 />
@@ -657,6 +656,7 @@ function LiveRunIndicator({
   runId: string;
   liveCount: number;
 }) {
+  const { t } = useTranslation();
   return (
     <Link
       to={`/agents/${agentRef}/runs/${runId}`}
@@ -668,7 +668,7 @@ function LiveRunIndicator({
         <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
       </span>
       <span className="text-(length:--text-micro) font-medium text-blue-600 dark:text-blue-400">
-        Live{liveCount > 1 ? ` (${liveCount})` : ""}
+        {t("agents.live")}{liveCount > 1 ? ` (${liveCount})` : ""}
       </span>
     </Link>
   );

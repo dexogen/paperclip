@@ -6,6 +6,23 @@ import {
 } from "./task-chat-adapter";
 
 describe("commentsToTaskChatItems", () => {
+  it("marks only absent human names and retains literal names that equal fallback captions", () => {
+    const comments = ["local-board", "viewer", "other"].map(authorUserId => ({
+      id: `comment-${authorUserId}`, authorType: "user", authorUserId, authorAgentId: null, body: "User <b>body</b>", createdAt: "2026-10-09T20:42:00Z",
+    } as unknown as IssueChatComment));
+    const raw = commentsToTaskChatItems(comments, { currentUserId: "viewer" });
+    expect(raw).toMatchObject([
+      { id: "comment-local-board", authorName: "Board", display: { authorName: { code: "author.board" } } },
+      { id: "comment-viewer", authorName: "You", display: { authorName: { code: "author.you" } } },
+      { id: "comment-other", authorName: "User", display: { authorName: { code: "author.user" } } },
+    ]);
+    const names = new Map([["local-board", "Board"], ["viewer", "You"], ["other", "User"]]);
+    const named = commentsToTaskChatItems(comments, { currentUserId: "viewer", userLabelMap: names });
+    expect(named.map(item => "display" in item ? item.display : undefined)).toEqual([undefined, undefined, undefined]);
+    expect(named.map(item => item.id)).toEqual(raw.map(item => item.id));
+    expect(named).toMatchObject([{ authorName: "Board" }, { authorName: "You" }, { authorName: "User" }]);
+  });
+
   it("preserves distinct human IDs, photos and viewer ownership, including after a profile refresh", () => {
     const comments = ["alex", "sam"].map(authorUserId => ({
       id: `comment-${authorUserId}`, authorType: "user", authorUserId,
@@ -172,7 +189,9 @@ describe("commentsToTaskChatItems", () => {
     expect(agent.presentation).toBeUndefined();
     expect(agent.metadata).toBeUndefined();
     expect(agent.runAgentId).toBeUndefined();
-    expect(agent.createdAtIso).toBeUndefined();
+    expect(agent.createdAtIso).toBe("2026-08-07T09:01:00.000Z");
+    expect(agent.timestamp).toBe(formatTaskChatTimestamp(comments[1].createdAt));
+    expect(agent.author).toBe("agent");
   });
 
   it("keeps the regular comment time for a causally repositioned steered follow-up", () => {

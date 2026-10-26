@@ -3,6 +3,9 @@ import type { Resource } from "i18next";
 import { assertValidLocaleMessages } from "./locale-validation";
 
 export const DEFAULT_LOCALE = "en" as const;
+export const DEFAULT_UI_LOCALE = "ru" as const;
+export const selectableLocales = ["en", "ru"] as const;
+export type SelectableLocale = (typeof selectableLocales)[number];
 
 const localeModules = import.meta.glob("./locales/*.json", {
   eager: true,
@@ -25,7 +28,7 @@ if (!(DEFAULT_LOCALE in localeMessages)) {
 
 for (const [locale, messages] of Object.entries(localeMessages)) {
   try {
-    assertValidLocaleMessages(messages);
+    assertValidLocaleMessages(messages, localeMessages[DEFAULT_LOCALE], { allowMissing: locale !== DEFAULT_LOCALE, locale });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Invalid ${locale} locale messages: ${message}`);

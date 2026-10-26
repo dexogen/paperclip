@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { setLocale } from "@/i18n";
 import { renderToStaticMarkup } from "react-dom/server";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AgentDetail, AgentRuntimeState, HeartbeatRun, Issue } from "@paperclipai/shared";
@@ -22,6 +23,20 @@ vi.mock("../components/MarkdownBody", () => ({
 }));
 
 describe("AgentOverview", () => {
+  it.each([[1, "задача"], [2, "задачи"], [5, "задач"], [21, "задача"]])("renders the omitted task count %s while preserving raw task names and links", async (count, noun) => {
+    const client = new QueryClient();
+    const agent = { id: "agent:raw", companyId: "company:raw", name: "Agent", role: "researcher", status: "idle", adapterType: "codex_local", adapterConfig: {}, runtimeConfig: {} } as AgentDetail;
+    const issues = Array.from({ length: 6 + Number(count) }, (_, index) => ({ id: `issue:${index}`, identifier: `RAW-${index}`, companyId: "company:raw", title: "Task <literal>", status: "todo", priority: "low", updatedAt: new Date() } as Issue));
+    try {
+      await setLocale("ru");
+      const markup = renderToStaticMarkup(<QueryClientProvider client={client}><AgentOverview agent={agent} runs={[]} assignedIssues={issues} directReportCount={0} skillNames={[]} agentRouteId="agent:raw" /></QueryClientProvider>);
+      expect(markup).toContain(`Ещё ${count} ${noun}`);
+      expect(markup).toContain("Task &lt;literal&gt;");
+      expect(markup).toContain('href="/issues/RAW-0"');
+      expect(markup).not.toContain("RAW-6");
+    } finally { client.clear(); await setLocale("en"); }
+  });
+
   it("identifies Muse and shows its provider-managed model even when old model fields remain", () => {
     const agent = {
       id: "muse-agent", companyId: "company-1", name: "Muse Researcher", role: "researcher", status: "active",

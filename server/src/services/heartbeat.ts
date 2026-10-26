@@ -1029,7 +1029,7 @@ export function heartbeatService(
     mergeRunStopMetadataForAgent,
     setWakeupStatus,
     classifyAndPersistRunLiveness,
-    releaseEnvironmentLeasesForRun,
+    releaseEnvironmentLeasesForRun: async input => { await releaseEnvironmentLeasesForRun(input); },
     releaseIssueExecutionAndPromote,
     finalizeAgentStatus,
     timerClaimWasFirstHeartbeat,
@@ -3670,8 +3670,9 @@ export function heartbeatService(
       }
     } finally {
       let caseHandoffCleanupSettled = false;
-      await instructionWorkingCopy?.nativeInstructionReservation?.release().catch(error => logger.warn({ runId: run.id, err: error }, "Managed warm session preparation cleanup failed"));
-      if (managedAiRuntime) await managedAiRuntime.cleanup().catch(() => logger.warn({ runId: run.id }, "AI connection refresh or cleanup failed"));
+      let nativeCleanupSettled = true;
+      await instructionWorkingCopy?.nativeInstructionReservation?.release().catch(error => { nativeCleanupSettled = false; logger.warn({ runId: run.id, err: error }, "Managed warm session preparation cleanup failed"); });
+      if (managedAiRuntime) await managedAiRuntime.cleanup().catch(() => { nativeCleanupSettled = false; logger.warn({ runId: run.id }, "AI connection refresh or cleanup failed"); });
       let latestRun = await getRun(run.id).catch(() => null);
       try {
         if (latestRun && isHeartbeatRunTerminalStatus(latestRun.status)) {
@@ -3749,6 +3750,7 @@ export function heartbeatService(
           ) {
             await cleanupGitHubOperationLaunchers(githubLauncherLocation).catch(
               (err) => {
+                nativeCleanupSettled = false;
                 logger.warn(
                   { err, runId: run.id },
                   "failed to clean managed GitHub launchers",
@@ -3766,7 +3768,7 @@ export function heartbeatService(
               payload: { state: "unavailable", code: uncapturedInstructions.errorCode } });
           }
           await withAdapterExecutionPhase(executionPhaseContext, "instruction_cleanup", releaseInstructionCopy);
-          await withAdapterExecutionPhase(executionPhaseContext, "lease_release", () => releaseEnvironmentLeasesForRun({
+          const environmentCleanupSettled = await withAdapterExecutionPhase(executionPhaseContext, "lease_release", () => releaseEnvironmentLeasesForRun({
             runId: run.id,
             companyId: run.companyId,
             agentId: run.agentId,
@@ -3775,7 +3777,8 @@ export function heartbeatService(
             providerResourceDisposition: providerResourceDispositionForRun,
             nativeLifecycleTelemetry: nativeLifecycleTelemetryForRun,
           }));
-          await releaseRuntimeServicesForRun(run.id).catch(() => undefined);
+          nativeCleanupSettled = nativeCleanupSettled && environmentCleanupSettled;
+          await releaseRuntimeServicesForRun(run.id).catch(() => { nativeCleanupSettled = false; });
           caseHandoffCleanupSettled = true;
         }
         if (
@@ -3862,9 +3865,17 @@ export function heartbeatService(
         }
         if (latestRun?.runtimeMode === "native" && isHeartbeatRunTerminalStatus(latestRun.status) &&
             !nativeSessionResumeScheduled && !nativeWorkspaceFinalizeScheduled && !nativeOwnershipHeld) {
-          await settleNativeRunProcess(db, run.id).catch(error => {
+          const processSettlement = await settleNativeRunProcess(db, run.id).catch(error => {
             logger.warn({ err: error, runId: run.id }, "failed to release settled native process identity");
+            return null;
           });
+          if (nativeCleanupSettled && caseHandoffCleanupSettled &&
+              (processSettlement === "released" || (processSettlement === "skipped" && !nativeDispatchStarted))) {
+            await db.update(heartbeatRuns).set({ controllerLeaseExpiresAt: null }).where(and(
+              eq(heartbeatRuns.id, run.id), eq(heartbeatRuns.companyId, run.companyId),
+              eq(heartbeatRuns.runtimeMode, "native"), eq(heartbeatRuns.controllerBootId, legacyControllerBootId),
+              inArray(heartbeatRuns.status, ["succeeded", "failed", "cancelled", "timed_out", "interrupted"])));
+          }
         }
         await db.update(heartbeatRuns).set({
           executionStage: sql`case when ${heartbeatRuns.status} = 'cancelled' then 'settled' else ${heartbeatRuns.executionStage} end`,
@@ -4017,7 +4028,7 @@ export function heartbeatService(
             logStore: string | null;
             logRef: string | null;
           },
-      opts?: { offset?: number; limitBytes?: number },
+      opts?: { offset?: number; limitBytes?: number; alignStartToRecord?: boolean; signal?: AbortSignal },
     ) => {
       const run =
         typeof runOrLookup === "string"

@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -143,7 +145,9 @@ const mockEnvironmentsApi = vi.hoisted(() => ({
   relinkCustomImageTemplate: vi.fn(),
   disableCustomImageTemplate: vi.fn(),
 }));
+const mockPushToast = vi.hoisted(() => vi.fn());
 const mockInstanceSettingsApi = vi.hoisted(() => ({
+  update: vi.fn(),
   get: vi.fn(),
   getExperimental: vi.fn(),
 }));
@@ -167,9 +171,9 @@ vi.mock("@/context/BreadcrumbContext", () => ({
 }));
 
 vi.mock("@/context/ToastContext", () => ({
-  useToast: () => ({ pushToast: vi.fn() }),
-  useToastActions: () => ({ pushToast: vi.fn() }),
-  useOptionalToastActions: () => ({ pushToast: vi.fn() }),
+  useToast: () => ({ pushToast: mockPushToast }),
+  useToastActions: () => ({ pushToast: mockPushToast }),
+  useOptionalToastActions: () => ({ pushToast: mockPushToast }),
 }));
 
 vi.mock("@/api/environments", () => ({
@@ -450,7 +454,8 @@ describe("CompanyEnvironments — test provider button", () => {
   let probeResolvers: Map<string, () => void>;
   let originalWebSocket: typeof WebSocket | undefined;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     root = null;
@@ -546,8 +551,8 @@ describe("CompanyEnvironments — test provider button", () => {
     );
   });
 
-  afterEach(() => {
-    root?.unmount();
+  afterEach(async () => {
+    await reactAct(async () => { root?.unmount(); });
     root = null;
     container.remove();
     document.body.innerHTML = "";
@@ -559,6 +564,7 @@ describe("CompanyEnvironments — test provider button", () => {
     }
     vi.restoreAllMocks();
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   it("shows the testing state only on the clicked environment's button", async () => {
@@ -587,6 +593,19 @@ describe("CompanyEnvironments — test provider button", () => {
     expect(buttonsAfter[1].textContent?.trim()).toBe("Test provider");
     expect(buttonsAfter[1].disabled).toBe(false);
     expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
+    const queryCalls = [mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(buttonsAfter[0].textContent?.trim()).toBe("Проверка…");
+    expect(buttonsAfter[0].disabled).toBe(true);
+    expect(buttonsAfter[1].textContent?.trim()).toBe("Проверить провайдера");
+    expect(buttonsAfter[1].disabled).toBe(false);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(testProviderButtons(container)).toEqual(buttonsAfter);
+    expect([mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length]).toEqual(queryCalls);
+    expect(mockEnvironmentsApi.probe).toHaveBeenCalledTimes(1);
+    await act(async () => { probeResolvers.get("env-1")?.(); });
+    await flushReact();
+    expect(container.textContent).toContain("ok");
   });
 
   it("explains that successful sandbox provider tests use a temporary sandbox", async () => {
@@ -596,10 +615,12 @@ describe("CompanyEnvironments — test provider button", () => {
       { id: "env-1", name: "Daytona", driver: "sandbox", description: null, config: { provider: "daytona" } },
     ]);
     mockEnvironmentsApi.capabilities.mockResolvedValue(supportedDaytonaCapabilities());
-    mockEnvironmentsApi.probe.mockResolvedValue({
+    let finishProbe!: () => void;
+    const probeResult = {
       ok: true,
       driver: "sandbox",
       summary: "Connected to Daytona sandbox paperclip-probe.",
+      summaryMessage: { code: "sandbox_connected_named", params: { provider: "Daytona", sandboxName: "paperclip-probe" } },
       details: {
         provider: "daytona",
         diagnostics: [],
@@ -609,20 +630,31 @@ describe("CompanyEnvironments — test provider button", () => {
           sandboxName: "paperclip-probe",
         },
       },
-    });
+    };
+    mockEnvironmentsApi.probe.mockImplementationOnce(() => new Promise((resolve) => { finishProbe = () => resolve(probeResult); }));
 
     await act(async () => {
       root!.render(renderCompanyEnvironments(queryClient));
     });
     await flushReact();
 
+    await waitForAssertion(() => { expect(testProviderButtons(container)[0]).toBeTruthy(); });
     await act(async () => {
       testProviderButtons(container)[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
-    await flushReact();
-
-    expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1"); });
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    await act(async () => { finishProbe(); });
+    const russianSummary = "Установлено подключение к песочнице «paperclip-probe» провайдера Daytona.";
+    await waitForAssertion(() => { expect(container.textContent).toContain(russianSummary); });
+    const toast = mockPushToast.mock.calls.at(-1)![0];
+    expect(toast).toMatchObject({ title: "Проверка среды пройдена", body: russianSummary });
+    expect(probeResult.summary).toBe("Connected to Daytona sandbox paperclip-probe.");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
     expect(container.textContent).toContain("Connected to Daytona sandbox paperclip-probe.");
+    expect(mockEnvironmentsApi.probe).toHaveBeenCalledTimes(1);
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect(toast.body).toBe(russianSummary);
     expect(container.textContent).not.toContain("Verified temporary daytona sandbox");
     expect(container.textContent).not.toContain("Test probes clean up the validation sandbox after the check");
     expect(container.textContent).not.toContain("provider dashboard");
@@ -638,7 +670,7 @@ describe("CompanyEnvironments — test provider button", () => {
     mockEnvironmentsApi.probe.mockResolvedValue({
       ok: false,
       driver: "sandbox",
-      summary: "Daytona sandbox probe failed.",
+      summary: "Environment probe failed.",
       details: {
         provider: "daytona",
         error: "Sandbox image was not found.",
@@ -660,10 +692,39 @@ describe("CompanyEnvironments — test provider button", () => {
     });
     await flushReact();
 
-    expect(container.textContent).toContain("Daytona sandbox probe failed.");
+    expect(container.textContent).toContain("Environment probe failed.");
     expect(container.textContent).toContain("Sandbox image was not found.");
     expect(container.textContent).not.toContain("Verified temporary daytona sandbox");
     expect(container.textContent).not.toContain("Test probes clean up the validation sandbox after the check");
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Environment probe failed.");
+    expect(container.textContent).toContain("Sandbox image was not found.");
+    expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
+  });
+
+  it.each([
+    { cause: null, expected: "Не удалось проверить среду." },
+    { cause: new Error("Environment probe failed."), expected: "Environment probe failed." },
+  ])("formats a rejected probe at render and completion without translating external errors: $expected", async ({ cause, expected }) => {
+    let rejectProbe!: (cause: unknown) => void;
+    mockEnvironmentsApi.probe.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectProbe = reject; }));
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    await act(async () => { root!.render(renderCompanyEnvironments(queryClient)); });
+    await waitForAssertion(() => { expect(testProviderButtons(container)[0]).toBeTruthy(); });
+    await act(async () => { click(testProviderButtons(container)[0]); });
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1"); });
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(mockPushToast).not.toHaveBeenCalled();
+    await act(async () => { rejectProbe(cause); });
+    await waitForAssertion(() => { expect(container.textContent).toContain(expected); });
+    const toast = mockPushToast.mock.calls.at(-1)![0];
+    expect(toast).toMatchObject({ title: "Проверка среды не пройдена", body: expected, tone: "error" });
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Environment probe failed.");
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect(toast.body).toBe(expected);
+    expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
   });
 
   it("keeps the second environment's testing state when an earlier probe settles", async () => {
@@ -725,6 +786,15 @@ describe("CompanyEnvironments — test provider button", () => {
   });
 
   it("opens the edit form on a standalone page with existing values and closes after save", async () => {
+    mockEnvironmentsApi.capabilities.mockResolvedValue({ adapters: [], sandboxProviders: {
+      e2b: { status: "supported", source: "plugin", supportsRunExecution: true,
+        displayName: "Sandbox", description: "Environment variables",
+        configSchema: { type: "object", properties: { image: { type: "string", title: "Name", description: "Private key" } } },
+      },
+    } });
+    mockEnvironmentsApi.list.mockResolvedValue([
+      { id: "env-1", name: "Alpha", driver: "sandbox", description: "Save environment", config: { provider: "e2b", image: "raw-image" } },
+    ]);
     root = createRoot(container);
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
@@ -733,13 +803,8 @@ describe("CompanyEnvironments — test provider button", () => {
     });
     await flushReact();
 
-    await act(async () => {
-      click(findAction(container, "Edit"));
-    });
-
-    await waitForAssertion(() => {
-      expect(getEnvironmentFormPage()?.textContent).toContain("Edit environment");
-    });
+    await openEnvironmentEditPage(container);
+    expect(getEnvironmentFormPage()?.textContent).toContain("Edit environment");
 
     const page = getEnvironmentFormPage();
     expect(document.body.querySelector("[role='dialog']")).toBeNull();
@@ -757,6 +822,26 @@ describe("CompanyEnvironments — test provider button", () => {
     });
     await flushReact();
 
+    variableValue.focus();
+    variableValue.setSelectionRange(2, 7);
+    const calls = [mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.secretRefs.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(page!.querySelector("h1")?.textContent).toBe("Изменить среду");
+    expect(page!.querySelector<HTMLInputElement>('input[aria-label="Name"]')?.value).toBe("raw-image");
+    expect(page!.textContent).toContain("Environment variables");
+    expect(page!.textContent).toContain("Private key");
+    expect(Array.from(page!.querySelectorAll("option")).some((option) => option.value === "e2b" && option.textContent === "Sandbox")).toBe(true);
+    expect(getEnvironmentFormPage()).toBe(page);
+    expect(document.body.contains(variableValue)).toBe(true);
+    expect(variableValue.value).toBe("draft-token");
+    expect(variableName.value).toBe("API_TOKEN");
+    expect(document.activeElement).toBe(variableValue);
+    expect([variableValue.selectionStart, variableValue.selectionEnd]).toEqual([2, 7]);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect([mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.secretRefs.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length]).toEqual(calls);
+    expect(mockEnvironmentsApi.update).not.toHaveBeenCalled();
+    expect(mockEnvironmentsApi.probeConfig).not.toHaveBeenCalled();
+
     await act(async () => {
       findButton(document.body, "Save environment")?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
@@ -768,6 +853,8 @@ describe("CompanyEnvironments — test provider button", () => {
         name: "Alpha",
         driver: "sandbox",
         envVars: { API_TOKEN: { type: "plain", value: "draft-token" } },
+        description: "Save environment",
+        config: { provider: "e2b", image: "raw-image" },
       }),
       // The secret-context company must ride along so the server can scope
       // bindings even when the environment has none yet.
@@ -778,6 +865,85 @@ describe("CompanyEnvironments — test provider button", () => {
     await waitForAssertion(() => {
       expect(getEnvironmentFormPage()).toBeNull();
     });
+  });
+
+  it("formats retained draft probe results without losing edits or repeating the request", async () => {
+    mockEnvironmentsApi.capabilities.mockResolvedValue(supportedDaytonaCapabilities());
+    mockEnvironmentsApi.list.mockResolvedValue([
+      { id: "env-1", name: "Daytona", driver: "sandbox", description: null, config: { provider: "daytona" } },
+    ]);
+    let finishProbe!: () => void;
+    mockEnvironmentsApi.probeConfig.mockImplementationOnce(() => new Promise((resolve) => { finishProbe = () => resolve({
+      ok: false, driver: "sandbox", summary: 'Sandbox provider "daytona" probe failed.',
+      summaryMessage: { code: "sandbox_provider_probe_failed", params: { provider: "daytona" } }, details: null,
+    }); }));
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    await act(async () => { root!.render(renderCompanyEnvironments(queryClient)); });
+    await openEnvironmentEditPage(container);
+    const page = getEnvironmentFormPage()!;
+    const name = Array.from(page.querySelectorAll<HTMLInputElement>("input")).find((input) => input.value === "Daytona")!;
+    await act(async () => { setInputValue(name, "raw-dirty-name"); });
+    const button = findButton(page, "Test")!;
+    expect(button).toBeTruthy();
+    await act(async () => { click(button); });
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.probeConfig).toHaveBeenCalledExactlyOnceWith("company-1", {
+      name: "raw-dirty-name", description: null, driver: "sandbox", config: { provider: "daytona" }, envVars: {},
+    }); });
+    const queries = [mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(document.body.contains(name)).toBe(true);
+    expect(name.value).toBe("raw-dirty-name");
+    await act(async () => { finishProbe(); });
+    const summary = "Проверка провайдера песочницы «daytona» не пройдена.";
+    await waitForAssertion(() => { expect(page.textContent).toContain(summary); });
+    const toast = mockPushToast.mock.calls.at(-1)![0];
+    expect(toast.body).toBe(summary);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(page.textContent).toContain('Sandbox provider "daytona" probe failed.');
+    expect(toast.body).toBe(summary);
+    expect(mockEnvironmentsApi.probeConfig).toHaveBeenCalledTimes(1);
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect([mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length]).toEqual(queries);
+    expect(mockEnvironmentsApi.update).not.toHaveBeenCalled();
+    expect(name.value).toBe("raw-dirty-name");
+  });
+
+  it("preserves SSH credential drafts and canonical payload across locale changes", async () => {
+    mockEnvironmentsApi.list.mockResolvedValue([
+      { id: "env-ssh", name: "Local", driver: "ssh", description: "Private key", config: {
+        host: "build.example.invalid", port: 2222, username: "operator", remoteWorkspacePath: "/srv/raw-workspace", strictHostKeyChecking: true,
+      } },
+    ]);
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    await act(async () => { root!.render(renderCompanyEnvironments(queryClient, `${ENVIRONMENTS_PATH}/env-ssh/edit`)); });
+    await waitForAssertion(() => { expect(getEnvironmentFormPage()?.querySelectorAll("textarea")).toHaveLength(2); });
+    const page = getEnvironmentFormPage()!;
+    const [privateKey, knownHosts] = Array.from(page.querySelectorAll("textarea"));
+    const setText = (input: HTMLTextAreaElement, value: string) => {
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!.call(input, value);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    await act(async () => { setText(privateKey, "fixture-private-key"); setText(knownHosts, "fixture-known-hosts"); });
+    privateKey.focus(); privateKey.setSelectionRange(2, 8);
+    const calls = [mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.secretRefs.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(page.textContent).toContain("Закрытый ключ");
+    expect(privateKey.value).toBe("fixture-private-key");
+    expect(knownHosts.value).toBe("fixture-known-hosts");
+    expect(document.activeElement).toBe(privateKey);
+    expect([privateKey.selectionStart, privateKey.selectionEnd]).toEqual([2, 8]);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect([mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.secretRefs.mock.calls.length]).toEqual(calls);
+    expect(mockEnvironmentsApi.update).not.toHaveBeenCalled();
+    await act(async () => { click(findButton(page, "Save environment")); });
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.update).toHaveBeenCalledExactlyOnceWith("env-ssh", {
+      name: "Local", description: "Private key", driver: "ssh", envVars: {}, config: {
+        host: "build.example.invalid", port: 2222, username: "operator", remoteWorkspacePath: "/srv/raw-workspace",
+        privateKey: "fixture-private-key", privateKeySecretRef: null, knownHosts: "fixture-known-hosts", strictHostKeyChecking: true,
+      },
+    }, "company-1"); });
   });
 
   it("confirms before cancelling the edit page with unsaved environment variable drafts", async () => {
@@ -1059,6 +1225,28 @@ describe("CompanyEnvironments — test provider button", () => {
     }));
     expect(FakeWebSocket.instances[0].sent).toContain(JSON.stringify({ type: "resize", cols: 120, rows: 32 }));
 
+    const terminal = xtermMocks.terminalInstances[0];
+    const socket = FakeWebSocket.instances[0];
+    const sent = [...socket.sent];
+    const writes = [...terminal.writes];
+    const calls = [mockEnvironmentsApi.customImageTemplate.mock.calls.length, mockEnvironmentsApi.customImageSetupSession.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Терминал в браузере");
+    expect(findButton(getEnvironmentFormPage()!, "Отключить")).toBeTruthy();
+    expect(document.activeElement).toBe(terminalScreen);
+    expect(getEnvironmentFormPage()?.textContent).toContain(command);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(FakeWebSocket.instances).toEqual([socket]);
+    expect(xtermMocks.terminalInstances).toEqual([terminal]);
+    expect(terminal.disposed).toBe(false);
+    expect(terminal.writes).toEqual(writes);
+    expect(socket.readyState).toBe(FakeWebSocket.OPEN);
+    expect(socket.sent).toEqual(sent);
+    expect([mockEnvironmentsApi.customImageTemplate.mock.calls.length, mockEnvironmentsApi.customImageSetupSession.mock.calls.length]).toEqual(calls);
+    expect(mockEnvironmentsApi.createCustomImageTerminalSessionToken).toHaveBeenCalledTimes(1);
+    expect(mockEnvironmentsApi.finishCustomImageSetupSession).not.toHaveBeenCalled();
+    expect(mockEnvironmentsApi.relinkCustomImageTemplate).not.toHaveBeenCalled();
+
     await act(async () => {
       xtermMocks.terminalInstances[0].emitData("l");
       xtermMocks.terminalInstances[0].emitData("\r");
@@ -1066,6 +1254,25 @@ describe("CompanyEnvironments — test provider button", () => {
 
     expect(FakeWebSocket.instances[0].sent).toContain(JSON.stringify({ type: "input", data: "l" }));
     expect(FakeWebSocket.instances[0].sent).toContain(JSON.stringify({ type: "input", data: "\r" }));
+
+    await reactAct(async () => { socket.emitMessage(JSON.stringify({ type: "error" })); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Terminal connection failed.");
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Не удалось подключиться к терминалу.");
+    await reactAct(async () => { socket.emitMessage(JSON.stringify({ type: "error", message: "Terminal connection failed." })); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Terminal connection failed.");
+    expect(getEnvironmentFormPage()?.textContent).not.toContain("Не удалось подключиться к терминалу.");
+    await reactAct(async () => { socket.emitMessage(JSON.stringify({ type: "closed", reason: "expired" })); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Срок действия сеанса настройки истёк.");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Setup session expired.");
+    await reactAct(async () => { socket.emitMessage(JSON.stringify({ type: "closed", reason: "toString" })); });
+    expect(getEnvironmentFormPage()?.textContent).toContain("Terminal closed.");
+    expect(getEnvironmentFormPage()?.textContent).not.toContain("toString");
+    expect(FakeWebSocket.instances).toEqual([socket]);
+    expect(xtermMocks.terminalInstances).toEqual([terminal]);
+    expect(mockEnvironmentsApi.createCustomImageTerminalSessionToken).toHaveBeenCalledTimes(1);
+    expect(terminal.disposed).toBe(false);
   });
 
   it("keeps the environment edit page open when Escape is pressed in setup terminal", async () => {
@@ -1589,9 +1796,25 @@ describe("CompanyEnvironments — test provider button", () => {
     expect(options.some((option) => option.textContent?.trim() === "Local")).toBe(false);
     // Saved non-local environments remain selectable defaults.
     expect(options.some((option) => option.textContent?.includes("Alpha"))).toBe(true);
+    let finishDefault!: () => void;
+    mockInstanceSettingsApi.update.mockImplementationOnce(() => new Promise((resolve) => { finishDefault = () => resolve({ defaultEnvironmentId: "env-2" }); }));
+    const select = container.querySelector<HTMLSelectElement>('select[aria-label="Default environment"]')!;
+    await act(async () => { setSelectValue(select, "env-2"); });
+    expect(select.disabled).toBe(true);
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(select.getAttribute("aria-label")).toBe("Среда по умолчанию");
+    expect(Array.from(select.options).some((option) => option.textContent === "Локальная среда")).toBe(false);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(mockInstanceSettingsApi.update).toHaveBeenCalledExactlyOnceWith({ defaultEnvironmentId: "env-2" });
+    await act(async () => { finishDefault(); });
+    await waitForAssertion(() => { expect(select.disabled).toBe(false); });
   });
 
   it("reassigns this company's active agents to the chosen environment before deleting", async () => {
+    let finishReassignment!: () => void;
+    mockAgentsApi.update.mockImplementationOnce(() => new Promise((resolve) => {
+      finishReassignment = () => resolve({});
+    }));
     mockAgentsApi.list.mockResolvedValue([
       { id: "agent-1", name: "Iris", status: "active", defaultEnvironmentId: "env-1" },
       { id: "agent-2", name: "Miles", status: "active", defaultEnvironmentId: "env-2" },
@@ -1645,7 +1868,20 @@ describe("CompanyEnvironments — test provider button", () => {
       { defaultEnvironmentId: "env-2" },
       "company-1",
     );
-    expect(mockEnvironmentsApi.remove).toHaveBeenCalledExactlyOnceWith("env-1");
+    expect(mockEnvironmentsApi.remove).not.toHaveBeenCalled();
+    const pendingConfirm = dialog.querySelector<HTMLButtonElement>("[data-testid='environment-delete-confirm']")!;
+    expect(pendingConfirm.disabled).toBe(true);
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(pendingConfirm.textContent).toBe("Удаление…");
+    expect(reassignSelect.value).toBe("env-2");
+    expect(document.body.querySelector("[data-testid='environment-delete-dialog']")).toBe(dialog);
+    expect(dialog.textContent).toContain("Iris");
+    expect(dialog.textContent).not.toContain("Retired");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(mockAgentsApi.update).toHaveBeenCalledTimes(1);
+    expect(mockEnvironmentsApi.remove).not.toHaveBeenCalled();
+    await act(async () => { finishReassignment(); });
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.remove).toHaveBeenCalledExactlyOnceWith("env-1"); });
     expect(mockAgentsApi.update.mock.invocationCallOrder[0]).toBeLessThan(
       mockEnvironmentsApi.remove.mock.invocationCallOrder[0],
     );
@@ -1800,6 +2036,15 @@ describe("CompanyEnvironments — test provider button", () => {
     )!;
     expect(confirm.disabled).toBe(false);
     expect(confirm.textContent?.trim()).toBe("Destroy 3 sandboxes and delete");
+    const holderRows = Array.from(holders.querySelectorAll("li"));
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(holders.textContent).toContain("2 выделенные песочницы");
+    expect(holders.textContent).toContain("Рабочего пространства больше нет в реестре");
+    expect(confirm.textContent?.trim()).toBe("Уничтожить 3 песочницы и удалить");
+    expect(holders.querySelector("a[href='/execution-workspaces/ws-1']")).toBe(workspaceLink);
+    expect(Array.from(holders.querySelectorAll("li"))).toEqual(holderRows);
+    expect(mockEnvironmentsApi.remove).not.toHaveBeenCalled();
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
 
     await act(async () => click(confirm));
     await flushReact();

@@ -105,3 +105,40 @@ it("offers Retry even when its old notice is outside the loaded conversation", a
   await render({ version: 1, sections: [] });
   expect(container.textContent).toBe("Retry");
 });
+
+it("keeps an edited branch and canonical recovery receipt across locale changes", async () => {
+  const { i18n } = await import("@/i18n");
+  await i18n.changeLanguage("en");
+  await render();
+  await act(async () => [...container.querySelectorAll("button")].find(b => b.textContent === "Choose another branch")!.click());
+  const input = container.querySelector<HTMLInputElement>("input")!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "release/localized");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  input.focus();
+  const getCalls = mocks.get.mock.calls.length;
+  try {
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector("input")).toBe(input);
+    expect(document.activeElement).toBe(input);
+    expect(input.value).toBe("release/localized");
+    expect(container.textContent).toContain("Начальная ветка");
+    expect(mocks.get).toHaveBeenCalledTimes(getCalls);
+    expect(mocks.resolve).not.toHaveBeenCalled();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(input.value).toBe("release/localized");
+    expect(container.textContent).toContain("Starting branch");
+    mocks.resolve.mockResolvedValue({ issue });
+    await act(async () => container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+    expect(mocks.resolve).toHaveBeenCalledExactlyOnceWith("issue", { actionId: "action", outcome: "restored", sourceIssueStatus: "todo", workspaceBaseRef: { requestedRef: "main", branch: "release/localized" } });
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain("The task changed while saving");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain("Задача изменилась во время сохранения");
+    expect(mocks.resolve).toHaveBeenCalledTimes(1);
+    expect(mocks.get).toHaveBeenCalledTimes(getCalls);
+    expect(input.value).toBe("release/localized");
+  } finally {
+    await act(async () => { await i18n.changeLanguage("en"); });
+  }
+});

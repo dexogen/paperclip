@@ -45,7 +45,7 @@ concurrency:
 jobs:
   authorize:
     name: Authorize paid direct eval campaign
-    if: github.event_name != 'schedule' || vars.RUNNER_PROTOCOL_EVAL_NIGHTLY_ENABLED == 'true'
+    if: github.repository == 'paperclipai/paperclip' && (github.event_name != 'schedule' || vars.RUNNER_PROTOCOL_EVAL_NIGHTLY_ENABLED == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -167,6 +167,7 @@ jobs:
           fi
 
   target_lock:
+    if: github.repository == 'paperclipai/paperclip'
     name: Resolve target pnpm lockfile
     needs: authorize
     runs-on: ubuntu-latest
@@ -218,6 +219,7 @@ jobs:
           if-no-files-found: error
 
   catalog:
+    if: github.repository == 'paperclipai/paperclip'
     name: Pin and fan out the direct Evalbook roster
     needs: authorize
     runs-on: ubuntu-latest
@@ -300,6 +302,7 @@ jobs:
           if-no-files-found: error
 
   build_runner:
+    if: github.repository == 'paperclipai/paperclip'
     name: Build portable direct-eval runner once
     needs: [authorize, target_lock, catalog]
     runs-on: ${{ needs.authorize.outputs.test_runner }}
@@ -409,6 +412,7 @@ jobs:
           if-no-files-found: error
 
   eval_shard_0:
+    if: github.repository == 'paperclipai/paperclip'
     name: Direct eval ${{ matrix.rosterId }} / ${{ matrix.caseId }}
     needs: [authorize, catalog, build_runner]
     runs-on: ${{ needs.authorize.outputs.test_runner }}
@@ -553,6 +557,7 @@ jobs:
           OPENROUTER_API_KEY: ${{ matrix.credentialName == 'OPENROUTER_API_KEY' && secrets.OPENROUTER_API_KEY || '' }}
           XAI_API_KEY: ${{ matrix.credentialName == 'XAI_API_KEY' && secrets.XAI_API_KEY || '' }}
           PAPERCLIP_ACPX_GROK_AUTH_JSON_SECRET: ${{ matrix.credentialName == 'PAPERCLIP_ACPX_GROK_AUTH_JSON_SECRET' && secrets.GROK_AUTH_JSON || '' }}
+          COPILOT_GITHUB_TOKEN: ${{ matrix.credentialName == 'COPILOT_GITHUB_TOKEN' && secrets.COPILOT_GITHUB_TOKEN || '' }}
           PAPERCLIP_CLAUDE_MANAGED_PROFILE_ID: ${{ vars.PAPERCLIP_CLAUDE_MANAGED_PROFILE_ID }}
           PAPERCLIP_CLAUDE_MANAGED_AGENT_ID: ${{ vars.PAPERCLIP_CLAUDE_MANAGED_AGENT_ID }}
           PAPERCLIP_CLAUDE_MANAGED_AGENT_VERSION: ${{ vars.PAPERCLIP_CLAUDE_MANAGED_AGENT_VERSION }}
@@ -637,7 +642,7 @@ jobs:
 
   eval_shard_1:
     name: Direct eval ${{ matrix.rosterId }} / ${{ matrix.caseId }}
-    if: needs.catalog.outputs.matrix_1_present == 'true'
+    if: github.repository == 'paperclipai/paperclip' && (needs.catalog.outputs.matrix_1_present == 'true')
     needs: [authorize, catalog, build_runner]
     runs-on: ${{ needs.authorize.outputs.test_runner }}
     timeout-minutes: 18
@@ -654,7 +659,7 @@ jobs:
 
   report:
     name: Merge attempts and render canonical Evalbook
-    if: always() && !cancelled() && needs.catalog.result == 'success' && needs.build_runner.result == 'success'
+    if: github.repository == 'paperclipai/paperclip' && (always() && !cancelled() && needs.catalog.result == 'success' && needs.build_runner.result == 'success')
     needs: [authorize, catalog, build_runner, eval_shard_0, eval_shard_1]
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -842,7 +847,7 @@ jobs:
   publish_history:
     name: Publish immutable Evalbook and mutable campaign index
     needs: [authorize, catalog, report]
-    if: always() && needs.report.outputs.public_report_ready == 'true'
+    if: github.repository == 'paperclipai/paperclip' && (always() && needs.report.outputs.public_report_ready == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:

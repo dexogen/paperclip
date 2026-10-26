@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   ResourceMembershipResourceType,
@@ -7,6 +8,8 @@ import type {
 import { resourceMembershipsApi } from "../api/resourceMemberships";
 import { useToastActions } from "../context/ToastContext";
 import { queryKeys } from "../lib/queryKeys";
+
+class MembershipCompanyRequiredError extends Error {}
 
 type MutationVariables = {
   resourceType: JoinableResourceType;
@@ -151,7 +154,7 @@ export function useResourceMembershipMutation(companyId: string | null | undefin
 
   return useMutation({
     mutationFn: (variables: MutationVariables) => {
-      if (!companyId) throw new Error("Select an organization first.");
+      if (!companyId) throw new MembershipCompanyRequiredError("Select an organization first.");
       const body = { state: variables.state, starred: variables.starred };
       return variables.resourceType === "project"
         ? resourceMembershipsApi.updateProject(companyId, variables.resourceId, body)
@@ -177,8 +180,12 @@ export function useResourceMembershipMutation(companyId: string | null | undefin
         ? variables.starred ? "star" : "unstar"
         : variables.state === "left" ? "leave" : "join";
       pushToast({
-        title: `Couldn't ${verb} ${variables.resourceName}.`,
-        body: error instanceof Error ? error.message : "Try again.",
+        title: verb === "star" ? i18n.t("projectConfigUi.membership.starFailed", { name: variables.resourceName })
+          : verb === "unstar" ? i18n.t("projectConfigUi.membership.unstarFailed", { name: variables.resourceName })
+            : verb === "leave" ? i18n.t("projectConfigUi.membership.leaveFailed", { name: variables.resourceName })
+              : i18n.t("projectConfigUi.membership.joinFailed", { name: variables.resourceName }),
+        body: error instanceof MembershipCompanyRequiredError ? i18n.t("projectConfigUi.membership.companyRequired")
+          : error instanceof Error ? error.message : i18n.t("projectConfigUi.membership.retry"),
         tone: "error",
       });
     },

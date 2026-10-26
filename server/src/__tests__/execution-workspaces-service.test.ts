@@ -1483,6 +1483,42 @@ describeEmbeddedPostgres("executionWorkspaceService.getCloseReadiness", () => {
     expect(workspace?.status).toBe("active");
   });
 
+  it("adds indexed close display provenance without changing raw messages or actions", async () => {
+    const seeded = await seedTerminalWorkspace();
+    await fs.writeFile(path.join(seeded.worktreePath, "untracked.txt"), "raw <b>data</b>\n", "utf8");
+    await insertRunningWorkspaceService(randomUUID(), seeded.companyId, seeded.projectId,
+      seeded.executionWorkspaceId, seeded.sourceIssueId, seeded.worktreePath);
+    await db.update(issues).set({ status: "todo" }).where(eq(issues.id, seeded.sourceIssueId));
+
+    const readiness = await svc.getCloseReadiness(seeded.executionWorkspaceId);
+    expect(readiness).toMatchObject({ state: "blocked", isDestructiveCloseAllowed: false,
+      blockingReasons: ["This workspace is still linked to an open issue."],
+      warnings: [
+        "Closing this workspace will stop 1 attached runtime service.",
+        "The workspace has 1 untracked file.",
+        "This workspace is 1 commit ahead of main and is not merged.",
+      ],
+    });
+    expect(readiness?.plannedActions.map(({ kind, label, description, command }) => ({ kind, label, description, command }))).toEqual([
+      { kind: "archive_record", label: "Archive workspace record", description: "Keep the execution workspace history and issue linkage, but remove it from active workspace lists.", command: null },
+      { kind: "stop_runtime_services", label: "Stop attached runtime service", description: "web will be stopped before cleanup.", command: null },
+      { kind: "git_worktree_remove", label: "Remove git worktree", description: `Paperclip will run git worktree cleanup for ${seeded.worktreePath}.`, command: `git worktree remove --force ${seeded.worktreePath}` },
+    ]);
+    expect(readiness).toHaveProperty("messageDescriptors", {
+      blockingReasons: [{ index: 0, message: { code: "open_issues", params: { count: 1 } } }],
+      warnings: [
+        { index: 0, message: { code: "stop_services", params: { count: 1 } } },
+        { index: 1, message: { code: "untracked_files", params: { count: 1 } } },
+        { index: 2, message: { code: "ahead", params: { count: 1, baseRef: "main" } } },
+      ],
+    });
+    expect(readiness?.plannedActions).toMatchObject([
+      { display: { code: "archive_record" } },
+      { display: { code: "stop_runtime_services", params: { count: 1, serviceName: "web" } } },
+      { display: { code: "git_worktree_remove", params: { path: seeded.worktreePath } } },
+    ]);
+  });
+
   it("does not reap uncommitted work after the workspace HEAD was delivered", async () => {
     const seeded = await seedTerminalWorkspace({ mergedPr: true });
     await fs.writeFile(path.join(seeded.worktreePath, "uncommitted.txt"), "not delivered\n", "utf8");

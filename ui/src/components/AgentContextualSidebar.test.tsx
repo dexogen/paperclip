@@ -1,5 +1,8 @@
 // @vitest-environment jsdom
 
+import { act } from "react";
+import { createRoot } from "react-dom/client";
+import { setLocale } from "@/i18n";
 import { renderToStaticMarkup } from "react-dom/server";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -36,6 +39,48 @@ vi.mock("./SidebarNavItem", () => ({
 vi.mock("@/plugins/slots", () => ({ usePluginSlots: () => ({ slots: [{ pluginKey: "test.plugin", id: "insights", displayName: "Insights" }] }) }));
 
 describe("AgentContextualSidebar", () => {
+  it.each([
+    { labels: undefined, en: "Secrets & variables", ru: "Секреты и переменные" },
+    { labels: {}, en: "Secrets", ru: "Секреты" },
+    { labels: { runtime: "Custom <runtime>" }, en: "Secrets", ru: "Секреты" },
+  ])("preserves the omitted versus explicit partial labels contract ($en)", async ({ labels, en, ru }) => {
+    const client = new QueryClient();
+    const render = () => renderToStaticMarkup(<QueryClientProvider client={client}><MemoryRouter>
+      <AgentContextualSidebar agentRef="agent" agentId="id" agentName="Agent" labels={labels} />
+    </MemoryRouter></QueryClientProvider>);
+    try {
+      await setLocale("en");
+      expect(new DOMParser().parseFromString(render(), "text/html").querySelector('a[href="/agents/agent/secrets"]')?.textContent).toBe(en);
+      await setLocale("ru");
+      expect(new DOMParser().parseFromString(render(), "text/html").querySelector('a[href="/agents/agent/secrets"]')?.textContent).toBe(ru);
+      if (labels?.runtime) expect(render()).toContain("Custom &lt;runtime&gt;");
+    } finally { client.clear(); await setLocale("en"); }
+  });
+
+  it("keeps canonical navigation and raw contribution names across locale changes", async () => {
+    Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+    const container = document.createElement("div"); document.body.append(container);
+    const root = createRoot(container); const client = new QueryClient();
+    try {
+      await act(async () => { await setLocale("en"); root.render(<QueryClientProvider client={client}><MemoryRouter>
+        <AgentContextualSidebar agentRef="agent:raw" agentId="id:raw" agentName="Agent <raw>" labels={{ secrets: "Secrets <custom>" }} />
+      </MemoryRouter></QueryClientProvider>); });
+      const links = Array.from(container.querySelectorAll("a"));
+      const hrefs = links.map(link => link.getAttribute("href"));
+      links[0].focus();
+      await act(async () => { await setLocale("ru"); });
+      expect(container.textContent).toContain("Инструмент / среда запуска");
+      expect(container.textContent).toContain("Secrets <custom>"); expect(container.textContent).toContain("Insights");
+      expect(container.querySelector("nav")?.getAttribute("aria-label")).toContain("Agent <raw>");
+      expect(Array.from(container.querySelectorAll("a"))).toEqual(links);
+      expect(links.map(link => link.getAttribute("href"))).toEqual(hrefs);
+      expect(document.activeElement).toBe(links[0]);
+      await act(async () => { await setLocale("en"); });
+      expect(container.textContent).toContain("Harness / Runtime");
+      expect(links.map(link => link.getAttribute("href"))).toEqual(hrefs);
+    } finally { await act(async () => { root.unmount(); await setLocale("en"); }); client.clear(); container.remove(); }
+  });
+
   it.each([false, true])("keeps Channels available for default email regardless of the chat setting (%s)", (enabled) => {
     const client = new QueryClient();
     client.setQueryData(queryKeys.instance.experimentalSettings, { enableChatConnectors: enabled });

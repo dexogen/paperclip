@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -99,6 +101,27 @@ describe("AuditHub", () => {
     root = createRoot(container);
     flushSync(() => root.render(<AuditHub section={section} />));
   }
+
+  it("switches all audit tabs and breadcrumbs while preserving deep-link scope", async () => {
+    currentSearch = "mode=agents&agentId=agent-1&runId=run-1";
+    render("runs");
+    const child = container.querySelector('[data-testid="audit-runs"]');
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(Array.from(container.querySelectorAll('[role="tab"]')).map(node => node.textContent)).toEqual([
+        "События", "Запуски", "Обратная связь", "Расходы", "Бюджеты", "Хронология",
+      ]);
+      expect(container.querySelector('[data-testid="audit-runs"]')).toBe(child);
+      expect(setBreadcrumbsMock).toHaveBeenLastCalledWith([{ label: "Аудит", href: "/activity" }, { label: "Запуски" }]);
+      expect(navigateMock).not.toHaveBeenCalled();
+      expect(setSearchParamsMock).not.toHaveBeenCalled();
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Commentary");
+      expect(container.querySelector('[data-testid="audit-runs"]')).toBe(child);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
 
   it("uses one clear section model and passes deep-link scopes to Activity", () => {
     currentSearch = "mode=agents&agentId=agent-1&runId=run-1&action=tool_";

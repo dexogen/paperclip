@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -92,4 +93,31 @@ describe("ArtifactFileRow", () => {
     expect(container.querySelector('a[aria-label="Open raw hero.png"]')).not.toBeNull();
     expect(container.querySelector('a[aria-label="Download hero.png"]')).not.toBeNull();
   });
+
+  it("keeps a loaded CSV and its canonical cache key while display dates change language", async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const subject = testSubject({ kind: "sheet", filename: "pricing.csv", contentType: "text/csv", updatedAt: "2026-10-26T12:00:00.000Z" });
+    const renderRow = (updatedAtLabel: string) => root.render(<QueryClientProvider client={client}><ArtifactFileRow subject={subject} source={source()} updatedAtLabel={updatedAtLabel} /></QueryClientProvider>);
+    act(() => renderRow("Oct 26, 2026"));
+    const preview = Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Preview data")!;
+    await act(async () => preview.click());
+    for (let i = 0; i < 20 && !container.textContent?.includes("unit_price"); i += 1) await act(flush);
+    expect(csvLoader).toHaveBeenCalledTimes(1);
+    const table = container.querySelector("table");
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); renderRow("26 окт. 2026 г."); });
+      expect(container.querySelector("table")).toBe(table);
+      expect(container.textContent).toContain("unit_price");
+      expect(container.textContent).toContain("2 строки");
+      expect(container.querySelector('a[aria-label="Скачать pricing.csv"]')?.getAttribute("download")).toBe("pricing.csv");
+      expect(csvLoader).toHaveBeenCalledTimes(1);
+      await act(async () => { await i18n.changeLanguage("en"); renderRow("Oct 26, 2026"); });
+      expect(container.querySelector("table")).toBe(table);
+      expect(csvLoader).toHaveBeenCalledTimes(1);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
 });
