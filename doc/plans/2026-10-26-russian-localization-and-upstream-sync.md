@@ -851,7 +851,24 @@ The final strict audit passes with 7,088 reviewed families and 15,598 remaining
 source findings; pending/missing/invalid messages, new findings and source errors
 are all zero. Map checks also pass.
 
-The remaining major packages are agent bulk controls and invitations,
+The bulk agent slice adds 73 EN/RU message families and three reused adapter-label
+contexts. Both active rosters and the editor preserve selection, canonical order,
+model-input focus, raw names, pending operations and exact runtime-setting patches.
+Stored own errors resolve at render time; provider Error messages remain literal.
+Partial-success retries exclude acknowledged saves, and lost responses trigger a
+read-back before another write. Fixed English helper defaults and the binding
+formatter's existing mixed fallback contract remain compatible.
+
+The latest complete runs of the five affected suites pass 66 tests without skips;
+this total combines the initial unchanged suites and focused complete reruns,
+not one final all-suite invocation. UI typecheck, build and token gates pass.
+The strict audit passes with 7,189 reviewed families, 15,520 remaining source
+findings and no pending/missing/invalid messages, new findings or source errors.
+Only 68 resolved roster/editor baseline entries were pruned; no exception was added.
+These are mocked component checks, not live backend permission, conflict or
+persistence proof. Exact-head hosted CI and Greptile review remain pending.
+
+The remaining major packages are agent invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

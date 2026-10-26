@@ -1,4 +1,5 @@
-import { t } from "@/i18n";
+import { i18n, t } from "@/i18n";
+import type { TFunction } from "i18next";
 /** Redacted presentation contracts shared with the production API. */
 import type { AiProvider, AiAuthMethod, AiManagedConnectionSummary, AiConnectionBinding } from "@paperclipai/shared";
 export type { AiProvider, AiAuthMethod, AiConnectionBinding } from "@paperclipai/shared";
@@ -105,12 +106,13 @@ export function bindingProblem(
   connections: AiConnectionSummary[],
   userId: string,
   _agentId: string,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
   if (
     binding.provider !== requirement.provider ||
     (binding.mode !== "responsible_user" && requirement.method !== undefined && binding.method !== requirement.method)
   )
-    return "Choose a connection compatible with this provider and sign-in method.";
+    return t("agentBulkUi.binding.compatible");
   if (binding.mode === "responsible_user")
     return aiConnectionProblem(
       personalAiDefault(connections, requirement, userId),
@@ -123,14 +125,14 @@ export function bindingProblem(
       matchesAiRequirement(item, requirement),
   );
   if (!connection)
-    return "This connection is no longer available for this agent. Choose another connection.";
+    return t("agentBulkUi.binding.missing");
   if (binding.mode === "shared" && connection.ownership !== "shared")
-    return "Choose a company-shared connection.";
+    return t("agentBulkUi.binding.shared");
   if (
     binding.mode === "delegated" &&
     (connection.ownership !== "personal" ||
       connection.ownerUserId !== userId)
   )
-    return "This credential is not shared with you. Choose a connection you can use.";
+    return t("agentBulkUi.binding.delegated");
   return aiConnectionProblem(connection);
 }

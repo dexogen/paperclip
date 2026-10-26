@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
-import type { ReactNode } from "react";
+import { act as reactAct, type ReactNode } from "react";
+import { i18n } from "../i18n";
+import { aiConnectionsApi } from "../api/ai-connections";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -332,7 +334,8 @@ describe("Agents", () => {
   let root: ReturnType<typeof createRoot> | null;
   let queryClient: QueryClient;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     mockRouterState.pathname = "/agents/all";
     mockRouterState.navigate.mockClear();
     container = document.createElement("div");
@@ -390,6 +393,7 @@ describe("Agents", () => {
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   it("filters the rendered roster and clears search without changing its status route", async () => {
@@ -901,16 +905,62 @@ describe("Agents", () => {
     expect(mockRouterState.navigate).toHaveBeenCalledWith("/agents/all", { replace: true });
   });
 
-  it("selects visible agents without navigating and exposes the harness edit action", async () => {
+  it.each([
+    ["streamlined", Agents],
+    ["production", ProductionAgents],
+  ] as const)("preserves bulk selection, hidden agents and order across locales in the %s roster", async (_mode, AgentList) => {
+    const roster = Array.from({ length: 21 }, (_, index) => makeAgent({
+      id: `agent-${index}`, name: index === 0 ? "Alpha <strong>&" : `Agent ${String(index).padStart(2, "0")}`,
+      adapterType: index < 2 ? "claude_local" : "codex_local", adapterConfig: { model: "Harness default" },
+    }));
+    mockAgentsApi.list.mockResolvedValue([...roster, ...(["process", "acpx_local", "muse"] as const).map(adapterType => makeAgent({ id: adapterType, adapterType, name: `Raw ${adapterType}` }))]);
     root = createRoot(container);
-    await act(async () => { renderAgentsView(root, queryClient); });
+    await act(async () => {
+      root!.render(<QueryClientProvider client={queryClient}><ToastProvider><AgentList /></ToastProvider></QueryClientProvider>);
+    });
     await flushReact();
     await flushReact();
-    const checkbox = container.querySelector<HTMLButtonElement>('[aria-label="Select Alpha"]');
-    expect(checkbox).not.toBeNull();
-    await act(async () => { checkbox!.click(); });
-    expect(container.querySelector('[aria-label="Bulk actions"]')?.textContent).toContain("1 selected");
-    expect(container.textContent).toContain("Edit connection & model");
+    await reactAct(async () => { container.querySelector<HTMLButtonElement>('[aria-label="List view"]')!.click(); });
+    const table = container.querySelector("table");
+    const boxes = [...container.querySelectorAll<HTMLButtonElement>('tbody [role="checkbox"]')].filter(box => !box.disabled);
+    expect(boxes).toHaveLength(21);
+    expect(container.querySelectorAll('tbody [role="checkbox"]:disabled')).toHaveLength(3);
+    const rows = [...container.querySelectorAll("tbody tr")];
+    const initialCalls = [mockAgentsApi.list.mock.calls.length, vi.mocked(aiConnectionsApi.list).mock.calls.length];
+    let selected = 0;
+    for (const [count, russian] of [[1, "Выбран 1 агент"], [2, "Выбрано 2 агента"], [5, "Выбрано 5 агентов"], [21, "Выбран 21 агент"]] as const) {
+      for (; selected < count; selected++) await reactAct(async () => { boxes[selected].click(); });
+      expect(container.querySelector('[aria-label="Bulk actions"]')?.textContent).toContain(`${count} selected`);
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('[aria-label="Массовые действия"]')?.textContent).toContain(russian);
+      expect(container.querySelector("table")).toBe(table);
+      expect([...container.querySelectorAll("tbody tr")]).toEqual(rows);
+      expect(boxes.filter(box => box.getAttribute("aria-checked") === "true")).toHaveLength(count);
+      expect(container.textContent).toContain("Alpha <strong>&");
+      expect(container.textContent).toContain("Harness default");
+      for (const label of ["Процесс", "ACPX (выведен из эксплуатации)", "Muse — персональный агент"]) expect(container.textContent).toContain(label);
+      expect(container.querySelectorAll('tbody [role="checkbox"]:disabled')).toHaveLength(3);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+    const actions = () => [...container.querySelectorAll('[role="region"] button')].map(button => button.textContent);
+    const groupOrder = actions();
+    await reactAct(async () => { container.querySelector<HTMLButtonElement>('[aria-label="Filter agents"]')!.click(); });
+    const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[role="group"][aria-label="Harness"] button')];
+    const filterLabels = filterButtons.map(button => button.textContent);
+    const filter = filterButtons.find(button => button.textContent === "claude_local");
+    expect(filter).toBeDefined();
+    await reactAct(async () => { filter!.click(); });
+    expect(container.querySelectorAll("tbody tr")).toHaveLength(2);
+    expect(container.textContent).toContain("19 hidden by filters");
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Фильтры скрывают 19 агентов");
+    expect(filter!.getAttribute("aria-pressed")).toBe("true");
+    expect([...document.querySelectorAll('[role="group"][aria-label="Инструмент агента"] button')]).toEqual(filterButtons);
+    for (const label of ["Процесс", "ACPX (выведен из эксплуатации)", "Muse — персональный агент"]) expect(filterButtons.map(button => button.textContent)).toContain(label);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(actions()).toEqual(groupOrder);
+    expect(filterButtons.map(button => button.textContent)).toEqual(filterLabels);
+    expect([mockAgentsApi.list.mock.calls.length, vi.mocked(aiConnectionsApi.list).mock.calls.length]).toEqual(initialCalls);
     expect(mockRouterState.navigate).not.toHaveBeenCalled();
     expect(Array.from(container.querySelectorAll("th")).map(cell => cell.textContent)).toEqual(["", "Agent", "Harness", "Connection", "Default model"]);
   });
