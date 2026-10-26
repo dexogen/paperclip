@@ -198,6 +198,15 @@ Custom captions, schema titles/descriptions, enum values, variable names/values,
 secret IDs/versions and provider errors remain literal. Unknown status values use
 own-property checks before a known status label is selected.
 
+Agent trust and project-access controls translate their owned labels, boundary
+counts and save states. Canonical permission values, policy fields and raw
+project names stay unchanged. Locale changes preserve an open policy, selected
+boundary type, project search, focus and pending grants without another write or
+refetch. A saved non-Error failure is translated at render time; an Error message
+remains literal. Legacy trust helpers retain their English defaults. Component
+checks include the existing email setup consumer; live permission enforcement
+and the remaining tools, skills and channel owners require separate verification.
+
 `validateJsonSchemaFormIssues` returns owned `JsonSchemaValidationIssue` objects.
 The form resolves them in the current language; supplied string errors remain
 literal. Environment, plugin and action-test consumers retain these objects so
