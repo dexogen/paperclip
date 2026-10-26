@@ -548,6 +548,42 @@
     {
       "id": "2128647e779fde5346591ed7fab69b12a61e9ba72092166de929f47d6deea17b",
       "reason": "TrustPresetSection compares the canonical boundary target type against project. The conditional renders the translated noProjects or noIssues message; the schema discriminator is never displayed."
+    },
+    {
+      "id": "06d01dd056558d6925de17c198b503b0d5ad71aab84a4ca50c6c0f49ed4d7f4e",
+      "reason": "Canonical preset comparison selecting the Hermes-specific whole display message; the predicate and onSelect/prompt payload remain hermes. The visible result is externalAgentUi.content.hermesInstructions."
+    },
+    {
+      "id": "da36a0300e7fbca9e258e3b7667da55f5b1bf919b96d74e348a357fe9c5fb608",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "e647f0254edbe8f808e627e3d8e379d854e782b5324876c49c635c3e2db7ce54",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "029dba1b9a7fc6394260522713e2f32ca121778b6fba44bbc46416dbe9edd7ce",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "0acced1802cbc5b8f8f23fccdb9dd34efb326746edc5b7611e760283cb48c11e",
+      "reason": "Canonical Dot binding status comparison in the closed presentation mapper; only the result is localized through externalAgentUi.dot.status. Unknown API status remains literal; requests and polling still use the raw status."
+    },
+    {
+      "id": "c8df807704560ebd542e022bac7f14b7445f1dc758c80770d145638fa4262112",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "d2b586070a5de6f7ee79b6387c8337f25c03f15353dd3d32e31602a23b0418a2",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "8087763918a43c37c8f94286c93bc207d2404e74cd5803d2c22e2ef4724525a3",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "0950855864811501c32a7fd9b80fc0cc1916382883d3062dbd5ffbce8d22ee13",
+      "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
     }
   ]
 }

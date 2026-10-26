@@ -176,7 +176,7 @@ literal. Fixed English helper defaults preserve unconverted consumers.
 Component tests cover both languages and pending create/save state. They use
 mocked APIs and selected model/login controls; real provider login, qualification,
 backend permission checks and browser acceptance remain separate. External
-invitation flows are a later slice.
+invitation coverage is described below.
 
 The agent-configuration slice covers the main form, manager selection, secret
 aliases, built-in agent setup and the Claude/Codex configuration controls.
@@ -309,7 +309,24 @@ selection, template identity and the exact save payload; instruction bodies and
 provider errors remain literal. The Grok activity summary translates its observed
 status, queued-task counts and contact date without changing status priority or
 polling. Component checks cover these two surfaces and their existing consumers;
-external invitations, reconnect flows and live provider acceptance remain separate.
+Dot/Muse invitation and reconnect coverage is described below; live provider
+acceptance remains separate.
+
+External-agent invitation controls translate preset selection, Dot/Muse connection
+checks, Muse name/role entry and the shared setup-prompt preview. Locale changes
+retain dirty drafts, selected roles, focus, clipboard attempts, pairing expiry and
+exact attestation snapshots without another request. Generated prompts, URLs,
+company/agent names, credential fields and explicit caption overrides stay literal.
+Only a marked missing-company fallback uses a whole localized sentence.
+
+The local Muse stale-snapshot error has a distinct type and changes language at
+render time; a provider Error with the same English message stays literal.
+Canonical phase/status comparisons, grant gates, revisions and request payloads
+are unchanged. Known status captions use closed mappings with literal unknown
+fallbacks. Receiver contact, background reply, operator attestation and worker
+quiescence retain separate evidence claims. These component checks include shared
+prompt consumers; they do not establish live invitation, provider execution or
+cleanup. Grok's dedicated setup and connection panels remain a separate slice.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

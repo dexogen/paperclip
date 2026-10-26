@@ -87,6 +87,15 @@ configuration across restart and activation. An unrelated edit/import update mus
 not change existing execution; a new package without a runner choice receives
 creation defaults. Do not count a board call or component test as agent evidence.
 
+The external invitation locale component checks preserve preset/role IDs,
+company/agent scope, binding generations/revisions and the exact Muse cleanup
+observation payload. A language change does not issue a new invitation, copy or
+attestation. Local stale-snapshot errors have explicit identity; supplied provider
+messages remain literal. This is UI state/payload evidence with mocked requests,
+not a live grant, cleanup, approval or permission-denial qualification. Generated
+access prompts and existing server authorization remain unchanged; see the
+[product recipe](../feature-map/agents.md#hire-agent).
+
 Gaps: Identity/persona hiring works. Operator account login and sensitive
 adapter/environment configuration are separate guarded actions.
 

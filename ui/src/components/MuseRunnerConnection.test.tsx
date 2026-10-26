@@ -3,6 +3,7 @@ import { act } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import { MuseConnectionDetails, MuseRunnerConnection } from "./MuseRunnerConnection";
 import { MuseConnectionChecks } from "./new-agent/ExternalAgentInviteContent";
 import { museConnectionState } from "@/hooks/useMuseConnection";
@@ -15,8 +16,8 @@ vi.mock("@/api/companies-query", () => ({ useAccountIdentity: () => ({ userId: "
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 let container: HTMLDivElement; let root: Root; let cache: QueryClient | null;
 const handlers = { onTest: vi.fn(), onRepair: vi.fn(), onPause: vi.fn(), onDisconnect: vi.fn(), onRefresh: vi.fn(), onAttest: vi.fn(), onAttestDetectorCleanup: vi.fn() };
-beforeEach(() => { container = document.createElement("div"); document.body.append(container); root = createRoot(container); cache = null; vi.clearAllMocks(); });
-afterEach(async () => { await act(async () => root.unmount()); cache?.clear(); vi.restoreAllMocks(); container.remove(); vi.useRealTimers(); });
+beforeEach(async () => { await i18n.changeLanguage("en"); container = document.createElement("div"); document.body.append(container); root = createRoot(container); cache = null; vi.clearAllMocks(); });
+afterEach(async () => { await act(async () => root.unmount()); cache?.clear(); vi.restoreAllMocks(); container.remove(); vi.useRealTimers(); await i18n.changeLanguage("en"); });
 const button = (name: string) => [...container.querySelectorAll("button")].find(b => b.textContent === name)!;
 async function render(connection = museConnection) { await act(async () => root.render(<MuseConnectionDetails connection={connection} {...handlers} />)); }
 
@@ -27,6 +28,13 @@ it("does not treat receiver contact as worker verification or lifecycle readines
   expect(container.textContent).toContain("Receiver detected: complete");
   expect(container.textContent).toContain("Background reply verified: waiting");
   expect(container.textContent).not.toContain("Muse is ready for tasks");
+  const steps = [...container.querySelectorAll("li")];
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect([...container.querySelectorAll("li")]).toEqual(steps);
+  expect(container.textContent).toContain("Получатель обнаружен: выполнено");
+  expect(container.textContent).toContain("Фоновый ответ подтверждён: ожидание");
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect([...container.querySelectorAll("li")]).toEqual(steps);
   const checksPassed: MuseConnection = { ...museConnection, binding: { ...museConnection.binding!, status: "ready", backgroundReplyVerified: true } };
   expect(museConnectionState(checksPassed).ready).toBe(false);
   expect(museConnectionState({ ...checksPassed, agentLifecycleState: "ready", agentStatus: "pending_approval" }).ready).toBe(false);
@@ -269,6 +277,24 @@ it("records exact detector observation while disabled and reads back authoritati
   await fillDetectorObservation(); expect(container.textContent).toContain(connection.binding!.cleanup.hookScript);
   expect(container.textContent).toContain("include_disabled: true");
   expect(button("Confirm detector observation").disabled).toBe(false);
+  const section = container.querySelector('[aria-label="Record exact Muse detector removal"]')!;
+  const hookId = section.querySelector<HTMLInputElement>('input[aria-label="Registered Muse hook ID"]')!;
+  const consent = section.querySelector<HTMLInputElement>('input[type="checkbox"]')!;
+  hookId.focus(); hookId.setSelectionRange(2, 8);
+  const reads = load.mock.calls.length;
+  for (const locale of ["ru", "en"]) {
+    await act(async () => { await i18n.changeLanguage(locale); });
+    expect(container.querySelector(`[aria-label="${locale === "ru" ? "Записать удаление конкретного детектора Muse" : "Record exact Muse detector removal"}"]`)).toBe(section);
+    expect(document.activeElement).toBe(hookId);
+    expect(hookId.value).toBe("test-registered-hook");
+    expect([hookId.selectionStart, hookId.selectionEnd]).toEqual([2, 8]);
+    expect(consent.checked).toBe(true);
+    expect(button(locale === "ru" ? "Подтвердить наблюдение о детекторе" : "Confirm detector observation").disabled).toBe(false);
+    expect(section.textContent).toContain(connection.binding!.cleanup.hookScript);
+    expect(section.textContent).toContain("hooks.list({ include_disabled: true })");
+    expect(load).toHaveBeenCalledTimes(reads);
+    expect(record).not.toHaveBeenCalled();
+  }
   const observedAt = "2026-10-15T14:59:00.000Z";
   vi.setSystemTime(new Date("2026-10-15T15:05:00Z"));
   await act(async () => button("Confirm detector observation").click());
@@ -298,6 +324,26 @@ it("rechecks the server snapshot before submitting a cached detector confirmatio
   load.mockResolvedValue({ ...connection, binding: { ...connection.binding!, revision: connection.binding!.revision + 1 } });
   await act(async () => button("Confirm detector observation").click()); await act(async () => { await vi.advanceTimersByTimeAsync(30); });
   expect(record).not.toHaveBeenCalled(); expect(container.textContent).toContain("Connection changed");
+  const reads = load.mock.calls.length;
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(container.querySelector('[role="alert"]')?.textContent).toContain("Подключение изменилось. Обновите данные, прежде чем записывать сведения об удалении детектора.");
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(container.querySelector('[role="alert"]')?.textContent).toContain("Connection changed. Refresh before recording detector cleanup.");
+  expect(load).toHaveBeenCalledTimes(reads);
+  expect(record).not.toHaveBeenCalled();
+});
+
+it("keeps a provider failure literal when its message equals the local stale-connection caption", async () => {
+  vi.useFakeTimers();
+  const message = "Connection changed. Refresh before recording detector cleanup.";
+  const load = vi.spyOn(museInvitationsApi, "connection").mockRejectedValue(new Error(message));
+  await renderRunner();
+  const reads = load.mock.calls.length;
+  for (const locale of ["ru", "en"]) {
+    await act(async () => { await i18n.changeLanguage(locale); });
+    expect(container.querySelector('[role="alert"]')?.textContent).toBe(message);
+    expect(load).toHaveBeenCalledTimes(reads);
+  }
 });
 
 it("requires the actual detector listing time and reconfirms every observation edit", async () => {

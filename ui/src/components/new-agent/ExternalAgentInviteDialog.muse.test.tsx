@@ -4,6 +4,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
+import { i18n } from "@/i18n";
 import { ExternalAgentInviteDialog } from "./ExternalAgentInviteDialog";
 import { museBinding, museConnection, musePairing } from "../../../storybook/support/external-agent-invite/muse-fixtures";
 import { readMuseInvitationDraft } from "@/lib/muse-invitation-draft";
@@ -34,7 +35,8 @@ async function click(label: string) {
   const b = [...document.querySelectorAll("button")].find(button => button.textContent?.trim() === label || button.getAttribute("aria-label") === label);
   expect(b, label).toBeTruthy(); await act(async () => b!.click()); await flush();
 }
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   vi.clearAllMocks(); Object.values(museApi).forEach(mock => mock.mockReset());
   settings.enableMuse = true; settings.enableNativeRunner = true; identity.userId = "operator";
   localStorage.clear(); copy.mockResolvedValue(undefined);
@@ -48,7 +50,8 @@ beforeEach(() => {
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
   cache = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
 });
-afterEach(async () => { await act(async () => root.unmount()); cache.clear(); container.remove(); localStorage.clear(); vi.useRealTimers(); });
+afterEach(async () => {
+  await act(async () => { await i18n.changeLanguage("en"); }); await act(async () => root.unmount()); cache.clear(); container.remove(); localStorage.clear(); vi.useRealTimers(); });
 it("gates Muse on both flags without changing Dot availability", async () => {
   settings.enableNativeRunner = false; await render();
   expect(document.body.textContent).toContain("Your Dot in ChatGPT");
@@ -65,9 +68,34 @@ it("retains a nonsecret name/role draft and has one aligned footer", async () =>
   const select = document.querySelector<HTMLSelectElement>("select")!;
   await act(async () => { select.value = "researcher"; select.dispatchEvent(new Event("change", { bubbles: true })); });
   expect(readMuseInvitationDraft("company", "operator")).toEqual({ name: "Maia", role: "researcher" });
+  name.focus(); name.setSelectionRange(1, 3);
+  const reads = museApi.resume.mock.calls.length;
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(document.body.textContent).toContain("Имя агента");
+  expect(document.querySelector('input[placeholder="Muse"]')).toBe(name);
+  expect(document.activeElement).toBe(name);
+  expect([name.selectionStart, name.selectionEnd]).toEqual([1, 3]);
+  expect(document.querySelector("select")).toBe(select);
+  expect(select.value).toBe("researcher");
+  expect(readMuseInvitationDraft("company", "operator")).toEqual({ name: "Maia", role: "researcher" });
+  expect(museApi.resume).toHaveBeenCalledTimes(reads);
+  expect(museApi.create).not.toHaveBeenCalled();
+  expect(museApi.pair).not.toHaveBeenCalled();
+  await act(async () => { await i18n.changeLanguage("en"); });
   const footer = [...document.querySelectorAll("button")].find(b => b.textContent === "Continue")!.parentElement!;
   expect(footer.textContent).toContain("Save & exit");
+  let finishCreate!: (result: unknown) => void;
+  museApi.create.mockImplementationOnce(() => new Promise(resolve => { finishCreate = resolve; }));
   await click("Continue");
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(document.body.textContent).toContain("Подготовка…");
+  expect(document.querySelector('input[placeholder="Muse"]')).toBe(name);
+  expect(name.value).toBe("Maia");
+  expect(select.value).toBe("researcher");
+  expect(museApi.create).toHaveBeenCalledExactlyOnceWith("company", { name: "Maia", role: "researcher" });
+  expect(museApi.pair).not.toHaveBeenCalled();
+  await act(async () => { await i18n.changeLanguage("en"); finishCreate({ agent, approvalId: null, binding: null }); });
+  await flush();
   expect(museApi.create).toHaveBeenCalledWith("company", { name: "Maia", role: "researcher" });
   expect(museApi.pair).toHaveBeenCalledWith("company", agent.id, {});
   expect(JSON.stringify(cache.getMutationCache().getAll().map(mutation => mutation.state))).not.toContain(musePairing.ticket);

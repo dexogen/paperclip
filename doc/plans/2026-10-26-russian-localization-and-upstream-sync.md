@@ -868,7 +868,29 @@ Only 68 resolved roster/editor baseline entries were pruned; no exception was ad
 These are mocked component checks, not live backend permission, conflict or
 persistence proof. Exact-head hosted CI and Greptile review remain pending.
 
-The remaining major packages are agent invitations,
+The Dot/Muse external-invitation slice adds 233 reviewed families (234 English
+and 236 Russian forms) in six production owners, including the shared setup-prompt
+preview. Twelve reused role-label contexts were read again. Two genuine locale
+regressions failed before implementation. Four complete direct suites then passed
+42 cases; ten complete final/consumer suites passed 119. The shared Muse suite is
+counted once: 13 unique suites and 139 unique tests passed, without skips. The final
+company-fallback wording change passed the complete Content suite separately.
+UI typecheck, build and token gates passed before that bounded wording delta;
+final source/catalog validation and map checks cover the final snapshot.
+
+The slice preserves drafts, focus, clipboard state, prompt bytes, pairing expiry,
+role IDs, revision-bound observations and the distinction between contact and
+verified background activity. The owned stale-snapshot error translates late;
+provider errors, including identical English text, remain literal. Five complete
+fallback messages avoid treating a missing company name as a quoted real name.
+Nine exact exceptions cover canonical enum comparisons; 232 resolved baseline
+entries were removed from the six owned files. Component evidence does not qualify real external
+invitations, provider execution or cleanup. Dedicated Grok setup/connection panels
+remain outstanding. The final strict audit passes with 7,379 reviewed families
+and 15,324 remaining source findings, with no pending/missing/invalid messages,
+new findings, source errors or resolved-debt residue. Map checks pass.
+
+The remaining major packages are remaining provider setup,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
