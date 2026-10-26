@@ -92,6 +92,7 @@ interface MarkdownEditorProps {
   contentClassName?: string;
   onBlur?: () => void;
   imageUploadHandler?: (file: File) => Promise<string>;
+  renderImageUploadError?: (cause: unknown) => string;
   /** Called when a non-image file is dropped onto the editor (e.g. .zip). */
   onDropFile?: (file: File) => Promise<void>;
   /** When set to `parent`, a wrapper owns drag/drop behavior and visuals. */
@@ -740,6 +741,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
   contentClassName,
   onBlur,
   imageUploadHandler,
+  renderImageUploadError,
   onDropFile,
   fileDropTarget = "editor",
   bordered = true,
@@ -773,7 +775,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
    * normalize or transform values cannot loop. Replaces the older blur/focus gate for the same concern.
    */
   const echoIgnoreMarkdownRef = useRef<string | null>(null);
-  const [uploadError, setUploadError] = useState<{ message: string | null } | null>(null);
+  const [uploadError, setUploadError] = useState<{ cause: unknown; message: string | null } | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [richEditorError, setRichEditorError] = useState<RichEditorError | null>(null);
   const dragDepthRef = useRef(0);
@@ -990,7 +992,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             }, 100);
             return src;
           } catch (err) {
-            setUploadError(err instanceof Error && !err.message ? null : { message: err instanceof Error ? err.message : null });
+            setUploadError(err instanceof Error && !err.message ? null : { cause: err, message: err instanceof Error ? err.message : null });
             throw err;
           }
         }
@@ -1731,7 +1733,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
         </div>
       )}
       {uploadError && (
-        <p className="px-3 pb-2 text-xs text-destructive">{uploadError.message ?? t("taskDetailCommon.editor.uploadFailed")}</p>
+        <p className="px-3 pb-2 text-xs text-destructive">{renderImageUploadError ? renderImageUploadError(uploadError.cause) : uploadError.message ?? t("taskDetailCommon.editor.uploadFailed")}</p>
       )}
     </div>
   );

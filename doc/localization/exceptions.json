@@ -508,6 +508,14 @@
     {
       "id": "4f3796967255b0ba6285b49130cfce0fe74d77da0a817537261fabe7d33f9d9c",
       "reason": "agentConfigRoleLabel uses the closed local agent-role message map guarded by Object.hasOwn. Unknown role IDs remain literal; stored role values do not change."
+    },
+    {
+      "id": "9af521646943d5aaeac4220961a8ab831a0a33aba5cfb17637062e6ef3da3b22",
+      "reason": "AgentOverview joins the closed knownRunStatusLabel display helper and locale-aware relativeTime with a middle-dot separator. Unknown status values remain raw; this expression contains no English application prose."
+    },
+    {
+      "id": "b4fd3a7aab4a44c7914f231ada3c1747fcd407c8aa027a925cd5139e3c8f92b1",
+      "reason": "LogViewer compares canonical transcript mode to nice before selecting localized nice/raw captions. The enum and React key remain unchanged; the comparator literal is not displayed."
     }
   ]
 }

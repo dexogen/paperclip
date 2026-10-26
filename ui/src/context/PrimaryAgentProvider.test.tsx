@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PrimaryAgentProvider } from "./PrimaryAgentProvider";
 import { usePrimaryAgentPresentation } from "@/components/primary-agent/PrimaryAgentPresentation";
 import { queryKeys } from "@/lib/queryKeys";
+import { i18n } from "../i18n";
 
 const state = vi.hoisted(() => ({
   companyId: "company-a", get: vi.fn(), set: vi.fn(), session: vi.fn(), toast: vi.fn(),
@@ -44,7 +45,8 @@ async function waitForOutput(text: string) {
     expect(container.querySelector("output")?.textContent).toBe(text);
   });
 }
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   state.companyId = "company-a";
   state.get.mockReset().mockResolvedValue(preference());
@@ -55,6 +57,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
   await act(async () => root.unmount()); client.clear(); container.remove(); vi.unstubAllGlobals();
+  await i18n.changeLanguage("en");
 });
 
 describe("primary agent persistence provider", () => {
@@ -64,14 +67,39 @@ describe("primary agent persistence provider", () => {
     await render(); await waitForOutput("maia");
     await act(async () => container.querySelector("button")!.click());
     await waitForOutput("alex");
-    await act(async () => reject(new Error("Connection lost")));
+    const getCount = state.get.mock.calls.length;
+    for (const language of ["ru", "en", "ru"]) {
+      await act(async () => { await i18n.changeLanguage(language); });
+      expect(container.querySelector("output")!.textContent).toBe("alex");
+      expect(container.querySelector("[data-pending]")!.textContent).toBe("alex");
+      expect(state.set).toHaveBeenCalledExactlyOnceWith("company-a", { primaryAgentId: "alex" });
+      expect(state.get).toHaveBeenCalledTimes(getCount);
+      expect(state.toast).not.toHaveBeenCalled();
+    }
+    await act(async () => reject(new Error("Couldn't change your primary agent.")));
     await waitForOutput("maia");
-    expect(state.toast).toHaveBeenCalledWith(expect.objectContaining({ tone: "error", body: "Connection lost" }));
+    expect(state.toast).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+      title: "Не удалось сменить основного агента.", tone: "error", body: "Couldn't change your primary agent.",
+      action: expect.objectContaining({ label: "Повторить" }),
+    }));
+    const toast = state.toast.mock.calls[0][0];
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(state.toast).toHaveBeenCalledExactlyOnceWith(toast);
+    expect(toast.title).toBe("Не удалось сменить основного агента.");
+    expect(toast.action.label).toBe("Повторить");
     state.get.mockResolvedValue(preference("company-a", "user-a", "alex"));
     state.set.mockResolvedValue(preference("company-a", "user-a", "alex"));
-    await act(async () => state.toast.mock.calls[0][0].action.onClick());
+    await act(async () => toast.action.onClick());
     await waitForOutput("alex");
     expect(state.set).toHaveBeenLastCalledWith("company-a", { primaryAgentId: "alex" });
+    expect(state.set).toHaveBeenCalledTimes(2);
+    state.companyId = "company-b";
+    state.get.mockResolvedValue(preference("company-b", "user-b", null));
+    await act(async () => client.setQueryData(queryKeys.auth.session, { user: { id: "user-b" } }));
+    await render(); await waitForOutput("none");
+    await act(async () => { await i18n.changeLanguage("ru"); toast.action.onClick(); });
+    expect(state.set).toHaveBeenCalledTimes(2);
+    expect(client.getQueryData(queryKeys.primaryAgent.mine("company-b", "user-b"))).toEqual(preference("company-b", "user-b", null));
   });
 
   it("keeps cached preferences separate across companies and users", async () => {
@@ -106,16 +134,19 @@ describe("primary agent persistence provider", () => {
     await render(); await waitForOutput("maia");
     await act(async () => container.querySelector("button")!.click());
     await waitForOutput("alex");
+    await act(async () => { await i18n.changeLanguage("ru"); });
     state.companyId = "company-b";
     state.get.mockResolvedValue(preference("company-b", "user-b", null));
     await act(async () => client.setQueryData(queryKeys.auth.session, { user: { id: "user-b" } }));
     await render(); await waitForOutput("none");
     expect(container.querySelector("[data-pending]")?.textContent).toBe("none");
+    await act(async () => { await i18n.changeLanguage("en"); });
     await act(async () => reject(new Error("Old request failed")));
     await waitForOutput("none");
     expect(client.getQueryData(queryKeys.primaryAgent.mine("company-a", "user-a"))).toEqual(preference());
     expect(client.getQueryData(queryKeys.primaryAgent.mine("company-b", "user-b"))).toEqual(preference("company-b", "user-b", null));
     expect(state.toast).not.toHaveBeenCalled();
+    expect(state.set).toHaveBeenCalledExactlyOnceWith("company-a", { primaryAgentId: "alex" });
   });
 
   it("retries session failures before fetching a personal preference", async () => {

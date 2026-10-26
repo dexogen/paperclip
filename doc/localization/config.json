@@ -3,22 +3,67 @@
   "locale": "ru",
   "sourceCatalog": "ui/src/i18n/locales/en.json",
   "targetCatalog": "ui/src/i18n/locales/ru.json",
-  "scanRoots": ["ui/src", "packages/shared/src/constants.ts"],
+  "scanRoots": [
+    "ui/src",
+    "packages/shared/src/constants.ts"
+  ],
   "excludedSources": [],
   "dynamicKeys": [
     {
       "file": "ui/src/pages/Auth.tsx",
       "owner": "AuthPage",
       "expression": "error.key",
-      "keys": ["auth.errors.authenticationFailed", "auth.errors.requiredFields"],
+      "keys": [
+        "auth.errors.authenticationFailed",
+        "auth.errors.requiredFields"
+      ],
       "reason": "Local sign-in error is a closed discriminated union; provider diagnostics are displayed separately."
     },
     {
       "file": "ui/src/pages/ProfileSettings.tsx",
       "owner": "ProfileSettings",
       "expression": "actionError.key",
-      "keys": ["profile.updateFailed", "profile.selectOrganization", "profile.uploadFailed", "profile.removeFailed"],
+      "keys": [
+        "profile.updateFailed",
+        "profile.selectOrganization",
+        "profile.uploadFailed",
+        "profile.removeFailed"
+      ],
       "reason": "Profile action errors are a closed union of four localized messages."
+    },
+    {
+      "file": "ui/src/components/AgentLifecycleStatus.tsx",
+      "owner": "AgentLifecycleStatus",
+      "expression": "agent.lifecycleError ? phase[2] : phase[0]",
+      "keys": [
+        "agentDetailUi.lifecycle.preparing",
+        "agentDetailUi.lifecycle.preparingFailed",
+        "agentDetailUi.lifecycle.verifying",
+        "agentDetailUi.lifecycle.verifyingFailed",
+        "agentDetailUi.lifecycle.pausing",
+        "agentDetailUi.lifecycle.pausingFailed",
+        "agentDetailUi.lifecycle.resuming",
+        "agentDetailUi.lifecycle.resumingFailed",
+        "agentDetailUi.lifecycle.terminating",
+        "agentDetailUi.lifecycle.terminatingFailed",
+        "agentDetailUi.lifecycle.cleaning_up",
+        "agentDetailUi.lifecycle.cleaning_upFailed"
+      ],
+      "reason": "The local phases table contains only these six lifecycle states; pendingPhase uses an own-property check before selecting the translated caption/description. Provider lifecycleError remains literal."
+    },
+    {
+      "file": "ui/src/components/AgentLifecycleStatus.tsx",
+      "owner": "AgentLifecycleStatus",
+      "expression": "phase[1]",
+      "keys": [
+        "agentDetailUi.lifecycle.preparingDescription",
+        "agentDetailUi.lifecycle.verifyingDescription",
+        "agentDetailUi.lifecycle.pausingDescription",
+        "agentDetailUi.lifecycle.resumingDescription",
+        "agentDetailUi.lifecycle.terminatingDescription",
+        "agentDetailUi.lifecycle.cleaning_upDescription"
+      ],
+      "reason": "The local phases table contains only these six lifecycle states; pendingPhase uses an own-property check before selecting the translated caption/description. Provider lifecycleError remains literal."
     }
   ]
 }

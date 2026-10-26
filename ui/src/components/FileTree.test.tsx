@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FileTree, buildFileTree } from "./FileTree";
@@ -28,6 +29,47 @@ describe("FileTree", () => {
   function row(path: string) {
     return container.querySelector(`[data-file-tree-path="${path}"]`) as HTMLDivElement | null;
   }
+
+  it("updates default empty captions while preserving an explicit equal-English description", async () => {
+    const callbacks = { onSelectFile: vi.fn(), onToggleDir: vi.fn() };
+    try {
+      await act(async () => { await setLocale("en"); root.render(<FileTree nodes={[]} selectedFile={null} expandedDirs={new Set()} {...callbacks} />); });
+      const tree = container.querySelector('[role="tree"]');
+      await act(async () => { await setLocale("ru"); });
+      expect(container.querySelector('[role="tree"]')).toBe(tree);
+      expect(container.textContent).toContain("Файлы появятся здесь, когда станут доступны.");
+      await act(async () => root.render(<FileTree nodes={[]} selectedFile={null} expandedDirs={new Set()} {...callbacks}
+        empty={{ title: "No files", description: "Files will appear here when they are available." }} />));
+      expect(container.textContent).toContain("No files");
+      expect(container.textContent).toContain("Files will appear here when they are available.");
+      expect(callbacks.onSelectFile).not.toHaveBeenCalled(); expect(callbacks.onToggleDir).not.toHaveBeenCalled();
+    } finally { await act(async () => { await setLocale("en"); }); }
+  });
+
+  it("keeps selected paths, checked rows and focus while captions change language", async () => {
+    const onSelectFile = vi.fn();
+    const onToggleDir = vi.fn();
+    const onToggleCheck = vi.fn();
+    const nodes = buildFileTree({ "docs/README <raw>.md": "", "docs/Other.md": "" });
+    try {
+      await act(async () => { await setLocale("en"); root.render(<FileTree nodes={nodes}
+        selectedFile="docs/README <raw>.md" expandedDirs={new Set(["docs"])}
+        checkedFiles={new Set(["docs/README <raw>.md"])} onSelectFile={onSelectFile}
+        onToggleDir={onToggleDir} onToggleCheck={onToggleCheck} />); });
+      const selected = row("docs/README <raw>.md")!;
+      selected.focus();
+      await act(async () => { await setLocale("ru"); });
+      expect(row("docs/README <raw>.md")).toBe(selected);
+      expect(selected.getAttribute("aria-selected")).toBe("true");
+      expect(selected.getAttribute("aria-checked")).toBe("true");
+      expect(document.activeElement).toBe(selected);
+      expect(container.querySelector('[role="tree"]')?.getAttribute("aria-label")).toBe("Файлы");
+      expect(container.textContent).toContain("README <raw>.md");
+      expect(onSelectFile).not.toHaveBeenCalled(); expect(onToggleDir).not.toHaveBeenCalled(); expect(onToggleCheck).not.toHaveBeenCalled();
+      await act(async () => { await setLocale("en"); selected.click(); });
+      expect(onSelectFile).toHaveBeenCalledExactlyOnceWith("docs/README <raw>.md");
+    } finally { await act(async () => { await setLocale("en"); }); }
+  });
 
   it("selects file rows and expands directory rows", () => {
     const onSelectFile = vi.fn();

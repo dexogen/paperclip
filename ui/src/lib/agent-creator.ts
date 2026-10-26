@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { CompanyUserDirectoryEntry } from "../api/access";
 
 const LOCAL_BOARD_USER_ID = "local-board";
@@ -9,12 +11,13 @@ export function humanAgentCreatorUserId(createdByUserId: string | null | undefin
 export function resolveAgentCreatorLabel(
   createdByUserId: string | null | undefined,
   users: CompanyUserDirectoryEntry[] | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   const creatorUserId = humanAgentCreatorUserId(createdByUserId);
   if (!creatorUserId || !users) return null;
   const humans = users.filter((entry) => entry.principalId !== LOCAL_BOARD_USER_ID);
   if (humans.length < 2) return null;
   const creator = humans.find((entry) => entry.principalId === creatorUserId);
-  if (!creator) return "Former member";
-  return creator.user?.name?.trim() || creator.user?.email || "Unknown user";
+  if (!creator) return t("agentDetailUi.creator.former");
+  return creator.user?.name?.trim() || creator.user?.email || t("agentDetailUi.creator.unknown");
 }

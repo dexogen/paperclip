@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { auditSectionHref, type AuditSection } from "./audit/audit-navigation";
 
 export type AgentDetailView =
@@ -16,10 +18,12 @@ export type AgentDetailView =
 export type AgentLocalDetailView = Exclude<AgentDetailView, "run-detail">;
 
 export const AGENT_DETAIL_NAVIGATION: ReadonlyArray<{
+  id: "agent" | "runtime" | "governance";
   label: string;
   items: ReadonlyArray<{ value: AgentLocalDetailView; label: string }>;
 }> = [
   {
+    id: "agent",
     label: "Agent",
     items: [
       { value: "overview", label: "Overview" },
@@ -28,6 +32,7 @@ export const AGENT_DETAIL_NAVIGATION: ReadonlyArray<{
     ],
   },
   {
+    id: "runtime",
     label: "Runtime",
     items: [
       { value: "runtime", label: "Harness / Runtime" },
@@ -37,6 +42,7 @@ export const AGENT_DETAIL_NAVIGATION: ReadonlyArray<{
     ],
   },
   {
+    id: "governance",
     label: "Governance",
     items: [
       { value: "permissions", label: "Permissions / Trust" },
@@ -45,6 +51,31 @@ export const AGENT_DETAIL_NAVIGATION: ReadonlyArray<{
     ],
   },
 ] as const;
+
+export function getAgentDetailNavigation(t: TFunction = i18n.getFixedT("en")) {
+  const labels: Record<AgentLocalDetailView, string> = {
+    "overview": t("agentDetailUi.nav.overview"),
+    "instructions": t("agentDetailUi.nav.instructions"),
+    "skills": t("agentDetailUi.nav.skills"),
+    "runtime": t("agentDetailUi.nav.runtime"),
+    "secrets": t("agentDetailUi.nav.secrets"),
+    "tools": t("agentDetailUi.nav.tools"),
+    "channels": t("agentDetailUi.nav.channels"),
+    "permissions": t("agentDetailUi.nav.permissions"),
+    "api-keys": t("agentDetailUi.nav.api-keys"),
+    "revisions": t("agentDetailUi.nav.revisions"),
+  };
+  const sectionLabels = {
+    agent: t("agentDetailUi.nav.groupAgent"),
+    runtime: t("agentDetailUi.nav.groupRuntime"),
+    governance: t("agentDetailUi.nav.groupGovernance"),
+  };
+  return AGENT_DETAIL_NAVIGATION.map(section => ({
+    ...section,
+    label: sectionLabels[section.id],
+    items: section.items.map(item => ({ ...item, label: labels[item.value] })),
+  }));
+}
 
 export function parseAgentDetailView(value: string | null): AgentLocalDetailView {
   if (value === "instructions" || value === "prompts") return "instructions";
