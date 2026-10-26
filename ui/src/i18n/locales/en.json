@@ -19583,5 +19583,12 @@
     "fromActor": "From",
     "resolveAnnotation": "Resolve",
     "resolveDelivery": "Resolve"
+  },
+  "latestUpstream": {
+    "preparingAgentComputer": "Preparing your agent computer…",
+    "retryPreparation": "Retry preparation",
+    "retryComputerPreparationFailed": "Could not retry computer preparation.",
+    "retrySavingEnvironment": "Retry saving environment",
+    "saveEnvironmentFailed": "Could not save the environment."
   }
 }

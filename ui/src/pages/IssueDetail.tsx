@@ -12,6 +12,7 @@ import { WorkspaceRetryControl } from "../components/WorkspaceRetryButton";
 import { isLockedIssueStub, LockedIssueChip } from "@/components/LockedIssueChip";
 import { canManageIssuePrivacy } from "../lib/issuePrivacy";
 import { TextAttachmentContext } from "../context/TextAttachmentContext";
+import { useTaskPluginPanels, taskPluginPanelId } from "@/hooks/useTaskPluginPanels";
 import { useTaskBrowsers, useBrowserArrivals } from "@/hooks/useTaskBrowsers";
 import { WorkspaceExportRecovery } from "../components/WorkspaceExportRecovery";
 import { DispositionRecoveryProvider } from "../components/DispositionRecoveryNotice";
@@ -3970,6 +3971,19 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
     openTaskSidePanel();
     if (isMobile) setMobilePropsOpen(true);
   }, [issue?.id, openTaskSidePanel, isMobile]);
+  const pluginPanels = useTaskPluginPanels(issue, taskChatShellEnabled);
+  const revealedPluginPanels = useRef(new Set<string>());
+  const openedPluginPanelKeys = useRef(new Set<string>());
+  const dismissedPluginPanelKeys = useRef(new Set<string>());
+  useEffect(() => {
+    for (const panel of pluginPanels) {
+      const key = JSON.stringify([currentUserId, issue?.id, panel.runId, taskPluginPanelId(panel)]);
+      if (revealedPluginPanels.current.has(key)) continue;
+      revealedPluginPanels.current.add(key);
+      openTaskSidePanel();
+      if (isMobile) setMobilePropsOpen(true);
+    }
+  }, [pluginPanels, currentUserId, issue?.id, openTaskSidePanel, isMobile]);
   const browserQuery = useTaskBrowsers(issue?.id);
   const { openBrowserId, openBrowser: setOpenBrowserId, acknowledgeBrowserOpened: handleBrowserOpened } =
     useBrowserArrivals(currentUserId ?? "anonymous", issue?.id, browserQuery.data);
@@ -6082,7 +6096,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
   );
 
   useLayoutEffect(() => {
-    if (!panelIssue || suppressPanelUntilPlan || (conversation && !conversation.issue)) {
+    if (!panelIssue || suppressPanelUntilPlan || (conversation && !conversation.issue) || (taskChatShellEnabled && isMobile)) {
       closePanel();
       return;
     }
@@ -6121,6 +6135,9 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       openPanel(
         <IssueGalleryContext.Provider value={openIssueGallery}>
           <TaskSidePanel
+            pluginPanels={pluginPanels}
+            openedPluginPanelKeys={openedPluginPanelKeys.current}
+            dismissedPluginPanelKeys={dismissedPluginPanelKeys.current}
             openBrowserId={openBrowserId}
             onBrowserOpened={handleBrowserOpened}
             key={panelIssue.id}
@@ -6146,6 +6163,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
     }
     return () => closePanel();
   }, [
+    pluginPanels,
     openBrowserId,
     handleBrowserOpened,
     closePanel,
@@ -8697,6 +8715,9 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
                     <SheetTitle>{t("taskDetail.copy.sidePanel")}</SheetTitle>
                   </SheetHeader>
                   <TaskSidePanel
+                    pluginPanels={pluginPanels}
+                    openedPluginPanelKeys={openedPluginPanelKeys.current}
+                    dismissedPluginPanelKeys={dismissedPluginPanelKeys.current}
                     openBrowserId={openBrowserId}
                     onBrowserOpened={handleBrowserOpened}
                     key={`${issue.id}:mobile`}

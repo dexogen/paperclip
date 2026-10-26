@@ -2656,6 +2656,7 @@ describe("IssueDetail", () => {
       );
     });
     expect(mockSetPanelVisible).not.toHaveBeenCalled();
+    expect(mockOpenPanel).not.toHaveBeenCalled();
   });
 
   it("opens a plan deep link in the shared mobile side-panel sheet", async () => {

@@ -20489,5 +20489,12 @@
     "fromActor": "От",
     "resolveAnnotation": "Отметить решённым",
     "resolveDelivery": "Выбрать решение"
+  },
+  "latestUpstream": {
+    "preparingAgentComputer": "Подготовка компьютера агента…",
+    "retryPreparation": "Повторить подготовку",
+    "retryComputerPreparationFailed": "Не удалось повторить подготовку компьютера.",
+    "retrySavingEnvironment": "Повторить сохранение среды выполнения",
+    "saveEnvironmentFailed": "Не удалось сохранить среду выполнения."
   }
 }
