@@ -187,6 +187,13 @@ language while each save is pending, then reload and compare persisted skill key
 and version pins. These component tests do not prove server permissions or skill
 materialization. Skills Manager, Studio and Store have separate coverage.
 
+[Connection instruction controls](../../ui/src/features/connections/ConnectionInstructions.test.tsx)
+check dirty text, focus, selection, reset template identity, configuration gates
+and exact pending-save payloads through EN/RU/EN changes. The agent source list
+keeps raw names and instruction bodies, filters inactive connections and retries
+the same agent/company after a load failure. These are mocked component checks, not
+proof that a live task received the connection's instructions.
+
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
 For failed setup, use an unavailable model or invalid command on a disposable agent.
@@ -290,6 +297,13 @@ Choose **Invite an external agent → Grok Bot**, identify the Bot by its deskto
 Prerequisites: authenticated public HTTPS, Assistant connections (MCP), Paperclip Runner and Grok Bot experimental settings. Cloud uses its normal managed Runner environment. Provider usage is unknown. Routine uncertainty blocks new assignments until explicit inspection and recovery; stopping work revokes Paperclip authority without confirming remote termination.
 
 Evidence: source implementation and focused protocol tests; real provider assigned/proactive workflows and deployed managed acceptance remain release gates.
+
+The [activity-summary locale checks](../../ui/src/components/GrokBotWorkSummary.test.tsx)
+preserve recovery/assignment status priority, raw task links and provider errors,
+queued counts and the existing polling schedule. The summary reports observed
+Paperclip activity; it does not certify complete Bot activity or availability.
+These tests use mocked responses and do not qualify invitation or recovery actions.
+
 ### Documentation scope: Agents, organization, and runtime setup
 
 Per-harness/model/account capabilities, every instruction-file error, and complete built-in-agent lifecycle variants remain separate qualification matrices.

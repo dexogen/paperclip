@@ -831,6 +831,19 @@ defaults for existing consumers. These are component tests with mocked APIs;
 live permission enforcement, provider access and skill materialization require
 separate acceptance. The existing channel-query error-as-empty gap is unchanged.
 
+The connection-instructions/activity-summary slice adds 30 reviewed families
+(31 English and 33 Russian forms) in two production owners. Both genuine locale
+regressions failed before translation; five focused cases then passed. Four
+complete existing consumer suites passed 318 cases, for 323 passes without skips
+across six complete suites in two invocations. UI typecheck, build and token gates
+passed. Drafts, focus, raw text/errors, template versions and save payloads remain
+stable; Grok status priority and polling do not change with the language. Only 32
+resolved baseline entries were removed, with no new exception. This is component
+coverage, not live instruction delivery, Bot availability or external setup.
+The final strict audit passes with 7,088 reviewed families and 15,598 remaining
+source findings; pending/missing/invalid messages, new findings and source errors
+are all zero. Map checks also pass.
+
 The remaining major packages are agent bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional

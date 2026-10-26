@@ -8396,5 +8396,42 @@
       "attention": "attention",
       "revoked": "revoked"
     }
+  },
+  "agentConnectionUi": {
+    "instructions": {
+      "title": "Agent instructions",
+      "tellAgents": "Tell agents to use {{provider}}",
+      "disabledWarning": "Agents can still use this connection’s tools, but won’t receive these instructions.",
+      "textLabel": "Instructions text",
+      "required": "Enter instructions.",
+      "doneEditing": "Done editing",
+      "edit": "Edit instructions",
+      "reset": "Reset to default",
+      "saveError": "Couldn’t save instructions. Try again.",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "save": "Save instructions",
+      "loading": "Loading connection instructions…",
+      "retry": "Retry",
+      "fromConnections": "From connections",
+      "description": "Enabled instructions are included when the connection is available for the task. Access can depend on the task’s responsible person and action permissions.",
+      "off": "These instructions are turned off for this connection.",
+      "configure": "Complete this connection’s configuration before agents receive its instructions.",
+      "loadError": "Couldn’t load connection instructions."
+    },
+    "grok": {
+      "refreshError": "Connection status could not be refreshed. {{message}}",
+      "recoveryNeeded": "Recovery needed",
+      "awaitingAcknowledgement": "Awaiting acknowledgement",
+      "working": "Working in Grok Bot",
+      "noActiveSession": "No active Paperclip work session",
+      "incomplete": "Connection setup incomplete",
+      "queued_one": "Queued tasks: {{count}}",
+      "queued_other": "Queued tasks: {{count}}",
+      "checking": "Queued tasks: Checking…",
+      "lastContact": "Last contact: {{date}}",
+      "noContact": "Last contact: Not observed",
+      "activityDescription": "Shows Paperclip-reported activity. Open the Grok Bot desktop app to inspect the Bot’s complete activity."
+    }
   }
 }
