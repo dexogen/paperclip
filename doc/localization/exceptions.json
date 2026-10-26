@@ -148,6 +148,14 @@
     {
       "id": "7d5debaa3ff0d1b60a9c076e6ef83d58fb826ed63928a630a874b4add9ad6ff1",
       "reason": "SnippetLine compares the canonical snippet field with document to select its title tooltip. The literal is a discriminator, not rendered copy. The tooltip preserves the user-provided fallbackLabel; the visible document chip uses searchUi.result.document."
+    },
+    {
+      "id": "3c2966cbd3f8db30b309c5dbb111660cf3a398e3af32f4146f8395366b3b9234",
+      "reason": "groupInboxWorkItems compares groupBy with the canonical workspace value to choose its display-label resolver. The discriminator is not rendered. Translation happens after canonical grouping and sorting, preserving group keys, order and custom names."
+    },
+    {
+      "id": "03b794e59d833d1f9257a4d8187155ef12a5f99671e3ac6bae2ec54c41e50b7c",
+      "reason": "groupInboxWorkItems compares groupBy with the canonical assignee value to choose its display-label resolver. The discriminator is not rendered. Translation happens after canonical grouping and sorting, preserving group keys, order and custom names."
     }
   ]
 }

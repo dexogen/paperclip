@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 2,589 reviewed semantic families, 2,655 English
-forms, and 2,787 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 18,832.
+The current combined catalog has 2,740 reviewed semantic families, 2,809 English
+forms, and 2,947 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,642.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -295,7 +295,7 @@ README includes reciprocal English/Russian flag links and a source quickstart th
 selects this preview. See the [UI localization guide](../../ui/src/i18n/README.md)
 for exact surface boundaries.
 
-Full task/agent/project detail screens, complete Inbox and routine host pages,
+Full task/agent/project detail screens, complete routine host pages,
 remaining agent configuration/settings, dashboards, and most Connections remain
 outside the completed translation scope. The design-sandbox-only refreshed filter
 panel is also untranslated. This preview does not meet the full-web-UI release
@@ -477,6 +477,36 @@ literal `Retry queued` after that caption moved to the catalog. This is a failed
 run, not a green qualification. A focused contract correction and behavioral retry
 regression are in progress. Backend and live phases did not start; process and
 database cleanup passed. A later candidate must complete those phases explicitly.
+
+### Inbox integration
+
+The next slice adds 151 reviewed semantic families (154 English forms and 160
+Russian forms) across ten production owners. Both active Inbox renderers and
+Blocked views translate their controls, actions, group labels, dates and local
+errors. Approval type/subject wrappers are included, but their full payload
+renderer and server-owned action descriptions are not. Existing toasts retain
+the language in which their string snapshot was created.
+
+Grouping first uses the original canonical sort, then translates the display
+labels. IDs, collapsed groups, pinned order and Undo placement remain stable.
+Known approval, blocked and fallback-error captions are searchable in either
+language so changing locale does not remove a matching row. Names, diagnostics,
+custom subjects and API-owned labels remain literal. The unavailable-agent label
+covers missing or ineligible agents as well as paused ones; it does not claim
+that every unavailable agent is paused.
+
+Root review examined all catalog pairs, corrected agent-availability wording and
+fractional-count grammar, and re-examined seven reused message families in their
+new source contexts. Two exact enum exceptions cover display-resolver selection.
+The baseline removes 190 resolved occurrences and accepts no new debt.
+
+The worker's final eleven-file component/helper run passed 187 tests. After merging
+the search slice and adapting the shared retry source contract, all twelve complete
+files passed 199 tests. API-binding checks remain, with separate behavioral tests
+for the selected retry payload, success navigation, error toast and no repeated
+request during a locale change. The combined-host fixture uses real Inbox props;
+it does not establish App redirects, server permissions or a live browser journey.
+The full combined Linux and browser qualification remains pending.
 
 ### Workflow activation
 

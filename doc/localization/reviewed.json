@@ -1976,6 +1976,1063 @@
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.759Z"
     },
+    "inboxUi.activeFilterHint": {
+      "sourceHash": "3ead20873e7f36bc1477ba3bc70e9becee589d218fef1cfbe1ddd621bb067959",
+      "translationHash": "d6c8f6f40f9c978b461ea82dd40744f6ab64b05a7b8a8e4b954723b4ea6cd933",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.alerts": {
+      "sourceHash": "cab2324b4c0b6a07ddf61383fb381153c796bd82f890f794505e7089116c61c9",
+      "translationHash": "ca92d19de7e6b60378a6ad456b9bcaea707dee963ca8f6de41b97feafef132ab",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.alertsAgents": {
+      "sourceHash": "3efd872b7d298cb692142f61b2d62bb22f15af9a333539107cac08e1873dc1b6",
+      "translationHash": "d2d7328a5e948c8d5a7ea215f5792112e4e2de50e040ebdcdc8def2fea3a2586",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.allApprovalStatuses": {
+      "sourceHash": "651258589460f6a066195562efba2b04afdc70ef7a4db9daa675ecbe7f13eebf",
+      "translationHash": "26bf165432a4332aea33a93bb4c2edb25efee9c95dd6a07747a9738622783c4c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.allCategories": {
+      "sourceHash": "5c6b3c2493dc3e07287813b8b22cb0d51397cbb978092a73c15135f91d567fdc",
+      "translationHash": "4a958ee4f4f2a5ad9c9f4ef8428d3a6b0ddc566a7078575b96e5d974a869f983",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.requestedBy": {
+      "sourceHash": "98450f683f01fcb62435703a1f196b55ba465454a2dbacf94e6c5ae62795c2df",
+      "translationHash": "dc0135f591719136dbdf598393eedd773759cfec68d3ed58e65e2aa4c79017de",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.type.approve_ceo_strategy": {
+      "sourceHash": "22ed087bef153454d856f7798a56191cc2e39b8c11345a16a53106360ec2d19b",
+      "translationHash": "089a9aabb65fa3a214f6f3dd6c86a0fa531893b7c09375ea8c1edec5fc972b6d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.type.budget_override_required": {
+      "sourceHash": "710fc0a464d880438acf8e8998b64a8f87a9f8a0784099a521cd843b922110a1",
+      "translationHash": "8d3a0fccaa0fe2dfa295a6a5361994e445eeb9e39955013c8b35896e9c61d1f1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.type.hire_agent": {
+      "sourceHash": "6de63a6b29ce2b2529ddf3570ba60af26acd3b060b11665482d8a2d2d45b570f",
+      "translationHash": "9b1bf24158da453f6effbcba838cb037de80eaf923b080c2cb23b685f8ef19c9",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.type.request_board_approval": {
+      "sourceHash": "cde88d11b86c813306303a2d05757aa05adfbb555340cdca429a803cb42b9aa7",
+      "translationHash": "8a219c24ac51177ff090144527436b35eaefd9058b9d871cc2dd385383317a76",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.updated": {
+      "sourceHash": "387e1b6da250529c848cba60185ac24fa4e4ace2514f79d38ee889c0feba472d",
+      "translationHash": "b74c64f15456c83b94a2d5260f28c1ab032b8c61d76462fba4c8e58490ffa419",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approval.withSubject": {
+      "sourceHash": "cd442d3db884cf67d33ad550e8481b133c0997603cd5b9e53304efa5e1e38659",
+      "translationHash": "cfe4e59318ce5999cbcd44ececf94ca02a59975e96fff3b6265f223c250c4eec",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approvals": {
+      "sourceHash": "04029e3b1fc860b64259a2dcf891dd760729289ab1290ab5c5078a1fe87ad4c5",
+      "translationHash": "ff0275b71b7b8d1e2da0976c00caf038c04752cace5b1fea977d28ad94094a3e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approvalStatus": {
+      "sourceHash": "6b2d8da842c71142de1afde3454569c510636598bec14381873dfcd784e50f3b",
+      "translationHash": "020a2ccd06d016f19cebbfdbf1da4d3380594285de11d221d92854c461c8793a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.approve": {
+      "sourceHash": "204d750dc1cbd8ebeb856259bf9b6f748733d61160361b01fbb95dd7b5c194bd",
+      "translationHash": "db174b6afb6bd0e0b44071337d113947862ee587c4a027ec0b7d6ada44b9f89f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.233Z"
+    },
+    "inboxUi.archive": {
+      "sourceHash": "f32be1cd1b169d06117665e99592678aa05c7efcde3428e7706505474dd5e94b",
+      "translationHash": "726ba05a89e892234d6acbd628b8da43ee82d24c4ed61461a7c3c46aeb22e92a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.archived": {
+      "sourceHash": "34262d698d61d8984af3f73d51f144e73dcd43236453bf2906076cde8daf18d2",
+      "translationHash": "d1193b3398c8360144eea9e82acec84f68abd7c2f0351ad5aecb2ce2aa396f29",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.days": {
+      "sourceHash": "8ab2bd5f6ea5c2f634d101d3a62fa290f565d6269c62501e7e0d17fdb495b4d1",
+      "translationHash": "38eefcc56f2a9a272a218394a38a38846f68e4decb75f301fe20a18a21a29fda",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.hours": {
+      "sourceHash": "e8e8d1757fb30a039567a8496502bb3b6385e496a030a4049e94a6dda772e746",
+      "translationHash": "12b196628c3e8e554cd280452b85f293f194f2c6c9d3be86bc6c1134be9547af",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.justNow": {
+      "sourceHash": "2c733a5435d7b613435d7fbd09feb18306f9eb7f9fa5e6a62bd8369e7c3d71a4",
+      "translationHash": "6cea2a52d392d452f537af67f52914d292a4a450c815b11651ad5d56d82f828d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.minutes": {
+      "sourceHash": "85721bb929dd4cef2c586f3812baf1209e620b88df777f1101b315c77929debc",
+      "translationHash": "0781de712420b36b5d40bbfca8bd96903d0c033677bc12995d0504a00f00ef19",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.months": {
+      "sourceHash": "e9cd2c4a9359ab6faf2dbfe776999991f6bc8449f39bb8ec5203d43ce1431267",
+      "translationHash": "3bd7b5ec09516d73d8dc65023ea6352ad160eab40c1da9d952f170d94551b5b5",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.stopped": {
+      "sourceHash": "dcbf775827bc6cfc6244b3a8bcee76ed0ac0b84b9005ddb8977bff064c578de5",
+      "translationHash": "e132a4050c036db5fdf0ecbd2404cf89702542cd1800d9b5472a67be10e4df1e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.age.weeks": {
+      "sourceHash": "754bfc4ce95f5b3d9931cf6c14a21e477eabed0f4acaf89223d4df5cf5d96ded",
+      "translationHash": "cab3472c9ab0ad89bc1621d457d5e637f986b2528d5bdef5cc9c45dfcbbd501e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.empty": {
+      "sourceHash": "dd14da34fc16a8382b555ea5e02a68c68da188b674d382e8ff99f611c2eed1be",
+      "translationHash": "97948d3cbf4bff471e0ac90b93099a6cc27198e34af0098624f64efdfad222a0",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.emptyHint": {
+      "sourceHash": "8af1fccbb38eb35c951d9f37230d2cb458bd83bdbe21d46a9ce01840d6172d28",
+      "translationHash": "6e3c64ad523f045618a5e66d607eedc82370a2629c85671c1ccabb0bb251c795",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.group.blocker_type": {
+      "sourceHash": "9d37f7aa5559cafbacfe61916726287d765cf84df0e1e0ed498a336d815d258f",
+      "translationHash": "fbba313ab424d848c01f7d89fb81e33f0566d8d6a0903462cd1f5a354a09da00",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.group.none": {
+      "sourceHash": "9ea94a56a8eea9aa9c3073b3d851afb148e79ad5f2ae13e751c386d5108eb025",
+      "translationHash": "3dbbdd1b3333a59ce12aa79033c68ac96c607bb7cf181be11f746e076986e7b2",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.groupCount": {
+      "sourceHash": "7e230ff884b1cd86db591424114cc63458e87ad399f03a4ec11807e6447486d8",
+      "translationHash": "596f7727a4cdefb76bbeb3488b2f7dc249d26e02a56feb8e5646718398a6ba38",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.loadFailed": {
+      "sourceHash": "015ac238f45fb94e6e0e7f70373def5c892c7c14f4873528c6b669edc7bd9363",
+      "translationHash": "07bf84384319ba1dd6f55506742ca6f1b7a967390ce05db7fa1d260c60376a2c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.noResults": {
+      "sourceHash": "c1b043d402bd08f05bfd85d5d34f3a9beb9df600346995662f7f2820b73dd81c",
+      "translationHash": "94446ce6a32ddf3a79f941c67dee39d650f43669f1edb864e1a5da39288890be",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.otherTabs": {
+      "sourceHash": "1b3dc6871768c4db6d97ef8bef4c3cf0f8867b286854af88588f170d65f0d11f",
+      "translationHash": "f4e65dfd07595e6405c4ab7b2d3700e4e86cef676011cf3ad3c708b931b3ec2b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.blocked_by_assigned_backlog_issue": {
+      "sourceHash": "f461a1fbc434d433a94f92e7e78d1922979a76b335196eb735d21825d7c98e1d",
+      "translationHash": "89dec2b396ce1b67312d7c1b01cea4cac4ca5bfeb5ddc3334623223fd2250652",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.blocked_by_cancelled_issue": {
+      "sourceHash": "3fe0722a0a56b37821c76123d23d44008b12dca511bcba3d273ed607f4227d29",
+      "translationHash": "cabd979b054bde76451bfe992b3efd91af81d471ca024902cfdd61f9a63be1fc",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.blocked_by_unassigned_issue": {
+      "sourceHash": "b31258e99dac192e48bb56847539020f2c48d728333077f6fef6b4a7617ff87c",
+      "translationHash": "217e3418d1aac46484cdf2c7bb695250ee060812490cc7a242b72d8b51833eb3",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.blocked_by_uninvokable_assignee": {
+      "sourceHash": "da92cc243dc65e3139b2820d10e5ace7984c09c272d2c31f076d5b624a318804",
+      "translationHash": "cd21856e416bc271d5cdf862e0125609bf9288f39f114895efbd3a0b3cda5758",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.blocked_chain_stalled": {
+      "sourceHash": "5c96091bc2efe962dda30216fc556a330a7b12f6b0894b07cce786b1a2ce47ca",
+      "translationHash": "3b9f86e1365353f903cb0659746094744f77ca86837a65507a7eac7309de9d5d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.external_owner_action": {
+      "sourceHash": "b64f049306ac2c5532a3a81ca9625172b3562d0df866dc9d121ebae2b40cd6d8",
+      "translationHash": "fffbb5af6fa122b3b13ff003867531140afd8d43d546d975e9026419b2e4bb04",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.234Z"
+    },
+    "inboxUi.blocked.reason.in_review_without_action_path": {
+      "sourceHash": "7474a6885812e99f9a9970f63146219ac3de7c34244a1f2e3ff829182fc0676a",
+      "translationHash": "71d4543670347e81a0bbcbd7c123082b434d458eabc6b4a3dd7a80890af9f2d6",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reason.invalid_review_participant": {
+      "sourceHash": "83dc5d0e139ad1fc24f462ac8cd7b4984f93b2d1faf22fe43a4941af4ee308f6",
+      "translationHash": "c830b11d367049a822e713cae7f6b999a96f39a8c8d53c28eca3834e4f9c22ee",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reason.missing_successful_run_disposition": {
+      "sourceHash": "3329ce8d7e3370a9d50cc99f70ad38b44c52445eb8da5b7b2e96fd37392e60d7",
+      "translationHash": "283658695c761b70f88e5a18c5e7bc4771516b8364ec504165f336ec17eac13f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reason.open_recovery_issue": {
+      "sourceHash": "b69efd2412afd7830bc49ba338378b780292621910003c5aa16d2be968dc833b",
+      "translationHash": "e97e3c0fd5e1435b3e6d4dd8d682aba10dbabe9352d3216b73b787b84744b2d0",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reason.pending_board_decision": {
+      "sourceHash": "91b4cb91fb0e9d0f6b5c7c4d99b6653cee10ec129cdaba5417de2d5557e83a80",
+      "translationHash": "27305575bd71e6ac3425ee7c4a6614ce74cecee1b511dcf5beb85886bb0dbdff",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reason.pending_user_decision": {
+      "sourceHash": "86a0280f34b06012b460286ff60c944f84586a717c6c09b916272a630264f4cd",
+      "translationHash": "7aaa09175e3ad65043790c377a2f75265920376d2ff4bc572c8ee10a99923139",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.reasonA11y": {
+      "sourceHash": "2d9e95415e10066e9ad486658b40a2338b951ab8923e6ef9dd8e1c8e703a6fed",
+      "translationHash": "fc0a6d28c1fdff0884c2ecc05eb69a4081885b2e2be4a36f39a427557561edac",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.severity.critical": {
+      "sourceHash": "d46b1d7ea8df0a7de31caa688a5e0df6754339ff65bf86ec75967b9809948c45",
+      "translationHash": "c4bd32fa6c900cf006a676c1e1f3fa1127ed9300ea4d6d53fe7f49b7a2817ce7",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.severity.high": {
+      "sourceHash": "b7048fed06f3570e6dc37b3697755dd10e6138f898c111398cb190e7e674eb87",
+      "translationHash": "c10d87af77150e064f978bedbe4896985f45788575a917a2974d5eed56aefce1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.severity.low": {
+      "sourceHash": "0bb7c3a635b57b559e55cd113a3a18cc8b236df72705af856acc0ea92e572b5f",
+      "translationHash": "6442b10bd72f5748b6c3a346eca5fec43cebeedb11e0f07d5d88e1f9ca4d721d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.severity.medium": {
+      "sourceHash": "097b9e0cece583af65e669be8cf69814d00e4f4cb77152363ac69905185cddc3",
+      "translationHash": "caa42001144bdf953bb952b0c514b6a181111b43ff19a1d43be3a4771ed111a8",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.sort.longest_stopped": {
+      "sourceHash": "9c0803dd1e18f9be4e2e67e09a891c2101fc381e867b40c4141abb460d1d38bd",
+      "translationHash": "906bfb7907b41f052127bc33f6114ed522c0efdcbe3dce35dbc0f07ed059496b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.sort.most_recent": {
+      "sourceHash": "1521398e1d53469620ce0c3e0def4eed126f272c589e59f9f3000869acfa2834",
+      "translationHash": "1087072853fb5493cfb6ad880893b97f263c33b04ce202391491c547dbb45bc8",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.sort.urgency": {
+      "sourceHash": "28171baf294ad68977d09dc4ff3e3d0d50648073eb0abac898807e5bd545a257",
+      "translationHash": "56c5856579576b1116dc39828c29c7f9f3399867125937717df7a1bd7fad922f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.stoppedLabel": {
+      "sourceHash": "acf07f82cdf64589436dd2de6da6ef68e26acb844ab43913bfdafa0c04f88687",
+      "translationHash": "2119b998c5d30b16bd8ce4b9f420f25e5bb5a492c6553ab9d2b073e75b8c9c60",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.235Z"
+    },
+    "inboxUi.blocked.tryAgain": {
+      "sourceHash": "7c893065b111827a4c6dc0f2e31e93e83479657820c30a6811306c210555a727",
+      "translationHash": "df4e4c09b3a9d0d38a5ead8730ed5e4f1a91f743c331a0a2642bf62651f1ad53",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.trying": {
+      "sourceHash": "938ed93e1f3494c800b4ed72f7dad3dc7447074529134e811faa52188a54dc05",
+      "translationHash": "bc27c5f8de50f5cb840f3affe44aec31be99ed97ec382ccb8fdbf70363cbad6b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.external_wait": {
+      "sourceHash": "dbd33896fb73010309644766f5434af723f3ae4df9cac5b4c3001c9fd95de53a",
+      "translationHash": "32a873ab24c70f5cb4480e1b81d1a27ead116b0073e02a024a61d66805fa198f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.needs_attention": {
+      "sourceHash": "3cc542793fcf88107b12bd5c8eaa7a752505b23e10ebca964a19fbe11db93f4f",
+      "translationHash": "9c80cc7ca65d2d7f8c3d51aae154fb084d3c4ff55bb475de44c6e05a9940475f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.needs_decision": {
+      "sourceHash": "ec5110310079e7bcfc96ca2d477f86233f598346237a36d7833fbe031197b90f",
+      "translationHash": "c8905a0a4ffea5ac190b43102bb451c43d843f40c62e0161923224e4778ca2dd",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.owner_paused": {
+      "sourceHash": "1d3abaec9c5ec24d467930b483e8184db080531efdde6d5c616074ec09f2efc4",
+      "translationHash": "86c75e22e01df5bb0f603e82b8ddde9300d486dd0c7c85f93d573279214f9e8d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.recovery_required": {
+      "sourceHash": "d3788d26a8d4b6e524866fcb9c39f98f47b7fbab55a8b80941517a94ac2ad0f1",
+      "translationHash": "591df5833d0c6b999d28a2aa5b9d9f0b6c40b0ae7f4feef8219e747254ee5267",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.blocked.variant.stalled": {
+      "sourceHash": "67def4982de9650e3370fa6a31db132f186123f8121193f80601cf3b30c40588",
+      "translationHash": "25c97650914b6ae164be62ba86344a2348892b4b84ad5afed956d1af03f6b0f0",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.budgetUsage": {
+      "sourceHash": "ee5e2833b0bbc3731c1b0dfd09bfe703038a57ec6f58c8c5c200f43468e6fea3",
+      "translationHash": "cd643c54e1cc800aa65a9598ce41951e7a92d70b08713ef44a155dbff78da587",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.cancel": {
+      "sourceHash": "0d67acfcbc672aed72db1806835a0c0fd0ea09ce502f8a424211e0ae698baadc",
+      "translationHash": "10df65d3a099c664864de272a4b306cd8c1abf54e4a03ae4b8d609ad389de357",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.category": {
+      "sourceHash": "3c80ce0e57361d817d19d023a5b3fd57eed372278760ecacc76393af08ad98bf",
+      "translationHash": "746ba59cc9733dd68e954884b76998384a2fab4b78aaf0013d3f55fe50f1a8ca",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.collapseChildren": {
+      "sourceHash": "424e0cc4a26bba7773120e044fc9304c86e3bcb6e717a65ca0838c7927e925b8",
+      "translationHash": "bf84558748d1ae6af6f5afd3010b40ccacc2d250cc7e9ffb83f23a299682f33a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.columns": {
+      "sourceHash": "92bf61722ff7b3e1171902a60d06a135308fd32e017b5e72621e830094a7861c",
+      "translationHash": "7af75aca8bb8dcf7b4e496541bb73627c9f6a24b9e1cd656e53694d083f51128",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.date.earlier": {
+      "sourceHash": "aa047f8e60bfdfa4ab89429c8c7d4f9fa73b7a199b5242d6959b255bb3073bdd",
+      "translationHash": "0a856de534701017d529ba79ec18320fa6cb3b8e015a8a96e366a369916a462f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.date.today": {
+      "sourceHash": "e4a0eb913c12d9667f0c00040567daa7a6ee7369e5929577a991a85a61904c9f",
+      "translationHash": "b229b8bf30e0ea40064bac2866a44b2bb6565d058c8fc76ec3514d669c391570",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.date.yesterday": {
+      "sourceHash": "71330b5b62a509f67054ca36388ae200eebd028d61b23b26743687f54ef3694f",
+      "translationHash": "50e6ecc794eb21761a040946badefab7c2d3c5021aa5d44cd49ead0a49c5a0dd",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.disableNesting": {
+      "sourceHash": "ec89f66ba55b7a593ecc8f9a416536ae61110c2684ede1cd00981b545c7014bd",
+      "translationHash": "5127c65e8bf9e106baf043d0c10d8b24dc7926ea3df95d8418fff7c1c568a6d3",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.dismiss": {
+      "sourceHash": "7c52ed50d975626cec8d4a84e3a9703fec799be79f47d19955df95494ce48fa4",
+      "translationHash": "4e86def84beb75fd0fd606c6d88e727dd276a6ad13968179a39533a8784f166f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.earlier": {
+      "sourceHash": "c671c637968dc14e1276f435ff3e5abc9e1ab250e1780681536c6df2d5067623",
+      "translationHash": "0b19ee9101daf38b473b40c9121227150043b740e993cc5548f90b44ca89f6e1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.empty.filters": {
+      "sourceHash": "9190a414738c30cd123f2789d5543116a74707af969c680f12f17897fa41af6d",
+      "translationHash": "9a31aadee4663a05df7fe397157ac5ea702f2b99512ba6393a6001576086a3bf",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.empty.mine": {
+      "sourceHash": "92d8c4f9e8ec1aeb3ae4b8999208bda0da9e55cae498b4b05b8bb563f4574fdf",
+      "translationHash": "59ebb7cfa5a7782be6d8736be40798b9e4171fa37cec8a172770e9eb386a5278",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.empty.recent": {
+      "sourceHash": "ab9270d40cf09aaf80bef35fca7b04ec4507d4e64ec5be4d65e7a2ee54ad027f",
+      "translationHash": "fb7caaa73fbae1323e515960d58bb850fc9e6e256d6f5bf2ec85737651bba783",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.empty.search": {
+      "sourceHash": "d43769a60787d614b3e9871be82dcf9d1a6a4c3eadb585cfe0d420fc5b9a787e",
+      "translationHash": "24e4b8138d5815ace876f8ce8a644355fec55161aadaf4088e123d3514289059",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.empty.unread": {
+      "sourceHash": "04b1863584468155236680e032c3f6c5bc7550b7ff9cdf9a170ca995f55e46ca",
+      "translationHash": "6396a4382915d9942002caa631550b4ea42142b68dc8c53f3449520fbd31c8bf",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.enableNesting": {
+      "sourceHash": "4bba464a2abffc6d56db7199bccf250a29a85b56630ab707055ac884fe0d4b5f",
+      "translationHash": "5620f6c525ef895291ff820c4f35e6fd38ee250fd55c81e82c144beafa8f87db",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.error.approve": {
+      "sourceHash": "ab2636e2aec3aaeffd6720e107664fb9eb6638e7c50db496208617b08f021a33",
+      "translationHash": "aac679c34982bd9a2b568bc82b3a21fb0a87b517adb1285886a7558a5dd36723",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.error.approveJoin": {
+      "sourceHash": "4895de7fff1b7d26d44723a6914a1a94b39e27ed9282ebc797e267c14b327704",
+      "translationHash": "d95a3f60e6fa409ad941c6cfc58c016bc2a9b065dff73ebc4dfe516b40569d74",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.error.archive": {
+      "sourceHash": "cfe560ab448fa73b55afd116ad09f55b746656eb876d8ff9380015c3d232a3e4",
+      "translationHash": "8ada7ae07fcc32d1fefe0f88719977c1e2abc26a69e778a9c28a3391c621e16f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.error.reject": {
+      "sourceHash": "607a090ac9f9720d537178d166c8b9bbfb497b5df63a0a551c09053ccc80542d",
+      "translationHash": "a1e957ed1188c5ceed7fd1b5798f7324316ec080bf2ae3faea3bea4809a0998e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.236Z"
+    },
+    "inboxUi.error.rejectJoin": {
+      "sourceHash": "39d7ccdb97beebc5592cdffbbb1f61201a70294cc265e2eafe635e7613e38ad9",
+      "translationHash": "283a0d6b622cb3b5d2576e7077f890529a3f41248c8e4a2e9792208f6454c122",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.error.undoArchive": {
+      "sourceHash": "ff20701057848cab42f1b2861a61e6782a3c39daf9425c2fea874a9359f9292a",
+      "translationHash": "3e3855750273e5aea359d8bb181ea8666f27511c2bfb4b28141f8806a47420a1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.expandChildren": {
+      "sourceHash": "4e235445ea6c5dcd7b7a5bf82b4134206aa350c5a75c16a5675b278510b60585",
+      "translationHash": "a7bd782d39db2bcca3982222c24d1f9be5420a937a3e6008ff03da36b0960cb4",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.failedRuns": {
+      "sourceHash": "f13d6bfd21a1d8e19bace8bd21312983462de89dbcf3eb7b72647cb42463c187",
+      "translationHash": "497df4529b3416ef65971d4425275801b937984bca8194f0dec3ccc710da26b2",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.group": {
+      "sourceHash": "64336027ae68bcb539cc735e9448b954c1e3fdd3aee486967d12e6f68a417b88",
+      "translationHash": "6edaead048acbc99a00442b87e7e879a24049336b2eb1e89b7f448ae4249fe7c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groupNone": {
+      "sourceHash": "f6a212fe11da31c34657b38afe4dcb2d7138583f9aeb961a7f42f1fed3f73dcf",
+      "translationHash": "82d89b12222ddc1c11265ec33ea033d1c69fabd9779b0949ab9607f6ef53a828",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groupProject": {
+      "sourceHash": "9117fbd64e13ad1b01a20ba2c0c2c10b92c8aa213d81272378e573a01790e69b",
+      "translationHash": "ee0c0b3dabee9acea955be62b61c342345c7068cc40bbc3086699c87f586fb77",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groupResponsible": {
+      "sourceHash": "3b626085ff6d989aff78be8875efb41ae22e868ba5555e72c698af1f17c3462f",
+      "translationHash": "aa492e7ce16082c50811dccadfb722e635a9e6a462d3c0ef8d46b9947cc83e05",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.defaultNamed": {
+      "sourceHash": "9cb651f07155cd7505c59b02a7d7031b56ab954a592e725e511b76fe9e52c4cb",
+      "translationHash": "6046f9d5f5eda78f653d6bde2d9c67478b8004ef49804b93962aeef931592207",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.defaultWorkspace": {
+      "sourceHash": "30d8e9af0d732db8033301db9205a9331040d971e9fa85dd9544f8da8a035da1",
+      "translationHash": "caaa811bd40801b8adb39ef3cd2aa43b9cff258a3793442ad9a211fa33cb5884",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.kind.approval": {
+      "sourceHash": "af9228d0674cd86f8acaf725b2c1ded27d5d13ac2023cb093d7404bd396f2315",
+      "translationHash": "cc9fac1e012e0b0c34c042bf508138d232cc2a93790fa5581f0bab05e13bfb2b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.kind.failed_run": {
+      "sourceHash": "35cb3ddacf435cc6c821ff7e15d7001ac546eaa3b8d022c28fdb655fe37e42ce",
+      "translationHash": "170b4d0d02d8b1de895f08beea887f6185d65a398ac23f03336abb305914d1b8",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.kind.issue": {
+      "sourceHash": "d457758c06417c4d03d506d6896a9641369bb83293baf72d8a7c406f58656123",
+      "translationHash": "8a60e5d7913a6a4710d0228c2a297fb29b215d01a025596ab4a9116fec44a31b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.kind.join_request": {
+      "sourceHash": "d658ee9a063dc9442476c39711d01ae94e15411e4aadfeadba40264f8b42515d",
+      "translationHash": "885f1cacb4a6ce18393059aaa9ac6bd26bce85714f903c5a37215d3fcd5145c0",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.noProject": {
+      "sourceHash": "da05fbd438cf73f32249c6c845ee71d06f781b7b19f9108b0c28e476adfe0ac5",
+      "translationHash": "8b2151a46046ab8c82ec8b4c663224dc603f513bf365c4caafaf40602d53ca9a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.noWorkspace": {
+      "sourceHash": "41588e97c2ac3373532f75463d13e05d28c64dc7b5c649df7113e68d11c375e6",
+      "translationHash": "a9ccf62b73310b605021bce01f2f11d4bf95ffe67f7878fecefcc6dfee892ade",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.unassigned": {
+      "sourceHash": "3cce2ef379429e72c60ca1f3c7562ccf9b026b906d5ea91b98ec6c4b1b72c4e1",
+      "translationHash": "6824eaeb06b7162be704392ab31ded3c1698934a9507ee26e6c97423e356d979",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groups.user": {
+      "sourceHash": "c4473370f0b28343d55458830df345a5764e2ce51b1a2dd27a33f3e46987050b",
+      "translationHash": "12522f660643cd7f6f0578aceecc37a53c0858382b47b4f4d15feb17726c2373",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groupType": {
+      "sourceHash": "2f0fcf41467480ab277e7e120cf4c12c2e60e6b1d4a2b26ce143f3d1169d3f98",
+      "translationHash": "2ac63b7d383780230a8e52e760da8bc6d98942d70b41416bd77bc80c6feaba19",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.groupWorkspace": {
+      "sourceHash": "bc911934620270eb557b8637c21722415f06ae9c6a98172e023205d9ed09ece4",
+      "translationHash": "79b78c3bc335690f0692b405f027dc96d140a039573843ab3ffb7dd26d61e739",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.inboxColumns": {
+      "sourceHash": "f23ee4d1b60f0c1f96affaf3daeb986fb7892b4647afd2171ae59efac7242a93",
+      "translationHash": "7847eb2944fd2f0aea9adbaa348aa307141cefe1686a0188f4c95660a6ee7a8f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.join.adapter": {
+      "sourceHash": "35ed8f776ab9da1a4de437529093ce44510de4bd065b3972fdbba054aef166b6",
+      "translationHash": "acd988b1e8a5a18761f9be8c774921d882e677a94d98dfe3a80a981923527328",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.join.agent": {
+      "sourceHash": "cb661b17fef224b2c8d6bd03db76266c1457c52bcca73688099b05bef28476e1",
+      "translationHash": "da1306fee73aad8b60dc0b578a474b6059b2425f3e8be9736307dbeb5c6e5b5f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.join.agentNamed": {
+      "sourceHash": "21959ec8b1939a026121547a110e88ec5cb1eef35c213dab351d654291eed736",
+      "translationHash": "3d1a6c8923863b6f13c92dda295c5eefd7945a16b598d4d326195ef5b8f59f13",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.join.human": {
+      "sourceHash": "a1b2cea9712c7f39d4ee891c977dc099895eafd9c4d388d1752c82da0f994b7e",
+      "translationHash": "2f6724796a23b0f3e7f6d858b2b33823495e4863a64f2e38478d052f37025f6a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.join.requestedFrom": {
+      "sourceHash": "235cf3b554ff96f101de59f18474727695e12cdb2d8c8189b4b9e46d6ae82e17",
+      "translationHash": "53ecdefb839b6884595fadbc74e5b38e3eb614f10e8d1cff504c907612582f5a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.joinRequests": {
+      "sourceHash": "c3e7eae4c4ac3f03c23a76b0eabc2adb6262c516173fb06e8f17205cd2ac8c5d",
+      "translationHash": "096607a4a8379bf21870d171592541fb75fa5d3ff4bf38c45cc44605e72d3730",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.liveFilterHint": {
+      "sourceHash": "b4fd089316a4dcc5f26ff869f11da63238b39d102011cdbccc52610c27b516e6",
+      "translationHash": "46c37ce43d735cbe3ac1b697c2ff20b8a7eb93f847d181affa1108c07bf9b6df",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.markAllDescription": {
+      "sourceHash": "7e865a4feca600b12e32a77a84ffc5b4b3bb2e9d115ab76ff16783d020b4fc10",
+      "translationHash": "facf14db090c135da34c1f1f3cefff07623fd6d0f7ffebe1029b6cc92e30358d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.markAllRead": {
+      "sourceHash": "ecc2c8b25458888cc587b10be3bf3b904b6e433f6424f1dbb409a8bc219a516e",
+      "translationHash": "ab9a07ce6be89dfeb34a17c95a5cf05efa2bfedb5e8a0e1be5e142520852d626",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.markAllReadTitle": {
+      "sourceHash": "ba632ab23b25e9a7124e35cda7abd43c51ac63de801346a307c904f33e03e984",
+      "translationHash": "553c4057779e31926d3ae5d0e5c1d1d4eaf350dfbce7758cef720ed19ae61fff",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.marking": {
+      "sourceHash": "392cb77ba17879e21c6be41e2c78d62524d7309db98c643ce6a6febae132b1cc",
+      "translationHash": "6ecb3e02adc074f6e5dc75fabd3351522a392d5cab1989dc3e132641672d1057",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.markRead": {
+      "sourceHash": "ee2eb6cb62e42e718a777b94c09784cb4cf21d1249e67f7d714a58d3bac7d57a",
+      "translationHash": "4e437c11274a20459c92c1e626104884c6ff37ef84b1668d4246624dc33bcf22",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.237Z"
+    },
+    "inboxUi.myRecentTasks": {
+      "sourceHash": "118584dc531c5613057cbf438350623f87f9a1f754b51b101a201fc55833d10d",
+      "translationHash": "c5a5e018fcbd1c905e15a1cef9b72a400dae18507cb2e1f0925176d39fb3056e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.needsAction": {
+      "sourceHash": "5d0addccba81b14587160d4a13f4006f4df226601290ae06755ba3e5de72e73e",
+      "translationHash": "7382cd9956947938d403e90268b2ea7e0212f98fe3b4af58fe08e6c9d474a8a1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.newTaskIn": {
+      "sourceHash": "31f5c72067ce0134e06578ed23c0ca0b1cd6b104440081bd54ec6937b134c7b3",
+      "translationHash": "2d65eb7dbae5f46df0137ee3be7d1ea217c98f33c4cbe4685910d01f93324e82",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.otherResults": {
+      "sourceHash": "7b10fdbb5bae9f176c15c6876f8151d45fb666276dcf4d48ae3e10d9524fdb6a",
+      "translationHash": "b73d53e1a1af4ba867193bffc2bf2db57cb76a43b519afbff10f5085009bcc2c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.reject": {
+      "sourceHash": "5d1b1a8cdc8aa9fc03a2c86c1ddfd56026adb1003b6d57b8dafc16e1c5c83a7a",
+      "translationHash": "9f8cffca9a284626257adf2d98142649b0f5f25835e375fce4e029092d9903f2",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.resolved": {
+      "sourceHash": "0ee03b160e6404c55016fbe18c75c5bf5c226ac4721f77b48355ed9832ffee6b",
+      "translationHash": "8140f44291305d593a806c5a36e480a2175c44da6ab109b39ea08af7af451ee2",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.approvalRequired": {
+      "sourceHash": "e303404f21a965194836ee521567fc5def23dba9858f7e9f9e43be91f9c19a2b",
+      "translationHash": "576072e5c422999e2e4db3c2cce859ec897ba477fbb3950c814cbd63086068bf",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.assignAgent": {
+      "sourceHash": "e1882eb1791dc15ee9969f00dd5e9d49d67fe43eb8df65d4d8bd50c227da7768",
+      "translationHash": "be3675606078ad30546613131730c2e9be864419099a00b2f21fc2c6b53c5c74",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.attemptFailed": {
+      "sourceHash": "ba6c5f5f57f1ed178eedc2f46240e1fc1d52f032398d6bb7c260a941f729998f",
+      "translationHash": "0935016e70cb735cf364c394c7f1ca8c2b36ad18da3a9abb4ae977806a9de9c5",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.budget": {
+      "sourceHash": "cc9ce2e94e0a52724c71ea547a6e959ceb55ccd0693d93efee39c2fb3b592299",
+      "translationHash": "8805108dada594a00fefcf440429c5df30897299313b684bbae2424598ef62e8",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.chooseModel": {
+      "sourceHash": "bcdfe337395a40e7ca60d3aa6ddaf47d12b1313a1e46fa7ab09b0adb747f108c",
+      "translationHash": "07f675208bff81d978da9c1a4bdb08867362137e0e4c1f1958af716c264bee64",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.failed": {
+      "sourceHash": "bcb8410358698e6ec7375eb212c7aa7ecc88d453062b32e131ae6e7c51a7e9bc",
+      "translationHash": "95e1606627743a76b02145a186f038a3e5bce03be3993835c54e96c05730bccb",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.failedFallback": {
+      "sourceHash": "7bc050dae7ca383ad9da20138b75e468d89322b1f9286df2e1a9c66529306940",
+      "translationHash": "1729dc9ae51fb2ad2710567683449b5c85b80681d342cffad8a45b5e05515a6c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.failedNamed": {
+      "sourceHash": "e113aee1d3d991ac06b38dcfe3866cee72948369fe4258db6441b4af177fb4da",
+      "translationHash": "4b3553d153ff8704429811d6bc9eea810b3a6f3a4768e4c72787a1ff58b1dc92",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.paused": {
+      "sourceHash": "e4ef31e6876f71770f3484a16e3380595b8627bded15f9c5aeceda90f99b61d1",
+      "translationHash": "3659c8639e1d19d8d797dc9947551ddf752868590e390947878531e1462bf171",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.projectAccess": {
+      "sourceHash": "45f18c84eb3e1de3d9ea80d1afceb20ebf308a3047dc5bf60d0c187b6429b89e",
+      "translationHash": "8da1446b6cfab322f358d2e9c55acd037d77fda9264d3b9e989e73b61344124b",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.reconnect": {
+      "sourceHash": "e539d28064078e477b393e46a7e58a917aa477d3140da535171222d0e30cdd73",
+      "translationHash": "fdf1e7d6cf1591a47c986706dfbff47959e910e5f8cfca753b9ae553c39fc90f",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.retry": {
+      "sourceHash": "dc87fb2f69a945fef0424ad4f92d67a62dea53f49d2482fb8b54590679735be8",
+      "translationHash": "d5b8f7ce3631fabcdf82af91c2d2ce4d6a3835e654a16d1888a5592660d6029d",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.retryFailed": {
+      "sourceHash": "6d07297d5d811ad7591cbf825e7fae40d9ea5343e8809ccf3f35d358d5184623",
+      "translationHash": "a5becd4d576b15c273d58f208ceced57cc023684387f2965ed709c6a28ca456a",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.retryFallback": {
+      "sourceHash": "bb79a0cf69800decd51489b586d3beb80d109b8ad7ef50a6838e66c65ee1fe65",
+      "translationHash": "ddc37dfecca73c522ed29975fa9899c7fc281e9a64e0660e0a2200cb10b8fd60",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.retryIn": {
+      "sourceHash": "28b65e1dc4167b5c10a285256869ab7ce0b9e172755c3ee684ce49c0c4f4282e",
+      "translationHash": "361da58d29628dd4ac6c913f67d38a2f0f83cea6a1e0ea25ac79918e191d6dd0",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.retrying": {
+      "sourceHash": "010624a73bfe331c238e320f7cd8eb611f338f25184e03a919d340c0f90ee02b",
+      "translationHash": "363105a7b1fb056ca7af5cffcf97b21a20b7ef7c470ea21b0b74364f3905d50e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.run.thinking": {
+      "sourceHash": "17ec1a4f308c4fe0246966f8d0ad8d9a84bf48856023bba42f94dbf788f7cd93",
+      "translationHash": "e2b599409251d8bb0b887b34266e7e41bc21464449d882e442b7bb3178227b61",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.searchInbox": {
+      "sourceHash": "0789a7e06f2eac6bbf1cdebb577cec4470c1a5d556af5194a108541077195061",
+      "translationHash": "ff62a76396c399fb38622c0d8ef8bd974ee0fe51c138d9f9775a304da5279399",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.238Z"
+    },
+    "inboxUi.searchSurface": {
+      "sourceHash": "a6d44b2991ad801da4988ba50e55421939e9d63cf9d69b76898a0f07bbda9ea3",
+      "translationHash": "f91c4ddd85435141ae991a74b04980a246cd7cbba92b1ef409bf27f0ead9f657",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.selectCompanyLegacy": {
+      "sourceHash": "f2f35397f9b81cf074760fea7790f8715b5b2b7b8852bf4de42c9b019a6242d6",
+      "translationHash": "31f6bb138af092e19544e10d3a80b29d3262d0bc4ed85d311c65cb3335d0c77c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.selectSurface": {
+      "sourceHash": "97ee9b02062fdadfe847c5596e41a0aa161be28d13328960f9b8490c6c1c4ef8",
+      "translationHash": "c78f9b23a7bd8436fbf811f90683cb4433e14baeccea0cdc6206a525a8199f15",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.sort": {
+      "sourceHash": "4bee80af80ed5f70ef2c2b10d960310dc7d85c3cafb92d603899fb01a58f8f50",
+      "translationHash": "fe49a0d995680db6a36210ef56c208d5e8cb6a7fb76474e9848b51d8a3368fc2",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.subtaskCount": {
+      "sourceHash": "7d91baaaecc3c24c6aa47f46564a90749226b9dbbf2718693031f6dee815b358",
+      "translationHash": "1f08db6d4067d592365eea2232ac39598ddd2a38e41c922496302ba27d46adbb",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.surfaceControls": {
+      "sourceHash": "ba1208734f6b481de2cf403ad0fe2a571107238fc481c3c0840e78693988a4bb",
+      "translationHash": "962f2a071d9e8e277d56ea824688d709f524a10714b9391957187482511fbc6c",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.tabs.all": {
+      "sourceHash": "2c302c3bc3b53caa6babc626bf4b8b2544804adc59dbf47b230080145cc2c39a",
+      "translationHash": "c79dd98417b0325c46d4fcf4be8e17c88fc4cf7659ee9fc349ca3e882857ed3e",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.tabs.blocked": {
+      "sourceHash": "ba19772f63791331e5d24eb0e152d7fee43088ceb0fb4fee777d84d1d9beba36",
+      "translationHash": "e95f28c0581cb04cf6a919f92e15a7c8179722073b40b6d08b9fa55873146793",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.tabs.mine": {
+      "sourceHash": "1b861bad9fcf6a20107968c23c8b66da959aa8017ba336399eb5f424dec6a15d",
+      "translationHash": "b56fad71dea4b823b5100510cc9d843ce6dab92e8c8c3bfafb0e8bf189dce578",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.tabs.recent": {
+      "sourceHash": "8caa1756d481637edd32519e8db53843f93b9b6b6a90edd774801b9399fdfeb4",
+      "translationHash": "5b3bc5c34eaa9eda8346022e81dc0841b5aa8efd42f0bb5d0ebd4b10c3eb88d1",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.tabs.unread": {
+      "sourceHash": "08e5c3c71980ad4084745f1efb1fff0805049fdfe8c005e8155f22904f1ac17e",
+      "translationHash": "adc63842acd64d8fd563b0fe6e89ae8b0bd983b338a235b4febcecf2e3cf01c8",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
+    "inboxUi.title": {
+      "sourceHash": "3ca63bfe2f426a723b68a13e409ff98ee6467ff9f787bc7ae0973f74ba6b33bd",
+      "translationHash": "937276c41581caf1333f59d747453071bb54d4345c30f4b3830d7c4d1c3d2248",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:29:30.239Z"
+    },
     "instanceAccess.access": {
       "sourceHash": "27cc811e8663ff7afdd29af6bf1499f7c412d883ab47edb6d3cfb88decf22c7e",
       "translationHash": "0c70bc33607fd6742dee0ef09d5a3e45a6f93152f7224c8e065bb33e26946b91",
@@ -7864,11 +8921,11 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.approved": {
-      "sourceHash": "e2799956810a1c648bf7dd7d8cb5eac39c20ecb729aa8968807a7dbd06fdcb7d",
+      "sourceHash": "01abd9cc805a984e4be6c3565088faf16116f3ca81c7a1e70c1930dfc0d332c6",
       "translationHash": "03f1adf2816e608db786d1621e7ec5a5f52ab8c3a4c926070b453cbf94debbc2",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "statuses.archived": {
       "sourceHash": "594aa21bd8c90a8e2ec5b9bf2b89f03a3eed56aa7e132e3f948d2e50e84a6c82",
@@ -7899,11 +8956,11 @@
       "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.cancelled": {
-      "sourceHash": "f754f4c0a742f48fb32bda119dd7de85d543893fed83fdc880dac97ba7bb64ec",
+      "sourceHash": "da7b7a37e888d74e61eac1552a5ed7e243136f3e06eb9e3ad2fae7d405687196",
       "translationHash": "46826c92b6807b20673b74ed41d0f4870b16587dda5902076556c2f152a9dd46",
-      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:21:30.200Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "statuses.completed": {
       "sourceHash": "28adee27006758349373778c13fb62cdaddfaca593cbe6835d3fe59ea94e7a57",
@@ -8032,11 +9089,11 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.pending": {
-      "sourceHash": "ceb2277afc7e1e7101a1f77b49dd85a11b80e12d57986d3b38d55e3b6677d721",
+      "sourceHash": "5c358b82521fd87d86349ade3ade1386baaea1f8f8a0d99191658f68a213a13e",
       "translationHash": "89abc7cdd5274e9f85f4c88dd662bcdf1c9636d7a08b0d473a0f6df369be7a71",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.766Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "statuses.pending_approval": {
       "sourceHash": "d45b3dbc7ef96f25d42595067dd078638cb052047d276c63cb38a1aa1eede4f7",
@@ -8074,11 +9131,11 @@
       "reviewedAt": "2026-10-25T22:12:18.767Z"
     },
     "statuses.rejected": {
-      "sourceHash": "19cc730514d5949d756e8fd0a08a072cf01343d7f2df3d52fa05bdf2fb60d0db",
+      "sourceHash": "ebc6d52d141a524026b96ba7e94237ceb22e29c480f66cc826c7256582f607fd",
       "translationHash": "0f0f20763fb8c5a9433cbfc5ac1fa32a7b9334f895a5dff8a978276e9db9d8eb",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.767Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "statuses.require_approval": {
       "sourceHash": "10ef57712f1086bb106d6ded612239ff7d46cc37f488944c023ef69ec6892420",
@@ -8088,11 +9145,11 @@
       "reviewedAt": "2026-10-25T22:12:18.767Z"
     },
     "statuses.revision_requested": {
-      "sourceHash": "dd11e583c163a22a44b3f505a64e3a6dd1c49213a2e592717aa158ef27af948e",
+      "sourceHash": "b33428343af96bb1e4da6f3f12739b312119c9182e2846091207f6a67fa11a1b",
       "translationHash": "194810db35201f87f186bdb8959ba9989070c6604c003ed8478b5c81e983f5e9",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.767Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "statuses.running": {
       "sourceHash": "d3420733988c305c1de94f735b8510f82192d2b4a8455f38f7a01f4ee4ec9c46",
@@ -10069,18 +11126,18 @@
       "reviewedAt": "2026-10-26T03:21:43.336Z"
     },
     "taskDisplay.assignees.board": {
-      "sourceHash": "7b2c2cdb51a6688d6f067b74fbd84760deebb3dd113771b5d9cd2a52b926bbbc",
+      "sourceHash": "316dc37088cd4e91d5c290d544e2eb52f4ffcb0e7e0a91e9ef96139e7b56dbc5",
       "translationHash": "36c7f44094ceb6d0cdea30387382ec2c2808ce19bdf7bf84cecef435d5ee9a8f",
-      "reviewer": "Codex agent /root: helper call-site and terminology review",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T02:58:09.661Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "taskDisplay.assignees.me": {
-      "sourceHash": "e7f42c28b35f5fb9ed0faaeb94b12f5c8913a141e47b9ac4c81a63b2db7413de",
+      "sourceHash": "f4cab9485677c644a65e48d61d828778108a681aa528f17c4dbb4e302670b44c",
       "translationHash": "f206fe154da0d48c9cbae8e1d2ec77f764b75cbe13c51e6a688ace4eba9105c0",
-      "reviewer": "Codex agent /root: helper call-site and terminology review",
+      "reviewer": "Codex root: Inbox messages, plural grammar, authority meanings and display contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T02:58:09.661Z"
+      "reviewedAt": "2026-10-26T04:29:30.240Z"
     },
     "taskDisplay.assignees.you": {
       "sourceHash": "4a9b96c9901874b5d35befeff3ad48d68ed2725fa811e89c44cca75291b275db",

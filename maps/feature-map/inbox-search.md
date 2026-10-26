@@ -45,7 +45,14 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Seed
 
 ### `inbox`
 
-Automated: [archive routes](../../server/src/__tests__/inbox-archive-routes.test.ts) cover server mutations. [Task-list helpers](../../ui/src/pages/Issues.test.tsx) cover search URLs, pagination, and presentation constants; they do not render the combined Inbox/Tasks page. Reading, archiving, and navigating that page remain manual checks.
+Automated: [archive routes](../../server/src/__tests__/inbox-archive-routes.test.ts)
+cover server mutations. [Inbox component tests](../../ui/src/pages/Inbox.test.tsx)
+render standalone, legacy and combined-host props. English/Russian checks preserve
+Undo position, IDs, collapsed groups, search input/results and request counts.
+They verify approval/join payloads, mark-read task IDs, local error updates and
+selected retry requests. These use fixture APIs and do not establish live access
+control or the App redirect. [Task-list helpers](../../ui/src/pages/Issues.test.tsx)
+cover search URLs, pagination and presentation constants.
 
 Automated: [Issue service regressions](../../server/src/__tests__/issues-service.test.ts)
 cover exclusion of historical automatic read cleanup from user participation,
@@ -58,6 +65,18 @@ human assignee. They check unread lists, flags, and counts, plus exclusion of
 historical questions and closed requests while preserving authorization requests.
 
 Manual: Seed GitHub, Slack, scheduled routine, and manual routine tasks. Attribution, imported comments, and reading alone keep them outside Mine. Direct board/API comments, human assignment, and open addressed requests admit them. Resolve the request and check that another valid reason is needed. Inbox discovery and Blocked hide unrelated automation by default; the **show agent-created tasks** checkbox reveals it without subscribing the user. Reload and verify membership, unread badges, archive/resurfacing, and preference persistence.
+
+[Blocked view](../../ui/src/components/BlockedInboxView.test.tsx) checks translated
+reason groups, collapsed state, search and explicit retry. Known reason and approval
+captions remain searchable in both English and Russian. [Swipe controls](../../ui/src/components/SwipeToArchive.test.tsx)
+preserve their active offset and action across language changes. Helper tests keep
+the original grouping order, date membership and raw user-provided names.
+
+Manual: With an Undo offer and collapsed group visible, switch English/Russian,
+then undo the archive and reload. Confirm the same task and group return to their
+positions. Search a known approval or Blocked caption in each language, switch
+language while the query remains active, and confirm the same IDs stay visible.
+Retry a selected failed run once and inspect the persisted request separately.
 
 Manual: Read an unread task, return to Unread, archive a handled item, and reload. Verify personal triage state changes while task status stays correct. Switch users and companies to check isolation.
 
