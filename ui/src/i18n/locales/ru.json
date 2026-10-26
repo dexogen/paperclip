@@ -10374,5 +10374,22 @@
     "billingCredits": "Оплата кредитами сервиса",
     "billingFixed": "Фиксированная плата",
     "billingUnknown": "Неизвестно"
+  },
+  "environmentProbeUi": {
+    "localAvailable": "Локальная среда доступна на этом сервере Paperclip.",
+    "sandboxCompanyRequired": "Для проверки среды песочницы требуется контекст организации (companyId).",
+    "sandboxConnectedNamed": "Установлено подключение к песочнице «{{sandboxName}}» провайдера {{provider}}.",
+    "sandboxConnected": "Установлено подключение к среде песочницы провайдера {{provider}}.",
+    "sandboxProbeFailed": "Не удалось проверить среду песочницы провайдера «{{provider}}».",
+    "sandboxWorkerRequired": "Для провайдера песочницы «{{provider}}» требуется работающий плагин провайдера.",
+    "pluginWorkerRequired": "Для проверки среды плагина «{{pluginKey}}:{{driverKey}}» требуется диспетчер процессов плагинов.",
+    "sshConnected": "Установлено подключение к {{username}}@{{host}}, путь к удалённому рабочему пространству проверен.",
+    "sshProbeFailed": "Не удалось проверить SSH-подключение к {{username}}@{{host}}.",
+    "pluginProbePassed": "Проверка драйвера среды плагина «{{providerKey}}» пройдена.",
+    "pluginProbeFailed": "Проверка драйвера среды плагина «{{providerKey}}» не пройдена.",
+    "sandboxProviderUnavailable": "Провайдер песочницы «{{provider}}» не установлен или процесс его плагина не работает.",
+    "sandboxProviderProbePassed": "Проверка провайдера песочницы «{{provider}}» пройдена.",
+    "sandboxProviderProbeFailed": "Проверка провайдера песочницы «{{provider}}» не пройдена.",
+    "fakeSandboxReady": "Тестовый провайдер песочницы готов к работе с образом {{image}}."
   }
 }

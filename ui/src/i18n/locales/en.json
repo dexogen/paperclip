@@ -9862,5 +9862,22 @@
     "billingCredits": "Credits",
     "billingFixed": "Fixed",
     "billingUnknown": "Unknown"
+  },
+  "environmentProbeUi": {
+    "localAvailable": "Local environment is available on this Paperclip host.",
+    "sandboxCompanyRequired": "Sandbox environment probe requires a companyId context.",
+    "sandboxConnectedNamed": "Connected to {{provider}} sandbox {{sandboxName}}.",
+    "sandboxConnected": "Connected to {{provider}} sandbox environment.",
+    "sandboxProbeFailed": "Sandbox environment probe failed for provider \"{{provider}}\".",
+    "sandboxWorkerRequired": "Sandbox provider \"{{provider}}\" requires a running provider plugin.",
+    "pluginWorkerRequired": "Plugin environment probes require a plugin worker manager for \"{{pluginKey}}:{{driverKey}}\".",
+    "sshConnected": "Connected to {{username}}@{{host}} and verified the remote workspace path.",
+    "sshProbeFailed": "SSH probe failed for {{username}}@{{host}}.",
+    "pluginProbePassed": "Plugin environment driver \"{{providerKey}}\" probe passed.",
+    "pluginProbeFailed": "Plugin environment driver \"{{providerKey}}\" probe failed.",
+    "sandboxProviderUnavailable": "Sandbox provider \"{{provider}}\" is not installed or its plugin worker is not running.",
+    "sandboxProviderProbePassed": "Sandbox provider \"{{provider}}\" probe passed.",
+    "sandboxProviderProbeFailed": "Sandbox provider \"{{provider}}\" probe failed.",
+    "fakeSandboxReady": "Fake sandbox provider is ready for image {{image}}."
   }
 }

@@ -755,6 +755,7 @@ export type {
   EnvironmentDeleteReusableLeaseHolder,
   EnvironmentDeleteBlockedReason,
   EnvironmentLease,
+  EnvironmentProbeMessage,
   EnvironmentProbeResult,
   FakeSandboxEnvironmentConfig,
   LocalEnvironmentConfig,

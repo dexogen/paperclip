@@ -124,6 +124,7 @@ function buildFakeSandboxProbe(config: FakeSandboxEnvironmentConfig): Environmen
     ok: true,
     driver: "sandbox",
     summary: `Fake sandbox provider is ready for image ${config.image}.`,
+    summaryMessage: { code: "fake_sandbox_ready", params: { image: config.image } },
     details: {
       provider: config.provider,
       image: config.image,

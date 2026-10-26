@@ -945,9 +945,25 @@ UI typecheck, build, token gates and map checks pass. The strict audit passes
 with 7,450 reviewed families, 15,288 remaining source findings and zero pending,
 missing, invalid or new findings. Only 200 resolved source entries were removed;
 no exception was added. These mocked checks do not prove live provider or terminal
-behavior. Backend probe summaries require a separate typed-provenance change;
-provider-schema localization remains a later bounded slice. Exact-head CI,
-browser qualification and deployment remain pending for this candidate.
+behavior. Provider-schema localization remains a later bounded slice. Exact-head
+CI, browser qualification and deployment remain pending for this candidate.
+
+The follow-up environment-probe slice adds 15 reviewed summary families and an
+optional host-issued descriptor alongside the unchanged legacy summary. Three
+existing producers mark only their own messages; provider summaries (including
+empty and English-equal values), diagnostics and metadata stay literal. The UI
+validates optional descriptor shape, driver and status, then formats retained
+saved/draft results at render time and toasts at completion. Existing requests,
+qualification and cleanup order are unchanged. Latest complete runs pass 139
+server tests and 39 UI tests across six suites; the UI total combines the helper
+run and a complete page rerun after correcting a new fixture's button label.
+UI/shared typecheck, UI build, token gates and map checks pass. The strict audit
+passes with 7,465 reviewed families, 15,288 remaining source findings and no other
+findings; baseline and exceptions are unchanged. Standard server typecheck and
+its official Runner release build pass. The cold build adds 111 ignored Copilot
+asset files covered by the input fingerprint, so it does not record a reusable
+Runner cache stamp; this is not a compilation failure. Exact-head CI remains
+pending. These mocked checks do not establish live provider or terminal behavior.
 
 The dashboard page adds 34 independently reviewed message families (37 English
 and 43 Russian forms). It translates summary cards, budget and paused-agent
@@ -1032,7 +1048,7 @@ accounting-recovery cards remain separate work. These mocked checks do not prove
 live billing, provider quota or budget enforcement.
 
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment backend/schema copy, activity and cost cards,
+workspace pages, environment schema/remaining backend copy, activity and cost cards,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
@@ -1098,8 +1114,8 @@ The [workspace integration run](https://github.com/dexogen/paperclip/actions/run
 on `320a21509bedd36c33261ccffeefaf963c5c2cf3` repeats the editor readiness
 failure and also observes the dashboard resume button before its pending-state
 notification commits. The dashboard test now waits for that state and for the
-subsequent agent-cache rendering, retaining its exact payload, count, focus and
-draft assertions. Both complete dashboard suites pass five tests locally. These
+subsequent agent-cache rendering, retaining its exact payload, count and raw-content
+assertions. Both complete dashboard suites pass five tests locally. These
 test repairs change no production behavior. The native large-result partition
 passes in this hosted run, but that does not resolve its earlier intermittent
 failure.

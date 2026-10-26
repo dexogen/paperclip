@@ -192,7 +192,8 @@ describe("probeEnvironment", () => {
 
     expect(result.ok).toBe(true);
     expect(result.driver).toBe("local");
-    expect(result.summary).toContain("Local environment");
+    expect(result.summary).toBe("Local environment is available on this Paperclip host.");
+    expect(result.summaryMessage).toEqual({ code: "local_available" });
     expect(mockEnsureSshWorkspaceReady).not.toHaveBeenCalled();
   });
 
@@ -227,6 +228,7 @@ describe("probeEnvironment", () => {
       ok: true,
       driver: "ssh",
       summary: "Connected to ssh-user@ssh.example.test and verified the remote workspace path.",
+      summaryMessage: { code: "ssh_connected", params: { username: "ssh-user", host: "ssh.example.test" } },
       details: {
         host: "ssh.example.test",
         port: 2222,
@@ -260,6 +262,7 @@ describe("probeEnvironment", () => {
       ok: true,
       driver: "sandbox",
       summary: "Fake sandbox provider is ready for image ubuntu:24.04.",
+      summaryMessage: { code: "fake_sandbox_ready", params: { image: "ubuntu:24.04" } },
       details: {
         provider: "fake",
         image: "ubuntu:24.04",
@@ -313,7 +316,7 @@ describe("probeEnvironment", () => {
     });
   });
 
-  it("boots a fresh runtime lease for saved sandbox probes when requested", async () => {
+  it.each(["paperclip-probe", undefined])("boots a fresh runtime lease for saved sandbox probes with name %s", async (sandboxName) => {
     mockRuntimeAcquireRunLease.mockResolvedValue({
       environment: {},
       leaseContext: {
@@ -339,7 +342,7 @@ describe("probeEnvironment", () => {
         cleanupStatus: "pending",
         metadata: {
           provider: "daytona",
-          sandboxName: "paperclip-probe",
+          sandboxName,
           reuseLease: false,
         },
         createdAt: new Date(),
@@ -374,7 +377,10 @@ describe("probeEnvironment", () => {
     expect(result).toMatchObject({
       ok: true,
       driver: "sandbox",
-      summary: "Connected to daytona sandbox paperclip-probe.",
+      summary: sandboxName ? "Connected to daytona sandbox paperclip-probe." : "Connected to daytona sandbox environment.",
+      summaryMessage: sandboxName
+        ? { code: "sandbox_connected_named", params: { provider: "daytona", sandboxName } }
+        : { code: "sandbox_connected", params: { provider: "daytona" } },
     });
     expect(mockProbePluginSandboxProviderDriver).not.toHaveBeenCalled();
     expect(mockRuntimeAcquireRunLease).toHaveBeenCalledWith(expect.objectContaining({
@@ -440,6 +446,35 @@ describe("probeEnvironment", () => {
     });
   });
 
+  it.each([
+    { driver: "sandbox", config: { provider: "daytona", reuseLease: false }, options: { acquireSandboxRuntimeLease: true }, code: "sandbox_company_required" },
+    { driver: "sandbox", config: { provider: "daytona", reuseLease: false }, options: {}, code: "sandbox_worker_required", params: { provider: "daytona" } },
+    { driver: "plugin", config: { pluginKey: "raw.plugin", driverKey: "raw.driver", driverConfig: {} }, options: {}, code: "plugin_worker_required", params: { pluginKey: "raw.plugin", driverKey: "raw.driver" } },
+  ] as const)("describes $code without starting a provider operation", async ({ driver, config, options, code, ...message }) => {
+    const environment = { id: "env-1", name: "raw", description: null, driver, status: "active" as const,
+      config, envVars: {}, metadata: null, createdAt: new Date(), updatedAt: new Date() };
+    const result = await probeEnvironment({} as never, environment, options);
+    expect(result.ok).toBe(false);
+    expect(result.summaryMessage).toEqual({ code, ...message });
+    expect(mockRuntimeAcquireRunLease).not.toHaveBeenCalled();
+    expect(mockProbePluginEnvironmentDriver).not.toHaveBeenCalled();
+    expect(mockProbePluginSandboxProviderDriver).not.toHaveBeenCalled();
+  });
+
+  it("keeps acquisition failure diagnostics raw and does not invent a lease to release", async () => {
+    mockRuntimeAcquireRunLease.mockRejectedValue(new Error("provider <raw> {{message}}"));
+    const result = await probeEnvironment({} as never, {
+      id: "env-1", name: "raw", description: null, driver: "sandbox", status: "active",
+      config: { provider: "daytona", reuseLease: false }, envVars: {}, metadata: null, createdAt: new Date(), updatedAt: new Date(),
+    }, { companyId: "company-1", acquireSandboxRuntimeLease: true });
+    expect(result).toEqual({ ok: false, driver: "sandbox", summary: 'Sandbox environment probe failed for provider "daytona".',
+      summaryMessage: { code: "sandbox_probe_failed", params: { provider: "daytona" } },
+      details: { provider: "daytona", error: "provider <raw> {{message}}" },
+    });
+    expect(mockRuntimeAcquireRunLease).toHaveBeenCalledOnce();
+    expect(mockRuntimeReleaseRunLease).not.toHaveBeenCalled();
+  });
+
   it("captures SSH probe failures without throwing", async () => {
     mockEnsureSshWorkspaceReady.mockRejectedValue(
       Object.assign(new Error("Permission denied"), {
@@ -473,6 +508,7 @@ describe("probeEnvironment", () => {
 
     expect(result.ok).toBe(false);
     expect(result.summary).toContain("SSH probe failed");
+    expect(result.summaryMessage).toEqual({ code: "ssh_probe_failed", params: { username: "ssh-user", host: "ssh.example.test" } });
     expect(result.details).toEqual(
       expect.objectContaining({
         error: "Permission denied (publickey).",

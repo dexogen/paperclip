@@ -1,5 +1,5 @@
 import { PassThrough } from "node:stream";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   PLUGIN_RPC_ERROR_CODES,
   createRequest,
@@ -457,3 +457,58 @@ async function waitForResponses(responses: unknown[], count: number): Promise<vo
   }
   expect(responses.length).toBeGreaterThanOrEqual(count);
 }
+
+const mockProbeRegistry = vi.hoisted(() => ({ getByKey: vi.fn(), list: vi.fn() }));
+vi.mock("../services/plugin-registry.js", () => ({ pluginRegistryService: () => mockProbeRegistry }));
+
+describe("host-owned environment probe summary provenance", () => {
+  beforeEach(() => {
+    const plugin = { id: "plugin-probe", pluginKey: baseManifest.id, status: "ready", manifestJson: {
+      ...baseManifest, environmentDrivers: [{ ...baseManifest.environmentDrivers![0], kind: "sandbox_provider" }],
+    } };
+    mockProbeRegistry.getByKey.mockReset().mockResolvedValue(plugin);
+    mockProbeRegistry.list.mockReset().mockResolvedValue([plugin]);
+  });
+
+  it.each(["plugin", "sandbox"] as const)("keeps %s worker summaries literal and marks only host fallbacks", async (driver) => {
+    const { probePluginEnvironmentDriver, probePluginSandboxProviderDriver } = await import("../services/plugin-environment-driver.js");
+    const providerKey = `${baseManifest.id}:fake-plugin`;
+    for (const [summary, ok] of [[undefined, true], [null, false], ["", true], [" ", false], ["english-equal", true], ["provider <raw> {{name}}", false]] as const) {
+      const fallback = driver === "plugin"
+        ? `Plugin environment driver "${providerKey}" probe ${ok ? "passed" : "failed"}.`
+        : `Sandbox provider "fake-plugin" probe ${ok ? "passed" : "failed"}.`;
+      const workerSummary = summary === "english-equal" ? fallback : summary;
+      const metadata = { summaryMessage: { code: "local_available" }, raw: "provider <raw> {{name}}" };
+      const call = vi.fn().mockResolvedValue({ ok, summary: workerSummary, summaryMessage: { code: "local_available" }, metadata });
+      const workerManager = { isRunning: () => true, call } as unknown as import("../services/plugin-worker-manager.js").PluginWorkerManager;
+      const result = driver === "plugin"
+        ? await probePluginEnvironmentDriver({ db: {} as never, workerManager, companyId: "company-1", environmentId: "env-1",
+            config: { pluginKey: baseManifest.id, driverKey: "fake-plugin", driverConfig: { template: "raw-template" } } })
+        : await probePluginSandboxProviderDriver({ db: {} as never, workerManager, companyId: "company-1", environmentId: "env-1",
+            provider: "fake-plugin", config: { provider: "fake-plugin", template: "raw-template" } });
+      expect(result.summary).toBe(workerSummary ?? fallback);
+      expect(result.details?.metadata).toBe(metadata);
+      expect(call).toHaveBeenCalledExactlyOnceWith("plugin-probe", "environmentProbe", {
+        driverKey: "fake-plugin", companyId: "company-1", environmentId: "env-1", config: { template: "raw-template" },
+      }, 120_000);
+      if (workerSummary == null) {
+        expect(result.summaryMessage).toEqual(driver === "plugin"
+          ? { code: ok ? "plugin_probe_passed" : "plugin_probe_failed", params: { providerKey } }
+          : { code: ok ? "sandbox_provider_probe_passed" : "sandbox_provider_probe_failed", params: { provider: "fake-plugin" } });
+      } else {
+        expect(Object.hasOwn(result, "summaryMessage")).toBe(false);
+      }
+    }
+  });
+
+  it("marks an unavailable sandbox provider without calling its worker", async () => {
+    mockProbeRegistry.list.mockResolvedValue([]);
+    const { probePluginSandboxProviderDriver } = await import("../services/plugin-environment-driver.js");
+    const call = vi.fn();
+    const workerManager = { isRunning: () => true, call } as unknown as import("../services/plugin-worker-manager.js").PluginWorkerManager;
+    const result = await probePluginSandboxProviderDriver({ db: {} as never, workerManager, companyId: "company-1", environmentId: "env-1", provider: "missing", config: {} });
+    expect(result.summary).toBe('Sandbox provider "missing" is not installed or its plugin worker is not running.');
+    expect(result.summaryMessage).toEqual({ code: "sandbox_provider_unavailable", params: { provider: "missing" } });
+    expect(call).not.toHaveBeenCalled();
+  });
+});

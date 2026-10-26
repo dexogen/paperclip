@@ -17,6 +17,13 @@ describe("sandbox provider runtime", () => {
     expect(listSandboxProviders().map((provider) => provider.provider).sort()).toEqual(["fake"]);
     expect(getSandboxProvider("fake")?.provider).toBe("fake");
     expect(getSandboxProvider("fake-plugin")).toBeNull();
+    await expect(probeSandboxProvider({ provider: "fake", image: "ubuntu:24.04", reuseLease: true })).resolves.toEqual({
+      ok: true,
+      driver: "sandbox",
+      summary: "Fake sandbox provider is ready for image ubuntu:24.04.",
+      summaryMessage: { code: "fake_sandbox_ready", params: { image: "ubuntu:24.04" } },
+      details: { provider: "fake", image: "ubuntu:24.04", reuseLease: true },
+    });
 
     await expect(
       validateSandboxProviderConfig({
