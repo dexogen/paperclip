@@ -428,6 +428,34 @@
     {
       "id": "1b2655945c4785b63a7f0ab65ddc1ba3bf4d1dcadabe1a613f19df373c6a888c",
       "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "d667b816b3cd308bffff0ffa5c42ee56cc8f71834e15df2b5bfaf8effb97c99c",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "dff590572ed1ff8f949340db2a41f583e12b985884e9b3b2114aa42ffe683a5c",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "3fda716cc1e5e8e5e48c1d46efd058f36de33a74d339f40aef9d3a4acdb0b6a7",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "5530e9bf504fe397cfbbe5786adf0dfe893b065ea7ac7a959c098ed476623ac5",
+      "reason": "Unknown future HTTPS exposure state fallback preserves the original protocol label and raw state spelling; all five known RuntimeExposureState captions are translated before this fallback."
+    },
+    {
+      "id": "c03f8c25a3abeac16b7a7280abd5e20c7c3cccb4191a02c04083ec93ce69fab9",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "5559071c09de2dbd32d60cae766517387ac1f3bc5eab17dbd3d66eac7a2ea81d",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
+    },
+    {
+      "id": "4c6c021fc8cb72d8b355a01956225cf96c99aee5838f9359fff531c1ea84f1a4",
+      "reason": "Closed canonical enum used only to select a translated display branch; it is never rendered as caption."
     }
   ]
 }

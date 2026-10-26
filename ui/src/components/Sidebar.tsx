@@ -183,6 +183,7 @@ export function Sidebar({ children }: { children?: ReactNode }) {
               icon={Inbox}
               badge={inboxBadge.inbox}
               badgeLabel={t("sidebar.unread")}
+              badgeText={t("projectConfigUi.sidebar.unread", { count: inboxBadge.inbox })}
               badgeTone={inboxBadge.failedRuns > 0 ? "danger" : "default"}
               alert={inboxBadge.failedRuns > 0}
             />
@@ -195,6 +196,7 @@ export function Sidebar({ children }: { children?: ReactNode }) {
               icon={ListChecks}
               badge={attentionCount}
               badgeLabel={t("sidebar.decisions")}
+              badgeText={t("projectConfigUi.sidebar.decisions", { count: attentionCount })}
             />
           ) : null}
           {showStatusCards ? (
@@ -221,6 +223,7 @@ export function Sidebar({ children }: { children?: ReactNode }) {
               icon={CircleCheck}
               badge={inboxBadge.inbox}
               badgeLabel={t("sidebar.unread")}
+              badgeText={t("projectConfigUi.sidebar.unread", { count: inboxBadge.inbox })}
               badgeTone={inboxBadge.failedRuns > 0 ? "danger" : "default"}
               alert={inboxBadge.failedRuns > 0}
             />
@@ -296,7 +299,7 @@ export function Sidebar({ children }: { children?: ReactNode }) {
               <SidebarNavItem to="/timeline" label={t("sidebar.timeline")} icon={GanttChartSquare} />
               <SidebarNavItem to="/costs" label={t("sidebar.costs")} icon={DollarSign} />
               <SidebarNavItem to="/activity" label={t("sidebar.activity")} icon={History} />
-              <SidebarNavItem to="/activity/commentary" label="Commentary" icon={History} />
+              <SidebarNavItem to="/activity/commentary" label={t("projectConfigUi.sidebar.commentary")} icon={History} />
               <SidebarNavItem to="/company/settings" label={t("sidebar.settings")} icon={Settings} />
             </SidebarSection>
           </>

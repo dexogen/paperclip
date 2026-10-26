@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { setLocale } from "@/i18n";
 import { queryKeys } from "../lib/queryKeys";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Project } from "@paperclipai/shared";
@@ -217,6 +218,33 @@ describe("ProjectDetail", () => {
     root = null;
     container.remove();
     vi.clearAllMocks();
+  });
+
+  it("changes page captions without replacing a dirty configuration field or changing routes and requests", async () => {
+    mockLocation.pathname="/projects/project-1/configuration";
+    const loaded=project({name:"Project <b>raw</b>"});
+    mockProjectsApi.get.mockResolvedValue(loaded);
+    const client=new QueryClient({defaultOptions:{queries:{retry:false,staleTime:Infinity}}});
+    root=createRoot(container);
+    await act(()=>root!.render(<QueryClientProvider client={client}><ProjectDetail /></QueryClientProvider>));
+    await act(async()=>{await new Promise(resolve=>setTimeout(resolve,0));await new Promise(resolve=>setTimeout(resolve,0));});
+    const draft=container.querySelector<HTMLInputElement>('[aria-label="Unsaved project field"]')!;
+    draft.value="Dirty repository selection";draft.focus();draft.setSelectionRange(2,7);
+    const reads=[mockProjectsApi.get.mock.calls.length,mockBudgetsApi.overview.mock.calls.length,mockNavigate.mock.calls.length];
+    try {
+      await setLocale("ru");await act(()=>{});
+      expect(container.textContent).toContain("Настройки");
+      expect(container.querySelector('[aria-label="Unsaved project field"]')).toBe(draft);
+      expect(draft.value).toBe("Dirty repository selection");
+      expect(document.activeElement).toBe(draft);
+      expect([draft.selectionStart,draft.selectionEnd]).toEqual([2,7]);
+      expect(mockSetBreadcrumbs).toHaveBeenLastCalledWith([{label:"Проекты",href:"/projects"},{label:loaded.name}]);
+      expect(mockSummarySlotCard.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({scopeKind:"project",scopeId:loaded.id,title:"Обзор проекта"}));
+      await setLocale("en");await act(()=>{});
+      expect([mockProjectsApi.get.mock.calls.length,mockBudgetsApi.overview.mock.calls.length,mockNavigate.mock.calls.length]).toEqual(reads);
+      expect(mockProjectsApi.update).not.toHaveBeenCalled();
+      expect(mockResourceMembershipsApi.updateProject).not.toHaveBeenCalled();
+    } finally {await setLocale("en");await act(()=>{});}
   });
 
   it.each(["alias", "other project", "other company"])("preserves a draft only for a same-project route alias (%s)", async target => {

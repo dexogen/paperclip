@@ -8634,11 +8634,11 @@
       "reviewedAt": "2026-10-26T08:23:49.740Z"
     },
     "formsUi.secret.createFailed": {
-      "sourceHash": "2b87ef0f4417c36187bdcd90eba077cd763d027ebbccbe74dfcbbb59333b755e",
+      "sourceHash": "d903db4edc5c3abd4a7627ee7e26fd47170cd793a3f049bd738b46c9782c5c69",
       "translationHash": "d0a35556971f0cf75b7ce55a6a23ba1ecdd1c7a087000fb4f3f56527769365e1",
-      "reviewer": "Codex root: source and EN/RU editorial review",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T08:23:49.740Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "formsUi.secret.deleted": {
       "sourceHash": "84716da14b5e7b1a2e9b7214403979f4540f76bcc04877640d70286671ea59a5",
@@ -12272,6 +12272,2106 @@
       "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.763Z"
+    },
+    "projectConfigUi.access.add": {
+      "sourceHash": "1fabc5e22f5098f9dec2c49c64d5440e6bfc8a72321062d4d2ddedbe707727f0",
+      "translationHash": "ecc4a58ba3de084be4a6026922afd4704e9b311cc50192361cd8813fcfafedc7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.018Z"
+    },
+    "projectConfigUi.access.added": {
+      "sourceHash": "488116fa141a448015a30af2790914743db94d70981ef4a491fd0e5ea8a2325f",
+      "translationHash": "790bfe428c98623c67b2d159eb88c7f4dc21d9e3be40bdfeddf59f99439267b0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.addFailed": {
+      "sourceHash": "57173733947508e6f8416229a53f8d244f9828bd618fee879943344b4064d9ac",
+      "translationHash": "360029b78071ef975d1a33aad97af8d19ff74ada675560f203e16d41e72deda0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.addPrompt": {
+      "sourceHash": "954e6fffa483ce83ac0a118aac52e68612d44878926e2268420d2fb933e2356f",
+      "translationHash": "15d2d75da01846f4336fa3b93c31cbfd6c6a3dd93130f5420e9ff45f2da6d1aa",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.agent": {
+      "sourceHash": "8dac8bc63dae836e32c257fd0fd14a6ef979bc45ec2c45233285a121014a5075",
+      "translationHash": "57fc47de2dc2e6e2f058c0668a4500a5cdb7ea5c05ad5527ffd2a60e2b2c1fab",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.agents": {
+      "sourceHash": "72d8b205cc247dc1425b0079ed642dc93a66083225cdc05138dbe43291df842d",
+      "translationHash": "d265b06bbcb47a903aea1994ff9a030d54d9a70962d74f1139e12252c7659246",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.description": {
+      "sourceHash": "d403f2af7e946e02fd80dfca3c0d390a658023cd1ba508416c47a7b2a1a5c922",
+      "translationHash": "f1e938e6ef88afbd277391a247f4a982b1d76bdbc232caac1cdd0d8361d00a5d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.directoryFailed": {
+      "sourceHash": "8b0096625a9d0162143fd1995e93abe006f6b5afef9c54ef10c4498e30e7259a",
+      "translationHash": "f7bac405b298323cdfd9fd9cc9f5aa3387181f167f2518907dafafbc00effb0a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.loading": {
+      "sourceHash": "2193bcf6449d33859f4c9aaf4ca698c83d7a9527872dea1558be77902d749730",
+      "translationHash": "83b206e50be3fc1a1463a8b953ecd53e5ceafff6288e9aa5d0c434f0c17d74ff",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.manage": {
+      "sourceHash": "7e9b2e09215d48f6ca654a23318ba523fcfe85362bd594b4049db02f8048a482",
+      "translationHash": "5599feb072b2998e2c9644642a22cb9632b869fc213d1e8853fc4e795ae100fb",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.membersFailed": {
+      "sourceHash": "a1f9c1706f6413b792b8f73e8b4b2ea9a023f441ef9f2403b24d6dee734520f3",
+      "translationHash": "737c625bd2c0820bc6ad7faa7e76f03b3b9d93dec02795cdf58962c967c6d37f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.noMore": {
+      "sourceHash": "9770bd8b461c9fc85555a350df0534498d4d84267fc236dcb3121a427d4a8bec",
+      "translationHash": "06c88dbbc65479a79772570b781f516020bb3aaf84caffc5848abc9ee1cef338",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.owner": {
+      "sourceHash": "a2753735b548a93998fbe3d136eee15a35ed66cd3324d2b994e60b3679c0ac22",
+      "translationHash": "14086e34ff0536a6f999b84b7095694ff04a91b24ee14c81d30658f2d4b797ac",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.people": {
+      "sourceHash": "06d2b64487aa2c73fba3045e1a538100be59591a3fcfc9f1d2e0f33530e34417",
+      "translationHash": "2689450e9ac6ae5b0195042f45e626ad4b8bc874ccb47333f7a3382457d21b7d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.person": {
+      "sourceHash": "dad1cd19815013ecd6c084debf9dba698a96260eef601e3c27ad35bb9fe1cff5",
+      "translationHash": "90380d52771c3520ffaaca7005d0723d35a9e10c7c11aa4fe40ed861a25a7357",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.removed": {
+      "sourceHash": "03810f4438fb5db899b2680a378dc87d562bb7566d6bd10ae80d8294513e94a8",
+      "translationHash": "c42118380437340ea48d8c3770823eb6aaa03163d744e9f29ed1b33f569cbef5",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.removeFailed": {
+      "sourceHash": "3d66e2e161bc4e164f308edf141f44c6d6a414261d3b2bba858ffcce64fb3fe3",
+      "translationHash": "61635589d0993512c62638b26098992dea9b57cb38245e76bb31d192848dc71b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.removeMember": {
+      "sourceHash": "7be710501a3c072d82ffa919104ae828dbaebe8bd38c583d9a2fb7940edddab5",
+      "translationHash": "79df87abe567317ead08b0813461344531c7bbbf5abd199423b7cf7c20805be7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.removeNamed": {
+      "sourceHash": "de1c3544d33ad6a0239430135b7d85cbb2724997cec03ef7587f34342e38c20e",
+      "translationHash": "ec36edb6343fc70f1a5170c50714b388233b33541242c484c463f552093c1e57",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.search": {
+      "sourceHash": "a8ef4525f50a947259a7b3c83db2f40f6541222105726ef68811fe76376865f6",
+      "translationHash": "36ac7a6538c2aafcb32f67a8b47a64ee3f8a3aa4be23dea20b49a17e100089b8",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.sharedMemory": {
+      "sourceHash": "164c0b3ecb17f8cbf0c6df05a325636b64bb907974fdcb098349496d108e0a0d",
+      "translationHash": "dfcc4a5c9fc4238a91d34dcd21327ada242d46ea79e5c8e27ce2441886d3e43b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.title": {
+      "sourceHash": "65feb8ddf96bb772d8fb0775a299fac9ea20ca460e37a0dac82b7b2c10a14397",
+      "translationHash": "73f9e6048cc311aa0b667e0b749d40fd2d0257ee7dadbea604938364ff8894f2",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.unknownMember": {
+      "sourceHash": "883a89287fa4189f0b0714fceb4ad4659125f7428b49471f4ed08315ebc999fd",
+      "translationHash": "545b1083dddf07a01d8dd4dec15ea08420ced5b8a0f477fce7cdb52862697dcc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.unknownUser": {
+      "sourceHash": "1db790fe1b54dc80d93ca571a24003ec0c3dcd0c7c83f7a1d07f01c097953bee",
+      "translationHash": "5bacc64ab82acc3ad2383ff4008abcaf2e5328d032843cb74f7cb807f9b52971",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.access.view": {
+      "sourceHash": "93ab6e17ecfb22a96802307c9a87db50a00b2fd48ae6c6a1b275cdbedd50cdc9",
+      "translationHash": "7091c4838c760d3453d1c51c6bafc7efef4505d84229cb6fb65a83f4859d2723",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.019Z"
+    },
+    "projectConfigUi.budget.advanced": {
+      "sourceHash": "14cc8bc342f6b31e66beb478a105c40746ab84acedd55d5901199680788fc1dc",
+      "translationHash": "6e59f53ebc9b87ab9d8bf45cd39191860f82f0cfc49fd5c2ebd371bf2672d8db",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.agent": {
+      "sourceHash": "2b87c8b0d3b195c90b193a6cf2054c528ff531ebc62a3db59778670c203274a4",
+      "translationHash": "969ab6a28778470d858d389ec9a3e6a9645d6f9314f241988db9d5e19870b552",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.blockUnpriced": {
+      "sourceHash": "3516bbcc1c857ecee999ad2bef63821bfe019cc5173bf8b5fdefafca5654c288",
+      "translationHash": "de701b9bd10c569c0f49c695671602927b8d11f013a053c472dbbdb04ce11a7c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.company": {
+      "sourceHash": "4d94485513a6ebe925916a0f75e87958bb54d85631e5d5484ec01c77b6a35a74",
+      "translationHash": "62e76cd1b1fbd53ce7666c6bf8c2ed0390e097f41ef81cbaec1a0f70d7ebd990",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.disabled": {
+      "sourceHash": "236b8008e0498ae474854ff57da3a00ef5cbd76914142f86ce4611e3f41b3777",
+      "translationHash": "d83520e32b01c311ea37544030f3f6547419d0ab51bfb20d2df53bea25733ca0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.hardStop": {
+      "sourceHash": "6ab27252c58604e7f04659d6548e4b1b0f7d75238b8a871e973567112074bf06",
+      "translationHash": "3365e16d94db7eef7819a5311cda8465000e54d33499a2de8b0c8713ab59c13a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.healthy": {
+      "sourceHash": "56cc50cfac64a88233f2c9c15a091e279fa3b69587cfe4e74ae07080072c2296",
+      "translationHash": "9637bba8170f69acc864b603312fca8992c0c29f941490a0788efb8fa069c8bf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.healthyTitle": {
+      "sourceHash": "9a8040816e90fdf6bdbf9b4442721f300e9b14c13bcf3c4ca89495b281006616",
+      "translationHash": "c31c2fdcd3da2b1e58c29b5c80156dc0ceb453a779efa2b4ef961bcc79580e6f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.lifetime": {
+      "sourceHash": "38206eeeaf13e1dc1c21deb15116bd437c93dfe5df155265c1008b4ff9bdb74d",
+      "translationHash": "165248c4be18c9fbb94c3a0c7642fd01e6be7e91ba8ec5e39b75428593ee73cf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.monthly": {
+      "sourceHash": "8d89a1a9d9b91aaa40f4bc43875e30734bac2c87ecab00321b06a1ad01c85a2c",
+      "translationHash": "661ed42ee6715a9b47a008e6be5e6b1afe01f447c83d18d77954a1319b834000",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.observed": {
+      "sourceHash": "83b349032d31e1bf0df428e1480b852df7a266842f87b617ef1b3bafeb864fcd",
+      "translationHash": "5795303d222bf0c46975ab7cc766c98571c9c92fd8fe4df40c777a2ba48fbaa6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.pause.budget": {
+      "sourceHash": "dd4c712e7d0793a9f5cb0642ee13ab87a2678a906d75068cd667627292ff4439",
+      "translationHash": "a62d50c02bda38d670dc70899650300663f43c7e3b89f3a68888b55e729a8e29",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.pause.company_archived": {
+      "sourceHash": "dfcce288a7f588d18155b0a11561c8ea55331ef94814fa104e29b76cfe842c2d",
+      "translationHash": "a4152ff8947c0b6c486f297586a09a1d2ac17fa545483fd7098da38ac2c25668",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.020Z"
+    },
+    "projectConfigUi.budget.pause.import": {
+      "sourceHash": "ba0216659398fbe4ef739a028279a933389b0b3a80cc8fc3e14133c57163ca31",
+      "translationHash": "84a0fb7d44659cfae9ba02bc2cca908cb440d440b0ce935dda9ac7acd4938f6e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.pause.manual": {
+      "sourceHash": "03b009080737bebc3ddc3f86434a86697a935818144224d8707545f5749f9b14",
+      "translationHash": "dd05970ee5bc311356f615648c47be80fdafdba4351fce0f706f38aca7f10d7a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.pause.setup": {
+      "sourceHash": "4cd764d41379922cc2d7bb5915c624b9ff18c6b151c962a34be96d7787f18439",
+      "translationHash": "75ce0df24d590066e1d940db0c30b401e17d78d7d29411afed4b207b0860caa3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.pause.system": {
+      "sourceHash": "44751d039d267a13fa870319a4422e1e195353c4c6c8453ac22222f4d9c70616",
+      "translationHash": "909c98f7aea37dbb78139c7fe1f617ac5e770bb595ac3beb3dedd869db86c6d6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.paused": {
+      "sourceHash": "e6ae5a256746f2f80cb4ea3e38b77cd5094de4af1da28971853a27896fd5cd0e",
+      "translationHash": "bc2596f6edc62d58b1cc468c2e095fdc3df976cb6544de252f09824769537d56",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.pausedTitle": {
+      "sourceHash": "cf1feec5830f622fbcce142bc62db0d605ec8525148efb1f58697b8993aa3a1d",
+      "translationHash": "e3878606ab413bdd2b4005accfb9373696dbefef4e7c9bcb385203ff2cade61f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.pending": {
+      "sourceHash": "f026058161cf7c822c00f59b17ca8a13f9d8dd9460372feb55d2826adb4833bb",
+      "translationHash": "882d893343183bcf3e3f0f08f8f64693ee7897cbe517c18a52388aac1f30ea27",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.project": {
+      "sourceHash": "d709d064b1a96b1fd57fc101cd2258e30b5206e9e2452457e7a3ad01fc8b161b",
+      "translationHash": "648f6f02ef4692b8428a4c222014eb08b9ffa24fcce35bf1f676bc1a3ea5e16b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.projectPaused": {
+      "sourceHash": "436ae37868d20e9ad5d94acae9423c5cdcf040cec11711fa3cbddc67045cfde9",
+      "translationHash": "f75cf34b1844be7867235bf68ce4ffd12ccd10a74c1d7b4d6ada288aaf82582f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.remaining": {
+      "sourceHash": "44d90870ec74be635ee2d7ce34653ee581334925384c8a701b481411eb9b5734",
+      "translationHash": "709ad206649b7b3f8ff36b943fced8363b1924711b241e2db14fe180eeb1a739",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.reserve": {
+      "sourceHash": "f068f49b50be0d89c85bf17409b6b9434982c3c36ac722b9fdfd903a8511bc40",
+      "translationHash": "c42b372bff6720915aae9d7204093f02af041a3e763930de5ce182711dd5d8b1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.reserveHelp": {
+      "sourceHash": "339267a08d824216c48a47f239190b4c5821050e868ac3e0f12d7d3b02859ffd",
+      "translationHash": "ef3346cf1ad25ec23fdd45b25e87244a3caf6a8711da2a1c5d16a218e7635f4c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.saving": {
+      "sourceHash": "543ee80d0be7c9d81c00aabc5aa3804ebe556d614ac185be4e61216d5503885f",
+      "translationHash": "30e1edf37c835aaa7601635a2500e9f662443a663401f18728faa8275ab086be",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.scopePaused": {
+      "sourceHash": "89de5db70109480058ef64d93cb42ac629f04f5dfa52f5cc2d18ae2a6bbf5bae",
+      "translationHash": "ec5f7fdbc138318f46a2321cc1154ab0b3df7d40e4183539b4be0f022e1224f1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.set": {
+      "sourceHash": "1c6614488bd28e289f46f16a42f4ac6ebfdc817c5ed6665fc9cf1660845d9ddf",
+      "translationHash": "3e14a5c06eb5183fa9a2972a3bfd99b2033de4959232ca03872a937aa1e7ca4e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.title": {
+      "sourceHash": "605a6676276b5055a7838674897932d9ebbfe4c072c68cc462582bfd52ddc6cc",
+      "translationHash": "2bb818bcda8a6f3cdb2e3923689e19363530470dec2d38982928eba22b901339",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.uncapped": {
+      "sourceHash": "3c281fc2cce3cc617ed9fdf9397f2fab2a954335197d2cd34cd56ea426fdbfb8",
+      "translationHash": "bb93cd74fc26c155c766f369c7a7503c5a80eacc8ef799b37090f6a5837ceeb3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.unknownPause": {
+      "sourceHash": "415d4bcbb5e691fe3c9a5a4ca453a2121d06aa5f13b9660da3de7ddeafc2fc02",
+      "translationHash": "3d05d1167bd6665a131ae757f7d28bc065f71f665d6150a6d42724cb04eba63a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.unlimited": {
+      "sourceHash": "a2e1d9860cbf9c7b28a2e6803b586d757e3b87f841185d02b77d7c69f4da36c5",
+      "translationHash": "e0d569a20fca61012b6d4b3565eca0b28f0c407e62d7a61603e48861f6e2cbff",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.unpriced": {
+      "sourceHash": "21f74ffa58cd4da1d1ff06959561cd5c59c910bb83e1b976536f1229421a7aa8",
+      "translationHash": "e499e6b7e013d0ab349820c7b5abc1126c020d546f821a6b16e5297aca088996",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.update": {
+      "sourceHash": "0b278efdf0f74788f9174288622526cdc7ce9505016c30c6400b07c7ded7beea",
+      "translationHash": "88038572805bd6a5749d2a1cceefa4daa43a17e5a69fd6452dd11c11330edf4c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.updateReserve": {
+      "sourceHash": "6cade7262b90599e9980b72fb15eaf1121eae88119f0055c3ed1ae123314909a",
+      "translationHash": "f8d1140b4ace894df5645bca67da085f3e80520dccc36e66c3d3e0d5a2dbc64c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.usd": {
+      "sourceHash": "7839d4ac6355be543a7f51d24522cc903f4e1ad764de4847841e87574cdf2be4",
+      "translationHash": "0b9681db5274ab3bbddbb1005672f2f65eae115d091dc8a13cd8baaf869b485d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.used": {
+      "sourceHash": "9d346b45a10463465e4067d9db8807442e22cae6c438bff349cbd710217f31eb",
+      "translationHash": "d68f5dc32debf6f7c6b0a4e651e9911c27d6d0f9a66f1fc7ec0ef6b7a8ef55cf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.utilization": {
+      "sourceHash": "b2905d42992ee0b52dc1600938f99f2ac11b43dcf1d8dba1c509556c431c41a9",
+      "translationHash": "f81958c6982f28d6b8c36d5512da9d80102a50d2b8b2be87b6b60041ef8e332e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.validAmount": {
+      "sourceHash": "035e6c44caa286110fb8964812e853bb344e1b5dc958217852c4ab37120a7eb2",
+      "translationHash": "cb1e995dce9ec946dad80a3b02315bf90b2ade7f749fb6c1423d27fa2358718e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.validReserve": {
+      "sourceHash": "e0515ad602aa821e82795d3e45bed0e94dc6ebc73afe16994ed5a8be030fce83",
+      "translationHash": "cbfcaad65807c369f539e4d2f27b7e2e11d5a09330c77ca2e1d355cb321b6d98",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.warning": {
+      "sourceHash": "839d8378c7bd5d62a0b3b696955bbbaf891869f8caa02c69a492c926d68eab43",
+      "translationHash": "ead5312f724953818575b09a0e8a12483c307ada2493fb2856ebe7078fffcf8a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.warningAt": {
+      "sourceHash": "0c64a21764b312006e175b428b274c323bb94a890f1d86d001c26782c8755ed1",
+      "translationHash": "97341598a0ed7ece972dfae3fc4fa4e99f40b32923ac4a789f7a5135f16fafaa",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.warningPaused": {
+      "sourceHash": "fbbb3443621d6e603a527967368945f7e10ff734e48db38d8c3f5eda7986d9e4",
+      "translationHash": "074561aa41d96e767f9b1f2cba1cd56c13c177e610bb1a9e8fa339c4ff5b4338",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.budget.warningTitle": {
+      "sourceHash": "10f616d3ab86044fae3b33ec573f7b25c94519c79629ab777d6fe5745afdb343",
+      "translationHash": "9e2cbfd236d581c38de45042cd9b12fb68493a394a5ddc07f66aa5bba949430e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.cancel": {
+      "sourceHash": "1d91b9ef7bee2e16d473843b4dcd5f28c439f6af8f7ba68f0df18ad8cbfe75bd",
+      "translationHash": "2e12459ece79908b05e4b7e4473f8877fe150a8627162169e788d9219f40d60e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.archived": {
+      "sourceHash": "bbe0c5ad258ba3b4f3547c4a40fa39f00e9fe92bec5d67bc8612f7be0ed0cf2b",
+      "translationHash": "5ba53dd88102a490d16b0047c03b965fdfda541e84df6d39810883a354ab0dfa",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.archiveFailed": {
+      "sourceHash": "51f3c974561f2cf7ebda4e2b698f923616f337bba4c1324e9527de3824457094",
+      "translationHash": "da6b9952a35040641c8cac6006da604f3870727dc8c3c7127af75d116f91b528",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.budgetStop": {
+      "sourceHash": "18587e78cca996071b5980ef55b4717e63f6abd83580004676cd10cfe0675938",
+      "translationHash": "a58b21e4d376d1b5fc2a4e0dfe1d6487b8c2c0019c8d564a5b17437e6b1d2d3b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.configuration": {
+      "sourceHash": "d5d798a9ffdd570623e7c82f5d3b0c155493423274271872cce47e36c528668f",
+      "translationHash": "7956033b54546807d57abf3aaf7148edd08dcef24ae3600fc0efb47228f4c838",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.dismissMembership": {
+      "sourceHash": "9912d7d0d3b3fa48ce762cef171cf69fdbc4a13445e299379f4730db7a141d11",
+      "translationHash": "0e4abf6cbcd8d1caf2f0f20843f70b526cdb322546bbe7207f63ac7e725e259d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.left": {
+      "sourceHash": "d2710c0a94e2935861e6da02f2796666aafd6278dc80f2380d6ab56f93a8b746",
+      "translationHash": "224af59244d18429e9ad5de8b6f880cf18dc0fb389e8933d9773f969391d92f2",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.loadingWorkspaces": {
+      "sourceHash": "27d4158cb3ba19ce3670b8c8ce77217e1d49445e6221c4ed3a38663aedee708d",
+      "translationHash": "98ea438d0be4220c0c3ced2655c4106122277e443db2c775eadf16c769bdcbcf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.managedBy": {
+      "sourceHash": "edd172be530ea715ec70e00e57e254cd1847ded46808ecfca2b9a538badb1cce",
+      "translationHash": "fb0ce6a97da09518b71b1ac23c30fe55ea3bdd40f6f5f46ad560c513f2e4df22",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.pluginOperations": {
+      "sourceHash": "e24fc8873c8932eb215ff21c2f1479ee683f32ae165718558a4df46fc4f88023",
+      "translationHash": "169caf7e6fb95ec79b115a04371e2ec42e64344543893687662fec81e24443e8",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.project": {
+      "sourceHash": "00f68918b6e0233a9b85b38c69b349de1958d6a825f2b402c4996e85f4f2b1cf",
+      "translationHash": "448a05c1ce265bfeff7c7e8b311ed61b33308a3a94529fd12aa52a171264b334",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.projects": {
+      "sourceHash": "8ed6c2c1590b84654ef0da174b8183836668700f696f58cee95a4b4f4e7f5351",
+      "translationHash": "d7451d62b903a7da5d2546fb24dfe76465e20e020719b2d29d780e239127822e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.021Z"
+    },
+    "projectConfigUi.detail.summary": {
+      "sourceHash": "cd218988f086eec53cf1a1f891979f8685269eb5dad36042bef85e874b1d7506",
+      "translationHash": "65df0a8786196bf760c12ecbcc52cc1920c59942a6a59f0deeaed4a48b475649",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.detail.summaryDescription": {
+      "sourceHash": "00ab3061eb4d756daa118754cd1e008b0c5728f4a44b23ed6794945cd21b8b88",
+      "translationHash": "a979f74d6b0eb3180a1a339868fc654350d29369de0bdd67d29e036c0fb7e23b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.detail.tasks": {
+      "sourceHash": "cf0addcea5d08e6b31b01ed70bc72d711201b8d94f0a3d992d9730290003f72c",
+      "translationHash": "9571944ee4ec80a8f9d31570fde4483a96846cfaf33fec5fa114a98fd1123293",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.detail.unarchived": {
+      "sourceHash": "ba2ce10ba4b91e1caa54bd7f56e735bec4e9f9fee9a4b254b01b46ace542e454",
+      "translationHash": "b3be75376b2457e5f440dafcad36a6d36f4cd56494043e0ad062d200df5cf672",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.detail.unarchiveFailed": {
+      "sourceHash": "1e3a0e394717fb066c546bb91d275a066d99f9bb343288722237d87ac0d0dcd2",
+      "translationHash": "652b7a31ace9f584b6959f0f9881acecab5c6b88e424b7fc94c2b89f4a223620",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.detail.workspaces": {
+      "sourceHash": "83c53bd5f65ea7e54354ed000521addd4ebd9a98aa9770d267a6f745a832d5c0",
+      "translationHash": "d3edcc336b21a94bb412d546b27d34dc4579bd4e8991f42992ec8ad5a2e0bd15",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.atom": {
+      "sourceHash": "e56a4ed9b483d1891e3674db97ac9b268b8a792200a61a8f3c9937471e7eca14",
+      "translationHash": "8bd741dd1c74501df28513b85e8e34413169b5018845ef118b32599227c55a00",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.box": {
+      "sourceHash": "39d25f1801699c509e45a42467623babd3c9ddcaa96554bfb2b737b98c3e956c",
+      "translationHash": "f1d28fcb3d78b63d0beb642c337df0cc0af6594a77aac209645c183d9e4c10af",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.boxes": {
+      "sourceHash": "ea99b2cbdf428bc376eb372cbd478be1b2820ebf7df5b0c5a5747dc9078d8e76",
+      "translationHash": "2c39687d912ca7ed0b0c1252a4ef19b4ec503684f6aa3e16ee5f9fa68db66954",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.brain": {
+      "sourceHash": "42c8e1bb128ba9481e19813242bb6fe634586c9d79fb4aefd954dd941f2920d8",
+      "translationHash": "302b74a82f4533951cd20a1bc0e462dbaeb553e5623b6d20d75a1a1d41548873",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.briefcase": {
+      "sourceHash": "ff6741ed5b15dfdf6cf433b43362e48ce0879d79e554c48e35487af44c4945c8",
+      "translationHash": "7a79d9ac8b6cad725886358463b5bf23c82f8fde30a99f4103611c88c81f966b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.bug": {
+      "sourceHash": "f28d2f24f00eb7cd9312faab3c5d3df9f07045904d0e38d1ca72b413daf245f0",
+      "translationHash": "44c6c89d38d974cc0622749e15a8da1cfbc42d2f71080283f9f5e1115cc35850",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.change": {
+      "sourceHash": "a556552a5e52d9299d636996ffe78becfe6ca6f465e5ffd971f31f9a4aaf6943",
+      "translationHash": "7847d21c236f6487ad53bb91433725e8bd6a1230fddf74dd6f096506d1789e49",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.code": {
+      "sourceHash": "2e987d7c3540a39b847a7b917ba4d7045d1e495747ec5552f62ea390e83b4f7b",
+      "translationHash": "ef0b810f7b654622311c506bccca51272146e3473c3458fad5a95ad55378d5e4",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.cog": {
+      "sourceHash": "a1ee5bdf678f1850c192bdbbdac767f7447b01020a86a26c84f6d64ab3a1db3e",
+      "translationHash": "7cee17763d6e59c4194cd8e8ed1f9e68c865a4daf78306fe7bb69d84a2418871",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.color": {
+      "sourceHash": "b46012d99fa56f69dcfec0bf7a47a2a2f96b5a45798813f1797093435a75bfa6",
+      "translationHash": "ab7d95d51d6533584cb1e310eb3203423945ba2f55b6e2b4f8f69a4a256d0674",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.compass": {
+      "sourceHash": "2f3dc474a63b3496a433117b5e9317226bbf0b0121acb47e928cbdd60c3d5463",
+      "translationHash": "4695636842345f993c64b2f5febd5ec4cc5bab4d37c923725ade078f4dddb60b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.cpu": {
+      "sourceHash": "94e1f430a7ed138f2058643a7df6fd9566e01e80b4bbe17ce5feeb1f207260e9",
+      "translationHash": "3b2bee0700d48eb66f52c6cff2d89d822d75b9063637835a75a8cb18dabb22d1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.crown": {
+      "sourceHash": "b3265bb402a06abfd7ebd4ecb1dbd8bf9b92dc66cb8880f4b708af272207dcb2",
+      "translationHash": "e5c857f92bd78fdd72be53a92e35ce78cfed1dfaf56598328f82faa3f879c9bc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.database": {
+      "sourceHash": "69df26da5807b063fe0f5f3d763b7155f8d7fb3be7fbe69a7359c86c25d89ecc",
+      "translationHash": "a170fc0cc6d943b1497029b97713aa8316d7dfb96f7732fa4428ea757a1266cf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.empty": {
+      "sourceHash": "91ef9dc72ac76c39abca2cb373e097fa80816fd049062972f75c449fd80b46e9",
+      "translationHash": "5bfcff88cb1f2a754bbe4b898235b8294b1f2372a81f05f8157066050da53bc6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.file-code": {
+      "sourceHash": "d27860b77d429fcb0e669b9cbb1c574746f1572dafad6c422cba7094d15ec6c0",
+      "translationHash": "9cbdb54b719654650d427b6616e41c4accbbf1ca6a4f0ed1aabcc70eb4f4f7de",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.flame": {
+      "sourceHash": "54d583aa88ca373b9a4063cd133a96171fcbe6791233e5301a243fd2d5a5d307",
+      "translationHash": "f31199cb8a799917d3872f0c2c5f5eadd240818fed6cb9bf4040b3552822f7d5",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.folder": {
+      "sourceHash": "d58d8bf26bfef2bec034e5c9b8399fafb8421996d7a958be85833b53b39063d9",
+      "translationHash": "96b470e8774e54712a5da5e0cd35b951d53df5cd859edbb2200d33860a03ff0d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.gem": {
+      "sourceHash": "32d681b128738ba8ccd7e7a4b403ac4cf8694f682b03cd5be0fcb29354afb306",
+      "translationHash": "ac7c8e57c7117f4e170d3a7ebac4a75c2810ba3785d38fe84253946c4deca1e7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.git-branch": {
+      "sourceHash": "06c888255c7dc2b7a5c39e09e467108cc1f85bf7e5e2046543931cd0584ad61a",
+      "translationHash": "19bb58041584c987f51b264de868b8a7d8012d327a04a0f3096f4b5498f70f24",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.globe": {
+      "sourceHash": "5745876642abc5d5d30c1bd779ba1a0871c0af3c094f0c0b8fba0b2a947512e2",
+      "translationHash": "f1fef933f59806cfdbaaa3c93f69fe117eef1e28020b4febf8ad6afddfd2763d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.hammer": {
+      "sourceHash": "cd9c6eccdc6cf750ddb0d74115203f210a7a05642763c0610768130a48a9935e",
+      "translationHash": "72c7e1690cadebe63831da7549850869f6b331c0f64c536eae942f138303ee1c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.heart": {
+      "sourceHash": "2cb77a9a76e4b45d3d1c78442e961ff2f7dca9707f4f1bbcf64ddcc3645fbfbb",
+      "translationHash": "4d6c767b90c92962f6056c7e892f43bc25945c05359841c2b0e65938dc0fe5d9",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.022Z"
+    },
+    "projectConfigUi.icons.hexagon": {
+      "sourceHash": "5c86825d3a381e06a08dd4e7d85a073e0433f338e77660f6f6f2e3a6c35e37c2",
+      "translationHash": "99090cfd679de2e2fb6d15fb63dcfa2f55799f7a76ad2f07160a15bf7c7da5e6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.layers": {
+      "sourceHash": "7891468c01609af40df6d1589ee92047cf928e75bf470ca4b708594b5bf6e120",
+      "translationHash": "549f56c02e856e3c990ba8e2b30789d324cf3f31546990605365ff5c8c3895ac",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.lightbulb": {
+      "sourceHash": "60d3809f03ba3b8836a8a2f5940def3068db3a2c053108dcb3d36ef42c6f072e",
+      "translationHash": "8303b20d039edd1afe7d85be63eb94bfe407308f12635554b41181f7f7150671",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.lock": {
+      "sourceHash": "f9717408d3e73e532c77fdf89b682ce71976dc5432faef7f1c010a3d9972b348",
+      "translationHash": "a9a715b92cf8c4e5046fc29f990b3defb9f36b31ace82ef7d598fc8bc888728f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.mail": {
+      "sourceHash": "7845b0a15fcfc95cc34987d99c99295b9b1b0f024aa07bdd7e207c00bbd38a4e",
+      "translationHash": "4c89fc02bd84a25ee965225857a2d961da0ed5df4a898d3466f19eee76798842",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.message-square": {
+      "sourceHash": "b6ffbd365b5169161c8043ee275781695af584d1b03b91aaea9a93b6b1f76732",
+      "translationHash": "6dde341644a83facd0bf66a83e75f9efbad5147ae1afe6add6babfc81fec34b0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.neutral": {
+      "sourceHash": "902eceab020364b1a70f6161aea4d3b5fd0bc4932c83ffc59e3a63299583cdc8",
+      "translationHash": "cd1a262e4bf0c3f293d95d87dd465f33c479caec0a32ef44de7f48f7cf1d3ab4",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.package": {
+      "sourceHash": "7134c05fdca784c72e0f40ef8ffcb54d63fa6251a8a1c3b6abcc97a69dc05907",
+      "translationHash": "76daac3238ab1eba0c6ed434c82caef2a9eca1822b0c17a19aed6b39c19ca9b0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.puzzle": {
+      "sourceHash": "83a67fe08c1e0b5f1541c0968b2f98fdf767874fb8ed8f35af5b0093366a491b",
+      "translationHash": "90cf276fc2074cfc1ad979802f6dccf7c34371bc6d3bb2d351a1caed5e9d8256",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.radar": {
+      "sourceHash": "4c658cdbc35f76d807e2963be7d708450d6fb3e0bd38bd82fd9a17574db7e658",
+      "translationHash": "8f25e7acd90ec070c31c400d06545dd5ce975a1f82e60be97f8666b4657e678e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.reset": {
+      "sourceHash": "3e5d5850bfb63b98cfeb1c6cb31d98bb90b1236f70a898f73f603e46bd0ea3af",
+      "translationHash": "c98de793028006de9d1049f1247ba0ec70fc1e4d9aa7af66237936431e1aa5e7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.rocket": {
+      "sourceHash": "f1a9eb6c3397e94347e32f54c2d6286ca4173e7a920b4b30c2136e754f556ac3",
+      "translationHash": "cdfc95614e66b45a85091ffd5ab47e9cfba4bdb6e60d3052ea635df3206cbaf7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.search": {
+      "sourceHash": "bb63423b6606877bf5cf6461655264e95c233c9ba40dcf2dcf8edeef21205720",
+      "translationHash": "31411447387bf530609b565b2e3e49a8d08eba4351dbb9dd03810ea5ff0c9f40",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.searchPlaceholder": {
+      "sourceHash": "01581874965dae508a7e331d767ba8ece51804b671fb94695cb461e51eae1dec",
+      "translationHash": "cddefea3561d060b8c664cbecb500258000ef946748e16a2b9e249a77b68f98b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.selectColor": {
+      "sourceHash": "aac379fb66902306b5e17c62677120fd4745b4dea9533a994de38dc6b10643df",
+      "translationHash": "dbe9bc8314c3f35a5f77eaf6b8326cef5d102f65e1ca5573af81e4773275f0fc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.shield": {
+      "sourceHash": "3e816b71239f1a97fb95926728c66ccc384bad34a8396ffa935ab79c0b677f99",
+      "translationHash": "bcf033c7eb2a6f94bfc59b5869876fffb349bbf6b26e4a07a08263e8f94f485e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.sparkles": {
+      "sourceHash": "748c9ef1f17dab5e8dd0088bb1e4b55d5281855aed43c35b7d8a065490459b5e",
+      "translationHash": "5d5942db4a2f8aedb221907b70b870b914f74e1acdde7105491e0c98c9b77625",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.star": {
+      "sourceHash": "bff393115fc16a04b7a6a9cc4ab04c0bbb4399690b33d45b7d3a9b82fcc00a28",
+      "translationHash": "b977942a163f86755f42ca3a3317bc5b7e85dffc042ea14b907c6c66bbb4ca9a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.target": {
+      "sourceHash": "d7d3cdbe1dd23f269e3a97f87f6426e1d853489c95bc88a47e4088f65a8b4196",
+      "translationHash": "ee4fbb4eef7071d71bf5bc2713ea02397f41abe387c87db152bff61e18987ca3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.telescope": {
+      "sourceHash": "35e341b63b7e207738af48f1b11f4e1770de4b2e594496dbd760601a2bc2611c",
+      "translationHash": "a3a2413a5d3c99aebb6d4fdfe543e4d4221a43b7ec339d2de0da6c1d241b4809",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.terminal": {
+      "sourceHash": "6a2516ea3d9cec2a6a4c26c286827cce5c467a6aec72d9b5d83e53a548c40864",
+      "translationHash": "54c2622eae87707faa5507f35181dc75e625dbe5eacd56ff2798b58a543a6700",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.title": {
+      "sourceHash": "dc5711f5e891016fadbfbaba23e88aee887186c6bd8c51c4cc7717cf6d2c6d8a",
+      "translationHash": "7a420917735bc9c2d9752d4ccd586a0d0484660702951f4152994e6bf2fc7f16",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.wrench": {
+      "sourceHash": "ded3dd3c499af507b9a129eae04129292145e1238e132d9d94492ae6d73f3b51",
+      "translationHash": "85ef7bfb905b71fa7f3ae5124b9f7c8c3bf55412920442064f1bbe828a2d137c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.icons.zap": {
+      "sourceHash": "e7712ed594e7373cfff9de16944cdae0fdf8d941ab4c651929f778e0ae7d71a6",
+      "translationHash": "b3401637c3bc64e83c33340e25d1d67fdf47dffad93c7547211862dc297311be",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.companyRequired": {
+      "sourceHash": "78f46a53945f3e0e1bd1c71f7bb0f3bd9caa7d5615f1a655e4010518b0be30f3",
+      "translationHash": "d56b098f53f2e9e3e1f1539790d3c90e7730972fd1c55555a8635f9c1547d011",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.joinFailed": {
+      "sourceHash": "2e1e1d62df04ba1937cb76cf82454b0d97405dbf2a1d56073aff2d56283fc973",
+      "translationHash": "67effbcbc9313d056014dde1b7f7cd1879b6bfff965fa961c101a593d73206e9",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.leaveFailed": {
+      "sourceHash": "e71f48789fb41a311af948b240d4ba1273e2bc78c91e7aa79c0921f5e1f6e803",
+      "translationHash": "212a442aaee51c933d1f44d405a96063fa94b2cedfd6b193fdcb837e59a176d7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.retry": {
+      "sourceHash": "d8b6484762d5a1f82b753252605209f9ab84b18ab27a621daab2c4c416820101",
+      "translationHash": "a60eb2a1bdfcb0154948448dec280a1815097c8e1325eccc140d7927c50c14f3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.starFailed": {
+      "sourceHash": "bb1e5a3efc3e2dc606040f2068212ee632201c20c4de195de0f89f6e546b6df0",
+      "translationHash": "ae739342f0195257019c06759e2533c42100da60aa4c338a46e3bca8a9139f33",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.membership.unstarFailed": {
+      "sourceHash": "8ecf68d365a24dfecd35724adc6ac20a2c40051bb0554eea84cff398d03dedcb",
+      "translationHash": "55f6cbb71c2b7d258a5f4687f4cefa1237988dbed47b5c31ff68621f6dd95406",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.new.close": {
+      "sourceHash": "f48e3e983e42a4dc23c3fb0b940071e10db29348cfb87c5058eea1deb9d3ef41",
+      "translationHash": "87a89e2c5758a31495cda5b3d05cf9f72ed36150aa239d35856420a23372d7d4",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.new.create": {
+      "sourceHash": "21d40a131ed123dd94053bdb3284e3917d3b22f2c4cfb876f83e251bfd2650e0",
+      "translationHash": "63592a7816f0e6a51d18b94744888a44a78fdadf5bddf5f7566e56fc3cb1e6fc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.new.creating": {
+      "sourceHash": "4172acd8eb791dcc5447372e87da7fab25294040b43ee3fbd9c3171a87039f61",
+      "translationHash": "1fcaf2fe0dab1b3d42b5ad774661f02a0cd7cb6d9bf7cf7c0c44c05893cb18b8",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.optional": {
+      "sourceHash": "95603d0fc179d15f9c4b834ce54a4ccadd2e62bb626fa802dcf79712db472602",
+      "translationHash": "e30123d84471d3d95ba30ac23914d40c2acba59efddf15e08e9a7862c7c95f48",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.absolutePath": {
+      "sourceHash": "bf9f7c5bfcd97d837c0079a031824672665d972f0019c6bd52b887f3f48431de",
+      "translationHash": "afb43e0d40fe09bfa60c3afd0065de49fcaed12d28de660f8375a1253324a15d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.allow": {
+      "sourceHash": "f8944089444a82f5d2799afe12a71c60e0a1c7e7159adf24cca1c39ebeb30789",
+      "translationHash": "c3470745cb37a82dd9a8f74542aa6951f8fed855dede4c9a6e91211b65f5878c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.allowHelp": {
+      "sourceHash": "5435633dc6e7b02aa3652a40c776d949f067b2704693136d517a827d5a867ca4",
+      "translationHash": "d9f8668bdf6308a28a1a334f4f15bcfd0bd4d13a84e3580df2eff53b54fe93a1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.archiveConfirm": {
+      "sourceHash": "6628ba86fb867a4bd3482d0dfb66f86ce935e90c9375cf7bb91b67cb312f6e40",
+      "translationHash": "47c055b4a27766a5355074c8ec2b47abf22a413b59e64a474e4d3f7b23c22eb1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.archiveHelp": {
+      "sourceHash": "c14a5f893387b227a80c8c25b9464dbc90e7f96f18a307d320c44f634d937533",
+      "translationHash": "56b66eebfcb8389c651ae9535e326de01391dcdeac761ad6abf60cedc12054f3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.archiveProject": {
+      "sourceHash": "035fc53669d94c3a70ec26edf5066aa3073a44367dc5dfe6b6a1c78fba26b839",
+      "translationHash": "856b15b49b4b903f2dd5a92b3e7c8f06e834066d8b9aa771b068041ec9e62244",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.archiving": {
+      "sourceHash": "1599afacfbcfa68fa93fd685ffa40c8b6f0cbd3cac07cf901b7e026fe027e2f6",
+      "translationHash": "b5f8a0b8e9e1ccb2b1c06809a689e6d0d577a022dc067b938fb728d79d700fba",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.auto": {
+      "sourceHash": "feb1aa6032a1088cb973f5f7d81f5e19334b2b2169624ed5d127e9c380354a3f",
+      "translationHash": "11344c4ad3caa59b566fad2b0f039f374840864038b2901a737511cc6d17a45d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.autoHelp": {
+      "sourceHash": "869e3f18645ddce04b9677ea51786723e3b54b87af9f89db9e7612d3f1cc4429",
+      "translationHash": "b3acb2fb2412c189c224ccb2da804f052ddbedfcc11f23a567ca432b7df85d8a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.baseRef": {
+      "sourceHash": "fd66add9669275d57daaa27b63ed56158c9aa850a83687039a643f43dd85964f",
+      "translationHash": "fff82785353478148b7ace5be400f91e36704aae02532c4703b9a28999352a1a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.branchTemplate": {
+      "sourceHash": "fcf4bcf381b3644f2e09de03603ec52156789d1eb685f77fa588f87de1c1d032",
+      "translationHash": "a9ea254b4e80dbc987a68728fe216d1ebe37bbb95b6cf4757109064b51f66095",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.cancel": {
+      "sourceHash": "76809254a35d276c45803bc9e0df6e6fd6bb80a832f0bc62f4982fb846e9c7c8",
+      "translationHash": "3bc3906b27653a9f373bebd8822771b74142b2c5e65372f0572214d6c825f2db",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.changeLocal": {
+      "sourceHash": "cd1f0bfe143a0e7edb9d018a5816d0cd1143f92a05451b7a22656c2e18bac0d0",
+      "translationHash": "43d864f94d1cf2f46e6fa30d9bec5ecb266b5f5089c2e38f51361f50f3caf32e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.clearConfirm": {
+      "sourceHash": "8fa02070dadefba2f5a1d2d0b23134d92aea21d06ca6b639c4b9e3ba0be78757",
+      "translationHash": "21fe4f1cdb8a0459e230804f62b1406f6b41501fb597a1ba8629ff625b01f950",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.clearLocal": {
+      "sourceHash": "ce84e57740899334b553d127b8beea38a5a12621d880419589e68cc387e4db91",
+      "translationHash": "7e8903dd294158dce4936b247e4e0ec3c4a26050e2aa75250e029ca5ef49d021",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.codebase": {
+      "sourceHash": "38201b1bf5b96776bbcac71f91d45a28ee462ecfb5720e2a739e89aee770bb27",
+      "translationHash": "b354abc811eda10d6308190566bd4d05c646ddcb2a397245a57dd56d03dd8680",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.codebaseHelp": {
+      "sourceHash": "dcce4ddb0bf84ead1bbedb6dc30c730dfbea1d9fa37156bf672c64e37d26be17",
+      "translationHash": "5d6bcb743418a4d82ef03fe85c2c040a7950992d1e5913f4bd9dc61bfacbe791",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.023Z"
+    },
+    "projectConfigUi.properties.codebaseLocalHelp": {
+      "sourceHash": "f1c398d9e027d3214a549662ebc3960560d90f651af3559c5e633d208bec8c4b",
+      "translationHash": "bbc3e7978d868fb39643fe60f4e086596209fd811883cb3aacb0bb3ae9b47fe1",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.codebaseManagedHelp": {
+      "sourceHash": "41523f65a047e49c59b378042b2f5588ed2b63ffa6c5421ebad83514f1d62a91",
+      "translationHash": "723e071b4d592b3670f3e54f90bcfcf5c03466e7688f9fc18ae0c53b23eaa260",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.concurrency": {
+      "sourceHash": "14e8feeb5a14e2dcc2b5830cba3551065e2450e7850a2f13e3924cc5107ddceb",
+      "translationHash": "9055e6194318e7e58f10926b31333ae85efaf2eadac5163c28ccd95e404222ca",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.confirm": {
+      "sourceHash": "8dfeec035d1b5091950fbe2da71bb6c452f9cfd805d75b496354d0ef518253f0",
+      "translationHash": "d3817b8598fa3d8550b2b9803eda61153ab84e52076a5ac11c4f3de9356bde75",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.coreStorage": {
+      "sourceHash": "9e252b17406ad8170655df3f0ff3fc78b581bcc421dfd8bc72c82c813b12ba0e",
+      "translationHash": "b08154c1b9355c9ebb11f3fe36f3a815dd5fc751fb3db81e27d4b8ada442c134",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.created": {
+      "sourceHash": "77165bb478e9ad4385b13b7ee9af6dbe648e21c8b4b77f0446ce5ae3f5e2217c",
+      "translationHash": "92f121f749c9272464da4617cf9357df27969639494d5f505579117d2070afdc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.danger": {
+      "sourceHash": "4bcd3664a33357c9a0d3a0e2840625319d8ea47d76ea415fe8cf8e955ba8131a",
+      "translationHash": "b03aada14fa739272435ce9e1987c6840b85d5bab82cb681e2cd4686788d7c42",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.defaultIsolated": {
+      "sourceHash": "10f0e77984459c0512efdae7c07ecf3d4db216b7f9edccd2b5f613a9aafb7650",
+      "translationHash": "14effd1b703a6ca6125618c0f3549330553b9c95179e8f59d3bae9d4ba8f7764",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.defaultIsolatedHelp": {
+      "sourceHash": "2224e1e0b9b80b2602b4287dde4c54f868cbbfa53f93cbd2abcd63195bf7c896",
+      "translationHash": "1dd680a1bcab6e76a337f706e0e941907a8c5433a82e9556c67e77ec7cb21444",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.defaultProvider": {
+      "sourceHash": "051a01be1031be5a90a76fc3a58e69f0168b5ce6838b622973bb6f331200a642",
+      "translationHash": "a5531e04cfade4416ee7e1ce0bad415fe1a119a4a6af4c842e5ef90d05c18a29",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.deleteConfirm": {
+      "sourceHash": "90d4b5365ec456232cad09bf5db147202e51e8c40481cf53e9b3c4d01513362a",
+      "translationHash": "633f60cfb4594f678b0df233978c4600bfb40d08044c276808ae53eb30b1f566",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.deleteWorkspaceFailed": {
+      "sourceHash": "424f12e05afa76382bf3901f4cad27c6ec7314aa0004039473e5d9c21f76fe7c",
+      "translationHash": "0efeb07d7dcd9113f7858f3913fb9ceaaedfaf7426bb65476b861d5be6f01609",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.description": {
+      "sourceHash": "8dbe3199d9388f09e24a16bb0dcb0441bfc041ea90f5d4df7b770ab1fd40d525",
+      "translationHash": "9b73fc7eab9653bd35ecd220ff58e0a442ab9e5074fc7d2a34da95cad4bbea6d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.descriptionPlaceholder": {
+      "sourceHash": "e44b105191c6d4cea39df3c947d0980de30657129eb57d9a39fafc24aa12913c",
+      "translationHash": "b55f765516f430e9e1b1bd573e3a93df3a78cb1fb6cd4e04820de175ebdf7cbb",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.disabled": {
+      "sourceHash": "f08ce03d8288e69aec7b360dfc54bda2c36051a36e9bdcae812b9051e88cbb7b",
+      "translationHash": "11fd6d7e268dcd5afc4b73269c4ce1c728241230bc82fe6b97d394f46da7491f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.enabled": {
+      "sourceHash": "4963cc4d350e6cbe90e52e349c0a18286d41e5bbdc84bd71a45d0de7ea5755ac",
+      "translationHash": "de8fad4b6315f49960b405830bbea2c764a8a641f87b4d456f696d5a806be480",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.enableIsolated": {
+      "sourceHash": "ef53aca0cb605ac5d8a26a74a9cf4ec8805e99f9fdd5317b6048e3a2c310f17b",
+      "translationHash": "0a419d56c7956e00a23ddcb96a22d1387f4db64a5fc98ce07dd1c2adcc26fc40",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.enableIsolatedHelp": {
+      "sourceHash": "daa3a0ba3aaf6da51df463993ebe7cb14846c40abf521ef83865158540e296da",
+      "translationHash": "f0af8a6b2966230c6e843ba4e294b2c9edc642964b3ed2208ea837349fdec864",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.env": {
+      "sourceHash": "08f3c74a4b100a609e2064b7bfdc43b769b4b97aef37c39164ea9f68ddfde32f",
+      "translationHash": "33059223523323e0b081efc7f0566c115a27de8dcc2e0ed7fdb73b71a2635c68",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.environment": {
+      "sourceHash": "32f42ff228044cff670dca801a8386f04093dc2b16841158fe872281cd51c684",
+      "translationHash": "d4b8bb76487ae8e22808c0b6da4e366185919f37ce3214b24a56d09166591701",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.execution": {
+      "sourceHash": "3553818a78aa15195c6ae020d83581c274587290ec59b21383a621908302662f",
+      "translationHash": "3e44fbdca1184e8ab551f974450feb674dae5d68204ff95e13cdc54f6ae5f3c6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.executionDescription": {
+      "sourceHash": "0d786c7d39950c4ba4e33b9e92a09fc59eebc16a0f65713d146483f7f0c03fe0",
+      "translationHash": "6e04d92c707fd62e5795a85798cf6ab598a403030f5b3aef268b4a8989f540b0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.executionHelp": {
+      "sourceHash": "7302fe160db186ce85f5c26ca53e5506db7abdcf98ae25e1002eaa649053b0f3",
+      "translationHash": "82c58d0f44128ce4fdfc42b5c02e03dab800eb1cc326f7abdf619888683c385e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.failed": {
+      "sourceHash": "86d1394281ef9f7911ef0d5b8752a886adcc8fe29d182bc96a665a4ed87f3c74",
+      "translationHash": "63164a4732e5b57462a85567eed5bec2daff09c8899c456934dfef89d36704e2",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.hideAdvanced": {
+      "sourceHash": "dc3be01473d06e0a52c88218532cf14d3f327f3a7991f84560206ad622a172a0",
+      "translationHash": "7a52d80c5de57e3256c5c07613fcfa5b1efc33bb58d420e1dd19d6422e12a183",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.https.cleanup_pending": {
+      "sourceHash": "a1ccac5e5bcbdf72949eaf0073d2e52fcb379bf47a4790f69b0628d7b910677a",
+      "translationHash": "acf8af38cf021b6182d47cb2ca74a944c269ae24ae60f871661fbb6d3d49fa8a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.https.failed": {
+      "sourceHash": "5857f3d497cc0d268af91a304ece1549eaac72538431fdd269f020485d044eaf",
+      "translationHash": "6d1076e34559365f7182e407ce2303120a039e274007ab473ad6eed098424348",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.https.pending": {
+      "sourceHash": "cfc8f4119b66aab3c4e84e8c75d69c141d08f3ef8feadf0da024f47001217e8a",
+      "translationHash": "379a3b16f94ed1c630a8af4dda631fc0776c39b1bb837cad79b818d727d2c264",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.https.ready": {
+      "sourceHash": "c99663bfd374be04be612227f0e48380b17c98d33dcf42b3cdd363bfb64f9e29",
+      "translationHash": "1b6897a076c7dedaf74951eb10967e45d13ad232b83739d0fa9353571a60848e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.https.removed": {
+      "sourceHash": "5dec939005167c2a1391043ecc6e0d88a3bd23f0a9879bd6e6fd76a8e5387c64",
+      "translationHash": "e5f0179b035243d219fae7913c412e8c256e49368222b1fab4683eb9b84379fa",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.implementation": {
+      "sourceHash": "9992c68c85cf045053c6ad154d3b59ad4d81e23ea7bf96ca6b03b69ed27abc8c",
+      "translationHash": "91584df5f50466c980eb898b86d4a5aa2f55aac7534e20395542a487d37a74bc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.inheritedProvider": {
+      "sourceHash": "a8e35ecf6b22e39baa03f9ea4db44c49dcb4e586ef4f1aa29563b28a10356b6e",
+      "translationHash": "ad2b73da2d6857785a1b12aad70a7909ee96c9ff56a1c4afb3f15547fe469a4e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.inheritStorage": {
+      "sourceHash": "f8ee8391e6e94dfaf7bbbe8d4ed73246e75ab2301bd6cdbcac4559559218fd53",
+      "translationHash": "841be27f2e9be39fd93432f7e13c47efa112ce1adc79541280abe6ecb792122c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.keepPrivate": {
+      "sourceHash": "30d94fd4399efe286cf3793aaca4086f4b3ba14d1f16797b9a2966b1cfb99f88",
+      "translationHash": "a0a74d9613076896508791d5ad4443160fbbae1a7f5625fc89583d104fff5e33",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.legacyWorkspaces": {
+      "sourceHash": "140f492f3e5207417fc53d7375382f8eed14636658206b0c631ab5b5ff1db57f",
+      "translationHash": "fde8bd44a7253aa386d5ed98edc5611ae9afb8a9c8dd80538fd11ca90ec187fc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.024Z"
+    },
+    "projectConfigUi.properties.localFolder": {
+      "sourceHash": "80dbe52cbc04d75a28f8191d510c794b3e1bd14f0330e8e35ad1635d9d52c12c",
+      "translationHash": "2f874e6b625cee50dd93cceae082aa9fca8ac36e78766edeac917ca09d409202",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.managedFolder": {
+      "sourceHash": "334ff2a6c92651a7fb65f659d40525c5c42bd925919568400e20cc70518f72a8",
+      "translationHash": "d517aba072c36dfada5a27aa46dfca11472fb72a3891a429c761171d19012c1f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.name": {
+      "sourceHash": "75d74563118513b66a691115383add7e7f50e7426b88171189983b548db7a9ed",
+      "translationHash": "fa2674b7bf3f5111a1dfc8e57ebc8e3c58099358f02cfaac213fe6bacf16b09a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.namePlaceholder": {
+      "sourceHash": "22ec4deaa7593cd3b19a77ac7b9cf0837e7eb35d82befbb1b0ac497c31fbb551",
+      "translationHash": "68dc69ad671e6c1e5ab120328958f58cbfa9f1f75b2b6ede1b3e0eba35823080",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.noDescription": {
+      "sourceHash": "0501fdb80d4684cfa0ef548e9f84f100160f13a79ada89b99ea4a88cec5c129c",
+      "translationHash": "dd4cb77c849eefa1cb126dbc5221e9ab45460ae71e06bba281d653b52ff0220e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.noEnvironment": {
+      "sourceHash": "49914bb550a04dd961347546aacd77db6ecf216fc0251fb940032afd533e9a90",
+      "translationHash": "c58413e49f17f62a75efb981175c295a3ed564b22cb878b4f9b370035d603645",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.noUrl": {
+      "sourceHash": "2ef54f541125c73286e5e257ceed85307c770dc3e5d66a0e87c2d99030cdd13b",
+      "translationHash": "f6aaac313ec8ef5b719822357ccf7ac395227539d37e2b9e822ed1816da66b0f",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.open": {
+      "sourceHash": "dadd62f324160ffebc3e6e0f9f777ef0124970dc622e4e46f9013701daaf58d4",
+      "translationHash": "b4f8a2611ec681b71d5ef295d810cc8c8ffb0257aef71222e5190e8de6f8c60a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.openAction": {
+      "sourceHash": "05e837b5ef909d4789b4fa1df70c7a6176385ec1682b122f9ae739ff2e37c4bd",
+      "translationHash": "b9c22a27d6b549b5a2cf055e0c611c1b5bafcb3dbcc7aa5b9018611d006abded",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.openDescription": {
+      "sourceHash": "74479b53fadba67eaf8db388598001a6343d66b3db31d4fcceedf6f75122c678",
+      "translationHash": "fae4c734f9034a4835883e3217e618d2c0da54e9c222e1d308d3d1a368d847ac",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.openHelp": {
+      "sourceHash": "d95436a6e7cffbd553ead827792f28e33ca96e2bdd0f80f62655fe1a3ebde2a3",
+      "translationHash": "b3be2340c9279dd02cd79f8b92e20dfbadad569229d05915697e5a3c070e2fe7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.openTitle": {
+      "sourceHash": "64d79a9672cb0c27756663f0e00ff94ae3878703946f379b00b1003565fe7e84",
+      "translationHash": "d67430b3444d1fef73c2ca7d61261459615296f837392eb8b3af63b1924d4ccb",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.private": {
+      "sourceHash": "42c890eb350605f5344b4fdad1a202bfbe0870f1b5056c18b65992cc3cab3224",
+      "translationHash": "bc271408d084c6d3577c469d48fec2c122f9fe2efe2f5095abca3a2144ee6be5",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.privateHelp": {
+      "sourceHash": "277d1721f14addeb0b29fa3ea20bc885a35a8947e8e5c85a3896ec85bf6054ab",
+      "translationHash": "b662f942d4aa21d39a90f70766a2870415e4d94a805d0314de87e7b0dd6651ee",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.privateLabel": {
+      "sourceHash": "4086c46d5763d247ba9dab96f1e2c0d6f8da0457470fc40d5e6cb8456ec1034c",
+      "translationHash": "7aef4f255ed98d00d341807f87f40a759ded9340b9d91d03cc9b24047c40a8ef",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.provision": {
+      "sourceHash": "c80f69206802bf9a1caf88e08c5af1c7f223a204a58ed6e398a3ebe871114fed",
+      "translationHash": "79bf1ad958d6ed6c50d67d79ebef59b6d39b97d7bda734543c48579f457b5526",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.runtimeProvision": {
+      "sourceHash": "7fd1064ff46d16936d75d2f826148439a6b2bb710de35a9208e04a5a198c2542",
+      "translationHash": "88bc933abf30bbcd9ddbe87a582f19c64132b054165e6934685cc3883a2d2ca9",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.runtimeProvisionHelp": {
+      "sourceHash": "d2c44214f19be1a66dafc5f6d2b007f5855efad6f775543c221628db76a3d166",
+      "translationHash": "811a5f4b86cfc777daff937782eda70a99c5bc1c832e3487d3cfd6a1ca54dd21",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.save": {
+      "sourceHash": "6c48783fff063b8048adc1cb1f4e7d7326711c107348d91654997febf89aa2b0",
+      "translationHash": "3f59b5861c6b473992543542420ae451e4229cf6b1c84b3a40eca4b13edf5067",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.saved": {
+      "sourceHash": "5c2f2e535c762dbac0d33a3d814ead4f0444b8ba12f4c0b628f06be35facdc24",
+      "translationHash": "6f0d5f5d663e1619db9a65cb0d1bf51484b8cd1decf183da79dbdd75eb389009",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.saveWorkspaceFailed": {
+      "sourceHash": "ba17d2bf870d7247abd8d05561a065b99b4e322b7419126b8211bdbb4de22a89",
+      "translationHash": "6985fc5246cc2346c906a37d6b703c9cf99c980b5d5e4509cda362ad72d4935c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.saving": {
+      "sourceHash": "e08be775b3772c79a0b5d9ce0f35e0c04799945de6ac98735fdc6edcd5be1d78",
+      "translationHash": "6a3e7718287ecfadf3c99fc174e61474116cbcdf8af3b7ef04f9361208b419bb",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.secretCompany": {
+      "sourceHash": "3cee56307317d8e58b43e56248625e9e35e35390ac8e0dfb224296279b3c3aa3",
+      "translationHash": "1ba6adb0eae4d48bae074ea1ec50151c0e432555e32a2d88880038fcb31913d8",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.selectedProvider": {
+      "sourceHash": "b134dc320b373297c2d9ae7e0ee0362a6b081bf3b153ca6ec204c19636c04c5a",
+      "translationHash": "518bb2a92c922dcdb7bec79eedfb166e1c12b9eb60148db95295912d5236b741",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serialize": {
+      "sourceHash": "275f2bad06b76991c17bb46e623f4499bf4fad8e0fcfda840c0f91ff02c09a92",
+      "translationHash": "43bd41fa5858a55360b78cb5dffebe9e3611e3821fda3bc96c4b3e3023999aa9",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serializeHelp": {
+      "sourceHash": "1cc8b82c96523aa03689a30be3422100232133ab3ed7af9320a716b3b44b4939",
+      "translationHash": "52f050a425910d9451555a01002b41e29f3a054ef53f97eecb906fce20131d2a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceLifecycles.ephemeral": {
+      "sourceHash": "e8adf0a7c3fca50ee6dd08c8974fd5256609feba0decd82cbab793fb32a7f426",
+      "translationHash": "98c9f584dce330dad4b01b1fe324c331bca2336f2b5ac9a4b33782326702792b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceLifecycles.shared": {
+      "sourceHash": "60820f9888e5a01a469cc4345e6275d6e2f593c7f33253d14d24704bdd016454",
+      "translationHash": "6b70f778ecc72610df20dc5a2c435c3d7a73fc593acac12b0dfa3641a893c561",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceStatuses.failed": {
+      "sourceHash": "5ce38c5a7d0df07728fa7f2da209235912ca0a308a45e0aacfa10b977ba9be28",
+      "translationHash": "939747ca02d7f1c6f5f3328ac6fe695d9bbde17dd0880b6a067d47a861180927",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceStatuses.provisioning": {
+      "sourceHash": "a5eedd50fa31be10c6500eaee17fd13b02fe09e287fdd5c6168b8017d02b2e93",
+      "translationHash": "1a8af6bc5c9bea112469e0c72f22134874e0dcb1cad739b6d05bef5a4984b429",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceStatuses.running": {
+      "sourceHash": "4a57c4efd429935666b89ea39d7fbad2963bc46851d4253d1ec0702f4800c1c9",
+      "translationHash": "7110d277e9c3e356575591bee9501742289691a7b19296c6e024cfdb8981cdff",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceStatuses.starting": {
+      "sourceHash": "32a797bf281a517166364ff567544acf79e660dec45a8e916a1f556b46bce136",
+      "translationHash": "c07b47b8ea45b38e0e5aba0e2035859579429d1f8a8b44677daea9ec7c3645f4",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.serviceStatuses.stopped": {
+      "sourceHash": "25266dfb65df4453a6d18f3c5c860a4430112d7f11aa7b2b1dd6e6a5d9494808",
+      "translationHash": "127ec0f427c19ffffb5ae78ca23dbcb2b066c13973dd207dd75936037e66035d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.setLocal": {
+      "sourceHash": "45dfd918e8b020321fca1d121061d6958c2ac7226b6eb8b0b4faeb27535b9bcd",
+      "translationHash": "1bd3dac8efd4e1468f23f05e4380cd6bcddfc82d5830f25ef28b3858c7c1d022",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.showAdvanced": {
+      "sourceHash": "6fe4c9e6bcc2273a21423237dc336a07cfa68ce73ab04141ad735955c03f642d",
+      "translationHash": "65ba398302a2e9e2b58b024994a521237b127c1cdc884f5a885257bff0d87753",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.storage": {
+      "sourceHash": "b7dc94a396ee04fc1f96e7776ecc714cb1b4c5d56165226c059d2aade00c839c",
+      "translationHash": "d3bb1a77ca7467c527bead43ddb71556f56a8a9298dd72e7f07f0b316e12f899",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.storageProvider": {
+      "sourceHash": "d095a2e2c632c0e767437fbf347f263d2fabc78b775d82081e68b17510fb35f1",
+      "translationHash": "1f8241c67b76ebe5ec9bde7dc0350219a3a1b80b40ce161308333cbafac1189c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.targetDate": {
+      "sourceHash": "f62f614b3bc7217cf0ef284ab3354d9d9f6a6417caf7b3d7e3d5fe1f06c0ea51",
+      "translationHash": "c707e5a0e64258c68014b762c3dc0bfc2401fb390ef9abe854ddef6f9587f494",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.teardown": {
+      "sourceHash": "426cf725793dcae34f79d7f3143b2729ce1725bee9689e616eeb92a8bf3d58a0",
+      "translationHash": "07f24534f76ceb9a5f38f16afea9cda8ae38cd758dc276b9301a70b5c2f29de6",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.teardownHelp": {
+      "sourceHash": "4fdca096bf8d0cd2888312d7cdb5acb1692e2498d3140c80f22a479d9d1a91d4",
+      "translationHash": "ef7f345e3a86523a454da2f27ad423d646b1f70562477a684fe253ff40453d4b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.unarchiveConfirm": {
+      "sourceHash": "cfe149239cec0f05877d13347282ed17682a24190ddd9978c19224ceed371b6c",
+      "translationHash": "760a2175d5ab2056bf306d32f2ab40c1ba37912e566f5e6d56767e164f4dafdc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.unarchiveHelp": {
+      "sourceHash": "8cc773647435954f66634891ae54f6494f89c0027a44f5ea06006f34137571a7",
+      "translationHash": "3c490e8df13c150c3764639ea574a7e2b7bac280e3b6f69bd1a032e76122d644",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.unarchiveProject": {
+      "sourceHash": "59967586cf16ff724840699b69a285ad6ff7a27fa8cffe829d5fbde2a4e63ff9",
+      "translationHash": "7e3fbf290a55c567ba01bd60a64995191f47f6ceab1d891317e4bd23f128807e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.unarchiving": {
+      "sourceHash": "d242811bae65c56b7d0007993dc250fc643c7e5dbf51817c79beadd791d89dca",
+      "translationHash": "a23dced4a9638abe7b657b9919bf72cea15a60951464a2a4bbfcbe3806d40fba",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.unavailableStorage": {
+      "sourceHash": "f64b1d474709dd616498a97c050153e646d109e0919b64396f2c53f42b8ff0ec",
+      "translationHash": "12d340cad39c8d199471226a2c5c4cac7a87e4b939f806f856217f115d95ca52",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.updated": {
+      "sourceHash": "1be74ba1346f6b3f89698d44d11920b4b6a3c255132805ecd32dcb2a28e5ae16",
+      "translationHash": "f6f01d1d674ecf30933743181b7d2bd9a5c45807de81cb7929aedae7d6ca1e14",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.updateWorkspaceFailed": {
+      "sourceHash": "fccc83e83a6283f4331ca9da9916e8321c1a2531896810c4e04980c79684e3a2",
+      "translationHash": "45b4ee3f0502a67c45fdfa639b17f74b1d071a788890a2c0763482e80959a671",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.visibility": {
+      "sourceHash": "c5ea67f1b3a719cdbc43b683fd12c53ad5626cc2721a6848b39826c670aa114f",
+      "translationHash": "50424a88b765b3a71940506e4295039ee2f595c80cc078838d2e442daed30037",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.properties.worktreeParent": {
+      "sourceHash": "bc2197dff6e90bb0dcde96c7e21d491fcc8400246113422830bff197977f6d6f",
+      "translationHash": "fc78fc5641e6d00612e26dda851feadbbce96989dcf0696970805440dfa84e8c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.025Z"
+    },
+    "projectConfigUi.repos.add": {
+      "sourceHash": "9551576cbec22d02c3577bb3c631f139825172385a662502c36215114ac0c059",
+      "translationHash": "cef471b38716b9b57c0e84ee44100052c8f63f832f7092a7061aade5247cf472",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.addAnother": {
+      "sourceHash": "ce246e0cc51ca9e59e5ea1a9a48b6804c9af37bed9b1c19a450f65944f79dbda",
+      "translationHash": "cfbc4d28d523d7eae94381a9f567cfc00253078e270ab3f6c0d59f53a0ace1cc",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.allConnections": {
+      "sourceHash": "c9335a1140fb1fd2825ee9981c344a07b725fd7f6a9b683d525e096e8edb9849",
+      "translationHash": "21fd9e5794988fc123976a9bcb34c766481d4be7c1e45f31cda7f2cc223abfe5",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.available": {
+      "sourceHash": "79dfa4051ba16aaceba7eb7e219e01cce3395290b43a047529ae1737c0cc3fd1",
+      "translationHash": "2892cec8fcf91328561368a17a2bcc851e8a383ac95bb7764adc64d973930304",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.chooseHelp": {
+      "sourceHash": "6b7cb69f8e5f8464a25b4f29b04e4351bd54bfe8f4467b21533a5fdf99987e4f",
+      "translationHash": "2a4a03c066e9234d2b283c104a7d1c427b9cb1244ce0af50a52c13b1f86d0335",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.connect": {
+      "sourceHash": "2e00d7d781e307fad4afb52b42b317f6379f7ad7103aafd8d40dac891dde9753",
+      "translationHash": "3d78ff0977f83b90f7a40ab118313a52f2f0614ee3d7b60e2cd96bc2c3284f2d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.connectAnother": {
+      "sourceHash": "dd2adcf5b268e2d440d5e19e09d36cdbda1ec704f40e5af05b8a68748d739fee",
+      "translationHash": "91e0eae06eaf8a34984666cd17e1ba3395c83db551cecc9b6001c2653ee7d15c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.connectToPick": {
+      "sourceHash": "7fee4111036768f907cac2df224cfa612e3c4fa846b40dcd0db7f66d11d42eb0",
+      "translationHash": "ea3c73571277652c1c72605f2845d31b46a041b7c6ad9f9f47dbbf02d9b4cafe",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.discard": {
+      "sourceHash": "28306a1d4c21ed04d8bcb1316c73c5d77c455585664bf9da916f19d7e8b17748",
+      "translationHash": "70d1eab0b98285223a24b04ac271e241de2d39aa72f9bfd51f0ba7d6439471de",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.edit": {
+      "sourceHash": "412cc5d417f9fae647e45b62e674889d4ac6c3f3fbd618773223b00b8fe3b87f",
+      "translationHash": "1a64cdec1b82fb1d8367cc09032434039447e3bc6c47817a0f812063ce744b01",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.empty": {
+      "sourceHash": "08563cac69b048a7c5f28bedf8b0bb46ae4ee1e2c83ceb88cfe8fc856e2f7f5a",
+      "translationHash": "8fa361d6fb5185e27a99c8836734f9ebe864c9cb37626a82c94e849b98626c68",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.error": {
+      "sourceHash": "ef092e4409db6f595a57ac2790f7db81a63267ca2a82dde67ad70741250df938",
+      "translationHash": "f34de2b68d72060e2738fb1816fe0ee894ac3c252f61a82be40d34d3725c4a67",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.existingUrl": {
+      "sourceHash": "57e42a3831d6d6c2702589837fde351c61c91fd8bb096acc85a619e3dde81053",
+      "translationHash": "83c0f5ff3b3e69f3c5ab858130045ed31dcb2f03ac4b3eecf80dd6868d03eedf",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.loading": {
+      "sourceHash": "1db309622dfeb4d66ff74c659cecbda19048ee68b8b5505618666c48eea65fa8",
+      "translationHash": "23178e8e1e5ec0afa38fb73811c038b3ba1932296067a2e0ce159ab9e68a6061",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.noMatch": {
+      "sourceHash": "ca7854e2b66b7e7590c7f77090facbb0f9904a164dc0b31e580abecfe2d32278",
+      "translationHash": "e0c33ffa68a1eb4380bbcafbc7ad7782af1e4c5200600ce75368e7be1f4ef3de",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.partialError": {
+      "sourceHash": "be9e3da4393ddd1bc6ca32db7295edbdf3063f53757d47baa89a4ea856f29dce",
+      "translationHash": "5443b689e3d6f5d23656a13afd879de4efcf03465f5fb87b6a8f4a8bc4151003",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.private": {
+      "sourceHash": "f3524d773c8c22852a2d3d61f34721948d11400bbb9780b860c8aaa6817f1ba3",
+      "translationHash": "11c60863e2aded9266e5c0337e037f7d4573f119516dce8a3b9483c041773afe",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.remove": {
+      "sourceHash": "c72923667377e20e9f2c430eb88e337d13800e9b64c384e0369a6c6219cc6416",
+      "translationHash": "bd4466004c22252c1afe2bac200757922083f1ab6bf677671ac539664c2a43c7",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.retry": {
+      "sourceHash": "9089248e5921eaaa9b093351b5c11fde591013695958a35748b3116ad2dfad80",
+      "translationHash": "3752635fc65fd9f85082ef415dbdf2dcf78b64ff6dd3d0026576499c979f7d2b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.save": {
+      "sourceHash": "5dc441e16981ad150f1a6c32244bd3084744fc0a1d4402a69dd46508d21f1e5a",
+      "translationHash": "1000804fec9d88820c8383cca33074c8b5dda3d3823fda9ad0b764c2411241ed",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.saved": {
+      "sourceHash": "f90f84f638898bac770030f2ab18af60a65faec11a2bb51535d213f02f0b82ab",
+      "translationHash": "65b9f7c69d4f1c764f50130f26062751ac721195a7c8811128369011a1b25137",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.saveUrl": {
+      "sourceHash": "2ef579b4e63cd6a32eec13a0f669f90950a3f23b8a4b8bded106bed07247189c",
+      "translationHash": "b2a21d1a7fd553f585a77e018881a02aeefeaf2f1890e37f78013bc73b3d706a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.saving": {
+      "sourceHash": "9b7702dc7414182f4360cb48fb4a820389c8272c000fbc0729c3fbc3eaf8f6b1",
+      "translationHash": "bf4000f8d8c2198f0d4c0c4e0bde82fb55abd36187756cf62b9e34d9a8f7c173",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.search": {
+      "sourceHash": "927cce6f1a1bdaf90244a59187a15a495f792e314cdacb03d96a1082190f643a",
+      "translationHash": "135656f694bad541dfdc85496d805d1fc329d43ca0f0e8b23e665f3afe98f73a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.source": {
+      "sourceHash": "6a7cfa17b9c2c7cfbb7c550a523bcba525f41c24f286c3f4fb22363871ae250a",
+      "translationHash": "d45e30038033147b56834c4f194849721f8e6c6a4a8fa92baec38939f46cb1ec",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.sourceLabel": {
+      "sourceHash": "b7cf2f7e4175a3c14af0d93d69781508e2d96275696ac09ff0ae607cadb58ab3",
+      "translationHash": "7b75119f17e813749a5ffa857280c2e7f90467acae8064a6674be514d435de74",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.repos.title": {
+      "sourceHash": "1c68a6602e7bfab4034b80977d2c05cc25b9380f5318b0b3918114217185ce74",
+      "translationHash": "ce6d107cb33b0ee4201704cf32ac1d024799f9a787be1ec6a14136f59399bb44",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.actions": {
+      "sourceHash": "cb65961331ce5d8c26cebdb4db082460c16fda80c45f9662e6ab4e9408e4096a",
+      "translationHash": "43c6a669a5b1eae7df65b2ecc6e8de6fc2eb510f266ebce8c4eca21ee341fd06",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.attention": {
+      "sourceHash": "fe6c879170c70298c8c6d88ee03faa20cb7e51e5329807155418dc9b561a4da9",
+      "translationHash": "31aaa5b839e890693a9a107a1fd7d0669fed61cb6b371d40dfe254754bc2e3be",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.browse": {
+      "sourceHash": "0958d080f0969aa9e5735c804e7c43aaa6ce777bedb6598f84f9efb1c1228425",
+      "translationHash": "a88d16a778451aed5d43bb6a33ee1f76a17f11859f7557428106322051c3a7e9",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.budgetPause": {
+      "sourceHash": "0e9ba5d7b873af6f15f79e125d816e41cbf1b8f5510d7a1c28ae50ac910d9532",
+      "translationHash": "3bb700471186fc45f4c95ded8606798e824d4263b3865e21e4ff9afdc33a5f8a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.commentary": {
+      "sourceHash": "51b7d0a7f3bf6737428794deede25344a446322f71218858b239b116f0bfcd29",
+      "translationHash": "1392ebbabf05369478ed5b1d0d774a21ad1d1b677cbd1252177db7fb5dc32945",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.company": {
+      "sourceHash": "f4016e161ecab548b1d891593a2436351ca7ccfa06cdea531484291728630645",
+      "translationHash": "842512130b613a8bb6034d0530e216ee21e2f0509098aac41efd302dfc211a56",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.026Z"
+    },
+    "projectConfigUi.sidebar.decisions": {
+      "sourceHash": "bb29e16645b48a4466d2f737f74e6fd6afe9e4c28efce0668180346ed4bf1ca2",
+      "translationHash": "aacced079341ff660499e160ccff0a3ad626f19a6e9bef76cd454ce7f19e8971",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragCancel": {
+      "sourceHash": "8652dc532439b6fd8657ff3569d890db567eced682d8098c18cda80ad8a4d828",
+      "translationHash": "a11fc2d5adc035a8231057d0524a0ded68ac4c63e67d96f646f1e695e7e93cf0",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragEnd": {
+      "sourceHash": "f492ff1e0988ed38b4445b844189036a464e334e33cf2ef6a374b6dc02a349a5",
+      "translationHash": "54edf85a802aa31e9e5e794968f29fd902b182c165d53c27ac4dfa8ad37cc30a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragEndOver": {
+      "sourceHash": "3cdc91a116c723be6e0a0e2101efb7e55c1ed354b049624f086e534488a45da9",
+      "translationHash": "9e18604e76f7e7c9f4bea51afb2729a0badbbb9b0822b03e3876cbced63feb07",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragInstructions": {
+      "sourceHash": "fa0689546085195d472fa2e5a8d8ae18a30aee45dcb47195605c31625089fb36",
+      "translationHash": "4e281994f915db37700ba4d02a0dc1e65406fb3a01425c03c43e8231f573968b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragOut": {
+      "sourceHash": "3e5c3baf9f420fd7e3a82642c43634b1837b66f4d1cabc5f308b45cb441fc3fe",
+      "translationHash": "0e8a634b4618771927fcc495771c648f3719be0c4d33f9789082b735bc269c8b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragOver": {
+      "sourceHash": "ac8a88ee5d17a489d74c582d99bc6a6d64937de22a928e76b145c8347de39b67",
+      "translationHash": "d689568b224095ac819797dae64fb873078ce87c860bdebb653e105302088af2",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.dragStart": {
+      "sourceHash": "46e01f67a290053efde1db3fb84e1c65cf4d55cc8c2b5dbb19cb3fbca812efbd",
+      "translationHash": "95e65c821c9f537c586c7c8af4dd8ae63bb57342c8994e892968e57fc74bdcad",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.leave": {
+      "sourceHash": "11e99fbb4425ae9ac3b7667525d1fa96543482cdc3712f1428c1e8f01a455ef8",
+      "translationHash": "7247ccb07559049fb3ec35732c05bce8f00132a3d988d9a4cecd6c00b042763e",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.leaving": {
+      "sourceHash": "fc08c545b1355b7682e04833919c986f50fc30ca40014afa1bd18b9fcf0db8e0",
+      "translationHash": "241752cf48c6396c9e05e936659d85ce951c3842ef59e96517628ce59be2516d",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.live": {
+      "sourceHash": "9e781864989de0afa9b8a5bc9026c58c2cdab7d215d23c946b2cf64fbb618664",
+      "translationHash": "fe2a6943bf94a94f3770d6e93b70b8f072082076c73d51a9b5fea85614d07202",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.new": {
+      "sourceHash": "304d8b1e07d0198cb9dfe869922568e46d7e3cc66101d1323bdbf8404187d3e9",
+      "translationHash": "af169a9918dc245f394924808da2a063633d1481da70e1b7e36996c7e5c82042",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.private": {
+      "sourceHash": "f3b6786174b436c713046a2c5092b9dc9b4f0b6151c67529ac0db404f19ec3c5",
+      "translationHash": "734fd74e5c72329c37b393b222ae44e63b218f55a7fd97e98a4e671bc696a82c",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.projects": {
+      "sourceHash": "8ba931a9a03a09d9f3eacf8bc5047f6d2842481b9c6bf0bf64d3e7b4afd1fa48",
+      "translationHash": "641d08d3c5d928c8f03be18bc08631cb46faacad97441cbc9f653b6ed8d181c3",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.sectionActions": {
+      "sourceHash": "187cc5dcaa971ac1ebd947c421c7ec38ea79fca789d247eb5754f5a79efb32d8",
+      "translationHash": "ecd0d95c09c0163d032d0e69921e6dee082161f017956e24cab0e4283bb46f68",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.sort": {
+      "sourceHash": "beef5f0394ae54712cda07d43e1d8911e120ea04dfa7b75a5e9df5e935168ac3",
+      "translationHash": "7b77a009cb5c2cc68447d2627632e4a3a90743640d7c648b675b8bb4cdac9c41",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.sortAlpha": {
+      "sourceHash": "2e255eecffe2d4cb5a217ade8ff3c88957f81cd0504c6444f45bf305392abdcd",
+      "translationHash": "ad56096cc085266f54b90cd29d02034524e3c0bb0d8cadef2111c6d46be179fd",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.sortRecent": {
+      "sourceHash": "fdbcab95f343b0b0ead97a65aabdb599a8920f4f8a7adf71fb59108ad3a6cfab",
+      "translationHash": "5ce877a74782ffd33e29144658e76e1d5a2348d38d180957ec5b7dd878cbf55a",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.sortTop": {
+      "sourceHash": "a5e0469889bbf6ff9ab24b79afa90b4d4b7d81985f73bfc80f2e092ffcbc4b6b",
+      "translationHash": "9fa8a15b1a5fc15219bea1b35c2cd6c9be95289986f04dc38889b8706a1fd135",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.starred": {
+      "sourceHash": "1c3d581043fc1b2cc0ee811fe71073a4648bac54cca83c679450873a36164e3c",
+      "translationHash": "d07c8ba127f2f8085a2160cac8d1800234659c3c2f214681feb39bced550723b",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.unread": {
+      "sourceHash": "5f78301f95dca17ccebef322d193bdb8bdb07a931389bab9997af07e879231ec",
+      "translationHash": "58fea17608474fac887b29a8b9f54ad08252cbc2445e071f551433b778115776",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
+    },
+    "projectConfigUi.sidebar.unstar": {
+      "sourceHash": "05dbe48cec8cb521c5c6311babc283cd3e505059e84df45e034febcce941e8d0",
+      "translationHash": "b8c72e439e5e7e72a1e0a3754bd1594a6832038c47f5f66c74fb1c6a9d9de9a2",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "projects.add": {
       "sourceHash": "f82336b38df14275477dcd0b2b0ae51bdb9217b34618b5ca09889ff203366afd",
@@ -25189,11 +27289,11 @@
       "reviewedAt": "2026-10-26T00:16:03.016Z"
     },
     "sidebar.activity": {
-      "sourceHash": "e2799131e196be7aff1764cfe6b5fcb47ca15affec761586e1a22518d33064e1",
+      "sourceHash": "8d10f336dcebccd50ef7ccf37f2c70514ab890d7c14354b2da5d835920c78347",
       "translationHash": "1ebe0fda50509877c1c2e65555c6aec11c3f6e31df1ed24f7f12cf0be3f6ce43",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.764Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.agents": {
       "sourceHash": "8483244843bd2fa8009522b4726390c291bc0f563ebea5e193da68b7f8658bd3",
@@ -25203,11 +27303,11 @@
       "reviewedAt": "2026-10-25T22:12:18.764Z"
     },
     "sidebar.artifacts": {
-      "sourceHash": "69f513ef343df08c030516ce834a05d6ddadc308c8b03d2642da45ebc2a11a14",
+      "sourceHash": "eede7a7855424505769e3596f75fa3ee861e456d9a1152f449f5b8b113941d5f",
       "translationHash": "09ff11f9419e7e358f0a1cf0d41867ce57a7363a390493d925263201208e7275",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.764Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.audit": {
       "sourceHash": "f0bdeab358bfe1a8c683f447b432926f71a2101da3ff0d6af390a0a03ad76fd5",
@@ -25217,11 +27317,11 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "sidebar.cases": {
-      "sourceHash": "504b0cd9e7496a807552f618316afa6b5341db433d96101bc1abc5f4e01e28c5",
+      "sourceHash": "342bb74fa7f13cdf11e05bb93d8dfc1a9e5bdb606c3d7757ea0f5e2e9b79a4ad",
       "translationHash": "84a596ddfc8e626f1d16e449e8763ff3f103c0eccde56f340c4601cb26eb03ef",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.chat": {
       "sourceHash": "fe88479a319fcda8c3210e5d1a1c38114035bddc05a33459d8f6ed1ea5302d86",
@@ -25231,67 +27331,67 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "sidebar.conferenceRoom": {
-      "sourceHash": "87571b1c474470668ded8ed3cb65de2292389af81172a4af10ba0b833a967226",
+      "sourceHash": "4aa322336fb5c8b104b601e5135fa5dc94e1511cd3c0665b3ed3318212fb7917",
       "translationHash": "60bf85d8992076eb9ccc86576924505b72cd8d1fa321f9b22c889ecb54c4b309",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.connectors": {
-      "sourceHash": "ef93170c617c11b5703b963d2c2310f5f8de01862a61b55187d6c3abc6ae363a",
+      "sourceHash": "0475a35bbe51bbe021ab6aa64a9d67da17367866537b1dab68f4de0c029237fd",
       "translationHash": "4d93f8a7ef498a3bfc10542eee257ad0f17abe4c18c3da8f00dfcd9d5e9c0a19",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.costs": {
-      "sourceHash": "8cc9d3e137901998f4cf3ac0b3e29146a59625891879ef2aa0f50288e1d889dc",
+      "sourceHash": "eae1a532822c6545de09dc65eed5f482f3d3385c3f572b7c7c1e1404ace44f0b",
       "translationHash": "1242db4fa27237aeae499cb769e1d63e24ea74528f6540bdd3e4d118c965af4e",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.dashboard": {
-      "sourceHash": "371d143db7a0850f7c3cf67fc06559b1b3375d139923020ad88e366926067a5e",
+      "sourceHash": "45d0910dfda0d51510557e857c2920843b56f2c111e91d096b003b6023ffa55f",
       "translationHash": "8e8438181b483d1f359f56c0aea26d65cb5d5da1b8352b321604e3261ce5eded",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.027Z"
     },
     "sidebar.decisions": {
-      "sourceHash": "5f64b082c3ec437c3ae341dc02049b647409cc53e6d19a03282de4938245dad1",
+      "sourceHash": "d8302571667bf10e2877eaca2cc062a61bd8976af4f092cd1649448569785e7e",
       "translationHash": "e2e933a98925717af003f23a252bec1169eb87bd358db7f15f77e591eb00a1ab",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.goals": {
-      "sourceHash": "9d618fd290f8010204dee6095ab44072d8d4ad30165ad79c7d337ca7136a8b61",
+      "sourceHash": "cc9a3990025ac1649f42d4add701d64cbee545af8f163321d2909795e826f647",
       "translationHash": "ccbeb58a8ebfaf2480ab55fd9aa6ed9750eba4e8ea22920770d77d8fadab21ef",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.inbox": {
-      "sourceHash": "6547ee79e0b8db1afb4d5396703ac728e3e0768bf5a30d2a918405ad73b3b0d5",
+      "sourceHash": "41571c558e0c6257266435326eee3aa3ab0ba7f2b8f8ad2e0a4a1d4e35685aae",
       "translationHash": "48b551181b8448a24a779482388b54a43e5e7e61843259d596a6dc5f6205de2f",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.newTask": {
-      "sourceHash": "0019e3ca197ff52dd0cbe39518d88a622518a3d80b5a412388e2e9a83d302356",
+      "sourceHash": "11e424d3636d72c4f2327a8380d225e0d30113344e86fbfe3f10dcef27288e00",
       "translationHash": "3ced90fd25b8dbb4d36d4d0fa6004734bb3899fbf9323bd0a3621900160835d8",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.org": {
-      "sourceHash": "ad7789417be39a30f9bdb06b22ed136e074279d08569c4fa85b88f74e4ec991b",
+      "sourceHash": "ae37c6f90c12fd455d198dd145befbc6d81a03a64263a9dd20cd3f6f657e28be",
       "translationHash": "68b2078c29f1c8edf7e64d06d22b8eb149d0618847f15b0f9a48828c7b9d9545",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.organization": {
       "sourceHash": "c99b0b379ad77bc8dd9649ebeb4dbf3fbe362ad558522a66076df0c6100ca255",
@@ -25308,81 +27408,81 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "sidebar.projects": {
-      "sourceHash": "08b9c1ac814664b1170dc369ebc43a82a989095b07b7684ee12e11fef0bc4f35",
+      "sourceHash": "9a15c0eb8d3aec6c64799529f0858eb50cdc101711b54ca31a7d8168912d465c",
       "translationHash": "c7fbba65e5d2409ea1fd9b70458f7a215b6a37212bdcced6ca79c762111fa38a",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.routines": {
-      "sourceHash": "ad82c7fc98e02b50512aaf4f250e9ee631cd2e3cd801a25a6c71fcd1a378b3b7",
+      "sourceHash": "61f0137f05dbb9399fea7d3c70e742be38a98c918c43982b4153b00eda07bcd0",
       "translationHash": "2edfb2b7a1d2334e986f9b6f9b4f4fac738b58da2323aeabbedf427314ee2049",
-      "reviewer": "Codex agent /root: helper call-site and terminology review",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T02:58:09.661Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.search": {
-      "sourceHash": "21eab9ec244c656cdce575cd9135626dd23b29977e30eacb25c379dd3349ea27",
+      "sourceHash": "f91473b8f8ba8e7f3b01c2d3c78702fbed1ff66b16e35d3ac67ea2e13e20423e",
       "translationHash": "a625eeb70ab02eececd2f5c01d9b820110bb178c9cec6f7523706cb24fcf842b",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.settings": {
-      "sourceHash": "146cf8edc1aae5d15deb35138d6d8b6b600013f119968cd507638190efbaf513",
+      "sourceHash": "56afba8d71cc303323af602ae3a0236c016ccfe8933c3c3b08eeea6de8e8fb99",
       "translationHash": "f784a21bef12f09258d5d57bc75b2f2ee50c74336338fa7afe600bcf2cb3d7eb",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.skills": {
-      "sourceHash": "ae5942cd6d76e47eeaa34cd6b6b861da43700e47e690158523f675b8ad2889cb",
+      "sourceHash": "feac3400065e71df9b78244ea244bec4561460fde09512b7121f117b4cdd85a2",
       "translationHash": "8791b2e3c5404e360ba8981291caa80d70a6d71b5ed675fc44cb7828e3c6abe6",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.status": {
-      "sourceHash": "e48f3b7d980347bd7886262c6028d36f384692deb8e5db92e17f3ce6c65ca9be",
+      "sourceHash": "8f6bb7b6a8f0ef1dc8811152abd2e6238f813139bb3ef626d0e110a9835f6dec",
       "translationHash": "320295e860def944dd56d7866d181c60e678f81e9fac193994f9e3e7f7eb377e",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.tasks": {
-      "sourceHash": "4549719d594134ec197c3840b1e6a236a26c57212c6327679b7c717391716b62",
+      "sourceHash": "e0404caed3c6bb5e64a73034912b9d8e75c8f782175fbfb11e4c7b89669f3987",
       "translationHash": "b0a7ade3480ef1d6598e568bc0e9418323228d67c3ff5c9abb3b705ec1c6ceee",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.timeline": {
-      "sourceHash": "c3ed5ac54c25c79c270c07152597a72c4969d289ef24162c25833fed0159a82e",
+      "sourceHash": "f6571a5b4c02c47f67941e49c1f785e7f7bc0d8be1796adb54c485fa905a788e",
       "translationHash": "104c7d6664fd1fb4c16003124f52c6653daed0ae7ba6022c35f0f7cd1e087635",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.unread": {
-      "sourceHash": "8f90d55ccced177b5f39f64303244d6548fd1d6e9a8de7849702f0c2bafad090",
+      "sourceHash": "b6bfbe7a5b4fb4875dfa311d6cb8749bd668d4c5c10b9e0aabd6deaf0affd8c5",
       "translationHash": "8a4a61f362279b8625857cceda1bdbdcd1cd88b147491181cc5c83d4fdb2fdca",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.work": {
-      "sourceHash": "a297a035035a79b8bfca6cc32b2f67e49b77b500adc6730d2ee77c9c9d8fd6eb",
+      "sourceHash": "a01b72b340e3d191a4b03472ada05a231f614d160c14e205d1d96550471f248e",
       "translationHash": "fc1e33939dea7de0c792840370cfa2b4f0f966a51e18777749603cf24085eb27",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "sidebar.workspaces": {
-      "sourceHash": "bb3a85654ce323aa2dbc68bf28a836574d2653ef20df8d5a4512145da3a61635",
+      "sourceHash": "df92e5b265bd5591fc97df6125b530fe4d277551ab77222ecb57af328a535470",
       "translationHash": "d6ca883aca193d3b56855acde4f02a686e0e641fce5226bd1417dfaadcb2f304",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex agent /root (EN/RU editorial and context review); /root/implement_locale_foundation (sidebar context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T09:30:13.028Z"
     },
     "star.add": {
       "sourceHash": "2142a08f417189203ef034d84d0a570bc3b0c5c5ceb0da80436c70084c0eea00",

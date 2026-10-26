@@ -62,6 +62,7 @@ export interface EnvironmentVariableRowProps {
   /** Enter pressed in the value of the last row — append a fresh row and focus it. */
   onEnterInValueLast: () => void;
   onCreateSecret: (name: string, value: string) => Promise<CompanySecret>;
+  renderCreateSecretError?: (error: unknown) => string;
   onToast: (message: string) => void;
   /** Parent-driven focus request for this row (append flow, source switch). */
   focusRequest: "name" | "value" | null;
@@ -84,6 +85,7 @@ export function EnvironmentVariableRow({
   onNamePaste,
   onEnterInValueLast,
   onCreateSecret,
+  renderCreateSecretError,
   onToast,
   focusRequest,
   onFocusConsumed,
@@ -506,6 +508,7 @@ export function EnvironmentVariableRow({
                 existingSecretNames={secrets.map((s) => s.name)}
                 onCancel={() => setSecretPopover(null)}
                 onSubmit={submitSecretPopover}
+                renderCreateSecretError={renderCreateSecretError}
               />
             ) : secretPopover?.mode === "create" ? (
               <CreateSecretPopover
@@ -514,6 +517,7 @@ export function EnvironmentVariableRow({
                 existingSecretNames={secrets.map((s) => s.name)}
                 onCancel={() => setSecretPopover(null)}
                 onSubmit={submitSecretPopover}
+                renderCreateSecretError={renderCreateSecretError}
               />
             ) : null}
           </PopoverContent>

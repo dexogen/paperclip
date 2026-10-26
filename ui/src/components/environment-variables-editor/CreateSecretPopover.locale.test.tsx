@@ -2,7 +2,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { setLocale } from "@/i18n";
+import { setLocale, useTranslation } from "@/i18n";
 import { SecretPopoverForm } from "./CreateSecretPopover";
 let root: Root;
 let container: HTMLDivElement;
@@ -52,4 +52,30 @@ it.each([undefined, new Error("Failed to create secret")])("keeps a failed write
   expect([name.selectionStart, name.selectionEnd]).toEqual([1, 5]);
   await act(async () => setLocale("en"));
   expect(submit).toHaveBeenCalledTimes(1);
+});
+
+it.each([true, false])("renders a supplied error formatter late without repeating a write (owned=%s)", async owned => {
+  class CompanyRequired extends Error {}
+  const text = "Select an organization to create secrets";
+  const cause = owned ? new CompanyRequired(text) : new Error(text);
+  const submit = vi.fn().mockRejectedValueOnce(cause);
+  function Fixture() {
+    const { t } = useTranslation();
+    return <SecretPopoverForm mode="create" initialName="raw_key" initialValue="raw<&>"
+      onSubmit={submit} onCancel={vi.fn()} renderCreateSecretError={error => error instanceof CompanyRequired
+        ? t("projectConfigUi.properties.secretCompany") : (error as Error).message} />;
+  }
+  await act(async () => root.render(<Fixture />));
+  const name = container.querySelector<HTMLInputElement>('[aria-label="Secret name"]')!;
+  await act(async () => [...container.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent === "Create & bind")!.click());
+  expect(container.textContent).toContain(text);
+  name.focus(); name.setSelectionRange(1, 4);
+  await act(async () => setLocale("ru"));
+  expect(container.textContent).toContain(owned ? "Выберите организацию, чтобы создавать секреты" : text);
+  expect(container.querySelector('[aria-label="Имя секрета"]')).toBe(name);
+  expect(document.activeElement).toBe(name);
+  expect([name.selectionStart, name.selectionEnd]).toEqual([1, 4]);
+  await act(async () => setLocale("en"));
+  expect(container.textContent).toContain(text);
+  expect(submit).toHaveBeenCalledExactlyOnceWith("raw_key", "raw<&>");
 });
