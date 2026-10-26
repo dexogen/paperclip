@@ -167,6 +167,16 @@ inherited key/value pair is now public. Explicitly declared secrets, non-inherit
 bindings, and unknown values remain private. Regression checks preserve those
 privacy boundaries and the original heartbeat recovery assertions.
 
+The OpenCode shell-hook fixture invokes Bash with `--norc` so that an inherited
+SSH session does not select the remote-shell startup path instead of `BASH_ENV`.
+The fixture still sources the generated hook, checks the child's actual OOM
+preference, and verifies that the parent environment and score are unchanged.
+Both the original failure and the correction were reproduced with controlled SSH
+metadata. No runtime hook or container security policy changed. See the
+[Bash startup rules](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html).
+Linux source-test environments also need `jq` for the issue-update and file-delivery
+Bash helper tests; missing prerequisites are failures, not platform skips.
+
 A separate sandbox test accepts a positive shell exit status for denied redirection:
 shells can return either 1 or 2. It still verifies a successful in-workspace write,
 denied external read, and unchanged external file. The original failed hosted run
