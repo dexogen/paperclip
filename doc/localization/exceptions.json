@@ -584,6 +584,22 @@
     {
       "id": "0950855864811501c32a7fd9b80fc0cc1916382883d3062dbd5ffbce8d22ee13",
       "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "6c330bf87597b72e35988d9da94965d50a612185de8799b1a0143218c693a76f",
+      "reason": "ProjectWorkspaceSummaryCard compares the canonical summary kind to decide whether to show the close action. The technical discriminator is not rendered; the button label is translated separately."
+    },
+    {
+      "id": "d9773a3c9928f9615cdb51535d685ec4cdf68934c753db1762f98fa558e17864",
+      "reason": "CommandSection adds a language-neutral middle-dot separator before the lifecycle label already translated by workspaceRuntimeLabel with current t. No untranslated words are present."
+    },
+    {
+      "id": "331d86972ae5909706f503a8a2e1bf4bc7f70e94cd84aaa51fa32038b6905cd1",
+      "reason": "CommandSection compares the app-owned disabledReasonCode discriminator to select projectWorkspacesUi.runtime.missingCommand. The code is not rendered and external disabledReason text remains literal."
+    },
+    {
+      "id": "4d79ede8f508e810760fd1479f50961d16b3ee4805087c64b21154254353a225",
+      "reason": "CommandSection compares the app-owned disabledReasonCode discriminator to select projectWorkspacesUi.runtime.unmatched. The code is not rendered and external disabledReason text remains literal."
     }
   ]
 }

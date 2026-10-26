@@ -7,6 +7,10 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProjectWorkspaceDetail } from "./ProjectWorkspaceDetail";
 import { queryKeys } from "../lib/queryKeys";
+import { setLocale } from "../i18n";
+
+beforeEach(() => setLocale("en"));
+afterEach(() => setLocale("en"));
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -219,6 +223,41 @@ describe("ProjectWorkspaceDetail plugin tabs", () => {
       await flush();
     });
   }
+
+  it("preserves a dirty workspace and pending exact save through EN/RU/EN", async () => {
+    let finish!: (value: ProjectWorkspace) => void;
+    mockProjectsApi.updateWorkspace.mockImplementationOnce(() => new Promise<ProjectWorkspace>((resolve) => { finish = resolve; }));
+    await render();
+    const input = container.querySelector<HTMLInputElement>('input[placeholder="Workspace name"]')!;
+    const rawName = "Checkout <b>literal</b> & Черновик";
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, rawName);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+      input.setSelectionRange(2, 8);
+    });
+    const queries = mockProjectsApi.get.mock.calls.length;
+    await act(() => setLocale("ru"));
+    expect(container.textContent).toContain("Сохранить изменения");
+    expect(container.querySelector('input')).toBe(input);
+    expect(input.value).toBe(rawName);
+    expect(document.activeElement).toBe(input);
+    expect([input.selectionStart, input.selectionEnd]).toEqual([2, 8]);
+    expect(mockProjectsApi.updateWorkspace).not.toHaveBeenCalled();
+    const save = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === "Сохранить изменения")!;
+    await act(async () => { save.click(); await flush(); });
+    expect(mockProjectsApi.updateWorkspace).toHaveBeenCalledExactlyOnceWith("project-1", "workspace-1", { name: rawName }, "company-1");
+    expect(save.disabled).toBe(true);
+    await act(() => setLocale("en"));
+    expect(save.textContent).toBe("Save changes");
+    await act(() => setLocale("ru"));
+    expect(save.textContent).toBe("Сохранить изменения");
+    expect(input.value).toBe(rawName);
+    expect(mockProjectsApi.updateWorkspace).toHaveBeenCalledTimes(1);
+    expect(mockProjectsApi.get).toHaveBeenCalledTimes(queries);
+    mockProjectsApi.get.mockResolvedValue(project({ workspaces: [projectWorkspace({ name: rawName })] }));
+    await act(async () => { finish(projectWorkspace({ name: rawName })); await flush(); });
+  });
 
   it("scopes plugin detail-tab discovery to project_workspace and the project's company", async () => {
     await render();

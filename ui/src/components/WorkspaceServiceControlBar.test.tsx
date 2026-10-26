@@ -4,6 +4,10 @@ import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceServiceControlBar } from "./WorkspaceServiceControlBar";
+import { setLocale } from "../i18n";
+
+beforeEach(() => setLocale("en"));
+afterEach(() => setLocale("en"));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -228,4 +232,37 @@ describe("WorkspaceServiceControlBar", () => {
     expect(detail?.classList.contains("truncate")).toBe(false);
     expect(detail?.classList.contains("whitespace-normal")).toBe(true);
   });
+  it("keeps the open service picker and exact actions across language changes", async () => {
+    const onAction = vi.fn();
+    const rawName = "API <b>literal</b>";
+    await act(() => {
+      root.render(<WorkspaceServiceControlBar services={[
+        { key: "service-a", name: rawName, state: "running", url: "https://host.test:42010" },
+        { key: "service-b", name: "Queue", state: "stopped", port: 42011 },
+      ]} defaultServicesOpen onAction={onAction} />);
+    });
+    const dialog = document.body.querySelector('[role="dialog"]')!;
+    const start = Array.from(dialog.querySelectorAll('button')).find((button) => button.getAttribute("aria-label") === "Start")!;
+    start.focus();
+    await act(() => setLocale("ru"));
+    expect(dialog.textContent).toContain("Запустить все");
+    expect(document.body.querySelector('[role="dialog"]')).toBe(dialog);
+    expect(document.activeElement).toBe(start);
+    expect(dialog.textContent).toContain(rawName);
+    expect(dialog.querySelector('b')).toBeNull();
+    expect(start.getAttribute("aria-label")).toBe("Запустить");
+    expect(onAction).not.toHaveBeenCalled();
+    await act(() => start.click());
+    expect(onAction).toHaveBeenCalledExactlyOnceWith("start", "service-b");
+    const copy = dialog.querySelector<HTMLButtonElement>('button[aria-label="Копировать URL"]')!;
+    await act(() => copy.click());
+    expect(writeText).toHaveBeenCalledExactlyOnceWith("https://host.test:42010");
+    expect(copy.getAttribute("aria-label")).toBe("URL скопирован");
+    await act(() => setLocale("en"));
+    expect(copy.getAttribute("aria-label")).toBe("URL copied");
+    expect(document.body.querySelector('[role="dialog"]')).toBe(dialog);
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(writeText).toHaveBeenCalledTimes(1);
+  });
+
 });

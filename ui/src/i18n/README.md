@@ -268,8 +268,24 @@ write receipts. An optional `renderCreateSecretError` passes the host-owned erro
 formatter through the environment editor; other hosts retain their prior behavior.
 Membership error toasts resolve in the language current at completion, while
 backend error bodies remain literal. Component checks use mocked APIs; browser
-acceptance, nested workspace/environment flows, connection setup and summary-card
-internals remain separate work.
+acceptance, global execution-workspace pages, environment flows, connection setup
+and project summary-card internals remain separate work.
+
+The project-workspace slice covers the detail form, workspace summaries, runtime
+service/job controls, missing-plugin fallback and workspace-close dialog. Language
+changes preserve dirty fields, focus, an open service picker and pending save/close
+actions. Paths, URLs, commands, identifiers and provider diagnostics remain literal.
+Canonical status values still govern actions; translated labels are display only.
+
+Close readiness retains its ordered raw reasons, warnings and actions. Optional
+indexed message descriptors and action display descriptors identify Paperclip-owned
+copy without matching English strings. The UI accepts known codes with valid
+parameters and otherwise keeps raw text, including untagged provider messages.
+The new strict SDK response validator accepts legacy responses without descriptors
+and preserves current descriptors. Older strict SDK validators may reject enriched
+responses; compatibility with unknown future descriptor codes is not claimed.
+Real PostgreSQL service tests and component checks are separate evidence; no live
+service execution, destructive closure or plugin-provider acceptance is claimed.
 
 The agent-detail slice covers the active profile and navigation, instructions and
 revision history, API keys, lifecycle actions, built-in resource confirmations,

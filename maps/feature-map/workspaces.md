@@ -139,6 +139,21 @@ Automated: [workspace detail](../../ui/src/pages/ExecutionWorkspaceDetail.test.t
 
 Manual: Provision a disposable workspace, wait for readiness, start an available service, open its endpoint, and inspect a real response and logs. Stop it and verify it actually stops. Exercise close/reopen only after inspecting pending changes and active runs.
 
+The Russian project-workspace slice has component coverage for a dirty detail
+form, an open service picker and pending save/close actions through EN/RU/EN.
+See [detail](../../ui/src/pages/ProjectWorkspaceDetail.test.tsx),
+[service picker](../../ui/src/components/WorkspaceServiceControlBar.test.tsx) and
+[close dialog](../../ui/src/components/ExecutionWorkspaceCloseDialog.test.tsx).
+The [real PostgreSQL readiness suite](../../server/src/__tests__/execution-workspaces-service.test.ts)
+checks that additive display descriptors retain raw messages, action ordering,
+commands and close guards. The [SDK contract](../../packages/shared/src/workspace-close-display.test.ts)
+checks legacy responses and descriptor round-trips. These checks do not establish
+live service control or destructive cleanup. For manual acceptance, switch
+languages while the form or confirmation is open; verify no mutation occurs until
+the explicit action and that raw workspace names, commands and diagnostics remain
+unchanged. Global execution-workspace pages and environment setup remain separate.
+
+
 ## Gotchas
 
 - UI visibility, default isolation policy, the local environment row, a workspace
