@@ -1,3 +1,5 @@
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { TextAttachmentContext } from "@/context/TextAttachmentContext";
 import { useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArtifactUploadContent, type ArtifactUploadEntry } from "@/components/artifacts/ArtifactUploadControls";
@@ -60,20 +62,21 @@ interface IssuePropertiesArtifactsTabProps {
 /** Work-product status → label + `--status-task-*` base-hue var for `.status-chip`. */
 function workProductStatusBadge(
   status: string,
+  t: TFunction,
 ): { label: string; cssVar: string } | null {
   switch (status) {
     case "active":
     case "draft":
-      return { label: "In progress", cssVar: "--status-task-in_progress" };
+      return { label: t("taskPanels.workProduct.inProgress"), cssVar: "--status-task-in_progress" };
     case "ready_for_review":
-      return { label: "For review", cssVar: "--status-task-in_review" };
+      return { label: t("taskPanels.workProduct.forReview"), cssVar: "--status-task-in_review" };
     case "approved":
     case "merged":
-      return { label: "Done", cssVar: "--status-task-done" };
+      return { label: t("taskPanels.workProduct.done"), cssVar: "--status-task-done" };
     case "changes_requested":
-      return { label: "Changes requested", cssVar: "--status-task-todo" };
+      return { label: t("taskPanels.workProduct.changesRequested"), cssVar: "--status-task-todo" };
     case "failed":
-      return { label: "Failed", cssVar: "--status-task-blocked" };
+      return { label: t("taskPanels.workProduct.failed"), cssVar: "--status-task-blocked" };
     default:
       return null;
   }
@@ -130,13 +133,14 @@ function MarkdownWorkProductRow({
   openRequestId?: number;
   face?: ArtifactFace;
 }) {
+  const { t, i18n } = useTranslation();
   const openTextAttachment = useContext(TextAttachmentContext);
   const [expanded, setExpanded] = useState(false);
   const [annotationPanelOpen, setAnnotationPanelOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const queryClient = useQueryClient();
-  const badge = workProductStatusBadge(workProduct.status);
+  const badge = workProductStatusBadge(workProduct.status, t);
   const tooLarge = metadata.byteSize > MARKDOWN_REVIEW_DOCUMENT_MAX_BYTES;
 
   const ensure = useMutation({
@@ -186,7 +190,7 @@ function MarkdownWorkProductRow({
   if (tooLarge) {
     expandedBody = (
       <p className="text-sm text-muted-foreground">
-        This Markdown file is too large to preview. Use Raw or Download instead.
+        {t("taskPanels.preview.markdownTooLarge")}
       </p>
     );
   } else if (reviewDoc) {
@@ -207,15 +211,15 @@ function MarkdownWorkProductRow({
           <MarkdownBody>{reviewDoc.body}</MarkdownBody>
         </IssueDocumentAnnotations>
       ) : (
-        <p className="text-sm text-muted-foreground">Document is empty.</p>
+        <p className="text-sm text-muted-foreground">{t("taskPanels.document.empty")}</p>
       );
   } else if (ensure.isError) {
     expandedBody = (
       <div className="flex flex-col items-start gap-1.5">
         <p className="text-sm text-muted-foreground">
           {unsupportedError
-            ? "This file can't be previewed as Markdown. Use Raw or Download instead."
-            : "Preview failed to load."}
+            ? t("taskPanels.preview.markdownUnsupported")
+            : t("taskPanels.preview.failed")}
         </p>
         {!unsupportedError ? (
           <button
@@ -226,14 +230,14 @@ function MarkdownWorkProductRow({
               ensure.mutate();
             }}
           >
-            Retry
+            {t("taskPanels.retry")}
           </button>
         ) : null}
       </div>
     );
   } else {
     expandedBody = (
-      <p className="text-sm text-muted-foreground">Preparing preview…</p>
+      <p className="text-sm text-muted-foreground">{t("taskPanels.preview.preparing")}</p>
     );
   }
 
@@ -259,8 +263,8 @@ function MarkdownWorkProductRow({
                 <button
                   type="button"
                   onClick={() => openTextAttachment(metadata.attachmentId, metadata.originalFilename ?? workProduct.title)}
-                  aria-label={`Open in tab: ${workProduct.title}`}
-                  title="Open in tab"
+                  aria-label={t("taskPanels.file.openTabName", { title: workProduct.title })}
+                  title={t("taskPanels.file.openTab")}
                   className={face ? ROW_ACTION_CLASS : "shrink-0 px-1.5 py-1.5 text-muted-foreground hover:text-foreground"}
                 >
                   <FileText className="h-3 w-3" />
@@ -270,16 +274,16 @@ function MarkdownWorkProductRow({
                 href={metadata.openPath}
                 target="_blank"
                 rel="noreferrer"
-                aria-label={`Open raw ${workProduct.title}`}
-                title="Open raw"
+                aria-label={t("taskPanels.file.openRawName", { filename: workProduct.title })}
+                title={t("taskPanels.file.openRaw")}
                 className={face ? ROW_ACTION_CLASS : "shrink-0 px-1.5 py-1.5 text-muted-foreground hover:text-foreground"}
               >
                 <ExternalLink className="h-3 w-3" />
               </a>
               <a
                 href={metadata.downloadPath}
-                aria-label={`Download ${workProduct.title}`}
-                title="Download"
+                aria-label={t("taskPanels.file.download", { filename: workProduct.title })}
+                title={t("taskPanels.download")}
                 className={face ? ROW_ACTION_CLASS : "shrink-0 py-1.5 pr-2 pl-0.5 text-muted-foreground hover:text-foreground"}
               >
                 <Download className="h-3 w-3" />
@@ -329,6 +333,7 @@ function DocumentRow({
   onOpen?: () => void;
   face?: ArtifactFace;
 }) {
+  const { t, i18n } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [annotationPanelOpen, setAnnotationPanelOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -359,7 +364,7 @@ function DocumentRow({
         face({ onOpen: open, expanded: onOpen ? undefined : expanded, actions })
       ) : (
       <DocumentCard
-        title={documentDisplayTitle(doc)}
+        title={documentDisplayTitle(doc, t)}
         summary=""
         author={author}
         updatedAt={formatDateTime(doc.updatedAt)}
@@ -389,7 +394,7 @@ function DocumentRow({
               <MarkdownBody>{doc.body}</MarkdownBody>
             </IssueDocumentAnnotations>
           ) : (
-            <p className="text-sm text-muted-foreground">Document is empty.</p>
+            <p className="text-sm text-muted-foreground">{t("taskPanels.document.empty")}</p>
           )}
         </div>
       ) : null}
@@ -411,6 +416,7 @@ export function IssuePropertiesArtifactsTab({
   onOpenDocument,
   uploadState,
 }: IssuePropertiesArtifactsTabProps) {
+  const { t, i18n } = useTranslation();
   const { enabled: v1 } = useArtifactsV1Enabled();
   const {
     data: attachments,
@@ -540,7 +546,7 @@ export function IssuePropertiesArtifactsTab({
   const loading = attachmentsPending || productsPending || documentsPending;
   const feedback = loadError ? (
     <div role="alert" className="px-1 py-3 text-sm text-muted-foreground">
-      Some artifacts could not be loaded.
+      {t("taskPanels.artifacts.loadError")}
       <button
         className="ml-2 underline"
         onClick={() => {
@@ -549,12 +555,12 @@ export function IssuePropertiesArtifactsTab({
           void refetchDocuments();
         }}
       >
-        Retry
+        {t("taskPanels.retry")}
       </button>
     </div>
   ) : loading ? (
     <p role="status" className="px-1 py-3 text-sm text-muted-foreground">
-      Loading artifacts…
+      {t("taskPanels.artifacts.loading")}
     </p>
   ) : null;
 
@@ -570,8 +576,7 @@ export function IssuePropertiesArtifactsTab({
     if (feedback) return withUploads(feedback);
     return withUploads(
       <div className="px-1 py-6 text-sm text-muted-foreground">
-        No artifacts yet. Work products, documents, and agent-produced files
-        will appear here.
+        {t("taskPanels.artifacts.empty")}
       </div>,
       true,
     );
@@ -588,7 +593,7 @@ export function IssuePropertiesArtifactsTab({
             if (row.kind === "work_product") {
               const wp = row.value;
               const agent = row.runId ? agentsById.get(runsById.get(row.runId)?.agentId ?? "") : null;
-              const subject = subjectFromWorkProduct(wp);
+              const subject = subjectFromWorkProduct(wp, i18n.resolvedLanguage);
               const markdownMetadata = getMarkdownWorkProductAttachmentMetadata(wp);
               if (markdownMetadata) {
                 const reviewKey = artifactReviewDocumentKey(wp.id);
@@ -607,7 +612,7 @@ export function IssuePropertiesArtifactsTab({
                 );
               }
               // "Unhealthy" outranks the status, as the shipped cards warn.
-              const statusBadge = workProductStateBadge(wp, workProductStatusBadge(wp.status)?.label ?? null);
+              const statusBadge = workProductStateBadge(wp, workProductStatusBadge(wp.status, t)?.label ?? null, t);
               const file = fileRowSourceFromWorkProduct(wp);
               if (file) {
                 return (
@@ -634,7 +639,7 @@ export function IssuePropertiesArtifactsTab({
                     author={agentsById.get(doc.updatedByAgentId ?? doc.createdByAgentId ?? "")?.name ?? ""}
                     onOpen={onOpenDocument ? () => onOpenDocument(doc) : undefined}
                     openRequestId={documentDeepLink?.documentKey === doc.key ? documentDeepLink.requestId : undefined}
-                    face={v1Face(subjectFromIssueDocument(doc))}
+                    face={v1Face(subjectFromIssueDocument(doc, t))}
                   />
                 </li>
               );
@@ -642,7 +647,7 @@ export function IssuePropertiesArtifactsTab({
             const attachment = row.value;
             return (
               <li key={row.id} className="min-w-0">
-                <ArtifactFileRow subject={subjectFromAttachment(attachment)} source={fileRowSourceFromAttachment(attachment)} updatedAtLabel={formatDateTime(attachment.updatedAt)} />
+                <ArtifactFileRow subject={subjectFromAttachment(attachment, i18n.resolvedLanguage)} source={fileRowSourceFromAttachment(attachment)} updatedAtLabel={formatDateTime(attachment.updatedAt)} />
               </li>
             );
           })}
@@ -662,7 +667,7 @@ export function IssuePropertiesArtifactsTab({
             {group.runId !== "other" ? (
               <header className="flex items-baseline justify-between gap-2 px-1">
                 <h3 className="truncate text-xs font-medium text-foreground">
-                  {agent?.name ?? `Run ${group.runId.slice(0, 8)}`}
+                  {agent?.name ?? t("taskPanels.artifacts.run", { id: group.runId.slice(0, 8) })}
                 </h3>
                 <time
                   className="shrink-0 text-(length:--text-micro) text-muted-foreground"
@@ -745,6 +750,7 @@ export function IssuePropertiesArtifactsTab({
                           ?.name ?? ""
                       }
                       updatedAt={formatDateTime(attachment.updatedAt)}
+                      sourceVersion={new Date(attachment.updatedAt).toISOString()}
                       filename={filename}
                       contentType={attachment.contentType}
                       contentPath={attachment.contentPath}

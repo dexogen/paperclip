@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import type { WorkspaceFileSelector } from "@paperclipai/shared";
 import type { SidePanelTabRecord, SidePanelTabsState } from "@/components/side-panel";
 
@@ -298,4 +299,16 @@ export function taskPanelAttachmentTab(attachmentId: string, title: string): Sid
 
 export function taskPanelBrowserTab(browserId: string): SidePanelTabRecord<TaskSidePanelTabPayload> {
   return { id: `browser:${browserId}`, type: "browser", label: "Browser", closable: true, contentMode: "full-bleed", payload: { kind: "browser", browserId } };
+}
+
+export function taskPanelDisplayLabel(tab: SidePanelTabRecord<TaskSidePanelTabPayload>, t: TFunction): string {
+  switch (tab.payload.kind) {
+    case "properties": return t("taskPanels.tabs.properties");
+    case "subtasks": return t("taskPanels.tabs.subtasks");
+    case "agent-tasks": return t("taskPanels.tabs.tasks");
+    case "artifacts": return t("taskPanels.tabs.artifacts");
+    case "files-browser": return t("taskPanels.tabs.files");
+    case "browser": return t("taskPanels.tabs.browser");
+    default: return tab.label;
+  }
 }

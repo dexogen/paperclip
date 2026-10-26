@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
 import type { IssueAttachment, IssueDocumentSummary, IssueWorkProduct } from "@paperclipai/shared";
 import { getAttachmentArtifactWorkProductMetadata } from "@paperclipai/shared";
 
@@ -83,8 +85,10 @@ export function workProductHref(
 /** Display title for an issue document: its title, else its key humanized. */
 export function documentDisplayTitle(
   doc: Pick<IssueDocumentSummary, "key" | "title">,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   if (doc.title?.trim()) return doc.title;
+  if (doc.key === "plan") return t("taskPanels.document.plan");
   const words = doc.key.replace(/[-_]+/g, " ").trim();
   return words.charAt(0).toUpperCase() + words.slice(1);
 }

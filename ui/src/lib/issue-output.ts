@@ -26,7 +26,7 @@ export interface OutputFileGlyph {
  * Examples: `0 B`, `512 B`, `412 KB`, `18.4 MB`, `1.2 GB`. One decimal place is
  * used from KB upward, with a trailing `.0` trimmed so round values stay clean.
  */
-export function formatBytes(bytes: number): string {
+export function formatBytes(bytes: number, locale = "en-US"): string {
   if (!Number.isFinite(bytes) || bytes < 0) return "0 B";
   if (bytes < 1024) return `${Math.round(bytes)} B`;
   const units = ["KB", "MB", "GB", "TB"];
@@ -38,7 +38,7 @@ export function formatBytes(bytes: number): string {
   }
   const rounded = value.toFixed(1);
   const trimmed = rounded.endsWith(".0") ? rounded.slice(0, -2) : rounded;
-  return `${trimmed} ${units[unitIndex]}`;
+  return `${Number(trimmed).toLocaleString(locale, { maximumFractionDigits: 1, useGrouping: false })} ${units[unitIndex]}`;
 }
 
 /**

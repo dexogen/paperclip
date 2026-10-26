@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { IssueAttachment, IssueDocument, IssueDocumentSummary, IssueWorkProduct } from "@paperclipai/shared";
 import type { AttachmentRef } from "@/components/task-chat/task-chat-attachments";
 import { getAttachmentArtifactWorkProductMetadata } from "@paperclipai/shared";
@@ -24,10 +26,10 @@ const num = (metadata: Record<string, unknown> | null, key: string): number | nu
 };
 
 /** A task document: the sheet with its title set on it when it has text, named after its key. */
-export function subjectFromIssueDocument(doc: IssueDocument): ArtifactSubject {
+export function subjectFromIssueDocument(doc: IssueDocument, t: TFunction = i18n.getFixedT("en")): ArtifactSubject {
   return {
     kind: "document",
-    title: documentDisplayTitle(doc),
+    title: documentDisplayTitle(doc, t),
     filename: `${doc.key}.md`,
     ext: "md",
     contentType: "text/markdown",
@@ -38,7 +40,7 @@ export function subjectFromIssueDocument(doc: IssueDocument): ArtifactSubject {
 }
 
 /** An attached file: named after its original file name, sized, with the picture when it is one. */
-export function subjectFromAttachment(attachment: IssueAttachment): ArtifactSubject {
+export function subjectFromAttachment(attachment: IssueAttachment, locale = "en-US"): ArtifactSubject {
   const filename = attachment.originalFilename ?? attachment.objectKey;
   const ext = extOf({ filename });
   const kind = kindFor(ext, attachment.contentType);
@@ -51,7 +53,7 @@ export function subjectFromAttachment(attachment: IssueAttachment): ArtifactSubj
     contentType: attachment.contentType,
     thumbnailUrl: kind === "image" ? source : null,
     videoUrl: kind === "video" ? source : null,
-    sizeLabel: sizeLabel(attachment.byteSize),
+    sizeLabel: sizeLabel(attachment.byteSize, locale),
     updatedAt: iso(attachment.updatedAt),
   };
 }
@@ -61,7 +63,7 @@ export function subjectFromAttachment(attachment: IssueAttachment): ArtifactSubj
  * any other kind (a pull request, a commit, a preview URL, a branch, a
  * service) is a link named by its title.
  */
-export function subjectFromWorkProduct(workProduct: IssueWorkProduct): ArtifactSubject {
+export function subjectFromWorkProduct(workProduct: IssueWorkProduct, locale = "en-US"): ArtifactSubject {
   const attachment = getAttachmentArtifactWorkProductMetadata(workProduct);
   const metadata = workProduct.metadata;
   const updatedAt = iso(workProduct.updatedAt);
@@ -80,7 +82,7 @@ export function subjectFromWorkProduct(workProduct: IssueWorkProduct): ArtifactS
       contentType,
       thumbnailUrl: kind === "image" ? source : null,
       videoUrl: kind === "video" ? source : null,
-      sizeLabel: sizeLabel(attachment?.byteSize ?? num(metadata, "byteSize") ?? num(metadata, "size")),
+      sizeLabel: sizeLabel(attachment?.byteSize ?? num(metadata, "byteSize") ?? num(metadata, "size"), locale),
       updatedAt,
     };
   }
@@ -88,10 +90,10 @@ export function subjectFromWorkProduct(workProduct: IssueWorkProduct): ArtifactS
 }
 
 /** A document named in the thread (a summary: no body), as a row. */
-export function subjectFromDocumentSummary(doc: IssueDocumentSummary): ArtifactSubject {
+export function subjectFromDocumentSummary(doc: IssueDocumentSummary, t: TFunction = i18n.getFixedT("en")): ArtifactSubject {
   return {
     kind: "document",
-    title: documentDisplayTitle(doc),
+    title: documentDisplayTitle(doc, t),
     filename: `${doc.key}.md`,
     ext: "md",
     contentType: "text/markdown",

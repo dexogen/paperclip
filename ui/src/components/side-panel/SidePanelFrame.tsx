@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { CSSProperties, ReactNode } from "react";
 import { Maximize2, Minimize2, PanelRightClose, PanelRightOpen, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,16 +34,17 @@ export function SidePanelFrame({
   open = true,
   maximized = false,
   resizing = false,
-  label = "Side panel",
+  label,
   headerSize = "default",
   className,
   bodyClassName,
   style,
 }: SidePanelFrameProps) {
+  const { t } = useTranslation();
   const handleScroll = useScrollbarWhileScrolling();
   return (
     <section
-      aria-label={label}
+      aria-label={label ?? t("taskPanels.sidePanel.label")}
       aria-hidden={!open}
       data-presentation={presentation}
       data-open={open ? "true" : "false"}
@@ -110,7 +112,8 @@ export function SidePanelToggleButton({
   className?: string;
   highlightWhenOpen?: boolean;
 }) {
-  const label = "Toggle side panel";
+  const { t } = useTranslation();
+  const label = t("taskPanels.sidePanel.toggle");
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -118,7 +121,7 @@ export function SidePanelToggleButton({
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={label}
+          aria-label={label ?? t("taskPanels.sidePanel.label")}
           aria-pressed={open}
           onClick={onToggle}
           className={cn(
@@ -148,6 +151,7 @@ export function SidePanelWindowControls({
   onToggle: () => void;
   closeControl?: "toggle" | "close";
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <Button
@@ -156,8 +160,8 @@ export function SidePanelWindowControls({
         size="icon-sm"
         className="h-(--side-panel-tab-height) w-(--side-panel-tab-height) text-muted-foreground hover:text-foreground focus-visible:text-foreground"
         onClick={() => onMaximizedChange(!maximized)}
-        aria-label={maximized ? "Restore side panel" : "Maximize side panel"}
-        title={maximized ? "Restore side panel" : "Maximize side panel"}
+        aria-label={maximized ? t("taskPanels.sidePanel.restore") : t("taskPanels.sidePanel.maximize")}
+        title={maximized ? t("taskPanels.sidePanel.restore") : t("taskPanels.sidePanel.maximize")}
       >
         {maximized ? <Minimize2 aria-hidden /> : <Maximize2 aria-hidden />}
       </Button>
@@ -168,8 +172,8 @@ export function SidePanelWindowControls({
           size="icon-sm"
           className="h-(--side-panel-tab-height) w-(--side-panel-tab-height) text-muted-foreground hover:text-foreground focus-visible:text-foreground"
           onClick={onToggle}
-          aria-label="Close side panel"
-          title="Close side panel"
+          aria-label={t("taskPanels.sidePanel.close")}
+          title={t("taskPanels.sidePanel.close")}
         >
           <X aria-hidden />
         </Button>

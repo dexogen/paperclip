@@ -74,6 +74,21 @@ dialog state and explicit mutations. They use mocked requests and do not certify
 server authorization or a live task-detail journey. The chat/composer, activity
 formatters and unconverted child panels still need translation.
 
+The task-panel slice covers document and attachment panels, artifact and output
+controls, workspace file browsing and previews, browser controls, and side-panel
+tabs. Built-in tab labels resolve from their canonical payload during rendering;
+saved tab IDs, order, selection and custom titles keep their original values.
+Only an empty system document title with the known `plan` key receives a translated
+fallback. User titles, file paths, document bodies and server diagnostics remain
+literal. Locale regressions preserve dirty/conflicted document drafts, selected
+resources, pending uploads, clipboard state and browser viewer identity, and check
+that changing language does not repeat saves, uploads or browser control requests.
+
+This bounded slice changes 49 production files. Advanced annotation tools, the
+full chat/composer, browser activity, and most of `RichWorkProductCard` remain
+outside it; that shared card only receives translated state-chip labels. Component
+tests do not establish a complete browser journey or server permission coverage.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review

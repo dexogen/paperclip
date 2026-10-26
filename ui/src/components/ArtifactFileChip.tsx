@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { MouseEvent, ReactNode } from "react";
 import { FileCode2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,18 +30,22 @@ export function ArtifactFileChip({
   showIcon = true,
   title,
 }: ArtifactFileChipProps) {
+  const { t } = useTranslation();
   const viewer = useFileViewer();
   const display = typeof label !== "undefined" ? label : artifactFileDisplay(workspaceFileRef);
   const canOpen = !!(onOpen || viewer);
-  const lineSuffix = workspaceFileRef.line
-    ? ` line ${workspaceFileRef.line}${workspaceFileRef.column ? ` column ${workspaceFileRef.column}` : ""}`
-    : "";
   const ariaLabel = canOpen
-    ? `Open ${workspaceFileRef.displayPath}${lineSuffix} in the file viewer`
-    : `Workspace file ${workspaceFileRef.displayPath}${lineSuffix}`;
-  const tooltip = title ?? (canOpen
-    ? `Open ${workspaceFileRef.displayPath}${lineSuffix} in the file viewer`
-    : `Workspace file ${workspaceFileRef.displayPath}${lineSuffix}`);
+    ? workspaceFileRef.line
+      ? workspaceFileRef.column
+        ? t("taskPanels.file.openAtColumn", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line, column: workspaceFileRef.column })
+        : t("taskPanels.file.openAtLine", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line })
+      : t("taskPanels.file.openViewer", { path: workspaceFileRef.displayPath })
+    : workspaceFileRef.line
+      ? workspaceFileRef.column
+        ? t("taskPanels.file.workspaceAtColumn", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line, column: workspaceFileRef.column })
+        : t("taskPanels.file.workspaceAtLine", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line })
+      : t("taskPanels.file.workspace", { path: workspaceFileRef.displayPath });
+  const tooltip = title ?? ariaLabel;
 
   const classNames = cn(
     "paperclip-artifact-file-chip inline-flex items-center gap-1 rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-xs leading-tight text-foreground/90 align-middle no-underline hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",

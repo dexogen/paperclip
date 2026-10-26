@@ -247,3 +247,10 @@ describe("isImageLikeOutput", () => {
     expect(isImageLikeOutput("application/octet-stream", "image.heic")).toBe(false);
   });
 });
+
+it("uses the requested numeric locale for byte sizes without changing the English default", () => {
+  expect(formatBytes(18.4 * 1024 * 1024, "ru")).toBe("18,4 MB");
+  expect(formatBytes(18.4 * 1024 * 1024)).toBe("18.4 MB");
+  expect(formatBytes(1024, "ru")).toBe("1 KB");
+  expect(formatBytes(-1, "ru")).toBe("0 B");
+});

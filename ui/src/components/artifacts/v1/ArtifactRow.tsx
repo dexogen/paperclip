@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { CSSProperties, ReactNode } from "react";
 import type { To } from "react-router-dom";
 import { Link } from "@/lib/router";
@@ -121,9 +122,10 @@ export interface ArtifactRowProps {
  * it, so nothing interactive nests.
  */
 export function ArtifactRow({ subject, to, href, external = false, onClick, expanded, trailing, className, style, now, testId = "artifact-v1-row" }: ArtifactRowProps) {
+  const { t, i18n } = useTranslation();
   const name = subject.filename ?? subject.title;
   const [stem, ext] = splitName(name);
-  const facts = [subject.sizeLabel, subject.updatedAt ? panelDateLabel(subject.updatedAt, now) : null].filter((fact): fact is string => Boolean(fact));
+  const facts = [subject.sizeLabel, subject.updatedAt ? panelDateLabel(subject.updatedAt, now, t, i18n.resolvedLanguage) : null].filter((fact): fact is string => Boolean(fact));
   const content = (
     <>
       {treatmentOf(subject) === "media" ? <Thumbnail subject={subject} /> : <ArtifactRowIcon subject={subject} />}
@@ -143,7 +145,7 @@ export function ArtifactRow({ subject, to, href, external = false, onClick, expa
       </span>
     </>
   );
-  const label = `Open ${name}`;
+  const label = t("taskPanels.file.open", { filename: name });
   const control = to ? (
     <Link to={to} aria-label={label} data-testid={`${testId}-open`} className={CONTROL_CLASS}>
       {content}

@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 1,959 reviewed semantic families, 2,003 English
-forms, and 2,091 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 19,491.
+The current combined catalog has 2,425 reviewed semantic families, 2,484 English
+forms, and 2,602 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,990.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -376,9 +376,22 @@ first failed with the missing selector. A revised browser recipe dismisses the
 announcement through its ordinary button and records the successful response.
 The complete browser retry on the combined source remains pending.
 
+The document/artifact side-panel slice covers 49 production files and adds 466
+reviewed semantic families (481 English forms and 511 Russian forms). Independent
+agent review corrected two count families for 21/101. Integration verified the
+exact reviewed catalog and source digests, re-examined seven existing drag
+announcements in their tab context, and made six file-link interpolation contracts
+explicit. Nineteen exact exceptions identify technical discriminators, a diagnostic
+comparison and the Markdown format name. The baseline removes 501 resolved
+occurrences and retains 18,990; no new debt is accepted.
 
-Document/artifact side panels are prepared as the next isolated slice. Full
-chat/composer, Activity, and remaining view branches still require separate work.
+The combined catalog has 2,425 families with no actionable localization findings.
+Focused component checks cover stored tabs, browser request counts, pending uploads,
+file selection/copy/media state, and a dirty document conflict across EN/RU without
+replaying mutations. These are fixture-based checks; combined Linux verification
+and real browser acceptance of this expanded slice remain pending. Full
+chat/composer, Activity, advanced annotation tools, and remaining rich-card/viewer
+branches still require separate work.
 
 The detector and sync regressions pass all 47 cases, including conflict cleanup,
 manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition

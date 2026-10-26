@@ -93,6 +93,14 @@ text, and mounted status/preview controls. Task list, board, row, and column tes
 exercise language changes with existing search and view state. These are component
 checks, not proof of task persistence or full task-detail translation.
 
+[Task side-panel tests](../../ui/src/components/task-side-panel/TaskSidePanel.test.tsx)
+check translated built-in tabs while preserving stored IDs, order, selection,
+scroll position and literal custom titles. Closing the last tab focuses the
+launcher through a language-independent selector. [Browser panel](../../ui/src/components/task-side-panel/TaskBrowserPanel.test.tsx)
+and [viewport tests](../../ui/src/hooks/useBrowserViewport.test.tsx) keep the same
+viewer and request counts across EN/RU. These are component checks; browser
+activity and the complete chat/composer are outside this localization slice.
+
 Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
 document language, labels, accessible names, dates, and currency. Verify both UI
 variants and a narrow viewport. Account-menu clicks can trigger the normal blur
