@@ -780,6 +780,31 @@ append conflicts were resolved by preserving both reviewed namespaces and the
 exact union of review records and exceptions. Component tests use mocked APIs;
 no live project or secret-write acceptance is claimed.
 
+The project-workspace slice adds 236 reviewed message families (247 English and
+269 Russian forms), plus seven examined existing task-status contexts. It covers
+the detail form, workspace summaries, runtime service/job controls, missing-plugin
+fallback and close-readiness dialog. Four precise technical exceptions were
+accepted. Only 169 resolved debt entries in these seven UI owners were removed.
+
+Five complete UI suites passed 56 tests; the new SDK response suite passed three.
+The complete real-PostgreSQL service and route suites passed 93 tests before the
+small diagnostic single-read cleanup. UI typecheck, build and token gates passed.
+The final three affected warning/cleanup cases passed after that cleanup (78
+other cases intentionally filtered). Standard server preparation/typecheck and
+shared typecheck passed. The final strict audit has 7,352 reviewed families,
+15,419 remaining debt findings and no actionable findings or source errors.
+Map structure checks passed.
+The first server typecheck stopped before compilation because Cargo was absent
+from PATH; the corrected environment uses the installed Rust toolchain.
+
+Optional display descriptors preserve the existing raw arrays, action order,
+commands and close guards. Language changes do not issue a new readiness query or
+repeat a pending mutation. Untagged, unknown or invalid UI descriptors retain raw
+copy. The new strict SDK validator accepts legacy responses and current metadata;
+older strict SDK versions may reject enriched responses, and future unknown codes
+are not guaranteed. Browser acceptance, live service commands, destructive closure,
+provider plugins and the global execution-workspace pages remain separate work.
+
 The agent-detail slice adds 468 reviewed message families (470 English and 474
 Russian forms). Root reviewed the full detail-page diff and all message forms;
 independent reviews covered eleven smaller owners and built-in/primary captions.
@@ -861,7 +886,8 @@ provider setup or delivery. The existing query-error-as-empty gap remains outsid
 this slice. Exact-head hosted CI and Greptile review remain pending.
 
 The remaining major packages are agent bulk controls and invitations,
-project workspaces/environments, dashboard/activity/costs, member access/secrets,
+global execution-workspace pages and environments, dashboard/activity/costs,
+member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
 components cover every host. Use the source audit and actual imports to set each
