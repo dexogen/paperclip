@@ -371,8 +371,16 @@ The dashboard page translates summary metrics, budget and paused-agent banners,
 chart headings and recent-task headings. Changing language preserves the current
 query identities and a pending sequential import-resume action. Raw task titles,
 identifiers and links remain unchanged. The focused component check mocks nested
-panels: live dashboards, activity rows, chart internals and Smoke Lab remain
-separate translation and acceptance work.
+panels; their bounded translation and acceptance scope is described below.
+
+The live dashboard, shared agent-run cards, activity charts and integration-smoke
+card translate their own captions and date display. EN/RU changes preserve card
+and legend nodes, focus, task/run links, query scope, limits and explicit caption
+overrides. Run deduplication, leader-only polling, date buckets, recovered-run
+aggregation, chart geometry, raw error codes and smoke path IDs remain unchanged.
+The focused component suites use mocked APIs; they do not prove live polling,
+provider health or translation of the recent-activity feed, audit pages and the
+optional run transcript surface.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

@@ -976,8 +976,29 @@ and MarkdownEditor import warnings. Full hosted CI and live browser acceptance
 of this combined candidate remain pending; earlier server checks apply only to
 the unchanged workspace-close source they tested.
 
+The live-dashboard slice translates four connected owners: the live page, shared
+agent-run panel/card, activity charts and integration-smoke card. It adds 56 message
+families (59 EN and 65 RU forms) and rechecks 12 existing status/priority contexts.
+Two genuine regressions failed before implementation. The first complete four-suite
+run passed 15 of 16 tests; a new count-loop assertion read immediately after a
+cache update. TanStack schedules its notifications with a timer; the assertion now
+waits through the existing test helper, preserving the assertion and timeout. The full panel suite then passes all nine tests; the
+other three complete suites retain seven passes. Thus four unique suites and 16
+tests pass without skips, across those invocations. The initial failure is retained.
+Production/catalog hashes did not change for that test-only correction.
+
+UI typecheck, build, token gates and map checks pass. The final strict audit has
+7,605 reviewed families, zero actionable findings and 15,119 remaining baseline
+entries. Stable card/legend identity, query keys,
+leader-only polling, raw counts/statuses, deduplication, chart geometry and date
+buckets remain unchanged; explicit caller captions and raw diagnostics stay literal.
+Only 34 resolved baseline entries in the four owners are pruned; no exception is
+added. Recent-activity/audit and optional transcript children remain separate work.
+These mocked component checks are not live polling, provider or full-repository
+qualification.
+
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment backend/schema copy, live dashboards/activity/costs,
+workspace pages, environment backend/schema copy, activity/costs,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

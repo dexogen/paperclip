@@ -34,6 +34,13 @@ credentials/run context; inspect its result and applicable persistence/attributi
 Assert the relevant denied actor, owner, company or mode from Policy. Review the
 remaining operations before qualifying the whole capability.
 
+The [live-page component check](../../ui/src/pages/DashboardLive.test.tsx) and
+[shared run-card check](../../ui/src/components/ActiveAgentsPanel.test.tsx) preserve
+company/query-scope identifiers, the configured limits, raw task/run links and
+request counts during locale changes. Source review retains the leader-only
+polling gate and raw ordering/deduplication. This mocked UI evidence does not
+qualify API permissions, cross-company isolation or live event streaming.
+
 Gaps: Dashboard data is accessible; live-work rendering and event streaming are separate
 surfaces.
 

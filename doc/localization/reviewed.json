@@ -34858,9 +34858,9 @@
     "statuses.critical": {
       "sourceHash": "632d72a00ed345729472750a48fcbe6c54a5798f405fa3231adba7ed6d895c78",
       "translationHash": "360d93cb4da0b7f1a2f6f8b375356bdeab65388d72939d9a0b73e7a6fbf04fab",
-      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:21:30.200Z"
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     },
     "statuses.deferred": {
       "sourceHash": "64344e58402413cf2e81525f2c00876d283f605eb79f15e4244d9d6bcef6ebea",
@@ -34914,16 +34914,16 @@
     "statuses.high": {
       "sourceHash": "db8904dd34ed328d504b2eafa7907adadf8ba1f7cdc2b0cff7f99b85c59577c5",
       "translationHash": "a05189e804554d95fc31a9d707b32b06f799d54b3f839272f24f324089d2cd92",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.954Z"
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     },
     "statuses.idle": {
       "sourceHash": "421aa768b887c612a8fe2e182f51bbfe99ab544fc0a78fd09f884b404f52300c",
       "translationHash": "3d29dc5c972c33142cf115b610e9d61b4e63b3bfed179bf21c6ec43d31214564",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     },
     "statuses.in_progress": {
       "sourceHash": "c4a4112cfbbcc447c489cb51a556763a13215787d0421a7b52d5d102d4be1610",
@@ -34949,16 +34949,16 @@
     "statuses.low": {
       "sourceHash": "f71e9c8ac1a08f6d2dc13ef610d4ed6fb4ca78a17c2b965d15febc9cc7f24203",
       "translationHash": "250acb8a7dc468f01de8cbc28f1c3bfd3e60ceff5205031403259e80eb53c37b",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.954Z"
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     },
     "statuses.medium": {
       "sourceHash": "c74e98cd2f8883d2ca911ea11838c9386bcbe7aeea04808df48d63259f894487",
       "translationHash": "0b24e7fddc0c7b7445dda76dd19b9262a5971fe18a65046a4211835e5ea5f13a",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Codex agent /root/translate_task_panels (live dashboard status and priority contexts)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.954Z"
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     },
     "statuses.ok": {
       "sourceHash": "94cc89c8af307d6371766c6067b2729f859b1d9f03c1305a2f604cc4384f25e4",
@@ -56351,6 +56351,398 @@
       "reviewer": "Codex editorial review with independent agent review",
       "method": "agent",
       "reviewedAt": "2026-10-26T12:14:48.414Z"
+    },
+    "liveDashboardUi.card.finished": {
+      "sourceHash": "de51c8bdaf4b0cc36537903c55e9b91b2a274a939af504dc8c053fa1d29f079a",
+      "translationHash": "d16869f8b8dc5040dda4cca9b0ac5db3a4e80a149dc2c2630d2d1e231c162751",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.606Z"
+    },
+    "liveDashboardUi.card.loading": {
+      "sourceHash": "6f78032432c31ef83d31942166987dd2d1078bd0b4aff34be5571c279775ffc2",
+      "translationHash": "f5917c1c343a1192a5da710cb9a8cc77b6cd6a65d54e51b4305d35b3d7d8145b",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.noTask": {
+      "sourceHash": "065e4c7ac9e03393962c0d987bf607a0cc16359ed06ace92c9cbac86a7eb0239",
+      "translationHash": "c3fed5dfcc44843c2a93692056807f94dd0913557ec490013289226365a6347b",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.queued": {
+      "sourceHash": "ab3e940b68c49d1c2f780dfbb2382f974ffaf37fbe90eb97815046168d11a2bc",
+      "translationHash": "5abdf00d5f32097e3878b86aa7590a54fb35ecfc8b153a212edd9e73a7d330c7",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.runTitle": {
+      "sourceHash": "cab14c8b7d30f667e0cc5b58e175968651dcecbea26e1498d91abd35e140c5f1",
+      "translationHash": "7d32fcdec1e38411e550aac4de4f959bb87db6d6fdbb4fe72360abb1008a20bc",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.scheduled": {
+      "sourceHash": "68280856dc420cd7f6ecfe50af8560c217919c51c64542a199fe2a58d1ca3d71",
+      "translationHash": "82ae907292c1f799f67ae86ba2e778c4b7f20772b66fea4cc21e7c05b60f94db",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.started": {
+      "sourceHash": "5dbd4cf1b5a73ca16db70e4f20b6ed6d37e4eeac847020cdf779438efdb7e818",
+      "translationHash": "9f9968e88cb9926a41f4b6d214b760709acfed3edb964f1e02facc678838f570",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.cancelled": {
+      "sourceHash": "302b76dd0e6467a1db4029ebb9082121238f823cd87dc40ba327f520e810906d",
+      "translationHash": "0f0e15b41a5986dccf412f2937c22c1bc09d36647032c403de8955f8755688e2",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.failed": {
+      "sourceHash": "74f4408421653dfa2983e4ad5ebc2d6233d32a280df980025df7ebd04b52e2dd",
+      "translationHash": "8c4b96ed7f5357e23534ed0f2d96a90836524448ef418246a409cfdb14aad878",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.interrupted": {
+      "sourceHash": "beaf148949d6b70cc7468ed73bc4fe058c6e8d46376688178fe1369a7d359486",
+      "translationHash": "2ca7491ca040e91b59e2762a99e3b93259a489109d84f484c0dc4f63036d0006",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.queued": {
+      "sourceHash": "feef88e5d1eb02e366c7a88180f69d7ab3ae044a1f1f8808e6d1518263cbbe11",
+      "translationHash": "ae1bdaa8bb231ca9f4ef29810c0f529a63b1ff45ed18522f9fbad152c475eb31",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.running": {
+      "sourceHash": "ad7f741ee6f3fde8d5ba6ef35c9e3c2bd9bff08465bd2e74acf3867a0754060c",
+      "translationHash": "cbcb4d5f7a5a69af4c6f4ec724fe7c5fb849a6b301df1dee5d612cc38faaf6f4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.succeeded": {
+      "sourceHash": "be40a944938dc57d7c0b8bcf0c27e54039e4942922cce53162cc96ae57a8c48f",
+      "translationHash": "0164fef3a943b32d8727293b24d44fcb68445836f02adec1ccbe2701c757161b",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.status.timed_out": {
+      "sourceHash": "82fbb425a0b81e403e397d97961732d72d7c0c1e299b4eac7e3f4184fa7bce71",
+      "translationHash": "e0bbc698740ef9a214d60d06fe8872e8115a5230163f570368841417bc185995",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.taskStatus": {
+      "sourceHash": "41ab2d208ea927fa5d9d033f56865dec1ed56fff2491d9da3ffa5b85aed0c614",
+      "translationHash": "c13934f06cd5f58c024ed6136c6273914ede80c639ac20d4e4ac0d30a2a0d98a",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.unavailable": {
+      "sourceHash": "786736da1c5c6b107f545c75ded1a56b90dcae74e70dff48ac22bcfdc2a62942",
+      "translationHash": "8efbfe7a6562a821f5a19afad14018f1dd29a6974948debe06e2d8082e2d3f09",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.card.viewRun": {
+      "sourceHash": "1a459109d1246a7449c7fda462ba4ae515e10210ae387a7cefe5f2d6521759fc",
+      "translationHash": "9a2c59892252b990c4837e517a1eb696cc605725ae11990461f64ebf0512ce98",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.backlog": {
+      "sourceHash": "33f950e93d2177ea77f77f9ca1e374da676d033465510512297683c3275b3172",
+      "translationHash": "2ed7ab08f91bdcc76ce8358f30cbaf997b1cf18b4aea995b30f24da88a2f5496",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.blocked": {
+      "sourceHash": "103b3fd3fefccc57162547be513aa5a8c90c58e51d3d86ea530f1b4c736829b7",
+      "translationHash": "f75e2c4dca3b8c7b1aa45771f7c269909baa74e4462baf2a4d92de207b5194d3",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.cancelled": {
+      "sourceHash": "885e48aaae5951ef0e5c9a73f4a9b11c3fda9616f2115285271d5de484f4ef80",
+      "translationHash": "10e6402d0919bdb0e2217497ebac76a7dc905b375b020e33ca79f3e723524dbe",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.done": {
+      "sourceHash": "e50dbd719f663b24a11c30b67c1a233d718757ee8a9e5179b93b04b85d86aa03",
+      "translationHash": "0eb45babd17c0de33a1cf0ee64950b3e6a113a70e51ee6b8a05fbde58049e810",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.failed": {
+      "sourceHash": "976a15abe3e85fed33d168f9ff4b897e062b896bce2ef51d5a0f46d30a276cfb",
+      "translationHash": "dfc88ce227b0e4f06fff4a5399f5e358d21a92af3629d595e9f8f8f4e27d63f5",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.607Z"
+    },
+    "liveDashboardUi.chart.failedCount": {
+      "sourceHash": "09825b6bf9912e6bfa5b099e8a9f27cf642400052d7e9c74aedf79cb07e4f91c",
+      "translationHash": "9d9fc7e2e05bede6421b8840d223dc73854f39695f990e776b9448efe8e284b4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.in_progress": {
+      "sourceHash": "31076956ab2fff9cb1858be15e40e38337af8f4de027174434396aa19a516fd6",
+      "translationHash": "fd34ba1913dba2762d02ad8d6ed98e7dfd7d373d900927ed21ff09ed204f4670",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.in_review": {
+      "sourceHash": "480dd9753f1dbafa9ac5adb74e30506ec90f17a9b676097ffb52d90c9ee9aed1",
+      "translationHash": "fe36972eb8fee47e66b27488c426fb161dcba62558151028fb2cba1c487b1fd4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.noRuns": {
+      "sourceHash": "076be79ce0a3901b386fcdd23067be4302f8251f3d4c37336fe7feffc04f0562",
+      "translationHash": "e7a280c3c27edb93a8a5ae3d509f4847dc809b2e931ff626868845159e3f6daf",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.noTasks": {
+      "sourceHash": "b8661209114484138d14f14300c4a03964f3f4c5d5cd60de5dc2cf2f26d13950",
+      "translationHash": "3dded610d6be062a05a9dcd05e84560ffa941cc3e1463b4bc4001064d171d981",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.other": {
+      "sourceHash": "2f955189c1972612f9325f42048f06e5fbec78261638eb6e2a8aeea0d33d3449",
+      "translationHash": "0f6a55363cb21d9de8a6070d1cb0d44e3b9f81a00e88d72fc9105b3461c4138d",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.otherCount": {
+      "sourceHash": "f3a80c122a581a08a5e30e970186418f17393ce21fe3774485cb147b223c0f86",
+      "translationHash": "cea84aa090ac11309da741095b0fa4df242d3da29cf588b7ac71f0ca56268cfd",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.recovered": {
+      "sourceHash": "5c008e6a795d171e7a98795ef22efa31ca38dc9d3801ab6f8d14a1bb32542adb",
+      "translationHash": "7227105b837ce12e92e2e6b1498d4086de29f02f0a71dea3a4dec9be2277359d",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.recoveredCount": {
+      "sourceHash": "0db59f1d2436e1c105023cb33ccd7621f9c754a4d5d2df9bf265a79bf6f08486",
+      "translationHash": "7e5a789bb39a3601e1d3032fe86f01662c24d4bdf2b0918b2d3e2c8c7c00a825",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.runs": {
+      "sourceHash": "60c447b5e95a7cc84728e27d486206cf3bf0bea205de6caa248fc53b7fb9bccb",
+      "translationHash": "99c9cb4496cb6ea2223a34b7da979b9d283cbb293bcc4871eda16b2a717e6eaa",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.succeeded": {
+      "sourceHash": "0963c0c469e50d20ec2ecde21192005119494124a07cff17ee18ea865e67c45c",
+      "translationHash": "a0ddee58a253a25cc99a4afeaa4a2e34ca4ca02973897f4a44ec8c8252e8a581",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.succeededCount": {
+      "sourceHash": "fe98c6af76191a11b778da9507194fd4f10b7be45523fff2725059f305d0e745",
+      "translationHash": "02bb9aab339363367d09d54c30e49caaf442cea2e035c1d4f596c6d3df81a152",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.tasks": {
+      "sourceHash": "83f03bc172a9498ab37f0b8c1f2099b39c46e518d384c26cec60adcf31a63d7c",
+      "translationHash": "c0e3ec654be484b62ce6b7d9a4c7a07c981a8219e911f9f2f139d6742a6284b4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.chart.todo": {
+      "sourceHash": "fcc8e3c0c9db3e7a308bb9b83d343d6409616880bcbd8a64b8c2d0a82e027cc4",
+      "translationHash": "ef134465c33f36fa26649295eb19b19e6b4858f9863ec979737426e61510782f",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.activeRecent": {
+      "sourceHash": "fa985cf8b109ef5be4cdbf84a2fe4102b3787c083939f3e0be1b227c940898bb",
+      "translationHash": "21d264b3a40aace80a8245bc7f46d2c28e0263e801f7e48f715aaff818a93899",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.createCompany": {
+      "sourceHash": "aa977a534bcf2248ace99eb5e2d1a740d4d49e3ddbc9bbf88839513baa9f6e5b",
+      "translationHash": "24454f7d3861f9481a0dcb11040996d1a629f0e2dc9d1a2cb7e7f2d848e4d1e4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.dashboard": {
+      "sourceHash": "5455c235a2c39c4ca984e7836c48cf38edac6e63c871784042c85046ae28053c",
+      "translationHash": "effe6c4a7822d53cab3148f34e232659f3b75c22e9f4660d2fd0c88b35bc3b59",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.description": {
+      "sourceHash": "82917f9331bdf2b326f745fe2d8191400bcf296dec4111415945a1f3b81452e0",
+      "translationHash": "a493d6b3da8942bf779981057e87863608014f6330ef157b10b77c137caf6794",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.empty": {
+      "sourceHash": "4a6a4a94c393f180dd2b6f407497904fd8be375ba6fb23fb4e90577e2df3f9e0",
+      "translationHash": "1a941bafe941691e838f06271b7383d6922506d8f4ca43f4a49629f6449bf6c6",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.limit": {
+      "sourceHash": "1511e34fee6c3540001cc6a28466287d3daa305bd94debcc21e5c2a079cc4d46",
+      "translationHash": "c72403e8ec8b6751ebb4426c8e4572a4e68f909a32cc979dd30dd609d4ec48af",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.liveRuns": {
+      "sourceHash": "159aeb7749cc0edb249b800ebd82530d804b966a436547e04a70d06f6cfdac81",
+      "translationHash": "8d0c743cd6645b18b62faebe047285348b43910fee5315a88b0e2e1939d1ff5f",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.selectCompany": {
+      "sourceHash": "9194aee4955d0b84e45e6ed43d941ad65e473880047d615fc5cf9408ecd896f1",
+      "translationHash": "85883701b37cb36b1e5a8b541ab82e81589f2a189ddc4c86b7870e5a68ecbde0",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.page.title": {
+      "sourceHash": "a9050a52371cb122c9e396e8b953d45f955d2aaad0f586396a3266ba2b4846ae",
+      "translationHash": "2b57d186ec104ef09686e84395813ed2226f5ea99fb143a49b8fb945c964e79b",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.panel.all": {
+      "sourceHash": "72f05a6dfc814b46d948a356499a07f16c28c75b83bdb7cab143f846b38354ab",
+      "translationHash": "91519cfb11a60556fe8165a8edbb3bae9cfece99a4e8dc528f648d5d13d3be67",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.panel.empty": {
+      "sourceHash": "36b289475a4f2065eec15f351006690680bee9299c133afc565cad8defebdab4",
+      "translationHash": "c07459054172bd0bfcf01912d36cf3969d058bb92b67cea1efb4ed64eb221f04",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.panel.more": {
+      "sourceHash": "c684a3520cd6e6a0b5eef04ed29510f1f3967a7030096f8b96d0f9dffb78b7eb",
+      "translationHash": "f910a809ceb190630809dc997ce5764ad0bc42e66ebaed3199eeb7af15ee6a04",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.panel.title": {
+      "sourceHash": "c209a169788b6bea8c9369af282e54519194572b7c74e62cc0489f2a54d6c8c8",
+      "translationHash": "69aba8573aa74a600ba1a148743787a2e18a5a67c6f3af798fdf7ddaf179f398",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.amber": {
+      "sourceHash": "df5f901a3d862fe9c92699db0f20a02507ca029276813147f5d983fc4108a0e9",
+      "translationHash": "99606bd3917287b5169450ebe8b480cf681f52a6fe93ce7d5cdae390fcd91f1a",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.green": {
+      "sourceHash": "19a9c39d31759b6a41946d4f2c9a5a9b454b2e838999805cd079f3acede3eb65",
+      "translationHash": "9a9538000c4430af404054c2ae5a50e452754a3da52b1a8dfdb691baae00c7b4",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.lastRun": {
+      "sourceHash": "c3cc0bbdf35b033e8ff3235d86aefaca318ec59860fa7766dae591187ebac6cb",
+      "translationHash": "a65ecc490b3f3b27b762c3a53d7b84a43567de82c8d25fc7fde0d1e1af7e2347",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.red": {
+      "sourceHash": "ad8339aa92709366d93afbdc0f7c252a1d03ac1aceef7a3a4d58d2d10d061e47",
+      "translationHash": "0afe6f8b48c5de4a68edb54f4b6acc113b6e01ec24926d8baaf39261f31a2dfa",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.start": {
+      "sourceHash": "118b69c16fe0bd5641475e83fccb7905f29b356ed65451488ce787e5443cc9a1",
+      "translationHash": "1f96bda62faa7027bcc61bec0fd26fe0e0ffa3faa3cf22927264ea6d77a91448",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.title": {
+      "sourceHash": "9cc9277281bdb04f7a1b2f5c7ddf1d6788666a332ab1eceb6e9d8c5e78d7d363",
+      "translationHash": "08145d43c7ee84d07179d412070d21130e64476e67b4656c8b8111797cfc8d54",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
+    },
+    "liveDashboardUi.smoke.unknown": {
+      "sourceHash": "37949344f6db36f396e8757b843ca1afa2dacfbab8722457c7333bba27f65475",
+      "translationHash": "4ba6444451cc00b4597594d80357d967204b82d8957502ec6032f7a3ff15e26c",
+      "reviewer": "Codex agent /root (editorial) and /root/chat_locale_scope (independent source review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:46:05.608Z"
     }
   }
 }

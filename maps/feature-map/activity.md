@@ -48,6 +48,17 @@ resume in a disposable imported company, then reload and inspect each agent.
 
 Manual: Compare the dashboard with the known fixture tasks and runs. Start and finish a small task, refresh/reload, and verify the summary changes and links reach the right records. Exercise empty data and a failed fetch.
 
+Locale checks cover the actual [live page](../../ui/src/pages/DashboardLive.test.tsx)
+and [agent-run cards](../../ui/src/components/ActiveAgentsPanel.test.tsx), including
+stable links/focus, deduplication, query scope, 50-run limit and omitted-only caption
+defaults. [Charts](../../ui/src/components/ActivityCharts.test.tsx) retain date buckets,
+geometry, legend nodes and literal diagnostic codes; the
+[smoke card](../../ui/src/components/SmokeLabDashboardCard.test.tsx) retains its flag,
+request identities and raw path IDs. Switch EN/RU/EN with a focused run link and
+known daily totals, checking that only display captions/dates change. These mocked
+component checks do not prove real cross-tab polling or provider health, nor do
+they cover the recent-activity feed or optional transcript child.
+
 ### `activity-audit`
 
 Automated: [activity service](../../server/src/__tests__/activity-service.test.ts), [audit runs](../../ui/src/pages/audit/AuditRuns.test.tsx), and [routine audit](../../ui/src/pages/audit/RoutineAuditActivity.test.tsx) cover these separate data/host layers.
