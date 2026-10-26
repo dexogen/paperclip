@@ -279,7 +279,7 @@ The implementation is published as a draft stack:
 [Decisions and approvals #13](https://github.com/dexogen/paperclip/pull/13).
 The canonical checkout remains on `master`. Upstream fetching is configured with
 pushing blocked. Ordinary merges preserve upstream ancestry through
-`6336c340411809b3a94af1f4a911b30c0275447c`; recheck upstream before deployment.
+`1fbbef45a8d399771add7a27a04b12f3a20e264c`; recheck upstream before deployment.
 
 PR #17546 was reviewed at its recorded head and credited in the localization guide.
 Its successful checks are provenance, not verification of this adaptation. The
@@ -616,6 +616,43 @@ work/resumed run UUID; setup calls cannot satisfy the assertion. Four new shell
 contract tests and four existing loader tests passed, as did narrow strict typing
 and discovery. No real native rerun is claimed by those eight tests. The prior
 failed qualification is retained. No production Runner or Rust code changed.
+
+### Latest upstream candidate
+
+The normal merge from `6336c340411809b3a94af1f4a911b30c0275447c` through
+`1fbbef45a8d399771add7a27a04b12f3a20e264c` includes three upstream commits:
+GitHub response-authority projections (#17686), recovery source/child projections
+and agent-chat E2E cleanup (#17694), and the initial recovery candidate projection
+(#17695). The merge completed without conflicts across 12 files. It adds no schema
+migration, dependency or UI/catalog change.
+
+Source review checked retained authority fields, company/source ownership and
+unchanged recovery dispatch predicates. The new recovery-candidate projection
+omits description from the initial scan; later branches can still load a full row.
+This is not evidence that every recovery query is narrow or that latency improved.
+The tracking pin is prospective until the reviewed stack reaches the default branch.
+
+The exact merged candidate still requires full Russian build and workspace types,
+complete UI qualification, the affected real-PostgreSQL GitHub/recovery/attention
+suites, Russian Decisions/classic approval browser proof, and the native Stop and
+agent-chat cleanup journeys. Older passing or failed candidates do not cover it.
+
+### Remaining journey packages
+
+Continue the task-chat/composer and run/recovery slices with separate owners.
+The active standard and classic thread renderers both need coverage. Classify
+system labels before translation: retry markers, transcript detail keys, provider
+trace badges and file taxonomy currently participate in control decisions. Keep
+those canonical values stable and translate only app-owned display output with
+provenance. Locale changes must not alter scroll identity, queue revisions, editor
+selection, uploads or privileged diagnostic reads.
+
+After chat, the remaining major packages are agent creation/configuration,
+project details/environments, dashboard/activity/costs, member access/secrets,
+connections and routines. Skills/teams/portability/plugin hosts have additional
+coverage gaps. These are outstanding packages, not a claim that shared translated
+components cover every host. Use the source audit and actual imports to set each
+bounded scope; do not translate sandbox fixtures to reduce the baseline.
 
 ### Workflow activation
 
