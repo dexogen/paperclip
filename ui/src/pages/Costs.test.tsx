@@ -1,6 +1,9 @@
 // @vitest-environment jsdom
 
 import { act } from "react";
+import { i18n } from "@/i18n";
+import { datePresetLabel, PRESET_LABELS } from "../hooks/useDateRange";
+import { billingTypeDisplayName } from "../lib/utils";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -71,7 +74,8 @@ describe("Shared Costs surfaces", () => {
   let container: HTMLDivElement;
   let root: ReturnType<typeof createRoot>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     scopedAgentMock.mockReset();
     const usage = { inputTokens: 0, cachedInputTokens: 0, outputTokens: 0, costCents: "0", eventCount: 0, estimatedEventCount: 0, unpricedEventCount: 0 };
     subscriptionsMocks.report.mockResolvedValue({ canRefresh: false, asOf: "2026-10-08T00:00:00Z", accounts: [], monthlyTotals: [], activeCount: 0, unknownPriceCount: 0, unidentifiedAccountCount: 0, api: usage, subscription: usage, unknown: usage, unattributedSubscription: usage });
@@ -88,9 +92,10 @@ describe("Shared Costs surfaces", () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     act(() => root?.unmount());
     container.remove();
+    await i18n.changeLanguage("en");
     vi.clearAllMocks();
   });
 
@@ -486,6 +491,17 @@ describe("Shared Costs surfaces", () => {
     // The count is for charges, not runs; it must not use apiRunCount or the
     // page-wide estimated count when determining whether a row is mixed.
     expect(breakdown.querySelector('[data-slot="badge"]')!.getAttribute("title")).toContain("1 estimated charge.");
+    const beforeReads = costsApiMocks.byAgentModel.mock.calls.length;
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    const localizedCard = container.querySelector('[aria-label="Расходы: Mixed"]')!;
+    expect(localizedCard.querySelector(".border-l")).toBe(breakdown);
+    expect(breakdown.textContent).toContain("API с оплатой по использованию");
+    expect(breakdown.textContent).toContain("gpt-6-astra");
+    expect(billingTypeDisplayName("metered_api")).toBe("Metered API");
+    expect(costsApiMocks.byAgentModel).toHaveBeenCalledTimes(beforeReads);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(card("Mixed").querySelector(".border-l")).toBe(breakdown);
+    expect(breakdown.textContent).toContain("Metered API");
   });
 
   it.each(surfaces)("preserves the %s heading, breadcrumbs and tab navigation", async (name, props) => {
@@ -509,6 +525,93 @@ describe("Shared Costs surfaces", () => {
     expect([...container.querySelectorAll('[role="tab"]')].map((tab) => tab.textContent)).toEqual(
       streamlined ? ["Overview", "Providers", "Billers", "Finance", "Decisions", "Fast responses"] : ["Overview", "Budgets", "Providers", "Billers", "Finance", "Decisions", "Fast responses"],
     );
+  });
+
+  it("retains custom date inputs, active report and request bounds through EN/RU/EN", async () => {
+    for (const mock of Object.values(costsApiMocks)) mock.mockResolvedValue([]);
+    costsApiMocks.byUser.mockResolvedValue({ activeUserCount: 1, rows: [] });
+    costsApiMocks.summary.mockResolvedValue({ spendCents: 200, budgetCents: 1000, pricingComplete: true });
+    costsApiMocks.financeSummary.mockResolvedValue({ netCents: 0, debitCents: 0, creditCents: 0, estimatedDebitCents: 0, eventCount: 0 });
+    const cache = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    root = createRoot(container);
+    await act(async () => root.render(<MemoryRouter><QueryClientProvider client={cache}><Costs /></QueryClientProvider></MemoryRouter>));
+    await act(async () => { await vi.waitFor(() => expect(container.textContent).toContain("No cost events yet.")); });
+    const button = (label: string) => [...container.querySelectorAll("button")].find(row => row.textContent === label)!;
+    await act(async () => button("Custom").click());
+    const [fromInput, toInput] = [...container.querySelectorAll<HTMLInputElement>('input[type="date"]')];
+    const inputValue = async (input: HTMLInputElement, value: string) => act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, value);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await inputValue(fromInput, "2026-10-01");
+    fromInput.focus();
+    const reads = () => [budgetOverviewMock, subscriptionsMocks.report, ...Object.values(costsApiMocks)].map(mock => mock.mock.calls.length);
+    const partialReads = reads();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector("h1")?.textContent).toBe("Расходы");
+    expect(container.textContent).toContain("Выберите начальную и конечную даты, чтобы загрузить данные.");
+    expect(container.querySelector('input[type="date"]')).toBe(fromInput);
+    expect(fromInput.value).toBe("2026-10-01");
+    expect(document.activeElement).toBe(fromInput);
+    expect(reads()).toEqual(partialReads);
+    expect(button("Свой период").getAttribute("aria-pressed")).toBe("true");
+    expect(datePresetLabel("custom")).toBe("Custom");
+    expect(PRESET_LABELS.custom).toBe("Custom");
+    await inputValue(toInput, "2026-10-02");
+    await act(async () => { await vi.waitFor(() => expect(costsApiMocks.summary).toHaveBeenLastCalledWith(
+      "company-1", new Date("2026-10-01T00:00:00").toISOString(), new Date("2026-10-02T23:59:59.999").toISOString(),
+    )); });
+    const readyReads = reads();
+    const queryHashes = cache.getQueryCache().getAll().map(query => query.queryHash);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector("h1")?.textContent).toBe("Costs");
+    expect(button("Custom").getAttribute("aria-pressed")).toBe("true");
+    expect(fromInput.value).toBe("2026-10-01"); expect(toInput.value).toBe("2026-10-02");
+    expect(reads()).toEqual(readyReads);
+    expect(cache.getQueryCache().getAll().map(query => query.queryHash)).toEqual(queryHashes);
+    expect(upsertPolicyMock).not.toHaveBeenCalled(); expect(resolveIncidentMock).not.toHaveBeenCalled();
+    cache.clear();
+  });
+
+  it("retains a dirty budget and one pending save while translating its own failure through EN/RU/EN", async () => {
+    const policy = {
+      policyId: "raw-policy", companyId: "company-1", scopeType: "agent", scopeId: "raw-agent", scopeName: "Worker <b>literal</b>", metric: "billed_cents", windowKind: "lifetime",
+      amount: 500, warnPercent: 65, hardStopEnabled: false, notifyEnabled: false, isActive: false, unpricedUsagePolicy: "allow", reservationCents: "2.0000000",
+      observedAmount: 0, remainingAmount: 500, utilizationPercent: 0, unpricedEventCount: 0, pendingRunCount: 0, status: "ok", paused: false, pauseReason: null,
+    };
+    budgetOverviewMock.mockResolvedValue({ policies: [policy], activeIncidents: [], pausedAgentCount: 0, pausedProjectCount: 0 });
+    let rejectSave!: (error: Error) => void;
+    upsertPolicyMock.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectSave = reject; }));
+    const cache = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 }, mutations: { retry: false } } });
+    root = createRoot(container);
+    await act(async () => root.render(<MemoryRouter><QueryClientProvider client={cache}><Costs embedded initialTab="budgets" lockTab /></QueryClientProvider></MemoryRouter>));
+    await act(async () => { await vi.waitFor(() => expect(container.querySelector('input:not([type="checkbox"]):not([aria-label])')).not.toBeNull()); });
+    const input = container.querySelector<HTMLInputElement>('input:not([type="checkbox"]):not([aria-label])')!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "8.25");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const save = [...container.querySelectorAll("button")].find(button => button.textContent === "Update budget")!;
+    await act(async () => save.click());
+    input.focus();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Управление бюджетом");
+    expect(container.textContent).toContain("Worker <b>literal</b>"); expect(container.querySelector("b")).toBeNull();
+    expect(input.value).toBe("8.25"); expect(document.activeElement).toBe(input);
+    expect(save.disabled).toBe(true);
+    expect(upsertPolicyMock).toHaveBeenCalledExactlyOnceWith("company-1", {
+      scopeType: "agent", scopeId: "raw-agent", metric: "billed_cents", windowKind: "lifetime", amount: 825,
+    });
+    await act(async () => rejectSave(new Error("private SQL")));
+    await act(async () => { await vi.waitFor(() => expect(container.querySelector('[role="alert"]')?.textContent).toBe(
+      "Не удалось обновить правила бюджета. Проверьте настройки и повторите попытку.",
+    )); });
+    expect(input.value).toBe("8.25"); expect(container.textContent).not.toContain("private SQL");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.querySelector('[role="alert"]')?.textContent).toBe("Could not update the budget policy. Review your settings and try again.");
+    expect(upsertPolicyMock).toHaveBeenCalledTimes(1); expect(budgetOverviewMock).toHaveBeenCalledTimes(1);
+    expect(save.disabled).toBe(false); expect(input.value).toBe("8.25");
+    cache.clear();
   });
 
 });

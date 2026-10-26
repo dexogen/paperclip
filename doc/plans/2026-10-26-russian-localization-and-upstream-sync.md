@@ -976,8 +976,24 @@ and MarkdownEditor import warnings. Full hosted CI and live browser acceptance
 of this combined candidate remain pending; earlier server checks apply only to
 the unchanged workspace-close source they tested.
 
+The Costs page slice adds 102 reviewed message families (103 English and 105
+Russian forms). It covers report periods, overview and finance summaries, table
+headings, budget sections and owned failure text. Date-preset and billing-type
+helpers accept an optional translator with fixed English defaults for legacy
+callers. Date bounds, query keys, refresh timers, amount arithmetic, raw names and
+budget payloads remain unchanged. Two new locale cases failed against the original
+English controls; all 38 tests in three complete page/formatting suites then pass.
+They preserve incomplete/custom dates, focused inputs, expanded model rows and
+one pending budget save through EN/RU/EN, including retained drafts after failure.
+UI typecheck, build, token gates and map checks pass. The final strict audit has
+8,152 reviewed families, 14,655 remaining source findings and no actionable
+findings or resolved-debt residue. Only 91 resolved source findings from
+Costs.tsx are pruned; no exception is added. Child subscription/quota/finance and
+accounting-recovery cards remain separate work. These mocked checks do not prove
+live billing, provider quota or budget enforcement.
+
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment backend/schema copy, live dashboards/activity/costs,
+workspace pages, environment backend/schema copy, live dashboards/activity and cost cards,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

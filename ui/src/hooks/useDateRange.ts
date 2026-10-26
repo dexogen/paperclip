@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export type DatePreset = "mtd" | "7d" | "30d" | "ytd" | "all" | "custom";
@@ -10,6 +12,18 @@ export const PRESET_LABELS: Record<DatePreset, string> = {
   all: "All Time",
   custom: "Custom",
 };
+
+export function datePresetLabel(preset: DatePreset, t: TFunction = i18n.getFixedT("en")): string {
+  const labels: Record<DatePreset, string> = {
+    "mtd": t("costsUi.dateMonth"),
+    "7d": t("costsUi.date7Days"),
+    "30d": t("costsUi.date30Days"),
+    "ytd": t("costsUi.dateYear"),
+    "all": t("costsUi.dateAll"),
+    "custom": t("costsUi.dateCustom"),
+  };
+  return labels[preset];
+}
 
 export const PRESET_KEYS: DatePreset[] = ["mtd", "7d", "30d", "ytd", "all", "custom"];
 
