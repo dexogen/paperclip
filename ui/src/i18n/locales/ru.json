@@ -12565,13 +12565,9 @@
     }
   },
   "upstreamGap": {
-    "claudeSubscription": "Подписка Claude",
-    "chatGptSubscription": "Подписка ChatGPT",
-    "grokSubscription": "Подписка Grok",
-    "subscriptionUnavailable": "Подписка недоступна",
-    "personalAccessToken": "Персональный токен доступа",
-    "connectionPersonal": "Личное",
-    "connectionCompanyShared": "Общее для организации"
+    "tasksCollapsedChildren": "(подзадачи)",
+    "tasksExternalStatusError": "Не удалось отфильтровать задачи по внешнему статусу: {{message}}",
+    "tasksRetryExternalStatuses": "Повторить загрузку внешних статусов"
   },
   "fullApps": {
     "needing_review_9f7107": "требуют проверки",
@@ -19306,7 +19302,12 @@
     "fallbackAgent": "Агент",
     "fallbackUser": "Пользователь",
     "fallbackSystem": "Система",
-    "metadataField": "поле {{number}}"
+    "metadataField": "поле {{number}}",
+    "inboxLoadError": "Не удалось загрузить входящие: {{error}}",
+    "inboxPartial": "Не удалось загрузить часть входящих. Показаны доступные элементы.",
+    "retryMissing": "Повторить загрузку",
+    "taskDetailsPartial": "Не удалось загрузить часть сведений о задачах.",
+    "retryDetails": "Повторить загрузку сведений"
   },
   "fullDiagnostics": {
     "toReview": "на проверку",

@@ -11909,13 +11909,9 @@
     }
   },
   "upstreamGap": {
-    "claudeSubscription": "Claude subscription",
-    "chatGptSubscription": "ChatGPT subscription",
-    "grokSubscription": "Grok subscription",
-    "subscriptionUnavailable": "Subscription unavailable",
-    "personalAccessToken": "Personal access token",
-    "connectionPersonal": "Personal",
-    "connectionCompanyShared": "Company shared"
+    "tasksCollapsedChildren": "(sub-tasks)",
+    "tasksExternalStatusError": "Unable to filter tasks by external status: {{message}}",
+    "tasksRetryExternalStatuses": "Retry external statuses"
   },
   "fullApps": {
     "needing_review_9f7107": "needing review",
@@ -18472,7 +18468,12 @@
     "fallbackAgent": "Agent",
     "fallbackUser": "User",
     "fallbackSystem": "System",
-    "metadataField": "field {{number}}"
+    "metadataField": "field {{number}}",
+    "inboxLoadError": "Unable to load the inbox: {{error}}",
+    "inboxPartial": "Some inbox items couldn’t load. Showing available items.",
+    "retryMissing": "Retry missing items",
+    "taskDetailsPartial": "Some task details couldn’t load.",
+    "retryDetails": "Retry details"
   },
   "fullDiagnostics": {
     "toReview": "to review",
