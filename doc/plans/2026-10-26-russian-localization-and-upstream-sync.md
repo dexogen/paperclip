@@ -844,8 +844,11 @@ The diagnostic version passed the complete actual-PRP suite locally. These repai
 are published in [PR #20](https://github.com/dexogen/paperclip/pull/20).
 [Combined hosted run 40301714419](https://github.com/dexogen/paperclip/actions/runs/40301714419)
 checks exact SHA `71f7e5d79dac4e55de63d9df4766342563a9bd34`, including project
-translations and the native cleanup fix. It is still running. Intermediate
-duplicate runs were cancelled; cancellation is not a passing result.
+translations and the native cleanup fix. All nine jobs passed, including build,
+workspace typecheck, UI/CLI/shared/adapter tests, all six server partitions and
+the localization gate. The later agent-detail slice is published in
+[PR #24](https://github.com/dexogen/paperclip/pull/24) and has a separate pending
+check. Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
 
@@ -887,11 +890,17 @@ four paused-composer cases and 24 cases in three complete upstream files.
 The originally failing native archive cleanup passed within its unchanged
 five-second assertion.
 
-Overall browser qualification remains failed. Default Playwright webServer
+The original browser qualification remains failed. Default Playwright webServer
 teardown used SIGKILL, bypassing application shutdown and leaving four PostgreSQL
 marker files. Read-only inspection found no matching processes or listeners.
 A separate test-harness repair in [PR #23](https://github.com/dexogen/paperclip/pull/23)
 at `7a90fbe9ce32bbb74d1be4bf55806fa60426dc6e` enables standard SIGTERM graceful shutdown;
 its real-PostgreSQL control fails before the change and passes after it, including
-marker removal and ordered shutdown. Fresh Linux browser/final qualification of
-that repair is pending. Original failures and forensic evidence are retained.
+marker removal and ordered shutdown. Fresh Linux qualification at `7a90fbe9`
+passes 38 fixture contracts, one real PostgreSQL shutdown check and all 30 browser
+cases with no skips or flaky cases. All four browser runs logged orderly database
+shutdown without a stop error or recovery attempt. Final qualification and
+process/database cleanup passed; no new marker, owned process or listener remains.
+Source build, workspace typecheck and the 644 server tests are inherited from
+identical production inputs at `82d22e84`, not rerun. This is not acceptance of the
+later combined localization. Original failures and forensic evidence are retained.
