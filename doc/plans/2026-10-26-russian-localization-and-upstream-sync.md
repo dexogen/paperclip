@@ -662,10 +662,15 @@ Candidate `40067580a` passed the fresh 23 fixture checks and native readiness,
 per-run work receipts, parent Stop and explicit subtree Pause. It then failed on
 an obsolete `Run cancelled` button selector; the actual current native status is
 a muted `Stopped` span. The test-only correction `614f75c9` scopes that status to
-the unique parent agent turn. Fresh complete native acceptance remains pending;
-process Stop, paused composer and upstream chat journeys have not yet run.
-Process cleanup
-passed; original database cleanup remains unconfirmed with stale markers retained.
+the unique parent agent turn. Its native assertions passed, but command completion
+failed because the fixture left its deliberately unrelated run active. Test-only
+cleanup correction `47fbbda9` adds checked archive/cancel calls and waits for owned
+agent lifecycle settlement. All 38 fixture checks pass. The new native attempt
+reached its final functional screenshot, then failed the existing five-second
+cleanup poll: the unrelated agent was paused and live-runs empty, but parent and
+child still reported pausing. Diagnosis remains open. Process Stop, paused
+composer and upstream chat journeys have not yet run on that candidate.
+Process cleanup passed; original database cleanup remains unconfirmed with stale markers retained.
 A later read-only observation found no active owned process or database listener.
 The original failed receipts are unchanged. Earlier build/unit/browser evidence
 is carried forward only for byte-identical inputs, with its original SHA stated;
@@ -688,7 +693,7 @@ upload receipt, now fixed with the complete typed contract. A second check and
 build found an incomplete local Copilot asset installation. The verified installer
 recreated the ignored files from the pinned package. The complete `pnpm build`
 and `pnpm -r typecheck` then passed on checkpoint `1a2bae9c2`. This does not certify
-the later split trees or a complete fresh test suite. Publication and live
+the later split trees or a complete fresh test suite. Stack integration and live
 qualification remain pending. The source is published in draft
 [run/recovery #15](https://github.com/dexogen/paperclip/pull/15) and
 [chat/composer #16](https://github.com/dexogen/paperclip/pull/16), with 85 and 49
@@ -705,14 +710,33 @@ and the exact commit. All copied source, catalog and lockfile hashes remained
 unchanged. This is scoped standalone verification, not a fresh full monorepo test
 suite. It does not establish full chat/composer or browser acceptance.
 
-The first agent-creation slice adds 142 reviewed EN/RU message pairs across the
+The first agent-creation slice ([PR #17](https://github.com/dexogen/paperclip/pull/17))
+adds 142 reviewed EN/RU message pairs across the
 page/dialog, name/adapter selection, setup wizard, local validation and runtime
 test controls. All 151 tests in six related files, UI typecheck/build and token
 gates pass. Source review preserves create/qualification dependencies, canonical IDs,
 credential cleanup and raw provider diagnostics. The integrated audit passes
-with 5,663 reviewed families and 16,848 existing source findings. Shared form
-controls, full agent configuration and external invitations remain separate;
+with 5,663 reviewed families and 16,848 existing source findings. Full agent
+configuration and external invitations remain separate;
 mocked component checks do not prove real provider login or browser acceptance.
+
+The shared-form slice adds 168 reviewed message families for default captions,
+validation, environment variables, secret binding and common controls. Stored
+schema issues retain owned codes and resolve at render time; legacy string APIs
+keep their prior English contract. Three host consumers use the new issue objects
+without changing their save/probe logic. Custom schema and provider text stays
+literal. Locale changes preserve drafts, selection, sources, versions and explicit
+action payloads. The complete 15-file run passed 179 tests. Two later regressions
+for unknown statuses passed complete affected-file reruns, for 181 distinct cases;
+this is not a new all-green 15-file invocation. After integration with agent setup,
+UI typecheck and build passed on `7b75860b5`; all six agent-setup files passed
+151 tests again. An initial test command stopped before discovery because the
+installed Vitest rejected `--minWorkers`; the corrected command changed no source.
+Root review examined every message form and changed source, added two precise
+exceptions, and pruned only resolved source debt. The integrated audit passes
+with 5,831 reviewed families and 16,712 existing source findings, no pending,
+missing, invalid or new findings, and no source errors. Full host-page translation and
+real browser/secret-write acceptance remain separate work.
 
 After chat, the remaining major packages are agent configuration and invitations,
 project details/environments, dashboard/activity/costs, member access/secrets,
@@ -729,12 +753,13 @@ They do not auto-merge or deploy. Scheduled sync and image publication require
 accepted default-branch integration and a successful first real run.
 
 Actions is enabled, but its default token is read-only and Actions PR creation is
-disabled. A sync App and registry publication have not been demonstrated. GitHub
-cancelled earlier verification with `repository invocation blocked`; subsequent
-confirmed pushes did not create PR workflow runs. The available API does not
-establish the restriction's cause. Local verification does not make that hosted
-gate green. The owner needs to resolve the account/repository restriction before
-hosted acceptance, protection activation, or image publication.
+disabled. A sync App and registry publication have not been demonstrated. After
+an earlier `repository invocation blocked` cancellation, the owner re-enabled
+Actions on 2026-10-26. A new exact-SHA dispatch for `07332f25c` started real jobs;
+the [localization lane passed](https://github.com/dexogen/paperclip/actions/runs/40291467289),
+while the complete hosted result is pending. The available evidence does not
+establish why GitHub disabled execution. Local checks and one successful lane do
+not make the full hosted gate green.
 
 The inherited `commitperclip PR Review` workflow was temporarily disabled after
 its unguarded default-branch run failed on unavailable upstream configuration.
