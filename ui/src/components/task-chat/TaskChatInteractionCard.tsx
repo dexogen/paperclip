@@ -1,3 +1,4 @@
+import { localizeOnboardingQuestion, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
 import { useTranslation } from "@/i18n";
 import type { ComponentProps } from "react";
 import type { IssueDocument } from "@paperclipai/shared";
@@ -48,9 +49,11 @@ export function TaskChatInteractionCard({
   ...cardProps
 }: TaskChatInteractionCardProps) {
   const { t } = useTranslation();
+  const onboardingTask = useOnboardingTask();
   const interaction = item.interaction;
   if (presentation === "timeline" && showUnansweredQuestion && !shouldHideInteractionCard(interaction) && interaction.kind === "ask_user_questions" && interaction.status === "pending") {
-    const prompt = interaction.payload.questionSet?.questions[0]?.prompt ?? interaction.payload.questions[0]?.prompt ?? interaction.title ?? t("taskChatUi.interaction.question");
+    const displayPayload = localizeOnboardingQuestion(interaction, onboardingTask, t);
+    const prompt = displayPayload.questionSet?.questions[0]?.prompt ?? displayPayload.questions[0]?.prompt ?? interaction.title ?? t("taskChatUi.interaction.question");
     return (
       <button
         type="button"

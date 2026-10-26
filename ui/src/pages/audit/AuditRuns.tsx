@@ -1,3 +1,5 @@
+import { statusLabel } from "@/i18n/ui-labels";
+import { t, useTranslation } from "@/i18n";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { HeartbeatRun, RoutineRunSummary } from "@paperclipai/shared";
@@ -33,17 +35,26 @@ function runDuration(run: HeartbeatRun) {
   const end = run.finishedAt ? new Date(run.finishedAt).getTime() : null;
   if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) return null;
   const seconds = Math.max(0, Math.round((end - start) / 1000));
-  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 60) return t("surfacesGap.runs.seconds", { seconds });
   const minutes = Math.floor(seconds / 60);
-  return `${minutes}m ${seconds % 60}s`;
+  return t("surfacesGap.runs.minutesSeconds", { minutes, seconds: seconds % 60 });
 }
 
 function readableSource(source: string) {
-  return source.replaceAll("_", " ");
+  switch (source) {
+    case "schedule": return t("surfacesGap.runs.source.schedule");
+    case "webhook": return t("surfacesGap.runs.source.webhook");
+    case "manual": return t("surfacesGap.runs.source.manual");
+    case "timer": return t("surfacesGap.runs.source.timer");
+    case "assignment": return t("surfacesGap.runs.source.assignment");
+    case "on_demand": return t("surfacesGap.runs.source.on_demand");
+    case "automation": return t("surfacesGap.runs.source.automation");
+    default: return source.replaceAll("_", " ");
+  }
 }
 
 function routineRunTitle(run: RoutineRunSummary) {
-  return run.linkedIssue?.title ?? run.trigger?.label ?? "Routine run";
+  return run.linkedIssue?.title ?? run.trigger?.label ?? t("surfacesGap.runs.routineRun");
 }
 
 function RoutineScopedRuns({
@@ -57,10 +68,11 @@ function RoutineScopedRuns({
   error: Error | null;
   onRetry: () => void;
 }) {
+  useTranslation();
   if (isLoading) {
     return (
       <div className="border-y border-border py-14 text-center text-sm text-muted-foreground">
-        Loading routine runs…
+        {t("surfacesGap.runs.loadingRoutine")}
       </div>
     );
   }
@@ -69,24 +81,24 @@ function RoutineScopedRuns({
     return (
       <div className="flex flex-col items-center gap-3 border-y border-border py-14 text-center">
         <p className="text-sm text-muted-foreground">{error.message}</p>
-        <Button variant="outline" size="sm" onClick={onRetry}>Try again</Button>
+        <Button variant="outline" size="sm" onClick={onRetry}>{t("surfacesGap.audit.tryAgain")}</Button>
       </div>
     );
   }
 
   if (runs.length === 0) {
-    return <EmptyState icon={Activity} message="No routine runs yet." />;
+    return <EmptyState icon={Activity} message={t("surfacesGap.runs.emptyRoutine")} />;
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Routine runs</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("surfacesGap.runs.routineRuns")}</h2>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Executions created by this routine, newest first.
+          {t("surfacesGap.runs.routineDescription")}
         </p>
       </div>
-      <ul className="divide-y divide-border border-y border-border" aria-label="Routine runs">
+      <ul className="divide-y divide-border border-y border-border" aria-label={t("surfacesGap.runs.routineRuns")}>
         {runs.map((run) => {
           const content = (
             <>
@@ -121,12 +133,13 @@ function RoutineScopedRuns({
           );
         })}
       </ul>
-      <p className="text-xs text-muted-foreground">Showing the {RUN_LIMIT} most recent routine runs.</p>
+      <p className="text-xs text-muted-foreground">{t("surfacesGap.runs.routineLimit", { count: RUN_LIMIT })}</p>
     </div>
   );
 }
 
 export function AuditRuns({ companyId, routineId }: { companyId: string; routineId?: string }) {
+  useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const agentId = searchParams.get("agentId") ?? ALL;
   const status = searchParams.get("runStatus") ?? ALL;
@@ -201,22 +214,21 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Runs</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("surfacesGap.audit.runs")}</h2>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Recent agent executions across the organization. Open a run to inspect its transcript,
-          output, and task context.
+          {t("surfacesGap.runs.description")}
         </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3 border-y border-border py-3">
         <label className="grid gap-1 text-(length:--text-micro) font-medium text-muted-foreground">
-          <span>Agent</span>
+          <span>{t("surfacesGap.audit.agent")}</span>
           <Select value={agentId} onValueChange={(value) => updateFilter("agentId", value)}>
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="All agents" />
+              <SelectValue placeholder={t("surfacesGap.audit.allAgents")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>All agents</SelectItem>
+              <SelectItem value={ALL}>{t("surfacesGap.audit.allAgents")}</SelectItem>
               {(agents.data ?? []).map((agent) => (
                 <SelectItem key={agent.id} value={agent.id}>
                   {agent.name}
@@ -226,16 +238,16 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
           </Select>
         </label>
         <label className="grid gap-1 text-(length:--text-micro) font-medium text-muted-foreground">
-          <span>Status</span>
+          <span>{t("surfacesGap.audit.status")}</span>
           <Select value={status} onValueChange={(value) => updateFilter("runStatus", value)}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="All statuses" />
+              <SelectValue placeholder={t("surfacesGap.audit.allStatuses")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>All statuses</SelectItem>
+              <SelectItem value={ALL}>{t("surfacesGap.audit.allStatuses")}</SelectItem>
               {statuses.map((value) => (
                 <SelectItem key={value} value={value}>
-                  {readableSource(value)}
+                  {statusLabel(value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -243,31 +255,31 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
         </label>
         {agentId !== ALL || status !== ALL ? (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
-            Clear filters
+            {t("surfacesGap.audit.clear")}
           </Button>
         ) : null}
       </div>
 
       {runs.isLoading ? (
         <div className="border-y border-border py-14 text-center text-sm text-muted-foreground">
-          Loading runs…
+          {t("surfacesGap.runs.loading")}
         </div>
       ) : runs.error ? (
         <div className="flex flex-col items-center gap-3 border-y border-border py-14 text-center">
           <p className="text-sm text-muted-foreground">
-            {runs.error instanceof Error ? runs.error.message : "Failed to load runs."}
+            {runs.error instanceof Error ? runs.error.message : t("surfacesGap.runs.loadError")}
           </p>
           <Button variant="outline" size="sm" onClick={() => runs.refetch()}>
-            Try again
+            {t("surfacesGap.audit.tryAgain")}
           </Button>
         </div>
       ) : visibleRuns.length === 0 ? (
         <EmptyState
           icon={agentId !== ALL || status !== ALL ? CircleDotDashed : Activity}
-          message={agentId !== ALL || status !== ALL ? "No runs match these filters." : "No runs yet."}
+          message={agentId !== ALL || status !== ALL ? t("surfacesGap.runs.noMatch") : t("surfacesGap.runs.empty")}
         />
       ) : (
-        <ul className="divide-y divide-border border-y border-border" aria-label="Recent runs">
+        <ul className="divide-y divide-border border-y border-border" aria-label={t("surfacesGap.runs.recent")}>
           {visibleRuns.map((run) => {
             const agent = agentById.get(run.agentId);
             const summary = runSummary(run);
@@ -281,7 +293,7 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium text-foreground">
-                        {agent?.name ?? "Unknown agent"}
+                        {agent?.name ?? t("surfacesGap.runs.unknownAgent")}
                       </span>
                       <span className="font-mono text-(length:--text-micro) text-muted-foreground">
                         {run.id.slice(0, 8)}
@@ -289,7 +301,7 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
                       <StatusBadge status={run.status} />
                     </div>
                     <p className="mt-1 truncate text-sm text-muted-foreground">
-                      {summary ?? `${readableSource(run.invocationSource)} run`}
+                      {summary ?? t("surfacesGap.runs.sourceSummary", { source: readableSource(run.invocationSource) })}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground sm:justify-end">
@@ -306,7 +318,7 @@ export function AuditRuns({ companyId, routineId }: { companyId: string; routine
         </ul>
       )}
 
-      <p className="text-xs text-muted-foreground">Showing the {RUN_LIMIT} most recent runs.</p>
+      <p className="text-xs text-muted-foreground">{t("surfacesGap.runs.recentLimit", { count: RUN_LIMIT })}</p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { t, useTranslation, i18n } from "@/i18n";
 import type { ReactNode } from "react";
 import type { To } from "react-router-dom";
 import { Link } from "@/lib/router";
@@ -30,7 +31,7 @@ export function ArtifactCaption({ title, identifier, facts }: { title: string; i
         ) : null}
         <span className="flex items-center gap-1 text-xs leading-4 text-muted-foreground">
           {facts.map((fact, i) => (
-            <span key={fact} className="whitespace-nowrap">
+            <span key={i} className="whitespace-nowrap">
               {i > 0 ? <span className="mr-1">·</span> : null}
               {fact}
             </span>
@@ -82,8 +83,9 @@ export interface StackTileProps {
 
 /** A task with several artifacts: its newest one on top of a stack, the task's title underneath. */
 export function ArtifactStackTile({ identifier, title, count, updatedAt, front, to, onClick, now }: StackTileProps) {
+  useTranslation();
   return (
-    <ArtifactTile label={`Open ${identifier} ${title}, ${countLabel(count)}`} to={to} onClick={onClick} testId="artifact-v1-stack-tile" caption={<ArtifactCaption title={title} identifier={identifier} facts={[countLabel(count), `Updated ${updatedLabel(updatedAt, now)}`]} />}>
+    <ArtifactTile label={t("surfacesGap.artifacts.openStack", { identifier, title, artifacts: countLabel(count, i18n.t) })} to={to} onClick={onClick} testId="artifact-v1-stack-tile" caption={<ArtifactCaption title={title} identifier={identifier} facts={[countLabel(count, i18n.t), t("surfacesGap.artifacts.updated", { date: updatedLabel(updatedAt, now, i18n.t, i18n.resolvedLanguage) })]} />}>
       <ArtifactStack front={front} />
     </ArtifactTile>
   );
@@ -91,9 +93,10 @@ export function ArtifactStackTile({ identifier, title, count, updatedAt, front, 
 
 /** One artifact on its own: its file name (or title) underneath. */
 export function ArtifactSingleTile({ subject, to, onClick, now }: { subject: ArtifactSubject; to?: To; onClick?: () => void; now?: Date }) {
+  useTranslation();
   const name = subject.filename ?? subject.title;
   return (
-    <ArtifactTile label={`Open ${name}`} to={to} onClick={onClick} testId="artifact-v1-single-tile" caption={<ArtifactCaption title={name} identifier={subject.taskIdentifier} facts={subject.updatedAt ? [`Updated ${updatedLabel(subject.updatedAt, now)}`] : []} />}>
+    <ArtifactTile label={t("surfacesGap.artifacts.open", { name })} to={to} onClick={onClick} testId="artifact-v1-single-tile" caption={<ArtifactCaption title={name} identifier={subject.taskIdentifier} facts={subject.updatedAt ? [t("surfacesGap.artifacts.updated", { date: updatedLabel(subject.updatedAt, now, i18n.t, i18n.resolvedLanguage) })] : []} />}>
       <ArtifactFront subject={subject} />
     </ArtifactTile>
   );

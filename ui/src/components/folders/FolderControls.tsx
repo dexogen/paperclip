@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Check,
@@ -98,6 +99,7 @@ export function FolderSwatch({
   color: string | null | undefined;
   className?: string;
 }) {
+  useTranslation();
   const backgroundColor = color
     ? (FOLDER_COLOR_VALUES[color] ?? color)
     : "var(--folder-color-slate)";
@@ -120,8 +122,30 @@ function selectionLabel({
   allLabel: string;
 }) {
   if (selection === "all") return allLabel;
-  if (selection === "unfiled") return "Unfiled";
+  if (selection === "unfiled") return t("skillsGap.unfiled");
   return folders.find((folder) => folder.id === selection)?.name ?? allLabel;
+}
+
+function itemFoldersLabel(items: string) {
+  switch (items) {
+    case "skills": return t("skillsGap.skillFoldersLabel");
+    case "Skills": return t("skillsGap.skillFoldersTitle");
+    case "routines": return t("skillsGap.routineFoldersLabel");
+    case "Routines": return t("skillsGap.routineFoldersTitle");
+    default: return t("skillsGap.itemFolders", { items });
+  }
+}
+
+function groupItemsDescription(items: string) {
+  if (items === "skills" || items === "Skills") return t("skillsGap.groupSkills");
+  if (items === "routines" || items === "Routines") return t("skillsGap.groupRoutines");
+  return t("skillsGap.groupItems", { items });
+}
+
+function deleteFolderDescription(items: string, count: number) {
+  if (items === "skills" || items === "Skills") return t("skillsGap.deleteFolderSkills", { count });
+  if (items === "routines" || items === "Routines") return t("skillsGap.deleteFolderRoutines", { count });
+  return t("skillsGap.deleteFolderItems", { items, count });
 }
 
 function selectionCount(result: FolderListResult | null | undefined, selection: FolderSelection) {
@@ -142,6 +166,7 @@ export function FolderChip({
   allLabel: string;
   onClick: () => void;
 }) {
+  useTranslation();
   const folder = result ? selectedFolderFromList(result.folders, selection) : null;
   return (
     <Button variant="outline" size="sm" className="max-w-full justify-start" onClick={onClick}>
@@ -176,6 +201,7 @@ export function FolderRail({
   onEdit: (folder: FolderListItem) => void;
   onDelete: (folder: FolderListItem) => void;
 }) {
+  useTranslation();
   const folders = result?.folders ?? [];
   const [renamingFolderId, setRenamingFolderId] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState("");
@@ -222,10 +248,10 @@ export function FolderRail({
   }
 
   return (
-    <nav aria-label={`${itemLabelPlural} folders`} className="hidden w-(--sz-folder-rail) shrink-0 border-r border-border pr-3 md:block">
+    <nav aria-label={itemFoldersLabel(itemLabelPlural)} className="hidden w-(--sz-folder-rail) shrink-0 border-r border-border pr-3 md:block">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">Folders</div>
-        <Button variant="ghost" size="icon-sm" title="New folder" onClick={onCreate}>
+        <div className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{t("skillsGap.folders")}</div>
+        <Button variant="ghost" size="icon-sm" title={t("skillsGap.newFolder")} onClick={onCreate}>
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -254,10 +280,8 @@ export function FolderRail({
               onDelete={() => onDelete(folder)}
             />
           ))}
-          <div className="px-2 pb-1 pt-3 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-            System
-          </div>
-          {renderVirtualRow("unfiled", "Unfiled", result?.unfiledCount ?? 0, <FolderSwatch color={null} className="mt-0.5" />)}
+          <div className="px-2 pb-1 pt-3 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{t("skillsGap.system")}</div>
+          {renderVirtualRow("unfiled", t("skillsGap.unfiled"), result?.unfiledCount ?? 0, <FolderSwatch color={null} className="mt-0.5" />)}
         </div>
       )}
     </nav>
@@ -294,6 +318,7 @@ export function FolderRailItem({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  useTranslation();
   return (
     <div
       className={cn(
@@ -334,19 +359,17 @@ export function FolderRailItem({
             variant="ghost"
             size="icon-sm"
             className="h-6 w-6 opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100"
-            aria-label={`Folder actions for ${folder.name}`}
+            aria-label={t("skillsGap.folderActionsFor", { name: folder.name })}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={onStartRename}>Rename</DropdownMenuItem>
-          <DropdownMenuItem onSelect={onEdit}>Edit color</DropdownMenuItem>
+          <DropdownMenuItem onSelect={onStartRename}>{t("skillsGap.rename")}</DropdownMenuItem>
+          <DropdownMenuItem onSelect={onEdit}>{t("skillsGap.editColor")}</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onSelect={onDelete}>
-            <Trash2 className="h-3.5 w-3.5" />
-            Delete
-          </DropdownMenuItem>
+            <Trash2 className="h-3.5 w-3.5" />{t("skillsGap.delete_f6fdbe")}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -366,6 +389,7 @@ export function AllUnfiledBanner({
   itemLabelPlural: string;
   onCreateFolder: () => void;
 }) {
+  useTranslation();
   const [dismissed, setDismissed] = useState(() => {
     try {
       return window.localStorage.getItem(storageKey) === "1";
@@ -388,13 +412,9 @@ export function AllUnfiledBanner({
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm">
       <FolderIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-      <span className="min-w-0 flex-1 text-muted-foreground">
-        Group these {itemLabelPlural} into folders to keep things tidy.
-      </span>
-      <Button size="sm" variant="outline" onClick={onCreateFolder}>
-        Create your first folder
-      </Button>
-      <Button size="icon-sm" variant="ghost" aria-label="Dismiss folder suggestion" onClick={dismiss}>
+      <span className="min-w-0 flex-1 text-muted-foreground">{groupItemsDescription(itemLabelPlural)}</span>
+      <Button size="sm" variant="outline" onClick={onCreateFolder}>{t("skillsGap.createYourFirstFolder")}</Button>
+      <Button size="icon-sm" variant="ghost" aria-label={t("skillsGap.dismissFolderSuggestion")} onClick={dismiss}>
         <X className="h-3.5 w-3.5" />
       </Button>
     </div>
@@ -420,6 +440,7 @@ export function MobileFolderSheet({
   onSelect: (selection: FolderSelection) => void;
   onCreate: () => void;
 }) {
+  useTranslation();
   function select(next: FolderSelection) {
     onSelect(next);
     onOpenChange(false);
@@ -451,7 +472,7 @@ export function MobileFolderSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="max-h-(--sz-folder-sheet-max) rounded-t-lg pb-4">
         <SheetHeader className="border-b border-border px-4 py-3">
-          <SheetTitle>{itemLabelPlural} folders</SheetTitle>
+          <SheetTitle>{itemFoldersLabel(itemLabelPlural)}</SheetTitle>
         </SheetHeader>
         <div className="overflow-y-auto px-3">
           <MobileFolderRow
@@ -464,10 +485,8 @@ export function MobileFolderSheet({
           />
           {result?.kind === "skill" ? (
             <>
-              {model.my ? renderBranch(model.my, "My Skills") : null}
-              <div className="px-2 pb-0.5 pt-2 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-                Organization
-              </div>
+              {model.my ? renderBranch(model.my, t("skillsGap.mySkills")) : null}
+              <div className="px-2 pb-0.5 pt-2 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{t("skillsGap.organization")}</div>
               {model.company.map((node) => renderBranch(node))}
               {model.projects ? renderBranch(model.projects, "Projects") : null}
               {model.bundled ? renderBranch(model.bundled, "Bundled") : null}
@@ -477,7 +496,7 @@ export function MobileFolderSheet({
           )}
           <MobileFolderRow
             id="unfiled"
-            label="Unfiled"
+            label={t("skillsGap.unfiled")}
             count={result?.unfiledCount ?? 0}
             selected={selection === "unfiled"}
             onSelect={select}
@@ -485,9 +504,7 @@ export function MobileFolderSheet({
         </div>
         <div className="border-t border-border px-4 pt-3">
           <Button size="sm" variant="outline" className="w-full" onClick={onCreate}>
-            <Plus className="mr-2 h-3.5 w-3.5" />
-            New folder
-          </Button>
+            <Plus className="mr-2 h-3.5 w-3.5" />{t("skillsGap.newFolder")}</Button>
         </div>
       </SheetContent>
     </Sheet>
@@ -511,6 +528,7 @@ function MobileFolderRow({
   all?: boolean;
   onSelect: (selection: FolderSelection) => void;
 }) {
+  useTranslation();
   return (
     <button
       type="button"
@@ -536,9 +554,10 @@ export function MoveToMenu({
   onMove: (folderId: string | null) => void;
   onCreateAndMove: () => void;
 }) {
+  useTranslation();
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>Move to...</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>{t("skillsGap.moveTo_d19987")}</DropdownMenuSubTrigger>
       <DropdownMenuSubContent className="w-56">
         <MoveToMenuItems
           folders={folders}
@@ -562,6 +581,7 @@ function MoveToMenuItems({
   onMove: (folderId: string | null) => void;
   onCreateAndMove: () => void;
 }) {
+  useTranslation();
   const [query, setQuery] = useState("");
   const visibleFolders = useMemo(() => {
     const lowered = query.trim().toLowerCase();
@@ -577,15 +597,13 @@ function MoveToMenuItems({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={(event) => event.stopPropagation()}
-            placeholder="Search folders"
+            placeholder={t("skillsGap.searchFolders")}
             className="h-7 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => onMove(null)}>
-          <FolderSwatch color={null} />
-          Unfiled
-          {currentFolderId == null ? <Check className="ml-auto h-3.5 w-3.5" /> : null}
+          <FolderSwatch color={null} />{t("skillsGap.unfiled")}{currentFolderId == null ? <Check className="ml-auto h-3.5 w-3.5" /> : null}
         </DropdownMenuItem>
         {visibleFolders.map((folder) => (
           <DropdownMenuItem key={folder.id} onSelect={() => onMove(folder.id)}>
@@ -595,13 +613,11 @@ function MoveToMenuItems({
           </DropdownMenuItem>
         ))}
         {visibleFolders.length === 0 ? (
-          <div className="px-2 py-2 text-xs text-muted-foreground">No folders match.</div>
+          <div className="px-2 py-2 text-xs text-muted-foreground">{t("skillsGap.noFoldersMatch")}</div>
         ) : null}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onCreateAndMove}>
-          <Plus className="h-3.5 w-3.5" />
-          New folder...
-        </DropdownMenuItem>
+          <Plus className="h-3.5 w-3.5" />{t("skillsGap.newFolder_94a199")}</DropdownMenuItem>
     </>
   );
 }
@@ -621,6 +637,7 @@ export function FolderFormDialog({
   onSubmit: (payload: { name: string; color: string | null }) => void;
   pending?: boolean;
 }) {
+  useTranslation();
   const [name, setName] = useState("");
   const [color, setColor] = useState<string | null>(FOLDER_COLORS[0] ?? null);
   const isEdit = Boolean(folder);
@@ -635,14 +652,14 @@ export function FolderFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit folder" : "Create folder"}</DialogTitle>
+          <DialogTitle>{isEdit ? t("skillsGap.editFolder") : t("skillsGap.createFolder")}</DialogTitle>
           <DialogDescription>
-            {kind === "routine" ? "Organize routines in this organization." : "Organize installed organization skills."}
+            {kind === "routine" ? t("skillsGap.organizeRoutinesInThisOrganization") : t("skillsGap.organizeInstalledOrganizationSkills")}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="folder-name">Name</label>
+            <label className="text-sm font-medium" htmlFor="folder-name">{t("skillsGap.name")}</label>
             <Input
               id="folder-name"
               value={name}
@@ -654,13 +671,13 @@ export function FolderFormDialog({
             />
           </div>
           <div className="space-y-2">
-            <div className="text-sm font-medium">Color</div>
+            <div className="text-sm font-medium">{t("skillsGap.color")}</div>
             <div className="flex flex-wrap gap-2">
               {FOLDER_COLORS.map((swatch) => (
                 <button
                   key={swatch}
                   type="button"
-                  aria-label={`Use folder color ${swatch}`}
+                  aria-label={t("skillsGap.useFolderColor", { color: swatch })}
                   className={cn(
                     "h-7 w-7 rounded-md border border-border",
                     color === swatch && "ring-2 ring-ring ring-offset-2 ring-offset-background",
@@ -676,18 +693,14 @@ export function FolderFormDialog({
                   color == null && "ring-2 ring-ring ring-offset-2 ring-offset-background",
                 )}
                 onClick={() => setColor(null)}
-              >
-                None
-              </button>
+              >{t("skillsGap.none")}</button>
             </div>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={pending}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={pending}>{t("skillsGap.cancel")}</Button>
           <Button onClick={() => onSubmit({ name: name.trim(), color })} disabled={pending || !name.trim()}>
-            {pending ? "Saving..." : isEdit ? "Save" : "Create folder"}
+            {pending ? t("skillsGap.saving") : isEdit ? t("skillsGap.save") : t("skillsGap.createFolder")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -710,17 +723,16 @@ export function DeleteFolderDialog({
   onConfirm: () => void;
   pending?: boolean;
 }) {
+  useTranslation();
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete folder</AlertDialogTitle>
-          <AlertDialogDescription>
-            The {folder?.itemCount ?? 0} {itemLabelPlural} in this folder won't be deleted. They'll move to Unfiled.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t("skillsGap.deleteFolder")}</AlertDialogTitle>
+          <AlertDialogDescription>{deleteFolderDescription(itemLabelPlural, folder?.itemCount ?? 0)}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>{t("skillsGap.cancel")}</AlertDialogCancel>
           <AlertDialogAction
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             disabled={pending || !folder}
@@ -729,7 +741,7 @@ export function DeleteFolderDialog({
               onConfirm();
             }}
           >
-            {pending ? "Deleting..." : "Delete folder"}
+            {pending ? t("skillsGap.deleting") : t("skillsGap.deleteFolder")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -752,13 +764,14 @@ export function BulkBar({
   onClear: () => void;
   onDone: () => void;
 }) {
+  useTranslation();
   if (selectedCount === 0) return null;
   return (
     <div className="sticky top-2 z-10 flex flex-wrap items-center gap-2 rounded-md border border-border bg-background/95 px-3 py-2 shadow-sm backdrop-blur">
-      <span className="mr-auto text-sm text-muted-foreground">{selectedCount} selected</span>
+      <span className="mr-auto text-sm text-muted-foreground">{t("skillsGap.selected", { count: selectedCount })}</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="sm" variant="outline">Move to...</Button>
+          <Button size="sm" variant="outline">{t("skillsGap.moveTo_d19987")}</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <MoveToMenuItems
@@ -769,8 +782,8 @@ export function BulkBar({
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      <Button size="sm" variant="ghost" onClick={onClear}>Deselect all</Button>
-      <Button size="sm" onClick={onDone}>Done</Button>
+      <Button size="sm" variant="ghost" onClick={onClear}>{t("skillsGap.deselectAll")}</Button>
+      <Button size="sm" onClick={onDone}>{t("skillsGap.done")}</Button>
     </div>
   );
 }

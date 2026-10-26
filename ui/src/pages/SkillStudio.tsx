@@ -1,3 +1,4 @@
+import { t, useTranslation, i18n } from "@/i18n";
 import { SkillsPageNavigation } from "@/components/skill-studio/SkillsNavigationTabs";
 import { interactionReadinessRefetchInterval } from "@/lib/issue-thread-interactions";
 import { SkillBinaryFile } from "../components/SkillBinaryFile";
@@ -205,7 +206,7 @@ function useMutationErrorToast() {
         return;
       }
       const body =
-        error instanceof Error && error.message ? error.message : "Please try again.";
+        error instanceof Error && error.message ? error.message : t("skillsGap.pleaseTryAgain");
       toast?.pushToast({ tone: "error", title, body });
     },
     [toast],
@@ -274,6 +275,7 @@ function useIsMobile() {
 // ---------------------------------------------------------------------------
 
 export function SkillStudio() {
+  useTranslation();
   const { skillId = "" } = useParams<{ skillId: string }>();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -310,22 +312,22 @@ export function SkillStudio() {
     setBreadcrumbs(
       isCreateMode
         ? [
-            { label: "Skills", href: "/skills" },
-            { label: "Studio", href: "/skills/studio" },
-            { label: "New skill" },
+            { label: t("skillsGap.skills"), href: "/skills" },
+            { label: t("skillsGap.studio"), href: "/skills/studio" },
+            { label: t("skillsGap.newSkill_a7b490") },
           ]
         : skill
         ? [
-            { label: "Skills", href: "/skills" },
-            { label: "Studio", href: "/skills/studio" },
+            { label: t("skillsGap.skills"), href: "/skills" },
+            { label: t("skillsGap.studio"), href: "/skills/studio" },
             { label: skill.name },
           ]
         : [
-            { label: "Skills", href: "/skills" },
-            { label: "Studio" },
+            { label: t("skillsGap.skills"), href: "/skills" },
+            { label: t("skillsGap.studio") },
           ],
     );
-  }, [isCreateMode, setBreadcrumbs, skill]);
+  }, [isCreateMode, setBreadcrumbs, skill, i18n.language]);
 
   // Record a per-browser visit whenever a skill successfully opens, powering the
   // landing's "Recently visited" section (PAP-13150).
@@ -334,7 +336,7 @@ export function SkillStudio() {
   }, [skill?.id]);
 
   if (!companyId) {
-    return <StudioMessage message="Select an organization to open Skill Studio." />;
+    return <StudioMessage message={t("skillsGap.selectAnOrganizationToOpenSkillStudio")} />;
   }
   if (isCreateMode) {
     return (
@@ -363,10 +365,10 @@ export function SkillStudio() {
     );
   }
   if (detailQuery.isLoading) {
-    return <StudioMessage message="Loading skill…" />;
+    return <StudioMessage message={t("skillsGap.loadingSkill")} />;
   }
   if (detailQuery.isError || !detailQuery.data) {
-    return <StudioMessage message="Skill not found." />;
+    return <StudioMessage message={t("skillsGap.skillNotFound")} />;
   }
 
   return (
@@ -400,6 +402,7 @@ function StudioCreateMode({
   forkError: boolean;
   onSelectSkill: (skillId: string) => void;
 }) {
+  useTranslation();
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex h-full min-h-0 flex-col">
@@ -409,7 +412,7 @@ function StudioCreateMode({
             skills={skills}
             loading={skillsLoading}
             onSelectSkill={onSelectSkill}
-            emptyLabel="New skill"
+            emptyLabel={t("skillsGap.newSkill_a7b490")}
           />
         </header>
         <SkillsPageNavigation activeView="authored" />
@@ -443,6 +446,7 @@ function StudioNewSkillPanel({
   forkLoading: boolean;
   forkError: boolean;
 }) {
+  useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const toast = useOptionalToastActions();
@@ -478,29 +482,29 @@ function StudioNewSkillPanel({
       await queryClient.invalidateQueries({ queryKey: queryKeys.companySkills.list(companyId) });
       toast?.pushToast({
         tone: "success",
-        title: skill.forkedFromSkillId ? "Skill fork created" : "Skill created",
-        body: `${skill.name} is now editable in the Paperclip workspace.`,
+        title: skill.forkedFromSkillId ? t("skillsGap.skillForkCreated") : t("skillsGap.skillCreated"),
+        body: t("skillsGap.skillEditable", { name: skill.name }),
       });
       navigate(skillStudioRoute(skill.id));
     },
     onError: (error) => {
       toast?.pushToast({
         tone: "error",
-        title: "Skill creation failed",
-        body: error instanceof Error ? error.message : "Failed to create skill.",
+        title: t("skillsGap.skillCreationFailed"),
+        body: error instanceof Error ? error.message : t("skillsGap.failedToCreateSkill"),
       });
     },
   });
 
   if (forkFromSkillId && forkLoading) {
-    return <StudioMessage message="Loading fork source..." />;
+    return <StudioMessage message={t("skillsGap.loadingForkSource")} />;
   }
 
   const previewCard: DiscoveryCard = {
     key: effectiveSlug || draft.name || "new-skill",
     skillId: null,
     catalogRef: null,
-    name: draft.name || "New Skill",
+    name: draft.name || t("skillsGap.newSkill"),
     slug: effectiveSlug || "skill",
     author: "you",
     version: null,
@@ -522,33 +526,28 @@ function StudioNewSkillPanel({
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-foreground">
-          {draft.forkedFromSkillId ? "Fork skill" : "Create a new skill"}
+          {draft.forkedFromSkillId ? t("skillsGap.forkSkill") : t("skillsGap.createANewSkill")}
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Create an editable organization skill and open it directly in Studio.
-        </p>
+        <p className="text-sm text-muted-foreground">{t("skillsGap.createAnEditableOrganizationSkillAndOpen")}</p>
       </div>
 
       {draft.forkedFromName ? (
         <div className="flex items-center gap-2 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-          <GitFork className="h-4 w-4" />
-          Forking {draft.forkedFromName}
+          <GitFork className="h-4 w-4" />{t("skillsGap.forking")}{" "}{draft.forkedFromName}
         </div>
       ) : forkError ? (
         <div className="flex items-center gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          <AlertTriangle className="h-4 w-4" />
-          Fork source not found. You can still create a blank skill.
-        </div>
+          <AlertTriangle className="h-4 w-4" />{t("skillsGap.forkSourceNotFoundYouCanStill")}</div>
       ) : null}
 
       <section className="space-y-3">
         <div>
-          <h2 className="text-sm font-medium text-foreground">Basics</h2>
-          <p className="text-xs text-muted-foreground">Name the skill and set the route-safe slug.</p>
+          <h2 className="text-sm font-medium text-foreground">{t("skillsGap.basics")}</h2>
+          <p className="text-xs text-muted-foreground">{t("skillsGap.nameTheSkillAndSetTheRoute")}</p>
         </div>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="skill-name">Name</Label>
+            <Label htmlFor="skill-name">{t("skillsGap.name")}</Label>
             <Input
               id="skill-name"
               value={draft.name}
@@ -562,11 +561,11 @@ function StudioNewSkillPanel({
                     : draft.markdown,
                 });
               }}
-              placeholder="Code review"
+              placeholder={t("skillsGap.codeReview")}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="skill-slug">Slug</Label>
+            <Label htmlFor="skill-slug">{t("skillsGap.slug")}</Label>
             <Input
               id="skill-slug"
               value={draft.slug}
@@ -581,7 +580,7 @@ function StudioNewSkillPanel({
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="skill-tagline">Tagline</Label>
+          <Label htmlFor="skill-tagline">{t("skillsGap.tagline")}</Label>
           <Textarea
             id="skill-tagline"
             value={draft.tagline}
@@ -595,7 +594,7 @@ function StudioNewSkillPanel({
                   : draft.markdown,
               });
             }}
-            placeholder="Review repository changes for correctness, tests, and maintainability."
+            placeholder={t("skillsGap.reviewRepositoryChangesForCorrectnessTestsAnd")}
             className="min-h-20"
           />
         </div>
@@ -603,18 +602,18 @@ function StudioNewSkillPanel({
 
       <section className="space-y-3">
         <div>
-          <h2 className="text-sm font-medium text-foreground">Appearance</h2>
-          <p className="text-xs text-muted-foreground">Tune how the skill appears in the store and Studio switcher.</p>
+          <h2 className="text-sm font-medium text-foreground">{t("skillsGap.appearance")}</h2>
+          <p className="text-xs text-muted-foreground">{t("skillsGap.tuneHowTheSkillAppearsInThe")}</p>
         </div>
         <div className="flex items-center gap-3">
           <SkillCardIcon card={previewCard} size={48} />
           <div className="min-w-0">
             <div className="truncate text-sm font-medium">{previewCard.name}</div>
-            <div className="truncate text-xs text-muted-foreground">{draft.tagline || "No tagline yet."}</div>
+            <div className="truncate text-xs text-muted-foreground">{draft.tagline || t("skillsGap.noTaglineYet")}</div>
           </div>
         </div>
         <div className="space-y-2">
-          <Label>Color</Label>
+          <Label>{t("skillsGap.color")}</Label>
           <div className="flex flex-wrap items-center gap-2">
             {SKILL_CREATE_ACCENTS.map((color) => (
               <button
@@ -626,11 +625,11 @@ function StudioNewSkillPanel({
                   draft.color === color ? "border-foreground" : "border-border",
                 )}
                 style={{ backgroundColor: color }}
-                aria-label={`Use ${color}`}
+                aria-label={t("skillsGap.use", { color: color })}
               />
             ))}
             <Input
-              aria-label="Hex color"
+              aria-label={t("skillsGap.hexColor")}
               value={draft.color}
               onChange={(event) => patchDraft({ color: event.target.value })}
               className="h-7 w-28 font-mono text-xs"
@@ -638,20 +637,20 @@ function StudioNewSkillPanel({
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="skill-categories">Categories</Label>
+          <Label htmlFor="skill-categories">{t("skillsGap.categories_6ccb60")}</Label>
           <Input
             id="skill-categories"
             value={categoryDraft}
             onChange={(event) => setCategoryDraft(event.target.value)}
-            placeholder="engineering, review, memory"
+            placeholder={t("skillsGap.engineeringReviewMemory")}
           />
         </div>
       </section>
 
       <section className="space-y-3">
         <div>
-          <h2 className="text-sm font-medium text-foreground">Sharing</h2>
-          <p className="text-xs text-muted-foreground">Choose who can discover this skill inside Paperclip.</p>
+          <h2 className="text-sm font-medium text-foreground">{t("skillsGap.sharing")}</h2>
+          <p className="text-xs text-muted-foreground">{t("skillsGap.chooseWhoCanDiscoverThisSkillInside")}</p>
         </div>
         <div className="grid gap-2 sm:grid-cols-3">
           {(["company", "private"] as const).map((scope) => (
@@ -664,9 +663,9 @@ function StudioNewSkillPanel({
                 draft.sharingScope === scope ? "border-foreground bg-accent/50" : "border-border",
               )}
             >
-              <span className="block font-medium">{scope === "company" ? "Organization" : "Private"}</span>
+              <span className="block font-medium">{scope === "company" ? t("skillsGap.organization") : t("skillsGap.private")}</span>
               <span className="mt-1 block text-xs text-muted-foreground">
-                {scope === "company" ? "Visible inside this organization." : "Only visible in your library."}
+                {scope === "company" ? t("skillsGap.visibleInsideThisOrganization") : t("skillsGap.onlyVisibleInYourLibrary")}
               </span>
             </button>
           ))}
@@ -675,14 +674,14 @@ function StudioNewSkillPanel({
             disabled
             className="rounded-md border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground"
           >
-            <span className="block font-medium">Public</span>
-            <span className="mt-1 block text-xs">Coming later.</span>
+            <span className="block font-medium">{t("skillsGap.public")}</span>
+            <span className="mt-1 block text-xs">{t("skillsGap.comingLater")}</span>
           </button>
         </div>
       </section>
 
       <details className="rounded-md border border-border px-3 py-2">
-        <summary className="cursor-pointer text-sm font-medium text-foreground">Starter content</summary>
+        <summary className="cursor-pointer text-sm font-medium text-foreground">{t("skillsGap.starterContent")}</summary>
         <Textarea
           value={draft.markdown}
           onChange={(event) => patchDraft({ markdown: event.target.value })}
@@ -691,12 +690,10 @@ function StudioNewSkillPanel({
       </details>
 
       <div className="flex items-center justify-end gap-2 border-t border-border pt-4">
-        <Button variant="ghost" onClick={() => navigate("/skills/studio")} disabled={createSkill.isPending}>
-          Cancel
-        </Button>
+        <Button variant="ghost" onClick={() => navigate("/skills/studio")} disabled={createSkill.isPending}>{t("skillsGap.cancel")}</Button>
         <Button onClick={() => createSkill.mutate()} disabled={createSkill.isPending || !nameValid}>
           <FilePlus className="h-4 w-4" />
-          {createSkill.isPending ? "Creating..." : draft.forkedFromSkillId ? "Create fork" : "Create skill"}
+          {createSkill.isPending ? t("skillsGap.creating") : draft.forkedFromSkillId ? t("skillsGap.createFork") : t("skillsGap.createSkill")}
         </Button>
       </div>
     </div>
@@ -704,6 +701,7 @@ function StudioNewSkillPanel({
 }
 
 function StudioMessage({ message }: { message: string }) {
+  useTranslation();
   return (
     <div className="flex h-full min-h-(--sz-60vh) items-center justify-center text-sm text-muted-foreground">
       {message}
@@ -722,6 +720,7 @@ function StudioEmptyState({
   onSelectSkill: (skillId: string) => void;
   onCreateNew: () => void;
 }) {
+  useTranslation();
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex h-full min-h-0 flex-col">
@@ -731,15 +730,15 @@ function StudioEmptyState({
             skills={skills}
             loading={skillsLoading}
             onSelectSkill={onSelectSkill}
-            emptyLabel="Select skill"
+            emptyLabel={t("skillsGap.selectSkill")}
           />
         </header>
         <SkillsPageNavigation activeView="authored" />
         <div className="flex flex-1 items-center justify-center">
           <EmptyState
             icon={FileCode}
-            message={skillsLoading ? "Loading skills..." : "Select a skill to open Studio."}
-            action="Create a new skill"
+            message={skillsLoading ? t("skillsGap.loadingSkills") : t("skillsGap.selectASkillToOpenStudio")}
+            action={t("skillsGap.createANewSkill")}
             onAction={onCreateNew}
           />
         </div>
@@ -765,6 +764,7 @@ function StudioLanding({
   onSelectSkill: (skillId: string) => void;
   onCreateNew: () => void;
 }) {
+  useTranslation();
   // Recency-sorted list, enriched with the last human editor (PAP-13149) — the
   // source for both landing sections. Kept separate from the alphabetical
   // switcher list so each cache stays sorted the way its consumer expects.
@@ -805,25 +805,23 @@ function StudioLanding({
             skills={skills}
             loading={skillsLoading}
             onSelectSkill={onSelectSkill}
-            emptyLabel="Select skill"
+            emptyLabel={t("skillsGap.selectSkill")}
           />
           <Button variant="ghost" size="sm" className="ml-auto" onClick={onCreateNew}>
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
-            New skill
-          </Button>
+            <Plus className="mr-1.5 h-3.5 w-3.5" />{t("skillsGap.newSkill_a7b490")}</Button>
         </header>
         <SkillsPageNavigation activeView="authored" />
         <div className="min-h-0 flex-1 overflow-auto">
           <div className="mx-auto w-full max-w-3xl space-y-8 px-4 py-8">
             {visited.length > 0 ? (
               <StudioLandingSection
-                title="Recently visited"
+                title={t("skillsGap.recentlyVisited")}
                 skills={visited}
                 onSelectSkill={onSelectSkill}
               />
             ) : null}
             <StudioLandingSection
-              title="Recently updated"
+              title={t("skillsGap.recentlyUpdated")}
               skills={updated}
               onSelectSkill={onSelectSkill}
             />
@@ -843,6 +841,7 @@ function StudioLandingSection({
   skills: CompanySkillListItem[];
   onSelectSkill: (skillId: string) => void;
 }) {
+  useTranslation();
   if (skills.length === 0) return null;
   return (
     <section className="space-y-2">
@@ -869,6 +868,7 @@ function StudioLandingRow({
   skill: CompanySkillListItem;
   onSelect: () => void;
 }) {
+  useTranslation();
   const editor = skillEditorAvatar(skill.lastEditor);
   return (
     <button
@@ -883,8 +883,7 @@ function StudioLandingRow({
           <span className="truncate text-xs text-muted-foreground">{skill.tagline}</span>
         ) : null}
       </span>
-      <span className="shrink-0 text-xs text-muted-foreground">
-        updated {relativeTime(skill.updatedAt)}
+      <span className="shrink-0 text-xs text-muted-foreground">{t("skillsGap.updatedLabel")}{" "}{relativeTime(skill.updatedAt)}
       </span>
       {editor ? (
         <Tooltip>
@@ -904,6 +903,7 @@ function StudioLandingRow({
 }
 
 function SkillLandingIcon({ skill }: { skill: CompanySkillListItem }) {
+  useTranslation();
   if (skill.iconUrl) {
     return (
       <img
@@ -941,6 +941,7 @@ function StudioShell({
   skills: CompanySkillListItem[];
   skillsLoading: boolean;
 }) {
+  useTranslation();
   const skillId = skill.id;
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -1139,16 +1140,17 @@ function StudioHeader({
   onSelectSkill: (skillId: string) => void;
   onOpenVersions: () => void;
 }) {
+  useTranslation();
   const version = skill.currentVersion?.revisionNumber ?? null;
   const toast = useOptionalToastActions();
   const copyShareLink = useCallback(() => {
     const href = typeof window !== "undefined" ? window.location.href : "";
     void copyTextToClipboard(href)
-      .then(() => toast?.pushToast({ tone: "success", title: "Link copied", body: "Skill Studio link copied to clipboard." }))
+      .then(() => toast?.pushToast({ tone: "success", title: t("skillsGap.linkCopied"), body: t("skillsGap.skillStudioLinkCopiedToClipboard") }))
       .catch((error) => toast?.pushToast({
         tone: "error",
-        title: "Copy failed",
-        body: error instanceof Error ? error.message : "Could not copy the link.",
+        title: t("skillsGap.copyFailed"),
+        body: error instanceof Error ? error.message : t("skillsGap.couldNotCopyTheLink"),
       }));
   }, [toast]);
 
@@ -1164,10 +1166,10 @@ function StudioHeader({
         <span className="font-mono text-xs text-muted-foreground">v{version}</span>
       )}
       {skillDirty ? (
-        <Badge variant="secondary">Unsaved edits</Badge>
+        <Badge variant="secondary">{t("skillsGap.unsavedEdits")}</Badge>
       ) : null}
       {!skill.editable ? (
-        <Badge variant="secondary">Read-only</Badge>
+        <Badge variant="secondary">{t("skillsGap.readOnly_9b19a5")}</Badge>
       ) : null}
       {skill.forkedFromSkillId ? (
         <SkillLineageChip
@@ -1178,19 +1180,16 @@ function StudioHeader({
       <AgentsUsingSkillBadge companyId={companyId} skill={skill} />
       <div className="ml-auto flex items-center gap-1">
         <Button variant="ghost" size="sm" onClick={onOpenVersions}>
-          <History className="mr-1.5 h-3.5 w-3.5" />
-          Version history
-        </Button>
+          <History className="mr-1.5 h-3.5 w-3.5" />{t("skillsGap.versionHistory")}</Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="Studio menu">
+            <Button variant="ghost" size="icon-sm" aria-label={t("skillsGap.studioMenu")}>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuItem onClick={copyShareLink}>
-              <Share2 className="mr-2 h-4 w-4" /> Share link
-            </DropdownMenuItem>
+              <Share2 className="mr-2 h-4 w-4" />{" "}{t("skillsGap.shareLink")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -1207,7 +1206,7 @@ function SkillSwitcher({
   skills,
   loading,
   onSelectSkill,
-  emptyLabel = "Select skill",
+  emptyLabel = t("skillsGap.selectSkill"),
 }: {
   skill: CompanySkillDetail | null;
   skills: CompanySkillListItem[];
@@ -1215,6 +1214,7 @@ function SkillSwitcher({
   onSelectSkill: (skillId: string) => void;
   emptyLabel?: string;
 }) {
+  useTranslation();
   const groups = useMemo<readonly SearchableSelectGroup<string, SkillSwitcherOption>[]>(() => {
     const options: SkillSwitcherOption[] = withCurrentSkill(skills, skill).map((item) => ({
       key: item.id,
@@ -1232,10 +1232,10 @@ function SkillSwitcher({
       value={skill?.id ?? ""}
       groups={groups}
       loading={loading}
-      loadingMessage="Loading skills..."
+      loadingMessage={t("skillsGap.loadingSkills")}
       placeholder={emptyLabel}
-      searchPlaceholder="Search skills..."
-      emptyMessage="No matching skills."
+      searchPlaceholder={t("skillsGap.searchSkills")}
+      emptyMessage={t("skillsGap.noMatchingSkills")}
       onValueChange={(value) => {
         if (value !== skill?.id) onSelectSkill(value);
       }}
@@ -1278,6 +1278,7 @@ function SkillPane({
   onDirtyChange: (dirty: boolean) => void;
   onEditACopy: () => void;
 }) {
+  useTranslation();
   const skillId = skill.id;
   const queryClient = useQueryClient();
   const onError = useMutationErrorToast();
@@ -1333,7 +1334,7 @@ function SkillPane({
     if (
       dirty
       && typeof window !== "undefined"
-      && !window.confirm("Discard unsaved edits and switch files?")
+      && !window.confirm(t("skillsGap.discardUnsavedEditsAndSwitchFiles"))
     ) {
       return;
     }
@@ -1354,7 +1355,7 @@ function SkillPane({
         queryKey: queryKeys.companySkills.versions(companyId, skillId),
       });
     },
-    onError: onError("Couldn't save file"),
+    onError: onError(t("skillsGap.couldnTSaveFile")),
   });
 
   const createMutation = useMutation({
@@ -1375,7 +1376,7 @@ function SkillPane({
         queryKey: queryKeys.companySkills.versions(companyId, skillId),
       });
     },
-    onError: onError("Couldn't create file"),
+    onError: onError(t("skillsGap.couldnTCreateFile")),
   });
 
   const deleteMutation = useMutation({
@@ -1396,7 +1397,7 @@ function SkillPane({
         queryKey: queryKeys.companySkills.versions(companyId, skillId),
       });
     },
-    onError: onError("Couldn't delete file"),
+    onError: onError(t("skillsGap.couldnTDeleteFile")),
   });
 
   // Read-only skills (bundled Paperclip, remote GitHub, URL, skills.sh) reject
@@ -1422,7 +1423,7 @@ function SkillPane({
           />
         }
       >
-        <EmptyState icon={FileCode} message="This skill has no files yet." />
+        <EmptyState icon={FileCode} message={t("skillsGap.thisSkillHasNoFilesYet")} />
         <SkillPathDialog
           mode={createDialog}
           open={createDialog !== null}
@@ -1462,7 +1463,7 @@ function SkillPane({
         {dirty && !readOnly ? (
           <div className="flex items-start gap-2 border-b border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
-            <span>Unsaved edits live only in this Studio session. Save to create the next version before running tests or switching files.</span>
+            <span>{t("skillsGap.unsavedEditsLiveOnlyInThisStudio")}</span>
           </div>
         ) : null}
         <div className="max-h-(--sz-11_75rem) overflow-auto border-b border-border p-1">
@@ -1480,7 +1481,7 @@ function SkillPane({
             }
             onSelectFile={selectFile}
             showCheckboxes={false}
-            ariaLabel="Skill files"
+            ariaLabel={t("skillsGap.skillFiles")}
           />
         </div>
         <SkillSourceProvenance skill={skill} />
@@ -1489,18 +1490,15 @@ function SkillPane({
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
             <div className="min-w-0 flex-1">
               <p>
-                {skill.metadata?.skillSourceId ? "This skill is synced from GitHub and is read-only." : skill.editableReason ?? "This skill is read-only because it comes from an external source."}
-                {" "}Make an editable copy to change it — the original stays untouched.
-              </p>
+                {skill.metadata?.skillSourceId ? t("skillsGap.thisSkillIsSyncedFromGithubAnd") : skill.editableReason ?? t("skillsGap.thisSkillIsReadOnlyBecauseIt")}
+                {" "}{t("skillsGap.makeAnEditableCopyToChangeIt")}</p>
               <Button
                 type="button"
                 size="sm"
                 className="mt-2"
                 onClick={onEditACopy}
               >
-                <GitFork className="mr-1.5 h-3.5 w-3.5" />
-                Make a copy
-              </Button>
+                <GitFork className="mr-1.5 h-3.5 w-3.5" />{t("skillsGap.makeACopy")}</Button>
             </div>
           </div>
         )}
@@ -1511,16 +1509,16 @@ function SkillPane({
           </span>
           <div className="flex items-center gap-2">
             {readOnly ? (
-              <Badge variant="secondary">Read-only</Badge>
+              <Badge variant="secondary">{t("skillsGap.readOnly_9b19a5")}</Badge>
             ) : (
               <>
-                {dirty && <Badge variant="secondary">Unsaved</Badge>}
+                {dirty && <Badge variant="secondary">{t("skillsGap.unsaved")}</Badge>}
                 <Button
                   size="sm"
                   disabled={!dirty || saveMutation.isPending}
                   onClick={() => saveMutation.mutate()}
                 >
-                  {saveMutation.isPending ? "Saving…" : "Save"}
+                  {saveMutation.isPending ? t("skillsGap.saving_56a228") : t("skillsGap.save")}
                 </Button>
               </>
             )}
@@ -1625,11 +1623,12 @@ function folderSeedFile(folderPath: string) {
 }
 
 function folderSeedContent(folderPath: string) {
-  const label = folderPath.split("/").filter(Boolean).at(-1) ?? "Folder";
+  const label = folderPath.split("/").filter(Boolean).at(-1) ?? t("skillsGap.folder");
   return `# ${label}\n`;
 }
 
 function SkillPaneTitle({ skillName, folder }: { skillName: string; folder: string }) {
+  useTranslation();
   return (
     <span className="flex min-w-0 items-center gap-1.5">
       <span className="truncate">{skillName}</span>
@@ -1659,6 +1658,7 @@ function SkillFileActions({
   onDeleteFile: () => void;
   onDeleteFolder: () => void;
 }) {
+  useTranslation();
   const disabled = readOnly || pending;
   const deleteDisabled = disabled || !canDeleteFile;
   return (
@@ -1666,22 +1666,22 @@ function SkillFileActions({
       <Tooltip>
         <TooltipTrigger asChild>
           <span>
-            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onAddFile} aria-label="Add file">
+            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onAddFile} aria-label={t("skillsGap.addFile")}>
               <FilePlus className="h-4 w-4" />
             </Button>
           </span>
         </TooltipTrigger>
-        <TooltipContent>Add file</TooltipContent>
+        <TooltipContent>{t("skillsGap.addFile")}</TooltipContent>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
           <span>
-            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onAddFolder} aria-label="Add folder">
+            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onAddFolder} aria-label={t("skillsGap.addFolder")}>
               <FolderPlus className="h-4 w-4" />
             </Button>
           </span>
         </TooltipTrigger>
-        <TooltipContent>Add folder</TooltipContent>
+        <TooltipContent>{t("skillsGap.addFolder")}</TooltipContent>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -1691,27 +1691,27 @@ function SkillFileActions({
               size="icon-sm"
               disabled={deleteDisabled}
               onClick={() => {
-                if (typeof window === "undefined" || window.confirm(`Delete ${selectedFile}?`)) {
+                if (typeof window === "undefined" || window.confirm(t("skillsGap.delete", { path: selectedFile }))) {
                   onDeleteFile();
                 }
               }}
-              aria-label="Delete file"
+              aria-label={t("skillsGap.deleteFile")}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
           </span>
         </TooltipTrigger>
-        <TooltipContent>{canDeleteFile ? "Delete file" : "SKILL.md cannot be deleted"}</TooltipContent>
+        <TooltipContent>{canDeleteFile ? t("skillsGap.deleteFile") : t("skillsGap.skillMdCannotBeDeleted")}</TooltipContent>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
           <span>
-            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onDeleteFolder} aria-label="Delete folder">
+            <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onDeleteFolder} aria-label={t("skillsGap.deleteFolder")}>
               <FolderMinus className="h-4 w-4" />
             </Button>
           </span>
         </TooltipTrigger>
-        <TooltipContent>Delete folder</TooltipContent>
+        <TooltipContent>{t("skillsGap.deleteFolder")}</TooltipContent>
       </Tooltip>
     </div>
   );
@@ -1734,6 +1734,7 @@ function SkillPathDialog({
   pending: boolean;
   onSubmit: (path: string, content: string) => void;
 }) {
+  useTranslation();
   const [pathValue, setPathValue] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -1745,19 +1746,19 @@ function SkillPathDialog({
     setError(null);
   }, [currentFolder, mode, open]);
 
-  const title = mode === "folder" ? "Add folder" : "Add file";
-  const label = mode === "folder" ? "Folder path" : "File path";
+  const title = mode === "folder" ? t("skillsGap.addFolder") : t("skillsGap.addFile");
+  const label = mode === "folder" ? t("skillsGap.folderPath") : t("skillsGap.filePath");
 
   function submit() {
     if (!mode) return;
     const normalized = normalizeStudioPath(pathValue);
     if (!normalized) {
-      setError(`${label} is required.`);
+      setError(t("skillsGap.isRequired", { label: label }));
       return;
     }
     if (mode === "file") {
       if (existingPaths.has(normalized)) {
-        setError("A file already exists at that path.");
+        setError(t("skillsGap.aFileAlreadyExistsAtThatPath"));
         return;
       }
       onSubmit(normalized, "");
@@ -1766,7 +1767,7 @@ function SkillPathDialog({
 
     const folderPath = normalized.replace(/\/+$/, "");
     if ([...existingPaths].some((path) => path.startsWith(`${folderPath}/`))) {
-      setError("A folder already exists at that path.");
+      setError(t("skillsGap.aFolderAlreadyExistsAtThatPath"));
       return;
     }
     onSubmit(folderSeedFile(folderPath), folderSeedContent(folderPath));
@@ -1777,9 +1778,7 @@ function SkillPathDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Saved changes create a new version immediately. External sources are not updated until you publish or install an update.
-          </DialogDescription>
+          <DialogDescription>{t("skillsGap.savedChangesCreateANewVersionImmediately")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
           <Label htmlFor="skill-path-input">{label}</Label>
@@ -1793,17 +1792,13 @@ function SkillPathDialog({
             placeholder={mode === "folder" ? "references/examples" : "references/examples.md"}
           />
           {mode === "folder" ? (
-            <p className="text-xs text-muted-foreground">A README.md seed file is created so the folder appears in the file tree.</p>
+            <p className="text-xs text-muted-foreground">{t("skillsGap.aReadmeMdSeedFileIsCreated")}</p>
           ) : null}
           {error ? <p className="text-xs text-destructive">{error}</p> : null}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button disabled={pending} onClick={submit}>
-            Create
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("skillsGap.cancel")}</Button>
+          <Button disabled={pending} onClick={submit}>{t("skillsGap.create")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -1825,6 +1820,7 @@ function DeleteFolderDialog({
   pending: boolean;
   onSubmit: (path: string) => void;
 }) {
+  useTranslation();
   const [pathValue, setPathValue] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -1837,16 +1833,16 @@ function DeleteFolderDialog({
   function submit() {
     const normalized = normalizeStudioPath(pathValue).replace(/\/+$/, "");
     if (!normalized) {
-      setError("Folder path is required.");
+      setError(t("skillsGap.folderPathIsRequired"));
       return;
     }
     const matchingFiles = [...existingPaths].filter((path) => path.startsWith(`${normalized}/`));
     if (matchingFiles.length === 0) {
-      setError("No files exist under that folder.");
+      setError(t("skillsGap.noFilesExistUnderThatFolder"));
       return;
     }
     if (matchingFiles.includes("SKILL.md")) {
-      setError("SKILL.md cannot be deleted.");
+      setError(t("skillsGap.skillMdCannotBeDeleted_b34f98"));
       return;
     }
     onSubmit(normalized);
@@ -1856,13 +1852,11 @@ function DeleteFolderDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete folder</DialogTitle>
-          <DialogDescription>
-            This removes every skill file under the folder and saves the result as the next version.
-          </DialogDescription>
+          <DialogTitle>{t("skillsGap.deleteFolder")}</DialogTitle>
+          <DialogDescription>{t("skillsGap.thisRemovesEverySkillFileUnderThe")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <Label htmlFor="skill-folder-delete">Folder path</Label>
+          <Label htmlFor="skill-folder-delete">{t("skillsGap.folderPath")}</Label>
           <Input
             id="skill-folder-delete"
             value={pathValue}
@@ -1875,12 +1869,8 @@ function DeleteFolderDialog({
           {error ? <p className="text-xs text-destructive">{error}</p> : null}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button variant="destructive" disabled={pending} onClick={submit}>
-            Delete
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("skillsGap.cancel")}</Button>
+          <Button variant="destructive" disabled={pending} onClick={submit}>{t("skillsGap.delete_f6fdbe")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -1914,6 +1904,7 @@ function InputPane({
   onSelectInput: (id: string) => void;
   onSelectAdHoc: () => void;
 }) {
+  useTranslation();
   const queryClient = useQueryClient();
   const onError = useMutationErrorToast();
   // The row's menu closes on click, so its copy confirmation goes to a toast.
@@ -1968,7 +1959,7 @@ function InputPane({
     if (!dirty) return true;
     return (
       typeof window === "undefined"
-      || window.confirm("Discard unsaved changes to this input?")
+      || window.confirm(t("skillsGap.discardUnsavedChangesToThisInput"))
     );
   }, [dirty]);
 
@@ -2000,7 +1991,7 @@ function InputPane({
         queryKey: queryKeys.companySkills.testInputs(companyId, skillId),
       });
     },
-    onError: onError("Couldn't save input"),
+    onError: onError(t("skillsGap.couldnTSaveInput")),
   });
   const deleteMutation = useMutation({
     mutationFn: (inputId: string) => companySkillsApi.deleteTestInput(companyId, skillId, inputId),
@@ -2012,7 +2003,7 @@ function InputPane({
         queryKey: queryKeys.companySkills.testInputs(companyId, skillId),
       });
     },
-    onError: onError("Couldn't delete input"),
+    onError: onError(t("skillsGap.couldnTDeleteInput")),
   });
 
   return (
@@ -2025,7 +2016,7 @@ function InputPane({
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                aria-label={collapsed ? "Expand input" : "Collapse input"}
+                aria-label={collapsed ? t("skillsGap.expandInput") : t("skillsGap.collapseInput")}
                 onClick={() => setCollapsed((current) => !current)}
               >
                 {collapsed ? (
@@ -2035,20 +2026,20 @@ function InputPane({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{collapsed ? "Expand input" : "Collapse input"}</TooltipContent>
+            <TooltipContent>{collapsed ? t("skillsGap.expandInput") : t("skillsGap.collapseInput")}</TooltipContent>
           </Tooltip>
-          <span>Input</span>
+          <span>{t("skillsGap.input")}</span>
         </span>
       }
       action={
         <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon-sm" onClick={selectAdHocInput} aria-label="New input">
+              <Button variant="ghost" size="icon-sm" onClick={selectAdHocInput} aria-label={t("skillsGap.newInput")}>
                 <Plus className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>New input</TooltipContent>
+            <TooltipContent>{t("skillsGap.newInput")}</TooltipContent>
           </Tooltip>
         </div>
       }
@@ -2060,20 +2051,19 @@ function InputPane({
           onClick={() => setCollapsed(false)}
         >
           <ChevronRight className="h-3.5 w-3.5" />
-          <span>Input folded</span>
+          <span>{t("skillsGap.inputFolded")}</span>
         </button>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col">
           {loading || inputs.length > 0 ? (
             <div className="max-h-(--sz-11_75rem) overflow-auto border-b border-border p-1">
               {loading ? (
-                <div className="p-3 text-xs text-muted-foreground">Loading inputs…</div>
+                <div className="p-3 text-xs text-muted-foreground">{t("skillsGap.loadingInputs")}</div>
               ) : (
                 <>
                   {adHocMode && (
                     <div className="flex items-center gap-2 rounded px-2 py-1.5 text-sm italic text-muted-foreground">
-                      <FilePlus className="h-3.5 w-3.5" /> New input (not saved)
-                    </div>
+                      <FilePlus className="h-3.5 w-3.5" />{" "}{t("skillsGap.newInputNotSaved")}</div>
                   )}
                   <FileTree
                     nodes={nodes}
@@ -2100,7 +2090,7 @@ function InputPane({
                           <DropdownMenuTrigger asChild>
                             <button
                               className="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-                              aria-label={`Input actions for ${node.name}`}
+                              aria-label={t("skillsGap.inputActionsFor", { name: node.name })}
                               onClick={(e) => e.stopPropagation()}
                             >
                               <MoreHorizontal className="h-3.5 w-3.5" />
@@ -2110,23 +2100,21 @@ function InputPane({
                             <DropdownMenuItem
                               onClick={() => {
                                 const input = inputs.find((i) => i.id === id);
-                                if (input) void copyWithToast(input.content, "Input content copied");
+                                if (input) void copyWithToast(input.content, t("skillsGap.inputContentCopied"));
                               }}
                             >
-                              <Copy className="mr-2 h-4 w-4" /> Copy content
-                            </DropdownMenuItem>
+                              <Copy className="mr-2 h-4 w-4" />{" "}{t("skillsGap.copyContent")}</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               variant="destructive"
                               onClick={() => deleteMutation.mutate(id)}
                             >
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
+                              <Trash2 className="mr-2 h-4 w-4" />{" "}{t("skillsGap.delete_f6fdbe")}</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       );
                     }}
-                    ariaLabel="Test inputs"
+                    ariaLabel={t("skillsGap.testInputs")}
                   />
                 </>
               )}
@@ -2136,17 +2124,17 @@ function InputPane({
             <textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Paste text - treated as a new issue description."
-              aria-label="Skill test input"
+              placeholder={t("skillsGap.pasteTextTreatedAsANewIssue")}
+              aria-label={t("skillsGap.skillTestInput")}
               className="min-h-0 flex-1 resize-none border-0 bg-transparent px-3 py-3 text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:ring-0"
             />
           </div>
           <div className="flex items-center gap-2 border-t border-border px-3 py-2">
             <div className="mr-auto flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
               <span className="truncate">
-                {selectedInput ? selectedInput.name : adHocMode ? "New input" : "No input selected"}
+                {selectedInput ? selectedInput.name : adHocMode ? t("skillsGap.newInput") : t("skillsGap.noInputSelected")}
               </span>
-              {dirty ? <Badge variant="secondary">Unsaved</Badge> : null}
+              {dirty ? <Badge variant="secondary">{t("skillsGap.unsaved")}</Badge> : null}
             </div>
             {selectedInput && dirty ? (
               <>
@@ -2159,16 +2147,14 @@ function InputPane({
                     draft: selectedInput.content,
                     baselineContent: selectedInput.content,
                   })}
-                >
-                  Revert
-                </Button>
+                >{t("skillsGap.revert")}</Button>
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={!canSaveSelectedInput || updateMutation.isPending}
                   onClick={() => updateMutation.mutate({ content: draft })}
                 >
-                  {updateMutation.isPending ? "Saving..." : "Save changes"}
+                  {updateMutation.isPending ? t("skillsGap.saving") : t("skillsGap.saveChanges")}
                 </Button>
               </>
             ) : null}
@@ -2176,9 +2162,7 @@ function InputPane({
               size="sm"
               disabled={!draft.trim()}
               onClick={() => setSaveDialogOpen(true)}
-            >
-              Save as input
-            </Button>
+            >{t("skillsGap.saveAsInput")}</Button>
           </div>
         </div>
       )}
@@ -2212,6 +2196,7 @@ function SaveInputDialog({
   initialContent: string;
   onSaved: (input: CompanySkillTestInput) => void;
 }) {
+  useTranslation();
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [content, setContent] = useState(initialContent);
@@ -2246,24 +2231,22 @@ function SaveInputDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Save test input</DialogTitle>
-          <DialogDescription>
-            Runs snapshot input at run time — editing later won't change past runs.
-          </DialogDescription>
+          <DialogTitle>{t("skillsGap.saveTestInput")}</DialogTitle>
+          <DialogDescription>{t("skillsGap.runsSnapshotInputAtRunTimeEditing")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="input-name">Name</Label>
+            <Label htmlFor="input-name">{t("skillsGap.name")}</Label>
             <Input
               id="input-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="onboarding/happy-path"
             />
-            <p className="text-xs text-muted-foreground">Use “/” for folders, e.g. onboarding/happy-path</p>
+            <p className="text-xs text-muted-foreground">{t("skillsGap.useForFoldersEGOnboardingHappy")}</p>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="input-content">Content</Label>
+            <Label htmlFor="input-content">{t("skillsGap.content")}</Label>
             <Textarea
               id="input-content"
               value={content}
@@ -2273,15 +2256,11 @@ function SaveInputDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("skillsGap.cancel")}</Button>
           <Button
             disabled={!name.trim() || !content.trim() || createMutation.isPending}
             onClick={() => createMutation.mutate()}
-          >
-            Save
-          </Button>
+          >{t("skillsGap.save")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -2326,6 +2305,7 @@ function RunsPane({
   filterInput: CompanySkillTestInput | null;
   onClearFilter: () => void;
 }) {
+  useTranslation();
   const skillId = skill.id;
   const queryClient = useQueryClient();
   const onError = useMutationErrorToast();
@@ -2367,8 +2347,8 @@ function RunsPane({
     updateTemplateSelection(resolution.selection);
     toast?.pushToast({
       tone: "warn",
-      title: "Run template reset",
-      body: "The saved run template is no longer available. Default test template is selected.",
+      title: t("skillsGap.runTemplateReset"),
+      body: t("skillsGap.theSavedRunTemplateIsNoLonger"),
       dedupeKey: `skill-studio-template-reset:${companyId}`,
     });
   }, [
@@ -2401,9 +2381,9 @@ function RunsPane({
     hasUnsavedSkillEdits: skillDirty,
   });
   const templateGateReason = templatesQuery.isLoading
-    ? "Loading run templates"
+    ? t("skillsGap.loadingRunTemplates")
     : templatesQuery.isError
-      ? "Run templates couldn't load"
+      ? t("skillsGap.runTemplatesCouldnTLoad")
       : null;
 
   const createTemplateMutation = useMutation({
@@ -2417,11 +2397,11 @@ function RunsPane({
       });
       toast?.pushToast({
         tone: "success",
-        title: "Template saved",
-        body: `${template.name} is ready for Skills Studio runs.`,
+        title: t("skillsGap.templateSaved"),
+        body: t("skillsGap.templateReady", { name: template.name }),
       });
     },
-    onError: onError("Couldn't save template"),
+    onError: onError(t("skillsGap.couldnTSaveTemplate")),
   });
 
   const updateTemplateMutation = useMutation({
@@ -2437,11 +2417,11 @@ function RunsPane({
       });
       toast?.pushToast({
         tone: "success",
-        title: "Template updated",
-        body: `${template.name} is ready for Skills Studio runs.`,
+        title: t("skillsGap.templateUpdated"),
+        body: t("skillsGap.templateReady", { name: template.name }),
       });
     },
-    onError: onError("Couldn't update template"),
+    onError: onError(t("skillsGap.couldnTUpdateTemplate")),
   });
 
   const deleteTemplateMutation = useMutation({
@@ -2456,30 +2436,30 @@ function RunsPane({
       });
       toast?.pushToast({
         tone: "success",
-        title: "Template deleted",
-        body: `${template.name} was removed from Skills Studio runs.`,
+        title: t("skillsGap.templateDeleted"),
+        body: t("skillsGap.templateRemoved", { name: template.name }),
       });
     },
-    onError: onError("Couldn't delete template"),
+    onError: onError(t("skillsGap.couldnTDeleteTemplate")),
   });
 
   const selectedTemplate = selectedTemplateId === null
     ? null
     : templates.find((template) => template.id === selectedTemplateId) ?? null;
   const selectedTemplateName = selectedTemplateId === null
-    ? "No template"
-    : selectedTemplate?.name ?? "Default test template";
+    ? t("skillsGap.noTemplate")
+    : selectedTemplate?.name ?? t("skillsGap.defaultTestTemplate");
   const runDisabledReason = gate.reason ?? templateGateReason;
 
   const createRunMutation = useMutation({
     mutationFn: () => {
       if (!templatesQuery.isSuccess) {
-        throw new Error(templateGateReason ?? "Run templates are not ready.");
+        throw new Error(templateGateReason ?? t("skillsGap.runTemplatesAreNotReady"));
       }
       const resolution = resolveRunTemplateSelection(selectedTemplateId, templates);
       if (resolution.recovered) {
         updateTemplateSelection(resolution.selection);
-        throw new Error("Selected run template is no longer available. The selection was reset.");
+        throw new Error(t("skillsGap.selectedRunTemplateIsNoLongerAvailable"));
       }
       return companySkillsApi.createTestRun(companyId, skillId, buildCreateRunRequest({
         agentId: selectedAgentId!,
@@ -2494,7 +2474,7 @@ function RunsPane({
       });
       onSelectRun(run.id);
     },
-    onError: onError("Couldn't start run"),
+    onError: onError(t("skillsGap.couldnTStartRun")),
   });
 
   if (selectedRunId) {
@@ -2512,7 +2492,7 @@ function RunsPane({
 
   return (
     <PaneScaffold
-      title="Test runs"
+      title={t("skillsGap.testRuns")}
       action={
         <div className="flex items-center gap-2">
           <AgentPicker
@@ -2529,8 +2509,7 @@ function RunsPane({
                   disabled={gate.disabled || Boolean(templateGateReason) || createRunMutation.isPending}
                   onClick={() => createRunMutation.mutate()}
                 >
-                  <Play className="mr-1.5 h-3.5 w-3.5" /> Run
-                </Button>
+                  <Play className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.run")}</Button>
               </span>
             </TooltipTrigger>
             {runDisabledReason && <TooltipContent side="bottom">{runDisabledReason}</TooltipContent>}
@@ -2555,7 +2534,7 @@ function RunsPane({
           onDeleteTemplate={(template) => {
             if (
               typeof window !== "undefined"
-              && !window.confirm(`Delete run template "${template.name}"?`)
+              && !window.confirm(t("skillsGap.deleteRunTemplate", { name: template.name }))
             ) {
               return;
             }
@@ -2571,7 +2550,7 @@ function RunsPane({
         {filterInput && (
           <div className="px-3 pt-2">
             <FilterBar
-              filters={[{ key: "input", label: "Input", value: filterInput.name }]}
+              filters={[{ key: "input", label: t("skillsGap.input"), value: filterInput.name }]}
               onRemove={onClearFilter}
               onClear={onClearFilter}
             />
@@ -2579,9 +2558,9 @@ function RunsPane({
         )}
         <div className="min-h-0 flex-1 overflow-auto p-3">
           {runsQuery.isLoading ? (
-            <div className="text-xs text-muted-foreground">Loading runs…</div>
+            <div className="text-xs text-muted-foreground">{t("skillsGap.loadingRuns")}</div>
           ) : runs.length === 0 ? (
-            <EmptyState icon={FlaskConical} message="No test runs yet. Pick an agent and Run." />
+            <EmptyState icon={FlaskConical} message={t("skillsGap.noTestRunsYetPickAnAgent")} />
           ) : (
             <div className="space-y-1 rounded-md border border-border p-1">
               {runs.map((run) => (
@@ -2660,13 +2639,14 @@ function RunTemplateAdvancedPanel({
   deletingTemplateId: string | null;
   actionPending: boolean;
 }) {
+  useTranslation();
   const templateGroups = useMemo<readonly SearchableSelectGroup<string, RunTemplateOption>[]>(() => {
     const noTemplateOption: RunTemplateOption = {
       key: "no-template",
       value: NO_TEST_RUN_TEMPLATE_STORAGE_VALUE,
-      label: "No template",
-      title: "No template",
-      description: "Run only the input text.",
+      label: t("skillsGap.noTemplate"),
+      title: t("skillsGap.noTemplate"),
+      description: t("skillsGap.runOnlyTheInputText"),
       builtIn: true,
       searchText: "no template plain input",
     };
@@ -2682,10 +2662,10 @@ function RunTemplateAdvancedPanel({
     const builtIn = templates.filter((template) => template.builtIn).map(toOption);
     const custom = templates.filter((template) => !template.builtIn).map(toOption);
     return [
-      { id: "built-in", label: "Built in", options: [noTemplateOption, ...builtIn] },
-      ...(custom.length > 0 ? [{ id: "custom", label: "Custom", options: custom }] : []),
+      { id: "built-in", label: t("skillsGap.builtIn"), options: [noTemplateOption, ...builtIn] },
+      ...(custom.length > 0 ? [{ id: "custom", label: t("skillsGap.custom"), options: custom }] : []),
     ];
-  }, [templates]);
+  }, [templates, i18n.language]);
 
   const selectedValue = runTemplateOptionValue(selectedTemplateId);
   const selectedMissing = selectedTemplateId !== null && !selectedTemplate && !templatesLoading;
@@ -2705,23 +2685,23 @@ function RunTemplateAdvancedPanel({
         ) : (
           <ChevronRight className="h-3.5 w-3.5" />
         )}
-        <span className="font-semibold uppercase tracking-wide">Advanced</span>
+        <span className="font-semibold uppercase tracking-wide">{t("skillsGap.advanced")}</span>
         <span className="ml-auto truncate">{selectedTemplateName}</span>
       </button>
       {open ? (
         <div className="space-y-3 px-3 pb-3 pt-1">
           <div className="flex items-end gap-2">
             <div className="min-w-0 flex-1 space-y-1">
-              <Label>Run template</Label>
+              <Label>{t("skillsGap.runTemplate")}</Label>
               <SearchableSelect<string, RunTemplateOption>
                 value={selectedValue}
                 groups={templateGroups}
                 loading={templatesLoading}
                 disabled={templatesLoading || templatesError}
-                loadingMessage="Loading templates..."
-                placeholder="Select template"
-                searchPlaceholder="Search templates..."
-                emptyMessage="No templates."
+                loadingMessage={t("skillsGap.loadingTemplates")}
+                placeholder={t("skillsGap.selectTemplate")}
+                searchPlaceholder={t("skillsGap.searchTemplates")}
+                emptyMessage={t("skillsGap.noTemplates")}
                 contentClassName="w-(--sz-320px)"
                 onValueChange={(value) => onSelectTemplate(runTemplateSelectionFromOption(value))}
                 renderValue={(option) => option?.label ?? selectedTemplateName}
@@ -2729,7 +2709,7 @@ function RunTemplateAdvancedPanel({
                   <span className="flex min-w-0 flex-col">
                     <span className={cn("truncate", selected && "font-medium")}>{option.label}</span>
                     <span className="truncate text-(length:--text-micro) text-muted-foreground">
-                      {option.description ?? (option.builtIn ? "Built in" : "Custom")}
+                      {option.description ?? (option.builtIn ? t("skillsGap.builtIn") : t("skillsGap.custom"))}
                     </span>
                   </span>
                 )}
@@ -2741,14 +2721,14 @@ function RunTemplateAdvancedPanel({
                   type="button"
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Create run template"
+                  aria-label={t("skillsGap.createRunTemplate")}
                   disabled={actionPending}
                   onClick={onCreateTemplate}
                 >
                   <Plus />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Create run template</TooltipContent>
+              <TooltipContent>{t("skillsGap.createRunTemplate")}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -2757,7 +2737,7 @@ function RunTemplateAdvancedPanel({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="Edit run template"
+                    aria-label={t("skillsGap.editRunTemplate")}
                     disabled={!canEdit || actionPending}
                     onClick={() => selectedTemplate && onEditTemplate(selectedTemplate)}
                   >
@@ -2765,7 +2745,7 @@ function RunTemplateAdvancedPanel({
                   </Button>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>Edit custom template</TooltipContent>
+              <TooltipContent>{t("skillsGap.editCustomTemplate")}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -2774,7 +2754,7 @@ function RunTemplateAdvancedPanel({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="Duplicate run template"
+                    aria-label={t("skillsGap.duplicateRunTemplate")}
                     disabled={!canDuplicate || actionPending}
                     onClick={() => selectedTemplate && onDuplicateTemplate(selectedTemplate)}
                   >
@@ -2783,7 +2763,7 @@ function RunTemplateAdvancedPanel({
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                {selectedTemplate?.builtIn ? "Duplicate built-in template" : "Duplicate template"}
+                {selectedTemplate?.builtIn ? t("skillsGap.duplicateBuiltInTemplate") : t("skillsGap.duplicateTemplate")}
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -2793,7 +2773,7 @@ function RunTemplateAdvancedPanel({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="Delete run template"
+                    aria-label={t("skillsGap.deleteRunTemplate_52d913")}
                     className="text-destructive hover:text-destructive"
                     disabled={!canDelete || actionPending || deletingTemplateId === selectedTemplate?.id}
                     onClick={() => selectedTemplate && onDeleteTemplate(selectedTemplate)}
@@ -2802,16 +2782,16 @@ function RunTemplateAdvancedPanel({
                   </Button>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>Delete custom template</TooltipContent>
+              <TooltipContent>{t("skillsGap.deleteCustomTemplate")}</TooltipContent>
             </Tooltip>
           </div>
 
           {templatesError ? (
-            <p className="text-xs text-destructive">Run templates could not load.</p>
+            <p className="text-xs text-destructive">{t("skillsGap.runTemplatesCouldNotLoad")}</p>
           ) : selectedTemplateId === null ? (
-            <p className="text-xs text-muted-foreground">Runs will use only the input text.</p>
+            <p className="text-xs text-muted-foreground">{t("skillsGap.runsWillUseOnlyTheInputText")}</p>
           ) : selectedMissing ? (
-            <p className="text-xs text-destructive">Selected template is no longer available.</p>
+            <p className="text-xs text-destructive">{t("skillsGap.selectedTemplateIsNoLongerAvailable")}</p>
           ) : selectedTemplate ? (
             <div className="space-y-2">
               {selectedTemplate.description ? (
@@ -2822,7 +2802,7 @@ function RunTemplateAdvancedPanel({
               </pre>
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground">Loading template...</p>
+            <p className="text-xs text-muted-foreground">{t("skillsGap.loadingTemplate")}</p>
           )}
         </div>
       ) : null}
@@ -2841,6 +2821,7 @@ function RunTemplateDialog({
   onOpenChange: (open: boolean) => void;
   onSubmit: (payload: CompanySkillTestRunTemplateCreateRequest) => void;
 }) {
+  useTranslation();
   const source = state?.source ?? null;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -2848,19 +2829,19 @@ function RunTemplateDialog({
 
   useEffect(() => {
     if (!state) return;
-    setName(state.mode === "edit" ? source?.name ?? "" : source ? `${source.name} copy` : "");
+    setName(state.mode === "edit" ? source?.name ?? "" : source ? t("skillsGap.templateCopyName", { name: source.name }) : "");
     setDescription(source?.description ?? "");
     setBody(source?.body ?? "");
   }, [source, state]);
 
   const title = state?.mode === "edit"
-    ? "Edit run template"
+    ? t("skillsGap.editRunTemplate")
     : source?.builtIn
-      ? "Duplicate built-in template"
-      : "Create run template";
+      ? t("skillsGap.duplicateBuiltInTemplate")
+      : t("skillsGap.createRunTemplate");
   const descriptionText = state?.mode === "edit"
-    ? "Update the custom run instructions used by Skills Studio."
-    : "Save reusable run instructions for Skills Studio.";
+    ? t("skillsGap.updateTheCustomRunInstructionsUsedBy")
+    : t("skillsGap.saveReusableRunInstructionsForSkillsStudio");
 
   return (
     <Dialog open={Boolean(state)} onOpenChange={onOpenChange}>
@@ -2871,40 +2852,37 @@ function RunTemplateDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="run-template-name">Name</Label>
+            <Label htmlFor="run-template-name">{t("skillsGap.name")}</Label>
             <Input
               id="run-template-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Focused smoke"
+              placeholder={t("skillsGap.focusedSmoke")}
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="run-template-description">Description</Label>
+            <Label htmlFor="run-template-description">{t("skillsGap.description")}</Label>
             <Input
               id="run-template-description"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Short instructions for common skill checks"
+              placeholder={t("skillsGap.shortInstructionsForCommonSkillChecks")}
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="run-template-body">Body</Label>
+            <Label htmlFor="run-template-body">{t("skillsGap.body")}</Label>
             <Textarea
               id="run-template-body"
               value={body}
               onChange={(event) => setBody(event.target.value)}
               className="min-h-(--sz-240px) font-mono text-xs leading-5"
             />
-            <p className="text-xs text-muted-foreground">
-              Placeholders: {"{{skillName}}"}, {"{{skillKey}}"}, {"{{skillInvocation}}"}, {"{{skillVersion}}"}, {"{{runId}}"}, {"{{issueId}}"}, {"{{outputDocumentKey}}"}.
+            <p className="text-xs text-muted-foreground">{t("skillsGap.placeholders")}{" "}{"{{skillName}}"}, {"{{skillKey}}"}, {"{{skillInvocation}}"}, {"{{skillVersion}}"}, {"{{runId}}"}, {"{{issueId}}"}, {"{{outputDocumentKey}}"}.
             </p>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("skillsGap.cancel")}</Button>
           <Button
             disabled={!name.trim() || !body.trim() || pending}
             onClick={() =>
@@ -2915,7 +2893,7 @@ function RunTemplateDialog({
               })
             }
           >
-            {pending ? "Saving..." : "Save template"}
+            {pending ? t("skillsGap.saving") : t("skillsGap.saveTemplate")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -2932,6 +2910,7 @@ function RunHistoryRow({
   agents: Agent[];
   onSelect: () => void;
 }) {
+  useTranslation();
   const agent = agents.find((a) => a.id === run.agentId) ?? null;
   const removed = !agent;
   const snapshotName =
@@ -2941,7 +2920,7 @@ function RunHistoryRow({
     <EntityRow
       leading={<StatusBadge status={runBadgeStatus(run.status)} />}
       identifier={runShortId(run)}
-      title={removed ? `${name} (removed)` : name}
+      title={removed ? t("skillsGap.removed", { name: name }) : name}
       subtitle={relativeTime(run.createdAt)}
       trailing={
         <span className="font-mono text-xs text-muted-foreground">
@@ -2962,6 +2941,7 @@ function AgentPicker({
   selectedAgent: Agent | null;
   onSelect: (id: string) => void;
 }) {
+  useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -2970,15 +2950,15 @@ function AgentPicker({
           {selectedAgent ? (
             <AgentIdentity agent={selectedAgent} size="xs" />
           ) : (
-            <span className="text-muted-foreground">Pick an agent</span>
+            <span className="text-muted-foreground">{t("skillsGap.pickAnAgent")}</span>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64 p-0">
         <Command>
-          <CommandInput placeholder="Search agents…" />
+          <CommandInput placeholder={t("skillsGap.searchAgents")} />
           <CommandList>
-            <CommandEmpty>No agents.</CommandEmpty>
+            <CommandEmpty>{t("skillsGap.noAgents")}</CommandEmpty>
             <CommandGroup>
               {agents.map((agent) => {
                 const selectable = isAgentSelectable(agent);
@@ -3003,9 +2983,7 @@ function AgentPicker({
                     />
                     <AgentIdentity agent={agent} size="xs" />
                     {!selectable && (
-                      <Badge variant="secondary" className="ml-auto">
-                        Paused
-                      </Badge>
+                      <Badge variant="secondary" className="ml-auto">{t("skillsGap.paused")}</Badge>
                     )}
                   </CommandItem>
                 );
@@ -3037,6 +3015,7 @@ function RunDetailView({
   onBack: () => void;
   onSelectRun: (id: string | null) => void;
 }) {
+  useTranslation();
   const skillId = skill.id;
   const queryClient = useQueryClient();
   const onError = useMutationErrorToast();
@@ -3056,7 +3035,7 @@ function RunDetailView({
       queryClient.invalidateQueries({
         queryKey: queryKeys.companySkills.testRunDetail(companyId, skillId, runId),
       }),
-    onError: onError("Couldn't cancel run"),
+    onError: onError(t("skillsGap.couldnTCancelRun")),
   });
 
   // Re-run reproduces the VIEWED run's snapshots — pinned skill version, saved
@@ -3066,7 +3045,7 @@ function RunDetailView({
   const reRunMutation = useMutation({
     mutationFn: () => {
       const d = detailQuery.data;
-      if (!d) throw new Error("Run details are still loading.");
+      if (!d) throw new Error(t("skillsGap.runDetailsAreStillLoading"));
       return companySkillsApi.createTestRun(companyId, skillId, buildReRunRequest(d));
     },
     onSuccess: (run) => {
@@ -3075,7 +3054,7 @@ function RunDetailView({
       });
       onSelectRun(run.id);
     },
-    onError: onError("Couldn't re-run"),
+    onError: onError(t("skillsGap.couldnTReRun")),
   });
 
   const deleteMutation = useMutation({
@@ -3086,7 +3065,7 @@ function RunDetailView({
       });
       onSelectRun(null);
     },
-    onError: onError("Couldn't delete run"),
+    onError: onError(t("skillsGap.couldnTDeleteRun")),
   });
 
   const detail = detailQuery.data ?? null;
@@ -3102,15 +3081,15 @@ function RunDetailView({
 
   if (detailQuery.isLoading) {
     return (
-      <PaneScaffold title="Run" action={<BackButton onBack={onBack} />}>
-        <div className="p-3 text-xs text-muted-foreground">Loading run…</div>
+      <PaneScaffold title={t("skillsGap.run")} action={<BackButton onBack={onBack} />}>
+        <div className="p-3 text-xs text-muted-foreground">{t("skillsGap.loadingRun")}</div>
       </PaneScaffold>
     );
   }
   if (!detail) {
     return (
-      <PaneScaffold title="Run" action={<BackButton onBack={onBack} />}>
-        <div className="p-3 text-xs text-muted-foreground">Run not found.</div>
+      <PaneScaffold title={t("skillsGap.run")} action={<BackButton onBack={onBack} />}>
+        <div className="p-3 text-xs text-muted-foreground">{t("skillsGap.runNotFound")}</div>
       </PaneScaffold>
     );
   }
@@ -3124,12 +3103,12 @@ function RunDetailView({
   const taskLink = testTaskLinkState(detail);
 
   return (
-    <PaneScaffold title="Run" action={<BackButton onBack={onBack} />}>
+    <PaneScaffold title={t("skillsGap.run")} action={<BackButton onBack={onBack} />}>
       <div className="min-h-0 flex-1 space-y-3 overflow-auto p-3">
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge status={runBadgeStatus(detail.status)} />
           <AgentIdentity agent={agent ?? { id: detail.agentId, name: agentName }} size="xs" />
-          {removed && <Badge variant="secondary">removed</Badge>}
+          {removed && <Badge variant="secondary">{t("skillsGap.removedLabel")}</Badge>}
           <span className="font-mono text-xs text-muted-foreground">
             v{detail.skillVersion.revisionNumber}
           </span>
@@ -3140,20 +3119,20 @@ function RunDetailView({
 
         {/* snapshot property block */}
         <div className="rounded-md border border-border text-xs">
-          <PropRow label="Input" value={detail.inputId ? "saved input" : "ad-hoc paste"} />
-          <PropRow label="Template" value={detail.templateName ?? "No template"} />
-          <PropRow label="Skill version" value={`v${detail.skillVersion.revisionNumber}`} />
-          <PropRow label="Created" value={relativeTime(detail.createdAt)} />
+          <PropRow label={t("skillsGap.input")} value={detail.inputId ? t("skillsGap.savedInput") : t("skillsGap.adhocInput")} />
+          <PropRow label={t("skillsGap.template")} value={detail.templateName ?? t("skillsGap.noTemplate")} />
+          <PropRow label={t("skillsGap.skillVersion")} value={`v${detail.skillVersion.revisionNumber}`} />
+          <PropRow label={t("skillsGap.created")} value={relativeTime(detail.createdAt)} />
         </div>
 
         {showRunErrorCard(detail.status) && (
           <Card className="border-destructive/50">
             <CardHeader className="flex-row items-center gap-2 space-y-0 pb-2">
               <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
-              <span className="text-sm font-medium">Run failed</span>
+              <span className="text-sm font-medium">{t("skillsGap.runFailed")}</span>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              {detail.error ?? "The test task ended with an error."}
+              {detail.error ?? t("skillsGap.theTestTaskEndedWithAnError")}
             </CardContent>
           </Card>
         )}
@@ -3162,16 +3141,15 @@ function RunDetailView({
         {outputMode === "output" || outputMode === "draft" ? (
           <section className="space-y-2">
             <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {outputMode === "draft" ? "Draft at failure" : "Output snapshot"}
+              {outputMode === "draft" ? t("skillsGap.draftAtFailure") : t("skillsGap.outputSnapshot")}
             </h3>
             <div className="rounded-md border border-border p-3">
-              <MarkdownBody>{detail.outputBody || "_No output_"}</MarkdownBody>
+              <MarkdownBody>{detail.outputBody || t("skillsGap.noOutput")}</MarkdownBody>
             </div>
           </section>
         ) : outputMode === "pending" ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" /> Working… output will appear here.
-          </div>
+            <Clock className="h-3.5 w-3.5" />{" "}{t("skillsGap.workingOutputWillAppearHere")}</div>
         ) : null}
 
         {unavailableCopy ? (
@@ -3230,17 +3208,14 @@ function RunDetailView({
             disabled={reRunMutation.isPending}
             onClick={() => reRunMutation.mutate()}
           >
-            <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Re-run
-          </Button>
+            <RotateCcw className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.reRun")}</Button>
           {nonTerminal ? (
             <Button
               variant="ghost"
               size="sm"
               disabled={cancelMutation.isPending}
               onClick={() => cancelMutation.mutate()}
-            >
-              Cancel
-            </Button>
+            >{t("skillsGap.cancel")}</Button>
           ) : (
             <Button
               variant="ghost"
@@ -3249,19 +3224,16 @@ function RunDetailView({
               disabled={deleteMutation.isPending}
               onClick={() => deleteMutation.mutate()}
             >
-              <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete
-            </Button>
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.delete_f6fdbe")}</Button>
           )}
           {taskLink.enabled && detail.harnessIssue ? (
             <Button variant="link" size="sm" asChild>
-              <Link to={`/issues/${detail.harnessIssue.id}`}>Open test task ↗</Link>
+              <Link to={`/issues/${detail.harnessIssue.id}`}>{t("skillsGap.openTestTask")}</Link>
             </Button>
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-not-allowed text-xs text-muted-foreground">
-                  Open test task ↗
-                </span>
+                <span className="cursor-not-allowed text-xs text-muted-foreground">{t("skillsGap.openTestTask")}</span>
               </TooltipTrigger>
               <TooltipContent>{taskLink.reason}</TooltipContent>
             </Tooltip>
@@ -3284,6 +3256,7 @@ function RunHarnessUnavailableNotice({
 }: {
   copy: NonNullable<ReturnType<typeof runHarnessUnavailableCopy>>;
 }) {
+  useTranslation();
   return (
     <div className="flex items-start gap-2 rounded-md border border-border bg-muted/30 p-3 text-xs">
       <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -3296,11 +3269,12 @@ function RunHarnessUnavailableNotice({
 }
 
 function RunDocumentsSection({ documents }: { documents: IssueDocument[] }) {
+  useTranslation();
   return (
     <section className="space-y-2">
       <div className="flex items-center gap-2">
         <FileText className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-        <h3 className="text-sm font-medium text-muted-foreground">Documents</h3>
+        <h3 className="text-sm font-medium text-muted-foreground">{t("skillsGap.documents")}</h3>
         <span className="text-xs text-muted-foreground">{documents.length}</span>
       </div>
       <div className="space-y-2">
@@ -3333,6 +3307,7 @@ function InteractionSection({
   agents: Agent[];
   onAnswered: () => void;
 }) {
+  useTranslation();
   const harnessIssueId = detail.harnessIssue?.id ?? null;
   const hasInlineAnswerable = detail.interactions.some((i) => isInteractionAnswerable(i));
 
@@ -3372,9 +3347,7 @@ function InteractionSection({
 
   return (
     <section>
-      <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Interactions
-      </h3>
+      <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("skillsGap.interactions")}</h3>
       <div className="space-y-2">
         {detail.interactions.map((summary) => {
           const inline = routeInteraction(summary.kind) === "inline";
@@ -3406,7 +3379,7 @@ function InteractionSection({
               trailing={
                 harnessIssueId ? (
                   <Button variant="link" size="xs" asChild>
-                    <Link to={`/issues/${harnessIssueId}`}>Open test task ↗</Link>
+                    <Link to={`/issues/${harnessIssueId}`}>{t("skillsGap.openTestTask")}</Link>
                   </Button>
                 ) : null
               }
@@ -3437,6 +3410,7 @@ function VersionHistorySheet({
   onRestored: () => void;
   onFilterRuns: (inputId: string) => void;
 }) {
+  useTranslation();
   const skillId = skill.id;
   const queryClient = useQueryClient();
   const versionsQuery = useQuery({
@@ -3456,7 +3430,7 @@ function VersionHistorySheet({
         await companySkillsApi.updateFile(companyId, skillId, file.path, file.content, { encoding: file.encoding, executable: file.executable ?? false });
       }
       return companySkillsApi.createVersion(companyId, skillId, {
-        label: `Restore of v${version.revisionNumber}`,
+        label: t("skillsGap.restoreOfV", { revision: version.revisionNumber }),
       });
     },
     onSuccess: () => {
@@ -3476,20 +3450,20 @@ function VersionHistorySheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-full sm:max-w-(--sz-560px)">
         <SheetHeader>
-          <SheetTitle>Version history</SheetTitle>
+          <SheetTitle>{t("skillsGap.versionHistory")}</SheetTitle>
         </SheetHeader>
         <div className="mt-3 space-y-2 overflow-auto">
           {versionsQuery.isLoading ? (
-            <div className="text-xs text-muted-foreground">Loading versions…</div>
+            <div className="text-xs text-muted-foreground">{t("skillsGap.loadingVersions_b8043f")}</div>
           ) : versions.length === 0 ? (
-            <EmptyState icon={History} message="No versions yet. Save changes to create the first." />
+            <EmptyState icon={History} message={t("skillsGap.noVersionsYetSaveChangesToCreate")} />
           ) : (
             <div className="space-y-1 rounded-md border border-border p-1">
               {versions.map((v) => (
                 <EntityRow
                   key={v.id}
                   identifier={`v${v.revisionNumber}`}
-                  title={v.label ?? `Version ${v.revisionNumber}`}
+                  title={v.label ?? t("skillsGap.version_fbeb9d", { revision: v.revisionNumber })}
                   subtitle={relativeTime(v.createdAt)}
                   selected={v.id === leftId || v.id === rightId}
                   onClick={() => {
@@ -3510,8 +3484,7 @@ function VersionHistorySheet({
                         e.stopPropagation();
                         restore.mutate(v);
                       }}
-                    >
-                      Restore as v{(skill.currentVersion?.revisionNumber ?? v.revisionNumber) + 1}
+                    >{t("skillsGap.restoreAsV")}{(skill.currentVersion?.revisionNumber ?? v.revisionNumber) + 1}
                     </Button>
                   }
                 />
@@ -3520,8 +3493,7 @@ function VersionHistorySheet({
           )}
           {diff && (
             <div className="rounded-md border border-border">
-              <div className="border-b border-border px-3 py-1.5 text-xs text-muted-foreground">
-                Diff v{left?.revisionNumber} → v{right?.revisionNumber}
+              <div className="border-b border-border px-3 py-1.5 text-xs text-muted-foreground">{t("skillsGap.diffV")}{left?.revisionNumber} → v{right?.revisionNumber}
               </div>
               <pre className="max-h-64 overflow-auto p-2 text-xs">
                 {diff.map((row, i) => (
@@ -3559,6 +3531,7 @@ function PaneScaffold({
   action?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  useTranslation();
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
@@ -3573,6 +3546,7 @@ function PaneScaffold({
 }
 
 function PropRow({ label, value }: { label: string; value: string }) {
+  useTranslation();
   return (
     <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-1.5 last:border-b-0">
       <span className="text-muted-foreground">{label}</span>
@@ -3582,10 +3556,10 @@ function PropRow({ label, value }: { label: string; value: string }) {
 }
 
 function BackButton({ onBack }: { onBack: () => void }) {
+  useTranslation();
   return (
     <Button variant="ghost" size="sm" onClick={onBack}>
-      <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back
-    </Button>
+      <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />{" "}{t("skillsGap.back")}</Button>
   );
 }
 
@@ -3598,12 +3572,13 @@ function MobileTabs({
   input: React.ReactNode;
   runs: React.ReactNode;
 }) {
+  useTranslation();
   return (
     <Tabs defaultValue="skill" className="flex flex-1 flex-col">
       <TabsList variant="line" className="px-3">
-        <TabsTrigger value="skill">Skill</TabsTrigger>
-        <TabsTrigger value="input">Input</TabsTrigger>
-        <TabsTrigger value="runs">Runs</TabsTrigger>
+        <TabsTrigger value="skill">{t("skillsGap.skill")}</TabsTrigger>
+        <TabsTrigger value="input">{t("skillsGap.input")}</TabsTrigger>
+        <TabsTrigger value="runs">{t("skillsGap.runs")}</TabsTrigger>
       </TabsList>
       <TabsContent value="skill" className="min-h-0 flex-1">
         {skill}

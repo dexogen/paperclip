@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -141,6 +143,31 @@ describe("Timeline", () => {
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
+  });
+
+  it("changes timeline labels without reloading data or resetting the selected date range", async () => {
+    mockWorkTimelineApi.get.mockResolvedValue(populatedTimeline);
+    root = createRoot(container);
+    flushSync(() => root?.render(<QueryClientProvider client={queryClient}><Timeline /></QueryClientProvider>));
+    await flushReact();
+    const input = container.querySelector<HTMLInputElement>('[aria-label="Timeline start date"]')!;
+    const value = input.value;
+    const calls = mockWorkTimelineApi.get.mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('[aria-label="Начальная дата хронологии"]')).toBe(input);
+      expect(input.value).toBe(value);
+      expect(container.textContent).toContain("Хронология работы");
+      expect(container.textContent).toContain("45 мин");
+      expect(container.querySelector('[aria-label="Увеличить масштаб"]')).not.toBeNull();
+      expect(mockWorkTimelineApi.get).toHaveBeenCalledTimes(calls);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector('[aria-label="Timeline start date"]')).toBe(input);
+      expect(container.textContent).toContain("45m");
+      expect(mockWorkTimelineApi.get).toHaveBeenCalledTimes(calls);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
   });
 
   it("applies project scope from the project Timeline control", async () => {

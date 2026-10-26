@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useAnnouncementAnimation } from "@/hooks/useAnnouncementAnimation";
+import { useTranslation } from "@/i18n";
+import { localizeAnnouncement } from "@/lib/announcement-localization";
 
 export interface AnnouncementCardProps {
   announcement: Announcement;
@@ -28,6 +30,8 @@ function Action({ action, primary, onClick }: { action: AnnouncementAction; prim
 }
 
 export function AnnouncementCard({ announcement, onDismiss, imageSrc, animationSrc, className }: AnnouncementCardProps) {
+  const { t } = useTranslation();
+  const display = localizeAnnouncement(announcement, t);
   const titleId = useId();
   const [failedImage, setFailedImage] = useState<string | null>(null);
   const src = imageSrc ?? `/api/announcements/${encodeURIComponent(announcement.id)}/image`;
@@ -49,17 +53,17 @@ export function AnnouncementCard({ announcement, onDismiss, imageSrc, animationS
           <iframe title={announcement.animation!.alt} aria-hidden="true" tabIndex={-1} sandbox="" referrerPolicy="no-referrer" srcDoc={animationDocument!} className="h-full w-full border-0" />
         </div>}
       </div>}
-      <Button variant="secondary" size="icon" aria-label="Dismiss announcement" onClick={onDismiss} className="absolute right-2 top-2 z-10 size-8 rounded-full shadow-sm">
+      <Button variant="secondary" size="icon" aria-label={t("authGap.announcement.dismiss")} onClick={onDismiss} className="absolute right-2 top-2 z-10 size-8 rounded-full shadow-sm">
         <X className="size-4" aria-hidden="true" />
       </Button>
       <div className={cn("flex flex-col gap-1 px-4 py-4", !showImage && !animationDocument && "pr-12")}>
-        <p className="text-xs text-muted-foreground">{announcement.eyebrow}</p>
-        <h2 id={titleId} className="break-words text-base font-semibold leading-snug">{announcement.title}</h2>
-        <p className="break-words text-sm leading-snug text-muted-foreground">{announcement.description}</p>
+        <p className="text-xs text-muted-foreground">{display.eyebrow}</p>
+        <h2 id={titleId} className="break-words text-base font-semibold leading-snug">{display.title}</h2>
+        <p className="break-words text-sm leading-snug text-muted-foreground">{display.description}</p>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-t px-3 py-2">
         {announcement.secondaryLink && <Action action={announcement.secondaryLink} onClick={onDismiss} />}
-        <div className="ml-auto min-w-0 max-w-full"><Action action={announcement.primaryAction} primary onClick={onDismiss} /></div>
+        <div className="ml-auto min-w-0 max-w-full"><Action action={display.primaryAction} primary onClick={onDismiss} /></div>
       </div>
     </Card>
   );

@@ -1,3 +1,4 @@
+import { localizeOnboardingTaskTitle, OnboardingTaskProvider, type OnboardingTaskContext } from "@/lib/onboarding-first-task-localization";
 import { useTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
 import { mergeWindowComments, useIssueHistoryWindow } from "../hooks/useIssueHistoryWindow";
@@ -1214,6 +1215,7 @@ function InboxMobileToolbar({
 }
 
 type IssueDetailChatTabProps = {
+  onboardingIssue?: OnboardingTaskContext;
   executionBlocked?: boolean;
   interruption?: Issue["interruption"];
   retryPreparing?: boolean;
@@ -1380,6 +1382,7 @@ type IssueDetailChatTabProps = {
 const DesignSandboxTaskThread = lazy(() => import("../components/design-sandbox/DesignSandboxTaskThread"));
 
 const IssueDetailChatTab = memo(function IssueDetailChatTab({
+  onboardingIssue,
   executionBlocked,
   interruption,
   retryPreparing,
@@ -2568,6 +2571,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
           }}
         >
           <EmailThreadProvider companyId={companyId} issueId={issueId}>
+          <OnboardingTaskProvider value={onboardingIssue ?? null}>
           <ThreadComponent
             {...(!classicTaskInterfaceEnabled ? {
               compactHistory: !historyExpanded,
@@ -2763,6 +2767,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
             externalReferences={externalReferences}
             linkCaseReferences={linkCaseReferences}
           />
+          </OnboardingTaskProvider>
           </EmailThreadProvider>
         </TaskChatScrollNavigation.Provider>
       )}
@@ -4076,7 +4081,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       }),
     [comments, optimisticComments],
   );
-  const breadcrumbTitle = issue?.title ?? issueId ?? t("taskDetail.copy.task");
+  const breadcrumbTitle = issue ? localizeOnboardingTaskTitle(issue, t) : issueId ?? t("taskDetail.copy.task");
   const breadcrumbIdentifier =
     issue?.identifier ?? issueHeaderSeed?.identifier ?? undefined;
   const breadcrumbStatus = issue?.status;
@@ -7326,7 +7331,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         ))}
         <ChevronRight className="h-3 w-3 shrink-0" />
         <span className="text-foreground/60 truncate max-w-(--sz-200px)">
-          {issue.title}
+          {localizeOnboardingTaskTitle(issue, t)}
         </span>
       </nav>
     ) : null;
@@ -7369,6 +7374,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
           >
             <InlineEditor
               value={issue.title}
+              displayValue={localizeOnboardingTaskTitle(issue, t)}
               onSave={(title) => updateIssue.mutateAsync({ title })}
               as="h2"
               className={cn(
@@ -7778,6 +7784,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       {!streamlinedTaskDetailEnabled ? (
         <InlineEditor
           value={issue.title}
+          displayValue={localizeOnboardingTaskTitle(issue, t)}
           onSave={(title) => updateIssue.mutateAsync({ title })}
           as="h2"
           className={
@@ -8262,6 +8269,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
                   onRetry: (actionId) => retryDispositionRecovery.mutateAsync(actionId).then(() => undefined),
                 }}>
                 <IssueDetailChatTab
+                  onboardingIssue={issue}
                   executionBlocked={Boolean(issue.executionBlocker)}
                   interruption={issue.interruption}
                   retryPreparing={taskRetry.optimistic}

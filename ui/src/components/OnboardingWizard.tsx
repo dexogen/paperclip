@@ -294,7 +294,6 @@ function ModelSourceMark({
 // Exported so tests write/read the exact key the component uses, instead of
 // duplicating the literal and silently drifting from it if it's ever renamed.
 export const ONBOARDING_STORAGE_KEY = "paperclip-onboarding-state";
-const DEFAULT_TASK_TITLE = "Paperclip onboarding";
 /**
  * The onboarding draft in `localStorage`, via a browser that is allowed to say
  * no.
@@ -492,7 +491,7 @@ function OnboardingWizardInner({
 }: {
   saved: Record<string, unknown> | null;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     onboardingOpen,
     onboardingOptions,
@@ -1928,6 +1927,8 @@ function OnboardingWizardInner({
     }
     setLoading(true);
     setError(null);
+    // Capture one language for all seeds even if the UI changes while awaiting APIs.
+    const onboardingLocale = i18n.resolvedLanguage === "ru" ? "ru" : "en";
     try {
       let goalId = createdCompanyGoalId;
       if (!goalId) {
@@ -1939,13 +1940,16 @@ function OnboardingWizardInner({
       let projectId = createdProjectId;
       if (!projectId) {
         const projects = await projectsApi.list(createdCompanyId);
-        const existingOnboardingProject = selectReusableOnboardingProject(projects);
+        const existingOnboardingProject = selectReusableOnboardingProject(projects, [
+          t("onboardingGap.projectName", { lng: "en" }),
+          t("onboardingGap.projectName", { lng: "ru" }),
+        ]);
         if (existingOnboardingProject) {
           projectId = existingOnboardingProject.id;
         } else {
           const project = await projectsApi.create(
             createdCompanyId,
-            buildOnboardingProjectPayload(goalId)
+            buildOnboardingProjectPayload(goalId, t("onboardingGap.projectName", { lng: onboardingLocale }))
           );
           projectId = project.id;
           queryClient.invalidateQueries({
@@ -1960,7 +1964,8 @@ function OnboardingWizardInner({
         const issue = await issuesApi.create(
           createdCompanyId,
           buildOnboardingIssuePayload({
-            title: DEFAULT_TASK_TITLE,
+            title: t("onboardingGap.taskTitle", { lng: onboardingLocale }),
+            locale: onboardingLocale,
             assigneeAgentId: createdAgentId,
             projectId,
             goalId

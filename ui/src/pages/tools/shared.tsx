@@ -130,8 +130,8 @@ export function DecisionBadge({ decision }: { decision: ToolPolicyDecision | str
 }
 
 /** Compact relative time, falling back to absolute. */
-export function RelativeTime({ value }: { value: Date | string | null | undefined }) {
-  if (!value) return <span className="text-muted-foreground">never</span>;
+export function RelativeTime({ value, t = i18n.getFixedT("en"), locale }: { value: Date | string | null | undefined; t?: TFunction; locale?: string }) {
+  if (!value) return <span className="text-muted-foreground">{t("surfacesGap.relative.never")}</span>;
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return <span className="text-muted-foreground">—</span>;
   const diffMs = Date.now() - date.getTime();
@@ -139,14 +139,12 @@ export function RelativeTime({ value }: { value: Date | string | null | undefine
   const mins = Math.round(abs / 60000);
   const isFuture = diffMs < 0;
   let text: string;
-  if (mins < 1) text = "just now";
-  else {
-    const value =
-      mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.round(mins / 60)}h` : `${Math.round(mins / 1440)}d`;
-    text = isFuture ? `in ${value}` : `${value} ago`;
-  }
+  if (mins < 1) text = t("format.justNow");
+  else if (mins < 60) text = isFuture ? t("surfacesGap.relative.minutesAhead", { value: mins }) : t("format.minutesAgo", { value: mins });
+  else if (mins < 1440) text = isFuture ? t("surfacesGap.relative.hoursAhead", { value: Math.round(mins / 60) }) : t("format.hoursAgo", { value: Math.round(mins / 60) });
+  else text = isFuture ? t("surfacesGap.relative.daysAhead", { value: Math.round(mins / 1440) }) : t("format.daysAgo", { value: Math.round(mins / 1440) });
   return (
-    <span title={date.toLocaleString()} className="text-muted-foreground">
+    <span title={date.toLocaleString(locale)} className="text-muted-foreground">
       {text}
     </span>
   );

@@ -21,6 +21,7 @@ parameters; user-entered names and machine identifiers are never translated.
 | Inbox | Входящие | The person's task inbox. |
 | Approval | Согласование | A governed decision; use «Подтвердить» for a simple confirmation action. |
 | Connection | Подключение | A configured connection to an external service. |
+| Connector | Коннектор | An integration type for a service; distinct from an account-specific connection. |
 | Profile | Профиль | A person's display identity. |
 | Workspace | Рабочее пространство | Keep runtime IDs and filesystem paths unchanged. |
 | Backlog | В планах | A task whose work has not started; match the status badge in warnings. |
@@ -35,6 +36,12 @@ Use polite, direct Russian without bureaucratic phrasing. Buttons name actions;
 errors explain the failure and a useful next step when one is known. Use «ё» where
 appropriate and the ellipsis character in Russian pending states. Preserve English
 source copy so English regression checks remain meaningful.
+
+Translate as technical documentation, not literary prose or word-for-word copy.
+Check the actual action, object, and surrounding workflow before choosing a term.
+Keep established technical terms when translating them would blur their meaning.
+Do not inflect interpolated organization, person, or agent names: phrase the
+sentence around a stable noun and quote the supplied name where needed.
 
 Russian cardinal families have `one`, `few`, `many`, and `other`; verify at least
 `0, 1, 2, 5, 11, 21, 22, 25, 1.5`. Some phrases can use an invariant construction,

@@ -5,8 +5,13 @@ import type {
   Project,
   ProjectWorkspace,
 } from "@paperclipai/shared";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act } from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { i18n } from "@/i18n";
 import {
+  ScanningStep,
+  SelectStep,
   defaultSelection,
   filterCandidates,
   groupCandidates,
@@ -210,5 +215,58 @@ describe("scannable workspace detection", () => {
       ],
     } as unknown as Project;
     expect(scannableWorkspaces(project)).toHaveLength(0);
+  });
+});
+
+
+(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
+describe("skill import whole messages", () => {
+  let container: HTMLDivElement;
+  let root: Root;
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = createRoot(container);
+  });
+  afterEach(async () => {
+    act(() => root.unmount());
+    container.remove();
+    await i18n.changeLanguage("en");
+  });
+
+  it.each(["project <b>Alpha</b>", ""])("preserves the project name %j while a scan changes language", async (name) => {
+    act(() => root.render(<ScanningStep projectName={name} />));
+    const status = container.querySelector("p")!;
+    expect(status.textContent).toBe(`Scanning ${name || "project"} for skills…`);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector("p")).toBe(status);
+    expect(status.textContent).toBe(name ? `Поиск навыков в проекте «${name}»…` : "Поиск навыков в проекте…");
+    expect(container.querySelector("b")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(status.textContent).toBe(`Scanning ${name || "project"} for skills…`);
+  });
+
+  it("quotes the literal search query as a whole message and preserves focused input", async () => {
+    const filter = 'literal <b>query</b>';
+    const onFilterChange = vi.fn();
+    const onRetry = vi.fn();
+    act(() => root.render(<SelectStep scanError={null} onRetry={onRetry} groups={[]} totalCandidates={1}
+      filter={filter} onFilterChange={onFilterChange} selection={new Map()} toggleCandidate={vi.fn()}
+      renameCandidate={vi.fn()} project={null} companyId="company-1" browseOpen={false}
+      onBrowseOpenChange={vi.fn()} onAddBrowsedSkill={vi.fn()} browseAddingKey={null} />));
+    const input = container.querySelector("input")!;
+    input.focus();
+    input.setSelectionRange(2, 6);
+    expect(container.textContent).toContain(`No skills match “${filter}”.`);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain(`Нет навыков по запросу «${filter}».`);
+    expect(container.querySelector("b")).toBeNull();
+    expect(container.querySelector("input")).toBe(input);
+    expect(document.activeElement).toBe(input);
+    expect(input.value).toBe(filter);
+    expect([input.selectionStart, input.selectionEnd]).toEqual([2, 6]);
+    expect(onFilterChange).not.toHaveBeenCalled();
+    expect(onRetry).not.toHaveBeenCalled();
   });
 });

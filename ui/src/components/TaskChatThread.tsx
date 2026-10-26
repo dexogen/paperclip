@@ -1,5 +1,7 @@
 import type { TFunction } from "i18next";
 import { i18n, useTranslation } from "@/i18n";
+import { localizeOnboardingGreeting, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
+
 import { TaskChatUiError } from "@/components/task-chat/task-chat-errors";
 import type { RunMarkerDisplay, RunMarkerLabelMessage, RunMarkerDetailMessage } from "@/components/task-chat/task-chat-display";
 import { TaskChatShimmerScope } from "@/components/task-chat/TaskChatShimmer";
@@ -501,6 +503,7 @@ function durableInputLabel(
  */
 export function TaskChatThread(props: TaskChatThreadProps) {
   const { t } = useTranslation();
+  const onboardingTask = useOnboardingTask();
   const { enabled: streamlinedUiEnabled } = useStreamlinedUiEnabled();
   const {
     initialHistoryPending = false,
@@ -883,7 +886,10 @@ export function TaskChatThread(props: TaskChatThreadProps) {
 
   const commentItems = useMemo(
     () =>
-      commentsToTaskChatItems(projectedComments, {
+      commentsToTaskChatItems(projectedComments.map((comment) => ({
+        ...comment,
+        body: localizeOnboardingGreeting(comment, onboardingTask, agentMap?.get(comment.authorAgentId ?? "")?.name, t),
+      })), {
         agentMap,
         userLabelMap,
         userProfileMap,
@@ -893,6 +899,8 @@ export function TaskChatThread(props: TaskChatThreadProps) {
       }),
     [
       projectedComments,
+      onboardingTask,
+      t,
       agentMap,
       userLabelMap,
       userProfileMap,

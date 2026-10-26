@@ -836,6 +836,8 @@ const createIssueDuplicateGuardSchema = {
 // kinds) and uses it to seed the agent greeting instead of an LLM welcome step.
 const onboardingFirstTaskMarkerSchema = {
   onboardingFirstTask: z.boolean().optional(),
+  // Presentation preference only; the server still verifies the first-task gate.
+  onboardingLocale: z.enum(["en", "ru"]).optional(),
 };
 
 export const createIssueInputSchema = createIssueBaseSchema.extend({

@@ -78,6 +78,32 @@ describe("InlineEditor", () => {
     container.remove();
   });
 
+  it("shows a localized title but edits the original and never saves a presentation change", async () => {
+    const root = createRoot(container);
+    const onSave = vi.fn();
+    const render = (displayValue: string) => root.render(<InlineEditor value="Paperclip onboarding" displayValue={displayValue} onSave={onSave} />);
+    try {
+      await act(async () => { render("Начало работы с Paperclip"); });
+      expect(container.textContent).toBe("Начало работы с Paperclip");
+      await act(async () => { container.querySelector("span")!.click(); });
+      const editor = container.querySelector("textarea")!;
+      expect(editor.value).toBe("Paperclip onboarding");
+      await act(async () => { render("Paperclip onboarding"); });
+      expect(container.querySelector("textarea")).toBe(editor);
+      await act(async () => { editor.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true })); });
+      expect(onSave).not.toHaveBeenCalled();
+      await act(async () => { container.querySelector("span")!.click(); });
+      const renamed = container.querySelector("textarea")!;
+      await act(async () => { setNativeTextareaValue(renamed, "Моя задача & CLI"); });
+      await act(async () => { render("Начало работы с Paperclip"); });
+      expect(renamed.value).toBe("Моя задача & CLI");
+      await act(async () => { renamed.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true })); });
+      expect(onSave).toHaveBeenCalledExactlyOnceWith("Моя задача & CLI");
+    } finally {
+      await act(async () => { root.unmount(); });
+    }
+  });
+
   it("preserves an unsaved title through language changes and saves only on explicit submit", async () => {
     const previousLanguage = i18n.language;
     const onSave = vi.fn().mockResolvedValue(undefined);

@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -176,6 +178,34 @@ describe("Artifacts page", () => {
   afterEach(() => {
     window.IntersectionObserver = originalIntersectionObserver as typeof IntersectionObserver;
     container.remove();
+  });
+
+  it("switches artifact controls without replacing the focused query or changing filters", async () => {
+    artifactsApiMock.list.mockResolvedValue({ artifacts: [], groups: [sampleGroup()], nextCursor: null });
+    const { root, queryClient } = renderArtifacts(container, ["/artifacts?q=Draft%20%3Craw%3E&kind=document&groupBy=task"]);
+    try {
+      await waitForAssertion(() => expect(container.querySelector('[aria-label="Search artifacts"]')).not.toBeNull());
+      await waitForAssertion(() => expect(container.textContent).toContain("Ship launch"));
+      const input = container.querySelector<HTMLInputElement>('[aria-label="Search artifacts"]')!;
+      input.focus();
+      input.setSelectionRange(2, 5);
+      const calls = artifactsApiMock.list.mock.calls.length;
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('[aria-label="Поиск артефактов"]')).toBe(input);
+      expect(input.value).toBe("Draft <raw>");
+      expect(input.selectionStart).toBe(2);
+      expect(document.activeElement).toBe(input);
+      expect(container.textContent).toContain("Документы");
+      expect(container.textContent).toContain("3 артефакта");
+      expect(container.textContent).toContain("Ship launch");
+      expect(artifactsApiMock.list).toHaveBeenCalledTimes(calls);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector('[aria-label="Search artifacts"]')).toBe(input);
+      expect(artifactsApiMock.list).toHaveBeenCalledTimes(calls);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); root.unmount(); });
+      queryClient.clear();
+    }
   });
 
   it("requests task-grouped artifact stacks by default", async () => {

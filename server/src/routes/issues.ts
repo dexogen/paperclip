@@ -12303,6 +12303,7 @@ export function issueRoutes(
       const {
         watchdogDiscovery: rawWatchdogDiscovery,
         onboardingFirstTask: rawOnboardingFirstTask,
+        onboardingLocale,
         ...rawCreateBody
       } = sanitizedBody;
       // The onboarding first-task marker grants privileged, server-owned behavior:
@@ -12406,6 +12407,7 @@ export function issueRoutes(
           const experimental = await instanceSettings.getExperimental();
           onboardingFirstTaskDescription = await buildOnboardingFirstTaskBrief({
             usePlanProposal: experimental.enableFirstTaskPlanProposal === true,
+            locale: onboardingLocale,
           });
         } catch (err) {
           logger.warn(
@@ -12727,6 +12729,7 @@ export function issueRoutes(
           const greetingBody = await renderOnboardingGreeting({
             agentName: assigneeAgent?.name ?? null,
             organizationName: company?.name ?? null,
+            locale: onboardingLocale,
           });
           await svc.addComment(
             issue.id,
@@ -12757,7 +12760,7 @@ export function issueRoutes(
               kind: "ask_user_questions",
               idempotencyKey: `onboarding-first-task:${issue.id}:opening-question`,
               continuationPolicy: "wake_assignee",
-              payload: await buildOnboardingFirstTaskOpeningQuestion(),
+              payload: await buildOnboardingFirstTaskOpeningQuestion(onboardingLocale),
             },
             { agentId: issue.assigneeAgentId },
           );

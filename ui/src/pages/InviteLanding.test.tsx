@@ -7,6 +7,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { InviteLandingPage } from "./InviteLanding";
 import { queryKeys } from "../lib/queryKeys";
+import { setLocale } from "@/i18n";
 
 const getInviteMock = vi.hoisted(() => vi.fn());
 const acceptInviteMock = vi.hoisted(() => vi.fn());
@@ -93,7 +94,8 @@ function renderInviteLanding(root: ReturnType<typeof createRoot>, queryClient: Q
 describe("InviteLandingPage", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await setLocale("en");
     localStorage.clear();
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -135,10 +137,90 @@ describe("InviteLandingPage", () => {
     setSelectedCompanyIdMock.mockReset();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
+    await setLocale("en");
+  });
+
+  it("switches bootstrap invite language without losing drafts, errors or the invite identity", async () => {
+    getInviteMock.mockResolvedValue({
+      id: "invite-1", companyId: null, companyName: "Acme Robotics",
+      inviteType: "bootstrap_ceo", allowedJoinTypes: "human", humanRole: "admin",
+      expiresAt: "2027-03-07T00:10:00.000Z", inviteMessage: "Welcome aboard.",
+    });
+    signUpEmailMock.mockRejectedValue(Object.assign(new Error("Invalid email or password"), {
+      code: "INVALID_EMAIL_OR_PASSWORD",
+    }));
+    const root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    try {
+      await act(() => renderInviteLanding(root, queryClient));
+      await flushReact();
+      await flushReact();
+      const form = container.querySelector<HTMLFormElement>("form")!;
+      const name = container.querySelector<HTMLInputElement>('[name="name"]')!;
+      const email = container.querySelector<HTMLInputElement>('[name="email"]')!;
+      const password = container.querySelector<HTMLInputElement>('[name="password"]')!;
+      const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
+      await act(() => {
+        setValue.call(name, "Анна Example");
+        name.dispatchEvent(new Event("input", { bubbles: true }));
+        setValue.call(password, "fixture-password");
+        password.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await act(() => { form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })); });
+      name.focus();
+      name.setSelectionRange(2, 5);
+      const alert = container.querySelector('[role="alert"]')!;
+      expect(alert.textContent).toBe("Please fill in all required fields.");
+
+      const language = container.querySelector<HTMLSelectElement>("select")!;
+      await act(async () => {
+        language.value = "ru";
+        language.dispatchEvent(new Event("change", { bubbles: true }));
+        await Promise.resolve();
+      });
+      await flushReact();
+      expect(container.querySelector("h1")?.textContent).toBe("Настройка Paperclip");
+      expect(container.textContent).toContain("Администратор");
+      expect(container.textContent).toContain("Welcome aboard.");
+      expect(container.textContent).toContain("Acme Robotics");
+      expect(alert.textContent).toBe("Заполните все обязательные поля.");
+      expect(container.querySelector('[name="name"]')).toBe(name);
+      expect(document.activeElement).toBe(name);
+      expect([name.value, name.selectionStart, name.selectionEnd]).toEqual(["Анна Example", 2, 5]);
+      expect(password.value).toBe("fixture-password");
+      expect(form.getAttribute("action")).toBe("/api/auth/sign-up/email");
+      expect(localStorage.getItem("paperclip:pending-invite-token")).toBe("pcp_invite_test");
+      expect(signUpEmailMock).not.toHaveBeenCalled();
+      expect(signInEmailMock).not.toHaveBeenCalled();
+      expect(acceptInviteMock).not.toHaveBeenCalled();
+
+      await act(() => {
+        setValue.call(email, "anna@example.invalid");
+        email.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await act(() => { form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })); });
+      await flushReact();
+      await flushReact();
+      expect(signUpEmailMock).toHaveBeenCalledExactlyOnceWith({
+        name: "Анна Example", email: "anna@example.invalid", password: "fixture-password",
+      });
+      expect(container.querySelector('[role="alert"]')?.textContent).toContain("Электронная почта или пароль");
+      await act(async () => { await setLocale("en"); });
+      await flushReact();
+      expect(container.querySelector('[role="alert"]')?.textContent).toContain("That email and password did not match");
+      expect(container.querySelector('[name="email"]')).toBe(email);
+      expect(email.value).toBe("anna@example.invalid");
+      expect(signUpEmailMock).toHaveBeenCalledTimes(1);
+      expect(acceptInviteMock).not.toHaveBeenCalled();
+      expect(getInviteMock).toHaveBeenCalledWith("pcp_invite_test");
+    } finally {
+      await act(() => root.unmount());
+      queryClient.clear();
+    }
   });
 
   it("keeps agent-invite onboarding on legacy adapters", async () => {

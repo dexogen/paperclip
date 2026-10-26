@@ -604,6 +604,34 @@
     {
       "id": "3780402f8e374c28f2f8b12ca9331d1f54aac0a5a5d335c89c7265ea7561a2a8",
       "reason": "REVIEWED_TOKEN_FIELD_LABEL is a raw canonical GitHub registry caption used only as a copy-drift guard after trusted built-in provenance is established. The existing visible caption remains githubSetupUi.registry.keyLabel (Your GitHub key). A changed registry label is shown literally and a five-caption canonical contract test fails until its translation is reviewed; this sentinel does not infer ownership."
+    },
+    {
+      "id": "2405e7e53bd4790beb1b5cf3655fc81e8ddf6310a6a4ffdf46691dd7c96444a7",
+      "reason": "InviteLandingPage compares the technical inviteType discriminator bootstrap_ceo to select a translated bootstrap label. The discriminator is never rendered as UI text."
+    },
+    {
+      "id": "ca53e845d1100c99e1eaaa1484bd57bb2df44f9b321c9d82af119c5b4fbce1dc",
+      "reason": "WorkTimelineChart compares the canonical connectorHint discriminator dashed to select the translated dashed/solid relationship explanation. This predicate is never rendered."
+    },
+    {
+      "id": "e0b06392c42acb2dc0dca8697059c1bc6f9b3f80ebc991fdf9e8e105096a786c",
+      "reason": "Frozen English seed submitLabel used only to recognize the exact server-owned onboarding question after company, issue, author and idempotency checks. Rendering uses onboardingGap.question.submit; unknown or edited payloads remain literal."
+    },
+    {
+      "id": "7f963c04af98f9f39865afb45b7e648e069f10198e6a7d81449a2eb3f6da434b",
+      "reason": "Frozen Russian seed submitLabel used only to recognize the exact server-owned onboarding question after company, issue, author and idempotency checks. Rendering uses onboardingGap.question.submit; unknown or edited payloads remain literal."
+    },
+    {
+      "id": "6c11243227785ccc04c1566d56710e49deaecbfed06d1fa26cd8e5baa03499b5",
+      "reason": "The stable onboarding option ID interview selects the translated option label only after exact canonical payload and server provenance match. Mutation handlers retain the original IDs and payload."
+    },
+    {
+      "id": "4e8dc73ce00f5ff934c860b5a3a3493215ccea606130d8f5721f527e5c7dbe92",
+      "reason": "The stable onboarding option ID interview selects the translated option description only after exact canonical payload and server provenance match. The predicate is not displayed."
+    },
+    {
+      "id": "4c99cac91b275bb052096813b9de121e0728ae702a5b92f597893aa1f24c6c8f",
+      "reason": "AgentCommentary compares the canonical entry.kind suggestion to select one of the translated readSuggestion/readComplaint accessible labels. The discriminator is not visible copy."
     }
   ]
 }

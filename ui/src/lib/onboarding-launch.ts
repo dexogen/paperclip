@@ -24,9 +24,9 @@ export function selectDefaultCompanyGoalId(goals: Goal[]): string | null {
   );
 }
 
-export function buildOnboardingProjectPayload(goalId: string | null) {
+export function buildOnboardingProjectPayload(goalId: string | null, name = ONBOARDING_PROJECT_NAME) {
   return {
-    name: ONBOARDING_PROJECT_NAME,
+    name,
     status: "in_progress" as const,
     ...(goalId ? { goalIds: [goalId] } : {}),
   };
@@ -34,12 +34,13 @@ export function buildOnboardingProjectPayload(goalId: string | null) {
 
 export function selectReusableOnboardingProject<T extends Pick<Project, "name" | "status">>(
   projects: T[],
+  names: readonly string[] = [ONBOARDING_PROJECT_NAME],
 ): T | null {
   return (
     projects.find(
       (project) =>
         project.status !== "cancelled" &&
-        project.name.trim().toLowerCase() === ONBOARDING_PROJECT_NAME.toLowerCase(),
+        names.some((name) => project.name.trim().toLowerCase() === name.toLowerCase()),
     ) ?? null
   );
 }
@@ -49,6 +50,7 @@ export function buildOnboardingIssuePayload(input: {
   assigneeAgentId: string;
   projectId: string;
   goalId: string | null;
+  locale?: "en" | "ru";
 }) {
   const title = input.title.trim();
 
@@ -64,5 +66,6 @@ export function buildOnboardingIssuePayload(input: {
     // the brief, seeds the agent greeting, and the task-detail view suppresses
     // the seeded-description bubble.
     onboardingFirstTask: true,
+    ...(input.locale ? { onboardingLocale: input.locale } : {}),
   };
 }

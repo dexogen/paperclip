@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
-import type { ReactNode } from "react";
+import { act as reactAct, type ReactNode } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -124,6 +125,32 @@ describe("AuditTab", () => {
       btn!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
   }
+
+  it("updates expanded audit details without changing literal actor, tool or app values", async () => {
+    listActivityMock.mockResolvedValue({ events: [event({ agentDisplayName: "<who>Agent</who>", toolDisplayName: "<action>Tool</action>", appDisplayName: "<app>Custom</app>" })], nextCursor: null });
+    await render();
+    await clickButton("used");
+    await clickButton("Details");
+    const row = container.querySelector("li");
+    const reads = listActivityMock.mock.calls.length;
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("li")).toBe(row);
+      expect(row?.textContent).toContain("<who>Agent</who>");
+      expect(row?.textContent).toContain("<action>Tool</action>");
+      expect(row?.textContent).toContain("<app>Custom</app>");
+      expect(row?.querySelector("who, action, app")).toBeNull();
+      expect(row?.textContent).toContain("Код причины");
+      expect(row?.textContent).toContain("deny_policy_block");
+      expect(row?.textContent).toContain("mail:send_email");
+      expect(row?.textContent).toContain("5 мин. назад");
+      expect(listActivityMock).toHaveBeenCalledTimes(reads);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(row?.textContent).toContain("Reason code");
+      expect(row?.textContent).toContain("5m ago");
+      expect(listActivityMock).toHaveBeenCalledTimes(reads);
+    } finally { await reactAct(async () => { await i18n.changeLanguage("en"); }); }
+  });
 
   it("renders humanized sentences and the outcome chip without the old footer note", async () => {
     await render();

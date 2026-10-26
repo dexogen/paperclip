@@ -1,3 +1,4 @@
+import { localizeOnboardingQuestion, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
 import type { TFunction } from "i18next";
 import { i18n, Trans, useTranslation } from "@/i18n";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -1053,6 +1054,8 @@ function AskUserQuestionsCard({
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
   const { t } = useTranslation();
+  const onboardingTask = useOnboardingTask();
+  const displayPayload = localizeOnboardingQuestion(interaction, onboardingTask, t);
   const resolutionErrorMessage = useResolutionErrorMessage();
   const [draftAnswers, setDraftAnswers] = useState<Record<string, string[]>>(() =>
     Object.fromEntries(
@@ -1233,7 +1236,7 @@ function AskUserQuestionsCard({
         />
       ) : interaction.status === "pending" ? (
         <div className="space-y-4">
-          {questions.map((question, index) => {
+          {displayPayload.questions.map((question, index) => {
             const hasFreeTextOption = question.options.some(
               (option) => option.freeText === true,
             );
@@ -1382,7 +1385,7 @@ function AskUserQuestionsCard({
                     {t("decisionForms.interaction.submitting")}
                   </>
                 ) : (
-                  interaction.payload.submitLabel ?? t("decisionForms.common.submitAnswers")
+                  displayPayload.submitLabel ?? t("decisionForms.common.submitAnswers")
                 )}
               </Button>
             </div>
@@ -1429,7 +1432,7 @@ function AskUserQuestionsCard({
         </div>
       ) : (
         <div className="space-y-3">
-          {questions.map((question) => {
+          {displayPayload.questions.map((question) => {
             const labels = getQuestionAnswerLabels({
               question,
               answers: interaction.result?.answers ?? [],

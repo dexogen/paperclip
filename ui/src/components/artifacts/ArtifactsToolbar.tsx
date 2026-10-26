@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { Check, Layers } from "lucide-react";
 import type { ArtifactGroupBy, ArtifactKindFilter } from "@/api/artifacts";
@@ -23,12 +24,28 @@ export const ARTIFACT_GROUP_OPTIONS: { value: ArtifactGroupBy; label: string }[]
 ];
 
 export function artifactGroupByLabel(value: ArtifactGroupBy): string {
-  return ARTIFACT_GROUP_OPTIONS.find((option) => option.value === value)?.label ?? "None";
+  switch (value) {
+    case "task": return t("surfacesGap.artifacts.task");
+    case "parent_task": return t("surfacesGap.artifacts.parentTask");
+    default: return t("surfacesGap.artifacts.none");
+  }
+}
+
+function artifactKindLabel(value: ArtifactKindFilter): string {
+  switch (value) {
+    case "image": return t("surfacesGap.artifacts.images");
+    case "video": return t("surfacesGap.artifacts.videos");
+    case "document": return t("surfacesGap.artifacts.documents");
+    case "text": return t("surfacesGap.artifacts.texts");
+    case "file": return t("surfacesGap.artifacts.files");
+    default: return t("surfacesGap.artifacts.all");
+  }
 }
 
 /** Canonical collection filters; compact standalone, standard in the toolbar. */
 export function ArtifactKindFilters({ kind, onKindChange, size = "compact" }: { kind: ArtifactKindFilter; onKindChange: (value: ArtifactKindFilter) => void; size?: TabSize }) {
-  return <TabFilters items={ARTIFACT_KIND_FILTERS} value={kind} onValueChange={onKindChange} size={size} label="Filter artifacts by type" />;
+  useTranslation();
+  return <TabFilters items={ARTIFACT_KIND_FILTERS.map((item) => ({ ...item, label: artifactKindLabel(item.value) }))} value={kind} onValueChange={onKindChange} size={size} label={t("surfacesGap.artifacts.filter")} />;
 }
 
 export interface ArtifactsToolbarProps {
@@ -44,11 +61,12 @@ export interface ArtifactsToolbarProps {
 
 /** Shared shipped Artifacts controls. Canonical proposal: Components / Toolbars / Artifacts. */
 export function ArtifactsToolbar({ query: draftQuery, onQueryChange: setDraftQuery, groupBy, onGroupByChange: selectGroupBy, kind, onKindChange: selectKind, filters }: ArtifactsToolbarProps) {
+  useTranslation();
   const grouping = groupBy !== "none";
   return (
-    <div data-canonical-toolbar="artifacts" role="toolbar" aria-label="Artifacts controls" className="flex flex-col items-start gap-4">
+    <div data-canonical-toolbar="artifacts" role="toolbar" aria-label={t("surfacesGap.artifacts.controls")} className="flex flex-col items-start gap-4">
       <div className="design-toolbar-controls flex w-full flex-wrap items-center gap-4">
-        <ToolbarSearch query={draftQuery} onQueryChange={setDraftQuery} label="Search artifacts" placeholder="Search artifacts…" clearLabel="Clear artifact search" />
+        <ToolbarSearch query={draftQuery} onQueryChange={setDraftQuery} label={t("surfacesGap.artifacts.search")} placeholder={t("surfacesGap.artifacts.searchPlaceholder")} clearLabel={t("surfacesGap.artifacts.clearSearch")} />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -56,8 +74,8 @@ export function ArtifactsToolbar({ query: draftQuery, onQueryChange: setDraftQue
               type="button"
               variant="outline"
               size="icon"
-              aria-label={`Group artifacts (currently ${artifactGroupByLabel(groupBy)})`}
-              title="Group artifacts"
+              aria-label={t("surfacesGap.artifacts.groupCurrent", { group: artifactGroupByLabel(groupBy) })}
+              title={t("surfacesGap.artifacts.group")}
               data-testid="artifact-group-control"
               data-group-by={groupBy}
               data-active={grouping}
@@ -67,7 +85,7 @@ export function ArtifactsToolbar({ query: draftQuery, onQueryChange: setDraftQue
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuLabel>Group by</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("surfacesGap.artifacts.groupBy")}</DropdownMenuLabel>
             {ARTIFACT_GROUP_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
@@ -76,7 +94,7 @@ export function ArtifactsToolbar({ query: draftQuery, onQueryChange: setDraftQue
                 onSelect={() => selectGroupBy(option.value)}
                 className="justify-between"
               >
-                {option.label}
+                {artifactGroupByLabel(option.value)}
                 {groupBy === option.value ? <Check className="h-3.5 w-3.5" /> : null}
               </DropdownMenuItem>
             ))}

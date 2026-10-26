@@ -64,6 +64,23 @@
         "agentDetailUi.lifecycle.cleaning_upDescription"
       ],
       "reason": "The local phases table contains only these six lifecycle states; pendingPhase uses an own-property check before selecting the translated caption/description. Provider lifecycleError remains literal."
+    },
+    {
+      "file": "ui/src/pages/InviteLanding.tsx",
+      "owner": "renderInviteMessage",
+      "expression": "message.key",
+      "keys": [
+        "authGap.accountExists",
+        "authGap.credentialsMismatch",
+        "authGap.accountMayExist",
+        "authGap.authenticationFailed",
+        "authGap.inviteNotFound",
+        "authGap.checkingMembership",
+        "authGap.alreadyMember",
+        "authGap.acceptFailed",
+        "authGap.requiredFields"
+      ],
+      "reason": "InviteMessageKey is a closed union of local invite/auth feedback. Raw provider errors use the separate message variant and are not catalog keys."
     }
   ]
 }

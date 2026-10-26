@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { act, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -124,6 +125,49 @@ describe("SidebarRecentTasks", () => {
     setter?.call(input, value);
     input.dispatchEvent(new Event("input", { bubbles: true }));
   }
+
+  it("localizes only the owned onboarding title without rewriting recent task storage", async () => {
+    const owned = { id: "issue-1", companyId: "company-1", title: "Paperclip onboarding", originKind: "onboarding_first_task" as const, identifier: "PAP-1", status: "todo" as const, hiddenAt: null, updatedAt: new Date(1) };
+    const custom = { ...owned, id: "issue-2", identifier: "PAP-2", originKind: undefined };
+    recordRecentTask(owned, "user-1"); recordRecentTask(custom, "user-1");
+    mockIssuesApi.get.mockImplementation(async (id: string) => id === owned.id ? owned : custom);
+    await render();
+    const storageKey = getRecentTasksStorageKey("company-1", "user-1");
+    const stored = window.localStorage.getItem(storageKey);
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('a[href="/issues/issue-1"]')?.textContent).toContain("Начало работы с Paperclip");
+      expect(container.querySelector('a[href="/issues/issue-2"]')?.textContent).toContain("Paperclip onboarding");
+      expect(window.localStorage.getItem(storageKey)).toBe(stored);
+      expect(mockIssuesApi.update).not.toHaveBeenCalled();
+    } finally { await act(async () => { await i18n.changeLanguage("en"); }); }
+  });
+
+  it("keeps a literal rename draft and focus while switching the recent-task menu language", async () => {
+    const issue = { id: "issue-1", companyId: "company-1", title: "Task <literal>", identifier: "PAP-1", status: "todo" as const, hiddenAt: null, updatedAt: new Date(1) };
+    recordRecentTask(issue, "user-1");
+    mockIssuesApi.get.mockResolvedValue(issue);
+    await render();
+    await openActions(issue.title);
+    await act(async () => { menuItem("Rename")?.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    const input = document.body.querySelector<HTMLInputElement>('input[aria-label="Task name"]')!;
+    await act(async () => { setInputValue(input, "Draft <unchanged>"); input.focus(); input.setSelectionRange(1, 4); });
+    const reads = mockIssuesApi.summaries.mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.body.querySelector('input[aria-label="Название задачи"]')).toBe(input);
+      expect(input.value).toBe("Draft <unchanged>");
+      expect(input.selectionStart).toBe(1);
+      expect(document.activeElement).toBe(input);
+      expect(document.body.textContent).toContain("Переименовать задачу");
+      expect(mockIssuesApi.update).not.toHaveBeenCalled();
+      expect(mockIssuesApi.summaries).toHaveBeenCalledTimes(reads);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(document.body.querySelector('input[aria-label="Task name"]')).toBe(input);
+      expect(input.value).toBe("Draft <unchanged>");
+      expect(mockIssuesApi.update).not.toHaveBeenCalled();
+    } finally { await act(async () => { await i18n.changeLanguage("en"); }); }
+  });
 
   it("hides the section when there are no recent tasks", async () => {
     await render();

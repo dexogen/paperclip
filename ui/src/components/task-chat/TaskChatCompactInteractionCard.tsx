@@ -1,3 +1,4 @@
+import { localizeOnboardingQuestion, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
 import {
   useEffect,
   useMemo,
@@ -410,6 +411,7 @@ function ReceiptDisclosure({
   compact?: boolean;
 }) {
   const { t } = useTranslation();
+  const onboardingTask = useOnboardingTask();
   const reason = receiptReason(interaction, t);
   const answerReason =
     reason ??
@@ -419,7 +421,8 @@ function ReceiptDisclosure({
   let request: ReactNode;
 
   if (interaction.kind === "ask_user_questions") {
-    const questionSet = questionSetForInteraction(interaction);
+    const displayPayload = localizeOnboardingQuestion(interaction, onboardingTask, t);
+    const questionSet = questionSetForInteraction({ ...interaction, payload: displayPayload });
     const response = questionResponseForInteraction(interaction, questionSet);
     request = (
       <div className="grid gap-3">
@@ -766,7 +769,11 @@ function AskUserQuestionsCard({
   onUploadImage?: SharedInteractionProps["onUploadImage"];
   mentions?: MentionOption[];
 }) {
+  const { t } = useTranslation();
+  const onboardingTask = useOnboardingTask();
   const questionSet = questionSetForInteraction(interaction);
+  const displayPayload = localizeOnboardingQuestion(interaction, onboardingTask, t);
+  const displayQuestionSet = questionSetForInteraction({ ...interaction, payload: displayPayload });
   const initialResponse = questionResponseForInteraction(
     interaction,
     questionSet,
@@ -774,7 +781,7 @@ function AskUserQuestionsCard({
   return (
     <QuestionForm
       id={interaction.id}
-      questionSet={questionSet}
+      questionSet={displayQuestionSet}
       initialResponse={initialResponse}
       implicitCustomAnswer={interaction.payload.questionSet === undefined}
       draftKey={draftKey}

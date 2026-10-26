@@ -1,3 +1,4 @@
+import { t, useTranslation, i18n, Trans } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronRight, ScrollText } from "lucide-react";
@@ -29,31 +30,37 @@ const PAGE_SIZE = 50;
 const ALL = "__all";
 
 /** Outcome chip vocabulary (spec §4C / §5): Allowed · Blocked · Asked first · Failed · Waiting. */
-const OUTCOME_META: Record<ToolAuditOutcome, { label: string; status: string }> = {
-  allowed: { label: "Allowed", status: "allowed" },
-  blocked: { label: "Blocked", status: "denied" },
-  asked_first: { label: "Asked first", status: "require-approval" },
-  waiting: { label: "Waiting", status: "deferred" },
-  failed: { label: "Failed", status: "failed" },
-  unknown: { label: "Recorded", status: "unchecked" },
-};
+function getOutcomeMeta(): Record<ToolAuditOutcome, { label: string; status: string }> {
+  return {
+    allowed: { label: t("surfacesGap.toolsAudit.allowed"), status: "allowed" },
+    blocked: { label: t("surfacesGap.toolsAudit.blocked"), status: "denied" },
+    asked_first: { label: t("surfacesGap.toolsAudit.asked"), status: "require-approval" },
+    waiting: { label: t("surfacesGap.toolsAudit.waiting"), status: "deferred" },
+    failed: { label: t("surfacesGap.toolsAudit.failed"), status: "failed" },
+    unknown: { label: t("surfacesGap.toolsAudit.recorded"), status: "unchecked" },
+  };
+}
 
-const OUTCOME_FILTERS: { value: string; label: string }[] = [
-  { value: ALL, label: "All outcomes" },
-  { value: "allowed", label: "Allowed" },
-  { value: "blocked", label: "Blocked" },
-  { value: "asked_first", label: "Asked first" },
-  { value: "waiting", label: "Waiting" },
-  { value: "failed", label: "Failed" },
-];
+function getOutcomeFilters(): { value: string; label: string }[] {
+  return [
+    { value: ALL, label: t("surfacesGap.toolsAudit.allOutcomes") },
+    { value: "allowed", label: t("surfacesGap.toolsAudit.allowed") },
+    { value: "blocked", label: t("surfacesGap.toolsAudit.blocked") },
+    { value: "asked_first", label: t("surfacesGap.toolsAudit.asked") },
+    { value: "waiting", label: t("surfacesGap.toolsAudit.waiting") },
+    { value: "failed", label: t("surfacesGap.toolsAudit.failed") },
+  ];
+}
 
-const WINDOW_FILTERS: { value: ToolAuditWindow; label: string }[] = [
-  { value: "all", label: "All time" },
-  { value: "1h", label: "Last 1 hour" },
-  { value: "24h", label: "Last 24 hours" },
-  { value: "7d", label: "Last 7 days" },
-  { value: "30d", label: "Last 30 days" },
-];
+function getWindowFilters(): { value: ToolAuditWindow; label: string }[] {
+  return [
+    { value: "all", label: t("surfacesGap.toolsAudit.allTime") },
+    { value: "1h", label: t("surfacesGap.toolsAudit.hour") },
+    { value: "24h", label: t("surfacesGap.toolsAudit.day") },
+    { value: "7d", label: t("surfacesGap.toolsAudit.week") },
+    { value: "30d", label: t("surfacesGap.toolsAudit.month") },
+  ];
+}
 
 function detailString(details: Record<string, unknown> | null, key: string): string | undefined {
   const v = details?.[key];
@@ -89,55 +96,55 @@ function formattedArguments(details: Record<string, unknown> | null): string | u
 
 function lifecycleSummary(event: ToolGatewayActivityEvent): string | null {
   if (!event.lifecycleType) return null;
-  const who = event.actorDisplayName ?? event.agentDisplayName ?? "Someone";
-  const app = event.appDisplayName ?? event.connectionDisplayName ?? "this app";
+  const who = event.actorDisplayName ?? event.agentDisplayName ?? t("surfacesGap.toolsAudit.someone");
+  const app = event.appDisplayName ?? event.connectionDisplayName ?? t("surfacesGap.toolsAudit.thisApp");
   const count = detailNumber(event.details, "count") ?? 0;
   const added = detailNumber(event.details, "added") ?? 0;
   const removed = detailNumber(event.details, "removed") ?? 0;
   switch (event.lifecycleType) {
     case "app_connected":
-      return `${who} connected ${app}`;
+      return t("surfacesGap.toolsAudit.connected", { who, app });
     case "app_paused":
-      return `${who} paused ${app}`;
+      return t("surfacesGap.toolsAudit.paused", { who, app });
     case "app_resumed":
-      return `${who} resumed ${app}`;
+      return t("surfacesGap.toolsAudit.resumed", { who, app });
     case "reconnected":
-      return `${who} reconnected ${app}`;
+      return t("surfacesGap.toolsAudit.reconnected", { who, app });
     case "disconnected":
-      return `${who} disconnected ${app}`;
+      return t("surfacesGap.toolsAudit.disconnected", { who, app });
     case "allowlist_changed":
-      if (added > 0 && removed === 0) return `${who} added ${added} allowed ${added === 1 ? "item" : "items"} in ${app}`;
-      if (removed > 0 && added === 0) return `${who} removed ${removed} allowed ${removed === 1 ? "item" : "items"} in ${app}`;
-      return `${who} updated the allowlist for ${app}`;
+      if (added > 0 && removed === 0) return t("surfacesGap.toolsAudit.added", { who, app, count: added });
+      if (removed > 0 && added === 0) return t("surfacesGap.toolsAudit.removed", { who, app, count: removed });
+      return t("surfacesGap.toolsAudit.allowlistUpdated", { who, app });
     case "actions_quarantined":
-      return `${count} new ${count === 1 ? "action needs" : "actions need"} review in ${app}`;
+      return t("surfacesGap.toolsAudit.review", { count, app });
     default:
-      return `${who} updated ${app}`;
+      return t("surfacesGap.toolsAudit.updated", { who, app });
   }
 }
 
 /** Plain-words "why" for the row expander, keyed off the reason code. */
 function plainReason(event: ToolGatewayActivityEvent): string {
-  if (event.lifecycleType) return "This connection change was recorded in the app's activity history.";
+  if (event.lifecycleType) return t("surfacesGap.toolsAudit.connectionRecorded");
   const code = detailString(event.details, "reasonCode");
   if (code === "permitted_connections_not_installed") {
-    return "Permitted connections were not installed, so their tools were not added to this run.";
+    return t("surfacesGap.toolsAudit.missingConnections");
   }
   switch (event.normalizedOutcome) {
     case "allowed":
-      return "Allowed by your rules.";
+      return t("surfacesGap.toolsAudit.allowedReason");
     case "blocked":
-      if (code === "rate_limited") return "Blocked because it ran too many times in a short window.";
-      if (code?.includes("secret")) return "Blocked to keep a sensitive value from leaving.";
-      return "Blocked by a rule.";
+      if (code === "rate_limited") return t("surfacesGap.toolsAudit.rateReason");
+      if (code?.includes("secret")) return t("surfacesGap.toolsAudit.secretReason");
+      return t("surfacesGap.toolsAudit.ruleReason");
     case "asked_first":
-      return "Held for someone to approve before it could run.";
+      return t("surfacesGap.toolsAudit.approvalReason");
     case "waiting":
-      return "Waiting — the app it needs wasn't ready yet.";
+      return t("surfacesGap.toolsAudit.waitingReason");
     case "failed":
-      return "The app was allowed to run it, but returned an error.";
+      return t("surfacesGap.toolsAudit.failedReason");
     default:
-      return "Recorded by Paperclip.";
+      return t("surfacesGap.toolsAudit.recordedReason");
   }
 }
 
@@ -152,7 +159,8 @@ function DetailFact({ label, value, mono }: { label: string; value: string; mono
 }
 
 function OutcomeChip({ outcome }: { outcome: ToolAuditOutcome }) {
-  const meta = OUTCOME_META[outcome] ?? OUTCOME_META.unknown;
+  useTranslation();
+  const meta = getOutcomeMeta()[outcome] ?? getOutcomeMeta().unknown;
   return <StatusBadge status={meta.status} label={meta.label} />;
 }
 
@@ -163,11 +171,12 @@ function ActivityRow({
   event: ToolGatewayActivityEvent;
   ruleNamesById: Map<string, string>;
 }) {
+  useTranslation();
   const [open, setOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const who = event.agentDisplayName ?? "An agent";
-  const action = event.toolDisplayName ?? "an action";
+  const who = event.agentDisplayName ?? t("surfacesGap.toolsAudit.anAgent");
+  const action = event.toolDisplayName ?? t("surfacesGap.toolsAudit.anAction");
   const app = event.appDisplayName ?? event.connectionDisplayName ?? event.applicationDisplayName ?? null;
   const lifecycle = lifecycleSummary(event);
   const rawTool = detailString(event.details, "tool") ?? detailString(event.details, "toolName");
@@ -216,26 +225,18 @@ function ActivityRow({
             <span className="block text-foreground">{lifecycle}</span>
           ) : isRuntimeMcpDeliveryDiagnostic ? (
             <span className="block text-foreground">
-              <span className="font-medium">{who}</span>'s run received 0 MCP servers —{" "}
-              <span className="font-medium">{permittedNotInstalledCount ?? permittedNotInstalledConnections.length}</span>{" "}
-              permitted {(permittedNotInstalledCount ?? permittedNotInstalledConnections.length) === 1 ? "connection" : "connections"} not installed
+              <Trans i18nKey="surfacesGap.toolsAudit.missing" count={permittedNotInstalledCount ?? permittedNotInstalledConnections.length} components={{ who: <span className="font-medium">{who}</span> }} />
             </span>
           ) : (
             <span className="block text-foreground">
-              <span className="font-medium">{who}</span> used <span className="font-medium">{action}</span>
-              {app ? (
-                <>
-                  {" "}
-                  in <span className="font-medium">{app}</span>
-                </>
-              ) : null}
+              {app ? <Trans i18nKey="surfacesGap.toolsAudit.usedIn" components={{ who: <span className="font-medium">{who}</span>, action: <span className="font-medium">{action}</span>, app: <span className="font-medium">{app}</span> }} /> : <Trans i18nKey="surfacesGap.toolsAudit.used" components={{ who: <span className="font-medium">{who}</span>, action: <span className="font-medium">{action}</span> }} />}
             </span>
           )}
         </span>
         <span className="flex shrink-0 items-center gap-2 whitespace-nowrap">
           {event.lifecycleType ? null : <OutcomeChip outcome={event.normalizedOutcome} />}
           <span className="text-xs text-muted-foreground">
-            · <RelativeTime value={event.createdAt} />
+            · <RelativeTime value={event.createdAt} t={i18n.t} locale={i18n.resolvedLanguage} />
           </span>
         </span>
       </button>
@@ -255,12 +256,12 @@ function ActivityRow({
           <div className="flex flex-wrap gap-3 text-xs">
             {issueId ? (
               <Link to={`/issues/${issueId}`} className="text-primary hover:underline">
-                View task
+                {t("surfacesGap.toolsAudit.viewTask")}
               </Link>
             ) : null}
             {runId && agentId ? (
               <Link to={`/agents/${agentId}/runs/${runId}`} className="text-primary hover:underline">
-                View run
+                {t("surfacesGap.audit.viewRun")}
               </Link>
             ) : null}
           </div>
@@ -272,32 +273,32 @@ function ActivityRow({
               className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
             >
               {detailsOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
-              Details
+              {t("surfacesGap.toolsAudit.details")}
             </button>
             {detailsOpen ? (
               <div className="mt-2 space-y-1.5 text-xs">
-                {rawTool ? <DetailFact label="Action name" value={rawTool} mono /> : null}
-                <DetailFact label="Reason code" value={reasonCode} mono />
-                <DetailFact label="Actor type" value={event.actorType ?? "—"} />
-                {runId ? <DetailFact label="Run ID" value={runId} mono /> : null}
-                {transport ? <DetailFact label="Transport" value={transport} mono /> : null}
-                {requestMethod && endpoint ? <DetailFact label="HTTP request" value={`${requestMethod} ${endpoint}`} mono /> : null}
-                {mcpMethod ? <DetailFact label="MCP method" value={mcpMethod} mono /> : null}
-                {requestId ? <DetailFact label="Request ID" value={requestId} mono /> : null}
-                {request ? <DetailFact label="Dispatched" value={request.dispatched === true ? "Yes" : "No"} /> : null}
-                {httpStatus !== undefined ? <DetailFact label="HTTP status" value={String(httpStatus)} mono /> : null}
-                {contentType ? <DetailFact label="Content type" value={contentType} mono /> : null}
-                {responseBytes !== undefined ? <DetailFact label="Response size" value={`${responseBytes} bytes`} /> : null}
-                {upstreamRequestId ? <DetailFact label="Upstream ID" value={upstreamRequestId} mono /> : null}
+                {rawTool ? <DetailFact label={t("surfacesGap.toolsAudit.actionName")} value={rawTool} mono /> : null}
+                <DetailFact label={t("surfacesGap.toolsAudit.reasonCode")} value={reasonCode} mono />
+                <DetailFact label={t("surfacesGap.toolsAudit.actorType")} value={event.actorType ?? "—"} />
+                {runId ? <DetailFact label={t("surfacesGap.toolsAudit.runId")} value={runId} mono /> : null}
+                {transport ? <DetailFact label={t("surfacesGap.toolsAudit.transport")} value={transport} mono /> : null}
+                {requestMethod && endpoint ? <DetailFact label={t("surfacesGap.toolsAudit.httpRequest")} value={`${requestMethod} ${endpoint}`} mono /> : null}
+                {mcpMethod ? <DetailFact label={t("surfacesGap.toolsAudit.mcpMethod")} value={mcpMethod} mono /> : null}
+                {requestId ? <DetailFact label={t("surfacesGap.toolsAudit.requestId")} value={requestId} mono /> : null}
+                {request ? <DetailFact label={t("surfacesGap.toolsAudit.dispatched")} value={request.dispatched === true ? t("surfacesGap.toolsAudit.yes") : t("surfacesGap.toolsAudit.no")} /> : null}
+                {httpStatus !== undefined ? <DetailFact label={t("surfacesGap.toolsAudit.httpStatus")} value={String(httpStatus)} mono /> : null}
+                {contentType ? <DetailFact label={t("surfacesGap.toolsAudit.contentType")} value={contentType} mono /> : null}
+                {responseBytes !== undefined ? <DetailFact label={t("surfacesGap.toolsAudit.responseSize")} value={t("surfacesGap.toolsAudit.bytes", { count: responseBytes })} /> : null}
+                {upstreamRequestId ? <DetailFact label={t("surfacesGap.toolsAudit.upstreamId")} value={upstreamRequestId} mono /> : null}
                 {isRuntimeMcpDeliveryDiagnostic ? (
                   <>
-                    <DetailFact label="Delivered MCP servers" value="0" mono />
+                    <DetailFact label={t("surfacesGap.toolsAudit.delivered")} value="0" mono />
                     {permittedNotInstalledConnections.map((connection) => {
                       const connectionId = detailString(connection, "id");
-                      const connectionName = detailString(connection, "name") ?? "Unnamed connection";
+                      const connectionName = detailString(connection, "name") ?? t("surfacesGap.toolsAudit.unnamed");
                       return connectionId ? (
                         <div key={connectionId} className="flex gap-2">
-                          <span className="shrink-0 text-muted-foreground">Not installed</span>
+                          <span className="shrink-0 text-muted-foreground">{t("surfacesGap.toolsAudit.notInstalled")}</span>
                           <Link to={`/apps/${connectionId}/permissions`} className="font-medium text-primary hover:underline">
                             {connectionName}
                           </Link>
@@ -308,7 +309,7 @@ function ActivityRow({
                 ) : null}
                 {argumentsText ? (
                   <div className="space-y-1">
-                    <span className="text-muted-foreground">Parameters (redacted)</span>
+                    <span className="text-muted-foreground">{t("surfacesGap.toolsAudit.parameters")}</span>
                     <pre className="whitespace-pre-wrap break-words rounded-md border border-border bg-background p-3 font-mono text-xs text-foreground">
                       {argumentsText}
                     </pre>
@@ -324,6 +325,7 @@ function ActivityRow({
 }
 
 export function AuditTab({ companyId }: { companyId: string }) {
+  useTranslation();
   const [app, setApp] = useState<string>(ALL);
   const [agent, setAgent] = useState<string>(ALL);
   const [outcome, setOutcome] = useState<string>(ALL);
@@ -396,17 +398,17 @@ export function AuditTab({ companyId }: { companyId: string }) {
   return (
     <div className="space-y-4">
       <ToolsPageHeader
-        title="Activity"
-        description="What your agents actually did with your apps, newest first. Each line is one decision — allowed, blocked, asked first, waiting, or failed."
+        title={t("surfacesGap.audit.activity")}
+        description={t("surfacesGap.toolsAudit.description")}
       />
 
       <div className="flex flex-wrap items-center gap-2">
         <Select value={app} onValueChange={setApp}>
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="App" />
+            <SelectValue placeholder={t("surfacesGap.toolsAudit.app")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={ALL}>All apps</SelectItem>
+            <SelectItem value={ALL}>{t("surfacesGap.toolsAudit.allApps")}</SelectItem>
             {(apps.data?.applications ?? []).map((a) => (
               <SelectItem key={a.id} value={a.id}>
                 {a.name}
@@ -415,7 +417,7 @@ export function AuditTab({ companyId }: { companyId: string }) {
           </SelectContent>
         </Select>
         <AgentSelect
-          agents={[{ id: ALL, name: "All agents" }, ...(agents.data ?? [])]}
+          agents={[{ id: ALL, name: t("surfacesGap.audit.allAgents") }, ...(agents.data ?? [])]}
           value={agent}
           onChange={setAgent}
           triggerClassName="w-40"
@@ -425,7 +427,7 @@ export function AuditTab({ companyId }: { companyId: string }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {OUTCOME_FILTERS.map((o) => (
+            {getOutcomeFilters().map((o) => (
               <SelectItem key={o.value} value={o.value}>
                 {o.label}
               </SelectItem>
@@ -437,7 +439,7 @@ export function AuditTab({ companyId }: { companyId: string }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {WINDOW_FILTERS.map((o) => (
+            {getWindowFilters().map((o) => (
               <SelectItem key={o.value} value={o.value}>
                 {o.label}
               </SelectItem>
@@ -445,35 +447,35 @@ export function AuditTab({ companyId }: { companyId: string }) {
           </SelectContent>
         </Select>
         <Input
-          placeholder="Search activity…"
+          placeholder={t("surfacesGap.toolsAudit.search")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-xs"
         />
         {hasActiveFilters ? (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
-            Clear filters
+            {t("surfacesGap.audit.clear")}
           </Button>
         ) : null}
       </div>
 
       {activity.isLoading ? (
-        <LoadingState />
+        <LoadingState label={t("surfacesGap.audit.loading")} />
       ) : activity.error ? (
-        <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
+        <ErrorState t={i18n.t} error={activity.error} onRetry={() => activity.refetch()} />
       ) : events.length === 0 ? (
         hasActiveFilters ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
               <ScrollText className="h-10 w-10 text-muted-foreground/40" />
               <div>
-                <p className="text-sm font-medium text-foreground">No activity matches these filters</p>
+                <p className="text-sm font-medium text-foreground">{t("surfacesGap.toolsAudit.noMatch")}</p>
                 <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                  Try a wider time window or different filters.
+                  {t("surfacesGap.toolsAudit.widen")}
                 </p>
               </div>
               <Button variant="outline" size="sm" onClick={clearFilters}>
-                Clear filters
+                {t("surfacesGap.audit.clear")}
               </Button>
             </CardContent>
           </Card>
@@ -482,9 +484,9 @@ export function AuditTab({ companyId }: { companyId: string }) {
             <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
               <ScrollText className="h-10 w-10 text-muted-foreground/40" />
               <div>
-                <p className="text-sm font-medium text-foreground">Nothing here yet</p>
+                <p className="text-sm font-medium text-foreground">{t("surfacesGap.toolsAudit.empty")}</p>
                 <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                  As soon as your agents start using connected apps, what they do shows up here.
+                  {t("surfacesGap.toolsAudit.emptyHint")}
                 </p>
               </div>
             </CardContent>
@@ -510,7 +512,7 @@ export function AuditTab({ companyId }: { companyId: string }) {
             onClick={() => activity.fetchNextPage()}
             disabled={activity.isFetchingNextPage}
           >
-            {activity.isFetchingNextPage ? "Loading…" : "Load more"}
+            {activity.isFetchingNextPage ? t("surfacesGap.audit.loading") : t("surfacesGap.audit.loadMore")}
           </Button>
         </div>
       ) : null}

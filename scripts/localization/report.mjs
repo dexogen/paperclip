@@ -49,7 +49,8 @@ const cell = (value) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g,
   .replace(/@/g, "&#64;").replace(/[\[\]()*_!~]/g, "\\$&");
 
 export function renderMarkdown(report) {
-  const lines = ["# Localization report", "", `Result: **${report.ok ? "passed" : "needs attention"}** (${cell(report.locale)}).`, "",
+  const lines = ["# Localization report", "", `Catalog and new-string checks: **${report.ok ? "passed" : "needs attention"}** (${cell(report.locale)}).`, "",
+    "This result does not certify a fully translated application. Existing baseline findings, server-owned text and runtime-only content require separate coverage review. See doc/localization/COVERAGE.md.", "",
     "| Measure | Count |", "| --- | ---: |", ...Object.entries(report.summary).map(([name, count]) => `| ${name} | ${count} |`), ""];
   const table = (title, headers, rows) => {
     if (!rows.length) return;

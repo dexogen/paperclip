@@ -9,6 +9,8 @@ export interface RecentTaskEntry {
   id: string;
   companyId: string;
   title: string;
+  /** Server-owned provenance, populated only when a full task is available. */
+  originKind?: Issue["originKind"];
   identifier: string | null;
   status: IssueStatus;
   externalConversationState?: Issue["externalConversationState"];
@@ -35,6 +37,7 @@ function isRecentTaskEntry(value: unknown, companyId: string): value is RecentTa
     && typeof entry.id === "string"
     && entry.id.length > 0
     && typeof entry.title === "string"
+    && (entry.originKind === undefined || typeof entry.originKind === "string")
     && (entry.identifier === null || typeof entry.identifier === "string")
     && typeof entry.status === "string"
     && typeof entry.recordedAt === "number"
@@ -104,24 +107,27 @@ export function writeRecentTasks(storageKey: string, entries: RecentTaskEntry[])
   publishRecentTasks(storageKey, bounded);
 }
 
-type TaskSnapshot = Omit<IssueSummary, "externalConversationState"> & Pick<Issue, "externalConversationState">;
+type TaskSnapshot = Omit<IssueSummary, "externalConversationState"> & Pick<Issue, "externalConversationState" | "originKind">;
 
 export function mergeRecentTaskSnapshot(entry: RecentTaskEntry, issue: TaskSnapshot): RecentTaskEntry {
   if (entry.id !== issue.id || entry.companyId !== issue.companyId) return entry;
   const snapshotUpdatedAt = new Date(issue.updatedAt).getTime();
   if (!Number.isFinite(snapshotUpdatedAt)) return entry;
   if (entry.snapshotUpdatedAt !== undefined && snapshotUpdatedAt < entry.snapshotUpdatedAt) return entry;
+  const originKind = issue.originKind ?? entry.originKind;
   // Conversation readiness also depends on deliveries and decisions, which
   // can change without changing the task's title/status version.
   if (snapshotUpdatedAt === entry.snapshotUpdatedAt) {
-    return issue.externalConversationState !== undefined
-      && issue.externalConversationState !== entry.externalConversationState
-      ? { ...entry, status: issue.status, externalConversationState: issue.externalConversationState }
+    const externalConversationState = issue.externalConversationState === undefined
+      ? entry.externalConversationState : issue.externalConversationState;
+    return externalConversationState !== entry.externalConversationState || originKind !== entry.originKind
+      ? { ...entry, status: issue.status, externalConversationState, originKind }
       : entry;
   }
   return {
     ...entry,
     title: issue.title,
+    originKind,
     identifier: issue.identifier,
     status: issue.status,
     externalConversationState: issue.externalConversationState,
@@ -131,7 +137,7 @@ export function mergeRecentTaskSnapshot(entry: RecentTaskEntry, issue: TaskSnaps
 }
 
 export function recordRecentTask(
-  issue: Pick<Issue, "id" | "companyId" | "title" | "identifier" | "status" | "externalConversationState" | "updatedAt" | "conversationAgentId">,
+  issue: Pick<Issue, "id" | "companyId" | "title" | "identifier" | "status" | "externalConversationState" | "updatedAt" | "conversationAgentId" | "originKind">,
   userId: string | null | undefined,
   recordedAt = new Date(issue.updatedAt).getTime(),
 ) {
@@ -147,6 +153,7 @@ export function recordRecentTask(
     id: issue.id,
     companyId: issue.companyId,
     title: issue.title,
+    originKind: issue.originKind,
     identifier: issue.identifier,
     status: issue.status,
     externalConversationState: issue.externalConversationState,
@@ -161,6 +168,7 @@ export function recordRecentTask(
   if (
     existing
     && existing.title === entry.title
+    && existing.originKind === entry.originKind
     && existing.identifier === entry.identifier
     && existing.status === entry.status
     && existing.externalConversationState === entry.externalConversationState

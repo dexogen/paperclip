@@ -6,7 +6,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import type { ToolRiskLevel } from "@paperclipai/shared";
 import { i18n, useTranslation } from "@/i18n";
 import { ApiError } from "@/api/client";
-import { CapabilityBadges, ErrorState, RiskBadge } from "./shared";
+import { CapabilityBadges, ErrorState, RelativeTime, RiskBadge } from "./shared";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 let root: ReturnType<typeof createRoot>;
@@ -77,4 +77,24 @@ it("retains the existing API route classification without translating ordinary p
   }
   await act(async () => { root.render(<><RiskBadge risk={null} t={t} /><RiskBadge risk={"__proto__" as ToolRiskLevel} t={t} /><RiskBadge risk={"toString" as ToolRiskLevel} t={t} /></>); });
   expect(container.textContent).toBe("Неизвестен__proto__toString");
+});
+
+it("localizes relative timestamps with the same rounding and fixed-English defaults", async () => {
+  const now = Date.parse("2026-10-26T12:00:00Z");
+  const clock = vi.spyOn(Date, "now").mockReturnValue(now);
+  function Surface() {
+    const { t, i18n } = useTranslation();
+    return <>
+      <div data-testid="localized"><RelativeTime value={new Date(now - 5 * 60_000)} t={t} locale={i18n.resolvedLanguage} /><RelativeTime value={new Date(now + 2 * 60 * 60_000)} t={t} /><RelativeTime value={null} t={t} /></div>
+      <div data-testid="legacy"><RelativeTime value={new Date(now - 5 * 60_000)} /><RelativeTime value={new Date(now + 2 * 60 * 60_000)} /><RelativeTime value={null} /></div>
+    </>;
+  }
+  try {
+    container = document.createElement("div"); document.body.appendChild(container);
+    await act(async () => { await i18n.changeLanguage("en"); root = createRoot(container); root.render(<Surface />); });
+    expect(container.querySelector('[data-testid="localized"]')?.textContent).toBe("5m agoin 2hnever");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[data-testid="localized"]')?.textContent).toBe("5 мин. назадчерез 2 чникогда");
+    expect(container.querySelector('[data-testid="legacy"]')?.textContent).toBe("5m agoin 2hnever");
+  } finally { clock.mockRestore(); }
 });

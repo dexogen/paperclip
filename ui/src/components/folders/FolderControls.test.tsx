@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,6 +11,7 @@ import {
   BulkBar,
   DeleteFolderDialog,
   FolderFormDialog,
+  FolderChip,
   FolderRail,
   MobileFolderSheet,
   MoveToMenu,
@@ -135,7 +138,7 @@ describe("FolderControls", () => {
     root = null;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     if (root) {
       act(() => {
         root?.unmount();
@@ -143,6 +146,7 @@ describe("FolderControls", () => {
     }
     container.remove();
     document.body.innerHTML = "";
+    await i18n.changeLanguage("en");
   });
 
   it("normalizes URL selection values for folder persistence", () => {
@@ -477,4 +481,60 @@ describe("FolderControls", () => {
     expect(container.textContent).not.toContain("Create your first folder");
     window.localStorage.removeItem(storageKey);
   });
+
+  it.each([
+    ["skills", ["1 навык", "2 навыка", "5 навыков", "21 навык"]],
+    ["routines", ["1 регулярное задание", "2 регулярных задания", "5 регулярных заданий", "21 регулярное задание"]],
+  ])("renders whole delete messages for %s without confirming on a locale change", async (items, phrases) => {
+    const onConfirm = vi.fn();
+    root = createRoot(container);
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    for (const [index, count] of [1, 2, 5, 21].entries()) {
+      await reactAct(async () => {
+        root?.render(<DeleteFolderDialog open folder={{ ...folderResult.folders[0]!, itemCount: count }}
+          itemLabelPlural={items as string} onOpenChange={vi.fn()} onConfirm={onConfirm} />);
+      });
+      expect(document.querySelector('[role="alertdialog"]')?.textContent).toContain(phrases[index]);
+      expect(document.querySelector('[role="alertdialog"]')?.textContent).toContain("«Без папки»");
+    }
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(document.body.textContent).toContain(`The 21 ${items} in this folder won't be deleted. They'll move to Unfiled.`);
+    expect(onConfirm).not.toHaveBeenCalled();
+    const confirm = Array.from(document.querySelectorAll("button")).find((button) => button.textContent === "Delete folder")!;
+    await reactAct(async () => { confirm.click(); });
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it("translates known folder kinds and preserves arbitrary labels and selection IDs", async () => {
+    const onSelect = vi.fn();
+    const onCreate = vi.fn();
+    root = createRoot(container);
+    await reactAct(async () => {
+      await i18n.changeLanguage("ru");
+      root?.render(<>
+        <FolderChip result={folderResult} selection="unfiled" allLabel="All routines" onClick={vi.fn()} />
+        <AllUnfiledBanner storageKey="locale-phrases" itemLabelPlural="routines" onCreateFolder={onCreate} />
+        <FolderRail result={folderResult} selection="all" itemLabelPlural="routines" allLabel="All routines"
+          onSelect={onSelect} onCreate={onCreate} onRename={vi.fn()} onEdit={vi.fn()} onDelete={vi.fn()} />
+      </>);
+    });
+    expect(container.textContent).toContain("Сгруппируйте эти регулярные задания по папкам, чтобы поддерживать порядок.");
+    expect(container.querySelector('nav')?.getAttribute('aria-label')).toBe("Папки регулярных заданий");
+    expect(container.textContent?.match(/Без папки/g)).toHaveLength(2);
+    expect(container.textContent).not.toContain("Unfiled");
+    const reporting = Array.from(container.querySelectorAll("button")).find((button) => button.textContent === "Reporting")!;
+    await reactAct(async () => { reporting.click(); });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith("folder-reporting");
+    expect(onCreate).not.toHaveBeenCalled();
+    const literal = "Custom <b>items</b>";
+    await reactAct(async () => {
+      root?.render(<AllUnfiledBanner storageKey="locale-phrases" itemLabelPlural={literal} onCreateFolder={onCreate} />);
+    });
+    expect(container.textContent).toContain(`Сгруппируйте элементы «${literal}» по папкам`);
+    expect(container.querySelector("b")).toBeNull();
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain(`Group these ${literal} into folders to keep things tidy.`);
+    expect(onCreate).not.toHaveBeenCalled();
+  });
+
 });

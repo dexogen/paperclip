@@ -1,14 +1,80 @@
 // @vitest-environment jsdom
 import { act, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Announcement } from "@paperclipai/shared";
 import { AnnouncementCard } from "./AnnouncementCard";
 import { announcementPreview, announcementAnimationPreview } from "@/lib/announcement-preview";
+import { setLocale } from "@/i18n";
+
+const connectorsPublication: Announcement = {
+  id: "2026-09-14-connectors",
+  eyebrow: "Introducing Connectors",
+  title: "Give your agents the access they need",
+  description: "Connect Gmail, GitHub, Notion, and more. Choose which agents get access, which accounts they use, and which actions they can take.",
+  primaryAction: { kind: "route", path: "/apps", label: "Explore connectors" },
+  secondaryLink: { kind: "external", url: "https://paperclip.ing", label: "Read publication notes" },
+  image: { path: `assets/${"0".repeat(64)}.png`, alt: "Original publication image" },
+};
 
 vi.mock("@/lib/router", () => ({ Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => <a href={to} {...props}>{children}</a> }));
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 describe("AnnouncementCard", () => {
-  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+  beforeEach(async () => { await setLocale("en"); });
+  afterEach(async () => { vi.unstubAllGlobals(); vi.restoreAllMocks(); await setLocale("en"); });
+  it("localizes reviewed publication copy in place while retaining destinations, media and dismissal", async () => {
+    const div = document.createElement("div"); document.body.append(div);
+    const root = createRoot(div);
+    const dismiss = vi.fn();
+    try {
+      await act(async () => root.render(<AnnouncementCard announcement={connectorsPublication} onDismiss={dismiss} />));
+      const heading = div.querySelector("h2");
+      const link = div.querySelector('a[href="/apps"]');
+      const poster = div.querySelector("img");
+      await act(async () => { await setLocale("ru"); });
+      expect(div.querySelector("h2")).toBe(heading);
+      expect(heading?.textContent).toBe("Предоставьте агентам нужный доступ");
+      expect(div.textContent).toContain("Новые подключения");
+      expect(div.textContent).toContain("Подключите Gmail, GitHub, Notion и другие сервисы.");
+      expect(div.querySelector('a[href="/apps"]')).toBe(link);
+      expect(link?.textContent).toBe("Посмотреть подключения");
+      expect(div.querySelector('a[href="https://paperclip.ing"]')?.textContent).toBe("Read publication notes");
+      expect(div.querySelector("img")).toBe(poster);
+      expect(poster?.getAttribute("src")).toBe("/api/announcements/2026-09-14-connectors/image");
+      expect(poster?.getAttribute("alt")).toBe("Original publication image");
+      expect(dismiss).not.toHaveBeenCalled();
+      await act(async () => { await setLocale("en"); });
+      expect(heading?.textContent).toBe(connectorsPublication.title);
+      expect(link?.textContent).toBe("Explore connectors");
+      await act(async () => { await setLocale("ru"); });
+      await act(async () => div.querySelector<HTMLButtonElement>('[aria-label="Скрыть объявление"]')!.click());
+      expect(dismiss).toHaveBeenCalledTimes(1);
+    } finally {
+      await act(async () => root.unmount()); div.remove();
+    }
+  });
+  it.each([
+    { id: "organization-owned-announcement" },
+    { eyebrow: "Updated announcement" },
+    { title: "Revised access policy" },
+    { description: "New publication text from the feed." },
+    { primaryAction: { kind: "route" as const, path: "/apps" as const, label: "Open revised announcement" } },
+  ])("preserves unreviewed publication content %j", async (change) => {
+    await setLocale("ru");
+    const publication = { ...connectorsPublication, ...change };
+    const div = document.createElement("div"); document.body.append(div);
+    const root = createRoot(div);
+    try {
+      await act(async () => root.render(<AnnouncementCard announcement={publication} onDismiss={vi.fn()} />));
+      expect(div.querySelector("h2")?.textContent).toBe(publication.title);
+      expect(div.textContent).toContain(publication.eyebrow);
+      expect(div.textContent).toContain(publication.description);
+      expect(div.querySelector('a[href="/apps"]')?.textContent).toBe(publication.primaryAction.label);
+      expect(div.querySelector('[aria-label="Скрыть объявление"]')).not.toBeNull();
+    } finally {
+      await act(async () => root.unmount()); div.remove();
+    }
+  });
   async function animatedCard() {
     const div = document.createElement("div"); document.body.append(div);
     const root = createRoot(div);

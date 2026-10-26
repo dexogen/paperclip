@@ -1,3 +1,4 @@
+import { localizeOnboardingGreeting, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
 import type { TFunction } from "i18next";
 import { i18n, Trans, useTranslation } from "@/i18n";
 import { TaskChatUiError, formatTaskChatError } from "./task-chat/task-chat-errors";
@@ -6005,10 +6006,14 @@ export function IssueChatThread({
   });
   const resolvedTranscriptByRun = transcriptsByRunId ?? transcriptByRun;
   const resolvedHasOutputForRun = hasOutputForRunOverride ?? hasOutputForRun;
+  const onboardingTask = useOnboardingTask();
   const rawMessages = useMemo(
     () =>
       buildIssueChatMessages({
-        comments,
+        comments: comments.map((comment) => ({
+          ...comment,
+          body: localizeOnboardingGreeting(comment, onboardingTask, agentMap?.get(comment.authorAgentId ?? "")?.name, t),
+        })),
         interactions,
         timelineEvents,
         linkedRuns,
@@ -6026,6 +6031,8 @@ export function IssueChatThread({
       }),
     [
       comments,
+      onboardingTask,
+      t,
       interactions,
       timelineEvents,
       linkedRuns,
