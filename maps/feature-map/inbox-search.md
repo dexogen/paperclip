@@ -77,6 +77,21 @@ Manual: Open a pending decision, follow its source, resolve it through the suppo
 
 Automated: [search page](../../ui/src/pages/Search.test.tsx) and [company search service](../../server/src/__tests__/company-search-service.test.ts) cover UI and server search separately.
 
+[Search filter controls](../../ui/src/components/search/SearchFilterSheet.test.tsx)
+exercise the real mobile sheet and desktop menus across English/Russian changes.
+They preserve the pending filter draft and canonical sort, Cancel and Apply behavior.
+[Localized results and recovery](../../ui/src/components/search/SearchResults.locale.test.tsx)
+check count forms, literal names/snippets, anchors, highlights and removal of the
+selected filter. Search-page tests also render the mobile branch and check query,
+URL, recent-search and request stability. These use API fixtures, not a live server.
+
+Manual: Switch English/Russian with an active query, an open desktop filter and a
+pending mobile filter draft. Confirm that switching language makes no search
+request, changes no URL or selected ID, and keeps text selection. Cancel a draft,
+reopen it, then Apply a deliberate filter change. Search for names containing
+literal `<strong>` or `<filter>` text; the text must remain literal in result and
+recovery controls. Verify 1, 2, 5 and 21 results and filtered-out recovery.
+
 [Task search quality](../../server/src/__tests__/task-search-quality.test.ts)
 also exercises mixed-case Cyrillic titles and short words against a real
 embedded PostgreSQL database with locale `C`. Company-search regressions cover

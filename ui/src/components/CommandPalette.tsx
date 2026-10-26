@@ -297,7 +297,13 @@ export function CommandPalette() {
             >
               <Search className="mr-2 h-4 w-4" />
               <span className="flex-1 truncate">
-                <Trans i18nKey="searchUi.palette.searchAll" values={{ query: searchQuery }} components={{ query: <span className="font-semibold" /> }} />
+                <Trans
+                  i18nKey="searchUi.palette.searchAll"
+                  values={{ query: searchQuery }}
+                  components={{ query: <span className="font-semibold" /> }}
+                  tOptions={{ interpolation: { escapeValue: true } }}
+                  shouldUnescape
+                />
               </span>
               <span className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <span>{t("searchUi.palette.openFullSearch")}</span>

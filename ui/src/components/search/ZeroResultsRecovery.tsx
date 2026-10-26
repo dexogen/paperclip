@@ -66,6 +66,8 @@ export function ZeroResultsRecovery({
                   i18nKey="searchUi.recovery.remove"
                   values={{ filter: describeLoosenSuggestion(suggestion.filter, suggestion.values, lookups, t) }}
                   components={{ filter: <span className="font-medium" /> }}
+                  tOptions={{ interpolation: { escapeValue: true } }}
+                  shouldUnescape
                 />
               </span>
               <span className="shrink-0 tabular-nums text-emerald-600 dark:text-emerald-400">

@@ -89,6 +89,17 @@ full chat/composer, browser activity, and most of `RichWorkProductCard` remain
 outside it; that shared card only receives translated state-chip labels. Component
 tests do not establish a complete browser journey or server permission coverage.
 
+The search slice covers the full-search page, result and empty states, desktop
+and mobile filters, sorting, recovery suggestions, and the command palette. Search
+operators and URLs remain canonical. Switching language preserves the query,
+selection, filter draft and request count. Command names and known agent roles are
+searchable in both languages. Stable command IDs preserve selection; promoted
+projects keep their existing relevance order. Normal Enter executes the selected
+command, while Ctrl/Cmd+Enter opens full search. User queries and names remain
+literal even when they contain strings that resemble translation markup.
+These component checks include the real Cmdk and Radix primitives. They do not
+establish a live full-search journey or complete localization of Inbox/Decisions.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review

@@ -176,6 +176,22 @@ describe("real Cmdk localized keyboard commands", () => {
     expect(state.navigate).toHaveBeenCalledWith(combined ? "/issues?view=mine" : "/inbox");
   });
 
+  it("keeps markup-shaped search queries literal through translated full-search captions", async () => {
+    const term = 'Literal <strong>query</strong> & &amp; <query>name</query>';
+    await open();
+    await query(term);
+    for (const locale of ["en", "ru", "en"]) {
+      await act(async () => { await i18n.changeLanguage(locale); });
+      await tick();
+      const item = document.querySelector('[data-value^="__paperclip-search-all__"]')!;
+      expect(item).not.toBeNull();
+      expect(item.textContent).toContain(term);
+      expect(item.querySelector("strong, query")).toBeNull();
+      expect(input().value).toBe(term);
+    }
+    expect(state.navigate).not.toHaveBeenCalled();
+  });
+
   it("keeps full-search canonical operator parsing on Ctrl+Enter", async () => {
     await i18n.changeLanguage("ru");
     await open();

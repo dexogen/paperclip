@@ -58,6 +58,28 @@ describe("localized search results", () => {
     }
   });
 
+  it("keeps markup-shaped project labels literal in translated recovery actions", async () => {
+    const name = 'Project <strong>name</strong> & &amp; <filter>raw</filter>';
+    const changed = vi.fn();
+    await act(async () => root.render(<ZeroResultsRecovery
+      query="query"
+      filters={{ projectId: "project-a" }}
+      zeroResults={{ unfilteredTotal: 1, loosenSuggestions: [{ filter: "projectId", values: ["project-a"], resultCount: 1, additionalCount: 1 }] }}
+      lookups={{ agentName: () => undefined, userName: () => undefined, projectName: () => name, labelName: () => undefined, currentUserId: null }}
+      onChange={changed} onClearAll={vi.fn()}
+    />));
+    const remove = container.querySelector("button")!;
+    for (const locale of ["en", "ru", "en"]) {
+      await act(async () => { await i18n.changeLanguage(locale); });
+      expect(container.querySelector("button")).toBe(remove);
+      expect(remove.textContent).toContain(name);
+      expect(remove.querySelector("strong, filter")).toBeNull();
+      expect(changed).not.toHaveBeenCalled();
+    }
+    await act(async () => remove.click());
+    expect(changed).toHaveBeenCalledExactlyOnceWith({});
+  });
+
   it.each([[1, "результат"], [2, "результата"], [5, "результатов"], [21, "результат"]])("renders Russian recovery count %s and removes the same filter dimension", async (count, noun) => {
     const changed = vi.fn(), cleared = vi.fn();
     await i18n.changeLanguage("ru");
