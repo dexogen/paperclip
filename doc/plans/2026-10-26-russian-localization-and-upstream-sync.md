@@ -275,8 +275,9 @@ The implementation is published as a draft stack:
 [upstream refresh #9](https://github.com/dexogen/paperclip/pull/9),
 [search controls #10](https://github.com/dexogen/paperclip/pull/10),
 [Inbox #11](https://github.com/dexogen/paperclip/pull/11),
-[shared decision forms #12](https://github.com/dexogen/paperclip/pull/12), and
-[Decisions and approvals #13](https://github.com/dexogen/paperclip/pull/13).
+[shared decision forms #12](https://github.com/dexogen/paperclip/pull/12),
+[Decisions and approvals #13](https://github.com/dexogen/paperclip/pull/13), and
+[latest upstream #14](https://github.com/dexogen/paperclip/pull/14).
 The canonical checkout remains on `master`. Upstream fetching is configured with
 pushing blocked. Ordinary merges preserve upstream ancestry through
 `1fbbef45a8d399771add7a27a04b12f3a20e264c`; recheck upstream before deployment.
@@ -631,6 +632,12 @@ unchanged recovery dispatch predicates. The new recovery-candidate projection
 omits description from the initial scan; later branches can still load a full row.
 This is not evidence that every recovery query is narrow or that latency improved.
 The tracking pin is prospective until the reviewed stack reaches the default branch.
+
+Frozen dependency installation and all 47 detector/sync regressions passed.
+The original-upstream delta has no added/removed source findings, catalog changes
+or audit errors. The strict merged-tree audit also passed: 3,427 reviewed families,
+zero actionable findings and 18,112 existing debt occurrences. This does not prove
+runtime acceptance.
 
 The exact merged candidate still requires full Russian build and workspace types,
 complete UI qualification, the affected real-PostgreSQL GitHub/recovery/attention
