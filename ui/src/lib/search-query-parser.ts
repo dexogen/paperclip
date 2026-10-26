@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import {
   COMPANY_SEARCH_UPDATED_WITHIN_OPTIONS,
   ISSUE_PRIORITIES,
@@ -39,15 +41,19 @@ export interface SearchOperatorSuggestion {
 
 export const SEARCH_OPERATOR_QUICK_FILTERS = ["assignee:me", "is:open", "updated:>7d"] as const;
 
-export const SEARCH_OPERATOR_SUGGESTIONS: SearchOperatorSuggestion[] = [
-  { token: "status:todo", label: "Open todo tasks", description: "Filter by task status" },
-  { token: "status:blocked", label: "Blocked tasks", description: "Find blocked work" },
-  { token: "assignee:me", label: "Assigned to me", description: "Use your current board user" },
-  { token: "project:\"Paperclip App\"", label: "Project name", description: "Quote multi-word project names" },
-  { token: "label:bug", label: "Label", description: "Filter by issue label" },
-  { token: "priority:high", label: "High priority", description: "Filter by priority" },
-  { token: "updated:>7d", label: "Recently updated", description: "Updated in the last 7 days" },
-];
+export function getSearchOperatorSuggestions(t: TFunction = i18n.getFixedT("en")): SearchOperatorSuggestion[] {
+  return [
+    { token: "status:todo", label: t("searchUi.operators.todo.label"), description: t("searchUi.operators.todo.description") },
+    { token: "status:blocked", label: t("searchUi.operators.blocked.label"), description: t("searchUi.operators.blocked.description") },
+    { token: "assignee:me", label: t("searchUi.operators.me.label"), description: t("searchUi.operators.me.description") },
+    { token: "project:\"Paperclip App\"", label: t("searchUi.operators.project.label"), description: t("searchUi.operators.project.description") },
+    { token: "label:bug", label: t("searchUi.operators.label.label"), description: t("searchUi.operators.label.description") },
+    { token: "priority:high", label: t("searchUi.operators.priority.label"), description: t("searchUi.operators.priority.description") },
+    { token: "updated:>7d", label: t("searchUi.operators.updated.label"), description: t("searchUi.operators.updated.description") },
+  ];
+}
+
+export const SEARCH_OPERATOR_SUGGESTIONS = getSearchOperatorSuggestions();
 
 export interface SearchQueryParserContext {
   currentAgentId?: string | null;
@@ -126,12 +132,13 @@ function currentTokenBounds(input: string): { start: number; end: number; token:
   return { start, end, token: input.slice(start, end) };
 }
 
-export function searchOperatorSuggestions(input: string, limit = 5): SearchOperatorSuggestion[] {
+export function searchOperatorSuggestions(input: string, limit = 5, t: TFunction = i18n.getFixedT("en")): SearchOperatorSuggestion[] {
   const { token } = currentTokenBounds(input);
   const normalized = token.toLowerCase();
+  const suggestions = getSearchOperatorSuggestions(t);
   const candidates = normalized.length > 0
-    ? SEARCH_OPERATOR_SUGGESTIONS.filter((suggestion) => suggestion.token.toLowerCase().startsWith(normalized))
-    : SEARCH_OPERATOR_SUGGESTIONS;
+    ? suggestions.filter((suggestion) => suggestion.token.toLowerCase().startsWith(normalized))
+    : suggestions;
   return candidates.slice(0, limit);
 }
 

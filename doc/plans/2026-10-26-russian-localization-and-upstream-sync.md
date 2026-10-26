@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 2,431 reviewed semantic families, 2,490 English
-forms, and 2,608 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 18,990.
+The current combined catalog has 2,589 reviewed semantic families, 2,655 English
+forms, and 2,787 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,832.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -427,13 +427,56 @@ A fresh-worktree UI typecheck first stopped on missing generated plugin SDK type
 the normal SDK prerequisite build resolved that setup error, and UI typecheck and
 token gates passed without a source workaround.
 
-The source is being frozen for full Linux build/typecheck, the complete UI project,
-seven affected backend files, fresh Russian list/detail journeys and the six
-shipped paused/composer-stop E2E cases. These checks remain pending. The Stop cases
-must use the deterministic fake provider and real runner binaries; a skipped native
-case does not satisfy the matrix. English E2E builds must follow Russian browser
-proof because they replace generated static UI assets. Recheck upstream before
-actual deployment; this recorded candidate is not production acceptance.
+The frozen candidate `6848bcc26aa4d53804a31468e6fc029f2a79169a` passed Linux
+frozen installation, full Russian-default build, full workspace typecheck and native
+fixture preparation. Its complete UI run finished with 9,235 passed and one failed
+test across 806 files, with no skips. The failure was a stale source assertion for
+`Retry queued`, now a catalog entry. The original failed run remains preserved.
+Process and database cleanup passed; the checkout remains clean at that candidate.
+
+The correction changes only two test files. It keeps the original API-binding
+assertions, checks the translation key and unchanged English caption, and exercises
+the selected failed-run callback in English and Russian. Switching language makes
+no retry request; explicit retry submits the selected run, agent and company and
+shows the translated queued notice. Both complete test files passed 172 tests;
+UI typecheck and diff validation also passed. These focused results do not replace
+the failed full run.
+
+Seven affected backend files, fresh Russian list/detail journeys and the six
+shipped paused/composer-stop E2E cases did not start and remain pending. The Stop
+cases must use the deterministic fake provider and real runner binaries; a skipped
+native case does not satisfy the matrix. English E2E builds must follow Russian
+browser proof because they replace generated static UI assets. Recheck upstream
+before actual deployment; this candidate is not production acceptance.
+
+### Search and command palette integration
+
+The search slice adds 158 reviewed semantic families, including the shared Close
+caption. Review also re-examines the eleven reused status/priority families in
+filter context. The 13 production owners cover the full-search page and palette,
+results, desktop/mobile filters, sorting and recovery. One exact exception records
+a `document` field discriminator in a title expression. The baseline removes 158
+resolved occurrences and accepts no new debt.
+
+Real Cmdk regressions found two issues during implementation: normal Enter could
+open full search while an action was selected, and Cmdk could reorder already
+ranked projects. The fixes preserve canonical values and existing project relevance
+order. Final integration also found that markup-shaped queries and project names
+could be interpreted by `Trans`. Both cases failed before explicit escaped
+interpolation and unescaping restored the original literal text. The failed test
+reports remain separate from successful checks. Component tests use API fixtures;
+the complete live full-search journey remains pending. The final seven-file
+component run passed 73 tests. UI typecheck, token gates, the 47 detector/sync
+regressions, map validation and strict localization audit passed.
+
+The prior frozen Linux candidate `6848bcc26aa4d53804a31468e6fc029f2a79169a`
+passed frozen installation, full Russian-default build and full workspace
+typecheck. Its full UI run completed with 9,235 passed and one failed test across
+806 files, with no skips. The failure was an obsolete source assertion for the
+literal `Retry queued` after that caption moved to the catalog. This is a failed
+run, not a green qualification. A focused contract correction and behavioral retry
+regression are in progress. Backend and live phases did not start; process and
+database cleanup passed. A later candidate must complete those phases explicitly.
 
 ### Workflow activation
 

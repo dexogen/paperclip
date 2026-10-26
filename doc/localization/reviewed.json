@@ -863,6 +863,13 @@
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.758Z"
     },
+    "common.close": {
+      "sourceHash": "18ae7703dda82f3d29cb127c6427471c468079767ae66afc212660105acfe4d5",
+      "translationHash": "db47406f53730ff30984bd2c5b9c8890f40dbd49e772c778d13b9ef4a7b2fecb",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.192Z"
+    },
     "companySettings.alreadyArchived": {
       "sourceHash": "6f3e951fcae3cd830229da269a106cac65e54343addf7c14e2fc6651644ad8d4",
       "translationHash": "1c19463c7c4b070a979db73b6b4e5759453d9c824afee23b925c12b01871870b",
@@ -6435,6 +6442,1105 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T00:16:08.819Z"
     },
+    "searchUi.filters.agent": {
+      "sourceHash": "a81912f4acab4e02dd95f8ab90cad33c2d9c2a06a1a9a1ddd487f23fd32bcf47",
+      "translationHash": "3d116887d5e404bfc511c480439d2cd8d82eb75a74332a0b7e9628d42a238d0c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.192Z"
+    },
+    "searchUi.filters.assignee": {
+      "sourceHash": "22c566d4823edc77131567163c49306686d0adf958beef648796b3efe2e42183",
+      "translationHash": "7b2bbe857c914bc2728a779fc65dee5fe1a6c2e8fdc0cf56feaa763679f6e797",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.cancel": {
+      "sourceHash": "970295518b2bbecd229b86088ee46618bf76e4c32c330238e38eadff7206e333",
+      "translationHash": "8aef6bbab9b31a8bf8f96d5ffad2f0185b06fc0012b013393dff4e6051ca6d65",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipAssignee": {
+      "sourceHash": "f9135d4dc674ca060638d9ddabd2521103c11e4764098089d53f4db0a41d950b",
+      "translationHash": "bed3007bc4912ab1c637d5eaa42aea796cac38962635fd0417b91c25c25ce705",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipLabel": {
+      "sourceHash": "d626b0d721fff68ce8f6d3fad0e2f77ac1741908047a4c70ac222e77466ce01f",
+      "translationHash": "e213e14fd483780ae723305de4f8089d69620bc04b483fb5bf4c87ec7534d885",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipPriority": {
+      "sourceHash": "23169f87afdcbb7c324743f0747f9213584da501c37b0526854c86c9200e6ebb",
+      "translationHash": "c0d584123bf834117ddb5a9745c7d2e545c4748515e7eeaae6ab9520a8dba518",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipProject": {
+      "sourceHash": "99fedb35a937a014efb73ade1c82c289ab70277dca5916a52ca6fbcf7e522064",
+      "translationHash": "6e8a21e6ebd30f3494533be968ea176388afeb932f565d381e7deb52675db101",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipStatus": {
+      "sourceHash": "83a5472ae61ea7104162f422b90c47c53e8b695e50a51d30d6bb6af6bdf63877",
+      "translationHash": "cff0114eca0ddec656b4fcae0a54ae169568ce72f06d0643a3575970ca2c6b72",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.chipUpdated": {
+      "sourceHash": "329a8b0fd6cae528bf8b2aeb2af808d7f86637f7d64d5491f2b344eafd680f65",
+      "translationHash": "15479ebfa690faf6a659c9bb064686fd91943c2a629a0e2456898b88fd1b36b3",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.clear": {
+      "sourceHash": "c51358ca3a1d97cbb0229712cb19b3d7f7437d4f897b62f49e49c94e9f8c3362",
+      "translationHash": "fe3ab8c695d6e04b16518017ca8c51f43e31346fa1c6e0b895b8c460750c99de",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.clearAll": {
+      "sourceHash": "94266b1115f01bf8c746e9adb03b01de9d0fadf7386771f4fd89f7d1ed5d3f20",
+      "translationHash": "ebd47ef11303d62e42f1ac69ec0a7fdd846cd28638f30ebc3652844080b3e5e5",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.filterBy": {
+      "sourceHash": "9a2eda6ec37e02cb55ed9d39472b60c52a962abed7c286454f33fa7a25050c80",
+      "translationHash": "b7d6551c75e3ccc3c08e8c88d368284c8f23aa96087eeb9838cd1149f83048b7",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.193Z"
+    },
+    "searchUi.filters.label": {
+      "sourceHash": "a4c008ad6930e42f6012addc5fd97cb50c55765a29288f738863d371eea02bfa",
+      "translationHash": "73b91213a70c5b1a808d5be358f2a948b7f76a3a7c04b7084fe2d095a1f5f908",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.me": {
+      "sourceHash": "df7ac9ef5fff6e6c597d45004d91142586018997bf75b489e304b18e1e7faad3",
+      "translationHash": "3ee87532745ef5a770081d3a9a9c28263a3bf8a9814bd7085695e26112cc2741",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.noAssignees": {
+      "sourceHash": "d6aa7a491fe8e11b4a84e8d471540ced698aa213fe51a5c2aace3056def0aed5",
+      "translationHash": "61c68b6992f2a70263e9f78d51943536f770117c456eb3c34f0afa48c2a0db4b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.noLabels": {
+      "sourceHash": "1f79bfb2a946610fa117b86b07f819b69763c105d023afe1e3d151b17dd4400e",
+      "translationHash": "6e9f42d6e7d472ab756aa21c4ab275e69c056a7ac505db2489f56060229b1d6c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.noOptions": {
+      "sourceHash": "d8a8ee26159f4bbe64d6846a4d8e34612c2a4afd03bfec5d345ae9d648837dda",
+      "translationHash": "8b82f1c9bfd40d9d8e87e43184490a264beef00ce2658426b7fe444bb8d305a6",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.noProjects": {
+      "sourceHash": "8babe5f0cdea813c98dce9d5856a4571af07a06dd4a92322cefca0145c6c0246",
+      "translationHash": "d5f157a0df45270c2308a5b64c7c207b6c8c7fa4f16a87c84a5e83b9b1fb890a",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.openItems": {
+      "sourceHash": "9e6a946aa6bfafe45833c0057c82d174ebfede56988a29b72ff23aaa9cc88aab",
+      "translationHash": "de0edaf900bbd4379024b6c8e39f24d1b4f9ca331c39e67e7228bdd06536551f",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.priority": {
+      "sourceHash": "a56ed5cd85ae87e29146bab52de6d1ccb239c9df35b256cc3dd3d8fe64af36f9",
+      "translationHash": "9e5e56f1dae4f7ccb85d6041cb2129e68875dc35c3607392b3ea03535f28d8aa",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.project": {
+      "sourceHash": "25932c79d90734f1f0f875b278d70f1bc424f221ae82d7c77b4b3e55fe0cc681",
+      "translationHash": "bbf0d13a061f47ffd8eda58b0a4d311f182c286866a25ee2a4a810b4eccfb487",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.195Z"
+    },
+    "searchUi.filters.removeFilter": {
+      "sourceHash": "a32bbd129f6b20c1a40fba036598aa7084d8db47b0abf1ed3367cd4d8f175769",
+      "translationHash": "503b6721f25d05de0c1d96cea524ce674cbbe7dd4f342cb0849ee48c871b0497",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.search": {
+      "sourceHash": "5da9f2d258661fa85fbde11a9125a78a0c34da3661becb23e97e81a3d79d12dd",
+      "translationHash": "fbc577d01a18bfa58f22efa893956cda660e7e677c63f5fdeb8f497e398fd32d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.searchAssignees": {
+      "sourceHash": "66ff559a9d3b1aa82818eda5217fbdd649c2460205c684acf4a7061e86b68971",
+      "translationHash": "2b5e0861afb4f7b0095c5556ae33b492bb3496de7a774969b9a53782f35b46d8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.searchLabels": {
+      "sourceHash": "1c3c7f515dd2d93339cda361d42d05b9af3297bd62d851594bfb42e2ca9ec2e7",
+      "translationHash": "0a9c08b3364f15c7fc3422ca048572af15f00fc71b7c9410ec11995b770a6197",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.searchProjects": {
+      "sourceHash": "19c82839c76778077abbc71d15a6391c4c63e091b0d9435dd68f3f297e929f17",
+      "translationHash": "f4816dd80794d691772ab4491df162eba69859e3abb5394aa041f5cb9177565c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.showCount": {
+      "sourceHash": "68894bc23d98babd4cb1ac9368ef74505455efc8cd1138a7d2a0608f327e35fc",
+      "translationHash": "bbd124d4a1ae44353504da31bfd2548b1df6f603c86675462a187b7a9110b045",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.showResults": {
+      "sourceHash": "25a6ed30ca010331067808182e6f534fc17271e36645d83a0a1616136c3f3efb",
+      "translationHash": "6e6537c501bb354bdae348ee422a402f0b03b64afe8410cb84de7383109c6aa5",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.status": {
+      "sourceHash": "21b80ed237d4e3bab0be759474353a4d5e266be03ee896fd5b59db1974769c2d",
+      "translationHash": "401bec747c0196f10450af12ba3e2e18d94fabfaebec2ea0021d5830c0b639cf",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.title": {
+      "sourceHash": "24e42dc336e332f3c7ce7f172aa5da57818dc1d54b52f7f189f3ba79169a9f55",
+      "translationHash": "c37286a12f0d105f3949fdf5aff4cfefe7404960c15fb613363f76b86510a0e4",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.unassigned": {
+      "sourceHash": "698d94b46f7f489c7c52c1da74b65e6416dc5a2342a641ec2b59b70290022be3",
+      "translationHash": "e725bfd179c0001b113b9c5c5501d2412bdd45438b6c36322d8a4c0c508f4154",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updated": {
+      "sourceHash": "17c07223f219daa2332a542a2152d01653bb481ff28e5dbd52277b3d1527d042",
+      "translationHash": "b422f61e7c00757a7e90169e660ae983215a650a48c33e719511d9d268cc4a5d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updated24h": {
+      "sourceHash": "23b7819778f15d8778ef2c13041d1db9edb4c6f6f3f7e9791ab995927fd27983",
+      "translationHash": "d1b80e435be4fd45af7a9c02e15e62ea4233308411f72e2d785bc3495c9c0468",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updated30d": {
+      "sourceHash": "ab8f1a4c2a65c0d07f3662fb3d268c88abf3b16db463496d2c861cc7c49a75cc",
+      "translationHash": "42fd087ae3ba2bb2a0afb157e8c78ea65e083d8f40343f21ccda48f7954c77b3",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updated7d": {
+      "sourceHash": "ebd34e8075ef6d2d7674ab7d549db85cb226eba9e22ffe3b28ebcd76d6ec409c",
+      "translationHash": "e9cef1f515907ea8b9f49c076a351908b592320729e97a43cfe9e921ee834035",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updated90d": {
+      "sourceHash": "40a32f95f978bf4760432a71970c25d5b9991abe0c089774e20a877e09d72487",
+      "translationHash": "0521e8c2a1c3b30af5896e88ce7a2c2d19eee1f57df399d4538f09150bb52b30",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.updatedOther": {
+      "sourceHash": "8906438667add549b8d72a7499791d6c7fbbef0ecd4d18b7342ebd7cdc03bc9b",
+      "translationHash": "234c2e2917e230fb5aca4b234774250968760d12c79d6990adad956e1aa25a06",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.filters.user": {
+      "sourceHash": "da1bb4bd21eabf02614935bbe5dcc6426f29a41634496d6c368560a596c9bc21",
+      "translationHash": "aba77d6492bee8c2e32663b75bfab475c1c093ef2aca794c044420b94782a9dd",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.blocked.description": {
+      "sourceHash": "ae186656286c122d235c37e4a2fed406a7a05d8f54977b0bb93b0217f81e74e5",
+      "translationHash": "db0deaf2238b37b7a1590cbf49d7d941ba1006170a307459904621282109e86e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.blocked.label": {
+      "sourceHash": "550935730bf6ec6d909a9cd01f463efd2db87007853e0e896f5ac3011640bbe9",
+      "translationHash": "21c8159d2a94010ea3c00042a6430aefbbfe7b7edf0d555e759c8324fbf05908",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.label.description": {
+      "sourceHash": "6a0b9681abf7c2cd79c577b42ed8c77e32e129d735c44d0bdbf29745129e4b91",
+      "translationHash": "58b8030d567acb2f744a966930194045a84f4689d9face0d32a06068d29b00b6",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.label.label": {
+      "sourceHash": "aabbc5b0bf08f7cdd1ae2884abe80cc722e2b7bb8c23bf842f5e80cc8ca0b593",
+      "translationHash": "7635860489faaa99dcf0a34093205b9b0a4bf79ca90f2db7fd76ffd2644ad17c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.me.description": {
+      "sourceHash": "fe51bd30f8d79a0ed6cf53376f47cee8dfb1150fe13b84a3a36b8c041b86c4a6",
+      "translationHash": "3f4171f92e4ab939d3e8930ca576d65787254017039dc0a0531f184ca3d1720e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.me.label": {
+      "sourceHash": "532731b8f2075f7f0ba161b8fbadd6f1b1a5344ad6fbb5dd622392c2a88a41db",
+      "translationHash": "3def3a1dfaf392d8fc6eb1ebd4adb9086b33a5d6655d812f0d352c60abd6bf89",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.priority.description": {
+      "sourceHash": "806b75ca3f4545f04d05255f436434eafb2af5d5949982d85c125ef0b8b561e5",
+      "translationHash": "a70b1d39ba306288eac1b00c2e6f22d8dbaa9fe3d9df82c3098b4b4c6b619ba4",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.196Z"
+    },
+    "searchUi.operators.priority.label": {
+      "sourceHash": "b94613ff919800ab87820cd20c85bbe35127503f1ee093e13224fcb5d57129c3",
+      "translationHash": "c4103dcf924fd3eb444af766c55971229d50c64b2416b2ed26d8d5ff20bda8a0",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.project.description": {
+      "sourceHash": "c5c5c32f34f8716de4f1c7dd071c7570a25764aff55255af3b62269d07e98681",
+      "translationHash": "b040ba61fa6c74a2e5c9be2fa9a54cfaa76c30290faf3d4682f112d2078e5fcc",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.project.label": {
+      "sourceHash": "69af0345408ae932a5c23d8aa1fdb53753f1dc29ddbcb3ca497f0e4f476613c9",
+      "translationHash": "0c3516ce20677b2e75f5638499a7d46b18edc2c7c9910a68eefb02978c9ae35d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.todo.description": {
+      "sourceHash": "824d5677c6fe83ace883b6d6a8955e988e1c665bbddac616ca2a0b7e593f3217",
+      "translationHash": "1d15ecdcb2faad476ff75a57d6b6afc6490c7c6b51f584efdc29f1ac5463dbf8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.todo.label": {
+      "sourceHash": "6ef9450358a7077af160be6d90c61160d34cd09a0a965991140662d13913f120",
+      "translationHash": "ce3d79aa186f5f0368e065fc3b58fff0d75fece6dc681f17ec7fd527d0cf9275",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.updated.description": {
+      "sourceHash": "78b4bd0c09c0b2d706a8b44417618f1fd8ebf9a0d2493bdb167d82a1791afa69",
+      "translationHash": "1af1ab242f2a115e226906a1ef32ce25799fd3840c8236dc64ac6019a75f4fa5",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.operators.updated.label": {
+      "sourceHash": "e46c287bb32d474a958f3e8ec11b5d4338ec5b78625e33487f8d52a79a966c09",
+      "translationHash": "f613ec3a3a03f6069dc646fc5293566a18490c3921db3ac3cca5e9c73afd2a5f",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.allScopes": {
+      "sourceHash": "23f5aa41ae215c4066636ecbebd760e80f9c8b1caaafb0358a740333e1506ee4",
+      "translationHash": "48a854e1378b03823596f554a6db604c4f9fdaaeae38bba3613c77022acac26c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.clear": {
+      "sourceHash": "30f8a495c9034236f0c370439b4f3eb645130c760f30dc7a397705744d9b1412",
+      "translationHash": "d9da99b15f716cff75aad6bdcb69ce38c5308aed8fdbc76b1fef0513bf7d522d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.createFromQuery": {
+      "sourceHash": "810f5b79571ef62a403d4635d8cc8ca5962e6b575cc11f2857934f9c22291c5f",
+      "translationHash": "3e21125030099779a23663e391cbc8f731b9215e48020c65094f1e186910b4aa",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.emptyDescription": {
+      "sourceHash": "853325253a068647f2e2f8e442319268574c7a4b2cfb6d8dbb5c3476cae27b0b",
+      "translationHash": "ba3e97315f16554653791bfe853db3098cded32a73f98b864051b17d1cac4849",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.emptyTitle": {
+      "sourceHash": "aa4932b66e32b44941e3ab439bfc6be1578052eb3271949e5751d875ec7db5da",
+      "translationHash": "27bd3af0409bcb14215794d15aeed5d8b3045595f82d0e38d7dc5b436e8434dd",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.errorRequest": {
+      "sourceHash": "099a59a4f4318ec9ffb3be3d80d03e4d9e382ea6dd1d94921423e9bc4269c50e",
+      "translationHash": "812a7fd65f37362a454a3d94e908eec7144e231f9d957b5621668e66c350a662",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.errorStatus": {
+      "sourceHash": "c8904ef5afebbeff80c6a50a752073364c40f72bfc20e30ce5666d0711060124",
+      "translationHash": "0db39e275bc109e78a80013d10d608260f19d2e67373e963cf4314a5354bc15b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.errorTitle": {
+      "sourceHash": "afb92f59295a6156c686999c11040b8b30860060cac9c773bdd50a728638f437",
+      "translationHash": "95bc49f3d1026800c4b50011a95c1322592a5e9c42801513a6d6535f1afa8463",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.fewerTerms": {
+      "sourceHash": "992caeab170f85aab004b48c95340de50544b2543f64817bccff4185b402ea3c",
+      "translationHash": "de05951c852758230977730ff31fff27397d78c9967474249d0b63fdedb06684",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.filtersActive": {
+      "sourceHash": "202c5f13fc705c7cff01c2fd4ac2147a0df63d4a16140ed2be569c913eaa4b3b",
+      "translationHash": "c7214301d4e43e5d4fe92145d9f14a75ace82d18cb2bd4cbd9579bc470d082fa",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.identifierHint": {
+      "sourceHash": "c8723d2ed9f3f1f5ea94a28309d76e2f08a38d2f907e0643a92048dbc3b03414",
+      "translationHash": "9a5d398b7ce2f6a25a0006e77ad6258c224598f8c7850ac10f5eb7580e52e3ca",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.identifierTip": {
+      "sourceHash": "5857fc430c41c6447c1d82a42a95cba885f2e6ca904f1f488a9cb3d45c6769ed",
+      "translationHash": "215b06718a60e5af9e6f274b10df5f1af5fbef0e6c3c59ab8a2001b1053963f2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.initialDescription": {
+      "sourceHash": "08de758262fc513b42efce761ea75d346c0f8a58908044be167b7f47bfa78e47",
+      "translationHash": "d10641d2fffbff72e79484de0f8509c9b98572a383b35a5f32ac21ab86a27a7b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.initialTitle": {
+      "sourceHash": "dcf8d1c53fc11cb5f944de09ed5ed231492f25f5e2de66e658c9b2272d25a0b4",
+      "translationHash": "b630668c5c0bb9d3b5cfb1a4cbe997da5641ca9a6f687b5367ee9b2196c5a5f2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.insertOperator": {
+      "sourceHash": "62e337e2537fb22609857915cff9b43a9b52fc7205fd838a9ccfc67b0335034e",
+      "translationHash": "a4763a9773c4271f322b841cd89883175a543f560b1771eef9dc84429f22072b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.operatorHint": {
+      "sourceHash": "e36d54d48cf4698420fc7f60e950020ed78349c4424cfd06b89a575b2baef95d",
+      "translationHash": "9cb5e9866352b3010f739031c40835f1a5d8ad89bcfaa7de9155f1e1641c7fd8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.paletteHint": {
+      "sourceHash": "dac57a046a8c61ab19f3fccae837c65af20db36891c9fac9b4dc9a3ab378b80f",
+      "translationHash": "8d6200dbf88e3d9cc960f8550a3e1a0c401a7e582e6acf9c3b42697c5cc6050f",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.placeholder": {
+      "sourceHash": "8fe5de80795eb952d41eb88abeeb7dc391c6cdb35465f5fb17356132e037b205",
+      "translationHash": "4975a3bba40ffac033f49a39c650ba6a444355a80ce06bc832e7e6fcdecb75e7",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.query": {
+      "sourceHash": "42936b5065f1bb6c08a666621bcd56064432273f117d2d2024644fecafa71eb6",
+      "translationHash": "0db3545e97e70563f5863410881932ce7856ac1ca3dd9f6e22b4da8aa8d744e8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.quotedHint": {
+      "sourceHash": "51474b101fc3fd3b0bf32385340b033d278c9ea3fe1235e4115a71044a4a6aad",
+      "translationHash": "3e9515f7f0ad2b3e3ae7376b7d9a3488675d75cf9b8a48d8a29da42be1a247d8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.quotedTip": {
+      "sourceHash": "a1b0f2f74f2b82ca0f00687da3a44d26a4e03d47fee9ee6ba67f04c167c88def",
+      "translationHash": "0f86d1e4fb4f7474f59f5cddf17379ffe94a05be6c9196b7bce30ebdcd5b8a6a",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.recent": {
+      "sourceHash": "70dd3badf81534a78629b1f9472abcb716c69b978573093a7df4118e419b80ef",
+      "translationHash": "54f03fce62f6d6dbbcb9706274e9b22729714017aee3b7670f0d168ebb44610f",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.results": {
+      "sourceHash": "c66ce5f56a460b7b7015380b84b3b964c549acbd62aa880bb8ab49da52f939f7",
+      "translationHash": "8f0f1b4427b28f6a34886cc2bb929082ebfd8263796eaca2740ebc09ce8f7158",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.resultsPartial": {
+      "sourceHash": "5f64962d5e794087a9398b2d65a117b25b9a110c28eac0e0c7003d4dab096c80",
+      "translationHash": "574734f83255fbbfb8176d4dc0712ae4e80084129533abeed19048b4716a2019",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.197Z"
+    },
+    "searchUi.page.retry": {
+      "sourceHash": "727e4dd9118b6e660c0280856b9692ec0945c708eacd72fa1ab156b65c1f739d",
+      "translationHash": "3a783027864c2d5dab398a62d78b3b12966e508bc3fce52c5fc44270134334c8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.searchAllScopes": {
+      "sourceHash": "3671bb46ab893a06f8b32fbc3486b23a54d2841db1e3fd1e0d175ac7760497b1",
+      "translationHash": "3478c40be223af666852d1429f33c34c9dece62fbc634d6f0d813f01a01d32d7",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.searching": {
+      "sourceHash": "c6f7b36a0de026bb40bb22654a1fb8ba749cdbef205713fca36f5cbd6614cabb",
+      "translationHash": "67f40d962f65396846f2d13cb6bdeba61f2c9cd36b6c454d4e723bf8ee8c272b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.sortedBy": {
+      "sourceHash": "69df6e61e3cf1bc5bc030de8634f2ce75b72ac8be1bc81e1ae9cec99455b01d2",
+      "translationHash": "fc58a466b01f40843031671b2e41ef9e417cc1b86afdf4577af6fc3090c63eeb",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.tasksFallback": {
+      "sourceHash": "6d684ca255d9bade3bd9d49e6bf41e612f2c621b59e8d791a1e71a9297f643d4",
+      "translationHash": "b2a9c2c51bcb8d9b8807c5866f13e52e1e6b03349e0da105adafad667c0c01b7",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.title": {
+      "sourceHash": "4e4783e43f319a73f931f9199fa09f8897e20d01f9ec757f4fcdf53d0b3e54a1",
+      "translationHash": "aa7aa54cd4c74b18d9be9b43a757273946a53ec6695e2f833c4129d67788b982",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.page.updating": {
+      "sourceHash": "6bd2b3d899a0cef2dfc068ba1059cfeb60ff0dceb856c2255fb17aab25ff6ffd",
+      "translationHash": "d1876f00f8b4e607cbb8fd433aa7029dbd9d8a896678750e8210775b36727ca3",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.actions": {
+      "sourceHash": "c5077cae78e65dcc0bbff14f801d4c1c56511138ac80b61db2d3b824303c70bc",
+      "translationHash": "0bc36bd2b87eb7eb27f32178865b8c8cbfca6f7c5c7c191a12a802f476cb918f",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.activity": {
+      "sourceHash": "f7c51e6de17dd80d673f8887569f9920fffc47c922b99065337c1785dc64955f",
+      "translationHash": "27bef6805deb78a1c8a5d25810385ede3b3595708ded2a4203ef7f1e5ad0e13b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.agents": {
+      "sourceHash": "648a864a1199caa4e5e1062e5c754c899b22092b08378ee1be6587eb7631f466",
+      "translationHash": "b1a6d610e2dbc9e21b5eab7ba3054398d018b762bd04c35ad5992807cffae2e3",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.costs": {
+      "sourceHash": "590e04f9e9b35d242e8fe6b6525bcd8215ea2a8204454c14bc907bd4bafe0365",
+      "translationHash": "43f44a0849932550268fbd3810f71330b52a57fb3198fef1c1c21ed57c4ed446",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.dashboard": {
+      "sourceHash": "4dddf42124985b91085cea26e4e6f936e3e653083563929997a5fdb6105f4f6f",
+      "translationHash": "d119d2b22d4848fefa7897f4d2cc581aa78d4a61bcc2adb05ad1ed0b958fa519",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.description": {
+      "sourceHash": "9be9364c7e8f430dc0c645fab129eba2fe45e8f24a51b66f1dd6fc4cb9a20dc7",
+      "translationHash": "81ae12eae0f9f0f43f560dde6fa76986be19af85a7ad6190ec4ac10e76684502",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.emptyHint": {
+      "sourceHash": "a3ec707091c63cac5edb3bd41b2807e2f11cf057937355b3f2da728cf4db2e23",
+      "translationHash": "4006b6edd95b2c42165cbab6727767939e04da74858050ed29c3b8550a4c5660",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.goals": {
+      "sourceHash": "1d476a5e0229d9027d5bc3f40818c4b075ea94a2efd07dd8eb34b6a8c2938431",
+      "translationHash": "040f2ae3e47d8792c2df3c6a4d53dc7b064828b487a47d1820b49f9f75fa813e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.inbox": {
+      "sourceHash": "643e1c40ec11876786ab229a336f127e5a61a6e8096f60a370af5ccc7aa55347",
+      "translationHash": "f27210a11872d2258789765e789dacfb1bc50381a6ba37b12356d3213289448c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.myWork": {
+      "sourceHash": "388318e1cda739651c099ab3c4f06712fec559145d24fb18b2993b58cfce15ec",
+      "translationHash": "d2cc50683fcb87725ea54e40df7f382eb53a4110bb23cf4bb11d5250c8c517b0",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.newAgent": {
+      "sourceHash": "451102fae8ca82d874c08696d9db37bc64838129075d6bca48470c503a75da44",
+      "translationHash": "93dce58d26d33bc2df5d2af97346caa6516b056366632a740bc8952fb271775e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.newProject": {
+      "sourceHash": "8cb5d55ae7b03ff3b5d52c316272427729c5ccb349f9e66e48c9f5f6478c26fc",
+      "translationHash": "4df2717d12d6ca29c550e1022c4e25b5768108e02ab26e1acf354d721f30448d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.newTask": {
+      "sourceHash": "7b45ad51f62b8aefef301684df830287314c454a82cc73d6e748884136246f3c",
+      "translationHash": "4312a7a400e1a9e94008ed637796b5b272648a26613e793eb4de39f351f3bf4d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.noResults": {
+      "sourceHash": "1fb87b7b133cf5a387120c5673ef96032f502ebdeac9b76ac5ad8ec68e3ee659",
+      "translationHash": "a748a0556533bffc19124081e5522c0de29aa6ca5c05be266e6f93fbce42c1e5",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.openFile": {
+      "sourceHash": "218fc7934fbf416c8d1de460b7afe994af7559282a6934532ddd463f4824b349",
+      "translationHash": "3f8dfd3fa4cd42da967f3df7a889ea52c5c1d0d76e5828feed20c97f5f98e542",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.openFullSearch": {
+      "sourceHash": "9ec8afc213f230ab17a23da081e10a1bce7684b06c682af1956383f2fefc62d9",
+      "translationHash": "4535a47b5b0d7aa771c65113454bbc095d9e60eb4f8cb058da4bda89b8d990b2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.pages": {
+      "sourceHash": "8f50b11c146e86079bfc92190b11da006d02e0c21857a930dd70ce67cfc9ad2c",
+      "translationHash": "372f45c328200fd10567ab74f5db3bc80f097ebfaec61419711caae95aa78c16",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.placeholder": {
+      "sourceHash": "0e91abc411760a313255cb4ab8f6961ae46a86f4c081aa89a74649c039ba677b",
+      "translationHash": "c1ab4b10ca8c3814798ae9831903b0b83e0353db45f8a0f36b889348be9f22bf",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.projects": {
+      "sourceHash": "20b1786f5c8a00b7bf6c316335b54020b375fa743b0c97dd6b03dfd64ed355bd",
+      "translationHash": "b93c5632a75756f776f8ee4076544c9c0491056a04695d04e6c08560d3484af0",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.query": {
+      "sourceHash": "2f49491e78ff6f4f33ac0344b44866602ea671bd212773185a26bbd450324851",
+      "translationHash": "4937099d37fb086ec58240ec40b5e916c19294d5f44212e5fdebbcb0a7a0963d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.quickFilters": {
+      "sourceHash": "1c78483908a8ca40bd3b6294c337d48fab793ca26746cb7cb8a85c3ac4d7ef20",
+      "translationHash": "d8c9e2b3c40a16c45b33489a3ee5301c79743929efc9d3bc04dd2f42234743ec",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.roles.ceo": {
+      "sourceHash": "4395d813652d7eabc1ddf7c375f7292bed58a7a7b55ab0cc9f9b27fc6dc6f908",
+      "translationHash": "eeb63810e7a785354c2d9398c06433f211f9db3b39a79964092b2f6cf64bb431",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.roles.cfo": {
+      "sourceHash": "f042955562acfcb4fe95fce55c097dc9669073c6cf833b9eceaa461c9303655c",
+      "translationHash": "5aa39bed1fa1e826d5132ceafd7f7bfdaa431da18f053ed5212f88c3505b7032",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.roles.cmo": {
+      "sourceHash": "44f3a50056eec69d35aab36ab9eae05f9d29e441a840c6d5f8af90bc00193b50",
+      "translationHash": "2609d9174ccdf950317f6e71649481cb10d82405131a6a41c5e3166ccfe544f2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.roles.cto": {
+      "sourceHash": "f2f1e4aad28330f68735e090317dd3a155d61ee951391b1442ff31836a3621be",
+      "translationHash": "c5f8624b4ca4de36d107bff280322d87be2c198cfb053634831a1a013bd41f6a",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.198Z"
+    },
+    "searchUi.palette.roles.designer": {
+      "sourceHash": "62c4d17f286be761a3447cc87e242a1892575d463cdae371f584708e1ff7d46d",
+      "translationHash": "87ced8b562e318a60ef74297e7c21f8f2e1cb06101caf2f9c5cad9d34d7abcef",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.devops": {
+      "sourceHash": "2d67d3f819a3f4140b8d09b0470405f4c8d0cb10d47e385e049f58751abef5e2",
+      "translationHash": "5d03526fca9360792390c17982f89150173c8b376457c08e21ba6ccc62f7159d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.engineer": {
+      "sourceHash": "b66ff7e3f3c0bd25fb4816c592a6b0f12bb711dc6f90abd8b0e2e8eeb46403c4",
+      "translationHash": "963c47f1f0f1e5d4de30c29620da3f65e75bf0d75f5d3203ee51603240185eb2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.general": {
+      "sourceHash": "3bc901ff05e101e0765315db7be2db9a24c667121f8fae17d2fdff911a018186",
+      "translationHash": "c64bf0c14525e5ed52778603d169973ef90b0641ff9b8af34bddea9b41720404",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.pm": {
+      "sourceHash": "ad451ea8cc25c9ed4499ef4f01cc61be35f3b8ab358c967227e9e9cde4a30d97",
+      "translationHash": "536137023e65a3a79493b686812ff214a563fed4f08fb4703b755f16bf4abd7e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.qa": {
+      "sourceHash": "898eb60210c069be9e7522de716a7bacebc29a23dd2fd351374dd53903869fb4",
+      "translationHash": "d1104fcf707e9f42268b145e199cc475bd322985c1caf5395bec85e74ea38366",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.researcher": {
+      "sourceHash": "e7c6e3a332afce08cc14496bbbd384dc9c8a5bbe779fe39a065284bd09689f65",
+      "translationHash": "061a863730b35e4c62f679eb4a647f6503438dfa86509f9fe2f14c6e01aa0ebd",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.roles.security": {
+      "sourceHash": "40144e25ca6fcab93160c037b88a604448c3eb1cf80d3df28ee008eefc9cebd4",
+      "translationHash": "ca5800778f7ae64e54a10e8c22ef5300a7e38a30facdf1b7d97e7198b1f76828",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.search": {
+      "sourceHash": "a1cabf353e9732fc453132a9245434c1dfdd15b61648b1bcd1ee451ffa9d23f5",
+      "translationHash": "70994dce48d0f7ac8e6ddd7eefadd8e1533a280fd2818c47034f8f6aaa27b966",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.searchAll": {
+      "sourceHash": "f79faa857b28771dfe172492d3967329f48bfe29af7afc2a8dfb94a4ca9536b8",
+      "translationHash": "af63bf14eb86b75d9e40fd8da13afad3b1302d9d158a3813531b223b9eb219a4",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.tasks": {
+      "sourceHash": "c7c89d74626a73b1c8e32970dc32f45d5e23dc5ce1e4c07a0d16ef992bb01f98",
+      "translationHash": "89379815d187be2fe4481db84e232eb2ffe715f881387fafb0e563317f564048",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.palette.title": {
+      "sourceHash": "032e702b87355c6728f7ee6bae1138e8f1827a13b1dab1088cb011554c7fccc4",
+      "translationHash": "17debcf6761041ae626b8c9f913df53bcdccb3433e5e7692582831b641c8db2c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.additional": {
+      "sourceHash": "ccd979329bb277018f0c4d70aa178601abfd9507b7ae18f94ef61e215744476d",
+      "translationHash": "4bbd29e009b2d21c2e11051fb52cd41b143883551bf790e26f7b4e4c85929fb9",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.clearAll": {
+      "sourceHash": "cc894af5b63da685bf748ffd0aa764e12210253c8a7870589a932eb18e95efbe",
+      "translationHash": "754f122e411bbd801d89b8d255d3ea8d452fc4eea2abfd029bd95c5a86e6de5d",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.hidden": {
+      "sourceHash": "d2b244d52ff38c236be3203249675d12c871a91be4ee709956210710042e2778",
+      "translationHash": "8c7d76e88f55ec6d093186c41903618b0996ca33a5ba03c546fb9006daea4ed9",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.loosen": {
+      "sourceHash": "eb895df10f68f18495259dcf1b0a210a6c5e0aff518e13196ce4c011705dec1b",
+      "translationHash": "18acf2fa6186646b9240abcc28f128fd43515ec8a2b1add3f322a4ca797899ce",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.matches": {
+      "sourceHash": "2965a5735e2f07b02babda90962ad318e666d20c4225dcbe5930ee4dbdc176e2",
+      "translationHash": "519fd44d1a9a0054dfe06d653aa9f8dac4fd15a90e1d417fde64cb84da76d091",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.matchesQuery": {
+      "sourceHash": "11208f960004c2f1574bc54d4f3e40253398ce9111d0999cf69468223e2d34f9",
+      "translationHash": "860ebc30c13842a461ba87d10251fb4fd13e641afa9aaa2ba6e6dafb95c6aaea",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.remove": {
+      "sourceHash": "3ef9f7866c70861d53721213e692d8f2ac3442d2c63ff9cf31a0fdccfde2147e",
+      "translationHash": "23b160b750ccc3bd1b351239935bccd72e365d9d562c7a40de193b153791730c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recovery.title": {
+      "sourceHash": "d32d1c76c42315a8d5f654045ab4e2fb97f9f2e9a3427652cb7fbd85561be37e",
+      "translationHash": "77ebe902ba8d21bb847b364391807f22b3b7130d1a7f65a8947195fb9c885eef",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.recoverySuggestions.updatedWindow": {
+      "sourceHash": "ec95ca36c2ca91ee61f02cc7ce365a87704cbb53f0e7e3251d9ab1ba612ac710",
+      "translationHash": "6316cecaed66a73512e4748a35da10a92d54b5617b6573b97675dc6bb69611c7",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.agent": {
+      "sourceHash": "fc98a9c6bcc8045ace3f7a2fa29d50bcfef697a546ac63d3d2865d70d2d2ad17",
+      "translationHash": "afa65a3256c60081d7fc6928ac20ffe5ed5ac3670b6acf3632d25e751e0145eb",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.artifact": {
+      "sourceHash": "b56aba3237c5766bdfe854d2abce731b82c92139c123ae00227e802365d34956",
+      "translationHash": "a19e7e0569816d201537faaed6adf3bf686b19421e292330f7907e210f2ffdf1",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.comment": {
+      "sourceHash": "5ae8f021d7ee21aca691e0d98d29d71d5560eb59ddf706ca4d75a067a395513b",
+      "translationHash": "9bfdf82e5a9d2d7537c3bc08218591ff5adf373dcf49969111d702b3bd35fa10",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.days": {
+      "sourceHash": "b57c706003fa0d5f7226b44b6bf8ebba7d8ca17d0fa9951fdbf864d925b2edfc",
+      "translationHash": "9e6a11476c6f54371e1279094e4821cefc87b9b1395e00fabfb526484de8beae",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.description": {
+      "sourceHash": "8cbe772a5ae1fbfd70e9c9a89652f1891a537c747a5595f5fc5c7eaf6c27f24d",
+      "translationHash": "ef563e191c76dd42ed0a69da0da312a0ab008e3ca646053adaa5d1480d745de0",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.document": {
+      "sourceHash": "49bead3828645e441e609d70a105aa820f271c5afcf949173b7e10104d957f57",
+      "translationHash": "9ad1a29b743a37552fc6a3a7e70cd6f8e7a296f71bbe7145b12126c15275f774",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.hours": {
+      "sourceHash": "05f84123e84f9e1c0f87886d4607163b2d7aa2ba64a9d52501adc5b8868d02ab",
+      "translationHash": "fe5aafee3aee219936f516387188d92b530daebe5c8c27c2d18821d3a6f6b50a",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.identifier": {
+      "sourceHash": "525cecad740daf136a2828672356ed6a8010c8b53e7efa167629904a9787fb6e",
+      "translationHash": "823b584103c1e19274d3a4a6045bf54adb24d1678282a38afac4ddb3ca085da3",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.justNow": {
+      "sourceHash": "b75db15766bc975a83e8ea955a4bb4df2292d5100f973a9b2e2f2da5b5173cae",
+      "translationHash": "e45b0f6427ce4661a8676d0dae6880335a33ac3c3065564eaa18b3f5d9f32a06",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.minutes": {
+      "sourceHash": "c2091265a678545be6db83fbc94ad46082a2b4e50c1caa518f4b4e86cf214f9c",
+      "translationHash": "80e1e079b2d4609933327ec28e245825fae81ef641c7e48849b17e0b320ab7cf",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.months": {
+      "sourceHash": "79f343b4d49981399d477fee73441b1c3397f1b8993e399952c5cd47971b1789",
+      "translationHash": "cd13121ccc33d9b8f86d9578e7c03cdfe8f251c5c5b4dbffeb505d9d71228bf2",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.project": {
+      "sourceHash": "250861cfeddf75cc15f42f714a3fc4720442db56d54aa0f5973dd4019fda0307",
+      "translationHash": "53e93a1fa58bf23c554a1a624de3b547e1f8dbf5c2a97f662ac45981f5b5e642",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.weeks": {
+      "sourceHash": "7705b0cbc6d5f1b211890de398eb3210cfa028d491d86abbe4e6b1026a92e403",
+      "translationHash": "8b313a2e439c6ee70ca47635365fc95465f8da8019a4422d899cc6e33e7da965",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.result.years": {
+      "sourceHash": "ba16e1d5409a490ec1dd4f2f97bcde1e149b6e420877a7ddbaf48bb32b86517a",
+      "translationHash": "ace45733c2d04d96b761808d605fa2c0754a1eebd28f65dcad759c8b2f375446",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.scope.agents": {
+      "sourceHash": "941358cd52795deff5329f4bf329981d9b0c7b492fa57d18a17f6d9398dc781c",
+      "translationHash": "1b56a0f2396b3dda8cfaaf85d67f1d40cb849110450923487521dcbd1a414087",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.199Z"
+    },
+    "searchUi.scope.all": {
+      "sourceHash": "a7d5ffd0a55412d7f84eeb59641cbb586582dad3329f502153d7e7d2e87fd722",
+      "translationHash": "6fcbef881ad78d4e6ca31c7e1649924fdaf4715865244d9cd701a33e16c4c7e9",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.scope.artifacts": {
+      "sourceHash": "3d73703af9161d28ccf72afc909467b3afff17e3fcad44e377ea2892609194ff",
+      "translationHash": "194c47de22ba03f4c51e6af633d1dba7612f20cdb34969d0efddc24182c14f79",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.scope.comments": {
+      "sourceHash": "e1c072df2750463b9cfa27208316939d0f465d04b7f2499ec201dec69db1547e",
+      "translationHash": "c519da5e9f1babed32bcb5631e1d61db64d15a1e3f654c0140f93ccab9d1e81e",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.scope.documents": {
+      "sourceHash": "172bd874c47a5d2665d067b4ae14fa7ef6afe9473ba8b608270612277fc72fc1",
+      "translationHash": "641b0b14ca3e3b8b7da76cb0aa7d07eeb98c54677486ab24439fc50ad1acb3e6",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.scope.issues": {
+      "sourceHash": "b2d5d40160a2dfe47f13e720977ddb234ce45140283ac217eb05fec5c97f9d2d",
+      "translationHash": "70cfd91fb10515a713690f963fc5c0302d321941a5d90578760e9aa3134ce04b",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.scope.projects": {
+      "sourceHash": "5ac7bc6a60f2d4ec15d826f3d2cc636e13afc659f3938b30a66784a123a1c95b",
+      "translationHash": "fcfb7e5427fbddb55606d0ef34139b25c10ac016718cd4fff851dc45d03bf09c",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.by": {
+      "sourceHash": "ad09cc5c9dbf5baac34e835a7bd27248fdc832fe1ce9030a0e0a2a28503e3943",
+      "translationHash": "a4d1c33ec76603bce42e70dfcbc85719626e78a67505dc425241d8cffc995d94",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.created": {
+      "sourceHash": "4f4d2c2b207c8c4288e3b7b8a3ec81a4c9fcaf762639d81841926223e0acaa96",
+      "translationHash": "fc96ec04e23b4cc9b2b449b0057e09f3ab569931ee78282eab426659de4efda1",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.prefix": {
+      "sourceHash": "cb19ea440b5ebd0d78e2c1e0e84b5a621fd699b54a358804ca5980aad3db8be1",
+      "translationHash": "243fd70643cf0fc43fc48288dfece78a5aceb2f556943f35d9e7af7215db0dd1",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.priority": {
+      "sourceHash": "d549d27222b9e53fc75b9645f2b4a69d6a655a614c8de99c5917abf6d99848b5",
+      "translationHash": "80896d9b1b10438950b2b60623c3c959ea152a82c4361724a1b9afb8181fe1c8",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.relevance": {
+      "sourceHash": "7ffa8dedab8b759fa054251d7964b184b07e6bf1c31671b233d0ab4ec36e7e75",
+      "translationHash": "3d7852a57b9547bb8a6965cc26701d80261e96aec47194582175ef6ca7529449",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.results": {
+      "sourceHash": "f34e2785607bfc13763deaf70bed9686c74730cb504d55605a735361221a8505",
+      "translationHash": "a78fa6f820bebfac6048cd452d4df73a0c418fee1b6efb52309f1fd5d6dbc5a4",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
+    "searchUi.sort.updated": {
+      "sourceHash": "41bba8d34c6ae5d9f48f613e258fae3a44cde5d840b73f03f52b8d1798653357",
+      "translationHash": "b06142099a7e023f36d9a1d3d24ff5ddf5c87eb1ab748fc602c5c82e9eb7d6e0",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
+    },
     "settingsNav.access": {
       "sourceHash": "b30ee8c6833b819781774245636f5875c8c8b83e1e860d7d1dff41e01be36cb5",
       "translationHash": "81924c2ad98d53b475289b8c49ecc3b6555692cdca336fe6db88c6951aa78751",
@@ -6772,11 +7878,11 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.backlog": {
-      "sourceHash": "e64976a3a50e551954d980ee34b0ac0eb27f536c366c485591aabcbf682397d5",
+      "sourceHash": "dab60ad06f04440aba1bcb83208da64debd4f16ecb83740fdef9d277743d3c4d",
       "translationHash": "de44af32035b0763082c301599bd0cda0909e70e285b5371dcc1929579216ad5",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.block": {
       "sourceHash": "f526ea6b1ca3e2b6de707adc430e8773096f9ab4c5dd424e0f5f51382ed8e7ff",
@@ -6786,18 +7892,18 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.blocked": {
-      "sourceHash": "a4c5a121c5d2860f559f31f5caa41483da3b138cf5a36bbea80b08f712302ae2",
+      "sourceHash": "b1fd88c89f9205677b547ea5284d8d57163f3e324806d1d2440cac1f26fc8d56",
       "translationHash": "7126cd6a7c57b8de73410a8f597eea2b3f2a619c48d9272cf0ab2d18e453922c",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.cancelled": {
-      "sourceHash": "f598bd540d66184d94f5f0ad5ed4e0eb6b9a37d33d90719167329f65206b7c9e",
+      "sourceHash": "f754f4c0a742f48fb32bda119dd7de85d543893fed83fdc880dac97ba7bb64ec",
       "translationHash": "46826c92b6807b20673b74ed41d0f4870b16587dda5902076556c2f152a9dd46",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.completed": {
       "sourceHash": "28adee27006758349373778c13fb62cdaddfaca593cbe6835d3fe59ea94e7a57",
@@ -6807,11 +7913,11 @@
       "reviewedAt": "2026-10-25T22:12:18.765Z"
     },
     "statuses.critical": {
-      "sourceHash": "a6121a6dbfc0f8ec2729b3d887051989bbdc348c66583a0d65417d60ed86a1bc",
+      "sourceHash": "632d72a00ed345729472750a48fcbe6c54a5798f405fa3231adba7ed6d895c78",
       "translationHash": "360d93cb4da0b7f1a2f6f8b375356bdeab65388d72939d9a0b73e7a6fbf04fab",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.765Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.deferred": {
       "sourceHash": "64344e58402413cf2e81525f2c00876d283f605eb79f15e4244d9d6bcef6ebea",
@@ -6828,11 +7934,11 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.done": {
-      "sourceHash": "db3b389f095f75ece4e3fe5afd2f025e84f614ba1dd816c147c6bed369090988",
+      "sourceHash": "4535aa19149d812f2ef00a4658476977d61be07fd1a927a972271b743bdd4288",
       "translationHash": "acd051c96721d31123fea0b26ce29428a90df1cbd04f2a4b6e379f7b533b4f7b",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.draft": {
       "sourceHash": "1b67deab620c9187a42c29bdb749315ce38f7a6d407872e124010efe959b9d91",
@@ -6863,11 +7969,11 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.high": {
-      "sourceHash": "1dfc5b12dabffa210a1d19e7ce8a959aa6113d557041ea71f57e41e8a1d326ba",
+      "sourceHash": "2f6fea9dd16b69008a3be2d4717fdcd6959e4ac905dd8dd8e51d73dfeb636d8f",
       "translationHash": "a05189e804554d95fc31a9d707b32b06f799d54b3f839272f24f324089d2cd92",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.766Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.idle": {
       "sourceHash": "421aa768b887c612a8fe2e182f51bbfe99ab544fc0a78fd09f884b404f52300c",
@@ -6877,18 +7983,18 @@
       "reviewedAt": "2026-10-26T01:39:13.403Z"
     },
     "statuses.in_progress": {
-      "sourceHash": "a24d30393ff16d47a708accc7e1c22e02d392d56ea3045463e188ec1c0fe0032",
+      "sourceHash": "a782bd925d21896bb9b68fd0dada9fd9168a22b5362556dad83bdb90081fdf42",
       "translationHash": "2d7be4c66b137656e9f86977552f03f9a51cd0fe4d9ea8c239e23cd75d6d0c0f",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.in_review": {
-      "sourceHash": "266a34e7c4934eaa5d38e6c6fa2a255bb9a641156b2f6cdaa628808d83dbf3d4",
+      "sourceHash": "5db92a657bf6660f8252b971b831d3b33b299946e2aae040df6632f89b59dc45",
       "translationHash": "37f33bd054ec748846a447034e60e5c217ee31006bb933472b2c58fd55ffa322",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.403Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.info": {
       "sourceHash": "f8cd80ff3f16a832aa92d4d73128e75b37cc2576739abb7052738b035ad3d1a9",
@@ -6898,18 +8004,18 @@
       "reviewedAt": "2026-10-25T22:12:18.766Z"
     },
     "statuses.low": {
-      "sourceHash": "9a94a51d4580f27f7a3322d6c839a9441e9784635d5f3a21a7e559f5ba544005",
+      "sourceHash": "a2f5e2b5b594ff99991c482aab35a798151d890a2dad451fd6cdfde6b769c0e5",
       "translationHash": "250acb8a7dc468f01de8cbc28f1c3bfd3e60ceff5205031403259e80eb53c37b",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.766Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.medium": {
-      "sourceHash": "21eb557e0d93eddbbf407d45acd9946a67052938bae5bf5273d9f9897eb90eb1",
+      "sourceHash": "1730422d45ba07dbcd7020ccf449a56c7c3be45152e7b5e5bd858d8ea7be821a",
       "translationHash": "0b24e7fddc0c7b7445dda76dd19b9262a5971fe18a65046a4211835e5ea5f13a",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.766Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.ok": {
       "sourceHash": "94cc89c8af307d6371766c6067b2729f859b1d9f03c1305a2f604cc4384f25e4",
@@ -7024,11 +8130,11 @@
       "reviewedAt": "2026-10-25T22:12:18.767Z"
     },
     "statuses.todo": {
-      "sourceHash": "677e1e07efc68e95c696e371ef2b6d8ca756e1ecd915f6b0f0af851bb064fee0",
+      "sourceHash": "dfb5e19e94a46b86746455df59a19025f1e206efca20cf4a245fec682da3a0dd",
       "translationHash": "4edd5661ce8226efa3b1a237cb66a55b6503a68b59e36b7fe65e85756443a564",
-      "reviewer": "OpenAI Codex /root: independent editorial review of task collection and display helpers",
+      "reviewer": "Codex root: search messages, plural forms, controls and source contexts",
       "method": "agent",
-      "reviewedAt": "2026-10-26T01:39:13.404Z"
+      "reviewedAt": "2026-10-26T04:21:30.200Z"
     },
     "statuses.warning": {
       "sourceHash": "51fb5875c76905e21f92ef1c8d8e2685fbc823907174e2c113034f870500537e",

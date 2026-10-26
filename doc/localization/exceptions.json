@@ -144,6 +144,10 @@
     {
       "id": "5b85ec3ae9dd9d1dd5812c254469cacbb74a1a13f23a01f47bbb097d68a7b301",
       "reason": "TaskBrowserPanel.message compares the local error code actionFailed to select taskPanels.browser.actionFailed. The comparison operand is not rendered; raw browser.error remains literal."
+    },
+    {
+      "id": "7d5debaa3ff0d1b60a9c076e6ef83d58fb826ed63928a630a874b4add9ad6ff1",
+      "reason": "SnippetLine compares the canonical snippet field with document to select its title tooltip. The literal is a discriminator, not rendered copy. The tooltip preserves the user-provided fallbackLabel; the visible document chip uses searchUi.result.document."
     }
   ]
 }
