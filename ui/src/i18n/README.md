@@ -321,9 +321,13 @@ Stored UI failures retain their cause and translate when rendered. Toasts use th
 language current at completion and then keep that snapshot. Component checks
 preserve dirty environment/SSH fields, focus, query identity, terminal resources
 and ordered agent reassignment before deletion through EN/RU/EN changes. They use
-mocked providers and sockets. Backend probe summaries still use their original
-text; typed provenance and provider-schema captions are separate follow-up work.
-These checks do not establish a live SSH connection, image capture or deployment.
+mocked providers and sockets. Backend probes preserve their original `summary`
+and add an optional `summaryMessage` only for host-generated summaries. The UI
+translates known descriptors with valid parameters and matching driver/status;
+legacy or invalid descriptors fall back to the original text. Provider summaries,
+including empty or English-equal strings, and nested provider metadata stay raw.
+Provider-schema captions remain separate work. These checks do not establish a
+live SSH connection, image capture or deployment.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

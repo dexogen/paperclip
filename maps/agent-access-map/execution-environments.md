@@ -118,6 +118,14 @@ own policy and access review.
 
 Gaps: Reachability probes are not granted by an agent's right to execute assigned work.
 
+Scoped localization contract (2026-10-26): both probe responses retain their raw
+`summary` and may add a host-owned `summaryMessage` descriptor for UI display.
+Plugin-supplied summaries and diagnostics remain literal; this additive metadata
+does not change probe admission, company/secret context or qualification.
+[Route regressions](../../server/src/__tests__/environment-routes.test.ts) check
+response forwarding and unchanged raw activity summaries with mocked services;
+they do not qualify a live agent/provider path.
+
 Scoped Evidence: `source-only` — [probe authorization](../../server/src/routes/environments.ts),
 [immutable binding, measurement and read](../../server/src/services/environment-probe.ts),
 [private metadata writes](../../server/src/services/environments.ts) and

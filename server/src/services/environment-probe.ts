@@ -99,6 +99,7 @@ export async function probeEnvironment(
       ok: true,
       driver: "local",
       summary: "Local environment is available on this Paperclip host.",
+      summaryMessage: { code: "local_available" },
       details: {
         hostname: os.hostname(),
         cwd: process.cwd(),
@@ -113,6 +114,7 @@ export async function probeEnvironment(
           ok: false,
           driver: "sandbox",
           summary: "Sandbox environment probe requires a companyId context.",
+          summaryMessage: { code: "sandbox_company_required" },
           details: {
             provider: parsed.config.provider,
           },
@@ -191,6 +193,9 @@ export async function probeEnvironment(
           summary: sandboxName
             ? `Connected to ${provider} sandbox ${sandboxName}.`
             : `Connected to ${provider} sandbox environment.`,
+          summaryMessage: sandboxName
+            ? { code: "sandbox_connected_named", params: { provider, sandboxName } }
+            : { code: "sandbox_connected", params: { provider } },
           details,
         };
       } catch (error) {
@@ -199,6 +204,7 @@ export async function probeEnvironment(
           ok: false,
           driver: "sandbox",
           summary: `Sandbox environment probe failed for provider "${parsed.config.provider}".`,
+          summaryMessage: { code: "sandbox_probe_failed", params: { provider: parsed.config.provider } },
           details: {
             provider: parsed.config.provider,
             error: error instanceof Error ? error.message : String(error),
@@ -245,6 +251,7 @@ export async function probeEnvironment(
           ok: false,
           driver: "sandbox",
           summary: `Sandbox provider "${parsed.config.provider}" requires a running provider plugin.`,
+          summaryMessage: { code: "sandbox_worker_required", params: { provider: parsed.config.provider } },
           details: {
             provider: parsed.config.provider,
           },
@@ -268,6 +275,7 @@ export async function probeEnvironment(
         ok: false,
         driver: "plugin",
         summary: `Plugin environment probes require a plugin worker manager for "${parsed.config.pluginKey}:${parsed.config.driverKey}".`,
+        summaryMessage: { code: "plugin_worker_required", params: { pluginKey: parsed.config.pluginKey, driverKey: parsed.config.driverKey } },
         details: {
           pluginKey: parsed.config.pluginKey,
           driverKey: parsed.config.driverKey,
@@ -290,6 +298,7 @@ export async function probeEnvironment(
       ok: true,
       driver: "ssh",
       summary: `Connected to ${parsed.config.username}@${parsed.config.host} and verified the remote workspace path.`,
+      summaryMessage: { code: "ssh_connected", params: { username: parsed.config.username, host: parsed.config.host } },
       details: {
         host: parsed.config.host,
         port: parsed.config.port,
@@ -321,6 +330,7 @@ export async function probeEnvironment(
       ok: false,
       driver: "ssh",
       summary: `SSH probe failed for ${parsed.config.username}@${parsed.config.host}.`,
+      summaryMessage: { code: "ssh_probe_failed", params: { username: parsed.config.username, host: parsed.config.host } },
       details: {
         host: parsed.config.host,
         port: parsed.config.port,

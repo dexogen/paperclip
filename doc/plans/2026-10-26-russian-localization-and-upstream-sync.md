@@ -879,12 +879,28 @@ UI typecheck, build, token gates and map checks pass. The strict audit passes
 with 7,450 reviewed families, 15,288 remaining source findings and zero pending,
 missing, invalid or new findings. Only 200 resolved source entries were removed;
 no exception was added. These mocked checks do not prove live provider or terminal
-behavior. Backend probe summaries require a separate typed-provenance change;
-provider-schema localization remains a later bounded slice. Exact-head CI,
-browser qualification and deployment remain pending for this candidate.
+behavior. Provider-schema localization remains a later bounded slice. Exact-head
+CI, browser qualification and deployment remain pending for this candidate.
+
+The follow-up environment-probe slice adds 15 reviewed summary families and an
+optional host-issued descriptor alongside the unchanged legacy summary. Three
+existing producers mark only their own messages; provider summaries (including
+empty and English-equal values), diagnostics and metadata stay literal. The UI
+validates optional descriptor shape, driver and status, then formats retained
+saved/draft results at render time and toasts at completion. Existing requests,
+qualification and cleanup order are unchanged. Latest complete runs pass 139
+server tests and 39 UI tests across six suites; the UI total combines the helper
+run and a complete page rerun after correcting a new fixture's button label.
+UI/shared typecheck, UI build, token gates and map checks pass. The strict audit
+passes with 7,465 reviewed families, 15,288 remaining source findings and no other
+findings; baseline and exceptions are unchanged. Standard server typecheck and
+its official Runner release build pass. The cold build adds 111 ignored Copilot
+asset files covered by the input fingerprint, so it does not record a reusable
+Runner cache stamp; this is not a compilation failure. Exact-head CI remains
+pending. These mocked checks do not establish live provider or terminal behavior.
 
 The remaining major packages are agent invitations,
-project workspaces and environment backend/schema copy, dashboard/activity/costs,
+project workspaces and environment schema/remaining backend copy, dashboard/activity/costs,
 member access/secrets, connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
 components cover every host. Use the source audit and actual imports to set each

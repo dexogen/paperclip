@@ -56,9 +56,16 @@ settings sidebars also translate their owned captions. The page tests preserve
 pending probe/default actions, dirty SSH and environment-variable drafts, raw
 schema/provider text, XTerm/WebSocket identity and reassignment-before-delete
 ordering through EN/RU/EN changes. Existing helper consumers retain fixed English
-unless they pass a translator. Backend probe summaries and provider-schema
-captions remain separate work. These checks do not establish live provider
-acceptance, terminal transport or image capture.
+unless they pass a translator. Host-generated probe summaries now carry optional
+message descriptors; saved and draft results translate at render time, while
+completion toasts retain their displayed language. Switch language during a
+pending probe and after its result: preserve the dirty form, query identity and
+single request. Provider text, empty summaries and unknown/malformed descriptors
+must stay literal. The [display helper tests](../../ui/src/lib/environment-probe-display.test.ts)
+and [producer seam tests](../../server/src/__tests__/plugin-environment-driver-seam.test.ts)
+cover this provenance boundary. Provider-schema captions remain separate work.
+These checks do not establish live provider acceptance, terminal transport or
+image capture.
 
 For an immutable sandbox image, pin the OCI image with `@sha256`, or select
 a Daytona snapshot whose provider ID can be verified, and explicitly probe the saved environment in the intended company. The existing connection

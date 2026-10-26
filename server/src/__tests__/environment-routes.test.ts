@@ -2694,6 +2694,7 @@ describe("environment routes", () => {
       ok: true,
       driver: "ssh",
       summary: "Connected to ssh-user@ssh.example.test and verified the remote workspace path.",
+      summaryMessage: { code: "ssh_connected", params: { username: "ssh-user", host: "ssh.example.test" } },
       details: {
         host: "ssh.example.test",
       },
@@ -2711,6 +2712,8 @@ describe("environment routes", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.ok).toBe(true);
+    expect(res.body.summaryMessage).toEqual({ code: "ssh_connected", params: { username: "ssh-user", host: "ssh.example.test" } });
+    expect(res.body.summary).toBe("Connected to ssh-user@ssh.example.test and verified the remote workspace path.");
     expect(mockProbeEnvironment).toHaveBeenCalledWith(expect.anything(), environment, {
       // The instance has exactly one company, so the secret-context fallback
       // resolves it even though the actor carries no memberships.
@@ -2729,6 +2732,7 @@ describe("environment routes", () => {
         details: expect.objectContaining({
           driver: "ssh",
           ok: true,
+          summary: "Connected to ssh-user@ssh.example.test and verified the remote workspace path.",
         }),
       }),
     );
@@ -2884,7 +2888,8 @@ describe("environment routes", () => {
     mockProbeEnvironment.mockResolvedValue({
       ok: true,
       driver: "sandbox",
-      summary: "Fake plugin sandbox provider is ready.",
+      summary: 'Sandbox provider "fake-plugin" probe passed.',
+      summaryMessage: { code: "sandbox_provider_probe_passed", params: { provider: "fake-plugin" } },
       details: { provider: "fake-plugin" },
     });
     const pluginWorkerManager = {};
@@ -2910,6 +2915,8 @@ describe("environment routes", () => {
       });
 
     expect(res.status).toBe(200);
+    expect(res.body.summaryMessage).toEqual({ code: "sandbox_provider_probe_passed", params: { provider: "fake-plugin" } });
+    expect(res.body.summary).toBe('Sandbox provider "fake-plugin" probe passed.');
     expect(mockEnvironmentService.create).not.toHaveBeenCalled();
     expect(mockSecretService.create).not.toHaveBeenCalled();
     expect(mockProbeEnvironment).toHaveBeenCalledWith(
@@ -2928,6 +2935,7 @@ describe("environment routes", () => {
         }),
       }),
     );
+    expect(mockLogActivity.mock.calls[0][1].details.summary).toBe('Sandbox provider "fake-plugin" probe passed.');
     expect(JSON.stringify(mockLogActivity.mock.calls[0][1].details)).not.toContain("unsaved-test-key");
   });
 

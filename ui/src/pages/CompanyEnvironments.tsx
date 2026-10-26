@@ -58,6 +58,7 @@ import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { useCompany } from "@/context/CompanyContext";
 import { useToast } from "@/context/ToastContext";
 import { environmentDisplayLabel, environmentDriverLabel, isPlatformManagedEnvironment } from "@/lib/managed-sandbox-environment";
+import { formatEnvironmentProbeSummary } from "@/lib/environment-probe-display";
 import { queryKeys } from "@/lib/queryKeys";
 import { Link, useNavigate, useParams } from "@/lib/router";
 import { buildSameOriginWebSocketUrl } from "@/lib/websocket-url";
@@ -1655,7 +1656,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       }));
       pushToast({
         title: probe.ok ? currentT("environmentsUi.probe.passed") : currentT("environmentsUi.probe.failed"),
-        body: probe.summary,
+        body: formatEnvironmentProbeSummary(probe, i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: probe.ok ? "success" : "error",
       });
     },
@@ -1686,7 +1687,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     onSuccess: (probe) => {
       pushToast({
         title: probe.ok ? currentT("environmentsUi.probe.draftPassed") : currentT("environmentsUi.probe.draftFailed"),
-        body: probe.summary,
+        body: formatEnvironmentProbeSummary(probe, i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: probe.ok ? "success" : "error",
       });
     },
@@ -2136,7 +2137,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                         : "mt-3 rounded bg-destructive/5 px-2.5 py-2 text-xs text-destructive"
                     }
                   >
-                    <div className="font-medium">{probe.summary}</div>
+                    <div className="font-medium">{formatEnvironmentProbeSummary(probe, t)}</div>
                     {probe.details?.error && typeof probe.details.error === "string" ? (
                       <div className="mt-1 font-mono text-(length:--text-micro)">{probe.details.error}</div>
                     ) : null}
@@ -2508,7 +2509,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               ) : null}
               {draftEnvironmentProbeMutation.data ? (
                 <div className={draftEnvironmentProbeMutation.data.ok ? "text-xs text-green-600" : "text-xs text-destructive"}>
-                  {draftEnvironmentProbeMutation.data.summary}
+                  {formatEnvironmentProbeSummary(draftEnvironmentProbeMutation.data, t)}
                 </div>
               ) : null}
             </div>

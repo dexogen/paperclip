@@ -615,10 +615,12 @@ describe("CompanyEnvironments — test provider button", () => {
       { id: "env-1", name: "Daytona", driver: "sandbox", description: null, config: { provider: "daytona" } },
     ]);
     mockEnvironmentsApi.capabilities.mockResolvedValue(supportedDaytonaCapabilities());
-    mockEnvironmentsApi.probe.mockResolvedValue({
+    let finishProbe!: () => void;
+    const probeResult = {
       ok: true,
       driver: "sandbox",
       summary: "Connected to Daytona sandbox paperclip-probe.",
+      summaryMessage: { code: "sandbox_connected_named", params: { provider: "Daytona", sandboxName: "paperclip-probe" } },
       details: {
         provider: "daytona",
         diagnostics: [],
@@ -628,7 +630,8 @@ describe("CompanyEnvironments — test provider button", () => {
           sandboxName: "paperclip-probe",
         },
       },
-    });
+    };
+    mockEnvironmentsApi.probe.mockImplementationOnce(() => new Promise((resolve) => { finishProbe = () => resolve(probeResult); }));
 
     await act(async () => {
       root!.render(renderCompanyEnvironments(queryClient));
@@ -639,10 +642,19 @@ describe("CompanyEnvironments — test provider button", () => {
     await act(async () => {
       testProviderButtons(container)[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
-    await flushReact();
-
-    expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1"); });
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    await act(async () => { finishProbe(); });
+    const russianSummary = "Установлено подключение к песочнице «paperclip-probe» провайдера Daytona.";
+    await waitForAssertion(() => { expect(container.textContent).toContain(russianSummary); });
+    const toast = mockPushToast.mock.calls.at(-1)![0];
+    expect(toast).toMatchObject({ title: "Проверка среды пройдена", body: russianSummary });
+    expect(probeResult.summary).toBe("Connected to Daytona sandbox paperclip-probe.");
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
     expect(container.textContent).toContain("Connected to Daytona sandbox paperclip-probe.");
+    expect(mockEnvironmentsApi.probe).toHaveBeenCalledTimes(1);
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect(toast.body).toBe(russianSummary);
     expect(container.textContent).not.toContain("Verified temporary daytona sandbox");
     expect(container.textContent).not.toContain("Test probes clean up the validation sandbox after the check");
     expect(container.textContent).not.toContain("provider dashboard");
@@ -858,6 +870,48 @@ describe("CompanyEnvironments — test provider button", () => {
     await waitForAssertion(() => {
       expect(getEnvironmentFormPage()).toBeNull();
     });
+  });
+
+  it("formats retained draft probe results without losing edits or repeating the request", async () => {
+    mockEnvironmentsApi.capabilities.mockResolvedValue(supportedDaytonaCapabilities());
+    mockEnvironmentsApi.list.mockResolvedValue([
+      { id: "env-1", name: "Daytona", driver: "sandbox", description: null, config: { provider: "daytona" } },
+    ]);
+    let finishProbe!: () => void;
+    mockEnvironmentsApi.probeConfig.mockImplementationOnce(() => new Promise((resolve) => { finishProbe = () => resolve({
+      ok: false, driver: "sandbox", summary: 'Sandbox provider "daytona" probe failed.',
+      summaryMessage: { code: "sandbox_provider_probe_failed", params: { provider: "daytona" } }, details: null,
+    }); }));
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    await act(async () => { root!.render(renderCompanyEnvironments(queryClient)); });
+    await openEnvironmentEditPage(container);
+    const page = getEnvironmentFormPage()!;
+    const name = Array.from(page.querySelectorAll<HTMLInputElement>("input")).find((input) => input.value === "Daytona")!;
+    await act(async () => { setInputValue(name, "raw-dirty-name"); });
+    const button = findButton(page, "Test")!;
+    expect(button).toBeTruthy();
+    await act(async () => { click(button); });
+    await waitForAssertion(() => { expect(mockEnvironmentsApi.probeConfig).toHaveBeenCalledExactlyOnceWith("company-1", {
+      name: "raw-dirty-name", description: null, driver: "sandbox", config: { provider: "daytona" }, envVars: {},
+    }); });
+    const queries = [mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(document.body.contains(name)).toBe(true);
+    expect(name.value).toBe("raw-dirty-name");
+    await act(async () => { finishProbe(); });
+    const summary = "Проверка провайдера песочницы «daytona» не пройдена.";
+    await waitForAssertion(() => { expect(page.textContent).toContain(summary); });
+    const toast = mockPushToast.mock.calls.at(-1)![0];
+    expect(toast.body).toBe(summary);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(page.textContent).toContain('Sandbox provider "daytona" probe failed.');
+    expect(toast.body).toBe(summary);
+    expect(mockEnvironmentsApi.probeConfig).toHaveBeenCalledTimes(1);
+    expect(mockPushToast).toHaveBeenCalledTimes(1);
+    expect([mockEnvironmentsApi.list.mock.calls.length, mockEnvironmentsApi.capabilities.mock.calls.length]).toEqual(queries);
+    expect(mockEnvironmentsApi.update).not.toHaveBeenCalled();
+    expect(name.value).toBe("raw-dirty-name");
   });
 
   it("preserves SSH credential drafts and canonical payload across locale changes", async () => {
