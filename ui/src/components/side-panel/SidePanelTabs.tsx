@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import {
   useEffect,
   useLayoutEffect,
@@ -19,6 +20,7 @@ import {
   closestCenter,
   useSensor,
   useSensors,
+  type Announcements,
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
@@ -58,7 +60,8 @@ function SortableSidePanelTab({
   onAuxClick,
   onKeyDown,
 }: SortableSidePanelTabProps) {
-  const sortable = useSortable({ id: tab.id, disabled: tab.disabled });
+  const { t } = useTranslation();
+  const sortable = useSortable({ id: tab.id, disabled: tab.disabled, attributes: { roleDescription: t("taskPanels.tabs.sortable") } });
   return (
     <div
       ref={sortable.setNodeRef}
@@ -164,17 +167,24 @@ export function SidePanelTabs({
   onReorderTabs,
   onAddTab,
   addControl,
-  addLabel = "Open a new tab",
+  addLabel,
   appearance = "default",
   className,
 }: SidePanelTabsProps) {
-  const [announcement, setAnnouncement] = useState("");
+  const { t } = useTranslation();
+  const [announcement, setAnnouncement] = useState<{ kind: "moved"; tabId: string | undefined; position: number; count: number } | { kind: "closed" | "lastClosed" } | null>(null);
   const [showEndFade, setShowEndFade] = useState(false);
   const [useWideTabs, setUseWideTabs] = useState(false);
   const [draggedTab, setDraggedTab] = useState<{ id: string; width: number; labelIsTruncated: boolean } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const addControlRef = useRef<HTMLDivElement>(null);
+  const announcements = useMemo<Announcements>(() => ({
+    onDragStart: ({ active }) => t("taskViews.dragPickedUp", { id: active.id }),
+    onDragOver: ({ active, over }) => over ? t("taskViews.dragOver", { id: active.id, target: over.id }) : t("taskViews.dragOutside", { id: active.id }),
+    onDragEnd: ({ active, over }) => over ? t("taskViews.dragDroppedOver", { id: active.id, target: over.id }) : t("taskViews.dragDropped", { id: active.id }),
+    onDragCancel: ({ active }) => t("taskViews.dragCancelled", { id: active.id }),
+  }), [t]);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -260,7 +270,7 @@ export function SidePanelTabs({
     const index = tabIds.indexOf(tabId);
     const nextFocus = tabIds[index + 1] ?? tabIds[index - 1] ?? null;
     onCloseTab(tabId);
-    setAnnouncement(nextFocus ? "Tab closed." : "Last tab closed. Choose something to open.");
+    setAnnouncement({ kind: nextFocus ? "closed" : "lastClosed" });
     focusTab(nextFocus);
   }
 
@@ -276,7 +286,7 @@ export function SidePanelTabs({
       const [moved] = ordered.splice(index, 1);
       ordered.splice(target, 0, moved!);
       onReorderTabs(ordered);
-      setAnnouncement(`Moved ${tabs[index]?.label ?? "tab"} to position ${target + 1} of ${tabs.length}.`);
+      setAnnouncement({ kind: "moved", tabId: tabs[index]?.id, position: target + 1, count: tabs.length });
       focusTab(tabId);
       return;
     }
@@ -305,7 +315,7 @@ export function SidePanelTabs({
     const [moved] = ordered.splice(from, 1);
     ordered.splice(to, 0, moved!);
     onReorderTabs(ordered);
-    setAnnouncement(`Moved ${tabs[from]?.label ?? "tab"} to position ${to + 1} of ${tabs.length}.`);
+    setAnnouncement({ kind: "moved", tabId: tabs[from]?.id, position: to + 1, count: tabs.length });
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -340,6 +350,7 @@ export function SidePanelTabs({
         )}
       >
         <DndContext
+          accessibility={{ announcements, screenReaderInstructions: { draggable: t("taskViews.dragInstructions") } }}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
@@ -405,8 +416,8 @@ export function SidePanelTabs({
           variant="ghost"
           size="icon-sm"
           onClick={onAddTab}
-          aria-label={addLabel}
-          title={addLabel}
+          aria-label={addLabel ?? t("taskPanels.tabs.new")}
+          title={addLabel ?? t("taskPanels.tabs.new")}
           className={cn(
             "shrink-0 text-muted-foreground hover:text-foreground focus-visible:text-foreground",
             appearance === "streamlined-task"
@@ -417,7 +428,7 @@ export function SidePanelTabs({
           <Plus aria-hidden />
         </Button>
       ) : null)}
-      <div className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</div>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">{announcement?.kind === "moved" ? t("taskPanels.tabs.moved", { label: tabs.find((tab) => tab.id === announcement.tabId)?.label ?? t("taskPanels.tabs.fallback"), position: announcement.position, total: announcement.count }) : announcement?.kind === "closed" ? t("taskPanels.tabs.closed") : announcement?.kind === "lastClosed" ? t("taskPanels.tabs.lastClosed") : ""}</div>
     </div>
   );
 }

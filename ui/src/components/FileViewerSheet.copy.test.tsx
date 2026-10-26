@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
+import { act as reactAct } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -205,6 +207,32 @@ describe("FileViewerSheet copy actions", () => {
     expect(document.body.querySelector('[aria-label="launch.md source"]')).not.toBeNull();
     expect(document.body.querySelector('[aria-label="launch.md rendered Markdown"]')).toBeNull();
   });
+  it("keeps raw mode, file contents and clipboard data literal across a language change", async () => {
+    renderSheet();
+    await click("Show raw Markdown");
+    const source = document.body.querySelector('[role="region"][aria-label="tweet.md source"]');
+    expect(source).not.toBeNull();
+    const separator = document.body.querySelector('[role="separator"]')!;
+    flushSync(() => separator.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })));
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.body.querySelector('[role="region"][aria-label="tweet.md: исходный текст"]')).toBe(source);
+      expect(source?.textContent).toContain("hello from the file");
+      expect(document.body.querySelector('[role="separator"]')).toBe(separator);
+      expect(separator.getAttribute("aria-valuenow")).toBe("312");
+      await reactAct(async () => { await click("Скопировать содержимое файла"); });
+      expect(writeText).toHaveBeenCalledExactlyOnceWith("hello from the file");
+      expect(document.body.textContent).toContain("Содержимое скопировано");
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(document.body.querySelector('[role="region"][aria-label="tweet.md source"]')).toBe(source);
+      expect(document.body.textContent).toContain("Copied contents");
+      expect(writeText).toHaveBeenCalledTimes(1);
+      expect(viewerMock.open).not.toHaveBeenCalled();
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
 });
 
 
@@ -229,4 +257,6 @@ describe("source line navigation", () => {
       HTMLElement.prototype.scrollIntoView = original;
     }
   });
+
+
 });

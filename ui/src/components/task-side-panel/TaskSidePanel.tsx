@@ -1,7 +1,8 @@
+import { useTranslation } from "@/i18n";
 import { TextAttachmentContext } from "@/context/TextAttachmentContext";
 import { TaskAttachmentPanel } from "./TaskAttachmentPanel";
 import { useTaskBrowsers } from "@/hooks/useTaskBrowsers";
-import { TaskBrowserPanel } from "./TaskBrowserPanel";
+import { TaskBrowserPanel, browserStatusLabel } from "./TaskBrowserPanel";
 import {
   useCallback,
   useEffect,
@@ -74,6 +75,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { useLocation, useNavigate } from "@/lib/router";
 import {
   readTaskSidePanelState,
+  taskPanelDisplayLabel,
   taskPanelBrowserTab,
   taskPanelAgentTasksTab,
   taskPanelArtifactsTab,
@@ -269,6 +271,7 @@ export function TaskSidePanel({
   openSkillName,
   onSkillOpened,
 }: TaskSidePanelProps) {
+  const { t } = useTranslation();
   const handleScroll = useScrollbarWhileScrolling();
   // Agent Chat: agent chats swap the conversation issue's own panels for
   // agent-scoped ones — the agent's tasks lead, and Artifacts lists the
@@ -285,7 +288,7 @@ export function TaskSidePanel({
     readTaskSidePanelState(accountScope, issue.companyId, issue.id, fileTabsEnabled),
   );
   const taskCount = tasksTab?.count ?? childIssues.length;
-  const taskLabel = tasksTab ? "Tasks" : "Subtasks";
+  const taskLabel = tasksTab ? t("taskPanels.tabs.tasks") : t("taskPanels.tabs.subtasks");
   const initialSubtasksAvailableRef = useRef(showRelatedTasks && (taskCount > 0 || tasksTab?.hasError === true));
   const subtasksDismissedRef = useRef(
     restoredRef.current?.userInteracted === true
@@ -523,7 +526,7 @@ export function TaskSidePanel({
   useEffect(() => {
     if (activeTab) return;
     window.requestAnimationFrame(() => {
-      bodyRef.current?.querySelector<HTMLInputElement>('input[aria-label="Search tabs and resources…"]')?.focus();
+      bodyRef.current?.querySelector<HTMLInputElement>('input[data-side-panel-launcher-search]')?.focus();
     });
   }, [activeTab]);
 
@@ -566,39 +569,39 @@ export function TaskSidePanel({
   const visualTabs = useMemo<SidePanelTabItem[]>(() => controller.tabs.map((tab) => {
     const document = tab.payload.kind === "issue-document" ? documentByKey.get(tab.payload.documentKey) : null;
     const browserIndex = browsersQuery.data?.findIndex((browser) => tab.payload.kind === "browser" && (browser.id === tab.payload.browserId || browser.sessionId === tab.payload.browserId)) ?? -1;
-    const browserLabel = browserIndex >= 0 && (browsersQuery.data?.length ?? 0) > 1 ? `Browser ${browserIndex + 1}` : null;
+    const browserLabel = browserIndex >= 0 && (browsersQuery.data?.length ?? 0) > 1 ? t("taskPanels.browser.numbered", { number: browserIndex + 1 }) : null;
     return {
       id: tab.id,
       type: tab.type,
-      label: browserLabel ?? (tab.payload.kind === "subtasks" && tasksTab ? "Tasks" : document ? documentDisplayTitle(document) : tab.label),
+      label: browserLabel ?? (tab.payload.kind === "subtasks" && tasksTab ? t("taskPanels.tabs.tasks") : document ? documentDisplayTitle(document, t) : taskPanelDisplayLabel(tab, t)),
       ariaLabel: tab.payload.kind === "subtasks" ? taskLabel : tab.ariaLabel,
       closable: true,
       contentMode: tab.contentMode,
       icon: tabIcon(tab),
     };
-  }), [controller.tabs, documentByKey, taskCount, taskLabel, tasksTab, browsersQuery.data]);
+  }), [controller.tabs, documentByKey, taskCount, taskLabel, tasksTab, browsersQuery.data, t]);
 
   const launcherSections = useMemo<SidePanelLauncherSection[]>(() => {
     const primary: SidePanelLauncherItem[] = conversationAgentId ? [
-      { id: "agent-tasks", label: "Tasks", description: "Tasks this agent worked on", icon: <ListChecks />, alreadyOpen: controller.tabs.some((tab) => tab.id === "agent-tasks") },
-      { id: "artifacts", label: "Artifacts", description: "Files this agent produced", icon: <Box />, alreadyOpen: controller.tabs.some((tab) => tab.id === "artifacts") },
-      { id: "properties", label: "Properties", icon: <SlidersHorizontal />, alreadyOpen: controller.tabs.some((tab) => tab.id === "properties") },
+      { id: "agent-tasks", label: t("taskPanels.tabs.tasks"), description: t("taskPanels.tabs.agentTasks"), icon: <ListChecks />, alreadyOpen: controller.tabs.some((tab) => tab.id === "agent-tasks") },
+      { id: "artifacts", label: t("taskPanels.tabs.artifacts"), description: t("taskPanels.tabs.agentArtifacts"), icon: <Box />, alreadyOpen: controller.tabs.some((tab) => tab.id === "artifacts") },
+      { id: "properties", label: t("taskPanels.tabs.properties"), icon: <SlidersHorizontal />, alreadyOpen: controller.tabs.some((tab) => tab.id === "properties") },
     ] : [
-      { id: "properties", label: "Properties", icon: <SlidersHorizontal />, alreadyOpen: controller.tabs.some((tab) => tab.id === "properties") },
-      ...(subtasksAvailable ? [{ id: "subtasks", label: taskLabel, description: tasksTab?.hasError ? "Could not load all tasks" : `${taskCount} total`, icon: <ListTree />, alreadyOpen: controller.tabs.some((tab) => tab.id === "subtasks") }] : []),
-      { id: "artifacts", label: "Artifacts", icon: <Box />, alreadyOpen: controller.tabs.some((tab) => tab.id === "artifacts") },
+      { id: "properties", label: t("taskPanels.tabs.properties"), icon: <SlidersHorizontal />, alreadyOpen: controller.tabs.some((tab) => tab.id === "properties") },
+      ...(subtasksAvailable ? [{ id: "subtasks", label: taskLabel, description: tasksTab?.hasError ? t("taskPanels.tabs.tasksLoadError") : t("taskPanels.tabs.totalTasks", { total: taskCount }), icon: <ListTree />, alreadyOpen: controller.tabs.some((tab) => tab.id === "subtasks") }] : []),
+      { id: "artifacts", label: t("taskPanels.tabs.artifacts"), icon: <Box />, alreadyOpen: controller.tabs.some((tab) => tab.id === "artifacts") },
     ];
     for (const [index, browser] of (browsersQuery.data ?? []).entries()) {
-      primary.push({ id: `browser:${browser.id}`, label: (browsersQuery.data?.length ?? 0) > 1 ? `Browser ${index + 1}` : "Browser", description: browser.status, icon: <Globe />, alreadyOpen: controller.tabs.some(tab => tab.id === `browser:${browser.id}`) });
+      primary.push({ id: `browser:${browser.id}`, label: (browsersQuery.data?.length ?? 0) > 1 ? t("taskPanels.browser.numbered", { number: index + 1 }) : t("taskPanels.tabs.browser"), description: browserStatusLabel(browser.status, t), icon: <Globe />, alreadyOpen: controller.tabs.some(tab => tab.id === `browser:${browser.id}`) });
     }
     if (fileTabsEnabled) {
-      primary.push({ id: "files", label: "Files", icon: <FolderOpen />, shortcut: "G F", alreadyOpen: controller.tabs.some((tab) => tab.id === "files") });
+      primary.push({ id: "files", label: t("taskPanels.tabs.files"), icon: <FolderOpen />, shortcut: "G F", alreadyOpen: controller.tabs.some((tab) => tab.id === "files") });
     }
     const documentItems: SidePanelLauncherItem[] = [
       ...(planDocument ? [{
         id: "document:plan",
-        label: documentDisplayTitle(planDocument),
-        description: `Revision ${planDocument.latestRevisionNumber ?? 1}`,
+        label: documentDisplayTitle(planDocument, t),
+        description: t("taskPanels.document.revision", { revision: planDocument.latestRevisionNumber ?? 1 }),
         icon: <Lightbulb />,
         alreadyOpen: controller.tabs.some((tab) => tab.id === "document:plan"),
       }] : []),
@@ -607,17 +610,17 @@ export function TaskSidePanel({
         .sort((left, right) => new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime())
         .map((document) => ({
           id: `document:${document.key}`,
-          label: documentDisplayTitle(document),
-          description: `Revision ${document.latestRevisionNumber ?? 1}`,
+          label: documentDisplayTitle(document, t),
+          description: t("taskPanels.document.revision", { revision: document.latestRevisionNumber ?? 1 }),
           icon: <FileText />,
           alreadyOpen: controller.tabs.some((tab) => tab.id === `document:${document.key}`),
         })),
     ];
     const sections: SidePanelLauncherSection[] = [
-      { id: "open", label: "Open", items: primary },
+      { id: "open", label: t("taskPanels.tabs.openSection"), items: primary },
     ];
     if (documentItems.length > 0) {
-      sections.push({ id: "documents", label: "Task documents", items: documentItems });
+      sections.push({ id: "documents", label: t("taskPanels.document.section"), items: documentItems });
     }
     if (fileTabsEnabled) {
       const recentItems = recentFilesQuery.data?.state === "available"
@@ -631,14 +634,14 @@ export function TaskSidePanel({
         : [];
       sections.push({
         id: "recent-files",
-        label: "Recent workspace files",
+        label: t("taskPanels.tabs.recentFiles"),
         items: recentItems,
         loading: recentFilesQuery.isLoading,
-        error: recentFilesQuery.isError ? "Recent files are temporarily unavailable." : null,
+        error: recentFilesQuery.isError ? t("taskPanels.tabs.recentFilesError") : null,
       });
     }
     return sections;
-  }, [browsersQuery.data, conversationAgentId, taskCount, taskLabel, tasksTab?.hasError, controller.tabs, documents, fileTabsEnabled, planDocument, recentFilesQuery.data, recentFilesQuery.isError, recentFilesQuery.isLoading, subtasksAvailable]);
+  }, [browsersQuery.data, conversationAgentId, taskCount, taskLabel, tasksTab?.hasError, controller.tabs, documents, fileTabsEnabled, planDocument, recentFilesQuery.data, recentFilesQuery.isError, recentFilesQuery.isLoading, subtasksAvailable, t]);
 
   function selectLauncherItem(item: SidePanelLauncherItem) {
     markInteracted();
@@ -694,7 +697,8 @@ export function TaskSidePanel({
               ? "h-(--side-panel-tab-height) w-(--side-panel-tab-height) rounded-md"
               : "h-(--side-panel-tab-height) w-(--side-panel-tab-height) rounded-(--side-panel-control-radius)",
           )}
-          aria-label="Open a new tab"
+          aria-label={t("taskPanels.tabs.new")}
+          data-side-panel-add-tab
         >
           <Plus aria-hidden />
         </Button>
@@ -843,7 +847,7 @@ export function TaskSidePanel({
           {header}
           {onRequestClose ? (
             mobile ? (
-              <Button variant="ghost" size="icon" className="size-(--sz-44px) shrink-0" aria-label="Close side panel" onClick={onRequestClose}>
+              <Button variant="ghost" size="icon" className="size-(--sz-44px) shrink-0" aria-label={t("taskPanels.sidePanel.close")} onClick={onRequestClose}>
                 <X aria-hidden />
               </Button>
             ) : <SidePanelToggleButton open onToggle={onRequestClose} />

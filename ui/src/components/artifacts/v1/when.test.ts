@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
 import { countLabel, panelDateLabel, sizeLabel, updatedLabel } from "./when";
 
 // Monday 2026-09-28, 6:00 PM local time.
@@ -31,4 +32,16 @@ describe("countLabel and sizeLabel", () => {
     expect(sizeLabel(1289748)).toBe("1.2 MB");
     expect(sizeLabel(null)).toBeNull();
   });
+
+  it("formats Russian artifact counts and dates while preserving the English default", () => {
+    const ru = i18n.getFixedT("ru");
+    expect([0, 1, 2, 5, 11, 21, 22, 25, 1.5].map(count => countLabel(count, ru))).toEqual([
+      "0 артефактов", "1 артефакт", "2 артефакта", "5 артефактов", "11 артефактов", "21 артефакт", "22 артефакта", "25 артефактов", "1.5 артефакта",
+    ]);
+    expect(panelDateLabel("2026-09-25T08:00:00", NOW, ru, "ru")).toBe("3 дня назад");
+    expect(updatedLabel("2026-09-27T23:30:00", NOW, ru, "ru")).toBe("Вчера");
+    expect(sizeLabel(59085, "ru")).toBe("57,7 KB");
+    expect(countLabel(21)).toBe("21 Artifacts");
+  });
+
 });

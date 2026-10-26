@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   readTaskSidePanelState,
+  taskPanelDisplayLabel,
   taskPanelDocumentTab,
   taskPanelFilesTab,
   taskPanelPropertiesTab,
@@ -110,4 +112,14 @@ describe("task side-panel persistence", () => {
     expect(readTaskSidePanelState("user-1", "company-1", "task-0", true)).toBeNull();
     expect(readTaskSidePanelState("user-1", "company-1", "task-51", true)).not.toBeNull();
   });
+});
+
+it("resolves built-in display labels without rewriting saved titles or payloads", () => {
+  const properties = { ...taskPanelPropertiesTab(), label: "Properties" };
+  const custom = taskPanelDocumentTab("notes", "Literal <Properties>");
+  const before = JSON.stringify([properties, custom]);
+  expect(taskPanelDisplayLabel(properties, i18n.getFixedT("ru"))).toBe("Свойства");
+  expect(taskPanelDisplayLabel(custom, i18n.getFixedT("ru"))).toBe("Literal <Properties>");
+  expect(taskPanelDisplayLabel(properties, i18n.getFixedT("en"))).toBe("Properties");
+  expect(JSON.stringify([properties, custom])).toBe(before);
 });

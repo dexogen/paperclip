@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { TextAttachmentContext } from "@/context/TextAttachmentContext";
 import { isTextAttachment } from "@/lib/issue-attachments";
 import { getAttachmentArtifactWorkProductMetadata } from "@paperclipai/shared";
@@ -37,36 +39,37 @@ export function stateChipFor(
   kind: IssueWorkProduct["type"],
   status: string | null | undefined,
   reviewState: IssueWorkProduct["reviewState"] | string | null | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): StateChip | null {
   if (reviewState === "changes_requested" || status === "changes_requested") {
-    return { label: "Changes requested", tone: "failure" };
+    return { label: t("taskPanels.workProduct.changesRequested"), tone: "failure" };
   }
   if (reviewState === "needs_board_review" || status === "ready_for_review") {
-    return { label: "Review", tone: "review" };
+    return { label: t("taskPanels.workProduct.review"), tone: "review" };
   }
   if (["failed", "unhealthy", "down"].includes(status ?? "")) {
-    return { label: "Failed", tone: "failure" };
+    return { label: t("taskPanels.workProduct.failed"), tone: "failure" };
   }
   if (["pending", "opening"].includes(status ?? "")) {
-    return { label: status === "opening" ? "Opening" : "Pending", tone: "progress", dashed: true };
+    return { label: status === "opening" ? t("taskPanels.workProduct.opening") : t("taskPanels.workProduct.pending"), tone: "progress", dashed: true };
   }
   if (kind === "pull_request" && (status === "active" || status === "open")) {
-    return { label: "Open", tone: "progress" };
+    return { label: t("taskPanels.workProduct.open"), tone: "progress" };
   }
   if (kind === "pull_request" && status === "draft") {
-    return { label: "Draft", tone: "review" };
+    return { label: t("taskPanels.workProduct.draft"), tone: "review" };
   }
   if (kind === "pull_request" && status === "merged") {
-    return { label: "Merged", tone: "success" };
+    return { label: t("taskPanels.workProduct.merged"), tone: "success" };
   }
   if (kind === "pull_request" && status === "closed") {
-    return { label: "Closed", tone: "neutral" };
+    return { label: t("taskPanels.workProduct.closed"), tone: "neutral" };
   }
   if (kind === "runtime_service" && status === "active") {
-    return { label: "Running", tone: "progress" };
+    return { label: t("taskPanels.workProduct.running"), tone: "progress" };
   }
   if (kind === "runtime_service" && status === "closed") {
-    return { label: "Stopped", tone: "failure" };
+    return { label: t("taskPanels.workProduct.stopped"), tone: "failure" };
   }
   return null;
 }

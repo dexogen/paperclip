@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act, useRef } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -185,4 +186,28 @@ describe("Fit to pane", () => {
     });
     expect(browserPaneSize(600, 70, 70)).toBeNull();
   });
+
+  it("translates a failed resize without sending another request or releasing the lease", async () => {
+    vi.mocked(browserUseApi.resize).mockRejectedValueOnce(new Error("offline"));
+    await tick();
+    const iframe = host.querySelector("iframe");
+    const viewerId = result.viewerId;
+    const calls = vi.mocked(browserUseApi.resize).mock.calls.length;
+    const releases = vi.mocked(browserUseApi.releaseViewport).mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(result.error).toContain("Не удалось изменить размер браузера");
+      expect(result.viewerId).toBe(viewerId);
+      expect(host.querySelector("iframe")).toBe(iframe);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(result.error).toContain("Browser size could not be changed");
+      expect(browserUseApi.resize).toHaveBeenCalledTimes(calls);
+      expect(browserUseApi.releaseViewport).toHaveBeenCalledTimes(releases);
+      await act(async () => result.select("phone"));
+      expect(browserUseApi.resize).toHaveBeenLastCalledWith("task", "browser", expect.objectContaining({ preset: "phone", viewerId }));
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
 });

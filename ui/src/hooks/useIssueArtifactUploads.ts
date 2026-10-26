@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useCallback, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Issue, IssueAttachment, IssueDocument } from "@paperclipai/shared";
@@ -7,9 +8,10 @@ import { uploadedDocumentKey } from "@/lib/issue-artifact-upload";
 import type { ArtifactUploadEntry } from "@/components/artifacts/ArtifactUploadControls";
 
 export function useIssueArtifactUploads(issue: Pick<Issue, "id" | "companyId">) {
+  const { t } = useTranslation();
   const client = useQueryClient();
   const [entries, setEntries] = useState<ArtifactUploadEntry[]>([]);
-  const [announcement, setAnnouncement] = useState("");
+  const [addedFilename, setAddedFilename] = useState<string | null>(null);
   const files = useRef(new Map<string, File>());
   const queue = useRef<Promise<void>>(Promise.resolve());
 
@@ -42,10 +44,10 @@ export function useIssueArtifactUploads(issue: Pick<Issue, "id" | "companyId">) 
           void client.invalidateQueries({ queryKey: queryKeys.issues.detail(issue.id) });
           files.current.delete(id);
           setEntries(current => current.filter(entry => entry.id !== id));
-          setAnnouncement(`${file.name} added to this task.`);
+          setAddedFilename(file.name);
         } catch (error) {
           setEntries(current => current.map(entry => entry.id === id ? {
-            ...entry, status: "error", error: error instanceof Error ? error.message : "Upload failed. Try again.",
+            ...entry, status: "error", error: error instanceof Error ? error.message : undefined,
           } : entry));
         }
       }
@@ -61,5 +63,5 @@ export function useIssueArtifactUploads(issue: Pick<Issue, "id" | "companyId">) 
     files.current.delete(id);
     setEntries(current => current.filter(entry => entry.id !== id));
   }, []);
-  return { entries, announcement, upload, retry, dismiss };
+  return { entries, announcement: addedFilename === null ? "" : t("taskPanels.upload.added", { filename: addedFilename }), upload, retry, dismiss };
 }

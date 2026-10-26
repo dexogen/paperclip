@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -77,4 +78,21 @@ it("reports failed keep-open and clears the warning after recovery", async () =>
   await render(); expect(host.textContent).toContain("Could not keep this browser open");
   await viewerLoaded();
   await tick(30_000); expect(host.textContent).not.toContain("Could not keep this browser open");
+});
+
+it("keeps the live viewer and all network counts stable when the language changes", async () => {
+  await render();
+  await viewerLoaded();
+  const frame = host.querySelector("iframe");
+  const counts = [browserUseApi.viewer, browserUseApi.presence, browserUseApi.resize, browserUseApi.control, browserUseApi.releaseViewport].map(fn => vi.mocked(fn).mock.calls.length);
+  try {
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(host.querySelector("iframe")).toBe(frame);
+    expect(host.querySelector('button[aria-label="Параметры браузера"]')).not.toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(host.querySelector("iframe")).toBe(frame);
+    expect([browserUseApi.viewer, browserUseApi.presence, browserUseApi.resize, browserUseApi.control, browserUseApi.releaseViewport].map(fn => vi.mocked(fn).mock.calls.length)).toEqual(counts);
+  } finally {
+    await act(async () => { await i18n.changeLanguage("en"); });
+  }
 });

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { act, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -686,4 +687,54 @@ describe("TaskSidePanel", () => {
       expect.objectContaining({ replace: false }),
     );
   });
+
+  it("translates persisted built-in tabs live while preserving custom titles, order, selection and scroll", async () => {
+    fixture.documents = [issueDocument("report", "My <report> & notes")];
+    writeTaskSidePanelState("user-1", "company-1", "task-1", {
+      state: { tabs: [taskPanelArtifactsTab(), taskPanelDocumentTab("report", "My <report> & notes"), taskPanelPropertiesTab()], activeTabId: "document:report" },
+      launcherOpen: false, userInteracted: true, autoPlanHandled: true, updatedAt: 1,
+    });
+    await render(panel());
+    const tabs = Array.from(container.querySelectorAll('[role="tab"]'));
+    const viewport = container.querySelector<HTMLElement>("[data-side-panel-content-viewport]")!;
+    viewport.scrollTop = 137;
+    await act(async () => viewport.dispatchEvent(new Event("scroll", { bubbles: true })));
+    const stored = localStorage.getItem("paperclip:task-side-panel:v1:user-1:company-1");
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("#side-panel-tab-artifacts")?.textContent).toContain("Артефакты");
+      expect(container.querySelector("#side-panel-tab-properties")?.textContent).toContain("Свойства");
+      expect(container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain("My <report> & notes");
+      expect(Array.from(container.querySelectorAll('[role="tab"]'))).toEqual(tabs);
+      expect(viewport.scrollTop).toBe(137);
+      expect(localStorage.getItem("paperclip:task-side-panel:v1:user-1:company-1")).toBe(stored);
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector("#side-panel-tab-artifacts")?.textContent).toContain("Artifacts");
+      expect(container.querySelector('[role="tab"][aria-selected="true"]')?.id).toBe("side-panel-tab-document:report");
+      expect(localStorage.getItem("paperclip:task-side-panel:v1:user-1:company-1")).toBe(stored);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
+  it("focuses the launcher search after the last Russian tab closes", async () => {
+    writeTaskSidePanelState("user-1", "company-1", "task-1", {
+      state: { tabs: [taskPanelPropertiesTab()], activeTabId: "properties" },
+      launcherOpen: false, userInteracted: true, autoPlanHandled: true, updatedAt: 1,
+    });
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      await render(panel());
+      const close = container.querySelector<HTMLButtonElement>('button[aria-label="Закрыть «Свойства»"]');
+      expect(close).not.toBeNull();
+      await act(async () => close!.click());
+      const search = document.querySelector<HTMLInputElement>("input[data-side-panel-launcher-search]");
+      expect(search).not.toBeNull();
+      expect(document.activeElement).toBe(search);
+      expect(search?.getAttribute("aria-label")).toBe("Поиск вкладок и ресурсов…");
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
 });

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
 import type { IssueAttachment, IssueWorkProduct } from "@paperclipai/shared";
 import {
   documentDisplayTitle,
@@ -217,4 +218,13 @@ describe("documentDisplayTitle", () => {
     expect(documentDisplayTitle({ key: "synthesis", title: null })).toBe("Synthesis");
     expect(documentDisplayTitle({ key: "design_notes-v2", title: "  " })).toBe("Design notes v2");
   });
+
+  it("translates only the empty system plan title and keeps supplied names literal", () => {
+    const ru = i18n.getFixedT("ru");
+    expect(documentDisplayTitle({ key: "plan", title: null }, ru)).toBe("План");
+    expect(documentDisplayTitle({ key: "plan", title: "Plan <custom> & notes" }, ru)).toBe("Plan <custom> & notes");
+    expect(documentDisplayTitle({ key: "release_notes", title: null }, ru)).toBe("Release notes");
+    expect(documentDisplayTitle({ key: "plan", title: null })).toBe("Plan");
+  });
+
 });
