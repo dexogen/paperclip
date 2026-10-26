@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { type ReactNode, useMemo, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -57,13 +58,14 @@ function summarizeTrigger(label: string, selected: string[], options: FilterMenu
 }
 
 export function SearchFilterMenu(props: SearchFilterMenuProps) {
+  const { t } = useTranslation();
   const {
     label,
     options,
     selected,
     searchable = false,
-    searchPlaceholder = "Search…",
-    emptyMessage = "No options",
+    searchPlaceholder = t("searchUi.filters.search"),
+    emptyMessage = t("searchUi.filters.noOptions"),
     triggerClassName,
     contentClassName,
     align = "start",
@@ -102,7 +104,7 @@ export function SearchFilterMenu(props: SearchFilterMenuProps) {
             active && "border-primary/60 text-foreground",
             triggerClassName,
           )}
-          aria-label={`Filter by ${label}`}
+          aria-label={t("searchUi.filters.filterBy", { label })}
         >
           <span className="truncate">{summarizeTrigger(label, selected, options)}</span>
           {active ? (
@@ -123,7 +125,7 @@ export function SearchFilterMenu(props: SearchFilterMenuProps) {
               className="text-xs text-muted-foreground hover:text-foreground"
               onClick={() => props.onClear()}
             >
-              Clear
+              {t("searchUi.filters.clear")}
             </button>
           ) : null}
         </div>
@@ -136,7 +138,7 @@ export function SearchFilterMenu(props: SearchFilterMenuProps) {
                 preset.values.every((value) => selected.includes(value));
               return (
                 <button
-                  key={preset.label}
+                  key={preset.values.join(",")}
                   type="button"
                   className={cn(
                     "rounded-full border px-2 py-0.5 text-(length:--text-micro) transition-colors",

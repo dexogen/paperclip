@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -400,4 +402,75 @@ describe("BlockedInboxView", () => {
 
     act(() => root.unmount());
   });
+  it("keeps collapsed variant identity and matches the Russian visible reason without refetching", async () => {
+    const issue = makeIssue("literal-id", "PAP-77", "Literal <b>task</b>", attention({ reason: "open_recovery_issue", severity: "high" }));
+    mockIssuesApi.list.mockResolvedValue([issue]);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    const render = (searchQuery: string) => root.render(<QueryClientProvider client={queryClient}><BlockedInboxView {...blockedViewProps} groupBy="blocker_type" searchQuery={searchQuery} /></QueryClientProvider>);
+    try {
+      await reactAct(async () => { render(""); });
+      await vi.waitFor(() => expect(container.textContent).toContain(issue.title));
+      const group = container.querySelector('[data-testid="blocked-inbox-group-recovery_required"]')!;
+      await reactAct(async () => { group.querySelector<HTMLButtonElement>("button")!.click(); });
+      expect(container.textContent).not.toContain(issue.title);
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Требуется восстановление");
+      expect(container.querySelector('[data-testid="blocked-inbox-group-recovery_required"]')).toBe(group);
+      expect(container.textContent).not.toContain(issue.title);
+      expect(mockIssuesApi.list).toHaveBeenCalledTimes(1);
+      await reactAct(async () => { group.querySelector<HTMLButtonElement>("button")!.click(); render("Требуется восстановление"); });
+      expect(container.textContent).toContain(issue.title);
+      expect(container.querySelector('[data-severity="high"]')?.getAttribute("aria-label")).toContain("важность: высокая");
+      expect(container.querySelector("b")).toBeNull();
+      expect(mockIssuesApi.list).toHaveBeenCalledTimes(1);
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      queryClient.clear();
+    }
+  });
+
+  it("translates the retry surface without retrying or replacing provider diagnostics", async () => {
+    mockIssuesApi.list.mockRejectedValue(new Error("Provider <token>diagnostic</token>"));
+    const { root, queryClient } = renderWithClient(<BlockedInboxView {...blockedViewProps} />, container);
+    try {
+      await vi.waitFor(() => expect(container.querySelector('[role="alert"]')).not.toBeNull());
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Не удалось загрузить вкладку «Заблокированные».");
+      expect(container.textContent).toContain("Provider <token>diagnostic</token>");
+      expect(mockIssuesApi.list).toHaveBeenCalledTimes(1);
+      mockIssuesApi.list.mockResolvedValue([]);
+      await reactAct(async () => { container.querySelector<HTMLButtonElement>("button")!.click(); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Нет остановленных задач."));
+      expect(mockIssuesApi.list).toHaveBeenCalledTimes(2);
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      queryClient.clear();
+    }
+  });
+
+  it.each(["Needs decision", "Нужно решение"])("keeps the same filtered row while switching EN/RU/EN for %s without an API call", async (searchQuery) => {
+    const decision = makeIssue("decision", "PAP-91", "Decision task literal", attention({ reason: "pending_board_decision" }));
+    const recovery = makeIssue("recovery", "PAP-92", "Recovery task literal", attention({ reason: "open_recovery_issue" }));
+    mockIssuesApi.list.mockResolvedValue([decision, recovery]);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={queryClient}><BlockedInboxView {...blockedViewProps} searchQuery={searchQuery} /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain(decision.title));
+      const firstLink = Array.from(container.querySelectorAll("a")).find((link) => link.textContent?.includes(decision.title));
+      expect(firstLink).toBeDefined();
+      for (const language of ["ru", "en"] as const) {
+        await reactAct(async () => { await i18n.changeLanguage(language); });
+        expect(container.textContent).toContain(decision.title);
+        expect(container.textContent).not.toContain(recovery.title);
+        expect(Array.from(container.querySelectorAll("a")).find((link) => link.textContent?.includes(decision.title))).toBe(firstLink);
+        expect(mockIssuesApi.list).toHaveBeenCalledTimes(1);
+      }
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      queryClient.clear();
+    }
+  });
+
 });

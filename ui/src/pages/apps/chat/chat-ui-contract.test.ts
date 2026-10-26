@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import en from "../../../i18n/locales/en.json";
 
 function source(relativePath: string) {
   return readFileSync(new URL(relativePath, import.meta.url), "utf8");
@@ -31,13 +32,15 @@ describe("chat connector UI contract", () => {
     expect(issue).toMatch(
       /agentsApi\.retryFailedRun\(\s*failedRun\.agentId,\s*failedRun\.runId,\s*companyId/,
     );
-    expect(issue).toContain("Retry queued");
+    expect(issue).toContain('title: t("taskDetail.copy.retryQueued")');
+    expect(en.taskDetail.copy.retryQueued).toBe("Retry queued");
     for (const file of ["Inbox.tsx", "LegacyInbox.tsx"]) {
       const page = source(`../../${file}`);
       expect(page).toMatch(
-        /const retryRunMutation = useMutation\(\{[\s\S]*?onError: \(error\) => \{\s*pushToast\(\{\s*title: "Run retry failed"/,
+        /const retryRunMutation = useMutation\(\{[\s\S]*?onError: \(error\) => \{\s*pushToast\(\{\s*title: t\("inboxUi\.run\.retryFailed"\)/,
       );
     }
+    expect(en.inboxUi.run.retryFailed).toBe("Run retry failed");
   });
   it("keeps the exact dual-purpose choice and immutable searchable agent selection", () => {
     const setup = source("./ChatEndpointSetup.tsx");

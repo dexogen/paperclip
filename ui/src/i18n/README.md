@@ -89,6 +89,32 @@ full chat/composer, browser activity, and most of `RichWorkProductCard` remain
 outside it; that shared card only receives translated state-chip labels. Component
 tests do not establish a complete browser journey or server permission coverage.
 
+The search slice covers the full-search page, result and empty states, desktop
+and mobile filters, sorting, recovery suggestions, and the command palette. Search
+operators and URLs remain canonical. Switching language preserves the query,
+selection, filter draft and request count. Command names and known agent roles are
+searchable in both languages. Stable command IDs preserve selection; promoted
+projects keep their existing relevance order. Normal Enter executes the selected
+command, while Ctrl/Cmd+Enter opens full search. User queries and names remain
+literal even when they contain strings that resemble translation markup.
+These component checks include the real Cmdk and Radix primitives. They do not
+establish a live full-search journey or complete localization of Inbox/Decisions.
+
+The Inbox slice covers both active renderers, the combined host's Inbox controls,
+Blocked labels, grouping, dates, actions and local error messages. Translated group
+captions are applied after the original sort so group IDs, order, collapsed state
+and Undo placement stay stable. Known approval and blocked captions remain
+searchable in English and Russian across a language change. User names, subjects,
+provider errors and API-owned owner/action text stay literal. Retry tests retain
+the selected run or task request and its existing idempotency behavior.
+
+The shared approval helper translates only its type and subject wrapper; the full
+approval payload renderer is outside this slice. Existing toast storage keeps text
+snapshots, so a shown toast retains the language in which it was created. The
+combined-host fixture renders Inbox with the real host props; it does not verify
+the App redirect or the full Tasks wrapper. Complete Decisions and chat/composer
+flows still require separate translation and live verification.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review

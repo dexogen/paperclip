@@ -607,7 +607,8 @@
     "retry": "Couldn't save — retry"
   },
   "common": {
-    "clearSearch": "Clear search"
+    "clearSearch": "Clear search",
+    "close": "Close"
   },
   "theme": {
     "light": "Switch to light mode",
@@ -3201,6 +3202,396 @@
       "attach": "Attach image",
       "dropHint": "or drop/paste an image into the note",
       "uploadFailed": "The image could not be uploaded."
+    }
+  },
+  "inboxUi": {
+    "blocked": {
+      "variant": {
+        "needs_decision": "Needs decision",
+        "stalled": "Blocked chain stalled",
+        "needs_attention": "Needs attention",
+        "recovery_required": "Recovery required",
+        "external_wait": "External wait",
+        "owner_paused": "Owner paused"
+      },
+      "reason": {
+        "pending_board_decision": "Pending board decision",
+        "pending_user_decision": "Pending user decision",
+        "missing_successful_run_disposition": "Pick disposition",
+        "blocked_chain_stalled": "Blocked chain stalled",
+        "blocked_by_unassigned_issue": "Unassigned blocker",
+        "blocked_by_assigned_backlog_issue": "Parked blocker",
+        "blocked_by_cancelled_issue": "Cancelled blocker",
+        "in_review_without_action_path": "Review without action path",
+        "invalid_review_participant": "Invalid review participant",
+        "open_recovery_issue": "Recovery in progress",
+        "external_owner_action": "External owner action",
+        "blocked_by_uninvokable_assignee": "Owner paused"
+      },
+      "stoppedLabel": "Stopped",
+      "group": {
+        "blocker_type": "Blocker type",
+        "none": "None"
+      },
+      "sort": {
+        "urgency": "Most urgent",
+        "most_recent": "Most recent",
+        "longest_stopped": "Longest stopped"
+      },
+      "age": {
+        "stopped": "stopped",
+        "justNow": "stopped just now",
+        "minutes": "stopped {{count}}m",
+        "hours": "stopped {{count}}h",
+        "days": "stopped {{count}}d",
+        "weeks": "stopped {{count}}w",
+        "months": "stopped {{count}}mo"
+      },
+      "severity": {
+        "critical": "critical",
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      },
+      "reasonA11y": "Reason: {{reason}}, severity {{severity}}",
+      "loadFailed": "Couldn't load the Blocked tab.",
+      "trying": "Trying…",
+      "tryAgain": "Try again",
+      "empty": "No work is stopped.",
+      "emptyHint": "Tasks that need a decision, recovery, or external action will appear here.",
+      "noResults": "No stopped items match your search.",
+      "otherTabs": "Other Inbox tabs still work. {{message}}",
+      "groupCount": "{{label}} · {{count}}"
+    },
+    "archive": "Archive",
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "earlier": "Earlier"
+    },
+    "approval": {
+      "type": {
+        "hire_agent": "Hire Agent",
+        "approve_ceo_strategy": "CEO Strategy",
+        "budget_override_required": "Budget Override",
+        "request_board_approval": "Board Approval"
+      },
+      "withSubject": "{{type}}: {{subject}}",
+      "requestedBy": "requested by {{name}}",
+      "updated": "updated {{time}}"
+    },
+    "groups": {
+      "defaultNamed": "{{name}} (default)",
+      "defaultWorkspace": "Default workspace",
+      "noWorkspace": "No workspace",
+      "kind": {
+        "issue": "Tasks",
+        "approval": "Approvals",
+        "failed_run": "Failed runs",
+        "join_request": "Join requests"
+      },
+      "user": "User",
+      "unassigned": "Unassigned",
+      "noProject": "No project"
+    },
+    "title": "Inbox",
+    "run": {
+      "failedFallback": "Run exited with an error.",
+      "failedNamed": "Failed run — {{name}}",
+      "failed": "Failed run",
+      "retryIn": "Trying again in {{count}}s…",
+      "attemptFailed": "Couldn’t finish this attempt. Your message is saved.",
+      "approvalRequired": "Approval required",
+      "reconnect": "Reconnect account",
+      "assignAgent": "Assign an agent",
+      "chooseModel": "Choose a supported model",
+      "paused": "Work is paused",
+      "budget": "Budget limit reached",
+      "projectAccess": "Agent needs project access",
+      "thinking": "Thinking",
+      "retry": "Retry",
+      "retrying": "Retrying…",
+      "retryFailed": "Run retry failed",
+      "retryFallback": "Unable to retry run"
+    },
+    "join": {
+      "agentNamed": "Agent join request: {{name}}",
+      "agent": "Agent join request",
+      "human": "Human join request",
+      "requestedFrom": "requested {{time}} from IP {{ip}}",
+      "adapter": "adapter: {{adapter}}"
+    },
+    "error": {
+      "approve": "Failed to approve",
+      "reject": "Failed to reject",
+      "approveJoin": "Failed to approve join request",
+      "rejectJoin": "Failed to reject join request",
+      "archive": "Failed to archive task",
+      "undoArchive": "Failed to undo inbox archive"
+    },
+    "markRead": "Mark as read",
+    "dismiss": "Dismiss",
+    "approve": "Approve",
+    "reject": "Reject",
+    "tabs": {
+      "mine": "Mine",
+      "recent": "Recent",
+      "unread": "Unread",
+      "blocked": "Blocked",
+      "all": "All"
+    },
+    "group": "Group",
+    "sort": "Sort",
+    "columns": "Choose which columns stay visible",
+    "inboxColumns": "Choose which inbox columns stay visible",
+    "disableNesting": "Disable parent-child nesting",
+    "enableNesting": "Enable parent-child nesting",
+    "groupNone": "None",
+    "groupType": "Type",
+    "groupResponsible": "Responsible",
+    "groupProject": "Project",
+    "groupWorkspace": "Workspace",
+    "marking": "Marking…",
+    "markAllRead": "Mark all as read",
+    "markAllReadTitle": "Mark all as read?",
+    "cancel": "Cancel",
+    "empty": {
+      "search": "No inbox items match your search.",
+      "mine": "Inbox zero.",
+      "unread": "No new inbox items.",
+      "recent": "No recent inbox items.",
+      "filters": "No inbox items match these filters."
+    },
+    "collapseChildren": "Collapse sub-tasks",
+    "expandChildren": "Expand sub-tasks",
+    "archived": "Archived",
+    "otherResults": "Other results",
+    "earlier": "Earlier",
+    "alerts": "Alerts",
+    "category": "Category",
+    "allCategories": "All categories",
+    "myRecentTasks": "My recent tasks",
+    "joinRequests": "Join requests",
+    "approvals": "Approvals",
+    "failedRuns": "Failed runs",
+    "approvalStatus": "Approval status",
+    "allApprovalStatuses": "All approval statuses",
+    "needsAction": "Needs action",
+    "resolved": "Resolved",
+    "liveFilterHint": "Live runs only — tasks currently connected to an agent run.",
+    "activeFilterHint": "Active statuses — open tasks, whether or not an agent is running.",
+    "alertsAgents_one": "<number>{{count}}</number> agent has errors",
+    "alertsAgents_other": "<number>{{count}}</number> agents have errors",
+    "budgetUsage": "Budget at <number>{{percent}}%</number> utilization this month",
+    "markAllDescription_one": "This will mark {{count}} unread item as read.",
+    "markAllDescription_other": "This will mark {{count}} unread items as read.",
+    "newTaskIn": "New task in {{group}}",
+    "selectSurface": "Select an organization to view {{surface}}.",
+    "surfaceControls": "{{surface}} controls",
+    "searchSurface": "Search {{surface}}…",
+    "selectCompanyLegacy": "Select a company to view inbox.",
+    "searchInbox": "Search inbox…",
+    "subtaskCount_one": "({{count}} sub-task)",
+    "subtaskCount_other": "({{count}} sub-tasks)"
+  },
+  "searchUi": {
+    "page": {
+      "title": "Search",
+      "placeholder": "Search tasks, comments, documents, artifacts, agents, projects…",
+      "query": "Search query",
+      "clear": "Clear search",
+      "insertOperator": "Insert operator {{token}}",
+      "operatorHint": "Try <status>status:todo</status>, <assignee>assignee:me</assignee>, or <updated>updated:>7d</updated>.",
+      "initialTitle": "Type to search organization memory.",
+      "initialDescription": "Tasks, comments, plan documents, artifacts, agents, projects — same surface, ranked by relevance.",
+      "recent": "Recent searches",
+      "identifierHint": "<label>Identifier lookup:</label> type <code>PAP-123</code> to jump straight to a task.",
+      "quotedHint": "<label>Quoted phrases:</label> wrap a phrase in quotes to match the exact sequence.",
+      "paletteHint": "<shortcut>⌘K:</shortcut> opens the command palette.",
+      "errorTitle": "Couldn’t run that search",
+      "errorStatus": "The server returned {{status}}. Your input and filters are still here, so you can retry or fall back to the Tasks filter.",
+      "errorRequest": "The request failed. Your input and filters are still here, so you can retry or fall back to the Tasks filter.",
+      "retry": "Retry",
+      "tasksFallback": "Open Tasks filter view",
+      "searching": "Searching for “{{query}}”…",
+      "emptyTitle": "No results for “{{query}}”",
+      "emptyDescription": "No matches in the selected scope: {{scope}}. Try widening the scope or rephrasing your query.",
+      "allScopes": "All scopes",
+      "searchAllScopes": "Search all scopes",
+      "createFromQuery": "Create task from this query",
+      "fewerTerms": "Try fewer tokens or a single distinctive term.",
+      "identifierTip": "Use an identifier shortcut like <code>PAP-123</code>.",
+      "quotedTip": "Wrap multi-word phrases in quotes.",
+      "results_one": "{{count}} result",
+      "results_other": "{{count}} results",
+      "resultsPartial": "{{shown}} of {{total}} results",
+      "sortedBy": "sorted by {{sort}}",
+      "filtersActive_one": "{{count}} filter active",
+      "filtersActive_other": "{{count}} filters active",
+      "updating": "Updating…"
+    },
+    "palette": {
+      "title": "Command Palette",
+      "description": "Search for a command to run...",
+      "placeholder": "Search tasks, agents, projects...",
+      "query": "Command search",
+      "emptyHint": "No quick task matches. Press <key>↵</key> to <action>search all</action> or keep typing to refine.",
+      "noResults": "No results found.",
+      "search": "Search",
+      "searchAll": "Search all for <query>“{{query}}”</query>",
+      "openFullSearch": "open full search",
+      "quickFilters": "Quick filters",
+      "actions": "Actions",
+      "newTask": "Create new task",
+      "openFile": "Open file in this issue...",
+      "newAgent": "Create new agent",
+      "newProject": "Create new project",
+      "pages": "Pages",
+      "dashboard": "Dashboard",
+      "myWork": "My work",
+      "inbox": "Inbox",
+      "tasks": "Tasks",
+      "projects": "Projects",
+      "goals": "Goals",
+      "agents": "Agents",
+      "costs": "Costs",
+      "activity": "Activity",
+      "roles": {
+        "ceo": "CEO",
+        "cto": "CTO",
+        "cmo": "CMO",
+        "cfo": "CFO",
+        "security": "Security",
+        "engineer": "Engineer",
+        "designer": "Designer",
+        "pm": "PM",
+        "qa": "QA",
+        "devops": "DevOps",
+        "researcher": "Researcher",
+        "general": "General"
+      }
+    },
+    "result": {
+      "comment": "Comment",
+      "document": "Doc",
+      "artifact": "Artifact",
+      "description": "Description",
+      "agent": "Agent",
+      "project": "Project",
+      "justNow": "just now",
+      "minutes": "{{count}}m",
+      "hours": "{{count}}h",
+      "days": "{{count}}d",
+      "weeks": "{{count}}w",
+      "months": "{{count}}mo",
+      "years": "{{count}}y",
+      "identifier": "Identifier"
+    },
+    "recovery": {
+      "title": "No results with these filters",
+      "matchesQuery_one": "{{count}} result matches “{{query}}”.",
+      "matchesQuery_other": "{{count}} results match “{{query}}”.",
+      "matches_one": "{{count}} result matches.",
+      "matches_other": "{{count}} results match.",
+      "hidden_one": "The active filter hides all matches.",
+      "hidden_other": "The {{count}} active filters hide all matches.",
+      "loosen": "Loosen a filter",
+      "remove": "Remove <filter>{{filter}}</filter>",
+      "additional_one": "+{{count}} result",
+      "additional_other": "+{{count}} results",
+      "clearAll": "Clear all filters"
+    },
+    "scope": {
+      "all": "All",
+      "issues": "Tasks",
+      "comments": "Comments",
+      "documents": "Documents",
+      "artifacts": "Artifacts",
+      "agents": "Agents",
+      "projects": "Projects"
+    },
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "project": "Project",
+      "label": "Label",
+      "updated": "Updated",
+      "me": "Me",
+      "unassigned": "Unassigned",
+      "agent": "Agent",
+      "user": "User",
+      "openItems": "Open items",
+      "searchAssignees": "Search assignees…",
+      "noAssignees": "No assignees",
+      "searchProjects": "Search projects…",
+      "noProjects": "No projects",
+      "searchLabels": "Search labels…",
+      "noLabels": "No labels",
+      "search": "Search…",
+      "noOptions": "No options",
+      "filterBy": "Filter by {{label}}",
+      "clear": "Clear",
+      "clearAll": "Clear all",
+      "removeFilter": "Remove filter {{label}}",
+      "title": "Filters",
+      "cancel": "Cancel",
+      "showResults": "Show results",
+      "showCount_one": "Show {{count}} result",
+      "showCount_other": "Show {{count}} results",
+      "chipStatus": "Status: {{value}}",
+      "chipPriority": "Priority: {{value}}",
+      "chipAssignee": "Assignee: {{value}}",
+      "chipProject": "Project: {{value}}",
+      "chipLabel": "Label: {{value}}",
+      "chipUpdated": "Updated: {{value}}",
+      "updated24h": "Last 24 hours",
+      "updated7d": "Last 7 days",
+      "updated30d": "Last 30 days",
+      "updated90d": "Last 90 days",
+      "updatedOther": "Updated ≤ {{value}}"
+    },
+    "sort": {
+      "relevance": "Relevance",
+      "updated": "Recently updated",
+      "created": "Newest created",
+      "priority": "Priority",
+      "results": "Sort results",
+      "prefix": "Sort:",
+      "by": "Sort by"
+    },
+    "operators": {
+      "todo": {
+        "label": "Open todo tasks",
+        "description": "Filter by task status"
+      },
+      "blocked": {
+        "label": "Blocked tasks",
+        "description": "Find blocked work"
+      },
+      "me": {
+        "label": "Assigned to me",
+        "description": "Use your current board user"
+      },
+      "project": {
+        "label": "Project name",
+        "description": "Quote multi-word project names"
+      },
+      "label": {
+        "label": "Label",
+        "description": "Filter by issue label"
+      },
+      "priority": {
+        "label": "High priority",
+        "description": "Filter by priority"
+      },
+      "updated": {
+        "label": "Recently updated",
+        "description": "Updated in the last 7 days"
+      }
+    },
+    "recoverySuggestions": {
+      "updatedWindow": "Updated window"
     }
   }
 }

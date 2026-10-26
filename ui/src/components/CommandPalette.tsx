@@ -1,6 +1,9 @@
+import { i18n, Trans, useTranslation } from "@/i18n";
+import type { TFunction } from "i18next";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { useCombinedInboxTasksEnabled } from "@/hooks/useCombinedInboxTasksEnabled";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { defaultFilter } from "cmdk";
 import { useLocation, useNavigate } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import { useCompany } from "../context/CompanyContext";
@@ -35,7 +38,6 @@ import {
   Plus,
   Search,
 } from "lucide-react";
-import { Identity } from "./Identity";
 import { agentUrl, projectUrl } from "../lib/utils";
 import {
   SEARCH_OPERATOR_QUICK_FILTERS,
@@ -89,7 +91,26 @@ function scoreProjectMatch(name: string, description: string, q: string): number
   return null;
 }
 
+function paletteRoleLabel(role: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (role) {
+    case "ceo": return t("searchUi.palette.roles.ceo");
+    case "cto": return t("searchUi.palette.roles.cto");
+    case "cmo": return t("searchUi.palette.roles.cmo");
+    case "cfo": return t("searchUi.palette.roles.cfo");
+    case "security": return t("searchUi.palette.roles.security");
+    case "engineer": return t("searchUi.palette.roles.engineer");
+    case "designer": return t("searchUi.palette.roles.designer");
+    case "pm": return t("searchUi.palette.roles.pm");
+    case "qa": return t("searchUi.palette.roles.qa");
+    case "devops": return t("searchUi.palette.roles.devops");
+    case "researcher": return t("searchUi.palette.roles.researcher");
+    case "general": return t("searchUi.palette.roles.general");
+    default: return role;
+  }
+}
+
 export function CommandPalette() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -215,17 +236,22 @@ export function CommandPalette() {
 
   const showSearchAll = searchQuery.length > 0;
   const showPromotedProjects = showSearchAll && matchedProjects.length > 0;
+  const commandFilter = useCallback((value: string, search: string, keywords?: string[]) => {
+    if (value.startsWith(SEARCH_ALL_VALUE) || (showPromotedProjects && value.startsWith("project:"))) return 1;
+    return defaultFilter(value, search, keywords);
+  }, [showPromotedProjects]);
   const taskLimit = showPromotedProjects ? TASK_LIMIT_WITH_PROJECTS : TASK_LIMIT;
   const showEmptyHint =
     showSearchAll && visibleIssues.length === 0 && matchedProjects.length === 0;
 
   return (
-    <CommandDialog open={open} onOpenChange={(v) => {
+    <CommandDialog filter={commandFilter} open={open} onOpenChange={(v) => {
         setOpen(v);
         if (v && isMobile) setSidebarOpen(false);
       }}>
       <CommandInput
-        placeholder="Search tasks, agents, projects..."
+        placeholder={t("searchUi.palette.placeholder")}
+        aria-label={t("searchUi.palette.query")}
         value={query}
         onValueChange={setQuery}
         onKeyDown={(event) => {
@@ -235,8 +261,12 @@ export function CommandPalette() {
             return;
           }
           if (event.key === "Enter" && showEmptyHint) {
-            event.preventDefault();
-            goFullSearch();
+            const selectedId = event.currentTarget.getAttribute("aria-activedescendant");
+            const selectedValue = selectedId ? document.getElementById(selectedId)?.getAttribute("data-value") : null;
+            if (!selectedValue || selectedValue.startsWith(SEARCH_ALL_VALUE)) {
+              event.preventDefault();
+              goFullSearch();
+            }
           }
         }}
       />
@@ -244,17 +274,21 @@ export function CommandPalette() {
         <CommandEmpty>
           {showSearchAll ? (
             <span>
-              No quick task matches. Press{" "}
-              <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-(length:--text-nano)">↵</kbd>{" "}
-              to <span className="font-medium">search all</span> or keep typing to refine.
+              <Trans
+                i18nKey="searchUi.palette.emptyHint"
+                components={{
+                  key: <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-(length:--text-nano)" />,
+                  action: <span className="font-medium" />,
+                }}
+              />
             </span>
           ) : (
-            "No results found."
+            t("searchUi.palette.noResults")
           )}
         </CommandEmpty>
 
         {showSearchAll ? (
-          <CommandGroup heading="Search">
+          <CommandGroup heading={t("searchUi.palette.search")}>
             <CommandItem
               value={`${SEARCH_ALL_VALUE} ${searchQuery}`}
               onSelect={goFullSearch}
@@ -263,10 +297,16 @@ export function CommandPalette() {
             >
               <Search className="mr-2 h-4 w-4" />
               <span className="flex-1 truncate">
-                Search all for <span className="font-semibold">&ldquo;{searchQuery}&rdquo;</span>
+                <Trans
+                  i18nKey="searchUi.palette.searchAll"
+                  values={{ query: searchQuery }}
+                  components={{ query: <span className="font-semibold" /> }}
+                  tOptions={{ interpolation: { escapeValue: true } }}
+                  shouldUnescape
+                />
               </span>
               <span className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <span>open full search</span>
+                <span>{t("searchUi.palette.openFullSearch")}</span>
                 <kbd className="rounded border border-border bg-background px-1 py-0.5 text-(length:--text-nano)">↵</kbd>
               </span>
             </CommandItem>
@@ -275,7 +315,7 @@ export function CommandPalette() {
 
         {showSearchAll ? <CommandSeparator /> : null}
 
-        <CommandGroup heading="Quick filters">
+        <CommandGroup heading={t("searchUi.palette.quickFilters")}>
           {SEARCH_OPERATOR_QUICK_FILTERS.map((chip) => (
             <CommandItem
               key={chip}
@@ -293,11 +333,12 @@ export function CommandPalette() {
 
         {showPromotedProjects && (
           <>
-            <CommandGroup heading="Projects">
+            <CommandGroup heading={t("searchUi.palette.projects")}>
               {matchedProjects.map((project) => (
                 <CommandItem
                   key={project.id}
-                  value={`${searchQuery} ${project.name}`}
+                  value={`project:${project.id}`}
+                  keywords={[searchQuery, project.name, project.description ?? ""]}
                   onSelect={() => go(projectUrl(project))}
                   data-testid="command-project-match"
                 >
@@ -315,93 +356,92 @@ export function CommandPalette() {
           </>
         )}
 
-        <CommandGroup heading="Actions">
-          <CommandItem
+        <CommandGroup heading={t("searchUi.palette.actions")}>
+          <CommandItem value="action:create-task" keywords={[t("searchUi.palette.newTask", { lng: "en" }), t("searchUi.palette.newTask", { lng: "ru" })]}
             onSelect={() => {
               setOpen(false);
               openNewIssue();
             }}
           >
             <SquarePen className="mr-2 h-4 w-4" />
-            Create new task
+            {t("searchUi.palette.newTask")}
             <span className="ml-auto text-xs text-muted-foreground">C</span>
           </CommandItem>
           {onIssueDetail && fileViewerEnabled && (
-            <CommandItem
+            <CommandItem value="action:open-file" keywords={[t("searchUi.palette.openFile", { lng: "en" }), t("searchUi.palette.openFile", { lng: "ru" })]}
               onSelect={() => {
                 setOpen(false);
                 window.dispatchEvent(new CustomEvent("paperclip:open-file-viewer"));
               }}
             >
               <FileCode2 className="mr-2 h-4 w-4" />
-              Open file in this issue...
+              {t("searchUi.palette.openFile")}
               <span className="ml-auto text-xs text-muted-foreground">g f</span>
             </CommandItem>
           )}
-          <CommandItem
+          <CommandItem value="action:create-agent" keywords={[t("searchUi.palette.newAgent", { lng: "en" }), t("searchUi.palette.newAgent", { lng: "ru" })]}
             onSelect={() => {
               setOpen(false);
               openNewAgent();
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Create new agent
+            {t("searchUi.palette.newAgent")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/projects")}>
+          <CommandItem value="action:create-project" keywords={[t("searchUi.palette.newProject", { lng: "en" }), t("searchUi.palette.newProject", { lng: "ru" })]} onSelect={() => go("/projects")}>
             <Plus className="mr-2 h-4 w-4" />
-            Create new project
+            {t("searchUi.palette.newProject")}
           </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading="Pages">
-          <CommandItem onSelect={() => go("/dashboard")}>
+        <CommandGroup heading={t("searchUi.palette.pages")}>
+          <CommandItem value="page:dashboard" keywords={[t("searchUi.palette.dashboard", { lng: "en" }), t("searchUi.palette.dashboard", { lng: "ru" })]} onSelect={() => go("/dashboard")}>
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            Dashboard
+            {t("searchUi.palette.dashboard")}
           </CommandItem>
-          <CommandItem onSelect={() => go(combinedInboxTasksEnabled ? "/issues?view=mine" : "/inbox")}>
+          <CommandItem value="page:inbox" keywords={combinedInboxTasksEnabled
+            ? [t("searchUi.palette.myWork", { lng: "en" }), t("searchUi.palette.myWork", { lng: "ru" })]
+            : [t("searchUi.palette.inbox", { lng: "en" }), t("searchUi.palette.inbox", { lng: "ru" })]} onSelect={() => go(combinedInboxTasksEnabled ? "/issues?view=mine" : "/inbox")}>
             <Inbox className="mr-2 h-4 w-4" />
-            {combinedInboxTasksEnabled ? "My work" : "Inbox"}
+            {combinedInboxTasksEnabled ? t("searchUi.palette.myWork") : t("searchUi.palette.inbox")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/issues")}>
+          <CommandItem value="page:tasks" keywords={[t("searchUi.palette.tasks", { lng: "en" }), t("searchUi.palette.tasks", { lng: "ru" })]} onSelect={() => go("/issues")}>
             <CircleDot className="mr-2 h-4 w-4" />
-            Tasks
+            {t("searchUi.palette.tasks")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/projects")}>
+          <CommandItem value="page:projects" keywords={[t("searchUi.palette.projects", { lng: "en" }), t("searchUi.palette.projects", { lng: "ru" })]} onSelect={() => go("/projects")}>
             <Hexagon className="mr-2 h-4 w-4" />
-            Projects
+            {t("searchUi.palette.projects")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/goals")}>
+          <CommandItem value="page:goals" keywords={[t("searchUi.palette.goals", { lng: "en" }), t("searchUi.palette.goals", { lng: "ru" })]} onSelect={() => go("/goals")}>
             <Target className="mr-2 h-4 w-4" />
-            Goals
+            {t("searchUi.palette.goals")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/agents")}>
+          <CommandItem value="page:agents" keywords={[t("searchUi.palette.agents", { lng: "en" }), t("searchUi.palette.agents", { lng: "ru" })]} onSelect={() => go("/agents")}>
             <Bot className="mr-2 h-4 w-4" />
-            Agents
+            {t("searchUi.palette.agents")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/costs")}>
+          <CommandItem value="page:costs" keywords={[t("searchUi.palette.costs", { lng: "en" }), t("searchUi.palette.costs", { lng: "ru" })]} onSelect={() => go("/costs")}>
             <DollarSign className="mr-2 h-4 w-4" />
-            Costs
+            {t("searchUi.palette.costs")}
           </CommandItem>
-          <CommandItem onSelect={() => go("/activity")}>
+          <CommandItem value="page:activity" keywords={[t("searchUi.palette.activity", { lng: "en" }), t("searchUi.palette.activity", { lng: "ru" })]} onSelect={() => go("/activity")}>
             <History className="mr-2 h-4 w-4" />
-            Activity
+            {t("searchUi.palette.activity")}
           </CommandItem>
         </CommandGroup>
 
         {visibleIssues.length > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup heading="Tasks">
+            <CommandGroup heading={t("searchUi.palette.tasks")}>
               {visibleIssues.slice(0, taskLimit).map((issue) => (
                 <CommandItem
                   key={issue.id}
-                  value={
-                    searchQuery.length > 0
-                      ? `${searchQuery} ${issue.identifier ?? ""} ${issue.title}`
-                      : undefined
-                  }
+                  value={`issue:${issue.id}`}
+                  keywords={[searchQuery, issue.identifier ?? "", issue.title]}
                   onSelect={() => go(`/issues/${issue.identifier ?? issue.id}`)}
                 >
                   <CircleDot className="mr-2 h-4 w-4" />
@@ -422,12 +462,12 @@ export function CommandPalette() {
         {agents.length > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup heading="Agents">
+            <CommandGroup heading={t("searchUi.palette.agents")}>
               {agents.slice(0, 10).map((agent) => (
-                <CommandItem key={agent.id} onSelect={() => go(agentUrl(agent))}>
+                <CommandItem key={agent.id} value={`agent:${agent.id}`} keywords={[agent.name, agent.role, ...new Set([paletteRoleLabel(agent.role), paletteRoleLabel(agent.role, i18n.getFixedT("ru")), paletteRoleLabel(agent.role, t)])]} onSelect={() => go(agentUrl(agent))}>
                   <Bot className="mr-2 h-4 w-4" />
                   {agent.name}
-                  <span className="text-xs text-muted-foreground ml-2">{agent.role}</span>
+                  <span className="text-xs text-muted-foreground ml-2">{paletteRoleLabel(agent.role, t)}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -437,9 +477,9 @@ export function CommandPalette() {
         {projects.length > 0 && !showSearchAll && (
           <>
             <CommandSeparator />
-            <CommandGroup heading="Projects">
+            <CommandGroup heading={t("searchUi.palette.projects")}>
               {projects.slice(0, 10).map((project) => (
-                <CommandItem key={project.id} onSelect={() => go(projectUrl(project))}>
+                <CommandItem key={project.id} value={`project:${project.id}`} keywords={[project.name]} onSelect={() => go(projectUrl(project))}>
                   <Hexagon className="mr-2 h-4 w-4" />
                   {project.name}
                 </CommandItem>

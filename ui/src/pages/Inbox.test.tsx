@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
-import type { ComponentProps } from "react";
+import { act as reactAct, type ComponentProps } from "react";
+import { i18n, useTranslation } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,12 +19,19 @@ const routerMock = vi.hoisted(() => ({
   navigate: vi.fn(),
 }));
 
+const toastMocks = vi.hoisted(() => ({ pushToast: vi.fn() }));
+
 const externalObjectMocks = vi.hoisted(() => ({
   summaries: new Map(),
 }));
 
 const apiMocks = vi.hoisted(() => ({
   approvalsList: vi.fn(),
+  approveApproval: vi.fn(),
+  rejectApproval: vi.fn(),
+  approveJoinRequest: vi.fn(),
+  rejectJoinRequest: vi.fn(),
+  markRead: vi.fn(),
   joinRequestsList: vi.fn(),
   userDirectoryList: vi.fn(),
   authSession: vi.fn(),
@@ -33,6 +41,7 @@ const apiMocks = vi.hoisted(() => ({
   issuesCount: vi.fn(),
   issueLabels: vi.fn(),
   retryTask: vi.fn(),
+  retryFailedRun: vi.fn(),
   archiveFromInbox: vi.fn(),
   unarchiveFromInbox: vi.fn(),
   agentsList: vi.fn(),
@@ -43,7 +52,7 @@ const apiMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../api/approvals", () => ({
-  approvalsApi: { list: apiMocks.approvalsList },
+  approvalsApi: { list: apiMocks.approvalsList, approve: apiMocks.approveApproval, reject: apiMocks.rejectApproval },
 }));
 
 vi.mock("../api/access", async () => {
@@ -52,6 +61,8 @@ vi.mock("../api/access", async () => {
     ...actual,
     accessApi: {
       listJoinRequests: apiMocks.joinRequestsList,
+      approveJoinRequest: apiMocks.approveJoinRequest,
+      rejectJoinRequest: apiMocks.rejectJoinRequest,
       listUserDirectory: apiMocks.userDirectoryList,
     },
   };
@@ -76,7 +87,7 @@ vi.mock("../api/issues", () => ({
     count: apiMocks.issuesCount,
     listLabels: apiMocks.issueLabels,
     retryTask: apiMocks.retryTask,
-    markRead: vi.fn(),
+    markRead: apiMocks.markRead,
     markUnread: vi.fn(),
     archiveFromInbox: apiMocks.archiveFromInbox,
     unarchiveFromInbox: apiMocks.unarchiveFromInbox,
@@ -84,7 +95,7 @@ vi.mock("../api/issues", () => ({
 }));
 
 vi.mock("../api/agents", () => ({
-  agentsApi: { list: apiMocks.agentsList },
+  agentsApi: { list: apiMocks.agentsList, retryFailedRun: apiMocks.retryFailedRun },
 }));
 
 vi.mock("../api/heartbeats", () => ({
@@ -111,7 +122,7 @@ vi.mock("../context/BreadcrumbContext", () => ({
 }));
 
 vi.mock("../context/ToastContext", () => ({
-  useToastActions: () => ({ pushToast: vi.fn() }),
+  useToastActions: () => toastMocks,
 }));
 
 vi.mock("../context/DialogContext", () => ({
@@ -344,6 +355,7 @@ function resetInboxApiMocks() {
   routerMock.location.search = "";
   routerMock.location.hash = "";
   routerMock.navigate.mockReset();
+  toastMocks.pushToast.mockReset();
   apiMocks.approvalsList.mockResolvedValue([]);
   apiMocks.joinRequestsList.mockResolvedValue([]);
   apiMocks.userDirectoryList.mockResolvedValue({ users: [] });
@@ -1385,6 +1397,225 @@ describe("Inbox toolbar", () => {
       act(() => root.unmount());
     }
   });
+  it.each([
+    { mode: "standalone", streamlined: true, combined: false },
+    { mode: "combined", streamlined: true, combined: true },
+    { mode: "legacy", streamlined: false, combined: false },
+  ])("preserves the archive undo slot and collapsed group while switching EN/RU/EN ($mode)", async ({ streamlined, combined }) => {
+    routerMock.location.pathname = combined ? "/issues" : "/inbox/mine";
+    routerMock.location.search = combined ? "?view=mine" : "";
+    apiMocks.experimentalSettings.mockResolvedValue({ enableIsolatedWorkspaces: false, enableStreamlinedUi: streamlined });
+    localStorage.setItem("paperclip:inbox:group-by", "type");
+    localStorage.setItem("paperclip:inbox:collapsed-groups:company-1", JSON.stringify(["approval"]));
+    apiMocks.approvalsList.mockResolvedValue([createApproval({ payload: { name: "Operator <strong>name</strong>" } })]);
+    const rows = [
+      createIssue({ id: "locale-first", identifier: "PAP-9901", title: "First <strong>literal</strong>", updatedAt: new Date("2026-03-13T00:00:00Z") }),
+      createIssue({ id: "locale-second", identifier: "PAP-9902", title: "Second literal", updatedAt: new Date("2026-03-12T00:00:00Z") }),
+    ];
+    apiMocks.issuesList.mockResolvedValue(rows);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    function Surface() {
+      const { t } = useTranslation();
+      return combined ? <Inbox tab="mine" surfaceLabel={t("tasks.title")} toolbarContext={<span>{t("tasks.title")}</span>} /> : <Inbox />;
+    }
+    const rowIds = () => Array.from(container.querySelectorAll<HTMLAnchorElement>("[data-inbox-issue-link]"))
+      .map((link) => link.getAttribute("href"));
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={client}><Surface /></QueryClientProvider>); });
+      await vi.waitFor(() => {
+        expect(container.textContent).toContain(rows[0]!.title);
+        expect(client.isFetching()).toBe(0);
+      });
+      const initialIds = rowIds();
+      expect(initialIds).toHaveLength(2);
+      expect(container.textContent).not.toContain("Operator <strong>name</strong>");
+      const initialStorage = localStorage.getItem("paperclip:inbox:collapsed-groups:company-1");
+      await reactAct(async () => { container.querySelector<HTMLButtonElement>('button[aria-label="Archive"]')!.click(); });
+      await vi.waitFor(() => {
+        expect(container.textContent).not.toContain(rows[0]!.title);
+        expect(client.isMutating()).toBe(0);
+        expect(client.isFetching()).toBe(0);
+      });
+      const queriesAfterArchive = apiMocks.issuesList.mock.calls.length;
+      for (const language of ["ru", "en"] as const) {
+        await reactAct(async () => { await i18n.changeLanguage(language); });
+        expect(container.textContent).toContain(language === "ru" ? "Согласования" : "Approvals");
+        expect(container.textContent).not.toContain(rows[0]!.title);
+        expect(container.textContent).not.toContain("Operator <strong>name</strong>");
+        expect(rowIds()).toEqual(initialIds.slice(1));
+        expect(localStorage.getItem("paperclip:inbox:collapsed-groups:company-1")).toBe(initialStorage);
+        expect(apiMocks.archiveFromInbox.mock.calls).toEqual([["locale-first"]]);
+        expect(apiMocks.unarchiveFromInbox).not.toHaveBeenCalled();
+        expect(apiMocks.issuesList).toHaveBeenCalledTimes(queriesAfterArchive);
+      }
+      await reactAct(async () => { document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "u", bubbles: true })); });
+      await vi.waitFor(() => {
+        expect(apiMocks.unarchiveFromInbox.mock.calls).toEqual([["locale-first"]]);
+        expect(rowIds()).toEqual(initialIds);
+      });
+      expect(container.querySelector("strong")).toBeNull();
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
+  it.each([true, false])("keeps approval and join actions canonical and translates a pending error without retry (streamlined=%s)", async (streamlined) => {
+    routerMock.location.pathname = "/inbox/all";
+    apiMocks.experimentalSettings.mockResolvedValue({ enableIsolatedWorkspaces: false, enableStreamlinedUi: streamlined });
+    apiMocks.approvalsList.mockResolvedValue([createApproval({ payload: { name: "Hire <b>literal</b>" } })]);
+    apiMocks.joinRequestsList.mockResolvedValue([createJoinRequest({ requestType: "agent", agentName: "Agent <b>literal</b>" })]);
+    apiMocks.approveApproval.mockRejectedValue("local failure");
+    apiMocks.rejectJoinRequest.mockResolvedValue({});
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    const rowButton = (title: string, label: string) => {
+      const row = Array.from(container.querySelectorAll<HTMLElement>("[data-inbox-item]")).find((node) => node.textContent?.includes(title));
+      return Array.from(row?.querySelectorAll<HTMLButtonElement>("button") ?? []).find((node) => node.textContent === label)!;
+    };
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={client}><Inbox /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Hire <b>literal</b>"));
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Найм агента: Hire <b>literal</b>");
+      expect(container.textContent).toContain("Запрос агента на присоединение: Agent <b>literal</b>");
+      await reactAct(async () => { rowButton("Hire <b>literal</b>", "Одобрить").click(); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Не удалось одобрить"));
+      expect(apiMocks.approveApproval.mock.calls).toEqual([["approval-1"]]);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Failed to approve");
+      expect(apiMocks.approveApproval).toHaveBeenCalledTimes(1);
+      await reactAct(async () => { rowButton("Agent <b>literal</b>", "Reject").click(); });
+      await vi.waitFor(() => expect(apiMocks.rejectJoinRequest.mock.calls).toEqual([["company-1", "join-1"]]));
+      expect(container.querySelector("b")).toBeNull();
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
+  it.each([1, 2, 5, 21])("keeps unread task IDs while the mark-all dialog translates count %s", async (count) => {
+    routerMock.location.pathname = "/inbox/mine";
+    const rows = Array.from({ length: count }, (_, index) => createIssue({ id: `unread-${index}`, identifier: `PAP-${9900 + index}`, title: `Unread ${index}`, isUnreadForMe: true }));
+    apiMocks.issuesList.mockResolvedValue(rows);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={client}><Inbox /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Mark all as read"));
+      await reactAct(async () => { Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((button) => button.textContent === "Mark all as read")!.click(); });
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      const dialog = document.querySelector('[role="dialog"]')!;
+      const expected = count === 1 || count === 21
+        ? `Будет отмечен прочитанным ${count} непрочитанный элемент.`
+        : count === 2 ? "Будут отмечены прочитанными 2 непрочитанных элемента." : "Будут отмечены прочитанными 5 непрочитанных элементов.";
+      expect(dialog.textContent).toContain(expected);
+      expect(apiMocks.markRead).not.toHaveBeenCalled();
+      await reactAct(async () => { Array.from(dialog.querySelectorAll<HTMLButtonElement>("button")).find((button) => button.textContent === "Отметить всё прочитанным")!.click(); });
+      await vi.waitFor(() => expect(apiMocks.markRead.mock.calls.map(([id]) => id)).toEqual(rows.map((row) => row.id)));
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
+  it.each([true, false])("preserves one in-flight run retry across language changes (streamlined=%s)", async (streamlined) => {
+    routerMock.location.pathname = "/inbox/all";
+    apiMocks.experimentalSettings.mockResolvedValue({ enableIsolatedWorkspaces: false, enableStreamlinedUi: streamlined });
+    const run = createFailedRun({ issueId: "retry-issue", error: "Provider <raw>error</raw>" });
+    apiMocks.heartbeatRunsList.mockResolvedValue([run]);
+    apiMocks.issuesList.mockResolvedValue([createIssue({ id: "retry-issue", title: "Retry task literal" })]);
+    const pending = createDeferred<{ runId: null; issueId: string; accepted: true; requestId: string; presentation: null }>();
+    apiMocks.retryTask.mockReturnValue(pending.promise);
+    apiMocks.retryFailedRun.mockReturnValue(pending.promise);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={client}><Inbox /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Provider <raw>error</raw>"));
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      const retry = Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((button) => button.textContent === "Повторить")!;
+      await reactAct(async () => { retry.click(); });
+      await vi.waitFor(() => expect(streamlined ? apiMocks.retryTask : apiMocks.retryFailedRun).toHaveBeenCalledTimes(1));
+      if (streamlined) expect(apiMocks.retryTask).toHaveBeenCalledWith("retry-issue", { idempotencyKey: expect.any(String), observedRunId: "run-1" });
+      else expect(apiMocks.retryFailedRun.mock.calls).toEqual([["agent-1", "run-1", "company-1"]]);
+      const calls = JSON.stringify((streamlined ? apiMocks.retryTask : apiMocks.retryFailedRun).mock.calls);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.contains(retry)).toBe(true);
+      expect(retry.disabled).toBe(true);
+      expect(retry.textContent).toBe(streamlined ? "Thinking" : "Retrying…");
+      expect(JSON.stringify((streamlined ? apiMocks.retryTask : apiMocks.retryFailedRun).mock.calls)).toBe(calls);
+      expect(routerMock.navigate).not.toHaveBeenCalled();
+      await reactAct(async () => { pending.resolve({ runId: null, issueId: "retry-issue", accepted: true, requestId: "request-1", presentation: null }); });
+      await vi.waitFor(() => expect(routerMock.navigate).toHaveBeenCalledWith("/issues/retry-issue"));
+      expect(toastMocks.pushToast).not.toHaveBeenCalled();
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
+  it.each([true, false])("keeps provider retry diagnostics in the translated failure toast without a locale retry (streamlined=%s)", async (streamlined) => {
+    routerMock.location.pathname = "/inbox/all";
+    apiMocks.experimentalSettings.mockResolvedValue({ enableIsolatedWorkspaces: false, enableStreamlinedUi: streamlined });
+    const run = createFailedRun({ issueId: "toast-issue", error: "Original provider error" });
+    apiMocks.heartbeatRunsList.mockResolvedValue([run]);
+    apiMocks.issuesList.mockResolvedValue([createIssue({ id: "toast-issue", title: "Literal retry" })]);
+    const failure = new Error("Provider <token>retry diagnostic</token>");
+    apiMocks.retryTask.mockRejectedValue(failure);
+    apiMocks.retryFailedRun.mockRejectedValue(failure);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { root.render(<QueryClientProvider client={client}><Inbox /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Original provider error"));
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      await reactAct(async () => { Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((button) => button.textContent === "Повторить")!.click(); });
+      await vi.waitFor(() => expect(toastMocks.pushToast).toHaveBeenCalledWith({ title: "Не удалось повторить запуск", body: failure.message, tone: "error" }));
+      if (streamlined) expect(apiMocks.retryTask).toHaveBeenCalledWith("toast-issue", { idempotencyKey: expect.any(String), observedRunId: "run-1" });
+      else expect(apiMocks.retryFailedRun.mock.calls).toEqual([["agent-1", "run-1", "company-1"]]);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(streamlined ? apiMocks.retryTask : apiMocks.retryFailedRun).toHaveBeenCalledTimes(1);
+      expect(toastMocks.pushToast).toHaveBeenCalledTimes(1);
+      expect(routerMock.navigate).not.toHaveBeenCalled();
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
+  it.each([true, false])("retains a Russian approval query and result across a switch to English (streamlined=%s)", async (streamlined) => {
+    routerMock.location.pathname = "/inbox/all";
+    apiMocks.experimentalSettings.mockResolvedValue({ enableIsolatedWorkspaces: false, enableStreamlinedUi: streamlined });
+    apiMocks.approvalsList.mockResolvedValue([createApproval({ payload: { name: "Literal hire subject" } })]);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); root.render(<QueryClientProvider client={client}><Inbox /></QueryClientProvider>); });
+      await vi.waitFor(() => expect(container.textContent).toContain("Найм агента: Literal hire subject"));
+      const input = container.querySelector<HTMLInputElement>('input[data-page-search-target="true"]')!;
+      await reactAct(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "Найм агента");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await vi.waitFor(() => { expect(input.value).toBe("Найм агента"); expect(client.isFetching()).toBe(0); });
+      const link = container.querySelector('a[href="/approvals/approval-1"]');
+      expect(link).not.toBeNull();
+      const approvalCalls = apiMocks.approvalsList.mock.calls.length;
+      const issueCalls = apiMocks.issuesList.mock.calls.length;
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(input.value).toBe("Найм агента");
+      expect(container.textContent).toContain("Hire Agent: Literal hire subject");
+      expect(container.querySelector('a[href="/approvals/approval-1"]')).toBe(link);
+      expect(apiMocks.approvalsList).toHaveBeenCalledTimes(approvalCalls);
+      expect(apiMocks.issuesList).toHaveBeenCalledTimes(issueCalls);
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      client.clear();
+    }
+  });
+
 });
 
 describe("FailedRunInboxRow", () => {

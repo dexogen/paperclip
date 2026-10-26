@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import { taskDateGroup, taskDateGroupSeparator } from "./task-date-groups";
 
@@ -17,4 +18,14 @@ describe("task date groups", () => {
     expect(taskDateGroupSeparator("today", "yesterday")).toBe("Yesterday");
     expect(taskDateGroupSeparator("yesterday", "earlier")).toBe("Earlier");
   });
+});
+
+it("localizes date separators while retaining canonical calendar groups and suppression", () => {
+  const ru = i18n.getFixedT("ru");
+  expect(taskDateGroupSeparator(null, "today", ru)).toBe("Сегодня");
+  expect(taskDateGroupSeparator("today", "yesterday", ru)).toBe("Вчера");
+  expect(taskDateGroupSeparator("yesterday", "earlier", ru)).toBe("Ранее");
+  expect(taskDateGroupSeparator("today", "today", ru)).toBeNull();
+  expect(taskDateGroupSeparator(null, "earlier", ru)).toBeNull();
+  expect(taskDateGroupSeparator(null, "today")).toBe("Today");
 });

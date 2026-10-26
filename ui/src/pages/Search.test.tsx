@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
-import type { ReactNode } from "react";
+import { act, type ReactNode } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -11,6 +12,8 @@ import { Search, buildSearchUrl } from "./Search";
 const companyState = vi.hoisted(() => ({
   selectedCompanyId: "company-1",
 }));
+
+const sidebarState = vi.hoisted(() => ({ isMobile: false }));
 
 const breadcrumbState = vi.hoisted(() => ({
   setBreadcrumbs: vi.fn(),
@@ -55,7 +58,7 @@ vi.mock("../context/DialogContext", () => ({
 }));
 
 vi.mock("../context/SidebarContext", () => ({
-  useSidebar: () => ({ isMobile: false, setSidebarOpen: vi.fn() }),
+  useSidebar: () => ({ ...sidebarState, setSidebarOpen: vi.fn() }),
 }));
 
 vi.mock("../api/search", () => ({
@@ -160,7 +163,9 @@ describe("buildSearchUrl", () => {
 describe("Search page", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
+    sidebarState.isMobile = false;
     container = document.createElement("div");
     document.body.appendChild(container);
     breadcrumbState.setBreadcrumbs.mockReset();
@@ -178,8 +183,9 @@ describe("Search page", () => {
     window.localStorage.clear();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     container.remove();
+    await i18n.changeLanguage("en");
   });
 
   it("issues a search request when ?q is in the URL and renders the result", async () => {
@@ -1009,6 +1015,94 @@ describe("Search page", () => {
     flushSync(() => {
       root.unmount();
     });
+  });
+
+  it("preserves search state, URL, recent searches and query identity across EN→RU→EN", async () => {
+    const initialPath = "/search?q=needle&status=todo&scope=documents&sort=updated";
+    window.history.replaceState({}, "", initialPath);
+    searchApiMock.search.mockResolvedValue(emptyResponse({ scope: "documents", sort: "updated" }));
+    const { root } = renderSearch(initialPath, container);
+    try {
+      await waitForAssertion(() => {
+        expect(searchApiMock.search).toHaveBeenCalledWith("company-1", {
+          q: "needle", scope: "documents", limit: 20, status: ["todo"], sort: "updated",
+        });
+        expect(container.textContent).toContain("No results for");
+      });
+      const input = container.querySelector<HTMLInputElement>('input[aria-label="Search query"]')!;
+      input.focus(); input.setSelectionRange(1, 4);
+      const callCount = searchApiMock.search.mock.calls.length;
+      const recent = window.localStorage.getItem("paperclip:recent-searches:company-1");
+      const url = window.location.href;
+      for (const locale of ["ru", "en"]) {
+        await act(async () => { await i18n.changeLanguage(locale); });
+        expect(container.querySelector('input')).toBe(input);
+        expect(input.value).toBe("needle");
+        expect([input.selectionStart, input.selectionEnd]).toEqual([1, 4]);
+        expect(window.location.href).toBe(url);
+        expect(window.localStorage.getItem("paperclip:recent-searches:company-1")).toBe(recent);
+        expect(searchApiMock.search).toHaveBeenCalledTimes(callCount);
+        expect(container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain(locale === "ru" ? "Документы" : "Documents");
+        expect(breadcrumbState.setBreadcrumbs).toHaveBeenLastCalledWith([{ label: locale === "ru" ? "Поиск" : "Search" }]);
+        expect(container.textContent).toContain(locale === "ru" ? "Недавно обновлённые" : "Recently updated");
+      }
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "needle черновик");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        await i18n.changeLanguage("ru");
+      });
+      expect(input.value).toBe("needle черновик");
+      expect(window.location.href).toBe(url);
+      expect(searchApiMock.search).toHaveBeenCalledTimes(callCount);
+    } finally { await act(async () => root.unmount()); }
+  });
+
+  it("translates a failed search without retrying or discarding its input", async () => {
+    searchApiMock.search.mockRejectedValue(Object.assign(new Error("Provider text <b> stays raw"), { status: 500 }));
+    const { root } = renderSearch("/search?q=ошибка&status=todo", container);
+    try {
+      await waitForAssertion(() => expect(container.textContent).toContain("The server returned 500."));
+      const count = searchApiMock.search.mock.calls.length;
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Сервер вернул код 500.");
+      expect(container.querySelector<HTMLInputElement>('input')?.value).toBe("ошибка");
+      expect(searchApiMock.search).toHaveBeenCalledTimes(count);
+    } finally { await act(async () => root.unmount()); }
+  });
+
+  it("preserves the actual mobile sheet preview query and unapplied filters on a locale switch", async () => {
+    sidebarState.isMobile = true;
+    vi.stubGlobal("ResizeObserver", class { observe() {} unobserve() {} disconnect() {} });
+    window.history.replaceState({}, "", "/search?q=auth&status=todo");
+    searchApiMock.search.mockResolvedValue(emptyResponse({ countsByType: { issue: 5, comment: 0, document: 0, artifact: 0, agent: 0, project: 0 } }));
+    const { root } = renderSearch("/search?q=auth&status=todo", container);
+    try {
+      await waitForAssertion(() => expect(searchApiMock.search).toHaveBeenCalled());
+      const trigger = Array.from(container.querySelectorAll("button")).find(button => button.textContent?.startsWith("Filters"))!;
+      await act(async () => trigger.click());
+      const sheet = document.querySelector('[data-testid="search-filter-sheet"]')!;
+      expect(sheet).not.toBeNull();
+      const blocked = Array.from(sheet.querySelectorAll("button")).find(button => button.textContent === "Blocked")!;
+      await act(async () => blocked.click());
+      await waitForAssertion(() => {
+        expect(searchApiMock.search).toHaveBeenLastCalledWith("company-1", { q: "auth", scope: "all", limit: 20, status: ["todo", "blocked"] });
+        expect(sheet.textContent).toContain("Show 5 results");
+      });
+      const requestCount = searchApiMock.search.mock.calls.length;
+      const committedUrl = window.location.href;
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.querySelector('[data-testid="search-filter-sheet"]')).toBe(sheet);
+      expect(blocked.textContent).toBe("Заблокировано");
+      expect(blocked.getAttribute("aria-pressed")).toBe("true");
+      expect(sheet.textContent).toContain("Показать 5 результатов");
+      expect(searchApiMock.search).toHaveBeenCalledTimes(requestCount);
+      expect(window.location.href).toBe(committedUrl);
+      const cancel = Array.from(sheet.querySelectorAll("button")).find(button => button.textContent === "Отмена")!;
+      await act(async () => cancel.click());
+      expect(document.querySelector('[data-testid="search-filter-sheet"]')).toBeNull();
+      expect(window.location.href).toBe(committedUrl);
+      expect(new URL(window.location.href).searchParams.get("status")).toBe("todo");
+    } finally { await act(async () => root.unmount()); vi.unstubAllGlobals(); }
   });
 
 });
