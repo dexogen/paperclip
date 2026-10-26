@@ -267,11 +267,18 @@ The implementation is published as a draft stack:
 [foundation #1](https://github.com/dexogen/paperclip/pull/1),
 [upstream integration #2](https://github.com/dexogen/paperclip/pull/2),
 [setup and administration #3](https://github.com/dexogen/paperclip/pull/3),
-[Russian README #4](https://github.com/dexogen/paperclip/pull/4), and
-[task collections #5](https://github.com/dexogen/paperclip/pull/5).
+[Russian README #4](https://github.com/dexogen/paperclip/pull/4),
+[task collections #5](https://github.com/dexogen/paperclip/pull/5),
+[Cyrillic search #6](https://github.com/dexogen/paperclip/pull/6),
+[task details #7](https://github.com/dexogen/paperclip/pull/7),
+[task panels #8](https://github.com/dexogen/paperclip/pull/8),
+[upstream refresh #9](https://github.com/dexogen/paperclip/pull/9),
+[search controls #10](https://github.com/dexogen/paperclip/pull/10), and
+[Inbox #11](https://github.com/dexogen/paperclip/pull/11).
+The shared decision-form slice follows Inbox in the same stack.
 The canonical checkout remains on `master`. Upstream fetching is configured with
 pushing blocked. Ordinary merges preserve upstream ancestry through
-`1a3f604097d81fb653b271af4c7c3614d2b032a7`; recheck upstream before deployment.
+`6336c340411809b3a94af1f4a911b30c0275447c`; recheck upstream before deployment.
 
 PR #17546 was reviewed at its recorded head and credited in the localization guide.
 Its successful checks are provenance, not verification of this adaptation. The
@@ -281,9 +288,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 2,740 reviewed semantic families, 2,809 English
-forms, and 2,947 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 18,642.
+The current combined catalog has 3,096 reviewed semantic families, 3,191 English
+forms, and 3,381 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,356.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -474,9 +481,13 @@ passed frozen installation, full Russian-default build and full workspace
 typecheck. Its full UI run completed with 9,235 passed and one failed test across
 806 files, with no skips. The failure was an obsolete source assertion for the
 literal `Retry queued` after that caption moved to the catalog. This is a failed
-run, not a green qualification. A focused contract correction and behavioral retry
-regression are in progress. Backend and live phases did not start; process and
-database cleanup passed. A later candidate must complete those phases explicitly.
+run, not a green qualification. The focused contract correction and behavioral retry
+regression passed both complete test files (172 tests). Backend and live phases
+did not start on the original candidate; process and database cleanup passed.
+The frozen Inbox candidate `e80fc1532ce417f18c4c864f7d8ddabcc457c874` includes
+that correction and has passed frozen installation, full Russian-default build
+and full workspace typecheck. Its complete UI/backend and browser phases are
+still in progress. This is not complete runtime acceptance.
 
 ### Inbox integration
 
@@ -507,6 +518,41 @@ for the selected retry payload, success navigation, error toast and no repeated
 request during a locale change. The combined-host fixture uses real Inbox props;
 it does not establish App redirects, server permissions or a live browser journey.
 The full combined Linux and browser qualification remains pending.
+
+### Shared decision and question forms
+
+This slice adds 356 semantic families (382 English forms and 434 Russian forms)
+across ten production owners. It covers shared decision previews and results,
+interaction cards, paged questions, audience explanations, validation, image-input
+controls and local resolution errors. The secret proposal page only gains its
+justification caption. Decisions queues, the full chat/composer and remaining
+secret management are outside this slice.
+
+Helpers accept an optional translator with an English default. Error state stores
+the original cause; rendering selects the current local message without repeating
+the request. Unknown provider messages, custom action labels, question prompts,
+names and document contents stay literal. Canonical IDs, resolver policies, signed
+snapshots and submitted selections remain unchanged. Completed status changes use
+a separate message from action previews, and task cancellation does not claim to
+be irreversible.
+
+Root review examined all source changes and English/Russian pairs. Corrections
+cover operator/backlog terminology, complete sentences around names that cannot
+be declined, fractional plural forms and completed-action wording. Six exact
+exceptions describe technical verdict/action/property discriminators. The baseline
+removes 286 resolved occurrences and accepts no new debt.
+
+The final ten-file component/helper run passed 194 tests. UI typecheck and token
+gates also passed. Tests preserve dirty text, focus, selected IDs and storage across
+EN/RU/EN changes; explicit decisions send one expected payload. They also cover
+permanent denials without retry, pending uploads, literal markup-shaped names and
+plural counts including fractions. Failed fixture/expectation attempts remain
+separate from the final successful run. APIs and the rich editor are mocked in
+these component tests; they do not prove server authority or a real browser/MDX
+journey. After normal integration with Inbox, the same ten complete files passed
+194 tests again. UI typecheck, all 47 detector/sync regressions, token gates, map
+validation and the strict source/catalog audit passed. These focused checks do
+not replace the pending combined Linux and live qualification.
 
 ### Workflow activation
 

@@ -1745,6 +1745,2498 @@
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.759Z"
     },
+    "decisionForms.audience.addressed": {
+      "sourceHash": "d5847337e57033d3cac96cff506fd4e3f4355b448df6fd5ccea7a7fea0d5ad78",
+      "translationHash": "b18b2ea03fa54c0cccfbb3cc06bb3f748254fc3430e503a0e9899f67d1b9e627",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.addressedAgent": {
+      "sourceHash": "3db4a9c399e8ed707a15f5186ad65d4c3228b74be4fe60fb958d64b4240a3dd1",
+      "translationHash": "0c9f8fe2f4444e2b279105da1cd87ddf0710e77afba7b05705fd3d8b4576fb85",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.addressedUser": {
+      "sourceHash": "3bd7954471930953295f3fba05712d473c255cf658c884c7b7f0d69b832900ec",
+      "translationHash": "d3b724c2776fe1f1717264431fe62b4feafab3b8e71c3131c241971fa4c8a437",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.addresseeOrBoard": {
+      "sourceHash": "630345dabd7cf26d58a72736960d2bb6234488d47ed8efbcda58b52cdcda75aa",
+      "translationHash": "c3c5d53a84d8f42172ee12d3503d51738c9e4503ca1d8c887d90d2cd4170417d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.addresseeOrBoardShort": {
+      "sourceHash": "e21df4fe30087d0b8251db68ec6c0a0dee616f4a81819266b2fbd4790bf5f53e",
+      "translationHash": "535f9b57d20f4182cfec2c29c2eb6e13bbf59dd30c751946ed50ab42ff0c502e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.anyone": {
+      "sourceHash": "fca9160f0b07b8d59cbcaaf30d3fb7fda7314f1a61a31a30645984c13877c0a3",
+      "translationHash": "4d4d87c4365952b6d9e32e2f58c2f9efcf9504cb6b94ce9de3f886b93456e23d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.anyoneEffect": {
+      "sourceHash": "e5e98f5b9a1098a1f2249d345f48f81d6bc7a482ca049f38073bf51b6285c5c2",
+      "translationHash": "3c5e6595920eb7fe29a5d9147ea4093c04c4296fc29e3f06780a84193ae7f488",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.anyoneShort": {
+      "sourceHash": "d34fe4e853b501edac586df319d674018ad87f34c2ff7d139fd4430bd87f732a",
+      "translationHash": "2efbe493d18d0706f388efe5088aefb16eb421dfa3bc7b39617473a99a957d48",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.assignedHumanOnly": {
+      "sourceHash": "f74a700cbb446dc89aa543ee6389f5274dbb3b685b2bcd00a0ae56cc4e3485ab",
+      "translationHash": "7633b4d0219eeef7c6c36f9a0891509985a4acba367e4224860cf7c864ed8e6f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.assignedHumanOnlyShort": {
+      "sourceHash": "e99b5bbedf73f6b6d767506f7ce246f0e82635ad2d60cda6da87acc425904e03",
+      "translationHash": "1900bc9aa4e2e21f5cce467da5c61830a2bc3e5eb09512320f002e81ddbca8e9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.companyCap": {
+      "sourceHash": "1251301162f830f2511f32a2d31512fb86ba933ee147261434b1b48d4950c047",
+      "translationHash": "74bdcbdbb19a3b3b7de956f4dcf98ffd8b3acec30f541a613d4c0cb0fe1ae6ba",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.creator": {
+      "sourceHash": "c21484559fece99f2e40574b2e48277e7357eb209f783e27b8965bd06697a795",
+      "translationHash": "edd38f82b8b9757278fb048abec689b436a1ced1a338a377867ffd4c21c91278",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.exceptCreator": {
+      "sourceHash": "47b9459b9466b2944fcbf34295a26f0919092bd4a60c08e49e0bb2bd64f9737a",
+      "translationHash": "de5e6a965f9a4a47f43b881b08ed775635b5b9fe34ca48ff95e22eae7f9cef96",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.exceptCreatorShort": {
+      "sourceHash": "b966db89bf15a6fd053f5b98d571cb486ae68998ee017e5ec44039b82f50d852",
+      "translationHash": "9b93eac0ffa4e670bfdf881523db9c7fb8680160b095dc880f5b4b39e08776df",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.governedAction": {
+      "sourceHash": "6c89e43e16379480ac7db7f0e957dc12b774fd4e6558f92360084f5b577f7807",
+      "translationHash": "3099ad5b71045dd05fd04812c352da3acea05b8b7340fd436858642d637bfde2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.humanOnly": {
+      "sourceHash": "e0b2089f18c8aac1aee60342faf8f72bf4fbc934d04aaaacc8b2d0fe73ebb98a",
+      "translationHash": "9c347eae18ab890870fed3f702a47c1472910d02dd606e3483366b71c515073a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.humanOnlyEffect": {
+      "sourceHash": "ca6e85e00ccc792cddf83902cc135dbf9dd4138a8d6d99045ede214d584385b5",
+      "translationHash": "0a98d9f42fe13db9f0ffdcab004ee499769dc41728ea9018bb776596d95654fb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.humanOnlyShort": {
+      "sourceHash": "8ef5f25b37966d829f52e4021a1df00946f08bbc3bce09ba2cc8cc7cdc4a9a7f",
+      "translationHash": "e79c4e0053324c3685b9eeebb2722e46b0554275ad85d79f9ce4a7b7d314daf4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.humanOnlySummary": {
+      "sourceHash": "b8cd4ccb5a4721c8d134cff53bb1e416702f275fe792b198f26e969e7392fc27",
+      "translationHash": "db7576640bb8f59ffe206b9d271ec7167c85667e76e9f1d5b030dc8f61b98737",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.503Z"
+    },
+    "decisionForms.audience.legacyRestriction": {
+      "sourceHash": "e8b487d7a4841842eb82902a2c0919e38f864a0d98b69e50c9bf05e3f467772c",
+      "translationHash": "e353d7db75d0d227bc4c2b1586a79eee44b2fc5386a8c6d95d61e6ec9942ed66",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.audience.notCreator": {
+      "sourceHash": "d1ec424f058131e68695023237a015b6aac1e625318f7b695e270a65675a8543",
+      "translationHash": "042aaf61f9dbf13e11b8b8b81ec744b41f6d1163b376a1bb9f39142a3d8ac515",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.audience.notCreatorEffect": {
+      "sourceHash": "c35de94773c300cccb6ba0ddd93e1ba2e0c3c41b42d341d7c03a1251375ad4b6",
+      "translationHash": "880a27ddacac3ab70a7faad5fcc836f0fcee7c628e96dc683894379d86b6d135",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.audience.onlyAddressee": {
+      "sourceHash": "6d78393ec316d457fd4e1cd250a8b6c35bc09b42c9d911f575099b3c4a86dc22",
+      "translationHash": "e28e604e68d54b76b87ee3c14a1d60c9e0d36a22cfe9cd1ce9c00d2c7b02ad7b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.audience.onlyAddresseeShort": {
+      "sourceHash": "7183b2f76fea0b3739d5811353d396a61c84b8c49ac3d9407058cc7c4b32ba2b",
+      "translationHash": "df46c70251820696e1c4a66a9d68a8d3acfd7864be4971f7d9624f5edb6085aa",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.accepted": {
+      "sourceHash": "e6ba4fc4ea5694669ebb4900fa2b6b80ceb56971ef28b436640d32e53bed4b77",
+      "translationHash": "f0b1fe44ad06cb09ab4c77d4654517288170421db98021dafbafba908cf522c0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.addressedPerson": {
+      "sourceHash": "a14e6193dc7f137907978abfb665e079a9283f1ab45b447bfd9fc176ddac8b24",
+      "translationHash": "46a39cc655be4fefa0ec2c737ca6d515470936b85edf5ff5dfb94900ace3db89",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.agent": {
+      "sourceHash": "7692cf2b3a0e4bb876b6babbc597b8157732a5890f8acc5398841c056d374a4a",
+      "translationHash": "2a91fea358035d7832866c1dfa5bcdc169fa52dd7b5452536537ca8210e2b195",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.agentCapital": {
+      "sourceHash": "201b992b19b8b310c776698fd00fd318dc6305344c1c30e33891da6ebf478436",
+      "translationHash": "fc49ff874a4643ccae320c60fbb43266286224e126355c03781fa252cb41ce9d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.anAgent": {
+      "sourceHash": "cb81d59da2e7509c86a511e43123f93f2711c90e8b144a830efa640ab16ad2f3",
+      "translationHash": "148e9f0f636f4b56ceca42cca69fc8bc8914b7b5c437337f500270e9ba1e1a3d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.answered": {
+      "sourceHash": "d69faba1d2458e98a24fbba1d07f367ed46ed87ab0330754630b147a034f18e6",
+      "translationHash": "b2613946483364a4d9944bebeb21319a19cb019a66db1e61e2be56d9d46e9e85",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.approve": {
+      "sourceHash": "6274f72f1996b082640d8d915020011c3fad67862be14441967ff91a5c9cf2e7",
+      "translationHash": "63d5a006ee43a44ea175f4720a6ab85de180740a0f9ff63c36ad95d54e804ec3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.approved": {
+      "sourceHash": "b1e1ffdc400e02a641ccade673229f7f5a590853d6cec77cf79d6e2fd1814c5f",
+      "translationHash": "9fe65910a05d6330fa2027a45c40ec73a0eb774fe96bcce0ab624d5621bafffc",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.approving": {
+      "sourceHash": "71d359a2826b058953f2f79e0811b75144cfafbb1a07d7193d0ba7ae091c692f",
+      "translationHash": "779c5aadc7e65af3a02ce9a2feb6a3470fa7f4fe0c4a3e9a13d9bc2e4c39f7bf",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.board": {
+      "sourceHash": "6e1b34441aa68432e89626eaab85e5dceba9f69a77583dd27ccf3b546815acda",
+      "translationHash": "bb219bc5988a82607f9e61dfea75e05dfec44f442e26b610ebb51764c349f49f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.cancel": {
+      "sourceHash": "c81ffeb0a36b7d93bf4521a826fd6cb7daac677ddae3eb279be3371ada83dba4",
+      "translationHash": "8081cf1ebd7255395ddbfe866a5c8bc45c9fe534b8333668d57e16d41aa29b39",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.cancelled": {
+      "sourceHash": "e5497d97caec53b26b8400a19940ba3dfb30d7ea81ec899e0feba0897b8dc016",
+      "translationHash": "45a72132bf09fda8de19b0c9ffb2e41d89a6c57dfabc8423d16a86b885f245b2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.confirmed": {
+      "sourceHash": "1eb6aef4a6df66db17ffd8fcc9cbd1ec5ea04785fd2b37efe0120b4ee4bd6570",
+      "translationHash": "4362f26dc33a7b21c1f21b4eb0241386bbfd3b785335dffb3baea7bd5e01d600",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.declined": {
+      "sourceHash": "ae92b3f9ef23690a08edf4027442183a66e4c5e5e6292d226530b35d2ca815ad",
+      "translationHash": "a731c2a2e9a4bcd6f59441a9eefaa58c95155a81125fe9d5e16d3164d8fedddf",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.expired": {
+      "sourceHash": "b66329a07120ac6c095db2e385bff4f229ef074903b021c7440652e7c58c2d20",
+      "translationHash": "0109693b4e9d8689448ce05b75511985c30c11e4bb5e3fb0e3c7a8c5893914d3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.failed": {
+      "sourceHash": "544d5cf99a0a98775a6e79bfa59ca425c98ff473cfb66849d3ff196bb104d1e4",
+      "translationHash": "5fc789134423733fd7f6330a3d050273c633e49e237df5771c9385a2a88a1390",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.jumpComment": {
+      "sourceHash": "c15c68ebd29b62d8049eb4c4c3f8ee7a1dca7bec7a6c67eb9274810779d8ff5b",
+      "translationHash": "1f08aae1e34ca82d4a3832b98ab9af5539c3afb935f59ae0781362aa66e4f80a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.justification": {
+      "sourceHash": "5a6f35393f6dccec03d15ddcecf3777e9f86d622e7c89a465d581e01b53164f8",
+      "translationHash": "18d4dd689b167c4328b66c8264ffd406d904959fbf90caf22e06c6daff640bc4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.loadingDecision": {
+      "sourceHash": "7bea4c6b88738aefcb4aca4a229f42bf2732b2460376151c22cdfbbb10355ec8",
+      "translationHash": "5da8adf3efade0b5b068af15d84483a459d2c2b7f0e8a49136444e9de3627354",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.noAnswer": {
+      "sourceHash": "0ab3d7943fcd853ddce35c54b6b7b69ccb1360da7cbd5f3dd2b1999e2f35c4c8",
+      "translationHash": "7d7bddeaacac08ba654fa774ad19abd5a7d0a30bef2684220ea4ac92e19b8ee8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.noReason": {
+      "sourceHash": "53031b864019c1968ce1092b69a9e5e8d5339c7514862c58f0e32abbab545fc1",
+      "translationHash": "5238b8eade5d9831949d42e4210405387ba3d675516642fc49716e2aec346429",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.notNow": {
+      "sourceHash": "b4a1cebe242800cd6f648f7d49e83487bde2b913b566ba9b0304438ef12dd5ce",
+      "translationHash": "db18105952e281c8a25a64b20ea48417f19141ecc9c128a0bd349882f6222a99",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.other": {
+      "sourceHash": "c782d5a72c4a4fccf54268ff41137e5fb7721e5271e8f380b0179f7cec082fe4",
+      "translationHash": "309c05d9aeb09f2a57be88874087be13c308e9be07824bd14adfc60a32e96f9f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.pending": {
+      "sourceHash": "d43b8dc9da6f13e959871decdaba8dcdb607ea5ba663d0da3e7b442187038fe2",
+      "translationHash": "4c855aa0e66e2233813614d40867791e2ebb274ac4c00f1ed6657ebe9a3a0a4e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.plan": {
+      "sourceHash": "886531c438844efa0b7c4531132c5ad95f4832f8895b7a3f635bece3939a05e0",
+      "translationHash": "9e72e05ea53c8b9e56f570f3a5121ceb9cb9b854174da0d4271eb27d8d7c23a1",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.preparing": {
+      "sourceHash": "988262b08124cd14a86a2714a9216d8c02ece2c474601ad129cbfca90b1f5363",
+      "translationHash": "bce74490c7e0012916da036750b8335cd1b7d2bf91a51f5589c0ddbc54127f64",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.reason": {
+      "sourceHash": "e6447e9cf205fe38ee47391175206c7b60df0ac889ac59d9583a0644e51e3936",
+      "translationHash": "03b982b841b7f787d6c87dc76b4c000e0f8ec3e3312d2fd396162ecbf72920bb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.reject": {
+      "sourceHash": "43cc33662bc9c353686641f085bfa382ea1ba2cf9609ea2b4c475b191d5445af",
+      "translationHash": "6c233efc598727b7d291500854b5d9d6c7612d397f9dee5114e42690ff8a134d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.rejected": {
+      "sourceHash": "b5cb3eb52489d4b3b5c9c1f70081f725b939ba217138cb28ae234042276729c3",
+      "translationHash": "eb8094fcc937159e99defbebd55c32140825667dfa4c897b1511d396b4a60510",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.rejecting": {
+      "sourceHash": "2dc724a54f2a110188c6274f1d6c4749a04ea00e310e13947e1cb6d2b56c694f",
+      "translationHash": "b22a659a163c4ed452d2dc4c510b6d31f2f87e28b079409fd0c129b9dcf9bfd7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.requestFailed": {
+      "sourceHash": "d69a4dca0bb1311005519ae98d3b8facbcbfcb8ae8b3bbfb89ac58ac19f5df5e",
+      "translationHash": "7c9b42dd0941378a25b0d3c0d1a3ad6bde6505ca336296500b211402d87d7fe0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.revise": {
+      "sourceHash": "328eafadf222f045f98220530a04d0d15c4dc127a900c4f3e16ebebb23b4f1ef",
+      "translationHash": "82e3d498b537c8008caecde9f729a804d2b6d6dfa0932569470d4d1b3dae38a0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.504Z"
+    },
+    "decisionForms.common.saving": {
+      "sourceHash": "143e3d1eb8498267f84a585c00afb59a7838ae6ec89020ad5bd22fc50d6b32cc",
+      "translationHash": "c2bdab317d27082a67ad36135782dea0a455b09923a572c17d65cd044729afd2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.savingDots": {
+      "sourceHash": "c111a2d4c5a09b7c11d23de92db28a6897e356920f1e4c36ee0b2b2522246667",
+      "translationHash": "cb453e2e0bf9fc0d5c4e3763609f73bc4bb1417ff29a98ec5e1b65e8bc900955",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.sending": {
+      "sourceHash": "f5b4d1c1a662b4f6c76bf51b9de838ae1088fc2c5437b73c7b18158dbd9d3686",
+      "translationHash": "a6e03f007154837e29e63a4002c649df9fcc1efc4ec82878639cee43f68b9696",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.submitAnswers": {
+      "sourceHash": "9c77e6dc0ba22dd0bf924d3c306e8599c11b956bec67869a3632e60dd193a501",
+      "translationHash": "9d72c06c78f09dea1c69a761ed47193de895ffea4bdb5934c9a33c44df4303a5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.theAgent": {
+      "sourceHash": "9d41360c32105990d709ed5158e8d34602f47ff0ab5e1d3252f1c2e66a8d20ac",
+      "translationHash": "b126a4e62a754e47e66fec637665db777b9aee4490bccdb1789a4f165d365f2c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.theAgentCapital": {
+      "sourceHash": "370529bedef670968dce483105be64a2ddd38a012a703a355f4496bccb0bd0bf",
+      "translationHash": "6033528c04abf87f98ccbb80110b6b9cec5fcac812b2a32d0700627cc38b3313",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.theBoard": {
+      "sourceHash": "bad053075fb47e8e91ca977518ab9ff422cf9f2f16bc8fe4852ee4b6682279fa",
+      "translationHash": "0519d2e1ecb183f4e22ed50198395914148bd4703176c2a77cd8475a870105ea",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.typeAnswer": {
+      "sourceHash": "c9d526cfb89bb4d29858655435750bcd38e8c5281b0aad92c6c5f6f032dc15e0",
+      "translationHash": "59241a6bf781646c3009d917b8aa0a9d56941e4031be1a5b325b18d1c2a071e9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.unavailableDecision": {
+      "sourceHash": "7c1aa682b902cae48648ed1d91d36aa885bd8d9b492aca4afcd36f924fb07112",
+      "translationHash": "37f5c396a3320504763b36985b91ffaace9a81400aeaf5c158034c69a90407ea",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.unknown": {
+      "sourceHash": "966c7b8082f9dabbe72266d05d02c48d831e431b323b16a3dbe3bdf88b929aa2",
+      "translationHash": "059da97fac3405647b0283c367655733516287c3107844b081d44f458db7d23f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.common.withdrawn": {
+      "sourceHash": "c0fda9b392b8e772221200192fc20122ace711449aa516d04aa5d03ceeef54da",
+      "translationHash": "82b4e4e99c94d3c09f682bddf7ed71e8f43622cef1a1838dd294f1610ddcfac5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.appliedEffect": {
+      "sourceHash": "841d4febd94624fde03e0140cab181150f68bd7afb98650afd629071ec469c7a",
+      "translationHash": "f540843562b2b7209705e1f21b4cf14f8ec655944d8d12e1adabc0285a6c4375",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.appliesTo": {
+      "sourceHash": "c51e9f9f326ed9643aef0c1310734da2e1d1806d696541ca30c6a0ccb9e24f2e",
+      "translationHash": "043fd67ce17354681783fcb92e5f9ef8af2cbeb0034c6e3e7103552ec48632f9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.applyEffect": {
+      "sourceHash": "b7e7ed4516c0dfe240503cd1eacf644e6b2037629282f7fd3176a053b36f7572",
+      "translationHash": "2fa437393411b1d11bd08f6f13ab77c284b662c980416453740526d69d858434",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.blockedStale": {
+      "sourceHash": "a85f4b3dfe444d9942567b443f9f2dc171095c9e10929ebd4ac0d1f714a6e58a",
+      "translationHash": "0a9f57f249cc774272e4d99bf506e3f5f9f975cad7e4cd7d09b2fffdc6413fd8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelDescendants": {
+      "sourceHash": "c39032e9819badd4045bb328bc63b335656c44fca4042ecb16df6a1c79a8d12c",
+      "translationHash": "f81ed74649c1ccc6e9a62c5bbf93e273f14e630e75cdc0347162940e5ace0960",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelEntireTree": {
+      "sourceHash": "cc9e34845f0bfbb233ce7ba86b26a117d16b4bebb9496e473c2e9d71be5bbf57",
+      "translationHash": "454a083c29b0960d6ed3c6c983aeb3c9302ba3f3213cd55f384e59c48e949d8e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelIssues": {
+      "sourceHash": "1ef1fbf3d4baa17735ad1cbda9755590d9bd7b7630cab274b9429f9d6d9fb1da",
+      "translationHash": "b2614b0d1f520aa4aab8c4c60bb26ab0a3ce94a32b433d402f920987a620b4e3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelledIssues": {
+      "sourceHash": "8a508c144b39b084ec35b70cc394e745aa5e64bcb0abbd7250a939a2165d622a",
+      "translationHash": "f6eed4c614fc33eb6781603a4b5d4cb3765f397020b9e8848b9cb840f721dbe7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelTree": {
+      "sourceHash": "c42dbb4e3b7d2e4ae8e69dc47ff0761cee658e800544808a13fc5da3a6a5575a",
+      "translationHash": "0a24b4883dde2f45f2aa6d339515f0a45788974f7f4a1f65922dfbf4a73b1418",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.cancelTreeEffect": {
+      "sourceHash": "3725142f59f6491a93be21b1a6f28a08859c9454d04549dc8e043a92dafacb2c",
+      "translationHash": "4ea038e560ee6f38d393fd6486f3f9a3abdcf95ec210f653a5a1a404c248a998",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.commentedOn": {
+      "sourceHash": "93bfcef61e181691914cd036b4e101d8a78b5f6f6830da979fd9431867a98ae6",
+      "translationHash": "a44534dc6a754b095a1421a04637650deda7683fc050ddd31f73db4591a3685b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.commentOn": {
+      "sourceHash": "a8a29b1228e35324731a54c6fe092cbca06482601d1cfe5170bfad26ad422980",
+      "translationHash": "fb56eea47bc10522e6896d0a43c2d7164b5d6c21c33492805deb9e091c80e0c6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.confirmIdentifier": {
+      "sourceHash": "50703bcf8595a53872033690e4fda706cc48ed4e8ede06b98a333262f9f8fa87",
+      "translationHash": "970a35bdd370897d9eaed1056c87a869ffe471f9c20e909222c645fd6cc86f24",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.created": {
+      "sourceHash": "b15def940b9c53d58476665bf6ad971d424c1827aa894ff6640d6345fe71122a",
+      "translationHash": "f320022d65ddcb13c80ac26f7d632b7c197459c8a8d5fc565b889e0200102c71",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.createIssue": {
+      "sourceHash": "40c03aa825b345da36e63023a1167147fe89a188576945f575f26910380e86d2",
+      "translationHash": "46b48db20b29676b92ce16aa07592b79c8528f0023c7235b98e58e307fbe739f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.decided": {
+      "sourceHash": "d12beac46296f23325e045afc5512da90f77053cef3735f9336ce5e18e5bc097",
+      "translationHash": "588505197fe9d999982c02c8f299747b2da13f62865c84245f54285ccbb3ad03",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.destructive": {
+      "sourceHash": "7ad45da565407a10ab2b465a6ee1384239546ff8a7f5f2920e471cb8a7b4fa78",
+      "translationHash": "1cc467f057e947bb671feca4fd6db9758c1f904c6b7ccc2a2e96974ed3eac331",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.dismissed": {
+      "sourceHash": "31a6598ffc78f389bb322ee966ca3df2de5549865f40e27a976e3b93be427435",
+      "translationHash": "7ffefd5abfa59486b80912fe65cc3a7f83b40394f72c12c1802200c78dbd93f2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.dismissNoEffects": {
+      "sourceHash": "c8f294c56891f60c02aa769c855ef42b3527dd1a8ccd0d2780acb7798f177844",
+      "translationHash": "bbf7d741ce4152e94140d1400b298ec5426ffcaa15c864778fb29453405f3f6e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.effectCouldNotRun": {
+      "sourceHash": "b05c8f84172f36a93c840a3cc9e18a07c292bde2e43770fd95c8fd2ed6d31b58",
+      "translationHash": "57492d87fd6537cb397954eefe103bf1cf35761e5b450ff9d58e3ef7f88dd3fe",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.effectFailed": {
+      "sourceHash": "5e6c40449a8568e604a73cd24fb534657bdd7af3f3f66b8e78bce5d5ab007322",
+      "translationHash": "0d1efcca1c64b89828d64d86e58d5d43ad3a58599b0397e78c96aed554300a8e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.expiredDeadline": {
+      "sourceHash": "670d69711fb0825a6628aee90e6897480eda2fdb1198aaa175806b0f28aaf6e5",
+      "translationHash": "a1ba7c8358b213fddb47788840d71421a2d3efa94539e5ef078916c9b094e21a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.expiredTargetCompleted": {
+      "sourceHash": "9b070791b5bfb627ec21d0defbbb54311c23acefaea4d4e73f7a0b582c4acc0a",
+      "translationHash": "9276aca5bc1ce93ece4f46200b2746d21aa9a988187704b66f62a1d1ca0682d8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.expiredTargetGone": {
+      "sourceHash": "522802ed942389e2beda4cc40294e72c1eecb6fe349bd89e13f25a82f65d31ec",
+      "translationHash": "335fe94c7af4fa3d43a63884079d60cfabf406230b81305a67a790592ba00ecd",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.failedOn": {
+      "sourceHash": "6ed5b7eb0dec5784ab67d60609ce4d6481abbcf3f84956505838bb2f619a069c",
+      "translationHash": "ebfdbd38a1c052d605a013e26ebeb926be1493251b2185cce59b238f3acb1e8f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.issueFallback": {
+      "sourceHash": "fcb3c6c100b8faa1c18a5758f34354c7f3bb492faaa4c3026c94f79dcd254ea1",
+      "translationHash": "6465176cd3d0b2c9782c4164e70336dd94be6f07dfd7646dceec47f31ded98e6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.missingIssue": {
+      "sourceHash": "a0111ca0f8cab8b4b76940c120252e376e79ae2211de86169fcef25aeadf40e4",
+      "translationHash": "6c68e289caa3ac3f2d3dcf39612d77bee2d16ddf94dcc17e4e0273ff154ea256",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.newIssue": {
+      "sourceHash": "4a98cacbe4a67af3174ba905c136ad0088ef5803ada59b4ebd0931fc2e107f74",
+      "translationHash": "786babe20a55fda7707b4912bdd0b6980f09801b6ce0e6dd59c25d59e8b52cbb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.noEffectsRun": {
+      "sourceHash": "08545d1aadcf3f7baf41c1404547af4c26b0122ad0fbdca830d172d47516b3e4",
+      "translationHash": "56c8baba34c884381dade6818bcb007f354c21c1ef91dcde9e5f2086377f718d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.notNowQuestion": {
+      "sourceHash": "41f7ba790f7d6b617cf7d15d15a487f60a50fd0ae8ff1b1d9e75dc4c38eea06e",
+      "translationHash": "daf97d597f9c275c10fa56b6c412a78e4a1b6f6f1a3e20f8e86a2b990b3e7a25",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.partial": {
+      "sourceHash": "cd8558da93e5b8717ae1b3d73a0440f89e1fce1229e7434baa3f58a8825a446a",
+      "translationHash": "8bf0dfc32ebff9af2a4274955945fc75b818669ba237d8b6d9d803f3389c781d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.partialWarning": {
+      "sourceHash": "7c34cd297e0ea1f196b0ca176821a447646856fca5708147927361def53c2621",
+      "translationHash": "19e7014ee3c6ae4772cc7508d216b658b05038ddb05413a4757019098fa9de91",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.permissionBoundary": {
+      "sourceHash": "d3e7d9d10aa161122e5f689f52bbe967835705ab7191d1a61b3d6a090898d65a",
+      "translationHash": "3a5bc1663d121e9eef78dd93f71647f0a58ec5670259c5525550ba0a9afaef55",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.proposedBy": {
+      "sourceHash": "51141ad533c35f1bf1e7c20250614bfdfaeee0a80d92432840dc23820b466d9a",
+      "translationHash": "8e6374fd2efda4c1cbce12d5fbc3efdc8b8192445c7e1486a956c8e68d190b27",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.proposerWoken": {
+      "sourceHash": "04be625932cb1c45273d4a01fc1a6d5bc3e60459072297f28030ed12b9322ef9",
+      "translationHash": "952e4639b5e16ea6888ed9517fe0494c8a4189c5d3f123f60d8cdc60497b2a65",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.reassign": {
+      "sourceHash": "3a0fe5aeb810b37ca7d569a5ee9ef566a714ea7bc40330a3bdfa2e7ea6397f8a",
+      "translationHash": "105bc9daec31717d3e42b920275460c43597df8dab6d500fd71544960225c954",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.reassigned": {
+      "sourceHash": "0d91fe4c74cf1f8fb2ddf1ce89442cadbd72b3053c65bb8f0de3c51eb47efd39",
+      "translationHash": "fa8053f322beaa851503499789e5f9fce9ee514cb0ca119c65d6de76b45d328d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.removedBlockers": {
+      "sourceHash": "cc70b9693da961b2ed41d6e93052782f65be53e52576e8f7ebf9d4b7b517212b",
+      "translationHash": "ab8afb9cb4895331ce57af8d356e7004a40b91acfa95caa4f83788b3e6b7113b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.runningOn": {
+      "sourceHash": "70aaa6336437915afb44701b4cce97d34045031789baeb6972399799c6fbe2e2",
+      "translationHash": "cd0b781278b34f8cec678aee6dfb2a3d493e5b798276f8a35121e54712c3e8b1",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.setStatus": {
+      "sourceHash": "14686c6f3dad5fd7622e822328403d3ab9acd7222087bbb984cb784d098554b7",
+      "translationHash": "43c7d4eeebc85652ba425e1d65e8740a638716f998a972f9daf9e3cd86418e08",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.skipped": {
+      "sourceHash": "80a1ca1fe4231349974d79e606ac330945b078b7e9aa2a14d297d7de45a405b8",
+      "translationHash": "c7806606df9bbb50b62ae417fb702891527a1f2b5d6ad27c88e01d0531fcc770",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.staleOptions": {
+      "sourceHash": "32966107babdb5b3bf9d34b6329bf178483c41a7f092de439ecb13135c502a41",
+      "translationHash": "2732aefa55a066f2b6a34c4f2450ef4bf8e096fad6aa657d5c12c852d53f85ef",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.staleTargets": {
+      "sourceHash": "920aafda77fe4118590a2ade55731d644762b6e26dc0e89cef2c0c2e476cbb25",
+      "translationHash": "c1cc17957dc548e6a5663505db5e36c56a518b663ad5c504e335a26671eaa16d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.backlog": {
+      "sourceHash": "b10d133296b36146eba0f8bb4fb743453d43774491f7b491ea5a127c9715ba1b",
+      "translationHash": "3023c3222a37e5ef8645e32e9e12a8d0f5832f32a27a19c53883042d25394496",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.blocked": {
+      "sourceHash": "4fbe1a56b08164d82e9c49893cf1e885948859a01809b9903c8edbcbfc74b82e",
+      "translationHash": "7192871f44ec11e7e388c6a88b86f31f8ee1730ede4d9e18f0ecad4727e5fe66",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.cancelled": {
+      "sourceHash": "ce463335a2b17c241bf912b579aba51ecfcfd05872d5d8bc1215c205b4039ec0",
+      "translationHash": "72c3d2bc903a8a43729aaebccb87962822b67e8c2bf3f9e8a3b61d8b42562dbc",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.done": {
+      "sourceHash": "6f7fcf644784f45a3d1c7b7e4f72e7cb0ec79cffe009a9ae1b06e70c55329eaf",
+      "translationHash": "38e8af5226eb7a64ad0bc9c2d5b27da801648bcffc4fe5aa748b90b0465d1933",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.inProgress": {
+      "sourceHash": "debeee8078334d2a40df8370e5be2b8ba56dc925af24693abd108ff3b81ffac7",
+      "translationHash": "3a4d20e7d6765006b24bd30415e443251d7cb6c42ebe7c5e1d37703486df94e5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.inReview": {
+      "sourceHash": "fb7ef5979fa5b33ec8d16bef623a610c0d064f26a9753369775dbb5fdc4b74dd",
+      "translationHash": "c97cc68580999777feb4d7b97b743f9adc4c52a963ca5df42ee3091c95f69971",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.status.todo": {
+      "sourceHash": "e639938d666e8db1d9287cae0faea5dd5f2253b343ae4c7e5aa9d6a36e3c2c50",
+      "translationHash": "a89db2273a92e1fd6ff892de2e09711e4a4cc45448bcdcfbaf1a7025e88a88c1",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.statusSet": {
+      "sourceHash": "48a8fd07ec81aeb6de472950154b9a68c68345aa2f5fdccd2a056447f25d72de",
+      "translationHash": "383c4edc54e75855abda196b229cd208cf33776fe4cbe268ef541b849436b1a9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.targetChanged": {
+      "sourceHash": "4b5849194bda66fb78c2aedcd8d2a4b0b7de32e25bb17648be4abc47134b5b08",
+      "translationHash": "ae1db7610eb63d1cf4766e70c1227c3986ab39dd91147f71199da79667f7cd2e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.typeToken": {
+      "sourceHash": "9e8a586c48eeda39ecbaa583ed32e26c2d7b9bc4d95c3dbe6ea8fcb452098225",
+      "translationHash": "21826739f2e5ae88b9c630fd3f9ebecf85a9f68a1bfeb176202e6ab0553bb754",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.unblock": {
+      "sourceHash": "17121552055ce686e8c644bc9e611701479f2ecbe82eaf80bc837c48af45de1b",
+      "translationHash": "f115896bbc302191fffc8a43110d49d8ea7a5549f2226548f698e3e9d21cea1e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.unknownStatus": {
+      "sourceHash": "05dbc334d942e477fad971557863419fbca5370d38b6f4c01895a469f6e8e85d",
+      "translationHash": "7904d087db141ca5f890d1ca625d7986f47c13ecd06a9737b372e09695aeee20",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.viewRun": {
+      "sourceHash": "5213f88e2042811adbe152ca5bbed952f9c27b58093255d59d06df35181536b5",
+      "translationHash": "fed94e1bf1e32a4ee55f7614f0eacac06a2254d12ab6f03f83d799f6f5c5f45b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.whileRunning": {
+      "sourceHash": "b6b711d8f840b3a972ddc4d1702f2f95d0634286e4be4167d09f009804b269fb",
+      "translationHash": "298516810ec1f28edce8b6ddd16d011645a3901e3831f723e471ad014939bf09",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.willCancel": {
+      "sourceHash": "b302497cbc906e185f390a2709bc8d1fdd46fcb2ec9b93dfeecb20b397688f2f",
+      "translationHash": "fd3b4f31e4fc163b58c93192bfa0cd224320f6d9f2971257d6f591b8a99a469d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.windowClosed": {
+      "sourceHash": "12ec92d2a46b7b0d54f039467798c296e2d0e93e204e77b16fd5872361d4455d",
+      "translationHash": "b897b59201e7c32b5e582f6dba744bafd5230b1fb215d1c36e451848efa25669",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.decision.withdrawn": {
+      "sourceHash": "0ab4773d04e6342e0c0fdcf8c40103991ec89e10b42ced14e98c9bc5c257901d",
+      "translationHash": "6632d8ac6082690dc0e1314c9e5a9348d3dd351065973a67f1fe4ddecddce034",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.errors.audienceDenied": {
+      "sourceHash": "769ce5bfa2c4dbaff20f4eeac2215f53cf890670095fb88d20026b852392c143",
+      "translationHash": "64d6e245cbb304550b85bd090b8eb982d40a796c2a5f631c2f976eb082bbfc46",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.errors.permissionDenied": {
+      "sourceHash": "703915244b15b4168dbf1de10d5b98bc1c3fdfe8b2ae099e9a20a08960136fb1",
+      "translationHash": "9da173d32acd799ca74f2c6598d2ae20fd6830f3bfb708714aa88955a2f6418d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.errors.retryReason": {
+      "sourceHash": "dec4334f728cf2bd87b6f7c96200a5721bdb9654edcfa769117762354bcd8012",
+      "translationHash": "4ae8735f204e0f27576e184f566970652f013d8c20737238d5d490d273aea6bb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.505Z"
+    },
+    "decisionForms.errors.settled": {
+      "sourceHash": "a5b47498289fe6b80aa1d841b9f094dbe9b517c0cbf9641d42d74e2e475b75c4",
+      "translationHash": "40c677e221f34176807a6b8e12296ed7c81eefe174e3bbd4e6698c7410cc87fd",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.errors.submitFailed": {
+      "sourceHash": "5785866d5f709c1d07ee091c7c633ea6aeee74ae8084678edc34a0f398c1f473",
+      "translationHash": "6fe1c502d21f4801fca55dba1a78651fd060e02c99e6498b8d3b7952fb688986",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.acceptDrafts": {
+      "sourceHash": "7e1f839d431b2125e2de2bf11a9d34581b23c3fdbc47b572e109d3c2d0ad8942",
+      "translationHash": "3a8e3f48337379b15a5f5bfad79d09a4dbc3de0823ccb3360882ea686c2f5245",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.accepting": {
+      "sourceHash": "696b36d0077cd6b6164d756b758dee199e772f2bff466831fd67d04a92f4eec2",
+      "translationHash": "c598ce217881e9824e2acb6f06c94599ca28e424837cd5920f8d66475582ffe5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.acceptSelectedDrafts": {
+      "sourceHash": "b235fab9a76f15a79999610b190bf590356c71a882a436b4f8518dca17fad6a2",
+      "translationHash": "932d9ac6fc7fec6db38a717b110dce37b93a33973a69bab19940a0e64f61253f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.actionIncomplete": {
+      "sourceHash": "ec33cb0e6287424a8097eb95a9a39138c03b07aaca0f0e00a5ff4802d16327dd",
+      "translationHash": "9be145b38545a3b51a0e83f172622887ff7928cce45239970240439136b2a5c4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.actionRequired": {
+      "sourceHash": "e5a70472999d996dc7be15f66772df5ac2abf3a3ac4ca6d1e575e1d5416e664f",
+      "translationHash": "92b6df4be44dbbd47d94addf33093afbbc6f4c57cea628d8e73e56cbeb322ef8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.addReason": {
+      "sourceHash": "eaa4dcb2695abe97f1ede8416e5d1cc2a4fbc3e59720be195158bc6043977063",
+      "translationHash": "a62f40be12d128c9db7bfbdf2d01496d8a1ac2914afd78a777f020c798d25674",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.agentResolutionGovernance": {
+      "sourceHash": "1d627f1eb2968f410309729b49795030561334ba927fe458c7308ddaf9ed55a0",
+      "translationHash": "e2eea235e58c6ad8e8b5c13f746a1703e29ed16930ce9d9756420dcb62707dd0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.allDraftsSelected": {
+      "sourceHash": "f7d68782af4ea468fee3421367230b5f4941e95a025b569df4254eeeba9137c0",
+      "translationHash": "7b8b6b93e9ca508eb7647409b3109a088d0c41cba044d9ca1cfe263bc59fe8e0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.allOptionsSelected": {
+      "sourceHash": "3ab036b10536195dab74d163946fefd379408f40e6ba8e8209e896f87f4a8b64",
+      "translationHash": "aff368f50f7fcde0326f1b7d525b4bf09c93a3789cf3bfe446fe51ee01a90417",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.alwaysAllow": {
+      "sourceHash": "4febb93e99e9f029a6dd94fb219f53f4213d1d51940531cecc75cdf5038df896",
+      "translationHash": "977633ade18f43a80a15064ded3a0ef9dd409954353b66d95d92c922c720e288",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.alwaysAllowed": {
+      "sourceHash": "f6b51f2bb41cc89d678b549e69fac71416d3c103374f4ab9ee331b80178fd181",
+      "translationHash": "25176ef0524d062a4ccdccd8ea5d999c343e340abda12e44e19a4b8ad02b40a6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.answer": {
+      "sourceHash": "a4e929cd3043e624296ec765a41fd724dfc8e167073c8eaae433de0106aa7e09",
+      "translationHash": "332ab21bcc1ea9cec2f2d23a65d632bcf0a3131263dbd73f7e765be6f785ac97",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.applyDecisions": {
+      "sourceHash": "68c6eca765c28cedd0034d89392e907d2fc356c37fd49aabd8334b969de305b8",
+      "translationHash": "7d1fdfb7ba7917be2e9dd44b82c58cce1235830e65452cf9201e878d6be0ea3d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.applying": {
+      "sourceHash": "134b8104e7aa13549d62efe10bcb79dafbc6679fb9608d46f941eb26042b1c88",
+      "translationHash": "9387c7844c973c6b2ab407c1a9931431f3d8f2b75c5914174dc3168a25723b5a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approvalOptions": {
+      "sourceHash": "300a14b0a942392e9ec81275b89ea7589cae72f910ce71300fca92fbe2f68807",
+      "translationHash": "60e7a28c8200ff9f15d4b02de28cb9a39998a3035005fe8bb249e4a8d839add3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approveAll": {
+      "sourceHash": "41daf569f77ea05b89b801624f121cf478e103d1b574eb95a6481d0e9c8d9987",
+      "translationHash": "50d5e5501781de7a418597bb2d31b160c1d173fdbb5922ee80c071162b6ca0fe",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approveBind": {
+      "sourceHash": "54871f6cd4fc7d8a3f43e1adffb3a2358f72ff0b342b6b0fb8b7b84b48d72855",
+      "translationHash": "0c71f5b400d1abe2cac587481d0d442303b0b6dbb0af861adc3ddd7cfd2866dc",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approvedRunning": {
+      "sourceHash": "d8dd2e18100eca2e2c47dc1abed5e595fd74f770df66d2117480a864eaa59540",
+      "translationHash": "cac0792039285f75c59643c7299606ceb72d9b51a3fd81439136940a23b23e71",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approveItem": {
+      "sourceHash": "6b3caa67f175be2fea6651b6566a2eb8e557a9544e4eaf2e14c3013165446b35",
+      "translationHash": "d050cb0dadad02c54255f4fd0d51b133ad4fc6ae9dafbdf5aaf43b27f969312c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approveRequest": {
+      "sourceHash": "43092728c3a49edf6556f675294bc6873617e66dbb2f35966c3ccecb116c4cb3",
+      "translationHash": "f62b3273339b4e6e526187420204dc5652b795ce097825f6fdd05d93fe4c9025",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.approveRun": {
+      "sourceHash": "c50d7dde7082290af03399f4b0f0f185cffafee005590aebbbf3a6602966ffd2",
+      "translationHash": "249801beba705835dd6773c4e45ae06a9d21d69fadd1cfd5982175b5c6e654f3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.askQuestions": {
+      "sourceHash": "9f7e418d55be600e052a8f72eacf253e3819b4514c10542e0c59b83d1670bcc3",
+      "translationHash": "f2684a6e3a4eb88451523566efc4774946162fdb19eacc18d72ee82c62fee1c0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.attachScreenshots": {
+      "sourceHash": "1e7173d2aba83b4021f56f4db1c977b9e3530d3d3f39e7d4df735ac21235dd8e",
+      "translationHash": "2f5f00105cc953f506e486c34fbd6f303bace16e38961e75afe0ab694c4a14a7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.authorizationExpired": {
+      "sourceHash": "1b62882823470b521cd60d15191682688165bf0d9c1627551bef64c586f2efed",
+      "translationHash": "525daabee6ce22fd073a3aa3264374e1388d6c8c5f590b4ff907de4a096058d7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.authorizationRequestExpired": {
+      "sourceHash": "2861e714f9f3f7236af97ab8bed20b19f0002d3582f994db77601d4f70dd2bb4",
+      "translationHash": "eab4b56f31d09d1cb23f85d1bcb07043eb3df0b5c9301b0ef785c4854c71a9e6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.authorizationUnavailable": {
+      "sourceHash": "e53357a1c22c5db8efb721698fd669668d2e975a1b0251ff3c7ab197aa876d09",
+      "translationHash": "d832128e5b1e587d41ce2286534de32cf28800fc20367bf9ce3f67021504d367",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.awaitingApproval": {
+      "sourceHash": "2cfe983c2b52cd5dc3ba9c148d7d31c657ad09245338b61339ac295527267d19",
+      "translationHash": "4cdc486758712dc044f265af2333c46c35932a8085ff16f6f7c2c595163c7251",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.billing": {
+      "sourceHash": "2af359a56524747c993e7e94c127819a86fdc949c8b1849d83e301a0625379de",
+      "translationHash": "5a4db129997abe3063301791051c470e4a97760937c8d76fb89cfefb9b1d30d5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingApprovedBy": {
+      "sourceHash": "480ab4b75b9840b569a6e0852a9ed69b9fc1f8e70f8c3b0e53a522929dbb77e9",
+      "translationHash": "06dee237f56aebcf7149e705ada2ddcbcee82dc994a4dbcf67553e069434780d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingAvailable": {
+      "sourceHash": "6ea2b111b2428a02074e24c36f44c069b7b8769f28c651805239034306714e21",
+      "translationHash": "c8d36c2f191a879f92a82931d4d279b89a89cb78a097d861c341ce511bbb857f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingCreatedBy": {
+      "sourceHash": "bb7cfb963f72182597c173b5145ba648c6b1ba5c62c1bf5802e37a84bd19f697",
+      "translationHash": "cf5880dc6a8fad02e5983b5d7a21bbe39b16f2f96e9fa9c45e140592136ca0c3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingFailed": {
+      "sourceHash": "a2d15981cd900f2cf0bdcdf3ab26c2833fba8c71f632d295fb021f1dfc820c73",
+      "translationHash": "f862e58ba3447203e54c97e12cefb002a7c11992239cd4b5e30b889b42aaed27",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingFailedDetail": {
+      "sourceHash": "0d708edfecdef657f0c69bb4ba519eaf7adf654535adb81d4a2af8c44ed24611",
+      "translationHash": "589850dee3aff22718c4f50c56e58da36237ce5b1205877b2a9a7260719a02a3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingNeedsProposal": {
+      "sourceHash": "932c2c31db26eda1423a372a22d3c22ff531a141c9657a82c0908de132a11cea",
+      "translationHash": "285d93266cb2954485a930be6a0e21fed0af6767a2356fd5ce6049cdc1867401",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingNotCreated": {
+      "sourceHash": "5e402351e2ba2e3003b3d3b3a6c95bd74652883e48a389c89b5f41afd37a4119",
+      "translationHash": "053a60bc72bbbb7047fe2a5921b2af5b94d9d73c7223b76ccbf1fded35846fd2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingReasonPlaceholder": {
+      "sourceHash": "227e905cc4b0a11f62833992508ad0669914fb3f71390414ba9a214b9b2915db",
+      "translationHash": "198c1d9585a766150d0f3459477c4a845f8ab16b452b726528a5e4d200a575cb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindingRequested": {
+      "sourceHash": "2e8ff3b2cc0bf032e6ffd39f7a3f4152a513553dffd2c928f212c728a509810c",
+      "translationHash": "623e50ff21717c305c176c7a013af2163b67156c99fa5129c5d0dfa989f09fce",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.bindSecret": {
+      "sourceHash": "dd35617be27538f458c01bdf1c2db94877b002831b32b5e973daa152c75a2648",
+      "translationHash": "2df73b87f5ba6a8afba70d598a970066c962ab86ef50bfe9e5a8f657448b9e4f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.canAskAgain": {
+      "sourceHash": "8907cf9a5604b9ea50bc256f309d89eb83a412c0dba954652f1de95e4a40ce1f",
+      "translationHash": "9fa87af68369aac89182cda959767e6da26e3118178e5f892c22173fa3b6f0a9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.cancelling": {
+      "sourceHash": "91ab839a9f5f3b49a0c92a44e715a0399c40341b9240d874c0399b16fe5adf1c",
+      "translationHash": "e08949a366e0ff8448971ef9dc8cbd0c90d715919b3ca56c934bd0382ac21c65",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.cancelQuestion": {
+      "sourceHash": "04097507c9de5d87275f13816e29d2e0dac99debbdbd2ae881e30a19ea977e26",
+      "translationHash": "ff808cd28ed67b262aedd10e92f1173e8f669adea44db206d99624b3b1745202",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.changesRequested": {
+      "sourceHash": "589c92c32da469b3a093a23284bef5110fca50956e6a0f15ffd2e0f04f3b1a92",
+      "translationHash": "93b53556644ba71b1d3c73cce84f78de53979e441c7aa396afb9daebe45d43db",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.checkboxConfirmation": {
+      "sourceHash": "0647ecc6932e39fcd36ad1b187db8205581691c5803515926c2709963130349c",
+      "translationHash": "719a179a5916fb18a254603a1ab04d31b77fd3f72169611da7f4d43b7dc97458",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.checkboxRequested": {
+      "sourceHash": "5eafc234fcb60c96dd827926dec376c225093c7c5fe244d542ee87e905a49231",
+      "translationHash": "ebccdd5d230783e361453bd5d39ac20a8d01bfbd5b0a84ebcc1f015e83909f80",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.childTask": {
+      "sourceHash": "1b92f4980f62f1f49b300ef88eab573445814ced00d64b79ceca4d6fb5e56b02",
+      "translationHash": "be175afb855e4a5c48ecd215e800b9fbc850a67c58b1d7cc6c2626a899e3fa8c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.chooseVerdict": {
+      "sourceHash": "a4881b0ea9f44faf8cd474febfe7a885ca012f58a985b61f11c9b5c94c2b19ac",
+      "translationHash": "d987a7fc0324ff7a8e7a31134a352786691a79aec9265e092060f96bc91ef7df",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.clearSelection": {
+      "sourceHash": "9acf0637137ef75c3e073b8d3a075d688c6a1eedc9f69571c398b101e86bbc62",
+      "translationHash": "d0d33ec425bbdbbdfc5fd872aa06305b7fd568c18c7b9d672ef7d8e6ceb04054",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmation": {
+      "sourceHash": "28e45f7c53fe42bc5edafa467833cc52ca3cee1a13a8101ef0617671678e84fc",
+      "translationHash": "8516b0fdbd5195a2c36d56a36d13e371534305139bd4364db525845c819836e4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmationExpiredClosed": {
+      "sourceHash": "d317adaf20f1dd79210fdede5f5688ca49d9e0228f68f8d9d1b9009e3ef6af43",
+      "translationHash": "79b72d8c2b11959300f28a5616c9203e99619a238f21668132403e62ddbbc35e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmationRequested": {
+      "sourceHash": "33c353a6f0d190509674333fcabb4b530e9ae863240b6e1937d5db004f526725",
+      "translationHash": "0ea0ba2ca22791315ca4e22be9e63ba2135554fbae1701d04d5e3be8aa8d4b0c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmationSuperseded": {
+      "sourceHash": "584bf33a877db6dd2d57bbd09b12cec645f4dad0eabc32b15259e887f648d326",
+      "translationHash": "950168669f876dd0c7c48ba1d0f77e41fbcdf2eb5055b749c0cb5997292a21e7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmationTargetChanged": {
+      "sourceHash": "dc3d5677659ab522ae0c43f7b0ac41581841267664e1dc61bb24c47727655642",
+      "translationHash": "002cc65109b3cb2cac171413f0b9be3bd797218cd02e8884b9a575e76e1424f2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmedNoOptions": {
+      "sourceHash": "904bd1d027f7debacbdad8067f4a013b138fc51d6835b0e4ce1bebdb3e2dfb34",
+      "translationHash": "05a77523bb699fafdf60d000917b717d96ca9f16dd2f32890b650ae590a64dbe",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.confirmedOptions": {
+      "sourceHash": "f8a587b2416d6893a074ee0c5e025afa939a1c965830dbeb54f9e7b04c476989",
+      "translationHash": "28fa7c28d1f5d73f2ee7d83ff9d96c3087552a5aa8df4a94cb8fdaf40db202ff",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectedBy": {
+      "sourceHash": "b699c2286011cabacb20706653f6c928887f2eccc007b512b0e7def75d2a0c71",
+      "translationHash": "ca3c3ce051877497c8c55d8e5cdc049ebdd0625237e4a140fa577953921a1f85",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectionNeededOther": {
+      "sourceHash": "bc38fc731196f1ab2a6326d92455d5819ea39e031915fbae1afab4e42331a3e3",
+      "translationHash": "f1907109430a34642d4513196b05ef750c6bcf387c9f68153b597d3d7388e7be",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectionNeedOther": {
+      "sourceHash": "1e8759f70c631007086550dd4b998dee1742e43caff126a26cf526d11fe4e1c2",
+      "translationHash": "dcb2afe0f1a479a2590f94774a19c656d4f18eb2debc1800fc099caf411c8df4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectionNeedOwn": {
+      "sourceHash": "d094af1eca9b45afae19bee8c3a04e5e915428a701bfddf53d4d98bdd9e6917c",
+      "translationHash": "9c5495a5fc4a8cfd4f9fab3c413b9c0a68b46b1694d7ad5d902ed02057d6cc8f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectionRequest": {
+      "sourceHash": "9ec75e6c7f76ed055e1090c2ae4c7f25aaa0bdc77f61b6b3af8ff399129c79d5",
+      "translationHash": "a8f3ce5c0d080cad4edb116903f926c0b1bd036aefa9c124e2b139936b363494",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectProvider": {
+      "sourceHash": "af065adb469476fa9de9fac98dc27b91283cf1c15b38944274754f99cb99c319",
+      "translationHash": "4a14ade530b9a02bdddda17c249659abffc2d91e7b5309c5263310a5d2afcd19",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.connectToContinue": {
+      "sourceHash": "3d78ade039e31b41a13213410761dce2ce98abd57fd535d06c79cd1d0ec99460",
+      "translationHash": "1e5837bebf469d15aaa9191c68d36a70511fc3d638479ee936bdc3379f90d09e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.consentBoundary": {
+      "sourceHash": "ed1e89b5632489514547db81d075257b0e7e263213f910a6918e4a273d5c5ecf",
+      "translationHash": "4223cc1b13f116de777e8a918e11effa6f08b85ee953812caa8c0364fdf4ff1d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.createdAndSkipped": {
+      "sourceHash": "a9f3a191034771a4c967e439db6f2a4b8276b7c4d922aad4ff3f05f991345c4f",
+      "translationHash": "59f7b2e6424b9432449b6f643570588d5ae47ad4fa4a11be0af695485889c120",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.createdAt": {
+      "sourceHash": "81d26dea338ec0f3b612095812995c22374005756704bcd51c991522b8ba8161",
+      "translationHash": "a56ffd8beb3b704ca84d4d2dc1342921dbaa07c64fac3b27c0246a2783a8faf9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.createdDrafts": {
+      "sourceHash": "56deb80d3ebd7076268f31da1d8b43756c6182d05c48dc9c56847831f4f7b8e3",
+      "translationHash": "2bd7216e3cd88bc3ff8827ad949219ba4c10c9f5f4232da68bf78594096e15f5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.decline": {
+      "sourceHash": "9220d37f1602d9013cd4f6e2d25b5b8c8c4b8d4740e6271db0dca6973672cbba",
+      "translationHash": "22bac246384fce285e7e109330c7e0c742ac09967c130a4a40162773a7bf66f4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.declining": {
+      "sourceHash": "a28e030d485b8b1caa42e53f9e7595241a4d7115cbf1e84186eba4d4c4e7d043",
+      "translationHash": "e62d801a210dcd4f395244987a32813ef010fed89846c831b39f54c2faf96a1e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.defaultParent": {
+      "sourceHash": "e1bb7bfaa28f96f5428b0516805d1c065feea97f48436129d885c81dc7899451",
+      "translationHash": "69e5e457fc171d179d8564883aa1b65b819cd1f3af16797824bc3646430ec348",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.defer": {
+      "sourceHash": "f63f28c448f1dd84723ad4ca983cd5336fabdb132716102b62477ce95f9e30b6",
+      "translationHash": "214eaf4fb6d32586ddc0afbcdfaffadde1f9d6b4f6176305fc74602ab085af51",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.deferItem": {
+      "sourceHash": "f85f5add6de4a871c297521f76bda8cacf3d2b639c240a6b447022763b75094f",
+      "translationHash": "a3b34a3d213fa629f582a239c99b92da6f58714639b880f284ec2c91171764ba",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.deferred": {
+      "sourceHash": "eeb210e132d754face91b87398dba6df4c5a3e238a4b6cee6d22cd70b494e213",
+      "translationHash": "186e2abf3ed993e67c3152cab08a5ea7ce9d7e6958cb4a1e57c446157f4ceb9b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.describeAnswer": {
+      "sourceHash": "02534fc984af65fd2275b6ddd23b3034404a25f788d46796357869f7d9742dad",
+      "translationHash": "de7db7d4c22f8571f50d7bc38e49d5c586c396a36ecd46e35b1b0e1992550e17",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.directedTo": {
+      "sourceHash": "89f713095c964b7aa652fec7a8bbb2599ce65d0ed955dbf71682fe968d6aacca",
+      "translationHash": "3dd57fae798d9866dc62d4de033ce9c3c9bf81b70494f2788f09168266a05dce",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.draftIssues": {
+      "sourceHash": "b8f87c92e5de61afd19d4eeab1cf21b5e43629dad4eeca29d8c1322a431089e2",
+      "translationHash": "1c8b393a4a1439cfab56db5af3681456ed855ab0c87a0a3b291568734db36fbb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.draftsSelected": {
+      "sourceHash": "785cc957cbcda274a62f5ce1e41e9fd3ace3628114879e38c328a1fd64434549",
+      "translationHash": "9bb67d1a447bfa22e2fd669d493b14ea6a89dd813be249f9b8bb0c667a88ec06",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.draftVerdicts": {
+      "sourceHash": "a8ae58dafa7aba6785610b94c817b8af346492489b161607dd0a20032427cf8f",
+      "translationHash": "53f9cf2ca95c84a7af825c953850bad3bd2801a316892c7696b043700754fd93",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.errorCode": {
+      "sourceHash": "a59004179d45578660e0ddb57a532aeb5e2ab9016ea65e7cb810c40b0b95e0ed",
+      "translationHash": "f628c6b89847bee93dc92c5d6a6fbbb3eed0c179ff9e11a9bf63d51523947ad2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.executed": {
+      "sourceHash": "bfd16cb2febafa4accc129f720a6129e93534177173c1721e6cf96d03772ae0e",
+      "translationHash": "d4f86c8ac2bfee70373ba59d8a74e5ea62c86ac0a22fe5856d40da72c029664c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.executionFailed": {
+      "sourceHash": "517c3071ed8de9187a1ef1a5b91d8a2054b9ee281b8607c3018a93aa6d2d6456",
+      "translationHash": "dd05314c37cc1e727037ed9864256b568f4cf7c3f718516dd2e138dfef184a1c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.expiredComment": {
+      "sourceHash": "8ab985fdd7278741f0f007f074e4410cc389f615352a8633e0af8caf6c28a465",
+      "translationHash": "cb2f18e56d43065c6100f217340183ce480ffdb4c44714e32e09bb4e5c4105b9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.expiredIssueClosed": {
+      "sourceHash": "8fef1b83d59f4590822637f79af552926c9f72cc3893f3807df49b19267b66b2",
+      "translationHash": "26160d79fca6639763a612a2695cc8e0b9d56f5c85b7949b7323bca390f1731a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.expiredTarget": {
+      "sourceHash": "4bd3655977c4b36cd1ca9501f57984b85bd37c54f135568fa91a70ae9cc031c0",
+      "translationHash": "aba534ad565d190adc4f4f603bbbd019ebd7f01b1a9b560e7420cb4428712203",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.expiresAt": {
+      "sourceHash": "620e207a6ac5b838bd6d9b2f4d2d44eff7c4960da5838b29250bf873728e3b6b",
+      "translationHash": "32b19f6cabab525aba7c422811462dfcf8360a2cef5fd23eeeeba375230d4452",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.failedUpper": {
+      "sourceHash": "2dba61fbffc13b4299c55ddb0b6b0194f3eee1eb3ee55c704af1787aff18f93a",
+      "translationHash": "538a646c9e2692db94f8183758204896b41f99115c85951da4d2ac33bd75fac9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.forAddressee": {
+      "sourceHash": "0d0d936451b08ac89e98ddb4e1249edbaace1ea609ebab0c2bf978479d8dccac",
+      "translationHash": "c4d1a7e645b02fc4a35a27648aac38c1a60e1f5b1b0c3ac32395c9661d42ad0a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.506Z"
+    },
+    "decisionForms.interaction.freshAuthorization": {
+      "sourceHash": "4150cd553124d14c40aae8b90b678f946f6ba32ff87eda5f86cb58e3561226ec",
+      "translationHash": "4b669c6cbcf766eccad52e81aa1e645a0d42f854d9dff29439ac13270a33c3e8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.hiddenTasks": {
+      "sourceHash": "2299cf73b2571da681fd05c1302efd66173b1d6d3165d2ec9b20502083556c77",
+      "translationHash": "ed7dc636faf7df09c038707f0b57c7f8eb3706fac20c643db03187ca6deceb75",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.hideResult": {
+      "sourceHash": "2f9b63e77e66b037709a7715e858c995bd84052eb2be16422fcc6e5fca0ea5a8",
+      "translationHash": "3594c99bc0ff1a80f5161cd21dfabe426d2d24c36577fc7ca80961109a2b9f40",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.includeTask": {
+      "sourceHash": "92c321f3b95bedd382d779f1444e5cd63ad809d5f36998eca5cf72b0132d278f",
+      "translationHash": "68c3f58532e355879f2b65d56d85e58cf5743103602b35a6bea61b90b2308ed6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.inReview": {
+      "sourceHash": "8d3fe775dd8359a85ce05084baf96a3b5d4802c611558e3f85ba858e412fa511",
+      "translationHash": "31f7434d9a847e0fe56c9243c1347570e8c99027e41c4be2e1deeb5f84fce154",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.itemReasonPlaceholder": {
+      "sourceHash": "783d2c30374fadcd0455330a7ab54aa770059e003f1e7b98dc484297c38faa8b",
+      "translationHash": "8dc1d04c21b3dead3eac318f327db9d8a2beea217d4c915591be00c414746c37",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.itemsAlreadyApplied": {
+      "sourceHash": "d65ae99a802270c32d133d0ee7eb6a082d5578c82928afba3c1e9355c8cee1e0",
+      "translationHash": "3c50c7d80b29f49511c9459ee47b3993a1a738381f0691c54bd7b81f99c09c0c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.itemsToReview": {
+      "sourceHash": "31d82943d47b72956a20d1c1f52b4da3105b873a123d52e7562c1d8c6388d602",
+      "translationHash": "5c778c304834d35d69ea0db24ba00a0fffea353f831d7a5ccace8569a90b8f5b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.itemVerdicts": {
+      "sourceHash": "af3146ead0e11f7e4f0735d5d326f164dc8c35892c7ac87d7794731b3b08cc17",
+      "translationHash": "ff57f5fc53a73b0931c870877bb66246e5374cc487a53e9a33c1408f8e9c6b9e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.label": {
+      "sourceHash": "03f56b30dad456f43390b3b40bc2b2e3034d1d046a01821f2644f18c808966d3",
+      "translationHash": "da2700c73449f5a7795bb847279f56da40e6444339ae92d1dc20a218935b25b5",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.latestCause": {
+      "sourceHash": "4563fdcdaba70b114e29646fb9f32807b5d7feb52c239bd97d024080feabe405",
+      "translationHash": "f0f21aab731fc5f70ef2a0d0aead5a897583d99ad41a33f8374f3a1cab3bcc9e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.markVerdicts": {
+      "sourceHash": "6b20db34bb56ac01c55a6ebd233f4600544498de56d4429aa30c2be8385c06a9",
+      "translationHash": "f8eeb4214c27afbd7b1d201eb93f0975f0d8a6240ba1c13136003560bb000867",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.moreOptions": {
+      "sourceHash": "70815af45b7f5b8e958da85e6aa7a66ac1f477d904945b044651be927f98c955",
+      "translationHash": "87b6a6d16b9ce7519b2b0fbcbd234c94b33a8cc8f95789abe68cb69077f91d2c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.newConfigPath": {
+      "sourceHash": "9da3e978760ae081191f42876af4c2f3def4519f51ab9569a8e00514ca011c84",
+      "translationHash": "19d2a468aa0657f12577819a9afa4a9e436a6d75f5d0ae9acb78a834ffaba79e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.noAnswerWasRecorded": {
+      "sourceHash": "deccaa5d3bcb159296e8766306c2592f70151fe6677613f29bc698efcccd6ab7",
+      "translationHash": "ae8a70807bf1cb0180acefbf698cf8154d6c940dcdb7acc6e65cbffec976b9b7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.notConnected": {
+      "sourceHash": "f1af625a3eeb004b92cdad260bfb565ae1b2cadfdec433165cd121c73b1dae7d",
+      "translationHash": "4f875851bca7446994a3955fda2a6de7e617a1e13a66dd9a8fc375ac836383bb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.notDecided": {
+      "sourceHash": "d124c3b22e579cb45316ba9d80b7685157e6347d897822bc439b9902daec639c",
+      "translationHash": "99190349f25e622eea67e59e6c0e603b7fd7026e2b9baf78d464e85db4c44d1f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.onlyConnectOwn": {
+      "sourceHash": "497d1b88ec74f33dd69f6a54ed94c40101f10c05bf66559eb1cfe910df150073",
+      "translationHash": "cc8f0c9657a99fb6934c5a1b262dbc863ed426eb8fbb33d34c813aea59fe4494",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.open": {
+      "sourceHash": "f2d727095a5f01d2b1d1f936af38dd756fb7b3131cec7b814600fb552511db7d",
+      "translationHash": "84794a25711e5664475f7c8a830dd09addc59732f7f3fa88644edca783f8fb5c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.optional": {
+      "sourceHash": "5ae84fd2356112ac478b89dbe1d9c86297d4abceb357614d544e37a71b95fe11",
+      "translationHash": "7929870aa32f4e8d6c2898f57e7f650f23490be29071ef35370bcfd7b0b93067",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.optionsSelected": {
+      "sourceHash": "f9173bf8e53438f452a68fb8574eb7eb431f8a5395721d1a94935b6ffad50037",
+      "translationHash": "8ef83a018a35423e10b824ca44181a8dfcb5658137e9edca076749cd2d64506d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.otherAnswer": {
+      "sourceHash": "d0ab088e248f1107474d368f5dafa637132afa60948bd637a77612dd4d345224",
+      "translationHash": "ec559623fc83d6be87bbfe8f40396e23f7872cc957e2493d0d6c62e1d8b68ffc",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.pick": {
+      "sourceHash": "6a01269b055e0cf9741fc48d658b65b7724ea6a9cf89629f410c298be7a2e985",
+      "translationHash": "352c4afe47f1337465dd9a81c9a01c9ba27b2d12e68204b591eaba75f3d17774",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.pickAtLeast": {
+      "sourceHash": "a43fee92a2f9b4cfa62b711adc87450db7109b1e5a3b4b77e45afadec4d1be31",
+      "translationHash": "e693ce51854a35d6f59cf22cf41a4d68d1feeef3ae365c4837385d230faa1363",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.pickExactly": {
+      "sourceHash": "ff62df2a4603c3cacba161fd67e9488ad8abe22b61bc5b7ce63b191284791963",
+      "translationHash": "7c06e90b98a84cb3fcc82918c736dad244af683a50ed952f2cda651746a6f03a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.pickMany": {
+      "sourceHash": "e2e922da72edcabcb94be2bc2462e50bc2c99aa6454c470dd48c69f003c47c01",
+      "translationHash": "b10d80a16e9efd1e5ae295eea3286e06d195d571bf029c4a36b59e3e47f54420",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.pickRange": {
+      "sourceHash": "4ad4cf2efa10790f4966db445ce073061da7b4d53b412b1cbba777a0ae892282",
+      "translationHash": "798d06d1d4ab8b5bf9313903866840f9e0cd1cfe0f2a69bc8d5777ed25e0e406",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.planReasonPlaceholder": {
+      "sourceHash": "6a6d7d8d829af8b7e083d4e77c31d942feacfc93339f5a47587909b5d0145346",
+      "translationHash": "31f885de1c7b360a8d4fd9e7f166f81922e15b63b68679aa7dd360df8b7c1d5a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.planReview": {
+      "sourceHash": "81d6b37ecfc7f4184f6221c6348da34726a1f2e3115158b300361b7c146cfa59",
+      "translationHash": "e2a0f7fa2ff696966bebfa9e0055f397a9668b7643e0f33c72a1eedb2ac2b2fa",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.planRevision": {
+      "sourceHash": "da7c3742cb25aca37f82d4f7c925dee0999b609b2c1687f3560ae56d5bce3ab2",
+      "translationHash": "6833c0a778a8cb95931a3dac3db01bf9fc2ec45b173a2a01ea33fb09b156da8a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.progress": {
+      "sourceHash": "0cb74d277bf7edbc3c5c3aea8f7cd1d8d489dd3c1cb7e9f866713c1ab079b2d7",
+      "translationHash": "ad7277a068823e86f4ab1ab01c9288e07de82c37a37db5473a1318f24f0ea913",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.project": {
+      "sourceHash": "f3516de809a53660a554c1a5d88fd113230190af647533c2fbf5284c46f27932",
+      "translationHash": "537cc92ff1103af6d051a49d43c841f4f4793f97380158ba8914c7900c8751de",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.proposalExpired": {
+      "sourceHash": "8f504d379c6ca9584949da291bb2cbf9c433c577099c99a86dbaad6ff734cb06",
+      "translationHash": "3259cb692cedac3a66526f52e373542961627d884241822bb859e95c221004a3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.proposedBy": {
+      "sourceHash": "5ad13f3bd84e44c6d60a09b75eb7e8ef64e0c32144a753763dabf844e001f601",
+      "translationHash": "32b21da5a7f0895b08275b1671ccb4ed8e17f675e0cec56e1503def6b93284ab",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.providerConnected": {
+      "sourceHash": "3bd28783a98e4434d5f475ffb602b4d20366c30c303e66e2b234d91564893397",
+      "translationHash": "e4fbf694d30cb2d7fb51ec869528145634c188f75e8c4172f011991f3d504234",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.providerNotConnected": {
+      "sourceHash": "d6d34641e864d37b4b0c2894a7ed200951de976f35753f3b1c22927411f3c256",
+      "translationHash": "86d53d15ec8b440cf15c3e72634ff0aba82c8f0ff7c6de98887318a742b1c686",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionCancelled": {
+      "sourceHash": "f4da3450160d9e467b26cb0c12b6c7afc36cef4154d2fe48e58ef6e0ae9da67c",
+      "translationHash": "bd64f79b7e794c1e6d18c04b5f5a27ef4a9ae8ad2f1388d19db150261d51b0c6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionCount": {
+      "sourceHash": "83a6ef2b4006783d8451db53de593ce5b1c5c4b90c5b3aec8c8b766a4af34d9d",
+      "translationHash": "e8bfd736ed2a7355a6932d9add20cf58281082a31b9d64f92bc076321e122a8a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionNumber": {
+      "sourceHash": "fd9fca8cd4906eab773e501340bb6d03fb2a509f47a8e56aa6f4c1338570584f",
+      "translationHash": "fee32c35cc664e015eb2dd3b37a18a52cf2326982f27df30331083f1297a7368",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsClosed": {
+      "sourceHash": "41eab0306cd9a6b28dc516b561d1065832c9d9a1123d5128989175368cb986e5",
+      "translationHash": "839d2ad269cffbad6d0cce2128fa67176ca103d391c867bfcb232c3d06c4cc60",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsComment": {
+      "sourceHash": "f5f08c78060c02e636ff507748e4a662f3179bfdb6f49174a8ce97806d70dedc",
+      "translationHash": "3172caefb53b086f397528f0390cb30557cfb42c361eeefba97da8ce7e3e3b32",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsExpiredClosed": {
+      "sourceHash": "ffe852bc0545345023ee30c812da6002b1032811ba8be04dec1afffada741fdc",
+      "translationHash": "6220b2004125f0b8ead1603df8f65ea6e490378975a3b1867d96a44c9cb1eafc",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsOperator": {
+      "sourceHash": "71393612c4188490eee77bf2f0a8c6ae0936b5ba567060ca61f2374464ac451d",
+      "translationHash": "67caeca7c2874a0a271c88b29c3cd9034f0862b7be0f1f3051e9ea6898966387",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsSuperseded": {
+      "sourceHash": "d1fe1cb74b44a44b201249df2cf6a3f37729428c8a2cf1584c015fa2a65be9ed",
+      "translationHash": "36ed8ecd6fb0f1c115bc86a4924545db0ca2b6fa18951c843f2ee8428560d81c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsToAnswer": {
+      "sourceHash": "418082dc4177276881b29255a79e3681e4a7232b1128d5a0a0f4a379b9b3c589",
+      "translationHash": "a9551d8db5fdf0b299d950b82ea672d8696b1a8730caad8ba60fd5332f0d5308",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.questionsWithdrawn": {
+      "sourceHash": "8aaf642ffeb491cd2b090f5970ba1a8d12072b1bd6cc292044121e1fefbc091c",
+      "translationHash": "de2ce5fe647da9109afc7e6995a4d1035ad44d2719b38a3cdcb7bde2fb2bf84a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reasonApprove": {
+      "sourceHash": "8250c6e2f4220a2bf4fd5d636dc40ff2b0a429552e93af4fb066ec74e7df6845",
+      "translationHash": "4442e5f611bf977861b7f34fe560b39913c18f7efc4b8a1dec2a4ba36837a1bb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reasonDefer": {
+      "sourceHash": "5c595ac83adac0f2ea368fc007f84b8732578bd91877b1a16c6968aff2490bb9",
+      "translationHash": "4e0ed1a8311c42b6960ce7dcb3164ef1ef67fa40e1ad63492f5de019a106bed6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reasonNeeded": {
+      "sourceHash": "acfd633f02aadf67c120313c3597356459f6658a41a1fa88da3f1fe725e537c4",
+      "translationHash": "1ed33b841ca7e8413ceb3f97cc27eb7aa871343d4d0fbc375b5c01363e4e7a45",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reasonReject": {
+      "sourceHash": "79efae9ac642e67ed9f38d79c1a71c382849d2a0135626c19083fa39b3342a9a",
+      "translationHash": "a52ad7e8c5fa32aea01d5b0f8573ef72e24890d0e8de9f8db9923a4ee7cf1c99",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.recheckingAuthority": {
+      "sourceHash": "4f09fb9f1ca76aff4a8d5599a4632fe6e1a84e89b0adf9a1db3be5c51d01e1a2",
+      "translationHash": "ee224af63e438482897154d6924886e17659cb38e65b3402dc61d6e366e6ecc0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.rejectedBy": {
+      "sourceHash": "9c910fd0f43e55850f7ff3c088f5739356ea693036a5654dc5a0ade7d196d2aa",
+      "translationHash": "39ffeeb93c0a666ce1e09d94b4af94f14454497a9903e9af0a1fdf7ed1a59fe7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.rejectionReason": {
+      "sourceHash": "dda1d1ae815569c5d96419c4642e4e4bd5a1144e032af28a7c27def9c9b100b5",
+      "translationHash": "8a70de3ab75eff0ec9749609434dffb5336ca70fa734068f73abf32e7c381fe6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.rejectItem": {
+      "sourceHash": "80cc6269868225280579db0364eb746379aa3cc5a6515d96142d5e0ff8e1544c",
+      "translationHash": "c1ab11043c75db320787acf426118bb6b86315ad388e55e5fd3d94de0cd5cc99",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.rejectSuggestionPlaceholder": {
+      "sourceHash": "ea6a7ece14a2546133f4e05cf98ba493f93bb951d37dae7e6addd9b07d5853ec",
+      "translationHash": "63cc23d3a1fe043d11c59e59d079d7d4326a9e9b8526b481f8fb8749e5875793",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.removeImage": {
+      "sourceHash": "bae85938f4dac54b1c039d5cb8eeb43e5609ebf0504396c372c3f63130bc57fc",
+      "translationHash": "cb745e762dce8f9cb3f3f6f2eb4b8a4e4d930d7f629daf57421069fb1888f0f0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.required": {
+      "sourceHash": "5e68fa2807e3b3312e196984c871d09753e6bfaa8d3dbf57856a04ed63289325",
+      "translationHash": "20710e31301813af8202e72f5a81698be7efc8899e9c339b59f43160bbe01cf7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resetSelection": {
+      "sourceHash": "206a4a8141b0179fc20803ba3267f6fac461786ff3f9db6345cf493aa73ee48c",
+      "translationHash": "147fc0ea9556233c1d22a8aa1c1a094f4d981680d95b2060b6cbc352a6b6bb56",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resolutionSummary": {
+      "sourceHash": "20997e476c64159eaa4e4dae4d3e9eb02a69c4eece814ec21f2839ca0810b1d6",
+      "translationHash": "cde61efbfbd54d41dfcd80eb5b2bdd54593dd3e5520fffcb428263d110b5a7e6",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resolvedBy": {
+      "sourceHash": "5134f9b454cefb676a7a024f6f8fa695f2d4d93f71a8a7847b2b7e50f01465ea",
+      "translationHash": "b392bf209a80b59286e7a08fca5526480e2eda7ae02ca060bc26feb5e687b12a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resolvedOn": {
+      "sourceHash": "7d01757182b422c4914a2268530e93dbe567f1df8248e7cea0869703c9d01460",
+      "translationHash": "5f98827f6255aa30b7f3b71dc6055d9351f3d94e2373bbd2575eeacc04570e10",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.responsible": {
+      "sourceHash": "0433244918396b3042756ebf4c1c7031eba32855771bb84c64f9dca1bf3cd6f4",
+      "translationHash": "a1de9e91ad6be7f9d8e946c8c93379c63a8b5bef4693f8f9a45536d2b3e29c7a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resumeFailed": {
+      "sourceHash": "119250f33a785047219dae2d74d0422fa005482843ea4a2552d2a33bab602041",
+      "translationHash": "539b63807f3d69ea246023191fc5a0f9d1d5ca8859c79883367a005b0f68ce95",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resumeFailedStatus": {
+      "sourceHash": "b511b2e5be63dab2b8b293d5f687b5c437405a32e891f155471146adb83e7836",
+      "translationHash": "52a77b52ab6bf43b71a3cdd63730be0f6e6346738f1fd941463e8258184a5617",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resumeNeedsAttention": {
+      "sourceHash": "ec7486287c3e4efdb7807926c7d03de743a76486a5973595dfe04ddda360a737",
+      "translationHash": "ec3266913264fe96e7da8a868cf6be5834c2da672e655505aabb7951d6028aea",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.resumeRetry": {
+      "sourceHash": "5641731ce99f198e728af4a9b6a0d91e562f2f9a5618eeca75d91539a4a27a31",
+      "translationHash": "a1ccc50e9711740b5b78e52acc5b064ed5b5f21ab3460e06a8da04fdb3a681c2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reviewExpired": {
+      "sourceHash": "9fa3cc0c61b93c68b110db986a8c3da7539fc1acf39dd4e0f6d8ff71366aa2b9",
+      "translationHash": "f247f8389f59a645457635496f13028f3e80ce277ababa7280a2ab4b8134d449",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reviewExpiredComment": {
+      "sourceHash": "230791191d6c6f22aa03e51278ebe50801c0cb305f86f0816e093452cd46cfbb",
+      "translationHash": "5ffcfece5edf0163caf2c70f1a03ac431526816567be8f9c530b8f85338be967",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reviewExpiredTarget": {
+      "sourceHash": "23dc7204b0aa9162b9c062314c3172f281f77ce5d3fe93cc28de3ba819cfe63d",
+      "translationHash": "37e066e107eabc72f63b146bf5f46a02628d339d66c78069fe1bd86e9583e260",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.reviewItems": {
+      "sourceHash": "206fdf7047f1dcc16208d71a6a560e3ef6a3cd61fef6f652078b833b4dd73c1b",
+      "translationHash": "5f592b296a595448dfa89dd2368a72a416b147021f6e45be0ddedd48e0beba28",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.revisionNoteRequired": {
+      "sourceHash": "7ac17ec2323ee10b714b16933e5c2d4b8c399ce1dce4233b9b7a14436d76f5fe",
+      "translationHash": "bca6dcaafe629cac72c34aeabadad34b6647909ce8740e6c19f5cf89b610d471",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.revisionPlaceholder": {
+      "sourceHash": "0ea1e19d9c69a54e1455d0e952a157072b46a1d654d86746724ba529cd615c44",
+      "translationHash": "66b2f096620b9159b2a91c96050099888d8572764b623d05836846a455f08d00",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.running": {
+      "sourceHash": "4fe75f2c61f7c92ed7b29d7942f2a3e9f2dd9b4f309f283a16f9f3ccea5c7e66",
+      "translationHash": "3586c0acebe6b16241033741e0c5ae9378e96c33a5c932a655089d92cf837ee2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.saveRejection": {
+      "sourceHash": "d57d0dbca8ba42ab1e520b60dc1984f2b9016be73a0fabb2a767e1f1da1ecdaa",
+      "translationHash": "5d3c5d9eedfc9f69f79a876a23c2121e89710407babd61359384104efdb03972",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.secretBinding": {
+      "sourceHash": "ec5a693f122d8cb90aa90d47e7d17f39a23d460bf94ff4dc51de95aa4338ef70",
+      "translationHash": "e0d2f8f1cd496d689b664e6c6d593961357d676468048eb753f87be134fa130b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.selectableOptions": {
+      "sourceHash": "37345eecd609034b36ba128b5666875585c03f57a6e7bb10a1b62c6c9fb98545",
+      "translationHash": "e2473f12b9d2ee0515e0ecadedaedde7f25711cd989b0b64be41dbd7c6fe2f10",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.selectAll": {
+      "sourceHash": "e7f7654ecbb4e02c8bee70429d1e6a44e6c822af361d86b01c4feaeb450c71e6",
+      "translationHash": "8296b2053c40e5aa801e40f235d228e2e2631aefb7f17ea55f134294611d3bee",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.selected": {
+      "sourceHash": "d8ce083e708ecc81a2c264aeb7e63ee29021b1783bfaca3aa71d6dc4a945ff6b",
+      "translationHash": "eaeafcb9e99eb25c22d4696d69c0bf758fb5116c9a34bc3771be8f2abb270c6d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.selectMax": {
+      "sourceHash": "16d45e997dbf0261bc2b610796f156ec514fe2b798633b8e39f86a43deef7e1e",
+      "translationHash": "22fd7f3393928e30bfc18ccac0eec7bc7a5a7cdcf9a3d93ad26f8b57ac087908",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.507Z"
+    },
+    "decisionForms.interaction.selectMin": {
+      "sourceHash": "70d773913ee4a678a6176bdea3912a9484cdf61bdc66c2d87130fb5f554424b4",
+      "translationHash": "32899e9801efbb669d356d0604dadcff8b30ef4ff11d0b03e282de343d8951cd",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.sendRevision": {
+      "sourceHash": "7972e832c8ea8d071908e1ae303cb29c116ba0f6081b5bcf06ef5de312a6cb6d",
+      "translationHash": "454d30ab58e36ae058410cf59fe48150e33e1a9303dcc927c2c8119ad32d2b25",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.showLess": {
+      "sourceHash": "896215a784be44c9d3a4b9ed65c23ea3ebc68eda37e2779e52bd0de8fc88b883",
+      "translationHash": "33865bfc63f34cc2535d0e7c01242eae9e4cb11c2b9c1b3a704503058f3087a0",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.showResult": {
+      "sourceHash": "c9ff1c1f4e71ac0b5056c545a943409f9d6b119563e92d41d963a525d1e05a61",
+      "translationHash": "296a2539685914df9013506d28c92bb4dff6b148bd72f739d04fcf1a11f05ea7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.skipped": {
+      "sourceHash": "015a5a880c9d0b9ddf2562d2a303a4b470519344f0459dd683e6e0186042cf73",
+      "translationHash": "e3f1bebf08a710ea669d6992700caceeb7cfda5b884a8d6c9d77418dcf36037e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.sourceSecret": {
+      "sourceHash": "85416f71b6f78c3679cc327ca8428c96aa9405ef7a74a412a038505886b7a78f",
+      "translationHash": "bb1716f77141ec2c4659f378b2edbbd251cfae58193c84abd8b1ebe906cf2254",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.submittedSummary": {
+      "sourceHash": "050664154b2a52edef25db49da6ba6703e0776eb1c3276300b645d932fca9fac",
+      "translationHash": "156579e5ce55e60532c112aa3df064ea29fece6bd918ae163d49012b6b00af19",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.submitting": {
+      "sourceHash": "f686a4888bfa8975a7ff80eb56b5484cae3dab6f52a10e45ac58a62e30d41b77",
+      "translationHash": "5db4d2285065391dbba4889b4552855319a63b238c6e5dadcf34990b8933ad4e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.submitWholeForm": {
+      "sourceHash": "b0b0c7170aef882550949f2ae9a0a3e3f141f8d73747fa74187dd0cd2d5f408b",
+      "translationHash": "23381e3bed07a9ce97ec613974da9c5ebbc6467230486d39bd4183d44cb1f595",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.succeeded": {
+      "sourceHash": "16b5ef01177c895b5051ee858f50b20f3d201a6a10847129b859183f44262749",
+      "translationHash": "7533a1f80acb52cec5833bf6be4fbe256de01598062dd32f754d7571647d3a61",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.suggestedTasks": {
+      "sourceHash": "415f874e17ea8d8dc49f2ddaf98dc7cb210e2002d9369d2c9d96ed5f1d52b368",
+      "translationHash": "f98296b90251e0cced09f5391a0aa068920eb802dca678240a2d2705dea48cd2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.suggestedTree": {
+      "sourceHash": "99051326cf1d9bc28db72abb885cdea1a71adf7d8826057ca19b4394aea1ca07",
+      "translationHash": "596019adf91cac50119249b099ff09e3a2a0c3959b9ff4328e744df54638e1e8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.targetAgent": {
+      "sourceHash": "075e46b1fbdb2453b9b1dfe0a5af0f5bdc9ab5c1cf5320c8b989d062a058d8a1",
+      "translationHash": "dac8ab24da58f0622ff7fd32a3b46b15da2159c5f150f3381aee34ab6a4bb835",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.toolApprovalRequested": {
+      "sourceHash": "10fc7b78a9a0f5b4bdd4979de2e6436d7607ddf4ba9eb5f8ff5bbdb81adb1568",
+      "translationHash": "664926a778058fe95b67a0e76f46fe54a00c2317073e02f5d0142b888f2039f2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.uploadFailed": {
+      "sourceHash": "e8c0177727aea06dcafc9fbf5818a198cc3b5df41dc023452c33821cefccda30",
+      "translationHash": "69e321c5cb7e178cf17b9feff448830931da081a5e0ccb04f4a67eda9f9847d2",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.uploading": {
+      "sourceHash": "8eb7fd8841e38fc63cbbc0c0ec6ef5b8654a13847d671dee7b7d7e03d360bc14",
+      "translationHash": "973962554764747e0f2544e02c859539fb1d5ac82a3e3692abbfbdc9ec662d31",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.verdictDeferred": {
+      "sourceHash": "ee163f84b8133d72f2b626da7cc4a985603fd58527dfb7ce3516b6d597b8b7fa",
+      "translationHash": "d7dad862b0119a66dce1a645744236a0e8cbc7773d1879aafe0d22ddfeaf1eed",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.verdictSummary": {
+      "sourceHash": "6985878517ef3902594118cac501c2774893cb5694a7f8b5679193f39fb84322",
+      "translationHash": "2fde3be97cc1afd396de52a6176456e48d5383866d79627a2abdc00bec13ca6d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.viewResult": {
+      "sourceHash": "15622bd72e7f7986584ce139cb553c3e5dd55d1e7766fdce3b32f9f432ee413a",
+      "translationHash": "8b08b2cb1983ab25402a7f9fb4c9d99f778c8ed7c8b459fee0eeba3fcec56332",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.waitingApproval": {
+      "sourceHash": "6ff4bf7b788123081f8f8363600baee4f9c71d0fc1a207949f337c7c3d171e18",
+      "translationHash": "b91dec892f3d6a1b62649cc3de091bf0a97004a276b3f66b981bd0a047f39842",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.waitingFor": {
+      "sourceHash": "d54b15905a04d71328406261457bfa13a61ef9a28940a3a998fa296ee81af89d",
+      "translationHash": "6b66d15e4c02f1960a5c127fb82c656ab716c10d23a56ac96b08d27ab16e606c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.willSkip": {
+      "sourceHash": "627ba17a6028db97dfb708e3407e4cfcfce8674bfee6381107c9ad7b599bd05d",
+      "translationHash": "91f9f9b0037b32cf3c5c3efb285bd0ef38f9028a33a713943e08078377d6126b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.interaction.withdrawnBy": {
+      "sourceHash": "af1c86918171c20387cf38f7c35eabd655542e3c1c5af30ee36fa713d994caf0",
+      "translationHash": "31e2241ecbb49a3c4108e9be0d47a90694f3f8f38a95980d7cb97dd2af0e3712",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.answerPlaceholder": {
+      "sourceHash": "4652e867a8e610fae9b631eecb1320f05b1d837b2cc37517bb608efc8fac9143",
+      "translationHash": "5f5004f166b6c252d9dcfb1461e583761651bc2ecc54c8fd835e993cf40ba8f8",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.attachAnswer": {
+      "sourceHash": "5dbd9509d669ca418f03a74668583f77724f0157e5603790e0043ef3e0e4d629",
+      "translationHash": "bafbcd22d7e7510743529ce5ee416e53dd3efb8089cec6260c4b97a8aa4a709d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.attachCustomAnswer": {
+      "sourceHash": "4d67d166e541a42b18308919cabf18927328950c37930dc95af0e64c2a1e4120",
+      "translationHash": "4f8cd1b2d9876a285077402eb3ca6ad5b660ca173a0c773e043a6e682c04378f",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.cancel": {
+      "sourceHash": "f9349c13185c93eb72732f7c3c9b366a2d2ff315ac833e142296ebdc503ba309",
+      "translationHash": "15f1776e8cd3432f79305783acf54563bb18afe6c532ee7cc3eae7db5ac2cf99",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.cancelFailed": {
+      "sourceHash": "22000184fb8448e2b72fefc301e1e1231395d8631c8b4e113eb58efe1aa45907",
+      "translationHash": "f1b0eff48087851c6981adb58da34badbe3bd79db4361cf8ae1f2c4d23dc5ece",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.context": {
+      "sourceHash": "c137ef997d68591a7ef4d1cd45b8080a64091d2b6ecf4f139c0b845c71d800d9",
+      "translationHash": "398177b46c50d6e25b55b7f28423e3a4e899dd4ab722bd75f8f22a190ee34841",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.customPlaceholder": {
+      "sourceHash": "155b9f8054798d583e113e2c08ba1adea86778365ed1db8f807d6bfae3d9875b",
+      "translationHash": "511beb39b4de984a7d5fb6d808c370fa438894a6eb61d5d78e5c5df8c5a75c1d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.empty": {
+      "sourceHash": "1c55bb772ef888f798d173d14a9f8fe5a4d0959b44a2eb395eeb64d21a020554",
+      "translationHash": "005cd17d0124b19236914e03a83443df353a63753053eabeba8481ef286072b7",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.filterChoices": {
+      "sourceHash": "66d9fdcf88c23942a7593ff848e74d7d0786fb63f6f639cc0b7dd022005b29fc",
+      "translationHash": "dd6441c30b6c402571200978910c408c528746a080b000776cfc006c7ff1270a",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.filterFor": {
+      "sourceHash": "d65cd3e2a13ec9dff906334d3cee296569e4e29b66193d2783d741a71c78ba1a",
+      "translationHash": "8e65ae174bce41bdd71a8369920c7c8235881bbd5bb50e401546c919c495ff51",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.missingAnswer": {
+      "sourceHash": "1f0216467f903800bce193dc45f1cd1213e55a87ea968f50fb0b68b046c1462b",
+      "translationHash": "781ce51bd8be2ecd96665779e54c57a4e18182c4833168c5c5209f281bdaf6c3",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.next": {
+      "sourceHash": "238dafe52c0de32d87fab5ffee7ca6128ce4a55b0bd803be873922cd2fb7dce1",
+      "translationHash": "1ae45030dbac53a9cd98d5157397a37435654f07057e5db602c27ca536b6f402",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.nextQuestion": {
+      "sourceHash": "c5d6ad64550696b18fc998d71903dd7273326dd48514743f0b024fc48066ab9c",
+      "translationHash": "78d7e3862edb2a848a0ab3330dda55adba3a13bffbfbcfc72632b8d429c8d216",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.noAnswer": {
+      "sourceHash": "84d464e066e8ba803e17736e8a270330929dd3fcd2b98207cc7f42b68fc5de4a",
+      "translationHash": "9dd0b5a9db9d3feaf5c3b52f6dffe9889b2ac8711233200acd3c24f05f9d66c1",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.other": {
+      "sourceHash": "648d3e89c5a9883161f294da271726adca75eee70379c20a9fa629d1213d6630",
+      "translationHash": "bb8c0f42673c34797eb5a318d2957ff1322527b1a53a1a765c0a3fca043f328c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.pageOf": {
+      "sourceHash": "d761875dcc1470e03571ffd69e6128647d694a15f16737fa0c05ea7cb2d8f5c7",
+      "translationHash": "d76a48365bc1b6154dfd3ec2971f06057bef27e37efac79bd7b7ef314d0ea412",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.pagination": {
+      "sourceHash": "23547b80c7ea3ddd1fab2ec1c065b0853d38168e49ca9dcf5cc7010a11e3a92a",
+      "translationHash": "df936703f05f1e6046aac3b70414915db24f92ca04b3f9f1f56fa73ffc227697",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.previousQuestion": {
+      "sourceHash": "aa1044a8e1f7110196ccba7c94eb5252211f15c2fd59d00f51ddccee390ae5e5",
+      "translationHash": "74a20dcaa8914bed4b60a8399bc4c7542394ed3ce605a42244e1e95aa47cc97e",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.recommended": {
+      "sourceHash": "16f0e5e63a01b549db3ecbaeebe2263a6d739232edb8a8f49470b4ed344320c7",
+      "translationHash": "899e3931df145f302f408d42650fc411f86c4ce3fe1e300304ff50040c884105",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.skip": {
+      "sourceHash": "da61d5bb72aaed10662df5dc55798f22fc17b70d7285b05c0194072d02821e9f",
+      "translationHash": "2e27518e36dc588900acd9bc2548d1f6f59b1734c6328bf6ec07e0f04ecedd72",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.submit": {
+      "sourceHash": "0641b5605064599c0c81dfdb36f3691d9f1a70de2ab117e1065997b191438a49",
+      "translationHash": "16fcff09c3a503108addcc498981d10354c077f5f6e05c30718f02871013fe8c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.submitFailed": {
+      "sourceHash": "2f7df95fd642b4a21230a5c72e988e26a92ada3632ba5551ecc91543d217ea69",
+      "translationHash": "fcf20c645d3e2943f8e3f2fb9f56564821ba228736d304b241d72daeefe06a59",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.customRequired": {
+      "sourceHash": "f77b03a3c744b49a31a541f2f0c6d4a1f0e087d224209de1bd350b2d2a13d5ec",
+      "translationHash": "075ab84731dd7188cf2e77ec37645795b654412695c4a3ec851e0b56812f497d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.format": {
+      "sourceHash": "f6bfd7fd074b61a3b930d55693b4b21cb2c6b971cf8c27971b606c644a60f053",
+      "translationHash": "fb48916002f1b0752c88d4205517152954afec42f38c986db4ae8a111b4fd353",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.integer": {
+      "sourceHash": "6bc410be1b1d3d592ccb883c85dd328b9a0dcd1b23a2b411a083670e33506259",
+      "translationHash": "96d60a46447010216eee085ad8b59b03dd96d73e823dcabbc956e3863f4793cd",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.maximum": {
+      "sourceHash": "3ce617dbfb60c869698a44e133d2952a7a1b1d53d11570884df6fa04cf90f69c",
+      "translationHash": "4edd7c8cd1f26be40566a4f31e848bd6491f90b3bc368e0baebb0a525a1a68a9",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.maxLength": {
+      "sourceHash": "c3c3ce0d1b719c4da4f9d94446c3bbc0cae4b928facdcb3f798cf04bcfa6e09d",
+      "translationHash": "71a17f6b272f532ac3793c1360a543355345c3596a34064298cb1bfbe5db24cb",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.minimum": {
+      "sourceHash": "f0eee5b21fcba255be3abcd610c3edb62249200acc975aba61efadb03261ccb2",
+      "translationHash": "730c6e5b77fbde0a5faea4fbaef3ff738c78743c5f3f6a013b48a8200c5ae32d",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.minLength": {
+      "sourceHash": "67a138ed8e8459a8754fcd01630fe735bdb9e9ea3ac7786634f6a6c4b9a0fef9",
+      "translationHash": "19cd4d1d5ec76eb94affa62e932fca3fbe5294dabdd6294023025d49688a887c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.number": {
+      "sourceHash": "8e0f4512ccd418a14c56d82bd5f252689c5d4d98e8904c6a15b426c6f749dcdf",
+      "translationHash": "248295a482dea7b72ae9a043dbb28f4c7f8adaeedbbe88ff8164479821edd454",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.required": {
+      "sourceHash": "89a7a179d7aeb0c5771bf45c7c5c61c63070f4635cd53c389cceca375a05ab59",
+      "translationHash": "14abb9ba15da4c18bc588efcdba22e1f89bffbf79a4714c9ef0adbbe91db477c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.validation.unsupportedPattern": {
+      "sourceHash": "64def0850c5d32b2eb679a4681e4bca49df23811096d2acf0af1e8aee87e5b4c",
+      "translationHash": "34c4ba280a984129c0b3f1ea75b6996cc212d8dbfeb5ebcacb1775e6e4ff4f8c",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.questions.writeAnswer": {
+      "sourceHash": "78d49d396dc0513327e3d06b1aa9ca60a0dcba8fb5a8715cc661277bb294599b",
+      "translationHash": "611046bb296fc3dff7a32f98cb22dfceef4966ae2bcadee9d454c7ee26cace94",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.richInput.attach": {
+      "sourceHash": "6e9a48024fe35a8622e83f4be3108177d0a3200519a30823f8a85d097df1cee6",
+      "translationHash": "632a48dce7292486c0ae5b04b8acbac8c7c9ed48e8fdffb15543464c46559f18",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.richInput.dropHint": {
+      "sourceHash": "245d6ea02018c94cc0ebb3db8636f406511da7dd97a3e054eae6c698bb8d0914",
+      "translationHash": "c767af93e4ae19a2a7aa7963e2ca25a24ea1c2f517119194eb79676a6c4c0fb1",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.richInput.unavailable": {
+      "sourceHash": "7be450721b2219f50772d26982f565b218ca9e2a7044b29849d53b141df153d2",
+      "translationHash": "dc4bab7f545e111b85ba662281334a999e7162e4aa60d670f47e6b88e79b7e7b",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionForms.richInput.uploadFailed": {
+      "sourceHash": "cf3097048a81c2734459a0310751597abb27ca3bdbe65e89183902b07bcdd1c5",
+      "translationHash": "eb7fba54f80c9d17135f41e24949287c3aff8184a9573d977d83bdc9948ac1f4",
+      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
     "deferredOverlay.cancel": {
       "sourceHash": "27eadede230b1ad70dfa014b1499f46f01d08e4bb0b9d638e9ab087050e18f60",
       "translationHash": "4887cdadce5202295cc866a4c86c1684f386ce1a132e5cdf8615e273eefc7f84",

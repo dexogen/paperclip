@@ -156,6 +156,30 @@
     {
       "id": "03b794e59d833d1f9257a4d8187155ef12a5f99671e3ac6bae2ec54c41e50b7c",
       "reason": "groupInboxWorkItems compares groupBy with the canonical assignee value to choose its display-label resolver. The discriminator is not rendered. Translation happens after canonical grouping and sorting, preserving group keys, order and custom names."
+    },
+    {
+      "id": "d182a7106415713fd681e2577fb366818149dd3426ad441744a0fb539a97a6ae",
+      "reason": "ItemVerdictSegmentedControl compares the canonical verdict enum against approve to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "41321ee916b7be73405742b896ac814465b8eb799e86e02e71f6aa89bec27452",
+      "reason": "ItemVerdictSegmentedControl compares the canonical verdict enum against reject to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "54a2b3888ec93d888323216dfc8019aad9382009b6bd5f20acbdba8fc0583a4a",
+      "reason": "RequestItemVerdictsCard compares the canonical verdict enum against approve to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "368db9519fe33a91a164903450562ac618a1b90d9b65b92bab4af61fc18eab4b",
+      "reason": "RequestItemVerdictsCard compares the canonical verdict enum against reject to choose a translated action or validation message. This discriminator is not rendered and remains unchanged in submitted verdict payloads."
+    },
+    {
+      "id": "f3d886f9bef3a3fc957db8f796450214e53d6af3888c1b01f6b046b155b15634",
+      "reason": "QuestionForm compares the stored action discriminator against submit to select the translated submit or cancel failure. The action identifier is not rendered."
+    },
+    {
+      "id": "725f55b8e30441d36ca6418d7dda5a0ab3f761a91cf1901fae323df53940214d",
+      "reason": "TaskChatRichInput uses the message property name in a union guard to preserve a provider diagnostic or select a translated upload fallback. The property name is not rendered."
     }
   ]
 }

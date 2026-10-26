@@ -115,6 +115,16 @@ combined-host fixture renders Inbox with the real host props; it does not verify
 the App redirect or the full Tasks wrapper. Complete Decisions and chat/composer
 flows still require separate translation and live verification.
 
+The shared decision-form slice covers decision previews and results, interaction
+cards, paged questions, audience explanations, validation and image-input controls.
+Stored errors keep the original cause and translate at render time. A locale
+change keeps drafts, selected IDs, focus, pending uploads and submitted payloads.
+Optional helper translators retain English defaults for unconverted consumers.
+Custom prompts, labels, provider errors and names stay literal. The secret proposal
+page only translates its justification caption. Complete Decisions queues and the
+chat/composer still need separate work. Component evidence uses mocked APIs and
+editors; real server authorization and browser acceptance are separate checks.
+
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied
 English fallback, with literal interpolation. A dependency update must review

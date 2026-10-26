@@ -112,6 +112,18 @@ cover authority and durable continuation. Run a targeted set with:
 pnpm exec vitest run ui/src/components/TaskChatThread.test.tsx server/src/__tests__/question-response-delivery.test.ts
 ```
 
+Locale regressions in the interaction-card, [decision-card](../../ui/src/components/DecisionCard.test.tsx),
+[question-form](../../ui/src/components/task-chat/QuestionForm.test.tsx) and
+[rich-input](../../ui/src/components/task-chat/TaskChatRichInput.test.tsx) suites
+preserve drafts, selected IDs, focus and upload/request counts across EN/RU/EN.
+They check translated validation, permanent denials, literal custom labels and
+explicit decision payloads. These tests mock APIs and rich editors; they do not
+establish server authorization or installed-editor/browser acceptance.
+
+Manual: repeat the question and confirmation journeys in Russian and English.
+Change language with unsent text and selected checkboxes. Confirm that only the
+explicit submit/accept action creates a request and the same selected IDs persist.
+
 Manual: answer a multi-page question, go back, edit, then submit. Reload and
 confirm the saved answers and one agent continuation. On a fresh request,
 dismiss, reload, reopen, and verify the draft. Send a new comment while a
