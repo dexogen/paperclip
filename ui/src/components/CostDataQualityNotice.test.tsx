@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appearanceForPalette, agentAvatarUrl, type CostDataQualityItem, type CostDataQualityReason, type CostDataQualityReport } from "@paperclipai/shared";
 import { ToastProvider, useToastState } from "../context/ToastContext";
 import { CostDataQualityNotice } from "./CostDataQualityNotice";
+import { i18n } from "../i18n";
 
 const mocks = vi.hoisted(() => ({ dataQuality: vi.fn(), retryAccounting: vi.fn() }));
 vi.mock("../api/costs", () => ({ costsApi: mocks }));
@@ -26,12 +27,13 @@ function ToastStatus() {
 }
 describe("actionable cost notices", () => {
   let container: HTMLDivElement, root: ReturnType<typeof createRoot>, client: QueryClient;
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     vi.resetAllMocks(); mocks.dataQuality.mockResolvedValue(report()); mocks.retryAccounting.mockResolvedValue({ accounted: true });
     container = document.createElement("div"); document.body.appendChild(container); root = createRoot(container);
     client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   });
-  afterEach(() => { act(() => root.unmount()); client.clear(); container.remove(); });
+  afterEach(async () => { act(() => root.unmount()); client.clear(); container.remove(); await i18n.changeLanguage("en"); });
   async function render(counts: { unpricedCount?: number; pendingCount?: number; unknownBillingCount?: number } = {}) {
     await act(async () => root.render(<MemoryRouter initialEntries={["/PAP/activity/costs"]}><QueryClientProvider client={client}><ToastProvider><ToastStatus />
       <CostDataQualityNotice companyId="company" from="2026-10-01" to="2026-10-09" reportKey={key} unpricedCount={12} pendingCount={4} unknownBillingCount={9} {...counts} />
@@ -123,22 +125,45 @@ describe("actionable cost notices", () => {
     expect(container.textContent).not.toContain("Includes 12 estimated charges.");
   });
 
-  it("records saved costs without rerunning work and refreshes every period for this company", async () => {
+  it("records saved costs once across locale changes and snapshots the completion language", async () => {
     let finish!: (result: { accounted: boolean }) => void;
     mocks.retryAccounting.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+    const data = report();
+    data.events.push(
+      { ...item("missing_price"), id: "raw-agent", agentId: "raw-agent", agentName: "Unknown agent" },
+      { ...item("missing_price"), id: "unnamed-agent", agentId: "unnamed-agent", agentName: null },
+      { ...item("missing_price"), id: "service", agentId: null, agentName: null, runId: null },
+    );
+    mocks.dataQuality.mockResolvedValue(data);
     await render(); await click("16 run costs unavailable"); await loaded();
     const invalidate = vi.spyOn(client, "invalidateQueries");
+    const groups = [...container.querySelectorAll('[aria-label="Cost details by agent"] > li')];
+    const retryButton = button("Retry cost recording");
+    const queryCount = mocks.dataQuality.mock.calls.length;
     await click("Retry cost recording");
-    await act(async () => vi.waitFor(() => expect(button("Retry cost recording").disabled).toBe(true)));
+    await act(async () => vi.waitFor(() => expect(retryButton.disabled).toBe(true)));
     await click("Retry cost recording");
-    expect(mocks.retryAccounting).toHaveBeenCalledTimes(1);
-    await act(async () => finish({ accounted: true }));
-    await act(async () => vi.waitFor(() => expect(container.textContent).toContain("Costs recorded.")));
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Запись сохранённых расходов…");
+    expect([...container.querySelectorAll('[aria-label="Сведения о расходах по агентам"] > li')]).toEqual(groups);
+    expect(groups.map(group => group.querySelector("h3")!.textContent)).toEqual(["Codie", "Службы Paperclip", "Unknown agent", "Неизвестный агент"]);
+    expect(retryButton.textContent).toBe("Повторить запись расходов");
+    expect(retryButton.disabled).toBe(true);
     expect(mocks.retryAccounting).toHaveBeenCalledExactlyOnceWith("company", "retryable-run");
+    expect(mocks.dataQuality).toHaveBeenCalledTimes(queryCount);
+    expect(invalidate).not.toHaveBeenCalled();
+    await act(async () => finish({ accounted: true }));
+    await act(async () => vi.waitFor(() => expect(container.textContent).toContain("Расходы записаны. Агент не запускался повторно.")));
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ["costs", "company"] });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: [...key, "data-quality"] });
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ["cost-subscriptions", "company"] });
+    const completedQueryCount = mocks.dataQuality.mock.calls.length;
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Расходы записаны. Агент не запускался повторно.");
+    expect(container.textContent).toContain("Retry cost recording");
+    expect(mocks.retryAccounting).toHaveBeenCalledTimes(1);
+    expect(mocks.dataQuality).toHaveBeenCalledTimes(completedQueryCount);
   });
-
   it("keeps retry confirmation after the refreshed report removes the run and the notice unmounts", async () => {
     mocks.dataQuality.mockResolvedValueOnce({ ...report(), events: [], runs: [item("retryable")] })
       .mockResolvedValue({ ...report(), events: [], runs: [] });

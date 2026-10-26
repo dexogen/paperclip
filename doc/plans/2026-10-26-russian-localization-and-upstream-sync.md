@@ -988,12 +988,21 @@ one pending budget save through EN/RU/EN, including retained drafts after failur
 UI typecheck, build, token gates and map checks pass. The final strict audit has
 8,152 reviewed families, 14,655 remaining source findings and no actionable
 findings or resolved-debt residue. Only 91 resolved source findings from
-Costs.tsx are pruned; no exception is added. Child subscription/quota/finance and
-accounting-recovery cards remain separate work. These mocked checks do not prove
+Costs.tsx are pruned; no exception is added. These mocked checks do not prove
 live billing, provider quota or budget enforcement.
 
+The follow-up card slice adds 199 reviewed families in eleven existing cards and
+optional fixed-English finance/quota helper parameters. It preserves amounts,
+currencies, revisions, raw identities, group order and pending actions. Three
+English singular count forms deliberately correct “runs” to “run”. A seven-suite
+run passed 71 of 72 tests; the new finance/user test then passed after selecting
+the name separately from avatar initials. Two focused cases pass after the final
+static caption-table/punctuation cleanup. No provider child panel is included.
+UI typecheck/build and broader checks are deferred to the combined exact-head CI
+to avoid repeating expensive local gates; no live billing acceptance is claimed.
+
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment backend/schema copy, live dashboards/activity and cost cards,
+workspace pages, environment backend/schema copy, live dashboards/activity and remaining provider quota panels,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

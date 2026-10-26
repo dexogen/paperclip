@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
 import type { ProviderQuotaResult } from "@paperclipai/shared";
 
 const invalidCredentials = new Set([
@@ -23,8 +25,8 @@ export function retainQuotaWindows(
 }
 
 // Never render adapter diagnostics, even when talking to an older server.
-export function quotaUnavailableMessage(hasPreviousWindows: boolean): string {
+export function quotaUnavailableMessage(hasPreviousWindows: boolean, t: TFunction = i18n.getFixedT("en")): string {
   return hasPreviousWindows
-    ? "Showing the last available quota. Updates will resume automatically."
-    : "Subscription quota is currently unavailable. Check usage with your provider.";
+    ? t("costCardsUi.quota.stale")
+    : t("costCardsUi.quota.unavailable");
 }

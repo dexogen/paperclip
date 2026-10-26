@@ -381,8 +381,13 @@ the existing preset-label constant. Query identities, date boundaries, amount
 calculations, raw names and pending budget writes are unchanged. Component checks
 preserve custom dates, focus, expanded model rows, exact cents and failed drafts
 through EN/RU/EN. They use mocked APIs and do not qualify live billing or budget
-enforcement. Subscription, quota, finance-detail and accounting-recovery child
-cards retain separate translation work.
+enforcement. Subscription, budget-incident, finance-detail, user-cost, provider
+and accounting-recovery cards now translate their owned captions. Their focused
+checks preserve fractional price drafts and revisions, pending cost recording,
+raw names, currency groups, quota bucket order and bar values through EN/RU/EN.
+AccountQuotaPanels, ClaudeSubscriptionPanel and CodexSubscriptionPanel remain
+separate translation work; provider quota text stays literal. Finance/quota
+helpers retain fixed English when their optional translator is omitted.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { i18n } from "../i18n";
-import { formatCents, formatDateTime, formatDurationMs, formatNumber, formatProjectBudget, formatTokens, relativeTime } from "./utils";
+import { quotaUnavailableMessage } from "./quota-refresh";
+import { financeEventKindDisplayName, financeDirectionDisplayName, quotaSourceDisplayName, billingTypeDisplayName, formatCents, formatDateTime, formatDurationMs, formatNumber, formatProjectBudget, formatTokens, relativeTime } from "./utils";
 
 afterEach(async () => {
   vi.restoreAllMocks();
@@ -34,4 +35,20 @@ describe("localized display formatting", () => {
     expect(formatDurationMs(3_720_000)).toBe("1h 2m");
     expect(formatTokens(1200)).toBe("1.2k");
   });
+  it("keeps omitted finance and quota translators in English and raw source identities literal", async () => {
+    await i18n.changeLanguage("ru");
+    const ru = i18n.getFixedT("ru");
+    expect(financeEventKindDisplayName("inference_charge")).toBe("Inference charge");
+    expect(financeEventKindDisplayName("inference_charge", ru)).toBe("Начисление за работу модели");
+    expect(financeDirectionDisplayName("credit")).toBe("Credit");
+    expect(financeDirectionDisplayName("credit", ru)).toBe("Зачисление");
+    expect(billingTypeDisplayName("credits", ru)).toBe("Оплата кредитами сервиса");
+    expect(quotaSourceDisplayName("codex-rpc")).toBe("Codex app server");
+    expect(quotaSourceDisplayName("codex-rpc", ru)).toBe("Сервер приложения Codex");
+    for (const raw of ["", "Codex app server", "toString", "future.<raw>"]) expect(quotaSourceDisplayName(raw, ru)).toBe(raw);
+    expect(quotaUnavailableMessage(false)).toBe("Subscription quota is currently unavailable. Check usage with your provider.");
+    expect(quotaUnavailableMessage(false, ru)).toBe("Квота подписки сейчас недоступна. Проверьте использование у провайдера.");
+    expect(quotaUnavailableMessage(true, ru)).toBe("Показана последняя доступная квота. Обновления возобновятся автоматически.");
+  });
+
 });

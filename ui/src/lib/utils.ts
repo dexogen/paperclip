@@ -159,15 +159,15 @@ export function billingTypeDisplayName(billingType: BillingType, t: TFunction = 
   return map[billingType];
 }
 
-export function quotaSourceDisplayName(source: string): string {
+export function quotaSourceDisplayName(source: string, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<string, string> = {
     "anthropic-oauth": "Anthropic OAuth",
     "claude-cli": "Claude CLI",
     "bedrock": "AWS Bedrock",
-    "codex-rpc": "Codex app server",
+    "codex-rpc": t("costCardsUi.quota.codexServer"),
     "codex-wham": "ChatGPT WHAM",
   };
-  return map[source] ?? source;
+  return Object.hasOwn(map, source) ? map[source] : source;
 }
 
 function coerceBillingType(value: unknown): BillingType | null {
@@ -242,28 +242,28 @@ export function visibleRunCostUsd(
   return readRunCostUsd(usage) ?? readRunCostUsd(result) ?? 0;
 }
 
-export function financeEventKindDisplayName(eventKind: FinanceEventKind): string {
+export function financeEventKindDisplayName(eventKind: FinanceEventKind, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<FinanceEventKind, string> = {
-    inference_charge: "Inference charge",
-    platform_fee: "Platform fee",
-    credit_purchase: "Credit purchase",
-    credit_refund: "Credit refund",
-    credit_expiry: "Credit expiry",
-    byok_fee: "BYOK fee",
-    gateway_overhead: "Gateway overhead",
-    log_storage_charge: "Log storage",
-    logpush_charge: "Logpush",
-    provisioned_capacity_charge: "Provisioned capacity",
-    training_charge: "Training",
-    custom_model_import_charge: "Custom model import",
-    custom_model_storage_charge: "Custom model storage",
-    manual_adjustment: "Manual adjustment",
+    inference_charge: t("costCardsUi.finance.kind.inference_charge"),
+    platform_fee: t("costCardsUi.finance.kind.platform_fee"),
+    credit_purchase: t("costCardsUi.finance.kind.credit_purchase"),
+    credit_refund: t("costCardsUi.finance.kind.credit_refund"),
+    credit_expiry: t("costCardsUi.finance.kind.credit_expiry"),
+    byok_fee: t("costCardsUi.finance.kind.byok_fee"),
+    gateway_overhead: t("costCardsUi.finance.kind.gateway_overhead"),
+    log_storage_charge: t("costCardsUi.finance.kind.log_storage_charge"),
+    logpush_charge: t("costCardsUi.finance.kind.logpush_charge"),
+    provisioned_capacity_charge: t("costCardsUi.finance.kind.provisioned_capacity_charge"),
+    training_charge: t("costCardsUi.finance.kind.training_charge"),
+    custom_model_import_charge: t("costCardsUi.finance.kind.custom_model_import_charge"),
+    custom_model_storage_charge: t("costCardsUi.finance.kind.custom_model_storage_charge"),
+    manual_adjustment: t("costCardsUi.finance.kind.manual_adjustment"),
   };
   return map[eventKind];
 }
 
-export function financeDirectionDisplayName(direction: FinanceDirection): string {
-  return direction === "credit" ? "Credit" : "Debit";
+export function financeDirectionDisplayName(direction: FinanceDirection, t: TFunction = i18n.getFixedT("en")): string {
+  return direction === "credit" ? t("costCardsUi.finance.credit") : t("costCardsUi.finance.debit");
 }
 
 /** Build an issue URL using the human-readable identifier when available. */
