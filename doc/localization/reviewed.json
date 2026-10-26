@@ -2858,6 +2858,216 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T08:55:18.637Z"
     },
+    "agentConnectionUi.grok.activityDescription": {
+      "sourceHash": "f91febf198357ef78d9bceb1599a15e15ca77d50c1d17a7d40d0a10cb315cfac",
+      "translationHash": "3e325c605b0e0eeb3061097d5b7e71c7e12db0cb29e06120fe2ecb6d1284211d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.723Z"
+    },
+    "agentConnectionUi.grok.awaitingAcknowledgement": {
+      "sourceHash": "918f984ccec905827b105e74926caf10f2706769613ab7f7c046a87fbed00e6d",
+      "translationHash": "f3def18dffc161638dd66faf986d01d26bebafe6826001f0e935cca22469141c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.checking": {
+      "sourceHash": "ad7016b211d22653c2ddf8c183800eee075bc91c4d50736b1cfd7f25423b737a",
+      "translationHash": "64b92654fe392e43672110ae3234a873029aa15cfba38b1cc7f5714af5b9e49d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.incomplete": {
+      "sourceHash": "48cab7660a350b47ae92bc78a306e0bbde0e8b873c890103d1ae8637bcb62236",
+      "translationHash": "fd8a44d12db0cbe8491cf4277c6527c89274bcf9b66fc9bd8d87b39cac27d636",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.lastContact": {
+      "sourceHash": "413f5870a947f0cf4f2bfda17752f0bce94112fa6f0c48e9c244ace9927d517c",
+      "translationHash": "8e8fbaaea2da7ef24b865ec15eba90068dcd8ad189b45351d3953a471774c2c5",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.noActiveSession": {
+      "sourceHash": "d510ce789c892425b78c56fd7049300ba271e7b87ca1ac92d63722a1ef665b5f",
+      "translationHash": "a78f1ea521a2b60ea8613cc54ea15ef78cab6c0bd3afecc542ffe511bc114be1",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.noContact": {
+      "sourceHash": "260ae66cd2ba4d10ddf0797fd7e12a9c6a021b8d6194d8475781cc21a651910a",
+      "translationHash": "e4b9ef166c1afd550c79629e8bf6b91ecea783c424d06c9c226e68b9408ad890",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.queued": {
+      "sourceHash": "b14e65503aacf7023b2b1255d8f8143ad3dca507ea1098058d40cfd1d1d61f59",
+      "translationHash": "d1d2a7e78e517195098ff51ec5d16a6af9cfef396c7f8f57174df1c8de107c4b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.recoveryNeeded": {
+      "sourceHash": "12cf48feea18838834086fd1ca0df94c5778ff98c14cfd4da5c7657d6b0bbff1",
+      "translationHash": "793acc94e8b698b3320743c20f4b7406c8d78ffe857c273421200050bfe4c0e4",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.refreshError": {
+      "sourceHash": "1b9193d4a43ea4c3ab43ea3c7f8e0ccb4bd52fb0b827aca68b53240badebaf9d",
+      "translationHash": "1ae9a2f0cdf10d732af5cea539b390fdc24d5dd3d747df77c903e70882e8afa2",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.grok.working": {
+      "sourceHash": "d542c1f484da24805291b01da4fd6cce201254789a32c49ba10b50038b540981",
+      "translationHash": "c6d2eca05e911f5deec54d3a908df5f473035dd58a37f267f14753f6d7a4b291",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.instructions.cancel": {
+      "sourceHash": "56e8b8dea5c142c9828d669a7d3644069f7d5f7cecac0e1164a163665ca4ce65",
+      "translationHash": "0a9d97cfb3cfac92c51934d137baac159a82c3db6f169c0593c2ccae76080f0d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.724Z"
+    },
+    "agentConnectionUi.instructions.configure": {
+      "sourceHash": "2c71d434a2c8bdca9b53c931e3147d27afa2b79d0dbbdf70ee4706c358773dc0",
+      "translationHash": "824e5424c99c5f4b854f652b49e89d05669744a6b9358632929b3d5b9df977b4",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.description": {
+      "sourceHash": "10d7c413376047241db9899515b199f04d3b7d1acdf122af5f4a35638f3be27e",
+      "translationHash": "074ebc5133cb435ed0a92267eb9eab62d0852548ef5f730774875fe4a763049a",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.disabledWarning": {
+      "sourceHash": "ccd268eb79928393741b12b6ae8584e78866324025217882990906940f6d43c1",
+      "translationHash": "144a5768f0d105873e08a6323b424290af3af565223721f51624e3733b536ef1",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.doneEditing": {
+      "sourceHash": "5f904df11dc2ff26dc0d586b1d8b9ec383aac7e61bbcf7cac72e85605975d24d",
+      "translationHash": "98d1c93f778297cf2c0272043c16fca2c6cc081417a15ad30572b43e67c9f391",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.edit": {
+      "sourceHash": "f3197bfb8f9b0b1a335cf9f0afe1d6a0568287d41b2a7ee3465fa3b69bf70e60",
+      "translationHash": "ac603b6b610154c52a5ba706a8bb671c876b5f3114bd490079abe0b1e6188e4b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.fromConnections": {
+      "sourceHash": "4e9dbd4840194d021507769e7368ac78dd6846f5df0c1c3f1edd697b630f4f47",
+      "translationHash": "920ee15f5dbccb3182c9532e375d6840ce4389c943d5aa02d2af2416732985ed",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.loadError": {
+      "sourceHash": "7a19595a64c05ce7553601bfc59d3356c2df33ecf344af8af43e582ab824b030",
+      "translationHash": "ba126fb0ee96d2412abfe9737a22eeefc2290a5471f0e0312b8bcbadec43accc",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.loading": {
+      "sourceHash": "093f4cca4b1a664305d970ccb0f4984ee4afabc2e9b3280d83494428767e39c9",
+      "translationHash": "c83c70902296809f36e1883a97c7a022ecbae96dd7d5e14732c93498f7932e77",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.off": {
+      "sourceHash": "c49b88de64106a2dd7a6cd13e3248fba39ce8f5c9ab4a7551ed78833fef7bd92",
+      "translationHash": "372dcea96e77e0653ee618efcc64739bd84635e0d9f6a42ccee13d8048a2a9fe",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.required": {
+      "sourceHash": "96d78e9c73194ea36129663f7d2b83cc18c2606890d430704faa24bb92e70753",
+      "translationHash": "98ad18d36c7f8542374d82a8e8be68c5d7ecc787329c6f68136fa9a6a9bad9c2",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.reset": {
+      "sourceHash": "11362bbb035838d6cabfc3c8fefbf714bedea18df0cdd623499aa0d50f49820b",
+      "translationHash": "f793cf6f685de9d01e7a8a56b44835f4d296565d7571d6b36a39bf474db2fc50",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.retry": {
+      "sourceHash": "7bfa420f4d4538121c28615582e497c9532576a9d196b5aca6f29acaafb23e71",
+      "translationHash": "193361ddeb40ca8c8d086d3dd01f0d312ccf44aa5c9e7282a8e40841ad3e097c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.save": {
+      "sourceHash": "4707e920b1750551b4f63f4e3c0f7161e092d887e1781713237d2522edfc45f6",
+      "translationHash": "320aadb2ad2bef415ab3a0f481ad9f8d6a4e7dcbf6e964bfd62d6b8d09597760",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.saveError": {
+      "sourceHash": "01a72108cd9dcc274673bbf9efa663f5fc3513d448dae0f6259a697e2424c52d",
+      "translationHash": "928a8084532bdfb3843badc458893b9ed71b6721df5f49ce20a1c66d42af6144",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.saving": {
+      "sourceHash": "d55f714c465946ec9882619bdcdc534d3cef9da75692246f8a01974c99990ee4",
+      "translationHash": "8d3eae99a0a24e0e1eb56eacdd52b01eaddc27f07c317560a7aa9469d441938e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.tellAgents": {
+      "sourceHash": "d54326210d31afb51dfd6f4a0cf4a5b124203896880b4d61b0be0c3495397259",
+      "translationHash": "50f459aaf44902047267c45eb8cc59b18834003d1c63e553109cc92e50f5a469",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.textLabel": {
+      "sourceHash": "f80c7b0dc3958fe4c55211209e45048dbc95f15467eae60a276a527e990ea10a",
+      "translationHash": "abc7a841a8d09d5db400fa4769d9f6eedeba18b9b1c6637f3f159625fee731e8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
+    "agentConnectionUi.instructions.title": {
+      "sourceHash": "5707d1c25d73bc3c2bce08be7c3bbd067147d320baec6b5788b3131c11af082e",
+      "translationHash": "2bd32107303aa26d7a2381ef327cd9b03de1d46b6e5ecf58afafda9d8258643c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T11:07:06.725Z"
+    },
     "agentDetailUi.actions.assign": {
       "sourceHash": "fa682f26edb78aecdcf36cdc48bea133deae986718790637ecc98b40606e6f2c",
       "translationHash": "77efc53abb6b8e480a97426388fed72f0612987fc14ea9233ecde306b1f759d3",

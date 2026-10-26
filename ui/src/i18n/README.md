@@ -268,6 +268,14 @@ Trust/project restrictions, tools, skills, channels, external invitations and
 bulk editing remain separate slices. FileTree error/retry branches are also
 outside the active agent consumer's coverage.
 
+Connection-owned instruction controls translate editing, validation, save/retry
+states and the agent's source list. Language changes retain drafts, focus,
+selection, template identity and the exact save payload; instruction bodies and
+provider errors remain literal. The Grok activity summary translates its observed
+status, queued-task counts and contact date without changing status priority or
+polling. Component checks cover these two surfaces and their existing consumers;
+external invitations, reconnect flows and live provider acceptance remain separate.
+
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host

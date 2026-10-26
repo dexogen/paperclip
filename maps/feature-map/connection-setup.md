@@ -97,6 +97,12 @@ pnpm exec vitest run ui/src/pages/apps/Browse.test.tsx ui/src/pages/apps/AppsCon
 pnpm exec playwright test -c tests/e2e/playwright.config.ts tests/e2e/connection-intents.spec.ts
 ```
 
+The shared [instruction editor checks](../../ui/src/features/connections/ConnectionInstructions.test.tsx)
+cover live English/Russian captions while retaining raw provider names, template
+text and unsaved edits. Existing AppsConnect cases preserve the exact Honcho
+instruction payload and optional Notion template. This coverage does not translate
+template prose or establish live connector setup.
+
 Manual: connect from an unconnected provider landing. Select the intended
 identity and agent access, complete authentication, reload, and inspect the
 saved connection. Run a permitted read-only action with an eligible agent and
