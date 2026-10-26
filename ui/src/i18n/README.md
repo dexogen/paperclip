@@ -113,3 +113,7 @@ The initial foundation adapts the 19-file diff from
 languages, the Russian default, plural-aware validation, terminology corrections,
 expanded text coverage, and additional regression tests. Upstream test reports
 are not verification evidence for the adapted source.
+
+Task resume confirmations distinguish removing a pause from starting execution.
+Known structured warning codes receive translations; unknown server warnings keep
+their original text. Locale changes preserve the wake choice and action gates.

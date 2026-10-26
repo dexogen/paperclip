@@ -281,8 +281,8 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 2,425 reviewed semantic families, 2,484 English
-forms, and 2,602 Russian forms. Review records identify agent review; no human editorial
+The current combined catalog has 2,431 reviewed semantic families, 2,490 English
+forms, and 2,608 Russian forms. Review records identify agent review; no human editorial
 approval is claimed. The original 20,857 source occurrences have shrunk to 18,990.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
@@ -399,6 +399,41 @@ coverage. Typed translator helpers now use lexical bindings, preserve namespace
 boundaries and fail on unsupported prefixes. Token gates and map checks pass.
 Static analysis and API-fixture browser
 tests have their documented limits and do not replace real user journeys.
+
+### Upstream refresh through 6336c3404
+
+The next combined candidate includes upstream master through
+`6336c340411809b3a94af1f4a911b30c0275447c`. Two commits narrow bound-conversation
+authorization reads and correct eligible wake targets when resuming tasks. A
+normal merge retains both upstream gates: no selected wake checkbox for zero
+eligible agents, and no wake request for that preview. Resume removes the pause;
+it does not promise that blocked, backlog or unassigned tasks start execution.
+
+The original-upstream detector reports three added source findings and one removed
+finding: separate restore/pause-removal phrases and a technical restore discriminator.
+The existing restore translation, updated resume family and exact enum exception
+address those findings without adding baseline debt. Manual source review also
+identified the server-owned warnings newly exposed by the UI; they are outside the
+configured client source roots. The tracking pin is prospective until the reviewed
+stack reaches the fork default branch.
+
+The dialog receives structured warning codes and translates six known app-owned
+warnings. Unknown warning text remains literal and React-escaped. The existing
+resume count family now describes pause removal in both languages. Independent
+agent review checked the upstream authority/locking changes, all new EN/RU pairs,
+plural case, both wake gates and the unknown fallback. Two complete task-tree
+component tests passed, including the zero-target and live-warning regression.
+A fresh-worktree UI typecheck first stopped on missing generated plugin SDK types;
+the normal SDK prerequisite build resolved that setup error, and UI typecheck and
+token gates passed without a source workaround.
+
+The source is being frozen for full Linux build/typecheck, the complete UI project,
+seven affected backend files, fresh Russian list/detail journeys and the six
+shipped paused/composer-stop E2E cases. These checks remain pending. The Stop cases
+must use the deterministic fake provider and real runner binaries; a skipped native
+case does not satisfy the matrix. English E2E builds must follow Russian browser
+proof because they replace generated static UI assets. Recheck upstream before
+actual deployment; this recorded candidate is not production acceptance.
 
 ### Workflow activation
 
