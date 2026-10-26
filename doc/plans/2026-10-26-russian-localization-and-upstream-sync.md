@@ -780,16 +780,24 @@ Actions is enabled, but its default token is read-only and Actions PR creation i
 disabled. A sync App and registry publication have not been demonstrated. After
 an earlier `repository invocation blocked` cancellation, the owner re-enabled
 Actions on 2026-10-26. A new exact-SHA dispatch for `07332f25c` started real jobs;
-the [localization lane passed](https://github.com/dexogen/paperclip/actions/runs/40291467289),
-as did the complete code job and two server partitions. Three server partitions failed:
-the issue execution policy suite could not resolve the UI-only `@/i18n` alias,
-the actual PRP test timed out while delivering escape-heavy 500 KB results,
-and the multilingual route test did not find a Chinese substring.
-A relative import fixes the first failure: the existing server suite passes
-80 tests and three affected UI suites pass 49 tests. PRP and CJK search failures
-remain under diagnosis; the last hosted partition is still running. The available evidence does not
-establish why GitHub disabled execution. Local checks and one successful lane do
-not make the full hosted gate green.
+the [run finished with a failed integration gate](https://github.com/dexogen/paperclip/actions/runs/40291467289).
+The localization lane, complete code job, and two server partitions passed.
+Four server partitions failed from three causes: two could not resolve the UI-only
+`@/i18n` alias, the actual PRP test timed out while delivering escape-heavy 500 KB
+results, and the multilingual route test did not find a Chinese substring.
+A relative import fixes the first cause: existing server policy and persistence
+suites pass 82 tests, and three affected UI suites pass 49 tests.
+The CJK fix preserves substring matching for short Han, Hiragana, Katakana and
+Hangul terms while retaining word-start matching for other short words. The
+original multilingual assertion reproduced the failure. Four complete real-DB
+search suites then passed 115 tests with one expected opt-in scale test skipped.
+The PRP timeout did not reproduce with either release or debug Runner locally.
+The test now reports only safe progress counters on timeout, with its original
+15-second deadline and assertions unchanged; its hosted failure remains unexplained.
+The diagnostic version passed the complete actual-PRP suite locally. These repairs
+are a separate review candidate; a new combined hosted run is still required.
+The available evidence does not establish why GitHub disabled execution, and
+local passes do not make the failed hosted gate green.
 
 The inherited `commitperclip PR Review` workflow was temporarily disabled after
 its unguarded default-branch run failed on unavailable upstream configuration.
