@@ -94,39 +94,53 @@
       "reviewedAt": "2026-10-26T00:16:03.013Z"
     },
     "accountMenu.account": {
-      "sourceHash": "4b72de375818833166e9ae88a55964de281768343f342c92dfa32a2968a1ecfb",
+      "sourceHash": "6430b06c2c75b8f3f914b917da6e0acab365a03584ef7b71c011c19f201cc6b7",
       "translationHash": "b7a3cf1f3dc5b5458c84b06d95c88a9d70019cbef4c78de74d3c0dee2b50d21a",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.755Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.documentation": {
-      "sourceHash": "ea37588077383632aaf63c5d8679a2ac47a0cd231b2d09020fece2f92d65e52a",
+      "sourceHash": "76ecdf576db3f2b2d52429455b4a908f94925f2c1b3d4b91cdba70e474d2cc5d",
       "translationHash": "679e082512f933f56508a71ef2d4dde68d52a9ba5bdb28f33601adfebd8b5ae1",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.755Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
+    },
+    "accountMenu.documentationDescription": {
+      "sourceHash": "e8b94619a3e34cf9272afee8046675f7cbefbc14ba72906656d5875f59ffc756",
+      "translationHash": "863929dc7f30ec8655e423aed55d8c4bd08910f2eb6f2ed14347bc38635271fb",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.invite": {
-      "sourceHash": "0c7af2b68a91cd3131364d076263986ff76858d867202c87484d05dfa57706a8",
+      "sourceHash": "7fc6a8904dc00a91bb7133877c630f7f21e2e1bd8a1f583fe123dd2a7dcb8ef5",
       "translationHash": "cb9f14ee93469b6c64e224777fa9fc85f5b5de65f7e886f7436de7c2b7a8e57b",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
+    },
+    "accountMenu.inviteDescription": {
+      "sourceHash": "5687e068df14be0a419b5c28b5b1c02407fe89b58732fe94c736663865d7705b",
+      "translationHash": "4aa89b79499dd3d42a6c5a1d5acfdcddf3e190651dcdfad1223476b249034721",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.localWorkspaceBoard": {
-      "sourceHash": "1429d2da61d46455017b9b534d9a91063d3b857b6bf1ded0df4d71e18eec61a0",
+      "sourceHash": "3d41fb7aedc1c334df613e70e8fc145c221a92f0548cb77ed2969546550f3188",
       "translationHash": "2bf1e67b4465a6b60003bfb98053fab4e6769facebb1e288cf868bd723ea8c8a",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.openAccountMenu": {
-      "sourceHash": "7a86555e4f06d350c520c02b231fb33a5dbee86da7d978936f97a6ba2bbad1c1",
+      "sourceHash": "f60fa8a8d064415bcf94bef539900167517dcc53916262b70358240c26ba2f7e",
       "translationHash": "bd8174011396f347a66dd6108abb4676fc5d486c38c018084ec7205201b963f7",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.settings": {
       "sourceHash": "18dab8622a96fe57cf5b9587a6629c7d832aa3267eaa66b052a0a8f87e28425e",
@@ -136,46 +150,53 @@
       "reviewedAt": "2026-10-25T22:12:18.756Z"
     },
     "accountMenu.shareFeedback": {
-      "sourceHash": "ec013f0eb930d5f2e2687f1ad395253af7eaca51cc010d100621302905d0bd8c",
+      "sourceHash": "5e78e9003397350f8eace5e09763a9f4e3b57c51f98998bcc3641f7e1cb836ed",
       "translationHash": "dd48a9dfea16158642b97f6762c406599a7ea0385a0945fc406cff24463882a0",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.signedIn": {
-      "sourceHash": "7a14fc4575d3a40b188e09c78e73e11f2f78d3d5cbb299aeceba7aa85664201d",
+      "sourceHash": "c86949c85eb49fe94dcec0c535e7e7d95cb3332b62803923deaf841752d82f63",
       "translationHash": "fa8ea0030455f79e2b06d97d104087c9076cfa551e0d0f35be6c683ded5d2b44",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.signingOut": {
-      "sourceHash": "c1d9680d07756ffc1c7eff89af7042149fdc871dde34a7cdd6d8a6864ee857e4",
+      "sourceHash": "e9ead21c3b98e93264a6502a5db91791306395c2e32c8e15a633daf583947ad2",
       "translationHash": "a433a381d497c524f9e9cf5c6ecda636d6da86d0f08df9a21171b056a46154a1",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.signOut": {
-      "sourceHash": "50f733202bb7afa260c3366b6b56ba4b033fe580d5c32e2ef55bab768ece5d0a",
+      "sourceHash": "ee9b8d6a3b61b8800ba8b6361b303799ffd15db76e47077539b29fa5637ce99c",
       "translationHash": "0800bcb7b4b61632092004c1ff3c6a45592f015902f171dc75b25819a9f42bb3",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
+    },
+    "accountMenu.signOutDescription": {
+      "sourceHash": "6827f16869e59f33bdc032fe70dd14894ff8f7d9c1af8e8f3275147faed204da",
+      "translationHash": "2168494e1bc2fa04d46a566a9c5606df457b855fb46407f3d2fc15f338bd22bc",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:36:04.877Z"
     },
     "accountMenu.viewCommit": {
-      "sourceHash": "bb7e3a9904ec4a409a603870807bc50ad2d0496f23b268dea6e5bdab308e1b5c",
+      "sourceHash": "a152ea8bf3656e04ef48384603f8e0156ef369a1f252779bfe4a9d9e316b7aa0",
       "translationHash": "86829946e4f4389a77631fc20507fc592331a441baec7b1f4626049e5b830d10",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.878Z"
     },
     "accountMenu.viewProfile": {
-      "sourceHash": "112ab7e5f3b0f2a180303a2d4f61eec552cc5b6b54f41fd07e27d922d9edbcec",
+      "sourceHash": "c1ecd88bc18048dd13a06c007869b63ac46d2a778ad5ab3af7f27892caf26a57",
       "translationHash": "8b2286740128a62e73cfd29d525af674f46b328603583b713f81c899595da537",
-      "reviewer": "Codex root editorial and call-contract review, 2026-10-26",
+      "reviewer": "Codex root: legacy account menu source and EN/RU review",
       "method": "agent",
-      "reviewedAt": "2026-10-25T22:12:18.756Z"
+      "reviewedAt": "2026-10-26T03:36:04.878Z"
     },
     "agents.chat": {
       "sourceHash": "955429025ed1eb8f5e5227b1a67918807d4776f055766d51effbe3b6b20e696e",

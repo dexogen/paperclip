@@ -68,12 +68,13 @@ Sources: [Command palette](../../ui/src/components/CommandPalette.tsx), [shortcu
 ### `locale`
 
 Use the language control at sign-in, first-administrator bootstrap, the active
-onboarding wizard, or in the sidebar account menu. The fork starts
+onboarding wizard, or in either active sidebar account menu. The fork starts
 in Russian unless `VITE_DEFAULT_LOCALE` overrides it; a saved `paperclip.locale`
 preference wins. This is browser-local presentation, not an account-wide setting.
 
 Automated: [locale preferences](../../ui/src/i18n/locale-preferences.test.ts),
 [language control](../../ui/src/components/LocaleSwitcher.test.tsx),
+[both account-menu variants](../../ui/src/components/SidebarAccountMenu.test.tsx),
 [profile](../../ui/src/pages/ProfileSettings.test.tsx), and
 [formatting](../../ui/src/lib/utils.localization.test.ts) cover storage failure,
 language changes, draft preservation, and display contracts with fixtures.
@@ -94,7 +95,9 @@ checks, not proof of task persistence or full task-detail translation.
 
 Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
 document language, labels, accessible names, dates, and currency. Verify both UI
-variants and a narrow viewport. Language changes must not submit forms, change
+variants and a narrow viewport. Account-menu clicks can trigger the normal blur
+save of an active inline editor; test focused draft retention separately through
+the locale API. Language changes themselves must not submit forms, change
 identifiers, convert currency, or change the time zone. Component checks do not
 establish complete UI translation coverage; consult the localization audit report.
 
