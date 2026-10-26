@@ -168,6 +168,99 @@ describeEmbeddedPostgres("companySearchService", () => {
     return id;
   }
 
+  async function searchTasks(engine: "full" | "quick", companyId: string, q: string, offset = 0, limit = 50, excludedId?: string) {
+    const readCondition = excludedId ? sql<boolean>`${issues.id} <> ${excludedId}` : undefined;
+    return engine === "full"
+      ? (await svc.search(companyId, companySearchQuerySchema.parse({ q, offset, limit }), { issueReadCondition: readCondition }))
+        .results.filter((row) => row.type === "issue")
+      : issueService(db).list(companyId, { q, offset, limit, readCondition });
+  }
+
+  it.each(["full", "quick"] as const)("%s: preserves Unicode phrase ranking, word starts and conservative typo recovery", async (engine) => {
+    const companyId = await createCompany();
+    const exact = await createIssue(companyId, { title: "Проверка языка", status: "done" });
+    const phrase = await createIssue(companyId, { title: "Проверка языка в приложении" });
+    const reordered = await createIssue(companyId, { title: "Языка настройка проверка" });
+    const partial = await createIssue(companyId, { title: "Проверка связи" });
+    const short = await createIssue(companyId, { title: "ЁЖ проверяет" });
+    const prefix = await createIssue(companyId, { title: "Ёжик проверяет" });
+    const embedded = await createIssue(companyId, { title: "Надёжный поиск" });
+
+    const ranked = (await searchTasks(engine, companyId, "ПРОВЕРКА ЯЗЫКА")).map((row) => row.id);
+    expect(ranked).toEqual([exact, phrase, reordered]);
+    expect(ranked).not.toContain(partial);
+    expect((await searchTasks(engine, companyId, '"проверка языка"')).map((row) => row.id)).toEqual([exact, phrase]);
+    const shortMatches = (await searchTasks(engine, companyId, "ёж")).map((row) => row.id);
+    expect(shortMatches).toEqual(expect.arrayContaining([short, prefix]));
+    expect(shortMatches).not.toContain(embedded);
+    expect((await searchTasks(engine, companyId, "проврека языка")).map((row) => row.id))
+      .toEqual(expect.arrayContaining([exact, phrase, reordered]));
+    expect(await searchTasks(engine, companyId, '"проврека языка"')).toEqual([]);
+  });
+
+  it.each(["full", "quick"] as const)("%s: keeps Unicode wildcard and SQL-looking input literal", async (engine) => {
+    const companyId = await createCompany();
+    const values = ["Проверка 50%", "Проверка_имени", "Проверка\\пути", "Проверка ' OR 1=1 --"];
+    const targets = [];
+    for (const title of values) targets.push(await createIssue(companyId, { title }));
+    await createIssue(companyId, { title: "Проверка 500" });
+    await createIssue(companyId, { title: "ПроверкаXимени" });
+    await createIssue(companyId, { title: "Проверкапути" });
+    for (const [index, title] of values.entries()) {
+      const result = await searchTasks(engine, companyId, `"${title.toLowerCase()}"`);
+      expect(result.map((row) => row.id), title).toEqual([targets[index]]);
+    }
+    expect((await db.select({ id: issues.id }).from(issues)).length).toBe(7);
+  });
+
+  it.each(["full", "quick"] as const)("%s: preserves Unicode company, visibility, access and pagination boundaries", async (engine) => {
+    const companyId = await createCompany();
+    const otherCompanyId = await createCompany();
+    const visible = [];
+    for (let index = 0; index < 4; index++) {
+      visible.push(await createIssue(companyId, { title: "Проверка страницы", updatedAt: new Date("2026-01-01") }));
+    }
+    const hidden = await createIssue(companyId, { title: "Проверка страницы", hiddenAt: new Date() });
+    const other = await createIssue(otherCompanyId, { title: "Проверка страницы" });
+    const deletedComment = await createIssue(companyId, { title: "Other task" });
+    await db.insert(issueComments).values({ companyId, issueId: deletedComment, body: "Проверка страницы", deletedAt: new Date() });
+    const all = (await searchTasks(engine, companyId, "проверка страницы", 0, 50, visible[0])).map((row) => row.id);
+    expect(all).toHaveLength(3);
+    expect(all).toEqual(expect.arrayContaining(visible.slice(1)));
+    for (const excluded of [visible[0], hidden, other, deletedComment]) expect(all).not.toContain(excluded);
+    const paginated = [];
+    for (let offset = 0; offset < 4; offset++) {
+      paginated.push(...(await searchTasks(engine, companyId, "проверка страницы", offset, 1, visible[0])).map((row) => row.id));
+    }
+    expect(paginated).toEqual(all);
+  });
+
+  it("finds Unicode comment and document evidence and selects the matching phrase snippet", async () => {
+    const companyId = await createCompany();
+    const commentIssue = await createIssue(companyId, { title: "Comment evidence" });
+    const documentIssue = await createIssue(companyId, { title: "Document evidence" });
+    const preferredComment = randomUUID();
+    await db.insert(issueComments).values([
+      { id: preferredComment, companyId, issueId: commentIssue, body: "Проверка языка закончена", updatedAt: new Date("2026-01-01") },
+      { companyId, issueId: commentIssue, body: "Языка настройка и проверка", updatedAt: new Date("2026-02-01") },
+    ]);
+    for (const [index, body] of ["Проверка языка закончена", "Языка настройка и проверка"].entries()) {
+      const documentId = randomUUID();
+      await db.insert(documents).values({ id: documentId, companyId, title: "Notes", latestBody: body, format: "markdown" });
+      await db.insert(issueDocuments).values({ companyId, issueId: documentIssue, documentId, key: `notes-${index}`, updatedAt: new Date(`2026-0${index + 1}-01`) });
+    }
+    const full = await svc.search(companyId, companySearchQuerySchema.parse({ q: "проверка языка" }));
+    expect(full.results.map((row) => row.id)).toEqual(expect.arrayContaining([commentIssue, documentIssue]));
+    const comment = full.results.find((row) => row.id === commentIssue)!;
+    const document = full.results.find((row) => row.id === documentIssue)!;
+    expect(comment.matchedFields).toContain("comment");
+    expect(comment.snippet).toContain("Проверка языка закончена");
+    expect(document.matchedFields).toContain("document");
+    expect(document.snippet).toContain("Проверка языка закончена");
+    expect((await issueService(db).list(companyId, { q: "проверка языка", limit: 50 })).map((row) => row.id))
+      .toEqual(expect.arrayContaining([commentIssue, documentIssue]));
+  });
+
   it("keeps exact entity names ahead of speculative task typos and rejects empty quotes", async () => {
     const companyId = await createCompany();
     const agentId = await createAgent(companyId, { name: "Mibile" });

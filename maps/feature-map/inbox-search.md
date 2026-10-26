@@ -77,7 +77,19 @@ Manual: Open a pending decision, follow its source, resolve it through the suppo
 
 Automated: [search page](../../ui/src/pages/Search.test.tsx) and [company search service](../../server/src/__tests__/company-search-service.test.ts) cover UI and server search separately.
 
+[Task search quality](../../server/src/__tests__/task-search-quality.test.ts)
+also exercises mixed-case Cyrillic titles and short words against a real
+embedded PostgreSQL database with locale `C`. Company-search regressions cover
+literal wildcards, private/foreign results, pagination and comment/document
+evidence. These service tests do not establish an authenticated agent journey.
+See the [Unicode capability and performance limits](../../doc/SEARCH.md#unicode-task-queries).
+
 Manual: Search a unique task title and content phrase, open the result, and compare the actual record. Test filters, no results, and a second company. Verify stale results do not expose inaccessible data.
+
+Repeat with a title `Проверка языка ЁЖ`: search using lower, upper and mixed case
+in both the task-list input and full search. Confirm the intended IDs and literal
+title, then check a quoted phrase and a short `ёж` query. Record database version,
+collation and request timing separately from translation and browser layout.
 
 ### `toasts`
 
