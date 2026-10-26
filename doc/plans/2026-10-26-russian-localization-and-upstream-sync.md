@@ -808,7 +808,19 @@ production code. The complete 55-case editor suite then passed. The other 29
 complete suites passed in the original run. Integrated UI typecheck, build,
 token gates and map checks passed; these results do not claim full repository CI.
 
-The remaining major packages are agent trust/tools/skills/channels, bulk controls and invitations,
+The trust/project-access slice adds 69 reviewed families (75 English and 87
+Russian forms) across four production owners. All 52 cases in four complete
+related suites passed, including the existing email setup consumer. UI typecheck,
+build and token gates passed. The strict audit reports 6,979 reviewed families
+and 15,699 remaining findings, with no pending/missing/invalid messages, new
+findings or source errors. Only 67 resolved baseline entries were removed, with
+one exact exception for the canonical project-type comparison. An initial draft
+missed the export of a pure count helper; the existing multi-boundary case caught
+it, and the corrected complete suite passed. Permission builders remain unchanged.
+Component tests preserve selected projects, pending saves, raw names/errors and
+locale-independent requests; they do not establish live permission enforcement.
+
+The remaining major packages are agent tools/skills/channels, bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

@@ -47,6 +47,14 @@ save them. Existing projects and other containment restrictions remain intact.
 Cancel discards the draft; a failed save retains it. Reload to verify persistence.
 This does not start or retry a task.
 
+The [project-access locale tests](../../ui/src/components/AgentProjectAccessSettings.test.tsx)
+mount the real editor with mocked APIs. They check pending grant payloads, search
+and focus, cancellation, retry, read-only access, raw names and UUID-only return
+links across English/Russian changes. The [trust controls](../../ui/src/components/TrustPresetSection.test.tsx)
+check an open policy, unsaved boundary type, canonical permission payloads and
+disabled/email gates. These component checks do not prove live authorization or
+persistence; use the reload recipe above for that evidence.
+
 In `/agents/all`, select roster checkboxes and choose **Edit connection & model**.
 A mixed selection offers one action per harness. Each field is opt-in. The editor
 previews each changed value and excludes agents already at the target value.

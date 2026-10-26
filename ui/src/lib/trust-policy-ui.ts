@@ -1,3 +1,6 @@
+import type { TFunction } from "i18next";
+import { i18n } from "../i18n";
+
 import {
   DEFAULT_TRUST_PRESET,
   LOW_TRUST_REVIEW_PRESET,
@@ -25,6 +28,14 @@ export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = {
   low_trust_review:
     "Contained for hostile or untrusted input. Narrow Paperclip API, quarantined output. Use for PR review and external-content triage.",
 };
+
+export function getTrustPresetLabels(t: TFunction = i18n.getFixedT("en")): Record<TrustPreset, string> {
+  return { standard: t("agentAccessUi.trust.standard"), low_trust_review: t("agentAccessUi.trust.lowTrust") };
+}
+
+export function getTrustPresetDescriptions(t: TFunction = i18n.getFixedT("en")): Record<TrustPreset, string> {
+  return { standard: t("agentAccessUi.trust.standardDescription"), low_trust_review: t("agentAccessUi.trust.lowTrustDescription") };
+}
 
 export function getTrustPreset(permissions: Partial<AgentPermissions> | null | undefined): TrustPreset {
   return permissions?.trustPreset === LOW_TRUST_REVIEW_PRESET ? LOW_TRUST_REVIEW_PRESET : DEFAULT_TRUST_PRESET;
@@ -82,7 +93,7 @@ export function getLowTrustBoundary(
   return boundary?.mode === LOW_TRUST_REVIEW_PRESET ? boundary : null;
 }
 
-function countBoundaryTargets(boundary: LowTrustBoundary | null | undefined) {
+export function countBoundaryTargets(boundary: LowTrustBoundary | null | undefined) {
   return (
     (boundary?.projectIds?.length ?? 0) +
     (boundary?.rootIssueId ? 1 : 0) +

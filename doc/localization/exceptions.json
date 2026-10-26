@@ -544,6 +544,10 @@
     {
       "id": "b4fd3a7aab4a44c7914f231ada3c1747fcd407c8aa027a925cd5139e3c8f92b1",
       "reason": "LogViewer compares canonical transcript mode to nice before selecting localized nice/raw captions. The enum and React key remain unchanged; the comparator literal is not displayed."
+    },
+    {
+      "id": "2128647e779fde5346591ed7fab69b12a61e9ba72092166de929f47d6deea17b",
+      "reason": "TrustPresetSection compares the canonical boundary target type against project. The conditional renders the translated noProjects or noIssues message; the schema discriminator is never displayed."
     }
   ]
 }
