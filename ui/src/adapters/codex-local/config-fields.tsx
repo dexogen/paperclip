@@ -341,7 +341,7 @@ export function CodexLocalConfigFields({
         <ToggleField label={t("agentConfigUi.externalBilling")} hint={t("agentConfigUi.museBillingHint")}
           checked={runnerSchemaValue("allowUnmeteredProvider", false) === true} onChange={value => updateRunnerSchemaValue("allowUnmeteredProvider", value)} />
       </>}
-      {runnerManaged && runnerProvider === "acpx" && runnerSchemaValue("acpxAgent", "claude") !== "grok" && (
+      {runnerManaged && !hideRunnerHarness && runnerProvider === "acpx" && runnerSchemaValue("acpxAgent", "claude") !== "grok" && (
         <Field configSection="adapter" label={t("agentConfigUi.acpAgent")} hint={t("agentConfigUi.acpAgentHint")}>
           <Select
             value={String(isCreate ? values!.adapterSchemaValues?.acpxAgent ?? "claude" : eff("adapterConfig", "acpxAgent", config.acpxAgent ?? "claude"))}

@@ -743,6 +743,7 @@ export type {
   IssueReviewRequest,
   IssueExecutionDecision,
   IssueComment,
+  IssueRecentComments,
   IssueQueuedCommentEntry,
   IssueQueuedCommentProtocol,
   IssueQueuedCommentQueue,

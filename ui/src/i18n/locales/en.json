@@ -2755,7 +2755,9 @@
       "pausedProjectRetry": "The project is paused. Resume it before retrying.",
       "chatDisabled": "Agent Chat is disabled in Experimental settings.",
       "pausing": "Pausing...",
-      "owner": "Owner"
+      "owner": "Owner",
+      "moreMessages": "More messages",
+      "partialDetailsError": "Some task details could not be loaded."
     },
     "errors": {
       "stoppedUpdate": "Run was stopped, but updating the task failed: {{message}}",
@@ -7343,7 +7345,6 @@
     "upgradeVerify": "The upgrade will verify your computer first. This can take a few minutes.",
     "upgradeSaveComputer": "Save your computer change before upgrading the runner.",
     "upgradeIncludesDraft": "Your unsaved changes will be included.",
-    "comingSoon": "Coming soon",
     "experimental": "Experimental",
     "thinkingEffort": "Thinking effort",
     "instructionsFile": "Agent instructions file",
