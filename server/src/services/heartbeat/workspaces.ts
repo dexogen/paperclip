@@ -6,7 +6,7 @@ import { GitCacheRestorationFailure } from "../git-workspace-restoration.js";
 import { deriveRepoNameFromRepoUrl, managedProjectCheckoutName, projectRepositoryIdentity } from "../managed-project-checkout-name.js";
 import { forbidden } from "../../errors.js";
 import { readGitConnectionFailure } from "../git-connection-failure.js";
-import { materializeManagedProjectWorkspace, ensureManagedRepositoriesIgnored } from "../managed-repository-checkout.js";
+import { materializeManagedProjectWorkspace, ensureManagedRepositoriesIgnored, isGitNotRepositoryDiagnostic } from "../managed-repository-checkout.js";
 import { addNestedRepositoryWorktree, isVerifiedNestedRepositoryBase, nestedRepositoryBaseCandidates, readLinkedNestedCheckout, repairMovedNestedRepositoryWorktree } from "../nested-repository-worktrees.js";
 export { materializeManagedProjectWorkspace } from "../managed-repository-checkout.js";
 import { sql } from "drizzle-orm";
@@ -852,8 +852,7 @@ async function probeGitWorktreeBase(cwd: string) {
     // the same message. Verify its absence too. Missing Git, permission errors,
     // corruption and I/O failures must remain reportable in Sentry.
     const notRepository = failure.code === 128 && failure.signal == null &&
-      typeof failure.stderr === "string" &&
-      /^fatal: not a git repository \(or any of the parent directories\): \.git\r?\n?$/.test(failure.stderr) &&
+      isGitNotRepositoryDiagnostic(failure.stderr) &&
       !process.env.GIT_DIR && !process.env.GIT_WORK_TREE && !process.env.GIT_COMMON_DIR &&
       await hasNoGitMetadataInWorkspaceAncestors(cwd);
     return { isCheckout: false, notRepository };
