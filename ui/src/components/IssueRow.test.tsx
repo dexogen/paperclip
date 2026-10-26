@@ -7,6 +7,7 @@ import type { Issue } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { IssueRow } from "./IssueRow";
 import { StatusIcon } from "./StatusIcon";
+import { i18n } from "../i18n";
 import { TooltipProvider } from "./ui/tooltip";
 
 vi.mock("@/lib/router", () => ({
@@ -99,6 +100,31 @@ describe("IssueRow", () => {
   afterEach(() => {
     container.remove();
     vi.unstubAllGlobals();
+  });
+
+  it("translates read and archive controls while preserving literal task content and explicit actions", async () => {
+    const root = createRoot(container);
+    const onMarkRead = vi.fn();
+    const onArchive = vi.fn();
+    const issue = createIssue({ title: "Задача <strong>RU</strong> & EN" });
+    act(() => root.render(<IssueRow issue={issue} unreadState="visible" onMarkRead={onMarkRead} onArchive={onArchive} />));
+    const link = container.querySelector('a[href="/issues/PAP-1"]');
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain(issue.title);
+      expect(container.querySelector("strong")).toBeNull();
+      expect(container.querySelector('a[href="/issues/PAP-1"]')).toBe(link);
+      expect(container.querySelector('button[aria-label="Отметить как прочитанное"]')).not.toBeNull();
+      expect(container.querySelector('button[aria-label="Архивировать"]')).not.toBeNull();
+      expect(onMarkRead).not.toHaveBeenCalled();
+      expect(onArchive).not.toHaveBeenCalled();
+      act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Архивировать"]')!.click());
+      expect(onArchive).toHaveBeenCalledOnce();
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector('button[aria-label="Archive"]')).not.toBeNull();
+    } finally {
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+    }
   });
 
   it("renders the list status glyph at md (16px)", () => {

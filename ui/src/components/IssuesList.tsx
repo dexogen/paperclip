@@ -1070,7 +1070,7 @@ function StreamlinedIssuesList({
         if (!options.has(id)) {
           options.set(id, {
             id,
-            label: formatAssigneeUserLabel(issue.createdByUserId, currentUserId) ?? issue.createdByUserId.slice(0, 5),
+            label: formatAssigneeUserLabel(issue.createdByUserId, currentUserId, undefined, t) ?? issue.createdByUserId.slice(0, 5),
             kind: "user",
             searchText: `${issue.createdByUserId} board user human`,
           });
@@ -1374,7 +1374,7 @@ function StreamlinedIssuesList({
         key === "__unassigned"
           ? t("tasks.unassigned")
           : key.startsWith("__user:")
-            ? (formatAssigneeUserLabel(key.slice("__user:".length), currentUserId, companyUserLabelMap) ?? t("tasks.user"))
+            ? (formatAssigneeUserLabel(key.slice("__user:".length), currentUserId, companyUserLabelMap, t) ?? t("tasks.user"))
             : (agentName(key) ?? key.slice(0, 8)),
       items: groups[key]!,
     }));
@@ -2145,6 +2145,7 @@ function StreamlinedIssuesList({
                     issue.assigneeUserId,
                     currentUserId,
                     companyUserLabelMap,
+                    t,
                   ) ?? assigneeUserProfile?.label ?? null;
                   const originatingActor = deriveOriginatingActor(issue);
                   const originatingUserId = originatingActor?.kind === "user" ? originatingActor.id : null;
@@ -2345,12 +2346,12 @@ function StreamlinedIssuesList({
                             />
                           </>
                         ) : undefined}
-                        mobileTitleMeta={rowPresentation === "task" ? issueActivityTimestamp(issue) : undefined}
-                        mobileMeta={rowPresentation === "legacy" ? issueActivityText(issue).toLowerCase() : undefined}
+                        mobileTitleMeta={rowPresentation === "task" ? issueActivityTimestamp(issue, t) : undefined}
+                        mobileMeta={rowPresentation === "legacy" ? issueActivityText(issue, t).toLowerCase() : undefined}
                         trailingMeta={rowPresentation === "task"
                           && visibleIssueColumnSet.has("updated")
                           && availableIssueColumnSet.has("updated")
-                          ? issueActivityTimestamp(issue)
+                          ? issueActivityTimestamp(issue, t)
                           : undefined}
                         desktopTrailing={(
                           visibleTrailingIssueColumns.length > 0 ? (

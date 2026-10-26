@@ -2,6 +2,8 @@
 
 import { createRoot, type Root } from "react-dom/client";
 import { flushSync } from "react-dom";
+import { act as reactAct } from "react";
+import { i18n } from "../i18n";
 import type { Issue, IssueStatus } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getKanbanColumnTone, KanbanBoard, resolveKanbanTargetStatus } from "./KanbanBoard";
@@ -106,6 +108,32 @@ function renderBoard(
 }
 
 describe("KanbanBoard", () => {
+  it("keeps revealed cards and literal titles when switching languages without changing task status", async () => {
+    const issues = createIssues(21, "todo");
+    issues[0].title = "Задача <strong>RU</strong> & EN";
+    const onUpdateIssue = vi.fn();
+    const { container } = renderBoard({ issues, initialVisibleCount: 10, revealIncrement: 10, onUpdateIssue });
+    const taskLink = container.querySelector('a[href="/issues/PAP-1"]');
+    const more = Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Show 10 more");
+    act(() => more!.click());
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Показано 20 из 21");
+      expect(container.textContent).toContain("Показать ещё 1");
+      expect(container.querySelector('[aria-roledescription="перемещаемая задача"]')).not.toBeNull();
+      expect(document.body.textContent).toContain("Чтобы начать перемещение элемента, нажмите пробел.");
+      expect(container.textContent).toContain("Задача <strong>RU</strong> & EN");
+      expect(taskLink?.querySelector("strong")).toBeNull();
+      expect(container.querySelector('a[href="/issues/PAP-1"]')).toBe(taskLink);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Showing 20 of 21");
+      expect(container.textContent).toContain("Show 1 more");
+      expect(onUpdateIssue).not.toHaveBeenCalled();
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
+
   beforeEach(() => {
     document.body.innerHTML = "";
   });

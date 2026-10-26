@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { IssueRecoveryAction, IssueScheduledRetry } from "@paperclipai/shared";
 import { formatMonitorOffset } from "./issue-monitor";
 
@@ -204,16 +206,16 @@ export function readRecoveryRetryLineage(
 }
 
 /** "Attempt 2 of 5", or null when the server did not record a bounded budget. */
-export function formatRecoveryAttemptLabel(lineage: RecoveryRetryLineage): string | null {
+export function formatRecoveryAttemptLabel(lineage: RecoveryRetryLineage, t: TFunction = i18n.getFixedT("en")): string | null {
   if (lineage.maxAttempts === null) return null;
-  return `Attempt ${Math.min(lineage.attempt, lineage.maxAttempts)} of ${lineage.maxAttempts}`;
+  return t("taskDisplay.retry.attempt", { attempt: Math.min(lineage.attempt, lineage.maxAttempts), maxAttempts: lineage.maxAttempts });
 }
 
 /** "in 3m" / "now" / "3m ago" for the stored next attempt, or null when none is stored. */
-export function formatRecoveryRetryOffset(lineage: RecoveryRetryLineage): string | null {
+export function formatRecoveryRetryOffset(lineage: RecoveryRetryLineage, t: TFunction = i18n.getFixedT("en")): string | null {
   if (!lineage.nextRetryAt) return null;
   try {
-    return formatMonitorOffset(lineage.nextRetryAt);
+    return formatMonitorOffset(lineage.nextRetryAt, t);
   } catch {
     return null;
   }
@@ -223,21 +225,21 @@ export function formatRecoveryRetryOffset(lineage: RecoveryRetryLineage): string
  * One compact sentence fragment shared by the card and the blocker chips so every surface
  * reports the same attempt count and due time.
  */
-export function formatRecoveryLineageSummary(lineage: RecoveryRetryLineage): string | null {
+export function formatRecoveryLineageSummary(lineage: RecoveryRetryLineage, t: TFunction = i18n.getFixedT("en")): string | null {
   const parts: string[] = [];
-  const attempt = formatRecoveryAttemptLabel(lineage);
+  const attempt = formatRecoveryAttemptLabel(lineage, t);
   if (attempt) parts.push(attempt);
-  const offset = formatRecoveryRetryOffset(lineage);
+  const offset = formatRecoveryRetryOffset(lineage, t);
   if (lineage.liveRunId) {
-    parts.push("attempt running now");
+    parts.push(t("taskDisplay.retry.running"));
   } else if (lineage.retryExpired) {
     // Never "next try 5m ago": a due time in the past is a missed attempt, and phrasing it as
     // an upcoming one is exactly the false healthy state this helper exists to prevent.
-    parts.push(offset ? `retry missed ${offset}` : "retry missed");
+    parts.push(offset ? t("taskDisplay.retry.missedOffset", { offset }) : t("taskDisplay.retry.missed"));
   } else if (offset) {
-    parts.push(offset === "now" ? "next try now" : `next try ${offset}`);
+    parts.push(t("taskDisplay.retry.nextOffset", { offset }));
   } else if (lineage.exhausted) {
-    parts.push("retries used up");
+    parts.push(t("taskDisplay.retry.exhausted"));
   }
   return parts.length > 0 ? parts.join(" · ") : null;
 }

@@ -3,6 +3,8 @@
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { act as reactAct } from "react";
+import { i18n } from "../i18n";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Issue, Project } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -377,6 +379,53 @@ describe("IssuesList", () => {
   afterEach(() => {
     vi.useRealTimers();
     container.remove();
+  });
+
+  it("keeps a legacy search draft and grouping selection across language changes", async () => {
+    mockInstanceSettingsApi.getExperimental.mockResolvedValue({ enableStreamlinedUi: false });
+    const storageKey = "paperclip:localized-legacy:company-1";
+    localStorage.setItem(storageKey, JSON.stringify({ groupBy: "status", viewMode: "list" }));
+    const onUpdateIssue = vi.fn();
+    const onSearchChange = vi.fn();
+    const { root, queryClient } = renderWithQueryClient(
+      <IssuesList issues={[createIssue({ id: "localized-task", title: "Локальная задача", status: "todo" })]}
+        isLoading={false} agents={[]} projects={[]} viewStateKey="paperclip:localized-legacy"
+        rowPresentation="task" toolbarPresentation="collection"
+        searchWithinLoadedIssues onSearchChange={onSearchChange} onUpdateIssue={onUpdateIssue} />,
+      container,
+    );
+    try {
+      await waitForAssertion(() => {
+        const row = container.querySelector('[data-testid="issue-row"]');
+        expect(row).not.toBeNull();
+        expect(row?.getAttribute("data-presentation")).toBeNull();
+      });
+      const input = container.querySelector<HTMLInputElement>('input[aria-label="Search tasks"]')!;
+      vi.useFakeTimers();
+      act(() => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "Локальная");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await reactAct(async () => { await vi.advanceTimersByTimeAsync(250); });
+      expect(onSearchChange).toHaveBeenLastCalledWith("Локальная");
+      const changes = onSearchChange.mock.calls.length;
+      const persisted = localStorage.getItem(storageKey);
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(input.isConnected).toBe(true);
+      expect(input.value).toBe("Локальная");
+      expect(input.getAttribute("aria-label")).toBe("Поиск задач");
+      expect(container.querySelector('button[title="Доска"]')).not.toBeNull();
+      expect(container.textContent).toContain("К выполнению");
+      expect(localStorage.getItem(storageKey)).toBe(persisted);
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(input.value).toBe("Локальная");
+      expect(onSearchChange).toHaveBeenCalledTimes(changes);
+      expect(onUpdateIssue).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+      await reactAct(async () => { root.unmount(); await i18n.changeLanguage("en"); });
+      queryClient.clear();
+    }
   });
 
   it("uses the master list and legacy persistence when Streamlined UI is off", async () => {

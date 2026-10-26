@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { useTranslation } from "@/i18n";
 import type { ExternalObjectSummary } from "@paperclipai/shared";
 import {
   dominantExternalObjectTone,
@@ -28,15 +30,15 @@ function dominantObject(summary: ExternalObjectSummary) {
   return summary.objects.find((object) => object.statusTone === summary.highestSeverity) ?? null;
 }
 
-function buildBreakdownTitle(summary: ExternalObjectSummary): string {
+function buildBreakdownTitle(summary: ExternalObjectSummary, t: TFunction): string {
   const parts: string[] = [];
   for (const [category, count] of Object.entries(summary.byStatusCategory)) {
     if (!count) continue;
-    parts.push(`${count} ${externalObjectCategoryLabel(category).toLowerCase()}`);
+    parts.push(t("taskDisplay.external.categoryCount", { count, category: externalObjectCategoryLabel(category, t).toLowerCase() }));
   }
-  if (summary.staleCount > 0) parts.push(`${summary.staleCount} stale`);
-  parts.push(`${summary.total} total`);
-  return `External objects: ${parts.join(", ")}`;
+  if (summary.staleCount > 0) parts.push(t("taskDisplay.external.staleCount", { count: summary.staleCount }));
+  parts.push(t("taskDisplay.external.total", { count: summary.total }));
+  return t("taskDisplay.external.breakdown", { parts: parts.join(", ") });
 }
 
 /**
@@ -51,6 +53,7 @@ export function ExternalObjectStatusSummary({
   compact,
   className,
 }: ExternalObjectStatusSummaryProps) {
+  const { t } = useTranslation();
   const reducedMotion = usePrefersReducedMotion();
   const tone = dominantExternalObjectTone(summary);
   const total = summary?.total ?? 0;
@@ -61,7 +64,7 @@ export function ExternalObjectStatusSummary({
   const Icon = externalObjectIconForKey(object?.statusIconKey) ?? externalObjectIconForCategory(category);
   const badgeClass = externalObjectStatusBadge[category] ?? externalObjectStatusBadgeDefault;
   const dominantCount = externalObjectDominantCount(summary);
-  const title = buildBreakdownTitle(summary);
+  const title = buildBreakdownTitle(summary, t);
   const animateClass = category === "running" && !reducedMotion ? "animate-spin" : "";
 
   return (

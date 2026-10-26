@@ -58,10 +58,19 @@ claim, the active onboarding wizard and its model/provider setup controls,
 organization settings, instance general/access settings, and their permission
 controls. Provider account selection and the shared access step are included;
 the complete Connections catalog and its other setup steps are not.
-The legacy task list, board/column renderers, full task/agent/project detail pages,
-the rest of agent configuration, dashboards, and remaining settings still need
-translation. Shared child components may contain untranslated copy; the source
-audit tracks that debt.
+The task collection slice also covers the legacy list, board, column picker,
+shared rows, status picker, hover previews, retry indicators, and external-object
+summaries. Both standard and legacy task lists pass the active translator to
+their display helpers. Those helpers retain English defaults for other callers
+whose existing contracts still use English labels. Language changes preserve
+search text, open controls, pagination, user titles, and canonical status values.
+The design-sandbox-only refreshed filter panel is outside this production slice.
+
+Full task/agent/project detail pages, the rest of agent configuration, dashboards,
+and remaining settings still need translation. Shared task rows also appear in
+Inbox, projects, and routines; their translation does not cover those entire host
+pages. Shared child components may contain untranslated copy; the source audit
+tracks that debt.
 An English/Russian key match is not a claim of complete application localization.
 Formatting helpers update when their host component renders. Screens that do not
 yet subscribe to locale changes, such as Costs and Dashboard, may retain their

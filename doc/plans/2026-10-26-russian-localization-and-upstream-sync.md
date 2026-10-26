@@ -302,11 +302,25 @@ and complete repository verification of this combined revision remain pending.
 The latest parent/integration hosted runs were cancelled with the GitHub check
 annotation `repository invocation blocked`; they are not successful checks.
 
-Full task/agent/project detail screens, older task renderers, the complete
-Connections catalog, remaining agent configuration/settings, and dashboards are
-still outside the verified translation scope. The preview is not a completed
-full-web-UI release. See the [UI localization guide](../../ui/src/i18n/README.md)
-for the current supported surfaces and constraints.
+The following task-collection slice adds 205 message families for the legacy
+list, board, columns, shared rows, status/preview controls, recovery indicators,
+and external-object summaries. The catalog contains 1,306 reviewed families
+(1,333 English forms and 1,387 Russian forms). Eight existing status families
+were reviewed again in their new context. The baseline loses 137 resolved
+occurrences and retains 20,068. Shared display helpers accept the active
+translator while retaining English defaults for callers outside this slice.
+Component checks cover drafts, open controls, canonical status changes, plural
+forms, and future versus missed retries. Two existing large-tree tests timed out
+in a combined WSL run; isolated runs passed without changing timeouts. Separate
+Linux verification remains necessary before accepting this slice.
+
+Full task/agent/project detail screens, the complete Connections catalog,
+remaining agent configuration/settings, dashboards, and the design-sandbox-only
+refreshed filter panel are still outside the verified translation scope. Shared
+rows do not make their Inbox, project, or routine host pages fully translated.
+The preview is not a completed full-web-UI release. See the
+[UI localization guide](../../ui/src/i18n/README.md) for the current supported
+surfaces and constraints.
 
 Three workflows prepare reviewed upstream merges, verify source and translations,
 and publish immutable integration images from verified master commits. They preserve

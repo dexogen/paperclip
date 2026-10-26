@@ -86,6 +86,12 @@ and [instance access](../../ui/src/pages/InstanceAccess.test.tsx) check that a
 language change preserves drafts, selected permission values, and local errors
 without starting a claim, reconnecting, or submitting a form.
 
+[Task display localization](../../ui/src/lib/task-display-localization.test.tsx)
+checks Russian plural forms, active dependency and retry meaning, unchanged user
+text, and mounted status/preview controls. Task list, board, row, and column tests
+exercise language changes with existing search and view state. These are component
+checks, not proof of task persistence or full task-detail translation.
+
 Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
 document language, labels, accessible names, dates, and currency. Verify both UI
 variants and a narrow viewport. Language changes must not submit forms, change

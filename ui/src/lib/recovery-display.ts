@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { IssueRecoveryAction, IssueRecoveryActionKind } from "@paperclipai/shared";
 import { Eye, OctagonAlert, RefreshCw, TriangleAlert } from "lucide-react";
 import {
@@ -120,9 +122,10 @@ export function recoveryChipLabel(
   state: ActiveRecoveryDisplayState,
   kind: IssueRecoveryActionKind,
   lineage?: RecoveryRetryLineage | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   if (kind === "workspace_validation" && state === "needed") {
-    return "Workspace recovery needed";
+    return t("taskDisplay.recovery.workspaceNeeded");
   }
   if (
     state === "in_progress" &&
@@ -130,7 +133,12 @@ export function recoveryChipLabel(
     lineage.maxAttempts !== null &&
     lineage.attempt > 0
   ) {
-    return `Recovery in progress · ${Math.min(lineage.attempt, lineage.maxAttempts)}/${lineage.maxAttempts}`;
+    return t("taskDisplay.recovery.progressBudget", { attempt: Math.min(lineage.attempt, lineage.maxAttempts), maxAttempts: lineage.maxAttempts });
   }
-  return RECOVERY_CHIP_DEFAULT_TONE[state].label;
+  switch (state) {
+    case "needed": return t("taskDisplay.recovery.needed");
+    case "in_progress": return t("taskDisplay.recovery.inProgress");
+    case "observe_only": return t("taskDisplay.recovery.observing");
+    case "escalated": return t("taskDisplay.recovery.escalated");
+  }
 }

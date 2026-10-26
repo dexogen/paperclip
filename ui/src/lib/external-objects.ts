@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import {
   AlertCircle,
   AlertOctagon,
@@ -74,34 +76,32 @@ export function externalObjectIconForLiveness(liveness: string): LucideIcon | nu
   return null;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  unknown: "Not yet resolved",
-  open: "Open",
-  waiting: "Waiting",
-  running: "Running",
-  succeeded: "Succeeded",
-  failed: "Failed",
-  blocked: "Blocked",
-  closed: "Closed",
-  archived: "Archived",
-  auth_required: "Authorization required",
-  unreachable: "Unreachable",
-};
-
-export function externalObjectCategoryLabel(category: string): string {
-  return CATEGORY_LABELS[category] ?? category.replace(/_/g, " ");
+export function externalObjectCategoryLabel(category: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (category) {
+    case "unknown": return t("taskDisplay.external.category.unknown");
+    case "open": return t("taskDisplay.external.category.open");
+    case "waiting": return t("taskDisplay.external.category.waiting");
+    case "running": return t("taskDisplay.external.category.running");
+    case "succeeded": return t("taskDisplay.external.category.succeeded");
+    case "failed": return t("taskDisplay.external.category.failed");
+    case "blocked": return t("taskDisplay.external.category.blocked");
+    case "closed": return t("taskDisplay.external.category.closed");
+    case "archived": return t("taskDisplay.external.category.archived");
+    case "auth_required": return t("taskDisplay.external.category.auth_required");
+    case "unreachable": return t("taskDisplay.external.category.unreachable");
+    default: return category.replace(/_/g, " ");
+  }
 }
 
-const LIVENESS_LABELS: Record<string, string> = {
-  unknown: "Not yet refreshed",
-  fresh: "Fresh",
-  stale: "Stale",
-  auth_required: "Requires auth",
-  unreachable: "Unreachable",
-};
-
-export function externalObjectLivenessLabel(liveness: string): string {
-  return LIVENESS_LABELS[liveness] ?? liveness.replace(/_/g, " ");
+export function externalObjectLivenessLabel(liveness: string, t: TFunction = i18n.getFixedT("en")): string {
+  switch (liveness) {
+    case "unknown": return t("taskDisplay.external.liveness.unknown");
+    case "fresh": return t("taskDisplay.external.liveness.fresh");
+    case "stale": return t("taskDisplay.external.liveness.stale");
+    case "auth_required": return t("taskDisplay.external.liveness.auth_required");
+    case "unreachable": return t("taskDisplay.external.liveness.unreachable");
+    default: return liveness.replace(/_/g, " ");
+  }
 }
 
 export function externalObjectDisplayStatusLabel(input: {
@@ -110,16 +110,16 @@ export function externalObjectDisplayStatusLabel(input: {
   statusCategory: string;
   liveness: string;
   statusLabel?: string | null;
-}): string {
+}, t: TFunction = i18n.getFixedT("en")): string {
   const trimmedStatusLabel = input.statusLabel?.trim();
   if (trimmedStatusLabel) return trimmedStatusLabel;
   const isGenericUrl = input.providerKey === "url" && input.objectType === "link";
   const hasKnownObjectType = Boolean(input.providerKey && input.objectType);
   if (input.statusCategory === "unknown" && hasKnownObjectType && !isGenericUrl) {
-    if (input.liveness === "fresh") return "Status unavailable";
-    return externalObjectLivenessLabel(input.liveness);
+    if (input.liveness === "fresh") return t("taskDisplay.external.statusUnavailable");
+    return externalObjectLivenessLabel(input.liveness, t);
   }
-  return externalObjectCategoryLabel(input.statusCategory);
+  return externalObjectCategoryLabel(input.statusCategory, t);
 }
 
 /**
@@ -171,8 +171,8 @@ const PROVIDER_LABELS: Record<string, string> = {
   asana: "Asana",
 };
 
-export function externalObjectProviderLabel(providerKey: string | null | undefined): string {
-  if (!providerKey) return "External";
+export function externalObjectProviderLabel(providerKey: string | null | undefined, t: TFunction = i18n.getFixedT("en")): string {
+  if (!providerKey) return t("taskDisplay.external.provider");
   const lookup = PROVIDER_LABELS[providerKey];
   if (lookup) return lookup;
   return providerKey
@@ -181,30 +181,30 @@ export function externalObjectProviderLabel(providerKey: string | null | undefin
     .join(" ");
 }
 
-const OBJECT_TYPE_LABELS: Record<string, string> = {
-  pull_request: "pull request",
-  issue: "issue",
-  deployment: "deployment",
-  workflow_run: "workflow run",
-  ticket: "ticket",
-  lead: "lead",
-  url_link: "URL",
-};
-
-export function externalObjectTypeLabel(objectType: string | null | undefined): string {
-  if (!objectType) return "object";
-  return OBJECT_TYPE_LABELS[objectType] ?? objectType.replace(/_/g, " ");
+export function externalObjectTypeLabel(objectType: string | null | undefined, t: TFunction = i18n.getFixedT("en")): string {
+  if (!objectType) return t("taskDisplay.external.object");
+  switch (objectType) {
+    case "pull_request": return t("taskDisplay.external.type.pull_request");
+    case "issue": return t("taskDisplay.external.type.issue");
+    case "deployment": return t("taskDisplay.external.type.deployment");
+    case "workflow_run": return t("taskDisplay.external.type.workflow_run");
+    case "ticket": return t("taskDisplay.external.type.ticket");
+    case "lead": return t("taskDisplay.external.type.lead");
+    case "url_link": return t("taskDisplay.external.type.url_link");
+    default: return objectType.replace(/_/g, " ");
+  }
 }
 
 export function externalObjectDisplayLabel(
   providerKey: string | null | undefined,
   objectType: string | null | undefined,
   displayKey?: string | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
   const trimmedDisplayKey = displayKey?.trim();
   if (trimmedDisplayKey) return trimmedDisplayKey;
   if (providerKey === "url" && objectType === "link") return "URL";
-  return `${externalObjectProviderLabel(providerKey)} ${externalObjectTypeLabel(objectType)}`;
+  return t("taskDisplay.external.display", { provider: externalObjectProviderLabel(providerKey, t), type: externalObjectTypeLabel(objectType, t) });
 }
 
 /**
