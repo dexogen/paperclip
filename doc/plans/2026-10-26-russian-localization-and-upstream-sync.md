@@ -850,7 +850,17 @@ Autosave timing and existing eligibility gates are unchanged. This is component
 evidence with mocked APIs, not live materialization or a complete Skills catalog
 translation. Exact-head hosted CI and Greptile review remain pending.
 
-The remaining major packages are agent channels, bulk controls and invitations,
+The agent-channel list adds 16 reviewed message families. Its complete existing
+visibility-gate suite passes 16 cases without skips; UI typecheck, build and token
+gates pass. The strict audit reports 6,995 reviewed families and 15,689 remaining
+source findings, with no pending/missing/invalid messages, new findings or source
+errors. Only 10 resolved baseline entries are removed; no exception is added.
+Locale tests preserve pending queries, raw identity labels, status fallbacks,
+links and independent visibility filters. This is component evidence, not live
+provider setup or delivery. The existing query-error-as-empty gap remains outside
+this slice. Exact-head hosted CI and Greptile review remain pending.
+
+The remaining major packages are agent bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

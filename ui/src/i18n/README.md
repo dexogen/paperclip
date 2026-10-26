@@ -213,7 +213,14 @@ boundary type, project search, focus and pending grants without another write or
 refetch. A saved non-Error failure is translated at render time; an Error message
 remains literal. Legacy trust helpers retain their English defaults. Component
 checks include the existing email setup consumer; live permission enforcement
-and the remaining tools, skills and channel owners require separate verification.
+requires separate verification.
+
+The agent-channel list translates its captions and six known endpoint statuses.
+Provider brands, raw identity labels and the original display fallback for unknown
+statuses stay unchanged. Locale tests retain pending requests, links, independent
+chat/GitHub flags, default email availability and agent/archive filters without
+another fetch. This covers the list only; provider setup and live delivery remain
+separate. The existing query-error-as-empty behavior is not changed or qualified.
 
 `validateJsonSchemaFormIssues` returns owned `JsonSchemaValidationIssue` objects.
 The form resolves them in the current language; supplied string errors remain
@@ -264,8 +271,9 @@ dynamic-key declarations in the detector configuration. Unknown lifecycle values
 are not treated as active phases. Component tests preserve drafts, focus, pending
 actions, selected revisions and exact payloads through EN/RU/EN changes. They do
 not establish live key authentication, arbitrary plugin behavior or provisioning.
-Trust/project restrictions, tools, channels, external invitations and
-bulk editing remain separate slices. FileTree error/retry branches are also
+External invitations and bulk editing remain separate slices. The channel list
+is covered above; provider setup and delivery remain outside that slice.
+FileTree error/retry branches are also
 outside the active agent consumer's coverage.
 
 The agent-skills slice covers the active skills tab, skill rows, release picker
