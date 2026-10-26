@@ -400,6 +400,14 @@
     {
       "id": "b1f370ba75d95ec32ec5199748e3a06c7eaac64e2cd780baa15feab38377f298",
       "reason": "The canonical event tone error selects the translated app-owned fallback. Provider event text remains literal; the discriminant is not rendered."
+    },
+    {
+      "id": "b015f6d629e463d3f63cc1b4caef8ffcd1f7b16854bfcd250c0af3cc0df19ff8",
+      "reason": "Only two raw source fields joined by an em dash; the missing company-name fallback is already translated by formsUi.binding.otherOrganization. User-provided secret and company names remain literal."
+    },
+    {
+      "id": "a72f90c8c0ee403552742d899a2717138888151c8004e12ba16f36037d028e39",
+      "reason": "Parentheses wrap a known canonical status mapped to localized presentation; unknown status strings intentionally remain literal. No untranslated application caption."
     }
   ]
 }

@@ -6652,6 +6652,1182 @@
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.759Z"
     },
+    "formsUi.binding.bound": {
+      "sourceHash": "9bea32e99a360dd06039e67b34710fa2878814e9fe9dbd3c60cca6ebae26602a",
+      "translationHash": "d6593f98406d6cf6acc816395a3e42e223a2257ee09c81e91acc20f73d0ef8bb",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.735Z"
+    },
+    "formsUi.binding.checking": {
+      "sourceHash": "43ee68ef5e4cb1a5de0859cd593d2c62ac089988b9eab32b36d8c082b8f8dc39",
+      "translationHash": "1a5cbcfdfecd2262c51e6480e3537c0bbc25d5772f04b8eb40d3e37b8e71ec92",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.735Z"
+    },
+    "formsUi.binding.checkingName": {
+      "sourceHash": "fe19a321557482c3e6c0400e371fe07fcbc0077d3f6f0f96e0a4ea1bb9b89ea0",
+      "translationHash": "28416ddf3a137b0022ff1b737d03a652589b3a7611a9a1677e8b6e5ae9b6037b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.735Z"
+    },
+    "formsUi.binding.clear": {
+      "sourceHash": "819c32e28e1972e0782e3f32a0399c8c1635609c5385a1e90b56ac5228bbd75f",
+      "translationHash": "aa45df1c44beaf8016f3ddbfaefb74eede51325349659b9c01a52f47c623723c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.createTitle": {
+      "sourceHash": "090aeb3f1715c629062c173fdf3602e7792520c7cddc291d55d46e46af82837a",
+      "translationHash": "4af086ea16e95ae0f51cb53e0e4497eae3b4f7fdff77879a540974e279071d94",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.deleted": {
+      "sourceHash": "ad9c78ef7e10a3e9b62e80e550b6b9af4eba58efc82233533b14898154a47511",
+      "translationHash": "20e83fc96efb58d762528243febfe697fb151e708e6b2c26369d20c8802acb12",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.description": {
+      "sourceHash": "17adfa3f427cd3dd728a0d80d7ab7b63f99028428a03b316a35758eecab82d0c",
+      "translationHash": "16bd88fa7e1df98d82e809a57e906c070b7d189b9ffca1c44d0b64bddcfe53c3",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.empty": {
+      "sourceHash": "15dd81a21b6a220c6eb9a15d9502ae11979a060bd8ef506862602841ed061ae5",
+      "translationHash": "1a31c7b817e9c56680a65ce52ae0fb04480f95f2b61809de5a9513b2d062739a",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.external": {
+      "sourceHash": "09310d64a8adce12ae7602870ef71a6db8d8e6667955623005d482504ea1274c",
+      "translationHash": "73a12fed38f9daa551a8fe6ad998f7d11917a4dcb4ca58f2c65354df246fd680",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.inactive": {
+      "sourceHash": "46feb0d351117f0f32808cde8cbf4c41a4a0279ffa80b413c26d847348103388",
+      "translationHash": "f545fe25c7cf5534f4fae2d6af14ca34fe73b5952548c2968c11bd5012b468b1",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.label": {
+      "sourceHash": "8b0e836a668e24dc903f9fb7dee9ab43df58c2fc1b11474dc88ac8f1775555b4",
+      "translationHash": "caac21893b285750d3b643565ab7667d7992e66bb218ba690abc273bdecd1aa2",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.loadFailed": {
+      "sourceHash": "ff9982ac510888c565fc9a219259b06274155f718312275a9fc1aee734c69e43",
+      "translationHash": "78af90f55de7debc29a9669ce56976468eb64c57a9195b772fcc3fb316b81e48",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.loading": {
+      "sourceHash": "36ac0a32cae8b7673cb276ffc41636ee027bc83e0f225d7c72e6502467454247",
+      "translationHash": "5472d3e13abd2efb3cbfde226fe765d25761eb2244fc58b210bd53c1c2313108",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.notes": {
+      "sourceHash": "4a0f991a5cffc233c023a29d2ee52d61967bc91f9f249f35fe68d160e6c955cc",
+      "translationHash": "6acce0358854eb4b92dec0ee73e202b302245a917b79411bc15e27aa6f1ed6fa",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.otherOrganization": {
+      "sourceHash": "acfa2cf654b78aaeb209db9c3767c15f45f2af7d04236f9d8aa9bf88500b378f",
+      "translationHash": "4344dc78243ed02cde57d1c0e1565ec568f73e3c3e6aefc6dbb790b8d6a26a2d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.otherOwner": {
+      "sourceHash": "8ce89b5f5600b6483b583f5ca9a6441a3f9a4b1d6826d96d629400c0bf8c2b69",
+      "translationHash": "7ada01d75ee866fde7b6e67b9440eede2caa40bfd74a31c3283c61bc80fce6bb",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.owner": {
+      "sourceHash": "d068327bf010f6a9a3d2b3fd96a6a45d3a718f4ba4e06980fa2e10b6df92aea9",
+      "translationHash": "6ff861774f526a7c611718592e0ef7c0ba5e271ff95f14337bcaa3770249112f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.paste": {
+      "sourceHash": "84f36e566fe8421d4e717260695146ebd5ecfeb9a7d0a415e2ec4cd2edd38196",
+      "translationHash": "bee36883940e0b4ff58c8ef1345afbf524bc0460534d516dcffc558ecc560aa1",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.select": {
+      "sourceHash": "c937ce3b15be10680d99210ce2621effc6fe4afcedcfac548e8078f395fbd957",
+      "translationHash": "68c01bbecb3d9ea731842e15c0f5fff6a9beab85305d33c90bf5670928c69a14",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.status": {
+      "sourceHash": "86278f5a8862443915eda9db81b3a5b700d25c53b6e512e8c5a2e61196a9aedf",
+      "translationHash": "a33316387cff8e861a5791bcf538f588e5ca7e400baf43ee4fd8eba852c64bb5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.unavailable": {
+      "sourceHash": "635f59fc718194f23460453aee9e312c5ce024e7e8d359ae7748fa87c481c35d",
+      "translationHash": "4cb5c15139f1514d43f5321bf762a39fbdd2c50c6e8ee00a38262c7f4a41cf10",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.736Z"
+    },
+    "formsUi.binding.writeOnly": {
+      "sourceHash": "f813e4a8578e05260d3a94937078e57b9dfa8eb7f31debfc16e535dc44e119c1",
+      "translationHash": "6c54bb26dcf9224cded102ff46b57f5a00a632cc223c3701ac0c2ddcc0c346cf",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.copy.copied": {
+      "sourceHash": "742e046a967aa514e45866b19f147c54f0a588ea1ce79c3eb8e71e0e28f7f51c",
+      "translationHash": "c640c6c71f2631df8ce76712f48c215fc2b97dcd4a0055eace7e5033190aeffa",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.copy.failed": {
+      "sourceHash": "bb09d66460966df3ebd353c48761d77d6a0861d7428a3b1be37e10b0b3900f58",
+      "translationHash": "9467d2edec6efe3a182bf986337a78c0d3cee478af743cd2362b2bc0b05e1df3",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.add": {
+      "sourceHash": "64587bf6d16c27f36e3b82c3690d899640439531dc7ce67015b57bc507493059",
+      "translationHash": "1c15edf15eb35cb0ccd7446e0afc6988996d0d8182bb160e5caecc176799d255",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.added": {
+      "sourceHash": "9fcb31ed1dee36c879b99c8a2fab44db88df5cbb32ef1f5ff6e165b3d5c650dc",
+      "translationHash": "b64c098f4af251978806ae5249196388623a6dba8970a4d3f3874fce9670785e",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.attention": {
+      "sourceHash": "339a58bd0d22bb32a0817692d862d7cdb13cd0b987841dd4e2332ff1c67c3c8f",
+      "translationHash": "31e970f6fde167933087ca87860e6867dc733e4a8a7ee6566e7fd7536b03af52",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.bind": {
+      "sourceHash": "f14559e457a64df0017c3290da26c1a053cf3b7004e7e6f974e950e1038071b6",
+      "translationHash": "daf0c0974fe10b6c4759db354362a1f2885069c6aadf20f79dd922ccfad72ac6",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.edited": {
+      "sourceHash": "843793194de6785e6fe06bf17bc3ecba13838c314450051bf151f5593c8e65cd",
+      "translationHash": "8bd9c2c0f399430dc21c0fe009eaffcb08f32758ee8b73e3e6b84096d9c7670c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.empty": {
+      "sourceHash": "df2aa633ed9fdb2c58d7e49988a02d5d96dcf089227c095ffece6d27c9148397",
+      "translationHash": "9d53b7619860f1493bb7ddc7bdb84d40edfd2d5d2f1fca75026470974072353e",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.hint": {
+      "sourceHash": "977bad2deaac1540c31f14e1f74d3a8b4af566092b5a812482c2b315aa9e0c56",
+      "translationHash": "d7c9c65dcae0818a66aa99613ff73176383389e841e6d6d28f2b913bfcfa00cb",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.imported": {
+      "sourceHash": "43e77847fb87cef53c820d055792cfac3aea97a72dc04760548b9f7091586929",
+      "translationHash": "8fc24e7bc95e7275872759729258bd22aac6cba72ef3157a01684e7758ceb51a",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.more": {
+      "sourceHash": "531daa8a08ffe1d259544932992f59a4d6499ad0759deb178265b85659baac1f",
+      "translationHash": "102174a6ffc0db067e82ef5965cfcebe0632e3b5d4c176adac6524dec8171a28",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.recent": {
+      "sourceHash": "68637645ccffc6a1eeaf3cb730d3a2368bb60ee485148aea822ec90a4120b12c",
+      "translationHash": "ad6bf656a22f57b96b179b7f5da378a473cb7627a7ac65253ec5cf0eedf3e713",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.removed": {
+      "sourceHash": "453e651925da251f9dc1b728588ad11caa97621c4135a1ac187a071a3f61afae",
+      "translationHash": "635dd691c8646a90677ff08bebab0a03dbc87da6041a280554f4b221320ae185",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.737Z"
+    },
+    "formsUi.editor.revert": {
+      "sourceHash": "6a498c6ae2d270ed4d678f65b3f69cdbaa5bedd725f8bfc9eab883fe015ede13",
+      "translationHash": "903b75fc84ae3bb42d62185ccc152e3b1ce99eed61cdf43fc816c572e1537735",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.editor.save": {
+      "sourceHash": "b2d41ff5b2f2b5f5d3aaf73b55a5fa7f0cdaf12962e2b0ad8db6f8a13c6528e1",
+      "translationHash": "2132dfc427fcb466b4f4600673232aebd7da6ae3a524f7dd6a6f16fa5dcd249b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.editor.unsaved": {
+      "sourceHash": "790c840d64b62e51b394c2af24d1081e45d186c13b42484fa6f2554b8d2d2091",
+      "translationHash": "0c5fe04780b976ea42bf57a02863c8416585b9584077cddf796490ab2a28e9d8",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.editor.userHint": {
+      "sourceHash": "32df90b216cac7a32125c77259a45d5e4417ae85755aa0b5fdce6b8de9798d58",
+      "translationHash": "9424f52e6ebc4a1c3dc1568af8ed7f8e038fa793fadbf6c679a0d5e3aab2bd7b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.page.section": {
+      "sourceHash": "a7f0d919c185969ee39ae2d8bf4ee3ac8c17111786e3365405b8072b6bbe1a29",
+      "translationHash": "5e1c9eadf76c526881847e26c58c63542814fd48491b7785bafe30dd9e29d22c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.choose": {
+      "sourceHash": "ac18fef0f8d4696c949cf806fd7b5bdd892253766cd6ddca9af54d5e9b6a56cf",
+      "translationHash": "1dd76b886782410ca31b59363574bfbdafafe046dcd72055f72b6e08d717bb25",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.description": {
+      "sourceHash": "f068a8f7954bbe7e3c5e8337d3205c8ea674c343a34636e1bf905bbdb4af5ca3",
+      "translationHash": "5c50fe1adfcfebc36d8b9df53a7e6888cc190fd4fa325d352c7e0d45db654f8f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.linux.step1": {
+      "sourceHash": "01e4b114002849dca9e05b36dec29570637793334f3fe61aeab266c704324988",
+      "translationHash": "34bca002802300474305354c8907e175dd6cc4d9b4d1d7c31ddbb0cf0bf7989b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.linux.step2": {
+      "sourceHash": "0323cd0f621e2243706b405021b3882ba7a3983f3e72fde3146e88ab558ddd01",
+      "translationHash": "2323d17e5b4e03b1bd6d667505580ee3e1f1331956bb5c793919cc2b2a59a655",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.linux.step3": {
+      "sourceHash": "8dee76853e1087533464eb55cc62ac1c8190597e6b44ad65e00c9e1b847e57dc",
+      "translationHash": "00429710467daf29d5caf4cbd4df70f530dd94dc934592321bdd72a9d3c22b11",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.linux.tip": {
+      "sourceHash": "b1d5ab90d2aa79ccd05344e447c3ee54bb0838e0e52304fb419aaf969d1025ac",
+      "translationHash": "35027a573f8346a5ee4bbe81497c69872b037e811dd98c51bf8b3c16c390e6db",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.mac.step1": {
+      "sourceHash": "613eb290c9daee6b0a9250dcf5b969ccc3c862fc97e36fffa6d3f9e0546b3ffa",
+      "translationHash": "74aef57eec767b5f0fe0463474e402e8f4cb693995f78f86356f66a4a99c7a9c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.mac.step2": {
+      "sourceHash": "b29f4e6c58d519a797f16bbbe9ed95b4a02993a608680d917468d4d09a023c38",
+      "translationHash": "bf74e9d5b12051f7f58707167630db4c1580401e51043c3056925cb0721047b5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.mac.step3": {
+      "sourceHash": "b9393a49a24e52ce324c3e16bf91f9d584e15d941b16fd1ab5bd0a5a8490267e",
+      "translationHash": "5904206294e0f1577257833112d25bceeeca3d3cb99a7a8f4464b1d90706622d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.mac.step4": {
+      "sourceHash": "dca2df96fd47acb9c4b3634c7b08b6a394da6ff2392f0a462e2e64aa8063fc3b",
+      "translationHash": "191c40868407b458249a4f2aebb7155d47b9a9557eac77f81cce69e7ef6f48c3",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.mac.tip": {
+      "sourceHash": "b7816a30e4237be62c24574757a585854204fbe807abb1702c54cb91c0a5f775",
+      "translationHash": "55fd61705c794a890ecd2dee25da7eb828e1a24a120fede8c4b94c53fad67d76",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.title": {
+      "sourceHash": "b0c2dbf7eadb1d7c5e3500d54b25022fe57c38299b9c1745dbf0a0192b8ac18e",
+      "translationHash": "77f6d1e1cda0a80a9f8d6d2d8e782437d818a6e54fc5f7d7e97548b36f7d698c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.windows.step1": {
+      "sourceHash": "247880947c0beba5abd348cc59ce79a8d5e6a971c1c6d27a6310e454c49fc1f3",
+      "translationHash": "acc2f06eff6d153517a0e4e763da83363aeb9c3178582840d99dee68e17195b9",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.windows.step2": {
+      "sourceHash": "77e165cb75715e142b05d0d9bf9581043d38117599d670e0685f7afd148bb4f2",
+      "translationHash": "9cb6e09a2d3036b5f2025c0c941a04ea1cf610aa7f085cb91e0f84767a544e15",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.windows.step3": {
+      "sourceHash": "7a49168569ad9a2278ce7d72affeddb7a478e7e0550fe7a934ed57b0e5d69378",
+      "translationHash": "ecd5f1fe8012d4a0704bb948ef004e72183db286b737ef82ed94c8bb065aa867",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.path.windows.tip": {
+      "sourceHash": "b059c61479fa493cc4c4e38508beb3e39ac30b75eae514ecf4d74524067f7bdc",
+      "translationHash": "9c3a1c97bc7f68d22c30f28a0986fda1291623844f002020b44278cde6bdceb5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.all": {
+      "sourceHash": "51928161ed8277ebc187fd60486800af2586d94abd155b0b1c94c4566383da13",
+      "translationHash": "0d49c5797abf9d52dc07fe33d365f2dcc58fed294c71b203ce2839563db60dee",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.browse": {
+      "sourceHash": "fbd7cf00ca70bdef739ea74da0a1ed419ac7ee9017dc1781a6df07b5adce009d",
+      "translationHash": "602ee26c271b60dfebb6733cef063a84d5a40b53323eb352f3b7fa3cb6eaf2cb",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.createNamed": {
+      "sourceHash": "de46cafb1cae7f2526fcf73be80aee34ff3e718158575cc437928047f8388e12",
+      "translationHash": "a636aa0953d5059c72cc83b5b3d6a1570d9e0f744923f9e10b7cac0c075a4572",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.createNew": {
+      "sourceHash": "b4e0daa8751661b3273e4c3f612945bab91e0853a6af361fcf74ebc1713c4a26",
+      "translationHash": "36c1c275f958da69fd266f9c245311ffb80c13ab52969df5abe6eeea1bde5460",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.current": {
+      "sourceHash": "401a4614b666afabb6874c7fb5400404304e038f4e3630170bd4a2dbe0e04608",
+      "translationHash": "303f515ec9b6dd28f253afb5e17cb530ebcecc0d36dacba4fe71ea132b840a4b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.empty": {
+      "sourceHash": "58805d27303ab98fed367e10e629c8a7f8364609eb3b11674fbb0dcbf1d8ee3e",
+      "translationHash": "1d758369b100a5b20ec3119a189ac7ad0eb2c2d104a0913d675b6c23ef0987ca",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.missing": {
+      "sourceHash": "7b6ecdc3d6ce0415ca9397a2febacc8102742df2d05b178dbcc5b828688168da",
+      "translationHash": "c94b2bc6b95313965b1d3ae186830a8e7e3db44c3e78c44d2bafd4fc97593415",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.missingFull": {
+      "sourceHash": "5d4ce5921ffd48cd531dbefae477f4ee86796d763ecd677eb1cf67284ca08c6b",
+      "translationHash": "e53ac80430bae4f29b29a7cbaafd75eb9984407540863e37ab1bdc67c4018fe6",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.recent": {
+      "sourceHash": "e80dce508a5dc2cdee283e576e18db6130805832a05277e02fb94b49ed9cafae",
+      "translationHash": "a7e8e326f7d34145d2338862978e53b74ca0a208d22a40ef8024da63487b7780",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.search": {
+      "sourceHash": "317257733735455ef5895f2f362e3f08571401eb1cc87b7275d1c5db4e9c0522",
+      "translationHash": "fde0b7e1f5d6dbbc84fc349de61e69b949e201999d8970f40aa4b1733f88a342",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.select": {
+      "sourceHash": "00f71dbba92637fa23b36d88938d3762e65042e45306abb0feb99f4f3812d3f4",
+      "translationHash": "e566724b46a4add30a709432bf5dcdcdfcc0183ce54366c35404ff6f0c0b460e",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.picker.up": {
+      "sourceHash": "78eebbaf358100891327dd4ec72a94f04e546cccb4775afa3a9cd8cd187b42e6",
+      "translationHash": "8408bdc66be208bbbeb3e44df737a85a87105b90d361dfdf0d0191b0d3d7b4ef",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.created": {
+      "sourceHash": "e3e707fedccb2fab47a4c244d84862774bd89a2d8ef1bd856483393bd1a55199",
+      "translationHash": "74256f5892f98898b123d65db41a63b94636dee9db2cbc1862fad098d4ccbd60",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.dismiss": {
+      "sourceHash": "f2aea8fe14a1d81992f5192fc11acd61d6b95ba4cb86922543cb89b6c3aa7db0",
+      "translationHash": "571462f8af615f2abf705aed9c8041d3c4042aaebe817bb27a5456d1224cce97",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.dismissTitle": {
+      "sourceHash": "643e94b23ac7dfe34abc3877cf170ac78d6bd4fa4df01df087d745f3681d5068",
+      "translationHash": "be7f73dc5285605f02adab5b51c42a9262478106e1ae4620bd474bf887bbfba5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.latestRecommended": {
+      "sourceHash": "f4d87d63ff1ab946a386aa7aa1fbc330bd4b5e6b3485ca62d0954a9f7e3f5f5d",
+      "translationHash": "5206c7744feaa9fdfb1444494639fb2c4c2e72eebdbe8ae7338501294538ac14",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.more": {
+      "sourceHash": "ccadab01b7dc5eaea0b2be17c3a03962312e4dc27bc76b9b006815f4359b774f",
+      "translationHash": "ec8d38ef47d7592eadef8cc826fdaca86a9568631943faba2b03e228aaf1c63f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.name": {
+      "sourceHash": "1c2aabff973120fab6f13f4b7408f7861e09d4ce346d9db80e8481b2e34a365f",
+      "translationHash": "3a95d5b646b7b34bb596150cc32c90952a0e65a410cba7aab24c2767008ee504",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.optional": {
+      "sourceHash": "5d955e93d7c9b4393b3c7944aa54ac3c3776dd44476a9485c18eca3a87b9a3da",
+      "translationHash": "9d537b7390a39f178b35fb4a0fcb27a3b9bf7a3518e9154d295946eb71a0065d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.organization": {
+      "sourceHash": "40a16b8379a03b213163e90d12b9899e21bbcd7f537efd4470b9ce89a3bc0bc9",
+      "translationHash": "d75e9d4f300836596570a169b13f1e73bed853958725225a94cec9dbbcc9b45e",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.organizationHelp": {
+      "sourceHash": "a85f028f43a228fdb918180d9bea1009700d2f58fd0b5a24814c39eadbc7c2fa",
+      "translationHash": "f8422f2e3800019fee1e2bab8e1b3338282d56c0a786da447096ea2fecdaf553",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.organizationRef": {
+      "sourceHash": "030b2c7bcfe31b6b1c71f8b5dc3b2f1615df451b3104670fd0368e3c83fd2c5f",
+      "translationHash": "39a86b141f2b94806fdbe7e22774fbb5f00288b7b20a56b36549fa9abb717001",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.remove": {
+      "sourceHash": "a884cec423b87349baecf700587f3c398dd3272350aba14571cd9993237524f6",
+      "translationHash": "9c13db815ef514b8b05de7e27a75e7c6e4b985c12f4e18376b53676577a1c4d9",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.removeVariable": {
+      "sourceHash": "d42182f910ffb9a132e1352f391a1db9611ac2610ec9d42dcb8adac3ab2632e0",
+      "translationHash": "22d43831330298f5c0bd48bbd6f1108641e4dd839b5f88eab4e2036ae653d061",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.required": {
+      "sourceHash": "b5f3d06672df646e100cfcfafbcb83f125130cfc0ceea58c81cfd19c1452e58d",
+      "translationHash": "7040c6c083f9d49017482f06d51527c05529b4bb518f58e527c46a63f3220751",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.requirement": {
+      "sourceHash": "6d49cbe752e430621ffb13bb529a8d5c70f329653d50842638687e7cac1f22ae",
+      "translationHash": "460ea598a1af074a3045772f5efa21620c8369d389b65ffb2188dde75f7946dc",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.secretVersion": {
+      "sourceHash": "feb89400b9b12c123a5c2198b748922e9adc4afcfcf88300cb7389f381670945",
+      "translationHash": "d4de4f21442ecb8133981202a7ce619777363b001f984148070334973b0dd47c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.sensitive": {
+      "sourceHash": "96f15899873417c04bd0210c5ecc0c8b500a42f3ca748f5280e4252072ee0472",
+      "translationHash": "939217eaadd11dd72e38fbf5711a6fc13e00d53154dc1ec75eb8463071006fff",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.source": {
+      "sourceHash": "586bc38f76a8437b7a0197f9c502f7b9bc729025d37af8cfd403dd0c3e93a1a9",
+      "translationHash": "e782c67b20b233bb0f2291a3b53121300432896ab3a5e47eac54023a238394a5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.738Z"
+    },
+    "formsUi.row.store": {
+      "sourceHash": "b2c09e67b23950945d1f6c39ed9fe98b8b00249e171da8191ca59cd32f15e44d",
+      "translationHash": "58495a0487b4c226b68db040621a973bdc4c5365a8ad2bb4097922cd94f6bb6f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.storeMore": {
+      "sourceHash": "e99ce1d25192357429934789916840d00ef57c665b4d9981b9a2dc7ca0d60839",
+      "translationHash": "026dce248f5fff8b908d5a2f5a040e97d67dc55a8b2dff25d34f0f137f6e1998",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.text": {
+      "sourceHash": "70f4042a6b56606f81230f3503936cb3cd93ea0651c69344479a46c8968c5a36",
+      "translationHash": "6892b6f97da054c2c044c50a679572f9e93c30000cd11a3d5790c535fe1a73c9",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.textHelp": {
+      "sourceHash": "2cb993caa9412968789454d9e09d2024e7124f70e6781c80759fc75effb55c28",
+      "translationHash": "7084ee43be2e174092ea9213a09c538cdfa4090acefbf395f2c9ac824bf1c719",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.undoMessage": {
+      "sourceHash": "1c8e0aaf5630f8c1b40702b136cc2ded0c3eed6c634cf81d4fc5b26c7b943af8",
+      "translationHash": "000e368d7b8ecdef8ef7e8a5debb8183a839c694bf005fb1005d8a633d4f7067",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.unknown": {
+      "sourceHash": "f3671360efed55f73b04deaf80759273c3fc3c4ed3961fc2fe8f5e43b4b7bc68",
+      "translationHash": "cfe6a4d69b906398b9cd270dc4397e03d89c86249669421aed9dbbed15993284",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.user": {
+      "sourceHash": "dd456e0d88a86ca0cc9e5e37a91731676aa7a2e134dacf46ed5dcb14658a0ae4",
+      "translationHash": "a7f697a29e89f90af85ef7a51c06d34a214ff5b30becd629847ee877643b22a6",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.userHelp": {
+      "sourceHash": "a7ded7da19aabd99031831543958a409cff7be79a5b02b79399c0896f33f6d3b",
+      "translationHash": "68614fbd16ef7bf5f0160e7a864b2e23e7721789f4fa05e5ab5697a07beeb774",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.userKey": {
+      "sourceHash": "eaf3ca4d46339febe0f0ec6cdb4b00431888d9ac35b894828881753629aaf8eb",
+      "translationHash": "ebd191899d37576a2715ff107c09459d524f9c50f1cf4eb49b6706d6a94ab257",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.userKeyPlaceholder": {
+      "sourceHash": "e2a69730b9f39633b863554195c942a94bae9b6de8c73bd976fc5ed41a8b3b24",
+      "translationHash": "4ee4897f9727cd8f30e47a9a3b63031e83e34d82ae2aa511de65e0a6e4bcc480",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.userRef": {
+      "sourceHash": "26ca12fe90477a75d34d8d09f9e3e94aa9ec21ab24e5760962e04975860c4ce1",
+      "translationHash": "c94e6298a74f75772afba648d86cf1447498cb4d9655e48155594fbd97017f85",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.userSelect": {
+      "sourceHash": "b020264b1e66834e6d691eab2e8fc54f4f5c081dd6a0fe0ef2a7edd781b95013",
+      "translationHash": "4ca87bbb33c5a4ae3be2dbc25f9ec4b9097bd021cd68aeeefcae601fcd159d10",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.row.value": {
+      "sourceHash": "f6dc6e1bbf18ea4735e2bc2dd6b03451aaea52ef04c5330d2b3cbb4e4f18fd0a",
+      "translationHash": "1dccecc1585135b630f25b939106b9424613d89300e0c78db4176049adf2fca3",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.add": {
+      "sourceHash": "850c193bd0659fd05809ff61e95afe2a9b1e814c0dd4792a1a6e80a8759086fa",
+      "translationHash": "920425c54463752e785d45ee1c0bef666e3031be8dc05ae8858fd91b2e61334f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.addItem": {
+      "sourceHash": "055b6fba2e4301b3812738441cdb62e090ccbea36d0fc04972ac3ea147992cba",
+      "translationHash": "cee213cd5e1e0db91628e46d8f6ebaabeb182bf273b8ea9ebd3183744609ee23",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.advanced": {
+      "sourceHash": "da3ef76ebf2c7f9a740c26a1ef0a5dbda7c9dbdf3bee57b95b3b45625c04f1f5",
+      "translationHash": "4b24f881940f6f1a8ff9ae78da2d79136b367de59d69d9763c12dfce8e798ae8",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.empty": {
+      "sourceHash": "6c8d1486c341257d50a996737924907a005713cd5ae1714df5b3ad8ac3cb0dc5",
+      "translationHash": "afed68d31bb02a58cecf000fb015ffff325287257925ac74c15dbd303c14ba40",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.emptySecrets": {
+      "sourceHash": "5bcd8899d114a360c5c3ef2eb866e6704db6d76514c1b4879f586bbb03b1d266",
+      "translationHash": "8c8e9a06f43746e35c59980e74f5c74029e098132db2ebb60be5c79fa88d5de0",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.hidden": {
+      "sourceHash": "6aa8e2872a6755143d1bc498cf75bc22e03e765253816454e61b133ff591d03b",
+      "translationHash": "fc3217d8bb82f997e760367f59eeee19aef7910cdb97b35ac00bdbea3d7fc9c0",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.hideRaw": {
+      "sourceHash": "5756c878fb4cee5f6694a373dfb92e54c58fbe2f9e0a47858870b2adbcecdd89",
+      "translationHash": "030e0222bc37a0656a0bc4cacde62607bfd073fd7fb90eec59f125520f0119a7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.hideSecret": {
+      "sourceHash": "536a6708a4b43d408bc063a51e93142655b94d998f998840d74ebfa2ebf50a41",
+      "translationHash": "654e99abfa751ec666167a6c9c840807eaa1ea3dd7c3777efc546b2932826ae6",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.item": {
+      "sourceHash": "248c21e45c4bc689501789354b0fac333d6dbb763a43c9400c06efeed6788cfe",
+      "translationHash": "5a1061c057e8425b2923c5e340294b2520a5f42bf2d84e7c6f25c5c6d70d8973",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.jsonHint": {
+      "sourceHash": "6496082abcfa91ecb5f0a8c6c4f67f1fc0319f4e44a295d4824832ebbc9d07b7",
+      "translationHash": "cc47255578621d5140b929dc986b04ab90d5f156660994f8fe1fe20a0def0a34",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.moreOptions": {
+      "sourceHash": "8166d97f2ba6fa6d308f39aca3ed0727cf6f0a6931514107183a5dd682d2dfe6",
+      "translationHash": "ea50f522c1ee4902637bb6825db6bf8ff228327284acf8088e0379bbd9b59843",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.none": {
+      "sourceHash": "0c947d5aee18415f4dec620e74dd85a711a4f30d7d8fae4af5e048790a003a77",
+      "translationHash": "a7fe647368ba3c3a0b45373d27b06c50bdb2b381d3c6f1ea2bd6303051d366cd",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.noOptions": {
+      "sourceHash": "b42b1c7d8720fd5e3576832f94fb271092b3fa7b93b45d8d7e8d9a1d34f9bdec",
+      "translationHash": "1753efd8bd22ec60c3edf76321b3f64a4c7662de03c5381dfe0b41392ba9e006",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.pasteRaw": {
+      "sourceHash": "176b4cc80e9b89f6425db4355851f8049a5af3aef7a825a1532116617347949b",
+      "translationHash": "6f33498e8de5b31db413e50957625ba20fa4ac0559bcd66a0755d1e4789adc0b",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.remove": {
+      "sourceHash": "de98cc069824cdf3a49fa9e5e5b306dcac9996791b5f0814a34ff15d16208089",
+      "translationHash": "183357c389ba0ab0daaa0c23120dc4bd1406adbf574a661c400ce43e2451665d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.secretDescription": {
+      "sourceHash": "45565c22ed02abce9d180f200fa0c21aed505a9df36e1c58a169306c86dcdb50",
+      "translationHash": "2ca927f93199ff4f2801090007c39c21bdbdf5f409e0efdbcfd332f1767fcba7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.select": {
+      "sourceHash": "dfdb6a45b455c0b723d2db77955dcf0109211c3c01a402ff95bc9f2ed345ef59",
+      "translationHash": "89e2aa9394fd08e1345bc8fa5317bde1ddd90360d54569555a2ecb1e1495a973",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.selectSecret": {
+      "sourceHash": "fec81eaafcd755c7b4d859e5c1b16938c165a1df2b3de38e6345ca5b8930a27c",
+      "translationHash": "68b31491eb00213f61cac25b0f6c9804b68625923ebbfef43e6b8fc1fef1a720",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.showSecret": {
+      "sourceHash": "5b55d9c9c69040ff219b9e5a2ae2a35853c2fb8508ccc52ea888f61dc968fb04",
+      "translationHash": "0744e8ee194d7470d901d2a7c2b71c7916841b8dacc04ad361f2c2fb9f37ff06",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.exclusiveMaximum": {
+      "sourceHash": "584be53a8e3f05b23f46bcc183dd0dfe6a187c97ccc59c771aedcbc5d78e2069",
+      "translationHash": "943d06d9f5837049c93bfd09282ad722dee26a35af837b3ef2a9a6ac561a3f7d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.exclusiveMinimum": {
+      "sourceHash": "7ff1d53099d94d1d28c4a5115cfc76e9f14bea4036825d79691b16f5ddb85811",
+      "translationHash": "86c411b13028a6c359935a50b4c5ef4729dda105dc0a34cb1da6446cea4b23aa",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.integer": {
+      "sourceHash": "7fe54db024db2202cd912f08da056f073d8b8ad3b8a52a4e8a4ed94b80bee5ca",
+      "translationHash": "f453162d128faf14628679786e0392f8d2ba8f95a2941328a3f958992448e20f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.maximum": {
+      "sourceHash": "f97bc4d772c32c13043f7d69e6a2b0fe7b13da8b455ea8825f0b91b71f56863d",
+      "translationHash": "fadd52a2040432a5e4bb541a3581e6140804df3f5651ce97ac7a099c7d6e3ae8",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.maxItems": {
+      "sourceHash": "5d0e72a62fa31d11a7e162ead30091477e4cf290fc4abf24899611d86f10b674",
+      "translationHash": "6519bde3096a1305bfcac91d32940d36ae2fd5c421cd323f3f2877937b42abc5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.maxLength": {
+      "sourceHash": "28fe929f214abbc2989ad61a455c230cc8780a0c32289c09f6357239eaf88f60",
+      "translationHash": "9294548c6de51451d8cccb121a6a973db9fc84a8018e787bca77b6d895b78f68",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.minimum": {
+      "sourceHash": "82d76018dfd01d5421c28732bb1ab11e0b6e0357da83ce99fb3f71e71e440137",
+      "translationHash": "6d06049fd504964598443294699804ce585c15df327ddf84988607f10b28e1b5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.minItems": {
+      "sourceHash": "7f74f445c3315b6131396b7dd21aadec737aa22d763f5d54efef10aecfb029ac",
+      "translationHash": "d5788d04fba558b877d8f71bf9ce6fb261d4b8d93d802645503ea419177cbaa7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.minLength": {
+      "sourceHash": "593c98ab774ed59b2f6a2f667d2931e75757b948ee04b5d2bb8d5cd7a3f9d252",
+      "translationHash": "5d72ae833b33bc119bdb89cdc5094102d4fd4c70bc7a5606edaf274d062a6e06",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.multipleOf": {
+      "sourceHash": "8127282ac6bc0d43d1e39e4386c7bbe80706b00aea3150bdf3a21973c92c5bf3",
+      "translationHash": "ee8a3e32474eceb0e6ea5a99f2b0c619b6f0dc090ee4d38d2a202e5231058730",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.739Z"
+    },
+    "formsUi.schema.validation.number": {
+      "sourceHash": "0fb108cb18fe111e5014c0398bf4f45d0d5b090ddeb967b69e315bb3761ac1de",
+      "translationHash": "4bd02972c6b3a4e62692aab410f88433b539555134becbd94426e3af35cbd79c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.schema.validation.object": {
+      "sourceHash": "7bde6846156aca45fa9eb0987730ebcbbb08e0c33cc7406c499d424d8b75c2da",
+      "translationHash": "812997379defa6f3ae4794e98d5715732f90940dc911008b4534404b08ff38bf",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.schema.validation.pattern": {
+      "sourceHash": "4e6f1c72fdb89a45cb4fe03809743aba298c72105824c237997dfac60b5a9b1a",
+      "translationHash": "c6107882394b0d96c6e48d1b7844824ae07996b0af1ec8e76ee78d9c8a280876",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.schema.validation.required": {
+      "sourceHash": "e0e78df828accae5de6b9efbc4a6793ea52be6593406ac8c82cc3e5a321f2931",
+      "translationHash": "479eea04efd0e87b0afeb18b78778d2d0612f15b7924c72362930b2ca104b8e4",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.schema.validation.secretRef": {
+      "sourceHash": "9d3a6b2b9db67402292a16f568d2929095465a7aa01dd95b0f18d3cac3fea42b",
+      "translationHash": "4bd2f2c87174137830f98f72f0ff3af1a9613f3d60209e977fc1470a979b04d7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.search.close": {
+      "sourceHash": "935191f074458451e257b5e3a89dc4d24f146bb4d8fc7669dfef9512f6f7db80",
+      "translationHash": "6c551ffe000160aa4972afcb54122059d5b794139c44c43afb2fbe9cb3557fda",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.search.empty": {
+      "sourceHash": "eda528a603d9ea1a97b0129eaf452ba7bd36135d9e2a0bb465c48e18d1653f71",
+      "translationHash": "eaa43394310ecdebcc6582ea5a2e851e0d8b3060def745306f4b5049d1213ce3",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.search.loading": {
+      "sourceHash": "7928b5a715828e1c819d145dc136ddc876a207cbf617405b2709441b5cdc0d64",
+      "translationHash": "eded4d31ba5e2b30c30ee301072b10b6c2ecfb8860eee494fd209c25857ca0f0",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.search.search": {
+      "sourceHash": "c13711894ddb0a000801d3710b3f106323a56626906deb3a5433749aa93aa7be",
+      "translationHash": "aa88f2453d1adbbb0e87231dcf1c4a309083306faa11299aa8b25d68e0ca42b0",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.active": {
+      "sourceHash": "342f5ced710691f56fe6fa5fb62b5a3fc51c140f06d3c526d5ddd50c3eaec0ff",
+      "translationHash": "218ae972d8534619a988a0f2698bbcdf6a1687bfa4b2290fadb0780ad1e429d9",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.archived": {
+      "sourceHash": "59170fb3ca84fc471f4e7942130745497e89a74f1fc7dfd27c8241acf8decd95",
+      "translationHash": "a5672dcce94646bdc39f3d94efdff0b471b99a1241ae65d30f73693427081caa",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.cancel": {
+      "sourceHash": "0f5b99667116418de08a33c9b2e6c8a88b3be17d1bb294ad6b5619fbffaf75eb",
+      "translationHash": "ee56afff0606451ba7a15e97d11354533584a9f0654e040b3775ecd77b0d5e45",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.create": {
+      "sourceHash": "5f543d805e5bfa09306c10912e46f983f75325f26b684e26212c105dd7d35c05",
+      "translationHash": "6d6ff280a438d23f3f6bb7459af6c550c103a3e72606632a11dae7be9a6c1a94",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.createBind": {
+      "sourceHash": "e1b1ed2ff2149dbe8784bfc2f5b11b7f5c8474ceeeb2086c7ad9e2693b5a387e",
+      "translationHash": "da72c562d34ace3207c0b75c9041e20e82adcf2802f8db2b74cd6329f5c77a9a",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.createFailed": {
+      "sourceHash": "2b87ef0f4417c36187bdcd90eba077cd763d027ebbccbe74dfcbbb59333b755e",
+      "translationHash": "d0a35556971f0cf75b7ce55a6a23ba1ecdd1c7a087000fb4f3f56527769365e1",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.deleted": {
+      "sourceHash": "84716da14b5e7b1a2e9b7214403979f4540f76bcc04877640d70286671ea59a5",
+      "translationHash": "b5b86a7d792569b0e94261e03d125c3930e41080d311816ab03b1b4bbfe9b4d7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.disabled": {
+      "sourceHash": "9979d54f9210f8a53c299402c296b098ecfa79a921bb2e5ccdb51fb8d74ffb23",
+      "translationHash": "7cbe91b565eecdf79d6cf2718577493ae04221e76beb723d8d14b3f0da351cb7",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.hideValue": {
+      "sourceHash": "1297179bdff4625645092c5d1bc6298986e1310fb595fd79a8154c735c5b6748",
+      "translationHash": "527069d185edae0024728c2d6460b68a8d7cf44767af44ee60a05ff7320a1357",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.latest": {
+      "sourceHash": "ee323ff47a40740e6b3e0eeacde4bec016321a46eb71cb4a853a0002bd932bf4",
+      "translationHash": "08ace9ef64bbb593dd0ce69c9b29df1eaa0a63fa03d6427e8f8d3ad834438673",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.name": {
+      "sourceHash": "7aa7b273060fc73832f880173a1e83ad908c79ca60fdc6d66b26307640534063",
+      "translationHash": "dbcd56278403edb6dc628eea6333c662ef22a2661d6f7b19ba0ebc19efbe85be",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.nameExists": {
+      "sourceHash": "551f68d7e6aa86c82a71dea4c2f79b4efadf2518dd3433dc675265cd81ffe7c9",
+      "translationHash": "d238b5304742dbce2bad878d9ed7b328e8b5813ab26daf7a8f9c89936e700bcc",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.nameFormat": {
+      "sourceHash": "5893b9583961eedef0d531cf08ce38136dd8afcc1953983a6116b60a871f5bd2",
+      "translationHash": "8d26f3abc5d0213c3333f2c6e137c2ab1e641560d39c55f2c0671f94bdc9f117",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.nameLabel": {
+      "sourceHash": "4ce469a293ef2658d75a9a89875a5d8970f3e34e07eed25606b634598405d154",
+      "translationHash": "5256d64eb6847d5decfa23686b4dcf2b8da03f5df5ddff4383bd59e2891fb97c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.nameRequired": {
+      "sourceHash": "e83ec81b32c5b4a39ab1f120297a5f5db10ac76f364ff96250774b931783b382",
+      "translationHash": "7cc51df3bfb81614b2d714a8a4cd29f67b6a13c6823e8e0790eb3df781d5fd8f",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.showValue": {
+      "sourceHash": "56f1d033b8fe21483693173a7d5964138fabb3fc71749552dcd7a512a43e045b",
+      "translationHash": "444815bdafff658f72482d84fa3cafd65a34352a777eceb8e830098b89ddcd6c",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.storeBind": {
+      "sourceHash": "85e72a5b0c1fd739f74d55fc82f2600a661f7e94ab5d5c028069b6092eee37fa",
+      "translationHash": "cfca5bea6fc97393e8fa90c6291b9c00bb59883f41dc03adb12f3a62e0742028",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.storeDescription": {
+      "sourceHash": "a72e2baca3b18619fc17f634cafeffa83aa4132c73163519953b93371ec05802",
+      "translationHash": "ffbf5a03fe80b1c44547fee1a61770b8f9cef131bd8e858064c60f793a96fd0d",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.storeTitle": {
+      "sourceHash": "e0b10f053836245bbf110b2b2ca700144234c097a46b4d567016d2d78eb05c31",
+      "translationHash": "1d416968953958edfbab2a7bd678b746bfafb51b431f035c048bd13722d4de15",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.thisVariable": {
+      "sourceHash": "a3941a1dd318968663725ea938ced472aad47a17e80201a182f41b0469e12fa4",
+      "translationHash": "587826c07c8195b106a4e76d9a59b3a9674ceb7ae6b1a5046e46d8cdd4a69366",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.value": {
+      "sourceHash": "b974f9ec52b440740cc027a3c4066745339fa8619a6e95a0d1337ee7b1a9f517",
+      "translationHash": "000433458780a19584106fffd2864118324bb255776f4ad7643650acf9d40924",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.valueLabel": {
+      "sourceHash": "b494617739aafeab1e9bcdcc63419afd79f590d965bc1d906bb44e8fe9dd1521",
+      "translationHash": "9493d1e6616dea5395f19347c30d708efa741526289c02604ce272fdca444374",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.valuePlaceholder": {
+      "sourceHash": "9adf483d259ff0e33c531985c1bf9a4d81356819179bbcf178e08b0c17d8dcc9",
+      "translationHash": "47b4d2098025ffcbe0f014161cd528bb7e2cb66a6231c2b8c57fa2602922bac5",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.valueRequired": {
+      "sourceHash": "609377d8f44081568626a837340b1a9743f2d34297c4b50afd4f61aabdd43632",
+      "translationHash": "d2c0f8728dbe6e984e4155aaab2c293b90c322939de740d058165231527fafce",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.740Z"
+    },
+    "formsUi.secret.version": {
+      "sourceHash": "da1a575b69c65dada680961c1a830ca8c7a1362cd698065e5c1021218208ac6f",
+      "translationHash": "4b0be9c7501fc1e4a23fa720311494ddb4605fa246f4d215c2b8fe829b854439",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.disabledSecret": {
+      "sourceHash": "001b4f634a7173705e211ca3e8b68f4bbd6cdf667b4e0db60e4ecba061d6664f",
+      "translationHash": "df1e9b2b0b90640b876ba18a6a14ad280497b02e6d43ae0526be9305bc9ce794",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.disabledUserSecret": {
+      "sourceHash": "71344ff567899d50378124d294ba92498c4ac37392d54ad5cfa4918f70f83964",
+      "translationHash": "5ae07f47889590fe2d5cd9d9ee687f3140b2e4fefab9ba20ccf68b4fbc4977e2",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.duplicateName": {
+      "sourceHash": "02a03c714c17ac85a69f39f964d824a8cc6164e2d028fffa49a0a4ca2e6454b6",
+      "translationHash": "198e1463bd1404b9fe7f6425484770f03bcd849cbf9d931188d463d82a32b4b8",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.invalidName": {
+      "sourceHash": "099620cd5cad3a84bfefbddb8890fce4c31734c6b4d3bafc87e9e7fb91d9ed10",
+      "translationHash": "38c1b98b1e291a1dc330714c58bb959ede1b7ddaedf49aaae081110644cdb442",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.missingSecret": {
+      "sourceHash": "3b0fa0c66dbd2c83ac8beccf08554e2e5bcf688d70c43f803768f7d5ebdd1fd7",
+      "translationHash": "26e288a5d0e7f717006f70aed818e8dc483450d67c86c2468a0b5af69bfd7567",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.missingUserSecret": {
+      "sourceHash": "8cec7ec0a3c3830b7a55caae324cdc2dfe598a3e8e5f7efae9e68233f617ac99",
+      "translationHash": "5e1f643a676dacf070bb920c11f08cfd77a23b4e2d13d13241d0c20c3cd9a507",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
+    "formsUi.validation.reservedName": {
+      "sourceHash": "fda2077240665dbfca5f95371cdccb5ed70b014175f3bba2941b6b6e26b1b553",
+      "translationHash": "860125f9c48889bf2b04b0d8cac31812862bdb88dbbb39cbfe16ccf414ad5574",
+      "reviewer": "Codex root: source and EN/RU editorial review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T08:23:49.741Z"
+    },
     "inboxPolicy.allowedAgents": {
       "sourceHash": "396013ad00d4f3b528ac7e39a80c69fe7496dae382a5768e8f3955fdc7122eb3",
       "translationHash": "ea0bf9f726e1aa4082669ce04930f95cabec4d964991c6606f737991a8170bdb",

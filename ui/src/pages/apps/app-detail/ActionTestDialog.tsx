@@ -38,7 +38,8 @@ import {
 import {
   JsonSchemaForm,
   getDefaultValues,
-  validateJsonSchemaForm,
+  validateJsonSchemaFormIssues,
+  type JsonSchemaFormErrors,
   type JsonSchemaNode,
 } from "@/components/JsonSchemaForm";
 import { cn, relativeTime } from "@/lib/utils";
@@ -434,7 +435,7 @@ function ActionTester({
   const rawSchema = (entry.inputSchema ?? { type: "object", properties: {} }) as JsonSchemaNode;
   const formSchema = useMemo(() => splitRequiredOptional(rawSchema), [rawSchema]);
   const [values, setValues] = useState<Record<string, unknown>>(() => getDefaultValues(rawSchema));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<JsonSchemaFormErrors>({});
   const [outcome, setOutcome] = useState<RunOutcome | null>(() =>
     loadStoredAskFirstOutcome(connectionId, entry, agent)
   );
@@ -488,7 +489,7 @@ function ActionTester({
   });
 
   const onRun = () => {
-    const validationErrors = validateJsonSchemaForm(rawSchema, values);
+    const validationErrors = validateJsonSchemaFormIssues(rawSchema, values);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
     cancelledRef.current = false;
@@ -699,7 +700,7 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
   const entry = catalog.data?.catalog.find((item) => item.toolName === pending.resumeTool && item.status === "active");
   const schema = (pending.requestedSchema ?? { type: "object", properties: {} }) as JsonSchemaNode;
   const [content, setContent] = useState<Record<string, unknown>>(() => getDefaultValues(schema));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<JsonSchemaFormErrors>({});
   const resume = useMutation({
     mutationFn: async (action: "accept" | "decline" | "cancel") => {
       const started = Date.now();
@@ -711,7 +712,7 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
   const expired = !!pending.expiresAt && Date.parse(pending.expiresAt) <= Date.now();
   const permission = agent.effectiveAccess.tools.find((tool) => tool.toolName === entry?.toolName)?.decision ?? "off";
   const submit = (action: "accept" | "decline" | "cancel") => {
-    const validation = action === "accept" ? validateJsonSchemaForm(schema, content) : {};
+    const validation = action === "accept" ? validateJsonSchemaFormIssues(schema, content) : {};
     setErrors(validation);
     if (!Object.keys(validation).length) resume.mutate(action);
   };

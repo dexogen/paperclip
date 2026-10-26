@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "@/i18n";
 import { useState } from "react";
 import { Apple, Monitor, Terminal } from "lucide-react";
 import {
@@ -17,34 +18,6 @@ const platforms: { id: Platform; label: string; icon: typeof Apple }[] = [
   { id: "linux", label: "Linux", icon: Terminal },
 ];
 
-const instructions: Record<Platform, { steps: string[]; tip?: string }> = {
-  mac: {
-    steps: [
-      "Open Finder and navigate to the folder.",
-      "Right-click (or Control-click) the folder.",
-      "Hold the Option (⌥) key — \"Copy\" changes to \"Copy as Pathname\".",
-      "Click \"Copy as Pathname\", then paste here.",
-    ],
-    tip: "You can also open Terminal, type cd, drag the folder into the terminal window, and press Enter. Then type pwd to see the full path.",
-  },
-  windows: {
-    steps: [
-      "Open File Explorer and navigate to the folder.",
-      "Click in the address bar at the top — the full path will appear.",
-      "Copy the path, then paste here.",
-    ],
-    tip: "Alternatively, hold Shift and right-click the folder, then select \"Copy as path\".",
-  },
-  linux: {
-    steps: [
-      "Open a terminal and navigate to the directory with cd.",
-      "Run pwd to print the full path.",
-      "Copy the output and paste here.",
-    ],
-    tip: "In most file managers, Ctrl+L reveals the full path in the address bar.",
-  },
-};
-
 function detectPlatform(): Platform {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes("mac")) return "mac";
@@ -63,17 +36,43 @@ export function PathInstructionsModal({
 }: PathInstructionsModalProps) {
   const [platform, setPlatform] = useState<Platform>(detectPlatform);
 
+  const { t } = useTranslation();
+  const instructions: Record<Platform, { steps: string[]; tip?: string }> = {
+    mac: {
+      steps: [
+        t("formsUi.path.mac.step1"),
+        t("formsUi.path.mac.step2"),
+        t("formsUi.path.mac.step3"),
+        t("formsUi.path.mac.step4"),
+      ],
+      tip: t("formsUi.path.mac.tip"),
+    },
+    windows: {
+      steps: [
+        t("formsUi.path.windows.step1"),
+        t("formsUi.path.windows.step2"),
+        t("formsUi.path.windows.step3"),
+      ],
+      tip: t("formsUi.path.windows.tip"),
+    },
+    linux: {
+      steps: [
+        t("formsUi.path.linux.step1"),
+        t("formsUi.path.linux.step2"),
+        t("formsUi.path.linux.step3"),
+      ],
+      tip: t("formsUi.path.linux.tip"),
+    },
+  };
   const current = instructions[platform];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-base">How to get a full path</DialogTitle>
+          <DialogTitle className="text-base">{t("formsUi.path.title")}</DialogTitle>
           <DialogDescription>
-            Paste the absolute path (e.g.{" "}
-            <code className="text-xs bg-muted px-1 py-0.5 rounded">/Users/you/project</code>
-            ) into the input field.
+            <Trans t={t} i18nKey="formsUi.path.description" components={{ path: <code className="text-xs bg-muted px-1 py-0.5 rounded" /> }} />
           </DialogDescription>
         </DialogHeader>
 
@@ -124,6 +123,7 @@ export function PathInstructionsModal({
  * Drop-in replacement for the old showDirectoryPicker buttons.
  */
 export function ChoosePathButton({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -135,7 +135,7 @@ export function ChoosePathButton({ className }: { className?: string }) {
         )}
         onClick={() => setOpen(true)}
       >
-        Choose
+        {t("formsUi.path.choose")}
       </button>
       <PathInstructionsModal open={open} onOpenChange={setOpen} />
     </>

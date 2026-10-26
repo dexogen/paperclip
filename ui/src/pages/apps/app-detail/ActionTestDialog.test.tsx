@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { setLocale } from "@/i18n";
 import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -449,4 +450,45 @@ describe("Permissions action Test dialog", () => {
     expect(errorHints("Not found", "NOT_FOUND").join(" ")).toMatch(/check|verify|ID/i);
     expect(errorHints("Unexpected provider failure", null).length).toBeGreaterThan(0);
   });
+});
+
+
+it("keeps persisted validation and dirty provider fields through EN RU EN without running again", async () => {
+  const inputSchema = { type: "object", required: ["raw_name"], properties: { raw_name: { type: "string", title: "This field is required", description: "Provider <b>& description</b>", minLength: 2 } } };
+  try {
+    await setLocale("en");
+    await renderDialog({ ...entry, inputSchema } as ToolCatalogEntry);
+    const input = document.body.querySelector<HTMLInputElement>('input[aria-label="This field is required"]')!;
+    await act(() => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "x");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const run = [...document.body.querySelectorAll("button")].find(button => button.textContent?.trim() === "Run")!;
+    await act(() => run.click());
+    expect(document.body.textContent).toContain("Must be at least 2 characters");
+    input.focus();
+    input.setSelectionRange(0, 1);
+    const reads = [listTestAgentsMock.mock.calls.length, getTestAgentAccessMock.mock.calls.length];
+    await act(async () => setLocale("ru"));
+    await flushReact();
+    expect(document.body.textContent).toContain("Минимальная длина — 2 символа");
+    expect(document.body.textContent).toContain("This field is required");
+    expect(document.body.textContent).toContain("Provider <b>& description</b>");
+    expect(document.body.querySelector('input[aria-label="This field is required"]')).toBe(input);
+    expect(document.activeElement).toBe(input);
+    expect(input.value).toBe("x");
+    expect([input.selectionStart, input.selectionEnd]).toEqual([0, 1]);
+    expect([listTestAgentsMock.mock.calls.length, getTestAgentAccessMock.mock.calls.length]).toEqual(reads);
+    expect(runTestCallMock).not.toHaveBeenCalled();
+    await act(async () => setLocale("en"));
+    expect(document.body.textContent).toContain("Must be at least 2 characters");
+    expect(runTestCallMock).not.toHaveBeenCalled();
+    runTestCallMock.mockResolvedValue({ decision: "allowed", invocationId: "locale-result" });
+    await act(() => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "literal<&>");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await act(() => run.click());
+    expect(runTestCallMock).toHaveBeenCalledExactlyOnceWith("conn-1", { agentId: "agent-ceo", toolName: "list_projects", parameters: { raw_name: "literal<&>" } });
+  } finally { await act(async () => setLocale("en")); }
 });

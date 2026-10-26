@@ -46,7 +46,7 @@ import {
   EnvironmentVariablesEditor,
   type EnvironmentVariablesEditorHandle,
 } from "@/components/environment-variables-editor";
-import { JsonSchemaForm, getDefaultValues, validateJsonSchemaForm } from "@/components/JsonSchemaForm";
+import { JsonSchemaForm, getDefaultValues, validateJsonSchemaFormIssues } from "@/components/JsonSchemaForm";
 import {
   SecretRefHintsContext,
   type SecretRefHint,
@@ -1812,7 +1812,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const selectedSandboxSchema = selectedSandboxProvider?.configSchema ?? null;
   const sandboxConfigErrors =
     environmentForm.driver === "sandbox" && selectedSandboxSchema
-      ? validateJsonSchemaForm(selectedSandboxSchema as any, environmentForm.sandboxConfig)
+      ? validateJsonSchemaFormIssues(selectedSandboxSchema as any, environmentForm.sandboxConfig)
       : {};
 
   useEffect(() => {
