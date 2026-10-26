@@ -240,12 +240,13 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       if (adapter === "paperclip_runner") {
         const expected = [owner, childOwner, otherOwner].map(({ id }) => ({
           id, companyId: company.id, lifecycleState: "ready", status: "idle",
-          lifecycleOperation: null, lifecycleHolds: [], lifecycleError: null,
+          lifecycleHolds: [], lifecycleError: null,
         }));
         let readyAgents: Record<string, unknown>[] = [];
         await expect.poll(async () => {
           readyAgents = await Promise.all(expected.map(async ({ id }) => {
             const current = await json(await request.get(`/api/agents/${id}`));
+            expect(current).not.toHaveProperty("lifecycleOperation");
             return Object.fromEntries(Object.keys(expected[0]).map((key) => [key, current[key]]));
           }));
           return readyAgents;
@@ -383,9 +384,18 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
         page.getByRole("button", { name: "Dismiss notification" }),
       ).toHaveCount(0);
       if (adapter === "paperclip_runner") {
-        await expect(
-          page.getByRole("button", { name: /^Run cancelled/ }),
-        ).toHaveClass(/text-muted-foreground/);
+        const parentTurn = page.getByTestId("task-chat-runner-turn").filter({
+          has: page.getByTestId("task-chat-runner-identity-row")
+            .getByTestId("task-chat-agent-identity")
+            .getByText(owner.name, { exact: true }),
+        });
+        await expect(parentTurn).toHaveCount(1);
+        const parentStatus = parentTurn.getByTestId("task-chat-turn-status-header");
+        await expect(parentStatus).toHaveCount(1);
+        await expect(parentStatus).toBeVisible();
+        await expect(parentStatus).toHaveText(/^Stopped(?: after|$)/);
+        await expect(parentStatus).toHaveClass(/text-muted-foreground/);
+        await expect(parentStatus).not.toHaveClass(/text-destructive/);
       }
       await page.reload();
       await expect(

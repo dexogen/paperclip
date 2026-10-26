@@ -1,6 +1,9 @@
 import { isAbsolute, join } from "node:path";
 
 export interface ComposerStopProviderPaths {
+  nodeBinary: string;
+  runIdentityScript: string;
+  runtimeRoot: string;
   binary: string;
   stateDirectory: string;
   holdFile: string;
@@ -14,14 +17,8 @@ export function composerStopProviderScript(paths: ComposerStopProviderPaths): st
   return `#!/bin/sh
 set -eu
 if [ -f ${quote(paths.holdFile)} ]; then
-  case "\${PAPERCLIP_RUN_ID:-}" in
-    ????????-????-????-????-????????????) ;;
-    *) printf '%s\\n' 'Composer Stop held work requires a task run UUID' >&2; exit 2 ;;
-  esac
-  case "$PAPERCLIP_RUN_ID" in
-    *[!a-fA-F0-9-]*) printf '%s\\n' 'Composer Stop held work requires a task run UUID' >&2; exit 2 ;;
-  esac
-  exec ${quote(paths.binary)} --state-file ${quote(paths.stateDirectory)}/state-$$.json --hold-turn --call-log ${quote(paths.workLogDirectory)}/"$PAPERCLIP_RUN_ID".log "$@"
+  run_id=$(${quote(paths.nodeBinary)} ${quote(paths.runIdentityScript)} ${quote(paths.runtimeRoot)})
+  exec ${quote(paths.binary)} --state-file ${quote(paths.stateDirectory)}/state-$$.json --hold-turn --call-log ${quote(paths.workLogDirectory)}/"$run_id".log "$@"
 fi
 exec ${quote(paths.binary)} --state-file ${quote(paths.stateDirectory)}/state-$$.json --call-log ${quote(paths.setupLog)} "$@"
 `;

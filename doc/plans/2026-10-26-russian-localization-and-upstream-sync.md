@@ -658,8 +658,13 @@ Stop itself was not reached. Source review and saved provider state traced this 
 the test wrapper requiring `PAPERCLIP_RUN_ID`, which the Codex provider's filtered
 environment does not supply. A test-only correction reads the run UUID from the
 owned durable state associated with `CODEX_HOME`; its 23 fixture checks pass.
-Fresh native acceptance of that correction remains pending. Process Stop, paused
-composer and upstream chat journeys did not run on the failed candidate. Process cleanup
+Candidate `40067580a` passed the fresh 23 fixture checks and native readiness,
+per-run work receipts, parent Stop and explicit subtree Pause. It then failed on
+an obsolete `Run cancelled` button selector; the actual current native status is
+a muted `Stopped` span. The test-only correction `614f75c9` scopes that status to
+the unique parent agent turn. Fresh complete native acceptance remains pending;
+process Stop, paused composer and upstream chat journeys have not yet run.
+Process cleanup
 passed; original database cleanup remains unconfirmed with stale markers retained.
 A later read-only observation found no active owned process or database listener.
 The original failed receipts are unchanged. Earlier build/unit/browser evidence
@@ -681,9 +686,22 @@ parity does not establish full application coverage. Detector/sync tests pass
 47/47 and token gates pass. The first full type check found an incomplete test
 upload receipt, now fixed with the complete typed contract. A second check and
 build found an incomplete local Copilot asset installation. The verified installer
-recreated the ignored files from the pinned package; complete build/type checks
-are running again. Publication and live qualification remain pending. Split into
+recreated the ignored files from the pinned package. The complete `pnpm build`
+and `pnpm -r typecheck` then passed on checkpoint `1a2bae9c2`. This does not certify
+the later split trees or a complete fresh test suite. Publication and live
+qualification remain pending. Split into
 buildable run/recovery and chat/composer PRs below the repository's file limit.
+
+The standalone run/recovery slice retains the older chat/composer consumers and
+includes only their four required helper dependencies. Its 44 affected test files
+pass 727 tests without skips, including 25 real PostgreSQL projection cases.
+The scoped source audit passes with 4,836 reviewed families and 17,481 existing
+source findings. Shared, UI and server type checks, UI/server builds, token gates and map structure
+checks pass on `9fb470fe2`. The first server build populated missing ignored
+Copilot assets; a warm supported build then recorded a valid Runner input stamp
+and the exact commit. All copied source, catalog and lockfile hashes remained
+unchanged. This is scoped standalone verification, not a fresh full monorepo test
+suite. It does not establish full chat/composer or browser acceptance.
 
 After chat, the remaining major packages are agent creation/configuration,
 project details/environments, dashboard/activity/costs, member access/secrets,
