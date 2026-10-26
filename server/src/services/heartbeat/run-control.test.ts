@@ -99,7 +99,7 @@ describe("heartbeat run-control module boundary", () => {
     const database = guardedDatabase();
     const deps = callbacks(database.db);
     deps.getRunCleanupState.mockResolvedValue({ runtimeMode: "native", status: "running", nativePhase: "terminal_failure", errorCode: "native_execution_ownership_unverified" } as Run);
-    await createHeartbeatRunControl(database.db, deps).releaseEnvironmentLeasesForRun({ runId: "held", companyId: "company", agentId: "agent", status: "failed", providerResourceDisposition: "destroy" });
+    expect(await createHeartbeatRunControl(database.db, deps).releaseEnvironmentLeasesForRun({ runId: "held", companyId: "company", agentId: "agent", status: "failed", providerResourceDisposition: "destroy" })).toBe(false);
     expect(database.access).not.toHaveBeenCalled();
     expect(deps.options.closeWarmNativeSessionsForRun).not.toHaveBeenCalled();
     expect(deps.envOrchestrator.releaseForRun).not.toHaveBeenCalled();
@@ -119,16 +119,101 @@ describe("heartbeat run-control module boundary", () => {
     const deps = callbacks(database.db);
     deps.getRunCleanupState.mockResolvedValue({ status: "failed", runtimeMode: "legacy" } as Run);
     deps.options.closeWarmNativeSessionsForRun.mockResolvedValue({ closed: 0, busy: 1, failed: 0 });
-    await createHeartbeatRunControl(database.db, deps).releaseEnvironmentLeasesForRun({ runId: "busy", companyId: "company", agentId: "agent", status: "failed", providerResourceDisposition: "destroy" });
+    expect(await createHeartbeatRunControl(database.db, deps).releaseEnvironmentLeasesForRun({ runId: "busy", companyId: "company", agentId: "agent", status: "failed", providerResourceDisposition: "destroy" })).toBe(false);
     expect(deps.options.closeWarmNativeSessionsForRun).toHaveBeenCalledWith({ runId: "busy", reason: "terminal heartbeat run destroyed its environment lease" });
     expect(deps.envOrchestrator.releaseForRun).not.toHaveBeenCalled();
     expect(database.access).not.toHaveBeenCalled();
   });
+
+  it.each(["throws", "lease_error"] as const)("does not report successful cleanup when release %s", async failure => {
+    const database = guardedDatabase();
+    const deps = callbacks(database.db);
+    deps.getRunCleanupState.mockResolvedValue({ status: "failed", runtimeMode: "legacy" } as Run);
+    const release = vi.spyOn(deps.envOrchestrator, "releaseForRun");
+    if (failure === "throws") release.mockRejectedValue(new Error("Fixture release failed"));
+    else release.mockResolvedValue({ released: [], errors: [{ leaseId: "owned", error: new Error("Fixture lease failed") }] });
+    expect(await createHeartbeatRunControl(database.db, deps).releaseEnvironmentLeasesForRun({
+      runId: "failed", companyId: "company", agentId: "agent", status: "failed",
+    })).toBe(false);
+    expect(database.access).not.toHaveBeenCalled();
+  });
+
+  it("keeps cleanup unconfirmed when its durable verification fails", async () => {
+    const where = vi.fn(async () => { throw new Error("Fixture verification unavailable"); });
+    const db = { select: () => ({ from: () => ({ where }) }) } as unknown as Db;
+    const deps = callbacks(db);
+    deps.getRunCleanupState.mockResolvedValue({ id: "owned", companyId: "company", agentId: "agent",
+      status: "failed", runtimeMode: "legacy" } as Run);
+    expect(await createHeartbeatRunControl(db, deps).releaseEnvironmentLeasesForRun({
+      runId: "owned", companyId: "company", agentId: "agent", status: "failed",
+    })).toBe(false);
+    expect(deps.envOrchestrator.releaseForRun).toHaveBeenCalledOnce();
+    expect(where).toHaveBeenCalledOnce();
+  });
+
 });
 
 describe.skipIf(!runControlPostgresSupport.supported)("heartbeat run-control database wiring", () => {
   let db: Db;
   const { fixture, liveRun } = setupRunControlDatabase("paperclip-heartbeat-run-control-module", value => { db = value; });
+
+  it.each(["legacy", "native"] as const)("confirms %s no-resource cleanup only for the exact owning run", async runtimeMode => {
+    const { company, agent } = await fixture();
+    const [run] = await db.insert(heartbeatRuns).values({ companyId: company.id, agentId: agent.id,
+      runtimeMode, status: "failed", finishedAt: new Date() }).returning();
+    const deps = callbacks(db), control = createHeartbeatRunControl(db, deps);
+    const input = { runId: run.id, companyId: company.id, agentId: agent.id, status: "failed" };
+    expect(await control.releaseEnvironmentLeasesForRun(input)).toBe(true);
+    expect(await control.releaseEnvironmentLeasesForRun({ ...input, companyId: randomUUID() })).toBe(false);
+    expect(await control.releaseEnvironmentLeasesForRun({ ...input, agentId: randomUUID() })).toBe(false);
+  });
+
+  it.each(["failed", "throws"] as const)("reports unsuccessful warm cleanup: %s", async failure => {
+    const { company, agent } = await fixture();
+    const [run] = await db.insert(heartbeatRuns).values({ companyId: company.id, agentId: agent.id,
+      runtimeMode: "native", status: "failed", finishedAt: new Date() }).returning();
+    const deps = callbacks(db);
+    if (failure === "throws") deps.options.closeWarmNativeSessionsForRun.mockRejectedValue(new Error("Fixture warm cleanup failed"));
+    else deps.options.closeWarmNativeSessionsForRun.mockResolvedValue({ closed: 0, busy: 0, failed: 1 });
+    expect(await createHeartbeatRunControl(db, deps).releaseEnvironmentLeasesForRun({
+      runId: run.id, companyId: company.id, agentId: agent.id, status: "failed", providerResourceDisposition: "destroy",
+    })).toBe(false);
+    expect(deps.envOrchestrator.releaseForRun).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["none", true], ["released", true], ["retained", true], ["retained_ephemeral", false], ["active", false],
+    ["released_local_legacy_receipt", true], ["released_ssh_legacy_receipt", true], ["released_remote_unverified", false],
+    ["pending_cleanup", false], ["cleanup_failed", false], ["retained_unverified", false],
+    ["in_flight", false], ["invalid_in_flight", false], ["workspace_export", false], ["stop_and_retain", false],
+  ] as const)("reports native resource settlement from durable %s state", async (state, settled) => {
+    const { company, agent } = await fixture();
+    const [run] = await db.insert(heartbeatRuns).values({ companyId: company.id, agentId: agent.id,
+      runtimeMode: "native", status: "failed", finishedAt: new Date() }).returning();
+    if (state !== "none") await db.insert(environmentLeases).values({
+      companyId: company.id, heartbeatRunId: run.id,
+      provider: state === "released_remote_unverified" ? "daytona" : state === "released_ssh_legacy_receipt" ? "ssh" : "local",
+      providerLeaseId: state === "released_remote_unverified" ? randomUUID() : state === "released_ssh_legacy_receipt" ? "ssh://fixture" : null,
+      leasePolicy: state === "retained" ? "reuse_by_environment" : "ephemeral",
+      status: state === "active" ? "active" : state === "pending_cleanup" ? "pending_cleanup"
+        : state.startsWith("retained") ? "retained" : "released",
+      releasedAt: state === "active" || state.startsWith("retained") ? null : new Date(),
+      cleanupStatus: state === "cleanup_failed" ? "failed"
+        : ["retained_unverified", "released_local_legacy_receipt", "released_ssh_legacy_receipt", "released_remote_unverified"].includes(state) ? null : "success",
+      metadata: state === "in_flight" ? { pendingCleanupInFlight: true }
+        : state === "invalid_in_flight" ? { pendingCleanupInFlight: "unknown" }
+        : state === "workspace_export" ? { nativeWorkspaceExportResume: null }
+        : state === "stop_and_retain" ? { sandboxStopAndRetain: null }
+        : state === "released_ssh_legacy_receipt" ? { driver: "ssh" } : null,
+    });
+    const [other] = await db.insert(heartbeatRuns).values({ companyId: company.id, agentId: agent.id }).returning();
+    await db.insert(environmentLeases).values({ companyId: company.id, heartbeatRunId: other.id, status: "active", provider: "local" });
+    const deps = callbacks(db);
+    expect(await createHeartbeatRunControl(db, deps).releaseEnvironmentLeasesForRun({
+      runId: run.id, companyId: company.id, agentId: agent.id, status: "failed",
+    })).toBe(settled);
+    expect(deps.envOrchestrator.releaseForRun).toHaveBeenCalledOnce();
+  });
 
   it.each(["queued", "running", "cancelled", "succeeded"] as const)("does not supersede a retry that becomes %s between lookup and the cancellation fence", async status => {
     const { company, agent } = await fixture();
@@ -497,8 +582,8 @@ describe.skipIf(!runControlPostgresSupport.supported)("heartbeat run-control dat
     });
     await acquired;
     try {
-      await control.releaseEnvironmentLeasesForRun({ runId, companyId: company.id, agentId: agent.id,
-        status: "cancelled", providerResourceDisposition: "stop_and_retain" });
+      expect(await control.releaseEnvironmentLeasesForRun({ runId, companyId: company.id, agentId: agent.id,
+        status: "cancelled", providerResourceDisposition: "stop_and_retain" })).toBe(false);
       expect(deps.envOrchestrator.releaseForRun).not.toHaveBeenCalled();
       expect((await db.select().from(environmentLeases).where(eq(environmentLeases.id, leaseId)))[0])
         .toMatchObject({ status: "active", leasePolicy });

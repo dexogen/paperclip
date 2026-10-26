@@ -7,6 +7,7 @@ import {
   type Page,
 } from "@playwright/test";
 import { composerStopWorkLog } from "./fixtures/composer-stop-provider";
+import { cleanupComposerStopCompany } from "./fixtures/composer-stop-cleanup";
 
 async function workCalls(runId: string) {
   return readFile(composerStopWorkLog(process.env.PAPERCLIP_STOP_WORK_LOG_DIR!, runId), "utf8")
@@ -165,6 +166,8 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       await request.get("/api/instance/settings/experimental"),
     );
     const statusMetadata: Record<string, string | null>[] = [];
+    const ownedAgentIds: string[] = [];
+    let testFailure: { error: unknown } | undefined;
     let ownedHoldFile: string | undefined;
     page.on("websocket", (socket) => {
       socket.on("framereceived", ({ payload: frame }) => {
@@ -207,7 +210,7 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
         }),
       );
       async function agent(name: string) {
-        return json(
+        const created = await json(
           await request.post(`/api/companies/${company.id}/agents`, {
             data: {
               name,
@@ -233,6 +236,8 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
             },
           }),
         );
+        ownedAgentIds.push(created.id);
+        return created;
       }
       const owner = await agent("Stop fixture parent");
       const childOwner = await agent("Stop fixture child");
@@ -509,27 +514,34 @@ for (const adapter of ["process", "paperclip_runner"] as const) {
       await page.screenshot({
         path: testInfo.outputPath(`${adapter}-cancelled.png`),
       });
+    } catch (error) {
+      testFailure = { error };
     } finally {
-      try {
-        const statusEvidence = JSON.stringify(statusMetadata, null, 2);
-        // The company is disposable and scoped to this test invocation.
-        await request.patch(`/api/companies/${company.id}`, {
-          data: { status: "archived" },
-        });
-        await request.patch("/api/instance/settings/experimental", {
-          data: {
-            enableClassicTaskInterface:
-              originalSettings.enableClassicTaskInterface,
-            enableNativeRunner: originalSettings.enableNativeRunner,
-          },
-        });
-        await testInfo.attach("owned-company-status-metadata", {
-          body: statusEvidence,
-          contentType: "application/json",
-        });
-      } finally {
-        if (ownedHoldFile) await unlink(ownedHoldFile);
-      }
+      await cleanupComposerStopCompany({
+        request,
+        companyId: company.id,
+        agentIds: ownedAgentIds,
+        json,
+        poll: probe => expect.poll(probe).toBe(true),
+        failure: testFailure,
+        restore: async () => {
+          await json(await request.patch("/api/instance/settings/experimental", {
+            data: {
+              enableClassicTaskInterface: originalSettings.enableClassicTaskInterface,
+              enableNativeRunner: originalSettings.enableNativeRunner,
+            },
+          }));
+        },
+        attach: async (cleanup) => {
+          await testInfo.attach("owned-company-status-metadata", {
+            body: JSON.stringify(statusMetadata, null, 2), contentType: "application/json",
+          });
+          await testInfo.attach("owned-company-cleanup", {
+            body: JSON.stringify(cleanup, null, 2), contentType: "application/json",
+          });
+        },
+        removeMarker: async () => { if (ownedHoldFile) await unlink(ownedHoldFile); },
+      });
     }
   });
 }

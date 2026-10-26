@@ -822,3 +822,32 @@ its unguarded default-branch run failed on unavailable upstream configuration.
 Re-enable it after its owner guard lands; fork verification remains enabled.
 Activation, stack merge order, exact-SHA verification, and recovery are documented
 in [the fork runbook](../localization/UPSTREAM.md).
+
+
+## Native preparer cleanup candidate
+
+The native Stop qualification at `47fbbda95919a7d28e4220d4be6c134aa255094b`
+failed during owned-company archive cleanup. Copy-only database inspection found
+cancelled parent/child runs with process-stop receipts, released environment
+leases and terminal native finalization, but still-live legacy preparer leases.
+The source database remained unchanged. The failed qualification remains failed.
+
+A separate candidate keeps the preparer lease through execution and awaited
+cleanup. It clears only the exact current boot's terminal native run lease after
+environment and process cleanup are confirmed. Failed, pending or unknown
+cleanup, foreign ownership, scheduled resume and finalization retain the lease.
+Existing Stop guards and deadlines remain unchanged. Recovery callers retain
+their prior await-only contract.
+
+The existing assembled cancellation case failed before the fix and passed after
+it. Fourteen assembled cases pass, including real PostgreSQL records and process
+settlement with a controlled executor and an absent PID. Six complete owner
+suites pass 221 tests with no skips. Scoped server typecheck passes. Two agents
+reviewed the four changed source/test files. This is not live Runner proof or a
+full repository verification.
+
+Dispatched work whose process identity was already cleared returns `skipped`
+and conservatively retains the preparer lease. A real native qualification must
+establish whether the candidate resolves the observed parent/child cleanup path.
+Fresh immutable-source build, types, owner suites, fixtures and native E2E remain
+pending. Original failure and forensic evidence are retained through verification.
