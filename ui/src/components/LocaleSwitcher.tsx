@@ -1,10 +1,13 @@
 import { setLocale, useTranslation } from "@/i18n";
 import { selectableLocales } from "@/i18n/locales";
 
-const localeNames = selectableLocales.map((locale) => ({
-  value: locale,
-  label: new Intl.DisplayNames([locale], { type: "language" }).of(locale) ?? locale,
-}));
+const localeNames = selectableLocales.map((locale) => {
+  const name = new Intl.DisplayNames([locale], { type: "language" }).of(locale) ?? locale;
+  return {
+    value: locale,
+    label: name.charAt(0).toLocaleUpperCase(locale) + name.slice(1),
+  };
+});
 
 export function LocaleSwitcher() {
   const { t, i18n } = useTranslation();
