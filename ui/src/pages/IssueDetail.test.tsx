@@ -37,6 +37,7 @@ import {
   shouldScrollIssueDetailToTopOnNavigation,
 } from "./IssueDetail";
 import { queryKeys } from "../lib/queryKeys";
+import { i18n } from "@/i18n";
 import {
   armIssueDetailInboxQuickArchive,
   createIssueDetailLocationState,
@@ -1488,6 +1489,7 @@ describe("IssueDetail", () => {
       root.unmount();
     });
     queryClient.clear();
+    await i18n.changeLanguage("en");
     container.remove();
     document.body.innerHTML = "";
     localStorage.clear();
@@ -5005,6 +5007,33 @@ describe("IssueDetail", () => {
         tone: "error",
       }),
     );
+  });
+
+  it("updates task controls without changing a draft, thread identity, or canonical work mode", async () => {
+    const draftKey = "paperclip:issue-comment-draft:issue-1";
+    const title = "Keep <strong>the user title</strong>";
+    mockIssuesApi.get.mockResolvedValue(createIssue({ title, workMode: "planning" }));
+    localStorage.setItem(draftKey, "Несохранённый черновик / unchanged draft");
+    await act(async () => { renderIssueView(); });
+    await flushReact();
+    const thread = container.querySelector('[data-testid="task-chat-thread"], [data-testid="issue-chat-thread"]');
+    expect(thread).not.toBeNull();
+    expect(container.querySelector('[aria-label="More task actions"]')).not.toBeNull();
+    mockIssuesApi.update.mockClear();
+    mockIssuesApi.addComment.mockClear();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await flushReact();
+    expect(container.querySelector('[aria-label="Другие действия с задачей"]')).not.toBeNull();
+    expect(container.textContent).toContain(title);
+    expect(container.querySelector('[data-testid="task-chat-thread"], [data-testid="issue-chat-thread"]')).toBe(thread);
+    expect(mockIssueChatThreadRender.mock.calls.at(-1)?.[0].issueWorkMode).toBe("planning");
+    expect(localStorage.getItem(draftKey)).toBe("Несохранённый черновик / unchanged draft");
+    expect(mockIssuesApi.update).not.toHaveBeenCalled();
+    expect(mockIssuesApi.addComment).not.toHaveBeenCalled();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    await flushReact();
+    expect(container.querySelector('[aria-label="More task actions"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="task-chat-thread"], [data-testid="issue-chat-thread"]')).toBe(thread);
   });
 
   it("passes planning work mode to the issue chat thread", async () => {

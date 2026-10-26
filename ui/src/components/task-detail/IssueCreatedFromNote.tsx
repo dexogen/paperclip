@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "@/i18n";
 import type { IssueCreationSource } from "@paperclipai/shared";
 import { GitBranch } from "lucide-react";
 import {
@@ -20,6 +21,7 @@ export interface IssueCreatedFromNoteProps {
  * not a blocker. Renders nothing when the viewer may not see the source.
  */
 export function IssueCreatedFromNote({ createdFrom, issueLinkState, className }: IssueCreatedFromNoteProps) {
+  const { t } = useTranslation();
   if (!createdFrom) return null;
   const { issue, agent } = createdFrom;
   const ref = issue.identifier ?? issue.id;
@@ -29,17 +31,18 @@ export function IssueCreatedFromNote({ createdFrom, issueLinkState, className }:
       className={cn("flex min-w-0 items-center gap-1 text-xs text-muted-foreground", className)}
     >
       <GitBranch aria-hidden className="h-3 w-3 shrink-0" />
-      <span className="shrink-0">Created from</span>
-      <Link
-        to={createIssueDetailPath(ref)}
-        state={issueLinkState}
-        onClickCapture={() => rememberIssueDetailLocationState(ref, issueLinkState)}
-        className="min-w-0 truncate hover:text-foreground transition-colors"
-        title={issue.title}
-      >
-        {issue.identifier ? `${issue.identifier} ${issue.title}` : issue.title}
-      </Link>
-      {agent && <span className="shrink-0">by {agent.name}</span>}
+      <Trans
+        t={t}
+        i18nKey={agent ? "taskProperties.provenance.fromAgent" : "taskProperties.provenance.fromTask"}
+        values={{ task: issue.identifier ? `${issue.identifier} ${issue.title}` : issue.title, agent: agent?.name }}
+        components={{
+          prefix: <span className="shrink-0" />,
+          source: <Link to={createIssueDetailPath(ref)} state={issueLinkState} onClickCapture={() => rememberIssueDetailLocationState(ref, issueLinkState)} className="min-w-0 truncate hover:text-foreground transition-colors" title={issue.title} />,
+          author: <span className="shrink-0" />,
+        }}
+        tOptions={{ interpolation: { escapeValue: true } }}
+        shouldUnescape
+      />
     </p>
   );
 }

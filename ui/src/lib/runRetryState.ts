@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { formatDateTime } from "./utils";
 
 type RetryAwareRun = {
@@ -18,16 +20,18 @@ export type RunRetryStateSummary = {
   retryOfRunId: string | null;
 };
 
-const RETRY_REASON_LABELS: Record<string, string> = {
-  native_provider_overloaded: "Model at capacity",
-  ai_connection_pool_wait: "Waiting for pool usage to recover",
-  transient_failure: "Transient failure",
-  missing_issue_comment: "Missing task comment",
-  process_lost: "Process lost",
-  assignment_recovery: "Assignment recovery",
-  issue_continuation_needed: "Continuation needed",
-  max_turns_continuation: "Max-turn continuation",
-};
+function retryReasonLabels(t: TFunction): Record<string, string> {
+  return {
+    native_provider_overloaded: t("taskProperties.retryReasons.modelCapacity"),
+    ai_connection_pool_wait: t("taskProperties.retryReasons.poolWait"),
+    transient_failure: t("taskProperties.retryReasons.transient"),
+    missing_issue_comment: t("taskProperties.retryReasons.missingComment"),
+    process_lost: t("taskProperties.retryReasons.processLost"),
+    assignment_recovery: t("taskProperties.retryReasons.assignmentRecovery"),
+    issue_continuation_needed: t("taskProperties.retryReasons.continuationNeeded"),
+    max_turns_continuation: t("taskProperties.retryReasons.maxTurn"),
+  };
+}
 
 function readNonEmptyString(value: unknown) {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -38,10 +42,10 @@ function joinFragments(parts: Array<string | null>) {
   return filtered.length > 0 ? filtered.join(" · ") : null;
 }
 
-export function formatRetryReason(reason: string | null | undefined) {
+export function formatRetryReason(reason: string | null | undefined, t: TFunction = i18n.getFixedT("en")) {
   const normalized = readNonEmptyString(reason);
   if (!normalized) return null;
-  return RETRY_REASON_LABELS[normalized] ?? normalized.replace(/_/g, " ");
+  return retryReasonLabels(t)[normalized] ?? normalized.replace(/_/g, " ");
 }
 
 export function describeRunRetryState(run: RetryAwareRun): RunRetryStateSummary | null {

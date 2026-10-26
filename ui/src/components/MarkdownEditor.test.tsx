@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { buildIssueReferenceHref, buildProjectMentionHref, buildRoutineMentionHref, buildSkillMentionHref } from "@paperclipai/shared";
@@ -305,6 +307,44 @@ describe("issueMentionTitle", () => {
 describe("MarkdownEditor", () => {
   let container: HTMLDivElement;
   let originalRangeRect: typeof Range.prototype.getBoundingClientRect;
+
+  it("keeps fallback source and draft identity when its controls change language", async () => {
+    const previousLanguage = i18n.language;
+    const onChange = vi.fn();
+    const onSubmit = vi.fn();
+    const source = "## Черновик\n\nИсходный <custom> & $& текст";
+    mdxEditorMockState.emitMountParseError = true;
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => {
+        await i18n.changeLanguage("en");
+        root.render(<MarkdownEditor value={source} onChange={onChange} onSubmit={onSubmit} />);
+      });
+      await flush();
+      const textarea = container.querySelector("textarea");
+      expect(textarea).not.toBeNull();
+      expect(textarea!.value).toBe(source);
+      expect(fallbackCode(container)).toBe("MDE-PARSE");
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea!.value).toBe(source);
+      expect(container.textContent).toContain("Показан исходный текст.");
+      expect(container.querySelector("button")?.textContent).toContain("Повторить открытие визуального редактора");
+      expect(onChange).not.toHaveBeenCalled();
+      expect(onSubmit).not.toHaveBeenCalled();
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea!.value).toBe(source);
+      expect(onChange).not.toHaveBeenCalled();
+      await reactAct(async () => { textarea!.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", ctrlKey: true, bubbles: true })); });
+      expect(onSubmit).toHaveBeenCalledOnce();
+    } finally {
+      await reactAct(async () => {
+        root.unmount();
+        await i18n.changeLanguage(previousLanguage);
+      });
+    }
+  });
 
   beforeEach(() => {
     container = document.createElement("div");

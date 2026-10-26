@@ -263,103 +263,135 @@ required checks; and preserved actions, drafts, permissions, and canonical data.
 Any remaining untranslated surface must be named rather than hidden in a percentage.
 ## Implementation checkpoint (2026-10-26)
 
-The implementation uses a dedicated `codex/russian-localization` worktree. The main
-checkout remains on `master`. An `upstream` fetch remote now exists with pushing
-blocked. Upstream PR #17546 was reviewed at its recorded head: 54 successful checks
-and two skipped checks; those results are provenance, not proof of this adaptation.
-The author is credited in the UI localization guide and the adaptation commit.
+The implementation is published as a draft stack:
+[foundation #1](https://github.com/dexogen/paperclip/pull/1),
+[upstream integration #2](https://github.com/dexogen/paperclip/pull/2),
+[setup and administration #3](https://github.com/dexogen/paperclip/pull/3),
+[Russian README #4](https://github.com/dexogen/paperclip/pull/4), and
+[task collections #5](https://github.com/dexogen/paperclip/pull/5).
+The canonical checkout remains on `master`. Upstream fetching is configured with
+pushing blocked. Ordinary merges preserve upstream ancestry through
+`1a3f604097d81fb653b271af4c7c3614d2b032a7`; recheck upstream before deployment.
 
-The current slice adds English/Russian selection, plural and message validation,
-a static source detector, 414 reviewed-message fingerprints (435 Russian string
-forms), and an explicit initial inventory of 20,857 source candidates that remain
-migration debt. These are occurrences, not unique untranslated messages. It localizes self-hosted sign-in, main navigation,
-organization selection, agent lists, task creation copy, profile preferences, project
-browsing, shared status labels, and the modern task list/filter controls. It retains
-raw server/provider diagnostics and user-entered content.
+PR #17546 was reviewed at its recorded head and credited in the localization guide.
+Its successful checks are provenance, not verification of this adaptation. The
+foundation retains i18next, adds persistent English/Russian selection and plural
+validation, and detects source/catalog drift. The fork starts in Russian unless
+the browser has an explicit preference. Language changes retain drafts and stored
+canonical values; technical commands, user content, and provider diagnostics stay
+verbatim.
 
-At that foundation checkpoint, remaining work included onboarding,
-task/agent/project detail screens, organization settings and connections, and older/alternative task renderers
-(`LegacyIssuesList`, `IssueColumns`, `KanbanBoard`, `IssueFilterPanel`). Shared child
-components can still display English. This checkpoint is an integration preview;
-it does not meet the final full-web-UI release acceptance above. The source baseline
-is migration debt, never a translated-coverage percentage.
+The current catalog has 1,306 reviewed semantic families, 1,333 English forms, and
+1,387 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 20,068.
+That baseline is migration debt, never a translated-coverage percentage. Strict
+candidate checks and the latest upstream delta have no actionable findings.
 
-The next slice, `codex/russian-ui-journeys`, follows the integration branch with
-upstream `5a28f7acf8a8c86536c4f5c5369bfeb49a46c41a`. It adds the active onboarding
-wizard, provider selection and sign-in controls, first-administrator bootstrap,
-board claim, organization settings, instance general/access settings, and the
-shared provider permission step. English and Russian now contain 1,101 semantic
-messages (1,119 English forms and 1,155 Russian forms). Independent agent reviews
-cover all registered messages; no human approval is claimed. The source baseline
-shrinks by 652 occurrences to 20,205. Five narrow exceptions identify technical
-enum/property guards whose literals are never displayed.
+Supported surfaces include navigation, organization selection, self-hosted sign-in,
+first-administrator bootstrap, active onboarding/provider controls, organization
+settings, instance general/access settings, and both active task-list/board
+renderers with their shared status, recovery, and preview controls. The Russian
+README includes reciprocal English/Russian flag links and a source quickstart that
+selects this preview. See the [UI localization guide](../../ui/src/i18n/README.md)
+for exact surface boundaries.
 
-Targeted checks prove language changes preserve setup drafts, permission IDs,
-claim URL credentials, and literal user/agent names. Local error messages follow
-the language without repeating provider sign-in or administrator claims. UI
-typecheck, token gates, and the localization audit pass. Full-stack verification
-and complete repository verification of this combined revision remain pending.
-The latest parent/integration hosted runs were cancelled with the GitHub check
-annotation `repository invocation blocked`; they are not successful checks.
+Full task/agent/project detail screens, complete Inbox and routine host pages,
+remaining agent configuration/settings, dashboards, and most Connections remain
+outside the completed translation scope. The design-sandbox-only refreshed filter
+panel is also untranslated. This preview does not meet the full-web-UI release
+acceptance above. Continue with complete journeys and prune only resolved baseline
+entries; synchronization must never approve its own new translations.
 
-The following task-collection slice adds 205 message families for the legacy
-list, board, columns, shared rows, status/preview controls, recovery indicators,
-and external-object summaries. The catalog contains 1,306 reviewed families
-(1,333 English forms and 1,387 Russian forms). Eight existing status families
-were reviewed again in their new context. The baseline loses 137 resolved
-occurrences and retains 20,068. Shared display helpers accept the active
-translator while retaining English defaults for callers outside this slice.
-Component checks cover drafts, open controls, canonical status changes, plural
-forms, and future versus missed retries. Two existing large-tree tests timed out
-in a combined WSL run; isolated runs passed without changing timeouts. Separate
-Linux verification remains necessary before accepting this slice.
+### Verification evidence and outstanding work
 
-Full task/agent/project detail screens, the complete Connections catalog,
-remaining agent configuration/settings, dashboards, and the design-sandbox-only
-refreshed filter panel are still outside the verified translation scope. Shared
-rows do not make their Inbox, project, or routine host pages fully translated.
-The preview is not a completed full-web-UI release. See the
-[UI localization guide](../../ui/src/i18n/README.md) for the current supported
-surfaces and constraints.
+The full Linux run at `c5c8d13ae6685452e9db05637f90034daf5dde1e` completed every
+server partition and all 20 workspace projects, including supplements after a
+workspace fail-fast. It recorded 43,464 passed, 27 failed, and 109 skipped tests.
+All 9,183 UI and 537 CLI tests passed. The failed full run remains preserved.
+Twenty-three failures required `jq`; two exposed Git diagnostic recognition, one
+exposed inherited session-class redaction, and one depended on Bash SSH startup.
 
-Three workflows prepare reviewed upstream merges, verify source and translations,
-and publish immutable integration images from verified master commits. They preserve
-upstream ancestry and edited sync branches. They do not merge or deploy automatically.
-Local regression fixtures exercise conflicts, guard failures, and exact-SHA checks.
-The first hosted sync and image publication still require default-branch integration.
+After the prerequisite and source/test corrections, a clean Linux checkout at
+`367a9985debfc603670b3a2eda0d0056af4e647f` passed frozen installation, full Russian
+default build, full workspace typecheck, native fixture preparation, all eight
+affected server files (817 tests), and the complete OpenCode runtime-config file
+(19 tests). Git authority and secret-redaction guards remain enforced; no Git
+discovery override or timeout relaxation was used. Earlier hosted failures and
+superseded local attempts remain in the PR verification records.
 
-GitHub metadata was checked: Actions is enabled and allows actions; its default
-workflow token is read-only and Actions PR creation/approval is disabled. No installed
-sync App or GHCR publication has been demonstrated. The activation and recovery steps
-are in [the fork runbook](../localization/UPSTREAM.md).
+Real Chromium journeys against fresh embedded databases passed Russian default,
+RU/EN draft preservation, explicit organization creation, and mobile layout in
+`local_trusted` mode. A separate authenticated/private journey at `367a998` passed
+UI registration, a non-admin session, explicit first-admin claim, reload, and
+sign-in from a fresh browser context; anonymous identity requests remained 401.
+Its first attempt failed because the temporary verifier expected a field omitted
+from anonymous health. The failed attempt was retained and the verifier corrected
+against the existing public/session contracts. Owned servers, listeners, and
+databases stopped after the journeys. These are source-checkout proofs, not HTTPS,
+external identity-provider, agent/model execution, image, or production acceptance.
 
-Full workspace `pnpm -r typecheck` and `pnpm build` passed. Targeted UI tests,
-34 detector/sync regression tests, token gates, and map checks passed. The standard
-Chromium journey passed on desktop and mobile; four additional repeated runs
-confirmed the WSL headless environment correction. These browser tests use API
-fixtures and do not certify full-stack authentication.
+The task-collection source and latest upstream changes are frozen for Linux
+verification at `0ab7ec7693c62de927b22d3710943372d375242a`. Full Russian-default build
+and workspace typecheck passed, followed by all 800 UI files / 9,201 tests, all 58
+DB files / 259 tests, and all three affected GitHub service files / 1,473 tests.
+Two existing large-tree tests previously timed out in a combined WSL run; the full
+Linux UI run passed with unchanged timeouts. The failed WSL run remains preserved.
 
-The implementation is published in [draft PR #1](https://github.com/dexogen/paperclip/pull/1).
-Its verification record tracks the exact commit, full-suite outcome, and remaining
-failures. The hosted inventory contains 1,156 general server suites, 162 serialized
-suites, and 20 workspace projects. Local attempts superseded for resource limits
-are not passes; hosted verification must cover every partition before acceptance.
+The real task-list/board attempt failed before any task writes: it could not find
+the seeded Cyrillic titles. A separate read-only API diagnosis against the reused
+fixture database confirmed that all six tasks exist, an ASCII tag query finds them,
+and both Cyrillic-only and mixed queries return no matches. This is a server search
+problem requiring correction before accepting the Russian task journey; replacing
+the test query with English would not establish acceptance. Both attempts retained
+their original evidence and stopped their owned runtime, database, and listener.
 
-The full local attempt exposed an existing CompanySettings test helper that did not
-wait for React transitions. The same three assertions failed with the original
-revision. Replacing the helper with React's `act` made all four tests pass without
-changing their assertions or product behavior. A separate original server test
-depends on Git's exact non-repository error text; WSL filesystem boundaries change
-that text. A focused environment control passed with
-`GIT_DISCOVERY_ACROSS_FILESYSTEM=1`, without source changes. Keep the original
-failures and timing-sensitive test results in the PR's verification record.
+The search repair is published separately in
+[draft PR #6](https://github.com/dexogen/paperclip/pull/6), at
+`cd50089b9c09276506293ee75e82e03a7f20746f`. All four affected files passed 246
+tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
+comparisons passed. Unicode capability selection preserves existing databases.
+The recorded 10k-task timing run missed the 250 ms target; query plans and the
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The new real
+browser acceptance is still pending; the original failed result is retained.
 
-The inherited `commitperclip PR Review` workflow is temporarily disabled in the
-fork. Its initial `pull_request_target` run used the unguarded default branch and
-failed because Dependency Review was unavailable. Re-enable it after the owner
-guard reaches `master`; the fork's own verification remains enabled.
+The task-detail/properties and common-editor slice adds 650 reviewed families.
+The combined catalog has 1,956 families, 2,000 English forms and 2,088 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,505; twelve
+exact technical exceptions describe enum guards and currency formatting.
+Independent agent reviews found and corrected terminology and two missing
+accessible labels. The actual installed MDXEditor regression first reproduced
+a stale language callback, then passed with live translation updates preserving
+its edited content, DOM and selection. UI typecheck, token gates, focused task,
+sharing, editor and composer tests passed. Combined Linux and browser acceptance
+of this expanded slice remains pending.
 
-The next translation slice should close an entire remaining user journey, prune
-resolved baseline entries, review changed message fingerprints, and add appropriate
-Russian/English UI evidence. Automated synchronization prepares that review work;
-it must never certify its own new translations.
+Document/artifact side panels are prepared as the next isolated slice. Full
+chat/composer, Activity, and remaining view branches still require separate work.
+
+The detector and sync regressions pass all 47 cases, including conflict cleanup,
+manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition
+coverage. Typed translator helpers now use lexical bindings, preserve namespace
+boundaries and fail on unsupported prefixes. Token gates and map checks pass.
+Static analysis and API-fixture browser
+tests have their documented limits and do not replace real user journeys.
+
+### Workflow activation
+
+The three fork workflows prepare reviewed upstream merges, verify source and
+translations, and publish immutable images only from verified `master` commits.
+They do not auto-merge or deploy. Scheduled sync and image publication require
+accepted default-branch integration and a successful first real run.
+
+Actions is enabled, but its default token is read-only and Actions PR creation is
+disabled. A sync App and registry publication have not been demonstrated. GitHub
+cancelled earlier verification with `repository invocation blocked`; subsequent
+confirmed pushes did not create PR workflow runs. The available API does not
+establish the restriction's cause. Local verification does not make that hosted
+gate green. The owner needs to resolve the account/repository restriction before
+hosted acceptance, protection activation, or image publication.
+
+The inherited `commitperclip PR Review` workflow was temporarily disabled after
+its unguarded default-branch run failed on unavailable upstream configuration.
+Re-enable it after its owner guard lands; fork verification remains enabled.
+Activation, stack merge order, exact-SHA verification, and recovery are documented
+in [the fork runbook](../localization/UPSTREAM.md).

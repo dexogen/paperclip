@@ -20,6 +20,54 @@
     {
       "id": "f23a3dd8efec52232cc4ea889d70de56f17eea4acbbeb431771ec0a8b7b42bec",
       "reason": "AgentProviderConnection errorMessage uses the message property name in a TypeScript union guard (\"message\" in error). The property name is never rendered; output preserves the provider diagnostic or selects an already translated localErrors entry."
+    },
+    {
+      "id": "1db1e910801f67a3038f12c373beaecd20a3237598feb54851dae8f03c98fc71",
+      "reason": "ExternalObjectStatusIcon compares the canonical liveness enum against fresh; output is the translated status label and optional translated liveness. The enum value is not rendered."
+    },
+    {
+      "id": "466054b4f91c10f3af1f6bcf4eecab478938d2b61b21d4ce4aeea3fc43d4e302",
+      "reason": "ExternalObjectStatusIcon compares the canonical liveness enum against unknown; output is the translated status label and optional translated liveness. The enum value is not rendered."
+    },
+    {
+      "id": "aeb7c84aacecc0bf78aa51d1310ac23b4e3605a575e4c8647a09402f99870385",
+      "reason": "SiblingLink compares the navigation direction against previous to select one of two translated aria labels. The technical direction value is not rendered."
+    },
+    {
+      "id": "6a33eda5f24969dc4a14612324e78dffa64d4b6b3823e39181d65ab1a7825414",
+      "reason": "TaskTreeControlDialog compares its action mode against restore to select the translated restore-tasks plural family. The action discriminator is not rendered."
+    },
+    {
+      "id": "9f646d6f6232970922bf734c9cbb55a00c3f3f7ff8fbf93941ed9a4c442146e4",
+      "reason": "IssueProperties compares the execution stage type against review to select translated reviewer or approver search placeholders. The stage enum is not rendered."
+    },
+    {
+      "id": "d9fc6eea111f931024c8c74db49c245925939f3211301d1b5ea1cfb60f889734",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical run action to display its translated completion notice. The action identifier is not rendered."
+    },
+    {
+      "id": "1c19b10ffd23f3d65981d8ee6005c08f2972931f6b6d7727b61f3f5855cd5f36",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical stop action to display its translated service notice. The action identifier is not rendered."
+    },
+    {
+      "id": "84d6ff05919ee5a991e259cf7828123bc1cec9ef8f74102177df494003f1c385",
+      "reason": "IssueProperties compares runtimeActionMessage against the canonical restart action to display its translated service notice. The action identifier is not rendered."
+    },
+    {
+      "id": "d8cab01c161f7784f13ea9a9394f5c728a6ad39b44409f487b7baf6fd576af88",
+      "reason": "AttributionAvatar compares the technical role against assignee to select the translated assignee or originating-agent label. This is a discriminator, not visible copy."
+    },
+    {
+      "id": "9804cce7d273547277b9827ed7e91ea62d147fe86f3050b31a9b42f5ca850e28",
+      "reason": "IssueDetailActivityTab checks the BCP 47 locale identifier ru to select Russian USD number formatting. The locale code is not rendered."
+    },
+    {
+      "id": "415f2d62e9b2cb27dfdb47d13db08d2beb694ac01630a7a7ff3ebe287c4d4acd",
+      "reason": "IssueDetailActivityTab preserves the original four-decimal English USD amount format. Russian uses Intl currency formatting; the dollar symbol and number are monetary data, not an untranslated sentence."
+    },
+    {
+      "id": "da06d1581df0ed57107275876f74bf78955f488856eca274dcda561e0a3b346a",
+      "reason": "TaskDetailSurface compares the canonical workMode against ask to select a translated mode tooltip. The mode identifier is not rendered."
     }
   ]
 }

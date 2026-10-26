@@ -3,6 +3,7 @@
 import { act, forwardRef, useImperativeHandle, useRef, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 
 vi.mock("./MarkdownEditor", () => ({
   MarkdownEditor: forwardRef<
@@ -75,6 +76,41 @@ describe("InlineEditor", () => {
 
   afterEach(() => {
     container.remove();
+  });
+
+  it("preserves an unsaved title through language changes and saves only on explicit submit", async () => {
+    const previousLanguage = i18n.language;
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    const root = createRoot(container);
+    try {
+      await act(async () => {
+        await i18n.changeLanguage("en");
+        root.render(<>
+          <InlineEditor value="Original title" onSave={onSave} />
+          <InlineEditor value="" onSave={onSave} className="empty-locale-label" />
+        </>);
+      });
+      await act(async () => { container.querySelector("span")!.click(); });
+      const textarea = container.querySelector("textarea")!;
+      const draft = "Новое название <strong> & EN $&";
+      await act(async () => { setNativeTextareaValue(textarea, draft); });
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea.value).toBe(draft);
+      expect(container.querySelector(".empty-locale-label")?.textContent).toBe("Нажмите, чтобы изменить…");
+      expect(onSave).not.toHaveBeenCalled();
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(container.querySelector("textarea")).toBe(textarea);
+      expect(textarea.value).toBe(draft);
+      expect(onSave).not.toHaveBeenCalled();
+      await act(async () => { textarea.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true })); });
+      expect(onSave).toHaveBeenCalledExactlyOnceWith(draft);
+    } finally {
+      await act(async () => {
+        root.unmount();
+        await i18n.changeLanguage(previousLanguage);
+      });
+    }
   });
 
   it("calls onSave with empty string when nullable and the field is cleared (single-line)", () => {

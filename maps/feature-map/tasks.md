@@ -100,6 +100,18 @@ Manual: Filter by status and assignee, change grouping/sort, open a task, and re
 
 Automated: [task detail](../../ui/src/pages/IssueDetail.test.tsx) covers component behavior, while [issue service](../../server/src/__tests__/issues-service.test.ts) covers server contracts.
 
+Russian presentation covers the task-detail shell, properties, sharing/privacy,
+relations, subtask controls and common editors. Component locale regressions in
+the task-detail suite, [sharing sheet](../../ui/src/components/IssueShareSheet.test.tsx),
+[task tree](../../ui/src/components/TaskTreeControls.test.tsx),
+[inline editor](../../ui/src/components/InlineEditor.test.tsx) and
+[Markdown renderer](../../ui/src/components/MarkdownBody.rerender.test.tsx)
+check preserved drafts, literal names, selected items, markup, and explicit
+mutation counts. These checks use mocked requests. They do not prove live
+persistence, privacy isolation or complete translation of chat/composer and
+unconverted child panels. In a live check, switch languages with an unsaved draft
+and sharing dialog open, then save one intended change and reload it separately.
+
 Failure markers have no dashed divider rules. An adjacent run error and
 no-live-execution-path notice show only the last error, with its details and
 retry action, including a permitted legacy run retry carried onto a later

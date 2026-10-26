@@ -2,11 +2,12 @@ import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { posix } from "node:path";
 
-let parse;
+let parse, traverse;
 try {
   const uiRequire = createRequire(new URL("../../ui/package.json", import.meta.url));
   const storybookRequire = createRequire(uiRequire.resolve("storybook/internal/csf-tools"));
   ({ parse } = storybookRequire("@babel/parser"));
+  ({ traverse } = uiRequire("storybook/internal/babel"));
 } catch (error) {
   throw new Error("Localization audit needs the pinned UI Storybook dependencies. Run pnpm install --frozen-lockfile (without a production-only/filter install).", { cause: error });
 }
@@ -46,6 +47,52 @@ function staticKeys(node) {
   return null;
 }
 
+function lexicalBindings(ast) {
+  const paths = new WeakMap(), metadata = new WeakMap(), typeScopes = new WeakMap();
+  const functions = new Set(["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression",
+    "ObjectMethod", "ClassMethod", "ClassPrivateMethod", "TSDeclareFunction"]);
+  traverse(ast, { enter(path) { paths.set(path.node, path); } });
+  const bindingInfo = (binding) => {
+    if (!binding) return null;
+    if (!metadata.has(binding)) metadata.set(binding, { kind: "ordinary" });
+    return metadata.get(binding);
+  };
+  const valueBinding = (node, name) => bindingInfo(paths.get(node)?.scope.getBinding(name));
+  const typeScopeNodes = new Set(["Program", "BlockStatement", "CatchClause", "ForStatement", "ForInStatement",
+    "ForOfStatement", "SwitchStatement", "StaticBlock", "TSModuleBlock", "ClassDeclaration", "ClassExpression",
+    "TSTypeAliasDeclaration", "TSInterfaceDeclaration", "TSFunctionType", "TSConstructorType",
+    "TSCallSignatureDeclaration", "TSConstructSignatureDeclaration", "TSMethodSignature", ...functions]);
+  const visitTypes = (node, outer) => {
+    if (["ClassDeclaration", "TSTypeAliasDeclaration", "TSInterfaceDeclaration", "TSEnumDeclaration", "TSModuleDeclaration"].includes(node.type) && node.id?.name) {
+      outer.names.set(node.id.name, { kind: "ordinary" });
+    }
+    const scope = typeScopeNodes.has(node.type) ? { parent: outer, names: new Map() } : outer;
+    typeScopes.set(node, scope);
+    if (["ClassDeclaration", "ClassExpression"].includes(node.type) && node.id?.name) scope.names.set(node.id.name, { kind: "ordinary" });
+    for (const parameter of node.typeParameters?.params ?? []) {
+      if (parameter.type === "TSTypeParameter") scope.names.set(parameter.name, { kind: "ordinary" });
+    }
+    if (node.type === "ImportDeclaration") {
+      for (const specifier of node.specifiers) {
+        scope.names.set(specifier.local.name, { kind: node.source.value === "i18next" && propertyName(specifier.imported) === "TFunction" ? "translator-type" : "ordinary" });
+      }
+    }
+    for (const child of children(node)) visitTypes(child, scope);
+  };
+  visitTypes(ast, null);
+  return {
+    declarations: { get(node) { return valueBinding(node, node.name); } },
+    functions,
+    resolve(node, name, space = "values") {
+      if (space === "values") return valueBinding(node, name);
+      for (let scope = typeScopes.get(node); scope; scope = scope.parent) {
+        if (scope.names.has(name)) return scope.names.get(name);
+      }
+      return null;
+    },
+  };
+}
+
 export function scanSource(path, source) {
   const literals = [], references = [], dynamicKeys = [], errors = [];
   let ast;
@@ -66,32 +113,85 @@ export function scanSource(path, source) {
     }
     return owners.reverse().join("/") || "<module>";
   };
-  const translationNames = new Set(), i18nNames = new Set(), hooks = new Set(), namespaceByName = new Map();
+  let bindings;
+  try {
+    bindings = lexicalBindings(ast);
+  } catch (error) {
+    return { literals, references, dynamicKeys, errors: [{ file: path, line: error.loc?.line, message: error.message }] };
+  }
+  const namespaceFor = (node, typeArgument = false) => {
+    if (!node || node.type === "TSUndefinedKeyword" || node.type === "Identifier" && node.name === "undefined" && !bindings.resolve(node, "undefined")) return "translation";
+    return scalarText(typeArgument && node.type === "TSLiteralType" ? node.literal : node);
+  };
+  const isEmptyPrefix = (node, typeArgument = false) => !node || node.type === "TSUndefinedKeyword"
+    || node.type === "Identifier" && node.name === "undefined" && !bindings.resolve(node, "undefined")
+    || scalarText(typeArgument && node.type === "TSLiteralType" ? node.literal : node) === "";
+  const hookPrefix = (options) => {
+    if (!options || isEmptyPrefix(options)) return null;
+    if (options.type !== "ObjectExpression") return options;
+    for (const item of options.properties) {
+      if (item.type === "SpreadElement") return item;
+      const key = item.computed ? scalarText(item.key) : propertyName(item.key);
+      if (key === undefined || key === "keyPrefix" && !isEmptyPrefix(item.value)) return item;
+    }
+    return null;
+  };
+  const markTranslator = (binding, namespace, namespaceNode, prefixNode = null) => {
+    if (binding) Object.assign(binding, { kind: "translator", namespace, namespaceNode, prefixNode });
+  };
   for (const node of nodes) {
-    if (node.type !== "ImportDeclaration") continue;
+    if (node.type !== "ImportDeclaration" || node.importKind === "type") continue;
     const specifier = node.source.value;
     const resolved = (specifier.startsWith(".") ? posix.join(posix.dirname(path), specifier) : specifier)
       .replace(/\.[cm]?[jt]sx?$/, "");
     if (!/(?:^|\/)(?:i18n(?:\/index)?|react-i18next)$/.test(resolved)) continue;
     for (const item of node.specifiers) {
-      if (item.type === "ImportDefaultSpecifier") i18nNames.add(item.local.name);
-      if (item.imported?.name === "t") translationNames.add(item.local.name);
-      if (item.imported?.name === "i18n") i18nNames.add(item.local.name);
-      if (item.imported?.name === "useTranslation") hooks.add(item.local.name);
+      if (item.importKind === "type") continue;
+      const binding = bindings.declarations.get(item.local);
+      const imported = propertyName(item.imported);
+      if (item.type === "ImportDefaultSpecifier" || imported === "i18n") binding.kind = "i18n";
+      if (imported === "t") markTranslator(binding, "translation");
+      if (imported === "useTranslation") binding.kind = "hook";
     }
   }
   for (const node of nodes) {
-    if (node.type !== "VariableDeclarator" || node.id.type !== "ObjectPattern" || node.init?.type !== "CallExpression" || !hooks.has(node.init.callee.name)) continue;
+    if (bindings.functions.has(node.type)) {
+      for (const parameter of node.params) {
+        const binding = parameter.type === "AssignmentPattern" ? parameter.left : parameter;
+        if (binding.type !== "Identifier") continue;
+        const type = binding.typeAnnotation?.typeAnnotation;
+        if (type?.type !== "TSTypeReference" || type.typeName.type !== "Identifier"
+          || bindings.resolve(binding, type.typeName.name, "types")?.kind !== "translator-type") continue;
+        const namespace = type.typeParameters?.params[0];
+        const prefix = type.typeParameters?.params[1];
+        markTranslator(bindings.declarations.get(binding), namespaceFor(namespace, true), namespace,
+          isEmptyPrefix(prefix, true) ? null : prefix);
+      }
+    }
+    if (node.type !== "VariableDeclarator" || node.id.type !== "ObjectPattern" || node.init?.type !== "CallExpression"
+      || node.init.callee.type !== "Identifier" || bindings.resolve(node.init, node.init.callee.name)?.kind !== "hook") continue;
     for (const item of node.id.properties) {
-      if (propertyName(item.key) === "t" && item.value?.type === "Identifier") {
-        translationNames.add(item.value.name);
-        namespaceByName.set(item.value.name, scalarText(node.init.arguments[0]) ?? "translation");
+      const value = item.value?.type === "AssignmentPattern" ? item.value.left : item.value;
+      if (propertyName(item.key) === "t" && value?.type === "Identifier") {
+        markTranslator(bindings.declarations.get(value), namespaceFor(node.init.arguments[0]), node.init.arguments[0],
+          hookPrefix(node.init.arguments[1]));
       }
     }
   }
-  const isTranslationCall = (node) => ["CallExpression", "OptionalCallExpression"].includes(node?.type) && (
-    translationNames.has(node.callee.name)
-    || node.callee.type === "MemberExpression" && node.callee.property.name === "t" && i18nNames.has(node.callee.object.name));
+  const translationBinding = (node) => {
+    if (!["CallExpression", "OptionalCallExpression"].includes(node?.type)) return null;
+    if (node.callee.type === "Identifier") {
+      const binding = bindings.resolve(node, node.callee.name);
+      return binding?.kind === "translator" ? binding : null;
+    }
+    if (["MemberExpression", "OptionalMemberExpression"].includes(node.callee.type)
+      && (node.callee.computed ? scalarText(node.callee.property) : propertyName(node.callee.property)) === "t"
+      && node.callee.object.type === "Identifier" && bindings.resolve(node, node.callee.object.name)?.kind === "i18n") {
+      return { namespace: "translation" };
+    }
+    return null;
+  };
+  const isTranslationCall = (node) => translationBinding(node) !== null;
   const parameterContract = (node) => {
     const provided = new Set(), dynamic = [];
     let hasCount = false;
@@ -178,9 +278,16 @@ export function scanSource(path, source) {
     if (isTranslationCall(node) || node.type === "JSXAttribute" && propertyName(node.name) === "i18nKey") {
       const expression = node.type === "JSXAttribute" ? (node.value?.type === "JSXExpressionContainer" ? node.value.expression : node.value) : node.arguments[0];
       const keys = staticKeys(expression);
-      const namespace = namespaceByName.get(node.callee?.name) ?? "translation";
-      if (keys) {
-        for (const key of keys) references.push({ ...location(node), key: namespace === "translation" ? key.replace(/^translation:/, "") : `${namespace}:${key}`, parameters: parameterContract(node) });
+      const binding = translationBinding(node);
+      const namespace = binding ? binding.namespace : "translation";
+      if (binding?.prefixNode) {
+        errors.push({ file: path, line: node.loc.start.line,
+          message: `Translation key prefix is unsupported by static audit: ${normalizeText(textOf(binding.prefixNode))}` });
+      } else if (namespace === undefined) {
+        errors.push({ file: path, line: node.loc.start.line,
+          message: `Translation namespace cannot be resolved statically: ${normalizeText(textOf(binding.namespaceNode))}` });
+      } else if (keys) {
+        for (const key of keys) references.push({ ...location(node), key: namespace === "translation" || key.includes(":") ? key.replace(/^translation:/, "") : `${namespace}:${key}`, parameters: parameterContract(node) });
       } else dynamicKeys.push(finding(node, "dynamic-key", normalizeText(expression ? textOf(expression) : "<absent>")));
     }
     let text;

@@ -1,5 +1,7 @@
 import type { IssueWorkMode } from "@paperclipai/shared";
 import { ClipboardList, Hammer, MessageCircleQuestion, type LucideIcon } from "lucide-react";
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 
 export type WorkModeTone = "neutral" | "ask" | "planning";
 
@@ -41,25 +43,25 @@ export function isIssueWorkMode(value: unknown): value is IssueWorkMode {
   return value === "standard" || value === "ask" || value === "planning";
 }
 
-export function workModeMetaList(): WorkModeMeta[] {
+export function workModeMetaList(t: TFunction = i18n.getFixedT("en")): WorkModeMeta[] {
   return [
     {
       value: "standard",
-      label: "Auto mode",
+      label: t("taskDetailCommon.workMode.auto"),
       icon: Hammer,
       tone: "neutral",
       classes: STANDARD_CLASSES,
     },
     {
       value: "planning",
-      label: "Plan mode",
+      label: t("taskDetailCommon.workMode.plan"),
       icon: ClipboardList,
       tone: "planning",
       classes: PLANNING_CLASSES,
     },
     {
       value: "ask",
-      label: "Ask mode",
+      label: t("taskDetailCommon.workMode.ask"),
       icon: MessageCircleQuestion,
       tone: "ask",
       classes: ASK_CLASSES,
@@ -67,8 +69,8 @@ export function workModeMetaList(): WorkModeMeta[] {
   ];
 }
 
-export function workModeMetaFor(mode: IssueWorkMode): WorkModeMeta {
-  const modes = workModeMetaList();
+export function workModeMetaFor(mode: IssueWorkMode, t: TFunction = i18n.getFixedT("en")): WorkModeMeta {
+  const modes = workModeMetaList(t);
   return modes.find((meta) => meta.value === mode) ?? modes[0]!;
 }
 
@@ -78,12 +80,12 @@ export function nextWorkMode(mode: IssueWorkMode): IssueWorkMode {
   return modes[(index + 1) % modes.length]?.value ?? "standard";
 }
 
-export function titleForPendingWorkMode(mode: IssueWorkMode): string {
+export function titleForPendingWorkMode(mode: IssueWorkMode, t: TFunction = i18n.getFixedT("en")): string {
   if (mode === "ask") {
-    return "Ask mode for this submission. Click to change. The responsible will answer in this thread; no implementation work.";
+    return t("taskDetailCommon.workMode.askSubmission");
   }
   if (mode === "planning") {
-    return "Plan mode is on for this submission. Click to change.";
+    return t("taskDetailCommon.workMode.planSubmission");
   }
-  return "Auto mode for this submission. Click to change.";
+  return t("taskDetailCommon.workMode.autoSubmission");
 }

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { parseAgentMentionHref } from "@paperclipai/shared";
 
 /**
@@ -333,13 +335,13 @@ export interface ReassignInterruptCopy {
  * operator picks a *different* target mid-run. Naming the running agent keeps
  * the interrupt consequence concrete instead of a bare "are you sure".
  */
-export function describeReassignInterrupt(opts: { runningAgentName?: string | null } = {}): ReassignInterruptCopy {
-  const who = opts.runningAgentName?.trim() || "An agent";
+export function describeReassignInterrupt(opts: { runningAgentName?: string | null } = {}, t: TFunction = i18n.getFixedT("en")): ReassignInterruptCopy {
+  const who = opts.runningAgentName?.trim() || t("taskProperties.handoff.anAgent");
   return {
-    banner: `${who} is running — changing the responsible will interrupt this run.`,
-    confirmTitle: "Interrupt the current run?",
-    confirmAction: "Interrupt & assign",
-    cancelAction: "Cancel",
+    banner: t("taskProperties.handoff.interruptDescription", { agent: who }),
+    confirmTitle: t("taskProperties.handoff.interruptTitle"),
+    confirmAction: t("taskProperties.handoff.interruptAndAssign"),
+    cancelAction: t("taskProperties.actions.cancel"),
   };
 }
 

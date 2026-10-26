@@ -8,6 +8,7 @@ parameters; user-entered names and machine identifiers are never translated.
 | --- | --- | --- |
 | Organization | Организация | Current UI name for the company boundary; retain `company` in APIs. |
 | Task | Задача | Also use for user-facing issue terminology. |
+| Routine | Регулярное задание | Reusable automation that creates tasks; distinct from a single task. |
 | Project | Проект | Do not confuse a project with an organization or a task. |
 | Agent | Агент | A managed execution identity, not a human user. |
 | Human/user | Пользователь | Use for people when permissions distinguish them from agents. |

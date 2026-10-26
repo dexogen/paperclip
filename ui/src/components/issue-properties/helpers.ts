@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type { AdapterModel } from "../../api/agents";
 import type { Issue, Project } from "@paperclipai/shared";
 import { extractProviderIdWithFallback } from "../../lib/model-utils";
@@ -53,23 +55,25 @@ export function toDateTimeLocalValue(value: string | null | undefined) {
   return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
 }
 
-export const ISSUE_THINKING_EFFORT_OPTIONS = {
+export function issueThinkingEffortOptions(t: TFunction = i18n.getFixedT("en")) {
+ return {
   claude_local: [
-    { value: "", label: "Default" },
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
+    { value: "", label: t("taskProperties.effort.default") },
+    { value: "low", label: t("taskProperties.effort.low") },
+    { value: "medium", label: t("taskProperties.effort.medium") },
+    { value: "high", label: t("taskProperties.effort.high") },
   ],
   opencode_local: [
-    { value: "", label: "Default" },
-    { value: "minimal", label: "Minimal" },
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
-    { value: "xhigh", label: "X-High" },
-    { value: "max", label: "Max" },
+    { value: "", label: t("taskProperties.effort.default") },
+    { value: "minimal", label: t("taskProperties.effort.minimal") },
+    { value: "low", label: t("taskProperties.effort.low") },
+    { value: "medium", label: t("taskProperties.effort.medium") },
+    { value: "high", label: t("taskProperties.effort.high") },
+    { value: "xhigh", label: t("taskProperties.effort.xhigh") },
+    { value: "max", label: t("taskProperties.effort.max") },
   ],
 } as const;
+}
 
 export function asRecord(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -86,10 +90,11 @@ export function compactRecord(record: Record<string, unknown>) {
 export function thinkingEffortOptionsFor(
   adapterType: string | null | undefined,
   model?: string | null,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
-  if (adapterType === "codex_local") return codexReasoningEffortOptions(model);
-  if (adapterType === "opencode_local") return ISSUE_THINKING_EFFORT_OPTIONS.opencode_local;
-  return ISSUE_THINKING_EFFORT_OPTIONS.claude_local;
+  if (adapterType === "codex_local") return codexReasoningEffortOptions(model, undefined, t);
+  if (adapterType === "opencode_local") return issueThinkingEffortOptions(t).opencode_local;
+  return issueThinkingEffortOptions(t).claude_local;
 }
 
 export function thinkingEffortKeyFor(adapterType: string | null | undefined) {
