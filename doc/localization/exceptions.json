@@ -400,6 +400,26 @@
     {
       "id": "b1f370ba75d95ec32ec5199748e3a06c7eaac64e2cd780baa15feab38377f298",
       "reason": "The canonical event tone error selects the translated app-owned fallback. Provider event text remains literal; the discriminant is not rendered."
+    },
+    {
+      "id": "50d521acb6bdd786147413ddd577c39ed32683f767d7358ddd677b36bfb15ed1",
+      "reason": "Closed AgentSetupError code 'create' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "11b0acaad5d8f4a7e663cc0d0e3f11e076ec2f1a16883f72abdce110ed1c7bb6",
+      "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "91e040d3f0386f18dd57a521f06b91795f1bed7324790a7ee1fcda354e264b03",
+      "reason": "Closed AgentSetupError code 'test' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "04dd796056b2b206389f7a2e1900d9e78fa0d9eb288b5b43627f6997eb56dc25",
+      "reason": "Closed AgentSetupError code 'create' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
+    },
+    {
+      "id": "1b2655945c4785b63a7f0ab65ddc1ba3bf4d1dcadabe1a613f19df373c6a888c",
+      "reason": "Closed AgentSetupError code 'save' stored as error provenance; formatAgentSetupError renders the corresponding static agentSetupUi.errors key at the current locale. It is not visible prose or a provider message."
     }
   ]
 }
