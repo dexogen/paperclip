@@ -626,7 +626,8 @@
     "retry": "Не удалось сохранить — повторить"
   },
   "common": {
-    "clearSearch": "Очистить поиск"
+    "clearSearch": "Очистить поиск",
+    "close": "Закрыть"
   },
   "theme": {
     "light": "Включить светлую тему",
@@ -2907,5 +2908,219 @@
     "reissueReady": "Задача {{identifier}} будет выполняться в новом изолированном рабочем пространстве.",
     "workModeAsk": "Эта задача выполняется в режиме вопроса.",
     "workModePlanning": "Эта задача выполняется в режиме планирования."
+  },
+  "searchUi": {
+    "page": {
+      "title": "Поиск",
+      "placeholder": "Поиск по задачам, комментариям, документам, артефактам, агентам и проектам…",
+      "query": "Поисковый запрос",
+      "clear": "Очистить поиск",
+      "insertOperator": "Вставить оператор {{token}}",
+      "operatorHint": "Попробуйте <status>status:todo</status>, <assignee>assignee:me</assignee> или <updated>updated:>7d</updated>.",
+      "initialTitle": "Введите запрос для поиска по материалам организации.",
+      "initialDescription": "Задачи, комментарии, планы, артефакты, агенты и проекты — в одном списке, по релевантности.",
+      "recent": "Недавние запросы",
+      "identifierHint": "<label>Поиск по идентификатору:</label> введите <code>PAP-123</code>, чтобы сразу открыть задачу.",
+      "quotedHint": "<label>Фразы в кавычках:</label> заключите фразу в кавычки, чтобы найти точную последовательность слов.",
+      "paletteHint": "<shortcut>⌘K:</shortcut> открывает палитру команд.",
+      "errorTitle": "Не удалось выполнить поиск",
+      "errorStatus": "Сервер вернул код {{status}}. Запрос и фильтры сохранены. Повторите попытку или откройте список задач с этим фильтром.",
+      "errorRequest": "Запрос не выполнен. Текст и фильтры сохранены. Повторите попытку или откройте список задач с этим фильтром.",
+      "retry": "Повторить",
+      "tasksFallback": "Открыть список задач с фильтром",
+      "searching": "Поиск по запросу «{{query}}»…",
+      "emptyTitle": "По запросу «{{query}}» ничего не найдено",
+      "emptyDescription": "В выбранной области поиска нет совпадений: {{scope}}. Расширьте область поиска или измените запрос.",
+      "allScopes": "Все области",
+      "searchAllScopes": "Искать во всех областях",
+      "createFromQuery": "Создать задачу из запроса",
+      "fewerTerms": "Попробуйте сократить запрос или оставить одно характерное слово.",
+      "identifierTip": "Введите идентификатор задачи, например <code>PAP-123</code>.",
+      "quotedTip": "Заключайте фразы из нескольких слов в кавычки.",
+      "results_one": "{{count}} результат",
+      "results_other": "{{count}} результата",
+      "resultsPartial": "Показано {{shown}} из {{total}}",
+      "sortedBy": "сортировка: {{sort}}",
+      "filtersActive_one": "Применён {{count}} фильтр",
+      "filtersActive_other": "Применено {{count}} фильтра",
+      "updating": "Обновление…",
+      "results_few": "{{count}} результата",
+      "results_many": "{{count}} результатов",
+      "filtersActive_few": "Применено {{count}} фильтра",
+      "filtersActive_many": "Применено {{count}} фильтров"
+    },
+    "palette": {
+      "title": "Палитра команд",
+      "description": "Найдите команду для выполнения…",
+      "placeholder": "Поиск задач, агентов и проектов…",
+      "query": "Поиск команд",
+      "emptyHint": "Быстрый поиск не нашёл задач. Нажмите <key>↵</key>, чтобы <action>искать везде</action>, или уточните запрос.",
+      "noResults": "Ничего не найдено.",
+      "search": "Поиск",
+      "searchAll": "Искать везде: <query>«{{query}}»</query>",
+      "openFullSearch": "открыть полный поиск",
+      "quickFilters": "Быстрые фильтры",
+      "actions": "Действия",
+      "newTask": "Создать задачу",
+      "openFile": "Открыть файл этой задачи…",
+      "newAgent": "Создать агента",
+      "newProject": "Создать проект",
+      "pages": "Разделы",
+      "dashboard": "Обзор",
+      "myWork": "Моя работа",
+      "inbox": "Входящие",
+      "tasks": "Задачи",
+      "projects": "Проекты",
+      "goals": "Цели",
+      "agents": "Агенты",
+      "costs": "Расходы",
+      "activity": "Журнал действий",
+      "roles": {
+        "ceo": "Генеральный директор",
+        "cto": "Технический директор",
+        "cmo": "Директор по маркетингу",
+        "cfo": "Финансовый директор",
+        "security": "Безопасность",
+        "engineer": "Инженер",
+        "designer": "Дизайнер",
+        "pm": "Менеджер продукта",
+        "qa": "Тестирование",
+        "devops": "DevOps",
+        "researcher": "Исследователь",
+        "general": "Универсальный агент"
+      }
+    },
+    "result": {
+      "comment": "Комментарий",
+      "document": "Документ",
+      "artifact": "Артефакт",
+      "description": "Описание",
+      "agent": "Агент",
+      "project": "Проект",
+      "justNow": "только что",
+      "minutes": "{{count}} мин",
+      "hours": "{{count}} ч",
+      "days": "{{count}} дн.",
+      "weeks": "{{count}} нед.",
+      "months": "{{count}} мес.",
+      "years": "{{count}} г.",
+      "identifier": "Идентификатор"
+    },
+    "recovery": {
+      "title": "С этими фильтрами ничего не найдено",
+      "matchesQuery_one": "По запросу «{{query}}» найден {{count}} результат.",
+      "matchesQuery_other": "По запросу «{{query}}» найдено {{count}} результата.",
+      "matches_one": "Найден {{count}} результат.",
+      "matches_other": "Найдено {{count}} результата.",
+      "hidden_one": "Применённый фильтр скрывает все совпадения.",
+      "hidden_other": "Применённые фильтры ({{count}}) скрывают все совпадения.",
+      "loosen": "Снять ограничение фильтра",
+      "remove": "Убрать <filter>{{filter}}</filter>",
+      "additional_one": "+{{count}} результат",
+      "additional_other": "+{{count}} результата",
+      "clearAll": "Сбросить все фильтры",
+      "matchesQuery_few": "По запросу «{{query}}» найдено {{count}} результата.",
+      "matchesQuery_many": "По запросу «{{query}}» найдено {{count}} результатов.",
+      "matches_few": "Найдено {{count}} результата.",
+      "matches_many": "Найдено {{count}} результатов.",
+      "hidden_few": "Применённые фильтры ({{count}}) скрывают все совпадения.",
+      "hidden_many": "Применённые фильтры ({{count}}) скрывают все совпадения.",
+      "additional_few": "+{{count}} результата",
+      "additional_many": "+{{count}} результатов"
+    },
+    "scope": {
+      "all": "Все",
+      "issues": "Задачи",
+      "comments": "Комментарии",
+      "documents": "Документы",
+      "artifacts": "Артефакты",
+      "agents": "Агенты",
+      "projects": "Проекты"
+    },
+    "filters": {
+      "status": "Статус",
+      "priority": "Приоритет",
+      "assignee": "Исполнитель",
+      "project": "Проект",
+      "label": "Метка",
+      "updated": "Обновлено",
+      "me": "Я",
+      "unassigned": "Не назначен",
+      "agent": "Агент",
+      "user": "Пользователь",
+      "openItems": "Незавершённые задачи",
+      "searchAssignees": "Поиск исполнителей…",
+      "noAssignees": "Нет исполнителей",
+      "searchProjects": "Поиск проектов…",
+      "noProjects": "Нет проектов",
+      "searchLabels": "Поиск меток…",
+      "noLabels": "Нет меток",
+      "search": "Поиск…",
+      "noOptions": "Нет вариантов",
+      "filterBy": "Фильтр: {{label}}",
+      "clear": "Сбросить",
+      "clearAll": "Сбросить все",
+      "removeFilter": "Убрать фильтр «{{label}}»",
+      "title": "Фильтры",
+      "cancel": "Отмена",
+      "showResults": "Показать результаты",
+      "showCount_one": "Показать {{count}} результат",
+      "showCount_few": "Показать {{count}} результата",
+      "showCount_many": "Показать {{count}} результатов",
+      "showCount_other": "Показать {{count}} результата",
+      "chipStatus": "Статус: {{value}}",
+      "chipPriority": "Приоритет: {{value}}",
+      "chipAssignee": "Исполнитель: {{value}}",
+      "chipProject": "Проект: {{value}}",
+      "chipLabel": "Метка: {{value}}",
+      "chipUpdated": "Обновлено: {{value}}",
+      "updated24h": "За последние 24 часа",
+      "updated7d": "За последние 7 дней",
+      "updated30d": "За последние 30 дней",
+      "updated90d": "За последние 90 дней",
+      "updatedOther": "За последние {{value}}"
+    },
+    "sort": {
+      "relevance": "По релевантности",
+      "updated": "Недавно обновлённые",
+      "created": "Сначала новые",
+      "priority": "По приоритету",
+      "results": "Сортировка результатов",
+      "prefix": "Сортировка:",
+      "by": "Сортировать по"
+    },
+    "operators": {
+      "todo": {
+        "label": "Задачи к выполнению",
+        "description": "Фильтр по статусу задачи"
+      },
+      "blocked": {
+        "label": "Заблокированные задачи",
+        "description": "Найти заблокированные задачи"
+      },
+      "me": {
+        "label": "Назначенные мне",
+        "description": "Задачи, назначенные вашей учётной записи"
+      },
+      "project": {
+        "label": "Название проекта",
+        "description": "Заключайте названия из нескольких слов в кавычки"
+      },
+      "label": {
+        "label": "Метка",
+        "description": "Фильтр по метке задачи"
+      },
+      "priority": {
+        "label": "Высокий приоритет",
+        "description": "Фильтр по приоритету"
+      },
+      "updated": {
+        "label": "Недавно обновлённые",
+        "description": "Обновлённые за последние 7 дней"
+      }
+    },
+    "recoverySuggestions": {
+      "updatedWindow": "Период обновления"
+    }
   }
 }

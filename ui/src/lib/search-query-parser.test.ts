@@ -1,9 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
 import {
   applySearchOperatorSuggestion,
   buildSearchPathFromQuery,
   parseSearchQuery,
   readSearchFiltersFromParams,
+  searchFilterPills,
   searchOperatorSuggestions,
 } from "./search-query-parser";
 
@@ -20,6 +22,10 @@ const context = {
     { id: "22222222-2222-4222-8222-222222222222", name: "bug" },
   ],
 };
+
+afterEach(async () => {
+  await i18n.changeLanguage("en");
+});
 
 describe("parseSearchQuery", () => {
   it("parses status operators", () => {
@@ -129,6 +135,25 @@ describe("search query URLs", () => {
 });
 
 describe("search operator suggestions", () => {
+  it("translates only suggestions while canonical syntax, URL fields and parser results remain unchanged", async () => {
+    const query = 'русский текст status:todo assignee:me project:"Paperclip App" updated:>7d';
+    const parsed = parseSearchQuery(query, context);
+    const url = buildSearchPathFromQuery(query, context);
+    const pills = searchFilterPills(parsed.filters, context);
+    const english = searchOperatorSuggestions("sta", 5);
+    await i18n.changeLanguage("ru");
+    const russian = searchOperatorSuggestions("sta", 5, i18n.getFixedT("ru"));
+    expect(russian.map((suggestion) => suggestion.token)).toEqual(english.map((suggestion) => suggestion.token));
+    expect(russian[0]).toEqual({ token: "status:todo", label: "Задачи к выполнению", description: "Фильтр по статусу задачи" });
+    expect(searchOperatorSuggestions("sta", 5)).toEqual(english);
+    expect(parseSearchQuery(query, context)).toEqual(parsed);
+    expect(searchFilterPills(parsed.filters, context)).toEqual(pills);
+    expect(buildSearchPathFromQuery(query, context)).toBe(url);
+    expect(applySearchOperatorSuggestion("русский sta", russian[0]!.token)).toBe("русский status:todo");
+    await i18n.changeLanguage("en");
+    expect(searchOperatorSuggestions("sta", 5, i18n.getFixedT("en"))).toEqual(english);
+  });
+
   it("suggests syntax for the current partial token", () => {
     expect(searchOperatorSuggestions("auth sta").map((suggestion) => suggestion.token)).toEqual([
       "status:todo",
