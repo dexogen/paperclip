@@ -233,8 +233,26 @@ backend error bodies remain literal. Component checks use mocked APIs; browser
 acceptance, nested workspace/environment flows, connection setup and summary-card
 internals remain separate work.
 
-Unconverted task-detail child panels, agent detail pages, additional agent
-controls, dashboards and remaining settings still need translation. Shared task rows also appear in
+The agent-detail slice covers the active profile and navigation, instructions and
+revision history, API keys, lifecycle actions, built-in resource confirmations,
+personal primary-agent controls and run/log captions. Canonical routes, keys,
+file contents, provider errors and request payloads remain unchanged. The legacy
+action-error callback keeps fixed English output; the optional typed failure
+callback lets the detail page translate owned errors when rendered.
+
+The optional `MarkdownEditor.renderImageUploadError` formats a retained raw cause
+without recreating editor plugins. Empty error suppression and default callers
+keep their existing behavior. The lifecycle label table has two explicit, closed
+dynamic-key declarations in the detector configuration. Unknown lifecycle values
+are not treated as active phases. Component tests preserve drafts, focus, pending
+actions, selected revisions and exact payloads through EN/RU/EN changes. They do
+not establish live key authentication, arbitrary plugin behavior or provisioning.
+Trust/project restrictions, tools, skills, channels, external invitations and
+bulk editing remain separate slices. FileTree error/retry branches are also
+outside the active agent consumer's coverage.
+
+Unconverted task-detail child panels, additional agent controls,
+dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
 pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.

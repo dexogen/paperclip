@@ -149,6 +149,15 @@ operation; provider messages remain literal. For browser acceptance, repeat this
 while editing an agent, then save explicitly and verify the same values after
 reload. Component fixtures do not establish live provider execution.
 
+The [instruction editor](../../ui/src/pages/AgentDetail.instructions.test.tsx),
+[revision history](../../ui/src/components/InstructionHistory.test.tsx) and
+[shared editor upload](../../ui/src/components/MarkdownEditor.test.tsx) locale
+cases retain dirty content, selection, pinned revisions and pending errors.
+Action/lifecycle, built-in confirmation and primary-agent component tests keep
+canonical callbacks and pending state through EN/RU/EN changes. Provider error
+text stays literal. Repeat these changes in a browser before claiming a live
+instruction save, resource reset or lifecycle transition.
+
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
 For failed setup, use an unavailable model or invalid command on a disposable agent.
@@ -215,6 +224,11 @@ over the primary fallback. Opening Chat must not start execution.
 ### `agent-api-keys`
 
 Automated: [CLI token tests](../../cli/src/__tests__/token.test.ts) mock create/list/revoke. [Cross-tenant routes](../../server/src/__tests__/agent-cross-tenant-authz-routes.test.ts), [agent permissions](../../server/src/__tests__/agent-permissions-routes.test.ts), and [authentication middleware](../../server/src/__tests__/agent-auth-middleware.test.ts) cover company/key ownership, management permission, responsible-user binding, and denial. They do not prove a browser-created key working against a live instance.
+
+The [key locale regression](../../ui/src/pages/AgentDetail.keys.locale.test.tsx)
+uses mocked APIs to retain a dirty key name, pending creation, hidden token and
+exact copy/revoke payloads across language changes. The default stored key name
+remains `Default`. This does not prove that a live bearer authenticates.
 
 Manual: As an authenticated person with agents:create, create a named key for an eligible disposable agent and copy it privately from the once-only display. Make a harmless same-company agent request with that bearer, then reload the Keys tab and verify only metadata remains. Revoke the key through UI or CLI, reload, and retry the exact same bearer: authentication must fail. Inspect key-created/key-revoked activity without token values. Test a board person lacking agent-management permission, an agent caller, another company’s agent, a different agent’s key ID, and a pending-approval/terminated target. A created key without a real responsible-user binding is a failed acceptance prerequisite, not a working credential.
 

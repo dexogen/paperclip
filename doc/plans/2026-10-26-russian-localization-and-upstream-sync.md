@@ -780,7 +780,35 @@ append conflicts were resolved by preserving both reviewed namespaces and the
 exact union of review records and exceptions. Component tests use mocked APIs;
 no live project or secret-write acceptance is claimed.
 
-The remaining major packages are agent detail controls and invitations,
+The agent-detail slice adds 468 reviewed message families (470 English and 474
+Russian forms). Root reviewed the full detail-page diff and all message forms;
+independent reviews covered eleven smaller owners and built-in/primary captions.
+Six existing message contexts were re-examined. Two exact technical exceptions
+and two closed lifecycle dynamic-key declarations were added; only 374 resolved
+baseline entries were removed. The standalone strict audit passed with 6,610
+reviewed families and 16,044 remaining debt findings.
+
+The latest complete result for each of 24 related suites totals 232 passes with
+no skips. UI typecheck, build and token gates passed. Regressions preserve dirty
+instructions, focus, revision pins, hidden key receipts, pending actions and raw
+provider errors across language changes. The optional upload-error formatter
+keeps editor plugins stable; existing action-error callers keep fixed English
+output. Unknown operation statuses use the original display fallback. These are
+component tests, not fresh live agent, key-authentication or plugin acceptance.
+
+After integration with projects and native cleanup, the strict audit passes with
+6,910 reviewed families and 15,766 remaining source debt findings. Both catalogs
+match a structural three-way merge; the baseline contains only the intersection
+of remaining debt. The first combined 30-file test run passed 290 of 291 cases;
+an existing asynchronous editor-loading case also failed in an unchanged repeat.
+Instrumentation showed the editor had accepted the loaded text but React had not
+committed it before the assertion. Wrapping that case's existing flush in React
+`act` fixed the test's synchronization, without changing its assertion, timers or
+production code. The complete 55-case editor suite then passed. The other 29
+complete suites passed in the original run. Integrated UI typecheck, build,
+token gates and map checks passed; these results do not claim full repository CI.
+
+The remaining major packages are agent trust/tools/skills/channels, bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
@@ -813,7 +841,11 @@ The PRP timeout did not reproduce with either release or debug Runner locally.
 The test now reports only safe progress counters on timeout, with its original
 15-second deadline and assertions unchanged; its hosted failure remains unexplained.
 The diagnostic version passed the complete actual-PRP suite locally. These repairs
-are a separate review candidate; a new combined hosted run is still required.
+are published in [PR #20](https://github.com/dexogen/paperclip/pull/20).
+[Combined hosted run 40301714419](https://github.com/dexogen/paperclip/actions/runs/40301714419)
+checks exact SHA `71f7e5d79dac4e55de63d9df4766342563a9bd34`, including project
+translations and the native cleanup fix. It is still running. Intermediate
+duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
 
@@ -847,7 +879,19 @@ reviewed the four changed source/test files. This is not live Runner proof or a
 full repository verification.
 
 Dispatched work whose process identity was already cleared returns `skipped`
-and conservatively retains the preparer lease. A real native qualification must
-establish whether the candidate resolves the observed parent/child cleanup path.
-Fresh immutable-source build, types, owner suites, fixtures and native E2E remain
-pending. Original failure and forensic evidence are retained through verification.
+and conservatively retains the preparer lease. Fresh Linux qualification at
+`82d22e84ec4327a18f779f0a2174d377bf6e16c1` passed frozen install, Russian build,
+workspace typecheck, seven complete server suites (644 tests) and 38 fixture
+contracts. All 30 selected browser cases passed: native Stop, process Stop,
+four paused-composer cases and 24 cases in three complete upstream files.
+The originally failing native archive cleanup passed within its unchanged
+five-second assertion.
+
+Overall browser qualification remains failed. Default Playwright webServer
+teardown used SIGKILL, bypassing application shutdown and leaving four PostgreSQL
+marker files. Read-only inspection found no matching processes or listeners.
+A separate test-harness repair in [PR #23](https://github.com/dexogen/paperclip/pull/23)
+at `7a90fbe9ce32bbb74d1be4bf55806fa60426dc6e` enables standard SIGTERM graceful shutdown;
+its real-PostgreSQL control fails before the change and passes after it, including
+marker removal and ordered shutdown. Fresh Linux browser/final qualification of
+that repair is pending. Original failures and forensic evidence are retained.
