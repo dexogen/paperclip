@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { companies, createDb, documents, issueComments, issueDocuments, issues, getEmbeddedPostgresTestSupport, startEmbeddedPostgresTestDatabase } from "@paperclipai/db";
 import { companySearchQuerySchema } from "@paperclipai/shared";
 import { companySearchService } from "../services/company-search.js";
-import { parseTaskSearch, taskSearchCtes, taskSearchScore } from "../services/task-search.js";
+import { prepareTaskSearch, taskSearchCtes, taskSearchScore } from "../services/task-search.js";
 import { issueService } from "../services/issues.js";
 import { searchQualityMetrics, taskSearchCases, taskSearchCorpus } from "./fixtures/task-search-corpus.js";
 
@@ -105,7 +105,29 @@ describe.skipIf(!support.supported)("task search relevance rubric (real PostgreS
     }
   });
 
+  it.each(["full", "quick"] as const)("%s: finds Cyrillic titles regardless of case in an existing C-locale database", async (engine) => {
+    const locale = await db.execute(sql`SELECT datcollate, datctype FROM pg_database WHERE datname = current_database()`);
+    expect(locale[0]).toMatchObject({ datcollate: "C", datctype: "C" });
+    const id = randomUUID();
+    const isolatedCompanyId = randomUUID();
+    await db.insert(companies).values({ id: isolatedCompanyId, name: "Unicode search", issuePrefix: `UC${engine.toUpperCase()}` });
+    await db.insert(issues).values({ id, companyId: isolatedCompanyId, title: "Проверка языка ЁЖ standard-1792981575725 — основной черновик <b> & текст", status: "done" });
+    for (const q of ["Проверка языка", "проверка языка", "ПРОВЕРКА ЯЗЫКА", "пРоВеРкА яЗыКа", "ёж", '"проверка языка"', "Проверка языка standard-1792981575725"]) {
+      const rows = engine === "full"
+        ? (await companySearchService(db).search(isolatedCompanyId, companySearchQuerySchema.parse({ q }))).results.filter((row) => row.type === "issue")
+        : await issueService(db).list(isolatedCompanyId, { q, limit: 50 });
+      expect(rows.map((row) => row.id), q).toEqual([id]);
+    }
+    const kelvinId = randomUUID();
+    await db.insert(issues).values({ id: kelvinId, companyId: isolatedCompanyId, title: "K" });
+    const kelvinRows = engine === "full"
+      ? (await companySearchService(db).search(isolatedCompanyId, companySearchQuerySchema.parse({ q: "K" }))).results.filter((row) => row.type === "issue")
+      : await issueService(db).list(isolatedCompanyId, { q: "K", limit: 50 });
+    expect(kelvinRows.map((row) => row.id)).toEqual([kelvinId]);
+  });
+
   it.runIf(process.env.SEARCH_EVAL_SCALE === "1")("measures 10k tasks / 30k comments", async () => {
+    await db.insert(issues).values({ companyId, title: "Проверка языка", identifier: "UNICODE-1", status: "done" });
     await db.execute(sql`
       INSERT INTO issues (company_id, title, description, identifier)
       SELECT ${companyId}, 'Routine deployment checkpoint ' || n,
@@ -121,7 +143,7 @@ describe.skipIf(!support.supported)("task search relevance rubric (real PostgreS
     await db.execute(sql`ANALYZE issues`);
     await db.execute(sql`ANALYZE issue_comments`);
     for (const engine of ["full", "quick"] as const) {
-      for (const q of ["GitHub OAuth", "OAuth callback GitHub", "mibile api", "search", "quasarxylophone", "routine"]) {
+      for (const q of ["GitHub OAuth", "OAuth callback GitHub", "mibile api", "search", "quasarxylophone", "routine", "проверка языка"]) {
         const durations: number[] = [];
         for (let i = 0; i < 21; i++) {
           const start = performance.now();
@@ -133,8 +155,8 @@ describe.skipIf(!support.supported)("task search relevance rubric (real PostgreS
         latency.push({ engine, q, firstMs: durations[0]!, p95Ms: [...warmMs].sort((a, b) => a - b)[18]!, warmMs });
       }
     }
-    for (const q of ["GitHub OAuth", "mibile api", "routine"]) {
-      const search = parseTaskSearch(q);
+    for (const q of ["GitHub OAuth", "mibile api", "routine", "проверка языка"]) {
+      const search = await prepareTaskSearch(db, q);
       if (!baseline) plans[q] = await db.execute(sql`
         EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
         ${taskSearchCtes(companyId, search)}
