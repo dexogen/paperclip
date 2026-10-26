@@ -3,6 +3,7 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ProviderQuotaCard } from "./ProviderQuotaCard";
+import { i18n } from "../i18n";
 import { BillerSpendCard } from "./BillerSpendCard";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -33,4 +34,44 @@ describe.each(["provider", "biller"] as const)("%s price status", kind => {
     const badges = [...header.querySelectorAll('[data-slot="badge"]')].map(badge => badge.textContent);
     expect(badges).toEqual([example.estimate, example.unavailable].filter(Boolean));
   });
+});
+
+it("translates owned quota chrome while preserving raw windows, models, ordering and percentages", async () => {
+  await i18n.changeLanguage("en");
+  const container = document.createElement("div"); document.body.append(container);
+  const root = createRoot(container);
+  const row = { ...base, model: "Estimated <raw-model>", costCents: 125, eventCount: 2, estimatedEventCount: 1, unpricedEventCount: 1 };
+  const windows = [
+    { provider: "openai", biller: "openai", window: "24h", windowHours: 24, costCents: 250, inputTokens: 100, cachedInputTokens: 10, outputTokens: 50 },
+    { provider: "openai", biller: "openai", window: "5h", windowHours: 5, costCents: 125, inputTokens: 50, cachedInputTokens: 5, outputTokens: 25 },
+  ];
+  const quota = [{ label: "5h <provider>", usedPercent: 63, resetsAt: null, valueLabel: "50% used", detail: "resets <raw>" }];
+  const before = JSON.stringify({ row, windows, quota });
+  try {
+    await act(async () => root.render(<ProviderQuotaCard provider="openai" rows={[row]} windowRows={windows}
+      budgetMonthlyCents={1000} totalCompanySpendCents={125} weekSpendCents={125} showDeficitNotch={false}
+      quotaWindows={quota} quotaError="raw diagnostic must stay hidden" quotaSource="Provider.source" />));
+    const bars = [...container.querySelectorAll<HTMLElement>('[style*="width"]')];
+    const widths = bars.map(bar => bar.style.width);
+    expect(widths).toContain("50%");
+    expect(widths).toContain("100%");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Скользящие периоды");
+    expect(container.textContent!.indexOf("5 ч")).toBeLessThan(container.textContent!.indexOf("24 ч"));
+    expect(container.textContent).toContain("Estimated <raw-model>");
+    expect(container.textContent).toContain("Provider.source");
+    expect(container.textContent).toContain("5h <provider>");
+    expect(container.textContent).toContain("50% used");
+    expect(container.textContent).toContain("resets <raw>");
+    expect(container.textContent).toContain("Показана последняя доступная квота.");
+    expect(container.textContent).not.toContain("raw diagnostic");
+    expect(container.textContent).toContain("Частичная оценка");
+    expect(container.textContent).toContain("Не определена стоимость 1 записи");
+    expect([...container.querySelectorAll('[style*="width"]')]).toEqual(bars);
+    expect(bars.map(bar => bar.style.width)).toEqual(widths);
+    expect(container.querySelector("raw-model, provider, raw")).toBeNull();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Rolling windows");
+    expect(JSON.stringify({ row, windows, quota })).toBe(before);
+  } finally { await act(async () => root.unmount()); container.remove(); await i18n.changeLanguage("en"); }
 });

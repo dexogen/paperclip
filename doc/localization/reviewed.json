@@ -39963,7 +39963,7 @@
       "translationHash": "cc1177dab4cf1b5016d9ca3813b77470562eacdabdca48d9269cc8f419494cb1",
       "reviewer": "Codex root and translate_task_panels: upstream cold-open copy",
       "method": "agent",
-      "reviewedAt": "2026-10-26T13:35:35.807462+00:00"
+      "reviewedAt": "2026-10-26T13:35:35.807Z"
     },
     "taskChatUi.thread.reviewItems": {
       "sourceHash": "70fb5a1b4c560b84dd3c121f8dbc894b04c1929ff880ad2136bffbf8c0eed831",
@@ -59808,14 +59808,1407 @@
       "translationHash": "8e2d6f042dd6b6c5494145707e81e2a019b71f8e5ffe70fdb0b15e23a303545e",
       "reviewer": "Codex root and translate_task_panels: upstream cold-open copy",
       "method": "agent",
-      "reviewedAt": "2026-10-26T13:35:35.807573+00:00"
+      "reviewedAt": "2026-10-26T13:35:35.807Z"
     },
     "taskDetail.copy.partialDetailsError": {
       "sourceHash": "64688a6fceb501cbc3662b7df3b81ad9354c3146b5a30f67be2198393cfa2214",
       "translationHash": "671d6af156c2ab9012c46af30e1c938feb736fe9f68a9f4c9ce2aaacf9324215",
       "reviewer": "Codex root and translate_task_panels: upstream cold-open copy",
       "method": "agent",
-      "reviewedAt": "2026-10-26T13:35:35.807588+00:00"
+      "reviewedAt": "2026-10-26T13:35:35.807Z"
+    },
+    "costCardsUi.amount.unavailable": {
+      "sourceHash": "7415391b35c0540bc2b78824e62b981bb3472c4d7c5d3bf6e7a2dfc277e4ced4",
+      "translationHash": "92aa53c5e6dc3604526882d2a80d6ba92f29d66de3f4311340f2d69fe1e26d13",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.767Z"
+    },
+    "costCardsUi.estimate.all": {
+      "sourceHash": "e90914fc855105ebfe5242e35487351bf38688438e0df3e07a7fe823b6bba3fb",
+      "translationHash": "bbfc1f636050b6a83baad772cbaa51fb1f9e7b3740ef2616436e3e6077f10aca",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.estimate.part": {
+      "sourceHash": "8d485c77e46db4b51235b4cf528ff278f6b59009ac8a14df5db7d2fbbd926a56",
+      "translationHash": "897ee4139378cc05660afb521b182f3d35e3727d1ee2287b8935a1432b855b0d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.estimate.title": {
+      "sourceHash": "4c68596e0d44eafcbc2367262317b0283ea557c9933a17d4772c52105f6975cb",
+      "translationHash": "fa8b17c2716f618d9a503e5ee1309d00f8627a5abd47c9b06eaf15900e70612a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.billers": {
+      "sourceHash": "9ae8a8ca20496da7e5d7163b2cd7d3ad3c067fdd7cd698a5872d261913366452",
+      "translationHash": "602b7afc13dd568e435ce1f30f0b5e7d847f2765d0b56307a111fb03b3cea002",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.credit": {
+      "sourceHash": "56c0c1731758ef4aa244d67c244fa698a9c5cea6880c7b038ce6149a7374d79a",
+      "translationHash": "a22a9caa628024108b19f870b7388d8f4bed8fc0602c38deb53ac1501a02f195",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.credits": {
+      "sourceHash": "0a096cdca51651cd3ab45dd6ee62d3aa2ec41fd6eeb82094f9cd30b21b305b72",
+      "translationHash": "d6a60f827427b9933973ed23f0742521267cf34b942a54720b37908688d5760c",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.debit": {
+      "sourceHash": "23f6723f2ed6c2a67daadeb299eb0db657fb42969503a67b70b1a77037af5ed2",
+      "translationHash": "974c9eb92261b9f29e990238c60f9147dd392f07d18fa38250750bc7af63e9a9",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.debitAmount": {
+      "sourceHash": "4f6c868af6bf966a8f4f7b93643af3f144d34810a560a1550a0d013b067811d1",
+      "translationHash": "41e9b3c287fc76ba2b881ad08024168dc2479a4e6546153fa727e4034367c4c1",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.debits": {
+      "sourceHash": "1cc46e17c4f77c0b603c160a888be4743183bf18ea4fe5c5991cb14d33e1d282",
+      "translationHash": "bf71f83e7de944e4de9a4c5a91d9bebf752858f673b60ccd665e443b6471c650",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.empty": {
+      "sourceHash": "db01df8b97ea2b7406796134088bc97c1bfc56aa4eea9284fd6ec397c15c6079",
+      "translationHash": "af3c6787e041c9d031ab61e04e7836727c1493214707cd1ad088208c2176c817",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.emptyKinds": {
+      "sourceHash": "4b9b734eb75ff3ef31baaf3a4e8b09c558a674925bdc3ff28632ae4db553de94",
+      "translationHash": "4d7aa472950f2d402ad8db67af3c2c6d7b56541577f82cc75cd4d84d677f77c8",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.estimated": {
+      "sourceHash": "f58364d3f33180aed30efd035fa7e51b7dce414e16d727810a512cc783e30bed",
+      "translationHash": "50a0fa238ceadfdc2e0391c70124c459db2959615a6ef76cb37682cd9ad02b5f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.eventBillers": {
+      "sourceHash": "eede900916371368e54ff51ab2919895d3ece4710d79039f0dd6a8eaf8fc2642",
+      "translationHash": "f68e63812901b2a8eaf7da52b3fad0f932bef061075001247e4beb5ecbfc5f70",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.eventKinds": {
+      "sourceHash": "93df8d77a9f887b6e5c70080c0bb525e2c722f74a98f9b50cba0b130bbc00739",
+      "translationHash": "b2e822a6927fea0da850b709de93f7d3069d1bbfefe0f4c9fc72d6de78c13ef5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.768Z"
+    },
+    "costCardsUi.finance.events": {
+      "sourceHash": "8166195edec0666380d9c7325f00558d84288975c818d3ad01abbb4611cc33ca",
+      "translationHash": "20fdac3f97ac429c6589c2bce3ede8da805381dbb29a704e428900618c3f2056",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.hint": {
+      "sourceHash": "df1f7802a94ad167b4496e9bfd491400684a627d49b9d56f0cb81c1305499202",
+      "translationHash": "990584e9b3e3c592f70b55ca1b54549d9543bc505eaef440d57c44e64c5d9eb9",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.invoice": {
+      "sourceHash": "390d076ca163c326daa7cb1bd8e377c835da84ba402d03ae55a97459dfc78d0c",
+      "translationHash": "c61b83ecfebf64d2c52818379f29a2070b7aa01291c77e44797ec28efee3dceb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.byok_fee": {
+      "sourceHash": "7bfac5bf16b4a2e3180838b60822578d67a846dd8e86e57d88faec2df5c24808",
+      "translationHash": "f2badff191f7fde37a2af332b4207eb9e7c0039c5a67a86bd40481395caa0833",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.credit_expiry": {
+      "sourceHash": "2b507dd66a6c813e8619a08d48f6ccd1898c9ef7a424bc3926b9eabd0a85f8d2",
+      "translationHash": "471e32db692b91c923ab9123eae6a182868f17d98d94f7c800235ba4d3fe309e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.credit_purchase": {
+      "sourceHash": "2a7247b35b9d322ee95719fda943a55a93bd59619e439a56e3f7576d102b48bc",
+      "translationHash": "e8387340a3e43a696e1dc070689d4e8bc5ca9b87befc7c3e0bfe1c3f8cb227f5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.credit_refund": {
+      "sourceHash": "6dd830035d82708adb1f332db22d21079f5ea67bb9316afbcbf96d26cb70c75d",
+      "translationHash": "66e5dceda90a66ddd901fc932d9fbeed240fe16a9ccc1615743dfa7b5f7e7666",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.custom_model_import_charge": {
+      "sourceHash": "600fa89f28e6c105957db1b0804441e7155b51852e5ecd2910724b07b1de43dc",
+      "translationHash": "5616f7e50d45ff4894051c53a8566867c19c03ab9c40b46bf8a19ba7639d8437",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.custom_model_storage_charge": {
+      "sourceHash": "da007d12f32aaa50d4b60c8390f04ee32f38ec1ec9cdbb0dc119c02b2a67d281",
+      "translationHash": "9d54e35302d485782dd6e18484613dfe3524305210ba5c60bbf0584cd08026de",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.gateway_overhead": {
+      "sourceHash": "db6440f7118e2f402cbcbd1442ee94cd8eb18af9985914bcfc8a04a859f49796",
+      "translationHash": "e5269b4177b87dbcc58e783d929c56621dbeb7a52847aef073e5a3a20d275524",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.inference_charge": {
+      "sourceHash": "470fdcb41dae2bdf73c3881cb0592b96822197f1c8521bb40001c7b7391ec10c",
+      "translationHash": "a061e18a35069caacb71033a2e053bb96e4cc771833170f3789d43a218a56e17",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.log_storage_charge": {
+      "sourceHash": "ba3ec5ed0a772003d74fa76841c83baeaa345a25d77658b5dca7977d04c89449",
+      "translationHash": "c5229c547009fdbc05005eec43ad37cfc59b05fa38ba1371f6e8a899eb1f41a8",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.logpush_charge": {
+      "sourceHash": "b42c2a364cff8b985dfaa2aa393af30abd27aff81ea543bada8157c3c0c2afa1",
+      "translationHash": "c0b850080bcac7b09ddf050894d74ebf70c4268a16854f5c94466d336472c2c3",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.manual_adjustment": {
+      "sourceHash": "c7bb84ca58f846fc339be17fa371bf1baeceab3950f9671adafe7d09de626b8a",
+      "translationHash": "01330630f8e0af6cdc6bccc03f50302402a667872cb61584ce6f4c9dbab8a48f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.platform_fee": {
+      "sourceHash": "2dde0701ebd236e4aa1f88531e019481347855728d2bbf4b664fdd0716e435bc",
+      "translationHash": "c3ea70309c31920757cdc2b4486b35f6b9e00260bdd884523449bf096afcc48a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.provisioned_capacity_charge": {
+      "sourceHash": "e45161c156686ac6c0d8cd2baf9776790ea9069a11c70bc2879f4f174c72f494",
+      "translationHash": "49ce21b179156f75f69bef97f88c12b28cae3f070108148476963de3cacb7e72",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kind.training_charge": {
+      "sourceHash": "a06c7a1b8c049fb271d95c970f85af6c6e204c48fb18058a566002409b96a2d7",
+      "translationHash": "2e089543f23cbd908c2594921f2022f865536b4fe7e2505971741b3663c8a30e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kindHint": {
+      "sourceHash": "561b716ca9bd162b13c6ddc3b335295e4268cdf4d7cc99a212018601277843b4",
+      "translationHash": "fb83d01570301f079396f7a5065021335c516789cb52fd6e1f0be2fa39010c8a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kindTitle": {
+      "sourceHash": "a8b3b117c732e1861c3959ae264b50df6f6561763e31f03ac8d9d0699094ed01",
+      "translationHash": "ad2c09becf33b03c926fa335eafd43d0b5a56a161b7aa26d7f7d21fb3f1179c0",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.kinds": {
+      "sourceHash": "0cf456a39423358ac2d9af12ec45de62675c77aaeee45e7a35bff05ca6823456",
+      "translationHash": "20d9f9219cd6d7dbb721c4df9d89039eede4c514cab49556a2d5df1ba85ed4de",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.net": {
+      "sourceHash": "d0a88079ce27d798dc40be6620dd42a5efaf5b6693385ea54745f5d0590a5b17",
+      "translationHash": "d99a806a3d8c9b07cd01e7099a7f688b2407a770569ae9bb5224033bc89b3210",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.providerReport": {
+      "sourceHash": "d2626553c48e49d7348efa494683055bdbe5a3eaba5b21ba2fe471ed88d82929",
+      "translationHash": "e5b101c6f979cde9bf260f3f69967a123d892d30b556fc5d656eb4142913075d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.region": {
+      "sourceHash": "d212435efc950b4013dcac87f5dfed22da5dcd5f96acd98f2a528ba456c462b8",
+      "translationHash": "49fdb7ac25294e2aee12fbd2da5c713eae442ea0249a27119abefc252b3eef7b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.tier": {
+      "sourceHash": "1aec54beeafc8ec782bb77cf95d0276ba43af95f15a22737e18602d4756d8983",
+      "translationHash": "a417abf67656ad495963806fd1def5b89943ed753005e5deb15fcd4ff0377993",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.finance.title": {
+      "sourceHash": "2f1ca7c4a5ddacc8e14ea8bf69c5cf0334edaa797dcfee9634df59d224eded20",
+      "translationHash": "5c56da3043d45b83767efa5eca9e971d41f61e2fb566af04b040e5fa309b5e27",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.incident.agentStop": {
+      "sourceHash": "097ebeb030099f1fbc93ff1c55bbe65957630ec0a00678398f8e46e1530a481b",
+      "translationHash": "5907b56d25c38bef1cd9ae72e90586d2d311685d68ddd29f0629225eea9dfb00",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.incident.agentWarning": {
+      "sourceHash": "13e786ec5e86c24a554382b71017520176d69ff6a267d0028276edfe23b92cad",
+      "translationHash": "f9986b787e4756979175f9cebfc875660f66463d0e1b5189d894771a6410c2aa",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.incident.applying": {
+      "sourceHash": "22baf44b5cab3e078d2e113733b046b2f7b5c5837dab840c1bf1e9c9b86f75c6",
+      "translationHash": "47ceb370fa630108b9e848a9efafe4f89e31d91ce3e368332d9c16a06d69ff13",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.769Z"
+    },
+    "costCardsUi.incident.companyStop": {
+      "sourceHash": "f20bcd451d19d8db172ddc967b510fee8a02d5d4286da64104b2a30456335476",
+      "translationHash": "291460c7b4fba4351d9933139f8e07210d62176cd0725ae4ad5ed9293da00b93",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.companyWarning": {
+      "sourceHash": "ccc525fdf9324af8c508676b448fb4f247eb37eb4679d9bc1be5742120f9ad69",
+      "translationHash": "cbd1419a1324c064123135d7a61f346a7bc3ae1fb88ee63a4a878e399e6fcfcd",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.dismissWarning": {
+      "sourceHash": "0fb0af8cc6d2a2e524495eb46ee1393a152f669952da75a4353bf76910eb2f5b",
+      "translationHash": "2c31a9673d1df5ff5928e454de506b5900f030ca7f953c271b03b84e1b401283",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.dismissed": {
+      "sourceHash": "2c7af45995cd8da319cf2e17a5c89eb20891c718c26130246def8905d886fa18",
+      "translationHash": "c472343476fd6137f7b1cb286c3419ab34332a3a357cf2032a648ad2f184f4ad",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.escalated": {
+      "sourceHash": "9c316e30c781143a6bd913575edc92a10d79d75f5a6b548ac7c3b2ae2d7e4c19",
+      "translationHash": "a37800d5f802d2da24e59f8f2ca1c0854056896c12acbc0ec2d1953c2dc97e45",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.incomplete": {
+      "sourceHash": "cfda081bbd920d8a23ad63b5a66dfcf032ffa2d982141d8471b6c0dee3e8e992",
+      "translationHash": "75dd83ed0a6ff4763ac7341c13cc0fb450476a7e32e14b354db1506421d5b410",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.keepPaused": {
+      "sourceHash": "2d024581e3c052616177912a750857f428aca23af2d58b1807c618763898764a",
+      "translationHash": "d117bac2c27d0471b68bd88f6ab188a357260367a30ff997355d19ea4504b4fb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.mustExceed": {
+      "sourceHash": "133a9d0a791cfc3113e06d150b51f9af0c6194fe3e21a947a22f688595b33175",
+      "translationHash": "3d68714e23c97a6c5307a71d9edcad40e9252f669b4b92fe21c0dfe5b96cdc9e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.newBudget": {
+      "sourceHash": "e6c0c07263cf9df56e074c7342133e5b3c15ed8f3669844e36ad9c5f052c91ab",
+      "translationHash": "67b05bf59e5c27a8a1a782824857e633904753d168f62dc538c80c16ab422b0a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.open": {
+      "sourceHash": "9f7b756317eae8a821e1332f517c6c4ba466ff2a06b866fbcd30b838bfb072e7",
+      "translationHash": "827561a6b0a2ffb7dfe7bd742dcdcce6a21deca65ff96d3ea1af530e312d1933",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.paused": {
+      "sourceHash": "ca01c9e234b04c117cbf400344c1c538f3991cc04f06361e315a3bbb8c7820c1",
+      "translationHash": "dc5747071360a68c5ad71866932096c79c3611f9a7f2c3aecf7bcffac6020715",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.pending": {
+      "sourceHash": "b0b70acd9d8b876ef0380006ae6fea609e7b81b280a99838ef665a10cd8a0ad5",
+      "translationHash": "d856445db7ca114bc231e2b8638159ef94ddc70fc1c8f4dd4487dcfffc8f67d5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.projectPaused": {
+      "sourceHash": "8c5ebd4b20acac8fd69a23e5a736e0473282297e9c41023d28b28d712b535586",
+      "translationHash": "f170185d1f4e27ca66838ad17c8f7d6e1c5390e5d4c09ce8abc23c63ac2ad5fe",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.projectStop": {
+      "sourceHash": "eeb267e2af6e5ea52f32455bbaeb0e8a1b4401cf3d32c62a31c10a83bf9ae6d1",
+      "translationHash": "798ac80ceb5030a44ea35e7dd84a630408f4bf6df61b983b01f0d105a2e9e5ed",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.projectWarning": {
+      "sourceHash": "8ebcabed192b1bf308fa5e1043aa1b37fd82d3cc2429a142949369e7be3b749a",
+      "translationHash": "a628b79fd4ace07567c7765b87ac8e6fe05549cc172970a046f7164ad3aee723",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.raise": {
+      "sourceHash": "6ff67c8c5c54fb299e057fc2328d3fa22abfe898c9a8f3dd7492182cf5b8f9b5",
+      "translationHash": "c5c9b79e37c6e7d0aa71516cb8e31cbd5b6beb5d3258c42d97bd6f5609930ec3",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.raiseResume": {
+      "sourceHash": "84cccb31392dd8a63ba1fb4e1d29502e01a08024000c3983bcb2e38346745628",
+      "translationHash": "9de5ffa885f8e2e83eb0251a04f62401a18ebdb0c73cf88a384c70c30125c995",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.reached": {
+      "sourceHash": "09281459e8bc2ab9772c25aadbd3e89427300373df63573bf5700e1598f6234c",
+      "translationHash": "fefa49adb8cfebaec0c0c5eeca47fffe63a9979e507ef0643e4beba05bafffbe",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.resolved": {
+      "sourceHash": "74adc6be2e9999ffe79da33ad19c5e29d0fcc243bb77889b0d516c22d5de3e05",
+      "translationHash": "3f71d4d2407c9d401212c6648da19182b9cfbbae66b1c1f4b99b482e3a5cdd08",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.unknownStop": {
+      "sourceHash": "3c804dc77b1b7a625613d22c64fd405b560c9c3fe0b455c4c8692af10f1e1ced",
+      "translationHash": "1cb8ccc1d2f1f694963571f860cf8468fe3c6dcd1e412a34fc5f7e42ea0563a2",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.unknownWarning": {
+      "sourceHash": "be9f5933803436d51f576c5c92935b284d1cec97777f2fec41ec12cf7ffb9f02",
+      "translationHash": "ec89c6c912be475d7171b1f517a73b6adb5465593247d09bbb68d9b40459fac8",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.incident.warningHint": {
+      "sourceHash": "764017fdb35bae7b8b346928a33ada043fa0c38cee965b6ea08a544839faae6f",
+      "translationHash": "8084b029c6306a58d3bccdfad2f89c51fc6745ecf7b8e079532c5971b9fef914",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.apiRuns": {
+      "sourceHash": "618bbb341da9e128191103e0db719907c3b17891dcf129703c8b39f67183c885",
+      "translationHash": "a6fe155df2bdc4ce0c3b74456bd7673757228b127e9d3a784f3b2904e29d55fb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.approxApi": {
+      "sourceHash": "396885c9ac365e1c68bef5f8cdc72db9bbb49b9ddf1c7ea20936d61d58a78062",
+      "translationHash": "3ae5f06ccfa2f1201438d3b2e7817298baeb5fecd9f5077deedd903f39bc205f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.approxBoth": {
+      "sourceHash": "855fcd7295dc6748c7f7637565a79c63b98b1fa69defc046da33d6d49d1e318d",
+      "translationHash": "bb830b075ae8c07b55b504e12b26774e1fbc3efc9131f408b93e63942dfeeed7",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.approxSub": {
+      "sourceHash": "eb8900ca4292c81ee99e43470025f4e13fd7004dddcd0999757348495ff869a9",
+      "translationHash": "d37af0d1e551b5d60ee789bcdc38d781ee4399266cb42db59c0e7e4efc503c0f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.billingTypes": {
+      "sourceHash": "46c1162126d14801386bbcc1d4a3d0f04df26f9e74a8eef34599f074625b574b",
+      "translationHash": "a3974785708a1930a3dcf8bd2869d4e01dabc7e200cc615fe9874ce3e49ddbb9",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.budgetPercent": {
+      "sourceHash": "f0a46a2b632fa762be7bc99da6261c676b348e151e09371c6e634963ab48cac8",
+      "translationHash": "7bfe5131a718e14a7f31d05abc7024ab71862095c4aa78ccbd75caeb95110454",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.costShare": {
+      "sourceHash": "2f5a2c676c677b102d4656b4924487ef8f4020f4ff68d25ce582bdbe2acaccb2",
+      "translationHash": "02222994792f7e8cad3ec81bf974496775ad060ed6765a78c704e17639f4b899",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.models": {
+      "sourceHash": "431613d02b915be20db608c51a2ae013a062471a0c19d207ffb846edccf78011",
+      "translationHash": "20b58e3fd926940166259c437d86cdff08e16238344471db0872badc83418d53",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.period": {
+      "sourceHash": "ef9143b5e0b85868de9ac718a1b65c5bd9853dd02c528ab47d39a8b000c0ea95",
+      "translationHash": "8558f4432a765ab2babe60f66e2ef255e31fe5086adf6f5b94906ec28d6b8673",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.providers": {
+      "sourceHash": "89f185e981ab993937d570b37be99ff2323bed35063d2c7643381a2805b9c0ce",
+      "translationHash": "b81553b2f2e1ee8884c30aa39f0ca344d4da849f19f26ffaf30125b4bf1d4a42",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.quota": {
+      "sourceHash": "b1d1cfc00614b7582f235cac58e5570b8f1566ba2390c67e4425aeb28f9c10da",
+      "translationHash": "8fd60e587a11afad37f140450e7aed08761ac842b446bd4f25693af00e987a35",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.resets": {
+      "sourceHash": "bf146e195c6c2007d1ded88962d455fb88f4c645160ccc5763f8b1da2742e916",
+      "translationHash": "f48891a7801ae83f8048bfb1e296ec53f4146f1d86d313289006214955351c5a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.runs": {
+      "sourceHash": "ff6748144eac53bce74383e315ac00fb66b465ab9eb54d4c2d843a02a980e437",
+      "translationHash": "5ae4a563a28860d739ea0f91c2baaf56b70441202b5c10ff8ae29a946dba3006",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.subRuns": {
+      "sourceHash": "826332f51dd9ecf73e4e0a4d67182f6c5ceb4d3d7d22fd4d7c1fabd6aea994dd",
+      "translationHash": "4419b76597957032fac7ccc1ce4b33856fb6816143307d95f7df3bb8f4071e8b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.subscription": {
+      "sourceHash": "62f6af6feb355ed2d24ae8ce9533083fa9996abcc5768d2e8f62306c3072d354",
+      "translationHash": "f15911030953166f3177c3e4bcac3906fc6d4e581db2f75f015065bee37f7a78",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.subscriptionShare": {
+      "sourceHash": "096ed9e5295a998431b0dd9a9298ef19821da14ff930b419c9219c1c55944018",
+      "translationHash": "e475abde3043cc4a658cc3a8f0e411bed6e3c08af360c0f5199b06d8e170d5ed",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.tokenShare": {
+      "sourceHash": "7efe3791b433075010ffdfd27c8f4bde87ca1fea104bb7c735c1ddff1924e340",
+      "translationHash": "cc509afa7b4d5a57b6968eada426084b75656fa975390ed9047190091896ec3a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.upstreamProviders": {
+      "sourceHash": "691cb5e2471f039c7eb6882023f3121769e5bb9eb2da9f1f7933d1b5db81c086",
+      "translationHash": "6aacd84ca3d090158d2669282587ffb36622d4b7a778cdd16845ee13558a257e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.used": {
+      "sourceHash": "f6e8b574b29751919e2f29d5f2e5e24aee1eebf929a2c87a03f279727df99f99",
+      "translationHash": "f569639009d8e91f49e7d47a88b2aef130cf54cfd5c25ea3373c05caa6984a64",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.week": {
+      "sourceHash": "ed9fd13eb47b60aefe10a702053b130145a396fcfe45f13ed05d0214710b5f0a",
+      "translationHash": "096839b265439e4c6b82fa87e0474e9e0088aec649345288e52fcdd2a41625f2",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.weekSpend": {
+      "sourceHash": "fdddfd7a3c98ce5a048026bb0cbd9972b5e28f98318cebca949989449416dd66",
+      "translationHash": "51137fee8a2d2d5310ce3096d9155e90ebf204886b105892f0f6aab27dc716f0",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.weeklyBudget": {
+      "sourceHash": "6bc4c3096f29120ac30c34ee9754698281574b0bded4941c8304a1e32f1f2fb1",
+      "translationHash": "9831788c8fd3708e2aa08578a42f40769f7bc7375492df544454749ff4a9737d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.window24h": {
+      "sourceHash": "13e5634378a6bc0f3f0e62f3023516408ec0c06773f27de6eb92717aa224165c",
+      "translationHash": "f56de41e11bfd3468ff689d1a049a83b528d5f5da3f66bef6e9c80d8e7ac91f2",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.window5h": {
+      "sourceHash": "f24ae843a4ad728a6c6a8ee22c306d93fd615d7f1856c38d747d773323586874",
+      "translationHash": "528f1f59bb1405da497e743301e01cca371da8e60fefba0d92496edddf23d07e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.770Z"
+    },
+    "costCardsUi.provider.window7d": {
+      "sourceHash": "148377368e3526df9ebdf17e16f5810424f9b79efe13f71b04b59aa1860db090",
+      "translationHash": "88571ef313138bde5b8cc97b50cb6725a0030aee951ea340377a487678230def",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.provider.windows": {
+      "sourceHash": "ec007e6a01ae2133d067898ba5a45cba54d620b0e1667206767eb7e1573ac193",
+      "translationHash": "c3ed6cc34b7cd12f39bdfe3b3077a97153bfc2d488ccf2b02dc41d1693d2b2fe",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.agentDetails": {
+      "sourceHash": "84abc589ad3dae064e930a05697323b5a8092aef8c5b864f025d0bf653395d05",
+      "translationHash": "cf53291289ba014afb4e9c93a84788a971e228c004eb97ff9b0a8229ae60e557",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.byAgent": {
+      "sourceHash": "dd806876bb88cdbf7e725becc9340a6bbe95eef8a1ad566a91e1a1e31924674b",
+      "translationHash": "47817b7a14fea3a6b0c07f12304e50fb3782b32c352d49c286408dbf1a8392d9",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.complete": {
+      "sourceHash": "410a2e9dda907144d90758062438e983493a6ac2db43d1a3a308bfbbabce1b25",
+      "translationHash": "0b2eda27cf7f13aa79195086ebcb3e0aaead911f963cb9d36be44e7bd60709f7",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.loadFailed": {
+      "sourceHash": "52d8819668b903c4747f4aecfb8c89f8378abea6565cb85cfc4a197dce6bc5af",
+      "translationHash": "dd25e2aa46c6a61357744eeb46eeea7e687e590e3a941cd2e61fb2c6ef036aee",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.loading": {
+      "sourceHash": "e0be23bc0d485449ec935a4ee2a91d46a67bfac45dec445c7617642f225ad3ef",
+      "translationHash": "c41366c6d65324155716d226ff2a130745e1ab58585d51afe5908d11d66e31ed",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.noNew": {
+      "sourceHash": "06c507cd18f559631dfc321e14c73cadb50289f47ab50a0d4349571919ea913f",
+      "translationHash": "69eccdac2ae0e5272dc5bee126b4757bedf609ea6f31a2cf1230eabdab17a3c0",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.notRerun": {
+      "sourceHash": "7f41a61212b1d36074c4b967383ec965d72540bf139990ea54a533e926771ca4",
+      "translationHash": "c6e97f0777fef53d1d99f4c1f581baf85ef816d976376ed3f4de7ff81c44bc37",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.missing_model.description": {
+      "sourceHash": "7d6223823049258f4f337003cbfe3e498d54c710337b200de325767aa9c8dd1c",
+      "translationHash": "c11e271e9c0553ab0ca1cd89502476f943de620bacb002034be2cf06c7544483",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.missing_model.label": {
+      "sourceHash": "a1ce05140021524aeb1c08c3dec6bb742320f888ecfb4265427f7d4890801f50",
+      "translationHash": "8d99ecea491d586dc4c6cb788d00d9dacfafc7ece0c982032fb806c97b6740b5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.missing_price.description": {
+      "sourceHash": "387cf10bf5c03a211ad024fe96007995d67fd92be210ca80b209fe3ce0f06304",
+      "translationHash": "1cd79ec2fd18316ba737e81d2f223a900731a4282727a894e3881983ac8a3abe",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.missing_price.label": {
+      "sourceHash": "3f6c169805ae75d6dce717717ef3e1674787f5dd3f3da2f02c49773a7f0a2211",
+      "translationHash": "eaf4e4b03446bddcdae1196a2ec731108008a358c5268a15fcbfaed314f4b67b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.receipt_unavailable.description": {
+      "sourceHash": "4275b9c7c44a76c3ebf2eb12d4e35bfd1cf57ccc0ec0f44147354641b18798ed",
+      "translationHash": "f7bc3e9570f193630a89ef1980c09d22d93cbd311d5537a83dc8d8b71d5b55b5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.receipt_unavailable.label": {
+      "sourceHash": "661ad3483df3aa24e999871938f746da21722fb34048505092813c1102e88570",
+      "translationHash": "c390eb37f6f21457a0c4ddac317763aa23cd0378ef8ed1c66c07ae82d38e2a1c",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.retryable.description": {
+      "sourceHash": "bac8fe8d5266bd3d8ed13280040150e0350cd5173a4c2e6755796723c70e76a7",
+      "translationHash": "6c775d62dcad8eab503cc50bcf8e21c32f7514a19859116b5d59a65798f3c634",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.retryable.label": {
+      "sourceHash": "85295b50f1ec75fb751dd6df43954b149762d6097408a5613af2082bbbed6fb0",
+      "translationHash": "02a6f109b8de5fa587cd8177fdd234609cccfe5aa522528441aed8cc5a8c6ae6",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.unknown_billing.description": {
+      "sourceHash": "10ed7f46c469def0ef120544a0e1600720e8d1287cfc43a8f549386455b247de",
+      "translationHash": "cafb89c8d124ace0f4ae2ff6038321d203f7cdb2e937f749cc2d351dac280a1f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.unknown_billing.label": {
+      "sourceHash": "0552e62b3334dbe22b1e86a6dcf38bf844bfe51927cad3684c369e0056803604",
+      "translationHash": "bce2508d1f1acf237a39a4b55c7710b081ac7fbf17fc3f9045d019e79883a0ba",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.waiting_for_receipt.description": {
+      "sourceHash": "c6a450efeaa1b7eeb598397e8dc25e30e18103d92977061e96c96e4ba6d3f946",
+      "translationHash": "24f4626694af8626bf2545ddc848d395e046db4f864711443a58c48904a96bee",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reason.waiting_for_receipt.label": {
+      "sourceHash": "3bd701b3aab6cac4fcd88cf076501595591bec74c3d9e3c90a8f0ac57985df75",
+      "translationHash": "f4b20b2ea192a1bbb5459aeb08a48aa07d59a96fee293ae2390dbc24b4e2bc55",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.recordFailed": {
+      "sourceHash": "6ebb2418f18d870268d65e3d0e6422e29c3d4434c83ba66992e27897871562ec",
+      "translationHash": "24c4d0496a08f5c5a289418ccbc3483484194f912d89003a8df054f9a722f611",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.recorded": {
+      "sourceHash": "92606d007fc5e47e3f65d85cbe20fde0972fdf7d829af06a0579ba2b4453ecd2",
+      "translationHash": "50b44c379885a526cf98d5c2da35144dfe0c35e8a3ce7fcf1d06e4266a6850cc",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.recording": {
+      "sourceHash": "3d14b146538c015f4b9d81fba9667ffd872bcec39d86731dad46e695209c0ddc",
+      "translationHash": "7e76dfb224f4faa458feed3d74b4fb11610225c5f689f680b52d6c38a2ef0aac",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.reload": {
+      "sourceHash": "81f8bf37cace6a2b49848c7f6abe9745ade11db2de8e77495ea897be44d3d0b8",
+      "translationHash": "fbc36bac35c0671791a4095a1ef7d9b3622b31499338498aa23da02f3594c0bf",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.retry": {
+      "sourceHash": "37d190c6833a12ac8bb04fb939af0d78b544355dd480e0cb710a634da0d118c5",
+      "translationHash": "2d8ad1bb29012590637d3f2ad888a8bc8315d4579554981d54ff83ae26c91d96",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.services": {
+      "sourceHash": "8b1ad8b790cd7ee164966295484321f1c53f56858bf8eec5d4034b75302c2603",
+      "translationHash": "c61bf824cb051ba49f0a3995688e0e4b91af643f4c9fcd2e71312bc7ecb91bfe",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.stale": {
+      "sourceHash": "abf28dde78f8e24d9ba2184a84ffb7689118037d425e7eeb5cfb7972d8b979f1",
+      "translationHash": "01dc21e1513e3231611d81e7dd8fd0bae85a835a2cda0ab884b530d92df058b3",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.truncated": {
+      "sourceHash": "055a650e2ec774a921dabc58c0445d6e0715f69499f1c96f53643e067ab17c5a",
+      "translationHash": "160cb5ebd8b5b168d5737c81909356be09afe998d44036ac06f882f9a7bb6d07",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.unavailable": {
+      "sourceHash": "3a7260b917684b22bd270f17e0c7a507994dc8cc376344d6cb4bc61536afcc6d",
+      "translationHash": "34aa7779fbf2653be9724b935a89b40f555968c8f31e353ab1a90fdfd621df2a",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.unknownAgent": {
+      "sourceHash": "5c48ec06ad398f3bd1308653dcac58e23ab8b0ce6e19dbc3e2ce9e591be0e410",
+      "translationHash": "8aef860733461e0749d707d08dcc9eb9fc58ed4211e8db75922496be2de85068",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.unknownBilling": {
+      "sourceHash": "774badef0e70f4844f5d4a76ec45652d9f7cad1b42bcc5fcc7ba5a6714a44577",
+      "translationHash": "32a594752689f4b25821bcd73131d88497901890415b896c2632108c7dc11b65",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quality.viewRun": {
+      "sourceHash": "52f16e8e92c50ca550f05e5a48b194ac8e549fe5d24eeb0c1315918fb664818a",
+      "translationHash": "fb5559aa4b5c6d4454d1fcc4ddc62aed1f9e4b7867f467e1c93ac593f7223a57",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quota.codexServer": {
+      "sourceHash": "bc597daa0b2b48ae5ee5bb4bf7d2725a24659577799efbc3c2ccdf1f22b3fe88",
+      "translationHash": "0c608504ba6d592f3ac584fe9e8fcbe87cdd390ca3a689aaff5f115b5b60a7b6",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quota.stale": {
+      "sourceHash": "f9f7f928cc5b798d19a6197232930f8739f2816585d662588de8675f04acdc06",
+      "translationHash": "0ad66174529d59ebcd64107fb1a14308a6733567e2daf551563899997a30e066",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.quota.unavailable": {
+      "sourceHash": "a8397cb37bc420f8ddeb2c9cf707067c35392a4b25c6b0f6576b71fee797ec82",
+      "translationHash": "5a554a2ba2936c7671f6031fef3b7228e910888a236bc6b524834fdefcbce543",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.771Z"
+    },
+    "costCardsUi.subscription.active": {
+      "sourceHash": "e969b604d64ad5ea4d088fa11e6439fc5ee491aee0fe91d6039e79fa5e0328bf",
+      "translationHash": "00c9792d67fde2565d4e59d7a85f8390e74a8b9566a28eb14c08ad38d4706635",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.activeCount": {
+      "sourceHash": "bb1749e44a2030247d397cf77a1764e1922f8873d9191577c0742e86f35094d4",
+      "translationHash": "37b26f01ac236831f68d8e4fe49d84893d7c8367247a3d6b7f8e51a6de624a55",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.annual": {
+      "sourceHash": "e24f3b7034ff80aa0955e175d3b2a5673bd918485fa2286523858764bb444bae",
+      "translationHash": "8ede78b782f35c3fdbb10b17a0b9865335972cbdb79bce0b70a99cb0d7ec59bf",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.billed": {
+      "sourceHash": "9cd6aea2451dc064b223fec87e9431c53ab18925b07520e64a35cc135d1d014f",
+      "translationHash": "a081f51db16bbd16e7630a5355c78b0ad0a2523654fcfe5f77f3db11a6bf1c6d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.cancel": {
+      "sourceHash": "1dd7d3b4bc7800bd30c9d8e85fdec00c85ebac0a3e999a91107074a20c75908c",
+      "translationHash": "a5b13bdfff1960508ce73532b3ab78d2258dbf23c1033b1046f9cf669d9255bd",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.catalogPrice": {
+      "sourceHash": "74df07143015e12adc856935d16c1dbad3a4362a15bb27bc71a9f6610be07764",
+      "translationHash": "4166938ff7857659c5710503627f242328cd922baf98dc6b6748fe15248e82fd",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.checked": {
+      "sourceHash": "779aa4e05d7a1cf79b7cebfdc0071ca4047120ccf41eea0f52f470ec73bb5dda",
+      "translationHash": "3789b3bf40ca63f4611e9b561bc2c4bf1eb363f8dd363073792a130ce6ff71a4",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.checkedUnavailable": {
+      "sourceHash": "b4a167daa67ca3cfc8fa4ec9bb3a6f41bb45ffda7bfca518d36e38f6810d475c",
+      "translationHash": "7ba17256216d886c31056652b4f11f778366fca8be1cf59ce427c6829d9d49f8",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.chooseAccount": {
+      "sourceHash": "69545e7cf998bad0a2d88dbd4b073d6a75f34fefd36ef1ca0a4c7964f7c0c956",
+      "translationHash": "55e50345dc14ecfe6ef9a3af6b836439339804b7957591d72e3d172cfe88e8d5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.currency": {
+      "sourceHash": "cd0d08239f53ed6128192854c4f96297be2c44b5571637e04e9c59a4266115f6",
+      "translationHash": "a537288f20cca22d787a07771e4610b6e86fd686ffd6fe6bd3580a298cda9e3e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.description": {
+      "sourceHash": "cdb5e726652cecc669b109363127149d1f0b915318e3057c0e54d2f033c924b9",
+      "translationHash": "1e128a8411f68efee5cc794f5643464c81da897859e797a69dfd5a0c825ea31b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.details": {
+      "sourceHash": "3d4f82a57b4574811155d50c67700d07c426eccabcc34bb31a4f81d290112f80",
+      "translationHash": "1ebe18b3bd633b39991906351d6e60b29b938841f992182d3c77d2278301ce22",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.edit": {
+      "sourceHash": "17f911cdc9271832be7a2dbe2e8527fa987ad5e63d92cd646bbdae1d6f0824d9",
+      "translationHash": "eca7221947541caf4312f3d2c69348be74275ab5345092d08b593e101152945f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.empty": {
+      "sourceHash": "f9803622257f98bddb69dc771ffffb4f64136f777be800b51248c7f98ff6637b",
+      "translationHash": "e054a355fbcbf2eb9451a7accb55b701f07cecf021829e77868804db1cc72efb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.ended": {
+      "sourceHash": "3afdf0451541610ba414024e531044a3769adad3f65f1cf0c048b1fb83563d9c",
+      "translationHash": "2e4367ab8def76a4169d8ed12e794d4df45ca1746edebf88dfceed55c110774b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.endedOption": {
+      "sourceHash": "3fb8d3d1ba03a5a77e70f753dee3915f3919d665a04cee87139ad911ebb4edec",
+      "translationHash": "ed1582bd62cfa21eda29e99e3f2f70126ffe150e2df05e829bbb6409f59285e6",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.excluded": {
+      "sourceHash": "c8b4865be89bef5ecf5fa9d8c766a7b040a51608ede8904ee87420690d1fadf6",
+      "translationHash": "b0946eb50dcb8f70d2c1dd2e97f562230ca8489831c33cdf7083ef0467ccc3a9",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.excludedOption": {
+      "sourceHash": "6237963dd122ea314d1301d2a416b64c6dbe8b759ee59e9d00f1b82740ccdd10",
+      "translationHash": "3de371a13ac2d2f8faee0949903de9f40103bd5f00d02462c34480fe8807af0c",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.feesHint": {
+      "sourceHash": "d44f4090ce79b9bb45fd776f7138ccaec1829917591ada854b90598ac6a388dc",
+      "translationHash": "a24209e56a4db3ca8ab57721270a0c20110fc0c2232249272a3974363b3b1e7d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.identityHint": {
+      "sourceHash": "1eb9d77d6c25b9533e89b765324f258e7756b0add5e07dc1f685a3019c671ab9",
+      "translationHash": "26f969a0b71d615e4a69fb1d76e373eef4c0288a0f7947a96048ade7019e0a8d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.knownSubtotal": {
+      "sourceHash": "230dca3c284572f7742174faf778bc120e52485df0c67d8e4906d4e3124fdfb1",
+      "translationHash": "9122f9ff216d52e7d9db8774b505e3d4cece704e86d793e6cdf7e2008a521594",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.link": {
+      "sourceHash": "f2c488bc12fb1e0f6092a08af125339246ef14d1d97231d6a05b5d158516c8a6",
+      "translationHash": "3a9e0d0824f6859c1e49d8c7d776c5497fea9b6533eb95aa1b9d26473dddf793",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.linkFailed": {
+      "sourceHash": "ccd0e9f819af99029b0cda190bf33411cbfd225b23b8979012c94484e4f5b682",
+      "translationHash": "1df909afa83e71fe78bd77a50fd3d2b492834640034fde1533db15025f059671",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.linkHint": {
+      "sourceHash": "302e8b58c695617ebcc31c5e42b53a422ea6b1d676ebae9c70f7ea2f0b6cb82b",
+      "translationHash": "ca553bc37ce7914150779ea82d8973c836fe801b2c84fba72b156f208ca4b0fd",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.linkLabel": {
+      "sourceHash": "2e383d753b56e7423e65279b1fd5cbd704c6c6e79937fdd2363c70f691ac4776",
+      "translationHash": "71fa3981555b2376ee1ea94e674046210716df3ad5cc7cb0515b53bc39c04dea",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.loading": {
+      "sourceHash": "ad09c275b9fb045d0783f6cbc65ae3b8ed9f404419f58df4c6ecb7f70ac1135c",
+      "translationHash": "508d5731125af7bbc5c306dbd95cdd42bf98ff7ef4f897ee1e7a979eafc4b2b4",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.month": {
+      "sourceHash": "d205f88a7d444e3d0ea2c3c03131376c6847ff3b218c4ebe475439e157f844aa",
+      "translationHash": "73c02f8d8c16da2ebaa9e9c3fd53110f668f39555b00ffc2778e904984f2dc55",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.monthlyAmount": {
+      "sourceHash": "e745236db42f0c4d83262f8e1bbfcd152574adba8d94c50b8cd6c5ef06db1eea",
+      "translationHash": "fea2bacdeda27d000adfa9688a97480102d10b84ef7adb803e20382d2d55c9d5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.noPlan": {
+      "sourceHash": "85192b7a349c9340b1abac39b72339d90eb27419d21b22ffa5ce63b5a00a956d",
+      "translationHash": "a21b26a9b3f5d832fbd51595f9ea7a1c680582ef6562be95c73c25c8f794b935",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.none": {
+      "sourceHash": "15ea723f71d6b38f49d51b94512081b445c2d2ea5fd15498d8ecce07dfab1f13",
+      "translationHash": "0c2e9837a4aad78d5002493f420395dc91df889defa816e53c35101ce15368cb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.owner": {
+      "sourceHash": "06c6060d6aeeeb1f2afb025303becb0a140ae07f1f1f802c93bec4186b73296f",
+      "translationHash": "8b2961957376556a4060edff06d0f22775f5f2fbe222d314bc63bc58d6b267eb",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.772Z"
+    },
+    "costCardsUi.subscription.perMonth": {
+      "sourceHash": "d1311aa6f616489ddbadf9fb959dfb886b5ef1d43f9f1d49ac8300e2fe5bea83",
+      "translationHash": "80dc7b9b75715702e7c0f9fd389d14bd9a0945dc5040cd645fcb5ed932e0f796",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.personal": {
+      "sourceHash": "d4a385064b1428ade07a235286c653fb671aca665b43705cb0873920fdb6e98c",
+      "translationHash": "6f029f24f9fcff08afc17f31051f533b9ef08ba21e3d1ce280513ed3d564be5f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.plan": {
+      "sourceHash": "6454e4ff4fdf619ad9268d6fefff5d1e22a0265209c4503a38949983f5658c69",
+      "translationHash": "ccee3ce823b6651982fc23a52fe1a1db6b9253442773763a8b37bba5b7afac1f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.price": {
+      "sourceHash": "fd38fdb1d29c1291447b837be82db0e48fa27a453a9bcd14671360d3b1737683",
+      "translationHash": "73ad85222e9ebd346b1ebb959576803a12d4210778fe42e53d32cbdbae75de15",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.priceHint": {
+      "sourceHash": "f566127fbe223b2ecea5367697cae29ea981b1a0887fee43ae3122dcca4c018e",
+      "translationHash": "14cbb1bb3ae7b37d7f340d34f385e110b0a975bc2e6ada241f78c6256f8bd0b1",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.priceTitle": {
+      "sourceHash": "82c316eba869689da4ddad73cb9967f1abce6e3cdce5d45940c800452b7a8d0d",
+      "translationHash": "c874b62eaaa6f2912492685d3a0c328e888137bd1a6581c221d50d857d0be25f",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.priceUnknown": {
+      "sourceHash": "6a2ae4373c70c342b8df09b4dd66f7e0d86e163e9e55a0c788ed57cdfdcdd428",
+      "translationHash": "c191e2127a8ac8b2136682f79fe1638440975ed225da5d9dd846075052e01424",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.save": {
+      "sourceHash": "96bc7394888676da964571b62887ec74b656869e4453130ea1d03452804730e0",
+      "translationHash": "0181d05ecb471fefac692eae7820cc51c1e8dc2387f4284ecdc7fd021790063b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.saveFailed": {
+      "sourceHash": "22f7118bd9cb9228113677cdc7c9771f6c172e436a38580be43be1ded23aa436",
+      "translationHash": "57c11e4e8cb6bf1c9711fc186c7ff168185338df330a07876b013d2cbeda6243",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.saving": {
+      "sourceHash": "28a131b7e67d84b772fcc33b3a5b94976259dcc17e3399eceee0c469c3039212",
+      "translationHash": "0f2656e54a10d7de97b1b8b5868c4ed1fd76b439eb386541f1915293f12aa6c7",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.shared": {
+      "sourceHash": "f63f52a5f383e20f860b821864cd32278d54a0bc6d3417906a390d1aae8d8128",
+      "translationHash": "77cab33d2e3d704add9a7528c87862fa72857a4ded7941d11ad9b667a5d24ea3",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.stale": {
+      "sourceHash": "018dab6d575231eb5e3be71d919374146a132bece09a8032fb0dd97e821c46d3",
+      "translationHash": "1ea2c3711a81cb32f3defe09a661a82644d98cb51ff68cb265fcdf0eb68ef256",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.title": {
+      "sourceHash": "392b1343936b501a5d6d69aac104d3d7e7f4b2c58506cae7d6d1821b9fc38301",
+      "translationHash": "d293b862a6c8f08f48f1b8b28ba19083148dee181eacf922747f67f92cbe27c8",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.tracking": {
+      "sourceHash": "8d6bf437a46e9adc9f6bf34602337e1aeaff76e119aac772684575655cfde379",
+      "translationHash": "4b310afaf842398ac4e85b7f87c4013e3624742e51b6de799f052096b037df3b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.unattributed": {
+      "sourceHash": "95ed19fc4a87487d58c5ad256db345c79028808eb85d687fb8393f4cf5decf49",
+      "translationHash": "65d15ddf1f9bbf428bcc3e99fa748b0228998e74751b7ef1c72817fefc948d44",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.unavailable": {
+      "sourceHash": "6288656b4787da529990401d8eb4b9bdc6838e5f42043d3a1540b7f0d32df370",
+      "translationHash": "03f9087a92e840888a196483b96b18bcae9416c8afe122a6abf64292014d4c54",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.unconfirmed": {
+      "sourceHash": "05fb5f2b1c6ee09729d1cfab4c7bb649fc44f019dd0ff03bf67de48a6d9f9438",
+      "translationHash": "1e89c85f4c08f37a14c1f3decc2f343be40be6956dddbbcf3fb6eee67f4811f5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.unknown": {
+      "sourceHash": "de36d5648719afaabee20475e08308a685ca9d47b3c6ce0467ebca28c3cf8b26",
+      "translationHash": "b505dcf277b2c733e1022049cc9a968ad770768cdfc2e719d71468f3272a5223",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.unknownCount": {
+      "sourceHash": "37ed0893d179fdcd65c804d8f45d6ce6eb5560a1e8b1aa0648437e29d3309fe7",
+      "translationHash": "d49cf864de72380cf78ef438c4f9571cbc8018248320d7a08ba67a97f7d67e6d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.usageCharges": {
+      "sourceHash": "2e0225981461db7c6818bbb1919d4153718580f8c01c7746167dafa7eabf5746",
+      "translationHash": "4827a143cf6b558fbb13f37ef9676f5f5bd4b85a485cd1639b8945ad6e989964",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.usedBy": {
+      "sourceHash": "94e52896d38d1bc23d7fd04cab29e6da8f8d83dd1a07d86f96c0f6a29c7a8a07",
+      "translationHash": "e7baf21bcf01a93d7225b4faedf26d3c27f6ef8789b64f9e945654274f30fb7b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.userPrice": {
+      "sourceHash": "7e4fbc10589f1a4d74c4077a40671583c513f901d46f4b6274404bdda5aec044",
+      "translationHash": "422763f728aab9ee0dadd49c4919186f787ec18ee050a2c62712761cb03c233b",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.visibleFees": {
+      "sourceHash": "f8be984528f5a3bd96f64bec954239243149a72e86bf6e97d6d9a425d3f8719a",
+      "translationHash": "d06cc28a6ef7460ab91e0c26e130f293c9e4445525244a4078d54065e8de8460",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.subscription.year": {
+      "sourceHash": "cd01c3a918ae0105d16ca07041642d76c4eb9d3224913e8c4b0359f8ed6ab0a5",
+      "translationHash": "d888b0e84af69f3369fdf4981b444f72b3fe8086957e820e0c8aae8949631e04",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.cached": {
+      "sourceHash": "b0c7a178be8d2874302e5137a3620b938d95d84498cf6eba347c5e9f42a1efcd",
+      "translationHash": "4b66a96547556e13c0e35224f67f297acb18642dcedcab6f50f81c2c7dabbf2d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.input": {
+      "sourceHash": "168323323c95d6acff33bb89377b7b135da7294a044d9f0202bab059258ba588",
+      "translationHash": "a4a2fae6fbd92550cd21e08bb24dbace4c6006e4b357de11c926424cd67a99a2",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.output": {
+      "sourceHash": "5860e6c48fa9bb552a73f6f7b5ac7446026896dfb881062135657e891b23265e",
+      "translationHash": "4f76535ae79b8390ae05a35692916a1d816ae052236a9015676737f8c262d918",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.plain": {
+      "sourceHash": "bf590b63997e6cfbcfe8099edc0d75f49afde5194e460a5cbba647bef77ef6a9",
+      "translationHash": "c7e6c05e4fb67236ed7b793b1fd4b886ad135c208e8537213f594fbbbb019e0e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.tokens": {
+      "sourceHash": "2d649cc541ebb029a765afebe42aa50c0aaa0fea9cdd8257b657b6ecd1bcb10e",
+      "translationHash": "061aa921fcd562f49c80640c337407cbd5c65bafd1ba340e354bd52b00e68c0e",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.tokens.total": {
+      "sourceHash": "2d02b0c303e9e98a89cc89699c31313d2ff3a422044e23bddeac013151aa2611",
+      "translationHash": "0ea256cc24ec9b270387cb0c3df092558757c6932d0c6e4eb5f849f323db16ff",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.users.aria": {
+      "sourceHash": "dba76fbdb967baab92096273723a0ad4a617d7a404532e7ac6a2d0df0ecaff7f",
+      "translationHash": "88bc4648c9ab46a4481c5841b83bae124f1d879725f9543df68392a47c1e1636",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.users.cached": {
+      "sourceHash": "37b0d6321c24e98f092d93b09b3b8dbd57bf65a7bdda5ffbeafa5521c9498b24",
+      "translationHash": "1cdb0c74df84b06610cbd852e98781a5e79d6370f1e5e4b45cf60ec35650f865",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.773Z"
+    },
+    "costCardsUi.users.cost": {
+      "sourceHash": "17575e31a1d55d18c19f281d39d77f2797d0eac0c2796386d60b17325797e18d",
+      "translationHash": "523e7eca5229494b42ef69503f391bc42fa8fb0b84d1a5d3f579cefee4c19e49",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.empty": {
+      "sourceHash": "993a0241c7807cf6bae80f1495dd73e46c98939da5e6848736771e17300ff2a8",
+      "translationHash": "4c5b26a4048ba48c1603d1315f1fc6aa18a3f067e601099bf1126a2625e90c37",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.hint": {
+      "sourceHash": "ee32f3884f92fe236b30830caeccbe509bafa1d779e84e6e459cf0435b1d88d9",
+      "translationHash": "001c835d013fd055c83d62fdb7c1af3c1606c81d24e7b89f8994827f143bcce5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.input": {
+      "sourceHash": "c5182301c19cd98b65f909863ba9ae2c6b98c1ad737d38af4c505ff94c97c3f2",
+      "translationHash": "30bcf98cf22824efbb83166c88f7241f99800c507a040d311001ead5e088229d",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.output": {
+      "sourceHash": "dabb02c71bb28b50b7683b31f1466f321ea4ff0dd4174b8b2293c95217a1d019",
+      "translationHash": "5e4476c3a91d775a9cc090b4cc5d9511920f1eca9601266e8d5ae1f8f9f653f6",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.runs": {
+      "sourceHash": "d9d781d77f3283c9ba15fe6e093ae43fa94a1f0612ffb57197801e1be1b7c5fa",
+      "translationHash": "3138cde0857097fa0a096c7c7220ad3629f173b5a7e77617a34e73862da9ac3c",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.title": {
+      "sourceHash": "5aa8b0a7375ea68647aee3c0aa9c81cbe5e3e594a4425ebb574fa6fcc7dbad50",
+      "translationHash": "d4914e2f5797dc07303e93bb593609d717a7180fe74afe5f285c996d7c02b8f5",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.unattributed": {
+      "sourceHash": "6adff23a0959bcacd1613d51cce20f8b150a8db325069bcd6a278cfea1a9503b",
+      "translationHash": "4c19978871b51fd5711b31cff44252f800abdd2fdcf0d1fef71f645809362fe4",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.unknown": {
+      "sourceHash": "7b0231913a37157265761da73b193df57936f18d069211dcfca23c654710dd92",
+      "translationHash": "7bb33177e0dd07fdc91f0751cda654be685ee053a675f7aad2bd3fb2cadfe31c",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.unpriced": {
+      "sourceHash": "f98e248785a21fe9b0aca0b8c9b228ed4a0f542f7ad794af1bfc9e82f4e89734",
+      "translationHash": "ecdd5bb8ef5cb49b0b24fdeb93d343af71b44fefcc3618c2235fed80c8ad27f7",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
+    },
+    "costCardsUi.users.user": {
+      "sourceHash": "4b741a12890ad0e16106aa6d70d68834b852b48729f15f6559640ef798f1d9a3",
+      "translationHash": "59bcdb1278152fc460a939abe4cabb18774a0ccedf9fdd4933f139d7792e94f6",
+      "reviewer": "codex-d1-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T13:35:26.774Z"
     }
   }
 }

@@ -58,7 +58,10 @@ Switch language while only the first custom date is set, then complete the perio
 and check the same report bounds. In a disposable budget, retain a dirty value
 through a failed save and confirm that language changes send no extra mutation.
 The component checks use mocked APIs; they do not prove live billing or budget
-enforcement and do not qualify all child-card translations.
+enforcement. Card locale regressions also retain pending annual-price revisions,
+accounting retries and completion-language toast snapshots, dirty budget inputs,
+raw identities, separate currencies and quota bar values. The account-specific
+Claude/Codex/quota panels remain outside this translated card slice.
 
 Manual: Inspect a known fixture run and reconcile recorded spend with the chosen
 period and resource. Switch the report period/company and inspect the **By
