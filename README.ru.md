@@ -362,12 +362,12 @@ Paperclip — полноценная платформа управления, а
 
 ### Предварительная русская версия из исходного кода
 
-> **Предварительная версия:** ветка `codex/russian-decision-forms` содержит расширенную русскую локализацию, предложенную в [PR #12](https://github.com/dexogen/paperclip/pull/12). Команды ниже выбирают эту ветку явно, поскольку изменения ещё не приняты в `master` форка. Используйте эту версию для ознакомления и проверки; актуальные результаты проверок и состояние слияния доступны в PR. Это не выпуск полностью переведённого приложения.
+> **Предварительная версия:** ветка `codex/russian-decisions` содержит расширенную русскую локализацию, предложенную в [PR #13](https://github.com/dexogen/paperclip/pull/13). Команды ниже выбирают эту ветку явно, поскольку изменения ещё не приняты в `master` форка. Используйте эту версию для ознакомления и проверки; актуальные результаты проверок и состояние слияния доступны в PR. Это не выпуск полностью переведённого приложения.
 
 Потребуются **Node.js 24.11+**, **pnpm 9.15.4** и Rust. Версия Rust закреплена в [файле набора инструментов Runner](packages/paperclip-runner/rust-toolchain.toml); в этой ревизии это **1.97.1**. Для сборки нужны также инструменты C; в Debian/Ubuntu это пакеты `gcc`, `libc6-dev` и `pkg-config`. Сборка нативного Runner при первом запуске может занять заметное время. Запускайте приложение от обычного пользователя ОС: встроенный PostgreSQL не запускается от `root`.
 
 ```bash
-git clone --branch codex/russian-decision-forms https://github.com/dexogen/paperclip.git paperclip-ru
+git clone --branch codex/russian-decisions https://github.com/dexogen/paperclip.git paperclip-ru
 cd paperclip-ru
 pnpm install --frozen-lockfile
 pnpm dev

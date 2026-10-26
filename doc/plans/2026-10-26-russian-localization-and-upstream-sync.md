@@ -274,8 +274,9 @@ The implementation is published as a draft stack:
 [task panels #8](https://github.com/dexogen/paperclip/pull/8),
 [upstream refresh #9](https://github.com/dexogen/paperclip/pull/9),
 [search controls #10](https://github.com/dexogen/paperclip/pull/10),
-[Inbox #11](https://github.com/dexogen/paperclip/pull/11), and
-[shared decision forms #12](https://github.com/dexogen/paperclip/pull/12).
+[Inbox #11](https://github.com/dexogen/paperclip/pull/11),
+[shared decision forms #12](https://github.com/dexogen/paperclip/pull/12), and
+[Decisions and approvals #13](https://github.com/dexogen/paperclip/pull/13).
 The canonical checkout remains on `master`. Upstream fetching is configured with
 pushing blocked. Ordinary merges preserve upstream ancestry through
 `6336c340411809b3a94af1f4a911b30c0275447c`; recheck upstream before deployment.
