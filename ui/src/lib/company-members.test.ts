@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import type { CompanyMember, CompanyUserDirectoryEntry } from "@/api/access";
 import {
@@ -145,4 +146,14 @@ describe("company-members helpers", () => {
       { id: "user:user-1", name: "Taylor", kind: "user", userId: "user-1" },
     ]);
   });
+});
+
+it("translates only the missing board profile and preserves actual Board names", () => {
+  const missing = activeMember({ principalId: "local-board", user: null });
+  const named = activeMember({ principalId: "local-board", user: { id: "local-board", name: "Board", email: null, image: null } });
+  expect(buildCompanyUserLabelMap([missing], i18n.getFixedT("ru")).get("local-board")).toBe("Оператор");
+  expect(buildCompanyUserProfileMap([missing], i18n.getFixedT("ru")).get("local-board")?.label).toBe("Оператор");
+  expect(buildCompanyUserLabelMap([named], i18n.getFixedT("ru")).get("local-board")).toBe("Board");
+  expect(buildCompanyUserProfileMap([named], i18n.getFixedT("ru")).get("local-board")?.label).toBe("Board");
+  expect(buildCompanyUserLabelMap([missing]).get("local-board")).toBe("Board");
 });

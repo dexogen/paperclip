@@ -1,10 +1,16 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 export type TaskDateGroup = "today" | "yesterday" | "earlier";
 
-export const taskDateGroupLabels: Record<TaskDateGroup, string> = {
-  today: "Today",
-  yesterday: "Yesterday",
-  earlier: "Earlier",
-};
+function translatedTaskDateGroupLabels(t: TFunction): Record<TaskDateGroup, string> {
+  return {
+    today: t("inboxUi.date.today"),
+    yesterday: t("inboxUi.date.yesterday"),
+    earlier: t("inboxUi.date.earlier"),
+  };
+}
+
+export const taskDateGroupLabels = translatedTaskDateGroupLabels(i18n.getFixedT("en"));
 
 function localCalendarOrdinal(date: Date): number {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
@@ -30,8 +36,9 @@ export function taskDateGroup(value: Date | string | number, now: Date = new Dat
 export function taskDateGroupSeparator(
   previous: TaskDateGroup | null,
   current: TaskDateGroup,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   if (previous === current) return null;
   if (previous === null && current === "earlier") return null;
-  return taskDateGroupLabels[current];
+  return translatedTaskDateGroupLabels(t)[current];
 }

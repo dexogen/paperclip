@@ -2800,5 +2800,195 @@
     "reissueReady": "{{identifier}} will run on a fresh isolated workspace.",
     "workModeAsk": "This task is in ask mode.",
     "workModePlanning": "This task is in plan mode."
+  },
+  "inboxUi": {
+    "blocked": {
+      "variant": {
+        "needs_decision": "Needs decision",
+        "stalled": "Blocked chain stalled",
+        "needs_attention": "Needs attention",
+        "recovery_required": "Recovery required",
+        "external_wait": "External wait",
+        "owner_paused": "Owner paused"
+      },
+      "reason": {
+        "pending_board_decision": "Pending board decision",
+        "pending_user_decision": "Pending user decision",
+        "missing_successful_run_disposition": "Pick disposition",
+        "blocked_chain_stalled": "Blocked chain stalled",
+        "blocked_by_unassigned_issue": "Unassigned blocker",
+        "blocked_by_assigned_backlog_issue": "Parked blocker",
+        "blocked_by_cancelled_issue": "Cancelled blocker",
+        "in_review_without_action_path": "Review without action path",
+        "invalid_review_participant": "Invalid review participant",
+        "open_recovery_issue": "Recovery in progress",
+        "external_owner_action": "External owner action",
+        "blocked_by_uninvokable_assignee": "Owner paused"
+      },
+      "stoppedLabel": "Stopped",
+      "group": {
+        "blocker_type": "Blocker type",
+        "none": "None"
+      },
+      "sort": {
+        "urgency": "Most urgent",
+        "most_recent": "Most recent",
+        "longest_stopped": "Longest stopped"
+      },
+      "age": {
+        "stopped": "stopped",
+        "justNow": "stopped just now",
+        "minutes": "stopped {{count}}m",
+        "hours": "stopped {{count}}h",
+        "days": "stopped {{count}}d",
+        "weeks": "stopped {{count}}w",
+        "months": "stopped {{count}}mo"
+      },
+      "severity": {
+        "critical": "critical",
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      },
+      "reasonA11y": "Reason: {{reason}}, severity {{severity}}",
+      "loadFailed": "Couldn't load the Blocked tab.",
+      "trying": "Trying…",
+      "tryAgain": "Try again",
+      "empty": "No work is stopped.",
+      "emptyHint": "Tasks that need a decision, recovery, or external action will appear here.",
+      "noResults": "No stopped items match your search.",
+      "otherTabs": "Other Inbox tabs still work. {{message}}",
+      "groupCount": "{{label}} · {{count}}"
+    },
+    "archive": "Archive",
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "earlier": "Earlier"
+    },
+    "approval": {
+      "type": {
+        "hire_agent": "Hire Agent",
+        "approve_ceo_strategy": "CEO Strategy",
+        "budget_override_required": "Budget Override",
+        "request_board_approval": "Board Approval"
+      },
+      "withSubject": "{{type}}: {{subject}}",
+      "requestedBy": "requested by {{name}}",
+      "updated": "updated {{time}}"
+    },
+    "groups": {
+      "defaultNamed": "{{name}} (default)",
+      "defaultWorkspace": "Default workspace",
+      "noWorkspace": "No workspace",
+      "kind": {
+        "issue": "Tasks",
+        "approval": "Approvals",
+        "failed_run": "Failed runs",
+        "join_request": "Join requests"
+      },
+      "user": "User",
+      "unassigned": "Unassigned",
+      "noProject": "No project"
+    },
+    "title": "Inbox",
+    "run": {
+      "failedFallback": "Run exited with an error.",
+      "failedNamed": "Failed run — {{name}}",
+      "failed": "Failed run",
+      "retryIn": "Trying again in {{count}}s…",
+      "attemptFailed": "Couldn’t finish this attempt. Your message is saved.",
+      "approvalRequired": "Approval required",
+      "reconnect": "Reconnect account",
+      "assignAgent": "Assign an agent",
+      "chooseModel": "Choose a supported model",
+      "paused": "Work is paused",
+      "budget": "Budget limit reached",
+      "projectAccess": "Agent needs project access",
+      "thinking": "Thinking",
+      "retry": "Retry",
+      "retrying": "Retrying…",
+      "retryFailed": "Run retry failed",
+      "retryFallback": "Unable to retry run"
+    },
+    "join": {
+      "agentNamed": "Agent join request: {{name}}",
+      "agent": "Agent join request",
+      "human": "Human join request",
+      "requestedFrom": "requested {{time}} from IP {{ip}}",
+      "adapter": "adapter: {{adapter}}"
+    },
+    "error": {
+      "approve": "Failed to approve",
+      "reject": "Failed to reject",
+      "approveJoin": "Failed to approve join request",
+      "rejectJoin": "Failed to reject join request",
+      "archive": "Failed to archive task",
+      "undoArchive": "Failed to undo inbox archive"
+    },
+    "markRead": "Mark as read",
+    "dismiss": "Dismiss",
+    "approve": "Approve",
+    "reject": "Reject",
+    "tabs": {
+      "mine": "Mine",
+      "recent": "Recent",
+      "unread": "Unread",
+      "blocked": "Blocked",
+      "all": "All"
+    },
+    "group": "Group",
+    "sort": "Sort",
+    "columns": "Choose which columns stay visible",
+    "inboxColumns": "Choose which inbox columns stay visible",
+    "disableNesting": "Disable parent-child nesting",
+    "enableNesting": "Enable parent-child nesting",
+    "groupNone": "None",
+    "groupType": "Type",
+    "groupResponsible": "Responsible",
+    "groupProject": "Project",
+    "groupWorkspace": "Workspace",
+    "marking": "Marking…",
+    "markAllRead": "Mark all as read",
+    "markAllReadTitle": "Mark all as read?",
+    "cancel": "Cancel",
+    "empty": {
+      "search": "No inbox items match your search.",
+      "mine": "Inbox zero.",
+      "unread": "No new inbox items.",
+      "recent": "No recent inbox items.",
+      "filters": "No inbox items match these filters."
+    },
+    "collapseChildren": "Collapse sub-tasks",
+    "expandChildren": "Expand sub-tasks",
+    "archived": "Archived",
+    "otherResults": "Other results",
+    "earlier": "Earlier",
+    "alerts": "Alerts",
+    "category": "Category",
+    "allCategories": "All categories",
+    "myRecentTasks": "My recent tasks",
+    "joinRequests": "Join requests",
+    "approvals": "Approvals",
+    "failedRuns": "Failed runs",
+    "approvalStatus": "Approval status",
+    "allApprovalStatuses": "All approval statuses",
+    "needsAction": "Needs action",
+    "resolved": "Resolved",
+    "liveFilterHint": "Live runs only — tasks currently connected to an agent run.",
+    "activeFilterHint": "Active statuses — open tasks, whether or not an agent is running.",
+    "alertsAgents_one": "<number>{{count}}</number> agent has errors",
+    "alertsAgents_other": "<number>{{count}}</number> agents have errors",
+    "budgetUsage": "Budget at <number>{{percent}}%</number> utilization this month",
+    "markAllDescription_one": "This will mark {{count}} unread item as read.",
+    "markAllDescription_other": "This will mark {{count}} unread items as read.",
+    "newTaskIn": "New task in {{group}}",
+    "selectSurface": "Select an organization to view {{surface}}.",
+    "surfaceControls": "{{surface}} controls",
+    "searchSurface": "Search {{surface}}…",
+    "selectCompanyLegacy": "Select a company to view inbox.",
+    "searchInbox": "Search inbox…",
+    "subtaskCount_one": "({{count}} sub-task)",
+    "subtaskCount_other": "({{count}} sub-tasks)"
   }
 }

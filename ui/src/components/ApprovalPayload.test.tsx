@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -209,4 +210,11 @@ describe("ApprovalPayloadRenderer", () => {
       root.unmount();
     });
   });
+});
+
+it("localizes known approval types while retaining subjects, unknown types and English defaults", () => {
+  const payload = { title: "Board <b>literal</b>" };
+  expect(approvalLabel("request_board_approval", payload, i18n.getFixedT("ru"))).toBe("Согласование оператора: Board <b>literal</b>");
+  expect(approvalLabel("custom_type", payload, i18n.getFixedT("ru"))).toBe("custom_type: Board <b>literal</b>");
+  expect(approvalLabel("request_board_approval", payload)).toBe("Board Approval: Board <b>literal</b>");
 });

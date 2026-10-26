@@ -1,13 +1,19 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { UserPlus, Lightbulb, ShieldAlert, ShieldCheck } from "lucide-react";
 import { MarkdownBody } from "./MarkdownBody";
 import { formatCents } from "../lib/utils";
 
-export const typeLabel: Record<string, string> = {
-  hire_agent: "Hire Agent",
-  approve_ceo_strategy: "CEO Strategy",
-  budget_override_required: "Budget Override",
-  request_board_approval: "Board Approval",
-};
+function approvalTypeLabels(t: TFunction): Record<string, string> {
+  return {
+    hire_agent: t("inboxUi.approval.type.hire_agent"),
+    approve_ceo_strategy: t("inboxUi.approval.type.approve_ceo_strategy"),
+    budget_override_required: t("inboxUi.approval.type.budget_override_required"),
+    request_board_approval: t("inboxUi.approval.type.request_board_approval"),
+  };
+}
+
+export const typeLabel = approvalTypeLabels(i18n.getFixedT("en"));
 
 function firstNonEmptyString(...values: unknown[]): string | null {
   for (const value of values) {
@@ -28,11 +34,11 @@ export function approvalSubject(payload?: Record<string, unknown> | null): strin
 }
 
 /** Build a contextual label for an approval, e.g. "Hire Agent: Designer" */
-export function approvalLabel(type: string, payload?: Record<string, unknown> | null): string {
-  const base = typeLabel[type] ?? type;
+export function approvalLabel(type: string, payload?: Record<string, unknown> | null, t: TFunction = i18n.getFixedT("en")): string {
+  const base = approvalTypeLabels(t)[type] ?? type;
   const subject = approvalSubject(payload);
   if (subject) {
-    return `${base}: ${subject}`;
+    return t("inboxUi.approval.withSubject", { type: base, subject });
   }
   return base;
 }

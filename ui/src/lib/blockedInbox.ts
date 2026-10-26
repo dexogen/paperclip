@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type {
   Issue,
   IssueBlockedInboxAttention,
@@ -37,29 +39,35 @@ export const BLOCKED_REASON_VARIANT_ORDER: BlockedReasonVariant[] = [
   "owner_paused",
 ];
 
-export const BLOCKED_VARIANT_LABELS: Record<BlockedReasonVariant, string> = {
-  needs_decision: "Needs decision",
-  stalled: "Blocked chain stalled",
-  needs_attention: "Needs attention",
-  recovery_required: "Recovery required",
-  external_wait: "External wait",
-  owner_paused: "Owner paused",
-};
+function blockedVariantLabels(t: TFunction) {
+  return {
+    needs_decision: t("inboxUi.blocked.variant.needs_decision"),
+    stalled: t("inboxUi.blocked.variant.stalled"),
+    needs_attention: t("inboxUi.blocked.variant.needs_attention"),
+    recovery_required: t("inboxUi.blocked.variant.recovery_required"),
+    external_wait: t("inboxUi.blocked.variant.external_wait"),
+    owner_paused: t("inboxUi.blocked.variant.owner_paused"),
+  };
+}
 
-const REASON_LABELS: Record<IssueBlockedInboxReason, string> = {
-  pending_board_decision: "Pending board decision",
-  pending_user_decision: "Pending user decision",
-  missing_successful_run_disposition: "Pick disposition",
-  blocked_chain_stalled: "Blocked chain stalled",
-  blocked_by_unassigned_issue: "Unassigned blocker",
-  blocked_by_assigned_backlog_issue: "Parked blocker",
-  blocked_by_cancelled_issue: "Cancelled blocker",
-  in_review_without_action_path: "Review without action path",
-  invalid_review_participant: "Invalid review participant",
-  open_recovery_issue: "Recovery in progress",
-  external_owner_action: "External owner action",
-  blocked_by_uninvokable_assignee: "Owner paused",
-};
+export const BLOCKED_VARIANT_LABELS: Record<BlockedReasonVariant, string> = blockedVariantLabels(i18n.getFixedT("en"));
+
+function blockedReasonLabels(t: TFunction) {
+  return {
+    pending_board_decision: t("inboxUi.blocked.reason.pending_board_decision"),
+    pending_user_decision: t("inboxUi.blocked.reason.pending_user_decision"),
+    missing_successful_run_disposition: t("inboxUi.blocked.reason.missing_successful_run_disposition"),
+    blocked_chain_stalled: t("inboxUi.blocked.reason.blocked_chain_stalled"),
+    blocked_by_unassigned_issue: t("inboxUi.blocked.reason.blocked_by_unassigned_issue"),
+    blocked_by_assigned_backlog_issue: t("inboxUi.blocked.reason.blocked_by_assigned_backlog_issue"),
+    blocked_by_cancelled_issue: t("inboxUi.blocked.reason.blocked_by_cancelled_issue"),
+    in_review_without_action_path: t("inboxUi.blocked.reason.in_review_without_action_path"),
+    invalid_review_participant: t("inboxUi.blocked.reason.invalid_review_participant"),
+    open_recovery_issue: t("inboxUi.blocked.reason.open_recovery_issue"),
+    external_owner_action: t("inboxUi.blocked.reason.external_owner_action"),
+    blocked_by_uninvokable_assignee: t("inboxUi.blocked.reason.blocked_by_uninvokable_assignee"),
+  };
+}
 
 const SEVERITY_RANK: Record<IssueBlockedInboxSeverity, number> = {
   critical: 0,
@@ -74,12 +82,12 @@ export function blockedReasonVariant(reason: IssueBlockedInboxReason): BlockedRe
   return VARIANT_BY_REASON[reason] ?? "needs_attention";
 }
 
-export function blockedReasonLabel(reason: IssueBlockedInboxReason): string {
-  return REASON_LABELS[reason] ?? "Stopped";
+export function blockedReasonLabel(reason: IssueBlockedInboxReason, t: TFunction = i18n.getFixedT("en")): string {
+  return blockedReasonLabels(t)[reason] ?? t("inboxUi.blocked.stoppedLabel");
 }
 
-export function blockedVariantLabel(variant: BlockedReasonVariant): string {
-  return BLOCKED_VARIANT_LABELS[variant];
+export function blockedVariantLabel(variant: BlockedReasonVariant, t: TFunction = i18n.getFixedT("en")): string {
+  return blockedVariantLabels(t)[variant];
 }
 
 export function blockedSeverityRank(severity: IssueBlockedInboxSeverity): number {
@@ -109,16 +117,24 @@ export interface BlockedInboxIssueRow {
 export type BlockedInboxGroupBy = "blocker_type" | "none";
 export type BlockedInboxSort = "urgency" | "most_recent" | "longest_stopped";
 
-export const BLOCKED_GROUP_OPTIONS: readonly [BlockedInboxGroupBy, string][] = [
-  ["blocker_type", "Blocker type"],
-  ["none", "None"],
-];
+export function blockedGroupOptions(t: TFunction = i18n.getFixedT("en")): readonly [BlockedInboxGroupBy, string][] {
+  return [
+    ["blocker_type", t("inboxUi.blocked.group.blocker_type")],
+    ["none", t("inboxUi.blocked.group.none")],
+  ];
+}
 
-export const BLOCKED_SORT_OPTIONS: readonly [BlockedInboxSort, string][] = [
-  ["urgency", "Most urgent"],
-  ["most_recent", "Most recent"],
-  ["longest_stopped", "Longest stopped"],
-];
+export const BLOCKED_GROUP_OPTIONS = blockedGroupOptions();
+
+export function blockedSortOptions(t: TFunction = i18n.getFixedT("en")): readonly [BlockedInboxSort, string][] {
+  return [
+    ["urgency", t("inboxUi.blocked.sort.urgency")],
+    ["most_recent", t("inboxUi.blocked.sort.most_recent")],
+    ["longest_stopped", t("inboxUi.blocked.sort.longest_stopped")],
+  ];
+}
+
+export const BLOCKED_SORT_OPTIONS = blockedSortOptions();
 
 export interface BlockedInboxGroup {
   variant: BlockedReasonVariant;
@@ -126,7 +142,7 @@ export interface BlockedInboxGroup {
   rows: BlockedInboxIssueRow[];
 }
 
-export function buildBlockedInboxRows(issues: readonly Issue[]): BlockedInboxIssueRow[] {
+export function buildBlockedInboxRows(issues: readonly Issue[], t: TFunction = i18n.getFixedT("en")): BlockedInboxIssueRow[] {
   const rows: BlockedInboxIssueRow[] = [];
   for (const issue of issues) {
     const attention = issue.blockedInboxAttention;
@@ -135,7 +151,7 @@ export function buildBlockedInboxRows(issues: readonly Issue[]): BlockedInboxIss
       issue,
       attention,
       variant: blockedReasonVariant(attention.reason),
-      reasonLabel: blockedReasonLabel(attention.reason),
+      reasonLabel: blockedReasonLabel(attention.reason, t),
       stoppedAtMs: attention.stoppedSinceAt ? new Date(attention.stoppedSinceAt).getTime() : null,
     });
   }
@@ -198,6 +214,7 @@ export function sortBlockedInboxRows(
 export function groupBlockedInboxRows(
   rows: readonly BlockedInboxIssueRow[],
   sort: BlockedInboxSort = "urgency",
+  t: TFunction = i18n.getFixedT("en"),
 ): BlockedInboxGroup[] {
   const buckets = new Map<BlockedReasonVariant, BlockedInboxIssueRow[]>();
   for (const row of rows) {
@@ -210,12 +227,12 @@ export function groupBlockedInboxRows(
     const list = buckets.get(variant);
     if (!list || list.length === 0) continue;
     const sorted = sortBlockedInboxRows(list, sort);
-    groups.push({ variant, label: BLOCKED_VARIANT_LABELS[variant], rows: sorted });
+    groups.push({ variant, label: blockedVariantLabel(variant, t), rows: sorted });
   }
   return groups;
 }
 
-export function blockedRowMatchesSearch(row: BlockedInboxIssueRow, query: string): boolean {
+export function blockedRowMatchesSearch(row: BlockedInboxIssueRow, query: string, t: TFunction = i18n.getFixedT("en")): boolean {
   const q = query.trim().toLowerCase();
   if (!q) return true;
   const haystack = [
@@ -225,6 +242,11 @@ export function blockedRowMatchesSearch(row: BlockedInboxIssueRow, query: string
     row.attention.action.label,
     row.attention.action.detail ?? "",
     row.reasonLabel,
+    blockedVariantLabel(row.variant, t),
+    blockedReasonLabel(row.attention.reason, i18n.getFixedT("en")),
+    blockedReasonLabel(row.attention.reason, i18n.getFixedT("ru")),
+    blockedVariantLabel(row.variant, i18n.getFixedT("en")),
+    blockedVariantLabel(row.variant, i18n.getFixedT("ru")),
     row.attention.leafIssue?.identifier ?? "",
     row.attention.leafIssue?.title ?? "",
     row.attention.recoveryIssue?.identifier ?? "",
@@ -248,28 +270,28 @@ export function blockedBadgeTone(rows: readonly BlockedInboxIssueRow[]): Blocked
   return "muted";
 }
 
-export function formatStoppedAge(stoppedSinceAt: string | null, now: number = Date.now()): string {
-  if (!stoppedSinceAt) return "stopped";
+export function formatStoppedAge(stoppedSinceAt: string | null, now: number = Date.now(), t: TFunction = i18n.getFixedT("en")): string {
+  if (!stoppedSinceAt) return t("inboxUi.blocked.age.stopped");
   const then = new Date(stoppedSinceAt).getTime();
-  if (!Number.isFinite(then)) return "stopped";
+  if (!Number.isFinite(then)) return t("inboxUi.blocked.age.stopped");
   const seconds = Math.max(0, Math.round((now - then) / 1000));
-  if (seconds < 60) return "stopped just now";
+  if (seconds < 60) return t("inboxUi.blocked.age.justNow");
   if (seconds < 3600) {
     const m = Math.floor(seconds / 60);
-    return `stopped ${m}m`;
+    return t("inboxUi.blocked.age.minutes", { count: m });
   }
   if (seconds < 86_400) {
     const h = Math.floor(seconds / 3600);
-    return `stopped ${h}h`;
+    return t("inboxUi.blocked.age.hours", { count: h });
   }
   if (seconds < 86_400 * 7) {
     const d = Math.floor(seconds / 86_400);
-    return `stopped ${d}d`;
+    return t("inboxUi.blocked.age.days", { count: d });
   }
   if (seconds < 86_400 * 30) {
     const w = Math.floor(seconds / (86_400 * 7));
-    return `stopped ${w}w`;
+    return t("inboxUi.blocked.age.weeks", { count: w });
   }
   const mo = Math.floor(seconds / (86_400 * 30));
-  return `stopped ${mo}mo`;
+  return t("inboxUi.blocked.age.months", { count: mo });
 }

@@ -2918,5 +2918,201 @@
     "reissueReady": "Задача {{identifier}} будет выполняться в новом изолированном рабочем пространстве.",
     "workModeAsk": "Эта задача выполняется в режиме вопроса.",
     "workModePlanning": "Эта задача выполняется в режиме планирования."
+  },
+  "inboxUi": {
+    "blocked": {
+      "variant": {
+        "needs_decision": "Нужно решение",
+        "stalled": "Цепочка блокирующих задач остановилась",
+        "needs_attention": "Требуется внимание",
+        "recovery_required": "Требуется восстановление",
+        "external_wait": "Ожидание внешнего действия",
+        "owner_paused": "Агент-исполнитель недоступен"
+      },
+      "reason": {
+        "pending_board_decision": "Ожидается решение оператора",
+        "pending_user_decision": "Ожидается решение пользователя",
+        "missing_successful_run_disposition": "Нужно выбрать дальнейшее действие",
+        "blocked_chain_stalled": "Цепочка блокирующих задач остановилась",
+        "blocked_by_unassigned_issue": "Блокирующая задача без исполнителя",
+        "blocked_by_assigned_backlog_issue": "Блокирующая задача в планах",
+        "blocked_by_cancelled_issue": "Блокирующая задача отменена",
+        "in_review_without_action_path": "Проверка без дальнейшего действия",
+        "invalid_review_participant": "Недопустимый участник проверки",
+        "open_recovery_issue": "Идёт восстановление",
+        "external_owner_action": "Требуется действие внешнего ответственного",
+        "blocked_by_uninvokable_assignee": "Агент-исполнитель недоступен"
+      },
+      "stoppedLabel": "Остановлено",
+      "group": {
+        "blocker_type": "Тип блокировки",
+        "none": "Нет"
+      },
+      "sort": {
+        "urgency": "По срочности",
+        "most_recent": "Сначала новые",
+        "longest_stopped": "Дольше всего без работы"
+      },
+      "age": {
+        "stopped": "работа остановлена",
+        "justNow": "работа только что остановилась",
+        "minutes": "без работы {{count}} мин",
+        "hours": "без работы {{count}} ч",
+        "days": "без работы {{count}} дн.",
+        "weeks": "без работы {{count}} нед.",
+        "months": "без работы {{count}} мес."
+      },
+      "severity": {
+        "critical": "критическая",
+        "high": "высокая",
+        "medium": "средняя",
+        "low": "низкая"
+      },
+      "reasonA11y": "Причина: {{reason}}, важность: {{severity}}",
+      "loadFailed": "Не удалось загрузить вкладку «Заблокированные».",
+      "trying": "Повторная попытка…",
+      "tryAgain": "Повторить",
+      "empty": "Нет остановленных задач.",
+      "emptyHint": "Здесь появятся задачи, которым нужно решение, восстановление или внешнее действие.",
+      "noResults": "Остановленных задач по вашему запросу нет.",
+      "otherTabs": "Другие вкладки входящих по-прежнему доступны. {{message}}",
+      "groupCount": "{{label}} · {{count}}"
+    },
+    "archive": "Архивировать",
+    "date": {
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "earlier": "Ранее"
+    },
+    "approval": {
+      "type": {
+        "hire_agent": "Найм агента",
+        "approve_ceo_strategy": "Стратегия генерального директора",
+        "budget_override_required": "Превышение бюджета",
+        "request_board_approval": "Согласование оператора"
+      },
+      "withSubject": "{{type}}: {{subject}}",
+      "requestedBy": "запрос от {{name}}",
+      "updated": "обновлено {{time}}"
+    },
+    "groups": {
+      "defaultNamed": "{{name}} (по умолчанию)",
+      "defaultWorkspace": "Рабочее пространство по умолчанию",
+      "noWorkspace": "Без рабочего пространства",
+      "kind": {
+        "issue": "Задачи",
+        "approval": "Согласования",
+        "failed_run": "Неудачные запуски",
+        "join_request": "Запросы на присоединение"
+      },
+      "user": "Пользователь",
+      "unassigned": "Без исполнителя",
+      "noProject": "Без проекта"
+    },
+    "title": "Входящие",
+    "run": {
+      "failedFallback": "Запуск завершился с ошибкой.",
+      "failedNamed": "Неудачный запуск — {{name}}",
+      "failed": "Неудачный запуск",
+      "retryIn": "Повтор через {{count}} с…",
+      "attemptFailed": "Не удалось завершить эту попытку. Ваше сообщение сохранено.",
+      "approvalRequired": "Требуется согласование",
+      "reconnect": "Подключите учётную запись заново",
+      "assignAgent": "Назначьте агента",
+      "chooseModel": "Выберите поддерживаемую модель",
+      "paused": "Работа приостановлена",
+      "budget": "Достигнут лимит бюджета",
+      "projectAccess": "Агенту нужен доступ к проекту",
+      "thinking": "Обдумывает",
+      "retry": "Повторить",
+      "retrying": "Повторная попытка…",
+      "retryFailed": "Не удалось повторить запуск",
+      "retryFallback": "Не удалось повторить запуск"
+    },
+    "join": {
+      "agentNamed": "Запрос агента на присоединение: {{name}}",
+      "agent": "Запрос агента на присоединение",
+      "human": "Запрос пользователя на присоединение",
+      "requestedFrom": "запрос {{time}} с IP-адреса {{ip}}",
+      "adapter": "адаптер: {{adapter}}"
+    },
+    "error": {
+      "approve": "Не удалось одобрить",
+      "reject": "Не удалось отклонить",
+      "approveJoin": "Не удалось одобрить запрос на присоединение",
+      "rejectJoin": "Не удалось отклонить запрос на присоединение",
+      "archive": "Не удалось архивировать задачу",
+      "undoArchive": "Не удалось вернуть задачу во входящие"
+    },
+    "markRead": "Отметить прочитанным",
+    "dismiss": "Скрыть",
+    "approve": "Одобрить",
+    "reject": "Отклонить",
+    "tabs": {
+      "mine": "Мои",
+      "recent": "Недавние",
+      "unread": "Непрочитанные",
+      "blocked": "Заблокированные",
+      "all": "Все"
+    },
+    "group": "Группировка",
+    "sort": "Сортировка",
+    "columns": "Выберите видимые столбцы",
+    "inboxColumns": "Выберите видимые столбцы входящих",
+    "disableNesting": "Отключить вложенность подзадач",
+    "enableNesting": "Включить вложенность подзадач",
+    "groupNone": "Нет",
+    "groupType": "Тип",
+    "groupResponsible": "Ответственный",
+    "groupProject": "Проект",
+    "groupWorkspace": "Рабочее пространство",
+    "marking": "Отмечаем…",
+    "markAllRead": "Отметить всё прочитанным",
+    "markAllReadTitle": "Отметить всё прочитанным?",
+    "cancel": "Отмена",
+    "empty": {
+      "search": "Во входящих ничего не найдено по вашему запросу.",
+      "mine": "Входящих нет.",
+      "unread": "Новых входящих нет.",
+      "recent": "Недавних входящих нет.",
+      "filters": "Во входящих нет элементов с такими фильтрами."
+    },
+    "collapseChildren": "Свернуть подзадачи",
+    "expandChildren": "Развернуть подзадачи",
+    "archived": "Архивные",
+    "otherResults": "Другие результаты",
+    "earlier": "Ранее",
+    "alerts": "Предупреждения",
+    "category": "Категория",
+    "allCategories": "Все категории",
+    "myRecentTasks": "Мои недавние задачи",
+    "joinRequests": "Запросы на присоединение",
+    "approvals": "Согласования",
+    "failedRuns": "Неудачные запуски",
+    "approvalStatus": "Статус согласования",
+    "allApprovalStatuses": "Все статусы согласования",
+    "needsAction": "Требуется действие",
+    "resolved": "Решённые",
+    "liveFilterHint": "Только текущие запуски — задачи, над которыми сейчас работает агент.",
+    "activeFilterHint": "Активные статусы — открытые задачи, независимо от того, работает ли сейчас агент.",
+    "alertsAgents_one": "У <number>{{count}}</number> агента есть ошибки",
+    "alertsAgents_other": "У <number>{{count}}</number> агента есть ошибки",
+    "alertsAgents_few": "У <number>{{count}}</number> агентов есть ошибки",
+    "alertsAgents_many": "У <number>{{count}}</number> агентов есть ошибки",
+    "budgetUsage": "В этом месяце использовано <number>{{percent}}%</number> бюджета",
+    "markAllDescription_one": "Будет отмечен прочитанным {{count}} непрочитанный элемент.",
+    "markAllDescription_other": "Будет отмечено прочитанным {{count}} непрочитанного элемента.",
+    "markAllDescription_few": "Будут отмечены прочитанными {{count}} непрочитанных элемента.",
+    "markAllDescription_many": "Будут отмечены прочитанными {{count}} непрочитанных элементов.",
+    "newTaskIn": "Новая задача в группе «{{group}}»",
+    "selectSurface": "Выберите организацию, чтобы открыть раздел «{{surface}}».",
+    "surfaceControls": "Управление разделом «{{surface}}»",
+    "searchSurface": "Поиск в разделе «{{surface}}»…",
+    "selectCompanyLegacy": "Выберите организацию, чтобы открыть входящие.",
+    "searchInbox": "Поиск во входящих…",
+    "subtaskCount_one": "({{count}} подзадача)",
+    "subtaskCount_few": "({{count}} подзадачи)",
+    "subtaskCount_many": "({{count}} подзадач)",
+    "subtaskCount_other": "({{count}} подзадачи)"
   }
 }
