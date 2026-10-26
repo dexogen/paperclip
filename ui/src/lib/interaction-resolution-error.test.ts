@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import { ApiError } from "../api/client";
 import {
@@ -161,5 +162,39 @@ describe("describeInteractionResolutionFailure", () => {
     expect(
       interactionResolutionErrorMessage(denial(403, "interaction_human_only", "Agents cannot resolve this."), null),
     ).toBe("Agents cannot resolve this.");
+  });
+});
+
+describe("localized resolution failures", () => {
+  it("preserves classifications, codes and literal server evidence in Russian", () => {
+    const ru = i18n.getFixedT("ru");
+    const raw = "Server <b>denial</b> & evidence";
+    const audience = { shortSummary: "Ответить может только оператор", isOpen: false };
+    const forbidden = describeInteractionResolutionFailure(denial(403, "interaction_human_only", raw), audience, ru);
+    expect(forbidden).toEqual({ kind: "audience_denied", code: "interaction_human_only", message: `${raw}. Ответить может только оператор.` });
+    expect(forbidden.message).not.toContain("Повторите");
+    const settled = describeInteractionResolutionFailure({ status: 409, body: { code: "interaction_already_resolved" } }, null, ru);
+    expect(settled).toEqual({ kind: "settled", code: "interaction_already_resolved", message: "Этот запрос больше не ожидает решения." });
+    expect(describeInteractionResolutionFailure(null, null, ru)).toEqual({ kind: "transient", code: null, message: "Не удалось отправить. Повторите попытку." });
+    expect(describeInteractionResolutionFailure({ status: 403 }, null, ru).message).toBe("У вас нет права отвечать на эту карточку.");
+    expect(describeInteractionResolutionFailure(null).message).toBe("Couldn't submit. Try again.");
+  });
+});
+
+describe("decision count categories", () => {
+  it.each([
+    [0, "0 решений", "0 задач"],
+    [1, "1 решение", "1 задачу"],
+    [2, "2 решения", "2 задачи"],
+    [5, "5 решений", "5 задач"],
+    [11, "11 решений", "11 задач"],
+    [21, "21 решение", "21 задачу"],
+    [22, "22 решения", "22 задачи"],
+    [25, "25 решений", "25 задач"],
+    [1.5, "1.5 решения", "1.5 задачи"],
+  ])("uses Russian plural category for %s", (count, decisions, issues) => {
+    const ru = i18n.getFixedT("ru");
+    expect(ru("decisionForms.interaction.applyDecisions", { count })).toBe(`Применить ${decisions}`);
+    expect(ru("decisionForms.decision.cancelIssues", { count })).toBe(`Отменить ${issues}`);
   });
 });

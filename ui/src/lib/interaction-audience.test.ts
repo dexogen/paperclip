@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { describe, expect, it } from "vitest";
 import type { AttentionItem, AttentionResolverAudience } from "@paperclipai/shared";
 import type { RequestConfirmationInteraction } from "./issue-thread-interactions";
@@ -342,5 +343,22 @@ describe("describeAttentionResolverAudience", () => {
     expect(describeAttentionResolverAudience(attentionItem(null))).toBeNull();
     expect(describeAttentionResolverAudience({ sourceKind: "issue_thread_interaction" })).toBeNull();
     expect(describeAttentionResolverAudience(attentionItem(attentionAudience(), "approval"))).toBeNull();
+  });
+});
+
+describe("localized audience presentation", () => {
+  it("keeps policy and narrowing stable and never transforms actor labels", () => {
+    const interaction = confirmation({ effectiveResolverPolicy: "not_creator", requestedResolverPolicy: "anyone", effectiveResolverPolicySource: "company_cap" });
+    const creatorLabel = "Agent <b>raw</b> & имя";
+    const en = describeInteractionAudience({ interaction, creatorLabel });
+    const ru = describeInteractionAudience({ interaction, creatorLabel }, i18n.getFixedT("ru"));
+    expect(ru.policy).toBe(en.policy);
+    expect(ru.requestedPolicy).toBe(en.requestedPolicy);
+    expect(ru.narrowedBy).toBe(en.narrowedBy);
+    expect(ru.isOpen).toBe(en.isOpen);
+    expect(ru.summary).toContain(creatorLabel);
+    expect(ru.summary).toBe(`Ответить могут все участники организации. Исключение: ${creatorLabel}.`);
+    expect(ru.narrowedNote).toContain("Политика организации");
+    expect(en.summary).toContain("Anyone in the organization except");
   });
 });

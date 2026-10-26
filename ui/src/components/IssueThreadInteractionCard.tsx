@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n, Trans, useTranslation } from "@/i18n";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Agent } from "@paperclipai/shared";
 import { AlertTriangle, ArrowUpRight, Bot, Check, CheckCircle2, ChevronDown, ChevronRight, CircleDashed, Clock, ExternalLink, FileText, GitBranch, ImagePlus, KeyRound, Loader2, MessageSquareQuote, MinusCircle, ShieldAlert, ThumbsUp, TriangleAlert, Wrench, X, XCircle } from "lucide-react";
@@ -64,8 +66,9 @@ const InteractionAudienceContext = createContext<InteractionAudienceDescription 
  * audience refusal. Never invites a retry that policy will refuse again.
  */
 function useResolutionErrorMessage() {
+  const { t } = useTranslation();
   const audience = useContext(InteractionAudienceContext);
-  return (error: unknown) => interactionResolutionErrorMessage(error, audience);
+  return (error: unknown) => interactionResolutionErrorMessage(error, audience, t);
 }
 
 /**
@@ -80,7 +83,9 @@ function useResolutionErrorMessage() {
  * nesting one inside another makes some screen reader / browser pairs announce
  * the same denial twice (PAP-17289).
  */
-function InteractionActionError({ message }: { message: string | null }) {
+function InteractionActionError({ error }: { error: { cause: unknown } | null }) {
+  const resolutionErrorMessage = useResolutionErrorMessage();
+  const message = error == null ? null : resolutionErrorMessage(error.cause);
   return (
     <div aria-live="assertive" data-testid="interaction-action-error">
       {message ? (
@@ -136,15 +141,15 @@ function resolveActorLabel(args: {
   agentMap?: Map<string, Agent>;
   currentUserId?: string | null;
   userLabelMap?: ReadonlyMap<string, string> | null;
-}) {
+}, t: TFunction = i18n.getFixedT("en")) {
   const { agentId, userId, agentMap, currentUserId, userLabelMap } = args;
   if (agentId) {
     return agentMap?.get(agentId)?.name ?? agentId.slice(0, 8);
   }
   if (userId) {
-    return formatAssigneeUserLabel(userId, currentUserId, userLabelMap) ?? "Board";
+    return formatAssigneeUserLabel(userId, currentUserId, userLabelMap, t) ?? t("decisionForms.common.board");
   }
-  return "Unknown";
+  return t("decisionForms.common.unknown");
 }
 
 /**
@@ -173,41 +178,41 @@ function getAdministrativeReason(interaction: IssueThreadInteraction): string | 
   return null;
 }
 
-function statusLabel(status: IssueThreadInteraction["status"]) {
+function statusLabel(status: IssueThreadInteraction["status"], t: TFunction = i18n.getFixedT("en")) {
   switch (status) {
     case "pending":
-      return "Pending";
+      return t("decisionForms.common.pending");
     case "accepted":
-      return "Accepted";
+      return t("decisionForms.common.accepted");
     case "rejected":
-      return "Rejected";
+      return t("decisionForms.common.rejected");
     case "answered":
-      return "Answered";
+      return t("decisionForms.common.answered");
     case "cancelled":
-      return "Cancelled";
+      return t("decisionForms.common.cancelled");
     case "expired":
-      return "Expired";
+      return t("decisionForms.common.expired");
     case "failed":
-      return "Failed";
+      return t("decisionForms.common.failed");
     default:
       return status;
   }
 }
 
-function interactionKindLabel(kind: IssueThreadInteraction["kind"]) {
+function interactionKindLabel(kind: IssueThreadInteraction["kind"], t: TFunction = i18n.getFixedT("en")) {
   switch (kind) {
     case "suggest_tasks":
-      return "Suggested tasks";
+      return t("decisionForms.interaction.suggestedTasks");
     case "ask_user_questions":
-      return "Ask user questions";
+      return t("decisionForms.interaction.askQuestions");
     case "request_confirmation":
-      return "Confirmation";
+      return t("decisionForms.interaction.confirmation");
     case "request_checkbox_confirmation":
-      return "Checkbox confirmation";
+      return t("decisionForms.interaction.checkboxConfirmation");
     case "request_item_verdicts":
-      return "Item verdicts";
+      return t("decisionForms.interaction.itemVerdicts");
     case "connection_intent":
-      return "Connection request";
+      return t("decisionForms.interaction.connectionRequest");
     default:
       return kind;
   }
@@ -278,6 +283,7 @@ function planStatusClasses(
   status: IssueThreadInteraction["status"],
   resumeFailure?: ReturnType<typeof requestConfirmationResumeFailure>,
   outcome?: string | null,
+  t: TFunction = i18n.getFixedT("en"),
 ) {
   switch (status) {
     case "accepted":
@@ -286,14 +292,14 @@ function planStatusClasses(
         return {
           shell: "border-2 border-amber-500/70 bg-transparent",
           badge: "border-amber-500/60 bg-amber-500/10 text-amber-900 dark:bg-amber-500/15 dark:text-amber-100",
-          label: "Approved — agent resume failed",
+          label: t("decisionForms.interaction.resumeFailedStatus"),
           Icon: AlertTriangle,
         };
       }
       return {
         shell: "border-2 border-green-500/80 bg-transparent",
         badge: "border-green-500/60 bg-green-500/10 text-green-900 dark:bg-green-500/15 dark:text-green-100",
-        label: "Approved",
+        label: t("decisionForms.common.approved"),
         Icon: CheckCircle2,
       };
     case "rejected":
@@ -301,7 +307,7 @@ function planStatusClasses(
       return {
         shell: "border-2 border-red-500/80 bg-transparent",
         badge: "border-red-500/60 bg-red-500/10 text-red-900 dark:bg-red-500/15 dark:text-red-100",
-        label: outcome === "withdrawn" ? "Withdrawn" : "Changes requested",
+        label: outcome === "withdrawn" ? t("decisionForms.common.withdrawn") : t("decisionForms.interaction.changesRequested"),
         Icon: XCircle,
       };
     case "failed":
@@ -309,14 +315,14 @@ function planStatusClasses(
       return {
         shell: "border-2 border-amber-500/70 bg-transparent",
         badge: "border-amber-500/60 bg-amber-500/10 text-amber-900 dark:bg-amber-500/15 dark:text-amber-100",
-        label: "Expired",
+        label: t("decisionForms.common.expired"),
         Icon: AlertTriangle,
       };
     default:
       return {
         shell: "border-2 border-violet-500/80 bg-transparent",
         badge: "border-violet-500/60 bg-violet-500/10 text-violet-900 dark:bg-violet-500/15 dark:text-violet-100",
-        label: "In review",
+        label: t("decisionForms.interaction.inReview"),
         Icon: FileText,
       };
   }
@@ -464,7 +470,7 @@ function toolActionCardState(
   return "running";
 }
 
-function toolActionStatusClasses(state: ToolActionCardState): {
+function toolActionStatusClasses(state: ToolActionCardState, t: TFunction = i18n.getFixedT("en")): {
   shell: string;
   badge: string;
   label: string;
@@ -477,7 +483,7 @@ function toolActionStatusClasses(state: ToolActionCardState): {
       return {
         shell: "border-2 border-amber-500/70 bg-transparent",
         badge: "border-amber-500/60 bg-amber-500/10 text-amber-900 dark:bg-amber-500/15 dark:text-amber-100",
-        label: "Running…",
+        label: t("decisionForms.interaction.running"),
         Icon: Loader2,
         spin: true,
       };
@@ -485,31 +491,31 @@ function toolActionStatusClasses(state: ToolActionCardState): {
       return {
         shell: "border-2 border-green-500/80 bg-transparent",
         badge: "border-green-500/60 bg-green-500/10 text-green-900 dark:bg-green-500/15 dark:text-green-100",
-        label: "Executed",
+        label: t("decisionForms.interaction.executed"),
         Icon: CheckCircle2,
       };
     case "failed":
       return {
         shell: "border-2 border-amber-500/70 bg-transparent",
         badge: "border-amber-500/60 bg-amber-500/10 text-amber-900 dark:bg-amber-500/15 dark:text-amber-100",
-        label: "Failed",
+        label: t("decisionForms.common.failed"),
         Icon: XCircle,
       };
     case "declined":
       return {
         shell: "border-2 border-red-500/80 bg-transparent",
         badge: "border-red-500/60 bg-red-500/10 text-red-900 dark:bg-red-500/15 dark:text-red-100",
-        label: "Declined",
+        label: t("decisionForms.common.declined"),
         Icon: XCircle,
         dimmed: true,
       };
     case "cancelled":
-      return { shell: "border-2 border-border bg-transparent", badge: "border-border bg-muted text-muted-foreground", label: "Cancelled", Icon: XCircle, dimmed: true };
+      return { shell: "border-2 border-border bg-transparent", badge: "border-border bg-muted text-muted-foreground", label: t("decisionForms.common.cancelled"), Icon: XCircle, dimmed: true };
     case "expired":
       return {
         shell: "border-2 border-border bg-transparent",
         badge: "border-border bg-muted/60 text-muted-foreground",
-        label: "Expired",
+        label: t("decisionForms.common.expired"),
         Icon: Clock,
         dimmed: true,
       };
@@ -517,7 +523,7 @@ function toolActionStatusClasses(state: ToolActionCardState): {
       return {
         shell: "border-2 border-violet-500/80 bg-transparent",
         badge: "border-violet-500/60 bg-violet-500/10 text-violet-900 dark:bg-violet-500/15 dark:text-violet-100",
-        label: "Awaiting approval",
+        label: t("decisionForms.interaction.awaitingApproval"),
         Icon: ShieldAlert,
       };
   }
@@ -577,6 +583,7 @@ function TaskTreeNode({
   showSelection?: boolean;
   onToggleSelection?: (node: SuggestedTaskTreeNode, checked: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const visibleChildren = node.children.filter((child) => !child.task.hiddenInPreview);
   const hiddenChildCount = node.children
     .filter((child) => child.task.hiddenInPreview)
@@ -590,7 +597,7 @@ function TaskTreeNode({
     agentMap,
     currentUserId,
     userLabelMap,
-  });
+  }, t);
   const hasExplicitAssignee = Boolean(
     node.task.assigneeAgentId || node.task.assigneeUserId,
   );
@@ -616,7 +623,7 @@ function TaskTreeNode({
                 <Checkbox
                   checked={isSelected}
                   onCheckedChange={(checked) => onToggleSelection?.(node, checked === true)}
-                  aria-label={`Include ${node.task.title}`}
+                  aria-label={t("decisionForms.interaction.includeTask", { title: node.task.title })}
                   className="mt-0.5"
                 />
               ) : null}
@@ -635,7 +642,7 @@ function TaskTreeNode({
                 </div>
                 {depth > 0 ? (
                   <div className="mt-0.5 text-(length:--text-nano) font-medium uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-                    Child task
+                    {t("decisionForms.interaction.childTask")}
                   </div>
                 ) : null}
                 {node.task.description ? (
@@ -657,7 +664,7 @@ function TaskTreeNode({
             </Link>
           ) : isSkipped ? (
             <span className="inline-flex shrink-0 items-center rounded-sm border border-amber-500/60 bg-amber-500/10 px-2.5 py-1 text-(length:--text-micro) font-medium text-amber-900 dark:text-amber-100">
-              Skipped
+              {t("decisionForms.interaction.skipped")}
             </span>
           ) : null}
         </div>
@@ -665,16 +672,16 @@ function TaskTreeNode({
         {hasMetadata ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {hasExplicitAssignee ? (
-              <TaskField label="Responsible" value={assigneeLabel} />
+              <TaskField label={t("decisionForms.interaction.responsible")} value={assigneeLabel} />
             ) : null}
             {node.task.billingCode ? (
-              <TaskField label="Billing" value={node.task.billingCode} />
+              <TaskField label={t("decisionForms.interaction.billing")} value={node.task.billingCode} />
             ) : null}
             {node.task.projectId ? (
-              <TaskField label="Project" value={node.task.projectId} tone="subtle" />
+              <TaskField label={t("decisionForms.interaction.project")} value={node.task.projectId} tone="subtle" />
             ) : null}
             {labels.map((label) => (
-              <TaskField key={label} label="Label" value={label} tone="subtle" />
+              <TaskField key={label} label={t("decisionForms.interaction.label")} value={label} tone="subtle" />
             ))}
           </div>
         ) : null}
@@ -683,9 +690,7 @@ function TaskTreeNode({
           <div className="mt-2 flex items-center gap-2 rounded-sm border border-amber-500/60 bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-100">
             <GitBranch className="h-3.5 w-3.5 shrink-0" />
             <span>
-              {hiddenChildCount === 1
-                ? "1 follow-on task hidden in preview"
-                : `${hiddenChildCount} follow-on tasks hidden in preview`}
+              {t("decisionForms.interaction.hiddenTasks", { count: hiddenChildCount })}
             </span>
           </div>
         ) : null}
@@ -735,6 +740,7 @@ function SuggestTasksCard({
     reason?: string,
   ) => Promise<void> | void;
 }) {
+  const { t } = useTranslation();
   const [rejecting, setRejecting] = useState(false);
   const [working, setWorking] = useState<"accept" | "reject" | null>(null);
   const [rejectReason, setRejectReason] = useState(
@@ -782,8 +788,7 @@ function SuggestTasksCard({
     [interaction.payload.tasks],
   );
   const selectedCount = selectedClientKeys.size;
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const createdCount = interaction.result?.createdTasks?.length ?? 0;
   const skippedCount = interaction.result?.skippedClientKeys?.length ?? 0;
 
@@ -794,7 +799,7 @@ function SuggestTasksCard({
     try {
       await onAcceptInteraction(interaction, [...selectedClientKeys]);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -808,7 +813,7 @@ function SuggestTasksCard({
       await onRejectInteraction(interaction, rejectReason.trim() || undefined);
       setRejecting(false);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -841,9 +846,9 @@ function SuggestTasksCard({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span>{totalTasks === 1 ? "1 draft issue" : `${totalTasks} draft issues`}</span>
+        <span>{t("decisionForms.interaction.draftIssues", { count: totalTasks })}</span>
         {interaction.payload.defaultParentId ? (
-          <TaskField label="Default parent" value={interaction.payload.defaultParentId} tone="subtle" />
+          <TaskField label={t("decisionForms.interaction.defaultParent")} value={interaction.payload.defaultParentId} tone="subtle" />
         ) : null}
       </div>
 
@@ -867,12 +872,12 @@ function SuggestTasksCard({
       {interaction.status === "accepted" ? (
         <div className="rounded-sm border border-emerald-500/60 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-900 dark:text-emerald-100">
           <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-emerald-700">
-            Resolution summary
+            {t("decisionForms.interaction.resolutionSummary")}
           </div>
           <p className="mt-1 leading-6">
             {skippedCount > 0
-              ? `Created ${createdCount} draft ${createdCount === 1 ? "issue" : "issues"} and skipped ${skippedCount} during review.`
-              : `Created all ${createdCount} draft ${createdCount === 1 ? "issue" : "issues"}.`}
+              ? t("decisionForms.interaction.createdAndSkipped", { count: createdCount, skipped: skippedCount })
+              : t("decisionForms.interaction.createdDrafts", { count: createdCount })}
           </p>
         </div>
       ) : null}
@@ -880,13 +885,13 @@ function SuggestTasksCard({
       {interaction.status === "rejected" ? (
         <div className="rounded-sm border border-rose-500/60 bg-rose-500/10 px-4 py-3 text-sm text-rose-900 dark:text-rose-100">
           <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-rose-700">
-            Rejection reason
+            {t("decisionForms.interaction.rejectionReason")}
           </div>
           <p className={cn(
             "mt-1 leading-6",
             !interaction.result?.rejectionReason && "text-rose-900/75",
           )}>
-            {interaction.result?.rejectionReason || "No reason provided."}
+            {interaction.result?.rejectionReason || t("decisionForms.common.noReason")}
           </p>
         </div>
       ) : null}
@@ -897,12 +902,12 @@ function SuggestTasksCard({
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span>
                 {selectedCount === totalTasks
-                  ? `All ${totalTasks} draft ${totalTasks === 1 ? "issue" : "issues"} selected`
-                  : `${selectedCount} of ${totalTasks} draft ${totalTasks === 1 ? "issue" : "issues"} selected`}
+                  ? t("decisionForms.interaction.allDraftsSelected", { count: totalTasks })
+                  : t("decisionForms.interaction.draftsSelected", { count: totalTasks, selected: selectedCount })}
               </span>
               {selectedCount < totalTasks ? (
                 <span>
-                  {totalTasks - selectedCount} will be skipped if you accept this interaction.
+                  {t("decisionForms.interaction.willSkip", { count: totalTasks - selectedCount })}
                 </span>
               ) : null}
             </div>
@@ -916,10 +921,10 @@ function SuggestTasksCard({
                 {working === "accept" ? (
                   <>
                     <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    Accepting...
+                    {t("decisionForms.interaction.accepting")}
                   </>
                 ) : (
-                  selectedCount === totalTasks ? "Accept drafts" : "Accept selected drafts"
+                  selectedCount === totalTasks ? t("decisionForms.interaction.acceptDrafts") : t("decisionForms.interaction.acceptSelectedDrafts")
                 )}
               </Button>
               <Button
@@ -928,7 +933,7 @@ function SuggestTasksCard({
                 disabled={!onRejectInteraction || working !== null}
                 onClick={() => setRejecting((current) => !current)}
               >
-                Reject
+                {t("decisionForms.common.reject")}
               </Button>
               {selectedCount < totalTasks ? (
                 <Button
@@ -937,7 +942,7 @@ function SuggestTasksCard({
                   disabled={working !== null}
                   onClick={() => setSelectedClientKeys(new Set(interaction.payload.tasks.map((task) => task.clientKey)))}
                 >
-                  Reset selection
+                  {t("decisionForms.interaction.resetSelection")}
                 </Button>
               ) : null}
             </div>
@@ -948,7 +953,7 @@ function SuggestTasksCard({
               <Textarea
                 value={rejectReason}
                 onChange={(event) => setRejectReason(event.target.value)}
-                placeholder="Add a short reason for rejecting this suggestion"
+                placeholder={t("decisionForms.interaction.rejectSuggestionPlaceholder")}
                 className="min-h-24 bg-background text-sm"
               />
               <div className="flex justify-end">
@@ -961,17 +966,17 @@ function SuggestTasksCard({
                   {working === "reject" ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      Saving...
+                      {t("decisionForms.common.savingDots")}
                     </>
                   ) : (
-                    "Save rejection"
+                    t("decisionForms.interaction.saveRejection")
                   )}
                 </Button>
               </div>
             </div>
           ) : null}
 
-          <InteractionActionError message={actionError} />
+          <InteractionActionError error={actionError} />
         </div>
       ) : null}
     </div>
@@ -1047,6 +1052,8 @@ function AskUserQuestionsCard({
   ) => Promise<void> | void;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
+  const resolutionErrorMessage = useResolutionErrorMessage();
   const [draftAnswers, setDraftAnswers] = useState<Record<string, string[]>>(() =>
     Object.fromEntries(
       (interaction.result?.answers ?? []).map((answer) => [
@@ -1071,8 +1078,7 @@ function AskUserQuestionsCard({
   );
   const [working, setWorking] = useState(false);
   const [cancelling, setCancelling] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
 
   useEffect(() => {
     setDraftAnswers(
@@ -1164,7 +1170,7 @@ function AskUserQuestionsCard({
         }),
       );
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(false);
     }
@@ -1177,7 +1183,7 @@ function AskUserQuestionsCard({
     try {
       await onCancelInteraction(interaction);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setCancelling(false);
     }
@@ -1188,12 +1194,10 @@ function AskUserQuestionsCard({
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <Badge variant="outline" className="border-border/70 bg-background/70 px-2.5 py-1 uppercase tracking-(--tracking-eyebrow) text-foreground/70">
           <MessageSquareQuote className="h-3 w-3" />
-          Ask user questions
+          {t("decisionForms.interaction.askQuestions")}
         </Badge>
         <span>
-          {questions.length === 1
-            ? "1 question"
-            : `${questions.length} questions`}
+          {t("decisionForms.interaction.questionCount", { count: questions.length })}
         </span>
       </div>
 
@@ -1222,19 +1226,10 @@ function AskUserQuestionsCard({
                 ...(otherText !== undefined ? { otherText } : {}),
               };
             });
-            try {
-              await onSubmitInteractionAnswers?.(interaction, answers);
-            } catch (error) {
-              throw new Error(resolutionErrorMessage(error));
-            }
+            await onSubmitInteractionAnswers?.(interaction, answers);
           }}
-          onCancel={onCancelInteraction ? async () => {
-            try {
-              await onCancelInteraction(interaction);
-            } catch (error) {
-              throw new Error(resolutionErrorMessage(error));
-            }
-          } : undefined}
+          formatError={resolutionErrorMessage}
+          onCancel={onCancelInteraction ? () => onCancelInteraction(interaction) : undefined}
         />
       ) : interaction.status === "pending" ? (
         <div className="space-y-4">
@@ -1250,7 +1245,7 @@ function AskUserQuestionsCard({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-                    Question {index + 1}
+                    {t("decisionForms.interaction.questionNumber", { number: index + 1 })}
                   </div>
                   <div
                     id={`${interaction.id}-${question.id}-prompt`}
@@ -1265,8 +1260,8 @@ function AskUserQuestionsCard({
                   ) : null}
                 </div>
                 <TaskField
-                  label={question.selectionMode === "single" ? "Pick" : "Pick many"}
-                  value={question.required ? "Required" : "Optional"}
+                  label={question.selectionMode === "single" ? t("decisionForms.interaction.pick") : t("decisionForms.interaction.pickMany")}
+                  value={question.required ? t("decisionForms.interaction.required") : t("decisionForms.interaction.optional")}
                   tone="subtle"
                 />
               </div>
@@ -1295,14 +1290,14 @@ function AskUserQuestionsCard({
                         />
                         {isFreeText && optionSelected ? (
                           <Textarea
-                            aria-label={`Describe your answer for ${question.prompt}`}
+                            aria-label={t("decisionForms.interaction.describeAnswer", { prompt: question.prompt })}
                             value={draftOtherAnswers[question.id] ?? ""}
                             onChange={(event) =>
                               setDraftOtherAnswers((current) => ({
                                 ...current,
                                 [question.id]: event.target.value,
                               }))}
-                            placeholder="Type your answer"
+                            placeholder={t("decisionForms.common.typeAnswer")}
                             className="min-h-24 bg-background text-sm"
                             autoFocus
                           />
@@ -1332,18 +1327,18 @@ function AskUserQuestionsCard({
                       onClick={() =>
                         toggleOption(question.id, OTHER_ANSWER_ID, question.selectionMode)}
                     >
-                      Other
+                      {t("decisionForms.common.other")}
                     </button>
                     {otherActiveQuestions[question.id] ? (
                       <Textarea
-                        aria-label={`Other answer for ${question.prompt}`}
+                        aria-label={t("decisionForms.interaction.otherAnswer", { prompt: question.prompt })}
                         value={draftOtherAnswers[question.id] ?? ""}
                         onChange={(event) =>
                           setDraftOtherAnswers((current) => ({
                             ...current,
                             [question.id]: event.target.value,
                           }))}
-                        placeholder="Type your answer"
+                        placeholder={t("decisionForms.common.typeAnswer")}
                         className="min-h-24 bg-background text-sm"
                       />
                     ) : null}
@@ -1356,7 +1351,7 @@ function AskUserQuestionsCard({
 
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/75 p-4">
             <div className="text-sm text-muted-foreground">
-              Submit once after you finish the full form.
+              {t("decisionForms.interaction.submitWholeForm")}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {onCancelInteraction ? (
@@ -1369,10 +1364,10 @@ function AskUserQuestionsCard({
                   {cancelling ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      Cancelling...
+                      {t("decisionForms.interaction.cancelling")}
                     </>
                   ) : (
-                    "Cancel question"
+                    t("decisionForms.interaction.cancelQuestion")
                   )}
                   </Button>
                 ) : null}
@@ -1384,30 +1379,30 @@ function AskUserQuestionsCard({
                 {working ? (
                   <>
                     <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    Submitting...
+                    {t("decisionForms.interaction.submitting")}
                   </>
                 ) : (
-                  interaction.payload.submitLabel ?? "Submit answers"
+                  interaction.payload.submitLabel ?? t("decisionForms.common.submitAnswers")
                 )}
               </Button>
             </div>
           </div>
 
-          <InteractionActionError message={actionError} />
+          <InteractionActionError error={actionError} />
         </div>
       ) : interaction.status === "cancelled" ? (
         <div className="rounded-2xl border border-rose-300/60 bg-rose-50/85 p-4 text-sm leading-6 text-rose-950 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-100">
           <div className="font-semibold">
             {interaction.result?.outcome === "withdrawn"
-              ? questions.length === 1 ? "Question withdrawn" : "Questions withdrawn"
-              : "Question cancelled"}
+              ? t("decisionForms.interaction.questionsWithdrawn", { count: questions.length })
+              : t("decisionForms.interaction.questionCancelled")}
           </div>
           {interaction.result?.cancellationReason ? (
             <p className="mt-1">{interaction.result.cancellationReason}</p>
           ) : interaction.result?.reason ? (
             <p className="mt-1">{interaction.result.reason}</p>
           ) : (
-            <p className="mt-1">No answer was recorded.</p>
+            <p className="mt-1">{t("decisionForms.interaction.noAnswerWasRecorded")}</p>
           )}
         </div>
       ) : interaction.status === "expired" ? (
@@ -1415,24 +1410,20 @@ function AskUserQuestionsCard({
           <div className="flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4" />
             {interaction.result?.outcome === "issue_closed"
-              ? questions.length === 1
-                ? "Question expired when the issue closed"
-                : "Questions expired when the issue closed"
-              : questions.length === 1
-                ? "Question expired by comment"
-                : "Questions expired by comment"}
+              ? t("decisionForms.interaction.questionsClosed", { count: questions.length })
+              : t("decisionForms.interaction.questionsComment", { count: questions.length })}
           </div>
           <p className="mt-1">
             {interaction.result?.outcome === "issue_closed"
-              ? "This question request expired automatically when the issue reached a terminal state."
-              : "A later board/user comment superseded this question request. Create a fresh request if answers are still needed."}
+              ? t("decisionForms.interaction.questionsExpiredClosed")
+              : t("decisionForms.interaction.questionsSuperseded")}
           </p>
           {interaction.result?.commentId ? (
             <a
               href={`#comment-${interaction.result.commentId}`}
               className="mt-3 inline-flex text-sm font-medium underline underline-offset-4"
             >
-              Jump to comment
+              {t("decisionForms.common.jumpComment")}
             </a>
           ) : null}
         </div>
@@ -1454,10 +1445,10 @@ function AskUserQuestionsCard({
                 <div className="mt-2 flex flex-wrap gap-2">
                   {labels.length > 0 ? (
                     labels.map((label) => (
-                      <TaskField key={label} label="Answer" value={label} />
+                      <TaskField key={label} label={t("decisionForms.interaction.answer")} value={label} />
                     ))
                   ) : (
-                    <span className="text-sm text-muted-foreground">No answer recorded.</span>
+                    <span className="text-sm text-muted-foreground">{t("decisionForms.common.noAnswer")}</span>
                   )}
                 </div>
               </div>
@@ -1467,7 +1458,7 @@ function AskUserQuestionsCard({
           {interaction.result?.summaryMarkdown ? (
             <div className="rounded-2xl border border-emerald-300/60 bg-emerald-50/85 p-4">
               <div className="mb-2 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-emerald-700">
-                Submitted summary
+                {t("decisionForms.interaction.submittedSummary")}
               </div>
               <MarkdownBody externalReferences={externalReferences}>{interaction.result.summaryMarkdown}</MarkdownBody>
             </div>
@@ -1487,11 +1478,11 @@ function isDisplayableRequestConfirmationTarget(
   return target.type !== "custom" || Boolean(target.label);
 }
 
-function requestConfirmationTargetLabel(target: RequestConfirmationTarget) {
+function requestConfirmationTargetLabel(target: RequestConfirmationTarget, t: TFunction = i18n.getFixedT("en")) {
   if (target.label) return target.label;
   const revision = target.revisionNumber ? ` v${target.revisionNumber}` : "";
   if (target.type === "issue_document" && target.key === "plan") {
-    return `Plan${revision}`;
+    return t("decisionForms.interaction.planRevision", { revision });
   }
   return `${target.key}${revision}`;
 }
@@ -1520,6 +1511,7 @@ function RequestConfirmationTargetChip({
   target: RequestConfirmationTarget | null | undefined;
   tone?: "default" | "subtle";
 }) {
+  const { t } = useTranslation();
   if (!isDisplayableRequestConfirmationTarget(target)) return null;
 
   const href = requestConfirmationTargetHref({ interaction, target });
@@ -1533,7 +1525,7 @@ function RequestConfirmationTargetChip({
   const content = (
     <>
       <GitBranch className="h-3 w-3 shrink-0" />
-      <span className="min-w-0 truncate">{requestConfirmationTargetLabel(target)}</span>
+      <span className="min-w-0 truncate">{requestConfirmationTargetLabel(target, t)}</span>
     </>
   );
 
@@ -1557,6 +1549,7 @@ function RequestConfirmationResolution({
 }: {
   interaction: RequestConfirmationInteraction;
 }) {
+  const { t } = useTranslation();
   const outcome = interaction.result?.outcome;
   const target = interaction.payload.target ?? null;
   const staleTarget = interaction.result?.staleTarget ?? null;
@@ -1567,21 +1560,21 @@ function RequestConfirmationResolution({
       return (
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-            <span className="font-medium">Confirmed</span>
+            <span className="font-medium">{t("decisionForms.common.confirmed")}</span>
             <RequestConfirmationTargetChip interaction={interaction} target={target} />
           </div>
           <div className="rounded-sm border border-amber-500/60 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
             <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-amber-700">
-              Agent resume failed
+              {t("decisionForms.interaction.resumeFailed")}
             </div>
             <p className="mt-1 leading-6">
               {resumeFailure.status === "retrying"
-                ? `Paperclip is retrying the agent resume after approval (attempt ${resumeFailure.attempt}/${resumeFailure.maxAttempts}).`
-                : "Paperclip needs attention before the agent can resume this approved work."}
+                ? t("decisionForms.interaction.resumeRetry", { attempt: resumeFailure.attempt, maxAttempts: resumeFailure.maxAttempts })
+                : t("decisionForms.interaction.resumeNeedsAttention")}
             </p>
             {resumeFailure.errorCode ? (
               <p className="mt-1 leading-6">
-                Latest cause: <code className="font-mono text-(length:--text-micro)">{resumeFailure.errorCode}</code>
+                {t("decisionForms.interaction.latestCause")} <code className="font-mono text-(length:--text-micro)">{resumeFailure.errorCode}</code>
               </p>
             ) : null}
           </div>
@@ -1590,7 +1583,7 @@ function RequestConfirmationResolution({
     }
     return (
       <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-        <span className="font-medium">Confirmed</span>
+        <span className="font-medium">{t("decisionForms.common.confirmed")}</span>
         <RequestConfirmationTargetChip interaction={interaction} target={target} />
       </div>
     );
@@ -1600,7 +1593,7 @@ function RequestConfirmationResolution({
     return (
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-          <span className="font-medium">Declined</span>
+          <span className="font-medium">{t("decisionForms.common.declined")}</span>
           <RequestConfirmationTargetChip interaction={interaction} target={target} />
         </div>
         {interaction.result?.reason ? (
@@ -1619,7 +1612,7 @@ function RequestConfirmationResolution({
     // and no duplicated reason text.
     return (
       <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-        <span className="font-medium">Withdrawn</span>
+        <span className="font-medium">{t("decisionForms.common.withdrawn")}</span>
         <RequestConfirmationTargetChip interaction={interaction} target={target} />
       </div>
     );
@@ -1639,19 +1632,19 @@ function RequestConfirmationResolution({
          */}
         {expiredByIssueClosed ? null : (
           <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-amber-700">
-            {expiredByComment ? "Expired by comment" : "Expired by target change"}
+            {expiredByComment ? t("decisionForms.interaction.expiredComment") : t("decisionForms.interaction.expiredTarget")}
           </div>
         )}
         <p className="leading-6">
           {expiredByComment
-            ? "A board comment superseded this confirmation before it was resolved."
+            ? t("decisionForms.interaction.confirmationSuperseded")
             : expiredByIssueClosed
-              ? "This confirmation expired automatically when the issue reached a terminal state."
-              : "The requested target changed before this confirmation was resolved."}
+              ? t("decisionForms.interaction.confirmationExpiredClosed")
+              : t("decisionForms.interaction.confirmationTargetChanged")}
         </p>
         {expiredByComment && interaction.result?.commentId ? (
           <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-amber-950 hover:bg-amber-500/15 dark:text-amber-50">
-            <a href={`#comment-${interaction.result.commentId}`}>Jump to comment</a>
+            <a href={`#comment-${interaction.result.commentId}`}>{t("decisionForms.common.jumpComment")}</a>
           </Button>
         ) : null}
         {expiredByTargetChange ? (
@@ -1675,7 +1668,7 @@ function RequestConfirmationResolution({
   if (interaction.status === "failed") {
     return (
       <p className="text-sm leading-6 text-muted-foreground">
-        This request could not be resolved. Try again or create a new request.
+        {t("decisionForms.common.requestFailed")}
       </p>
     );
   }
@@ -1690,6 +1683,7 @@ function ToolActionResolution({
   state: ToolActionCardState;
   interaction: RequestConfirmationInteraction;
 }) {
+  const { t } = useTranslation();
   const result = interaction.result?.toolAction;
   const [resultOpen, setResultOpen] = useState(false);
   const output = state === "executed" ? result?.resultSummary?.trim() : null;
@@ -1698,29 +1692,29 @@ function ToolActionResolution({
     try { formattedOutput = JSON.stringify(JSON.parse(output), null, 2); } catch { /* Plain-text results remain readable. */ }
   }
   const labels = {
-    pending: "Waiting for approval",
-    running: "Approved · Running…",
-    executed: "Succeeded",
-    failed: "Execution failed",
-    declined: "Declined",
-    expired: "Expired",
-    cancelled: "Cancelled",
+    pending: t("decisionForms.interaction.waitingApproval"),
+    running: t("decisionForms.interaction.approvedRunning"),
+    executed: t("decisionForms.interaction.succeeded"),
+    failed: t("decisionForms.interaction.executionFailed"),
+    declined: t("decisionForms.common.declined"),
+    expired: t("decisionForms.common.expired"),
+    cancelled: t("decisionForms.common.cancelled"),
   };
   const Icon = state === "running" ? Loader2 : state === "executed" ? CheckCircle2 : state === "failed" ? AlertTriangle : state === "expired" ? Clock : MinusCircle;
-  const detail = state === "failed" ? result?.errorMessage?.trim() || "The action could not complete."
+  const detail = state === "failed" ? result?.errorMessage?.trim() || t("decisionForms.interaction.actionIncomplete")
     : state === "declined" ? interaction.result?.reason?.trim()
     : null;
   const status = <>
     <Icon className={cn("h-3.5 w-3.5 shrink-0", state === "running" && "animate-spin", state === "failed" && "text-destructive")} />
     {labels[state]}
-    {result?.rememberedAction ? " · Always allowed" : ""}
+    {result?.rememberedAction ? t("decisionForms.interaction.alwaysAllowed") : ""}
   </>;
   return (
     <div className="space-y-1 text-sm text-muted-foreground" aria-live="polite">
       {output ? (
         <Collapsible open={resultOpen} onOpenChange={setResultOpen}>
           <CollapsibleTrigger asChild>
-            <button type="button" className="flex items-center gap-1.5 rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={resultOpen ? "Hide result details" : "Show result details"}>
+            <button type="button" className="flex items-center gap-1.5 rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={resultOpen ? t("decisionForms.interaction.hideResult") : t("decisionForms.interaction.showResult")}>
               {status}<ChevronDown className={cn("h-3 w-3", resultOpen && "rotate-180")} />
             </button>
           </CollapsibleTrigger>
@@ -1731,7 +1725,7 @@ function ToolActionResolution({
       ) : <p className="flex items-center gap-1.5">{status}</p>}
       {detail ? <p className={cn("break-words", state === "failed" && "text-destructive")}>{detail}</p> : null}
       {state === "executed" && result?.resultHref?.trim() ? (
-        <a className="inline-flex items-center gap-1 underline underline-offset-4 hover:text-foreground" href={result.resultHref} target="_blank" rel="noreferrer">View result<ExternalLink className="h-3 w-3" /></a>
+        <a className="inline-flex items-center gap-1 underline underline-offset-4 hover:text-foreground" href={result.resultHref} target="_blank" rel="noreferrer">{t("decisionForms.interaction.viewResult")}<ExternalLink className="h-3 w-3" /></a>
       ) : null}
     </div>
   );
@@ -1750,10 +1744,10 @@ function RequestToolActionCard({
   onRejectInteraction?: (interaction: RequestConfirmationInteraction, reason?: string) => Promise<void> | void;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
   const payload = interaction.payload.toolAction!;
   const [working, setWorking] = useState<"accept" | "always" | "reject" | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const isPending = state === "pending";
   const variant = payload.risk === "destructive" ? "destructive" : "cta";
 
@@ -1768,7 +1762,7 @@ function RequestToolActionCard({
       if (decision === "reject") await onRejectInteraction?.(interaction);
       else await onAcceptInteraction?.(interaction, undefined, undefined, decision === "always");
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -1788,22 +1782,22 @@ function RequestToolActionCard({
       {isPending ? (
         <div className="mt-3 flex justify-end gap-2">
           <Button size="sm" variant="ghost" disabled={!onRejectInteraction || working !== null} onClick={() => void decide("reject")}>
-            {working === "reject" ? "Declining…" : "Decline"}
+            {working === "reject" ? t("decisionForms.interaction.declining") : t("decisionForms.interaction.decline")}
           </Button>
-          <div className="inline-flex" role="group" aria-label="Approve request">
+          <div className="inline-flex" role="group" aria-label={t("decisionForms.interaction.approveRequest")}>
             <Button size="sm" variant={variant} className={payload.rememberActionScope ? "rounded-r-none" : undefined} disabled={!onAcceptInteraction || working !== null} onClick={() => void decide("accept")}>
-              {working === "accept" || working === "always" ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />{working === "always" ? "Saving…" : "Approving…"}</> : "Approve & run"}
+              {working === "accept" || working === "always" ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />{working === "always" ? t("decisionForms.common.saving") : t("decisionForms.common.approving")}</> : t("decisionForms.interaction.approveRun")}
             </Button>
             {payload.rememberActionScope ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="icon-sm" variant={variant} className="rounded-l-none border-l border-background/30" aria-label="Approval options" disabled={!onAcceptInteraction || working !== null}>
+                  <Button size="icon-sm" variant={variant} className="rounded-l-none border-l border-background/30" aria-label={t("decisionForms.interaction.approvalOptions")} disabled={!onAcceptInteraction || working !== null}>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onSelect={() => void decide("always")} title={payload.rememberActionScope} aria-description={payload.rememberActionScope}>
-                    Always allow
+                    {t("decisionForms.interaction.alwaysAllow")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -1811,7 +1805,7 @@ function RequestToolActionCard({
           </div>
         </div>
       ) : null}
-      <InteractionActionError message={actionError} />
+      <InteractionActionError error={actionError} />
     </div>
   );
 }
@@ -1837,16 +1831,16 @@ function secretProposalCardState(
   return "running";
 }
 
-function secretProposalStatusClasses(state: SecretProposalCardState) {
+function secretProposalStatusClasses(state: SecretProposalCardState, t: TFunction = i18n.getFixedT("en")) {
   if (state === "failed") {
     return {
       shell: "border-2 border-red-500/80 bg-transparent",
       badge: "border-red-500/60 bg-red-500/10 text-red-900 dark:bg-red-500/15 dark:text-red-100",
-      label: "FAILED",
+      label: t("decisionForms.interaction.failedUpper"),
       Icon: XCircle,
     };
   }
-  return toolActionStatusClasses(state);
+  return toolActionStatusClasses(state, t);
 }
 
 function SecretProposalIdentityHeader({
@@ -1854,6 +1848,7 @@ function SecretProposalIdentityHeader({
 }: {
   state: SecretProposalCardState;
 }) {
+  const { t } = useTranslation();
   const dimmed = state === "declined" || state === "expired";
   return (
     <div className={cn("flex items-start gap-3", dimmed && "opacity-60 grayscale")}>
@@ -1865,7 +1860,7 @@ function SecretProposalIdentityHeader({
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-base font-bold leading-tight text-foreground">
-          Bind an existing secret
+          {t("decisionForms.interaction.bindSecret")}
         </div>
       </div>
     </div>
@@ -1877,23 +1872,24 @@ function SecretProposalDetails({
 }: {
   payload: NonNullable<RequestConfirmationInteraction["payload"]["secretProposal"]>;
 }) {
+  const { t } = useTranslation();
   return (
     <dl className="grid gap-3 rounded-sm border border-border/70 bg-muted/30 p-3 sm:grid-cols-2">
       <div className="min-w-0 space-y-1">
         <dt className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-          Source secret
+          {t("decisionForms.interaction.sourceSecret")}
         </dt>
         <dd className="truncate text-sm font-medium text-foreground">{payload.sourceSecretLabel}</dd>
       </div>
       <div className="min-w-0 space-y-1">
         <dt className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-          Target agent
+          {t("decisionForms.interaction.targetAgent")}
         </dt>
         <dd className="truncate text-sm font-medium text-foreground">{payload.targetAgentName}</dd>
       </div>
       <div className="min-w-0 space-y-1 sm:col-span-2">
         <dt className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-          New config path
+          {t("decisionForms.interaction.newConfigPath")}
         </dt>
         <dd className="break-all font-mono text-sm text-foreground">{payload.configPath}</dd>
       </div>
@@ -1910,8 +1906,9 @@ function SecretProposalResolution({
   state: SecretProposalCardState;
   resolvedByLabel: string | null;
 }) {
+  const { t } = useTranslation();
   const result = interaction.result?.secretProposal ?? null;
-  const who = resolvedByLabel ?? "the board";
+  const who = resolvedByLabel ?? t("decisionForms.common.theBoard");
   const when = interaction.resolvedAt
     ? formatDateTime(interaction.resolvedAt)
     : result?.updatedAt
@@ -1923,9 +1920,9 @@ function SecretProposalResolution({
       <div aria-live="polite" className="flex items-start gap-2 rounded-sm border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
         <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" />
         <div>
-          <div className="font-medium">Approved by {who} — creating the binding</div>
+          <div className="font-medium">{t("decisionForms.interaction.bindingApprovedBy", { who })}</div>
           <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">
-            Paperclip is re-checking authority and the proposal snapshot before writing.
+            {t("decisionForms.interaction.recheckingAuthority")}
           </p>
         </div>
       </div>
@@ -1937,9 +1934,9 @@ function SecretProposalResolution({
       <div aria-live="polite" className="flex items-start gap-2 rounded-sm border border-green-500/50 bg-green-500/10 px-4 py-3 text-sm text-green-900 dark:text-green-100">
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
         <div>
-          <div className="font-medium">Binding created · approved by {who}</div>
+          <div className="font-medium">{t("decisionForms.interaction.bindingCreatedBy", { who })}</div>
           <p className="mt-1 text-green-900/80 dark:text-green-100/80">
-            The target agent can now use the proposed config path{when ? ` · ${when}` : ""}.
+            {t("decisionForms.interaction.bindingAvailable", { when: when ? ` · ${when}` : "" })}
           </p>
         </div>
       </div>
@@ -1954,17 +1951,17 @@ function SecretProposalResolution({
           <XCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <div className="font-semibold uppercase tracking-(--tracking-eyebrow)">
-              FAILED · binding was not created
+              {t("decisionForms.interaction.bindingFailed")}
             </div>
             <p className="mt-1 text-red-900/80 dark:text-red-100/80">
-              The request was accepted, but execution failed closed. No secret value was exposed.
+              {t("decisionForms.interaction.bindingFailedDetail")}
             </p>
           </div>
         </div>
         {errorCode ? (
           <div className="rounded-sm border border-red-500/50 bg-background/60 px-3 py-2">
             <span className="text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow)">
-              Error code
+              {t("decisionForms.interaction.errorCode")}
             </span>{" "}
             <code className="font-mono text-foreground">{errorCode}</code>
           </div>
@@ -1980,8 +1977,8 @@ function SecretProposalResolution({
         <div className="flex items-start gap-2">
           <XCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <div className="font-medium">Rejected by {who}</div>
-            <p className="mt-1 text-red-900/80 dark:text-red-100/80">The binding was not created.</p>
+            <div className="font-medium">{t("decisionForms.interaction.rejectedBy", { who })}</div>
+            <p className="mt-1 text-red-900/80 dark:text-red-100/80">{t("decisionForms.interaction.bindingNotCreated")}</p>
           </div>
         </div>
         {reason ? (
@@ -1997,8 +1994,8 @@ function SecretProposalResolution({
     <div className="flex items-start gap-2 rounded-sm border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
       <Clock className="mt-0.5 h-4 w-4 shrink-0" />
       <div>
-        <div className="font-medium text-foreground">Proposal expired{when ? ` · ${when}` : ""}</div>
-        <p className="mt-1">The binding was not created. A fresh proposal is required.</p>
+        <div className="font-medium text-foreground">{t("decisionForms.interaction.proposalExpired")}{when ? ` · ${when}` : ""}</div>
+        <p className="mt-1">{t("decisionForms.interaction.bindingNeedsProposal")}</p>
       </div>
     </div>
   );
@@ -2020,10 +2017,10 @@ function RequestSecretProposalCard({
     reason?: string,
   ) => Promise<void> | void;
 }) {
+  const { t } = useTranslation();
   const payload = interaction.payload.secretProposal!;
   const [working, setWorking] = useState<"accept" | "reject" | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const isPending = state === "pending";
 
   useEffect(() => {
@@ -2038,7 +2035,7 @@ function RequestSecretProposalCard({
     try {
       await onAcceptInteraction(interaction);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -2051,7 +2048,7 @@ function RequestSecretProposalCard({
     try {
       await onRejectInteraction(interaction, reason);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -2064,19 +2061,19 @@ function RequestSecretProposalCard({
       <ProposalJustification justification={payload.justification} />
       <div className="flex items-center gap-2 text-(length:--text-micro) text-muted-foreground">
         <Clock className="h-3.5 w-3.5" />
-        Expires {formatDateTime(payload.expiresAt)}
+        {t("decisionForms.interaction.expiresAt", { date: formatDateTime(payload.expiresAt) })}
       </div>
 
       {isPending ? (
         <ConfirmationActionRow
           resetKey={`${interaction.id}:${interaction.status}`}
-          approveLabel={interaction.payload.acceptLabel ?? "Approve & bind"}
-          reviseLabel="Add reason…"
-          rejectLabel={interaction.payload.rejectLabel ?? "Reject"}
+          approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.interaction.approveBind")}
+          reviseLabel={t("decisionForms.interaction.addReason")}
+          rejectLabel={interaction.payload.rejectLabel ?? t("decisionForms.common.reject")}
           approveVariant="cta"
           allowRevise={interaction.payload.allowDeclineReason !== false}
           rejectRequiresReason={interaction.payload.rejectRequiresReason === true}
-          reasonPlaceholder={interaction.payload.declineReasonPlaceholder ?? "Optional: explain why this binding should not be created."}
+          reasonPlaceholder={interaction.payload.declineReasonPlaceholder ?? t("decisionForms.interaction.bindingReasonPlaceholder")}
           working={working}
           actionError={actionError}
           preparingApproval={isInteractionPreparingApproval(interaction)}
@@ -2105,9 +2102,7 @@ function RequestSecretProposalCard({
  * producers may still override the accept/reject labels for domain-specific
  * confirmations (e.g. "Delete selected"), but the shape stays consistent.
  */
-const CONFIRMATION_APPROVE_LABEL = "Approve";
-const CONFIRMATION_REVISE_LABEL = "Revise…";
-const CONFIRMATION_REJECT_LABEL = "Reject";
+
 
 /**
  * The one action control every confirmation card renders (PAP-418), collapsing
@@ -2120,7 +2115,7 @@ const CONFIRMATION_REJECT_LABEL = "Reject";
 function ConfirmationActionRow({
   resetKey,
   approveLabel,
-  reviseLabel = CONFIRMATION_REVISE_LABEL,
+  reviseLabel,
   rejectLabel,
   approveVariant = "default",
   primaryActionOnRight = false,
@@ -2152,7 +2147,7 @@ function ConfirmationActionRow({
   rejectRequiresReason: boolean;
   reasonPlaceholder: string;
   working: "accept" | "reject" | null;
-  actionError: string | null;
+  actionError: { cause: unknown } | null;
   approveDisabled?: boolean;
   preparingApproval?: boolean;
   canApprove: boolean;
@@ -2171,6 +2166,7 @@ function ConfirmationActionRow({
    * hierarchy instead of relying on opportunistic flex wrapping. */
   stackActionsOnMobile?: boolean;
 }) {
+  const { t } = useTranslation();
   const [revising, setRevising] = useState(false);
   const [reason, setReason] = useState("");
   const [attempted, setAttempted] = useState(false);
@@ -2213,7 +2209,7 @@ function ConfirmationActionRow({
           {working === "accept" ? (
             <>
               <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-              Approving…
+              {t("decisionForms.common.approving")}
             </>
           ) : (
             approveLabel
@@ -2230,7 +2226,7 @@ function ConfirmationActionRow({
               setRevising((current) => !current);
             }}
           >
-            {reviseLabel}
+            {reviseLabel ?? t("decisionForms.common.revise")}
           </Button>
         ) : null}
         {!rejectRequiresReason ? (
@@ -2244,7 +2240,7 @@ function ConfirmationActionRow({
             {working === "reject" && !revising ? (
               <>
                 <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                Rejecting…
+                {t("decisionForms.common.rejecting")}
               </>
             ) : (
               rejectLabel
@@ -2266,7 +2262,7 @@ function ConfirmationActionRow({
             )}
           />
           {attempted && reasonMissing ? (
-            <p className="text-xs text-destructive">Add a note describing the changes you want.</p>
+            <p className="text-xs text-destructive">{t("decisionForms.interaction.revisionNoteRequired")}</p>
           ) : null}
           {revisePanelChildren}
           <div className="flex flex-wrap justify-end gap-2">
@@ -2279,7 +2275,7 @@ function ConfirmationActionRow({
                 setAttempted(false);
               }}
             >
-              Cancel
+              {t("decisionForms.common.cancel")}
             </Button>
             <Button
               size="sm"
@@ -2290,17 +2286,17 @@ function ConfirmationActionRow({
               {working === "reject" ? (
                 <>
                   <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                  Sending…
+                  {t("decisionForms.common.sending")}
                 </>
               ) : (
-                "Send revision"
+                t("decisionForms.interaction.sendRevision")
               )}
             </Button>
           </div>
         </div>
       ) : null}
 
-      <InteractionActionError message={actionError} />
+      <InteractionActionError error={actionError} />
     </div>
   );
 }
@@ -2308,6 +2304,7 @@ function ConfirmationActionRow({
 function connectionAuthorizationStatusClasses(
   state: ConnectionAuthorizationCardState,
   copy: { providerName: string; addresseeLabel: string },
+  t: TFunction = i18n.getFixedT("en"),
 ): {
   shell: string;
   badge: string;
@@ -2319,7 +2316,7 @@ function connectionAuthorizationStatusClasses(
       return {
         shell: "border-2 border-sky-500/70 bg-transparent",
         badge: "border-sky-500/60 bg-sky-500/10 text-sky-900 dark:bg-sky-500/15 dark:text-sky-100",
-        label: "Action required",
+        label: t("decisionForms.interaction.actionRequired"),
         Icon: KeyRound,
       };
     case "waiting":
@@ -2328,21 +2325,21 @@ function connectionAuthorizationStatusClasses(
       return {
         shell: "border-border bg-transparent",
         badge: "border-border bg-muted/60 text-muted-foreground",
-        label: `Waiting for ${copy.addresseeLabel}`,
+        label: t("decisionForms.interaction.waitingFor", { name: copy.addresseeLabel }),
         Icon: Clock,
       };
     case "connected":
       return {
         shell: "border-2 border-green-500/80 bg-transparent",
         badge: "border-green-500/60 bg-green-500/10 text-green-900 dark:bg-green-500/15 dark:text-green-100",
-        label: `${copy.providerName} connected`,
+        label: t("decisionForms.interaction.providerConnected", { provider: copy.providerName }),
         Icon: CheckCircle2,
       };
     case "declined":
       return {
         shell: "border-border bg-transparent",
         badge: "border-border bg-muted/60 text-muted-foreground",
-        label: "Not connected",
+        label: t("decisionForms.interaction.notConnected"),
         Icon: MinusCircle,
       };
     case "expired":
@@ -2350,7 +2347,7 @@ function connectionAuthorizationStatusClasses(
       return {
         shell: "border-border bg-transparent",
         badge: "border-border bg-muted/60 text-muted-foreground",
-        label: "Authorization expired",
+        label: t("decisionForms.interaction.authorizationExpired"),
         Icon: CircleDashed,
       };
   }
@@ -2402,9 +2399,9 @@ function RequestConnectionAuthorizationCard({
     reason?: string,
   ) => Promise<void> | void;
 }) {
+  const { t } = useTranslation();
   const [working, setWorking] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const href = connectionAuthorizationHref(interaction);
   const declineReason = getAdministrativeReason(interaction);
 
@@ -2420,7 +2417,7 @@ function RequestConnectionAuthorizationCard({
     try {
       await onRejectInteraction(interaction);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(false);
     }
@@ -2434,14 +2431,14 @@ function RequestConnectionAuthorizationCard({
   // person. Shown to a teammate it names the wrong account, so a reader who is
   // not the addressee gets the same fact stated about them. Caught by rendering
   // the card, not by reading it.
-  const agentLabel = requestingAgentLabel ?? "An agent";
+  const agentLabel = requestingAgentLabel ?? t("decisionForms.common.agentCapital");
   const lead = isAddressee
     ? interaction.summary?.trim()
-      || `${agentLabel} needs your ${providerName} identity for work running as you.`
-    : `${agentLabel} ${state === "connected" ? "needed" : "needs"} ${addresseeLabel}'s ${providerName} identity for work running as them.`;
+      || t("decisionForms.interaction.connectionNeedOwn", { agent: agentLabel, provider: providerName })
+    : state === "connected" ? t("decisionForms.interaction.connectionNeededOther", { agent: agentLabel, name: addresseeLabel, provider: providerName }) : t("decisionForms.interaction.connectionNeedOther", { agent: agentLabel, name: addresseeLabel, provider: providerName });
   // Only the actionable state needs the consent boundary spelled out; the other
   // states carry it in their own status line.
-  const consentSentence = state === "actionable" ? "No one else can complete this step." : null;
+  const consentSentence = state === "actionable" ? t("decisionForms.interaction.consentBoundary") : null;
 
   return (
     <div className="space-y-4">
@@ -2461,7 +2458,7 @@ function RequestConnectionAuthorizationCard({
             >
               <Button asChild size="sm" variant="cta" className="w-full sm:w-auto">
                 <a href={href} target="_blank" rel="noreferrer">
-                  Connect {providerName}
+                  {t("decisionForms.interaction.connectProvider", { provider: providerName })}
                   <ArrowUpRight className="ml-1.5 h-3.5 w-3.5" />
                 </a>
               </Button>
@@ -2475,10 +2472,10 @@ function RequestConnectionAuthorizationCard({
                 {working ? (
                   <>
                     <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    Saving…
+                    {t("decisionForms.common.saving")}
                   </>
                 ) : (
-                  "Not now"
+                  t("decisionForms.common.notNow")
                 )}
               </Button>
             </div>
@@ -2488,33 +2485,29 @@ function RequestConnectionAuthorizationCard({
             <ConnectionAuthorizationStatusLine
               Icon={TriangleAlert}
               testId="connection-authorization-no-target"
-              headline="This authorization link is unavailable"
-              detail={`Ask ${requestingAgentLabel ?? "the agent"} to send a fresh ${providerName} authorization link.`}
+              headline={t("decisionForms.interaction.authorizationUnavailable")}
+              detail={t("decisionForms.interaction.freshAuthorization", { agent: requestingAgentLabel ?? t("decisionForms.common.theAgent"), provider: providerName })}
             />
           )}
-          <InteractionActionError message={actionError} />
+          <InteractionActionError error={actionError} />
         </div>
       ) : state === "waiting" ? (
         <ConnectionAuthorizationStatusLine
           Icon={Clock}
           testId="connection-authorization-waiting"
-          headline={`Waiting for ${addresseeLabel}`}
-          detail={`Only ${addresseeLabel} can connect their own ${providerName} account.`}
+          headline={t("decisionForms.interaction.waitingFor", { name: addresseeLabel })}
+          detail={t("decisionForms.interaction.onlyConnectOwn", { name: addresseeLabel, provider: providerName })}
         />
       ) : state === "connected" ? (
         <ConnectionAuthorizationStatusLine
           Icon={CheckCircle2}
           testId="connection-authorization-connected"
-          headline={`${providerName} connected`}
+          headline={t("decisionForms.interaction.providerConnected", { provider: providerName })}
           detail={
             <>
-              Connected by{" "}
-              <span className="font-medium text-foreground">
-                {/* "You" is display-cased for a badge; this is mid-sentence. */}
-                {(resolvedByLabel ?? addresseeLabel) === "You" ? "you" : resolvedByLabel ?? addresseeLabel}
-              </span>
+              <Trans i18nKey="decisionForms.interaction.connectedBy" values={{ name: (resolvedByLabel ?? addresseeLabel) === "You" ? "you" : resolvedByLabel ?? addresseeLabel }} tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape components={{ actor: <span className="font-medium text-foreground" /> }} />
               {resolvedByAgent ? <ResolvedByAgentChip /> : null}
-              {interaction.resolvedAt ? ` on ${formatDateTime(interaction.resolvedAt)}` : ""}
+              {interaction.resolvedAt ? t("decisionForms.interaction.resolvedOn", { date: formatDateTime(interaction.resolvedAt) }) : ""}
             </>
           }
         />
@@ -2525,10 +2518,10 @@ function RequestConnectionAuthorizationCard({
         <ConnectionAuthorizationStatusLine
           Icon={state === "declined" ? MinusCircle : CircleDashed}
           testId={state === "declined" ? "connection-authorization-declined" : "connection-authorization-expired"}
-          headline={state === "declined" ? `${providerName} was not connected` : "This authorization request expired"}
+          headline={state === "declined" ? t("decisionForms.interaction.providerNotConnected", { provider: providerName }) : t("decisionForms.interaction.authorizationRequestExpired")}
           detail={
             declineReason
-              ?? `${requestingAgentLabel ?? "The agent"} can ask again with a new ${providerName} authorization link.`
+              ?? t("decisionForms.interaction.canAskAgain", { agent: requestingAgentLabel ?? t("decisionForms.common.theAgentCapital"), provider: providerName })
           }
         />
       )}
@@ -2583,12 +2576,12 @@ function RequestConfirmationCard({
   onUploadImage?: (file: File) => Promise<string>;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
   const [working, setWorking] = useState<"accept" | "reject" | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const [shots, setShots] = useState<{ name: string; url: string }[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   // Screenshots ride along in the revise note as markdown image refs so the
   // board can attach images when sending a plan back — no schema change needed.
@@ -2598,13 +2591,13 @@ function RequestConfirmationCard({
   const reasonPlaceholder =
     interaction.payload.declineReasonPlaceholder
     ?? (interaction.payload.acceptLabel === "Approve plan"
-      ? "Optional: what would you like revised?"
-      : "Optional: tell the agent what you'd change.");
+      ? t("decisionForms.interaction.planReasonPlaceholder")
+      : t("decisionForms.interaction.revisionPlaceholder"));
 
   useEffect(() => {
     setActionError(null);
     setShots([]);
-    setUploadError(null);
+    setUploadError(false);
     if (interaction.status !== "pending") {
       setWorking(null);
     }
@@ -2612,7 +2605,7 @@ function RequestConfirmationCard({
 
   async function handleAddScreenshots(files: FileList | null) {
     if (!onUploadImage || !files || files.length === 0) return;
-    setUploadError(null);
+    setUploadError(false);
     setUploading(true);
     try {
       const uploaded: { name: string; url: string }[] = [];
@@ -2623,7 +2616,7 @@ function RequestConfirmationCard({
       }
       if (uploaded.length > 0) setShots((current) => [...current, ...uploaded]);
     } catch {
-      setUploadError("Couldn't upload that image. Try again.");
+      setUploadError(true);
     } finally {
       setUploading(false);
     }
@@ -2643,7 +2636,7 @@ function RequestConfirmationCard({
     try {
       await onAcceptInteraction(interaction);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -2656,7 +2649,7 @@ function RequestConfirmationCard({
     try {
       await onRejectInteraction(interaction, reason);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -2684,8 +2677,8 @@ function RequestConfirmationCard({
       {interaction.status === "pending" ? (
         <ConfirmationActionRow
           resetKey={`${interaction.id}:${interaction.status}`}
-          approveLabel={interaction.payload.acceptLabel ?? CONFIRMATION_APPROVE_LABEL}
-          rejectLabel={CONFIRMATION_REJECT_LABEL}
+          approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.common.approve")}
+          rejectLabel={t("decisionForms.common.reject")}
           approveVariant={isPlan ? "cta" : "default"}
           primaryActionOnRight={primaryActionOnRight}
           allowRevise={allowRevise}
@@ -2717,7 +2710,7 @@ function RequestConfirmationCard({
                         />
                         <button
                           type="button"
-                          aria-label={`Remove ${shot.name}`}
+                          aria-label={t("decisionForms.interaction.removeImage", { name: shot.name })}
                           className="absolute right-0.5 top-0.5 rounded-full bg-background/90 p-0.5 text-foreground opacity-0 transition-opacity group-hover:opacity-100"
                           onClick={() =>
                             setShots((current) => current.filter((_, i) => i !== index))
@@ -2750,17 +2743,17 @@ function RequestConfirmationCard({
                   {uploading ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      Uploading...
+                      {t("decisionForms.interaction.uploading")}
                     </>
                   ) : (
                     <>
                       <ImagePlus className="mr-2 h-3.5 w-3.5" />
-                      Attach screenshots
+                      {t("decisionForms.interaction.attachScreenshots")}
                     </>
                   )}
                 </Button>
                 {uploadError ? (
-                  <p className="text-xs text-destructive">{uploadError}</p>
+                  <p className="text-xs text-destructive">{t("decisionForms.interaction.uploadFailed")}</p>
                 ) : null}
               </div>
             ) : null
@@ -2780,6 +2773,7 @@ function RequestCheckboxConfirmationResolution({
 }: {
   interaction: RequestCheckboxConfirmationInteraction;
 }) {
+  const { t } = useTranslation();
   const target = interaction.payload.target ?? null;
   const [expanded, setExpanded] = useState(false);
 
@@ -2803,15 +2797,15 @@ function RequestCheckboxConfirmationResolution({
         <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
           <span className="font-medium">
             {selectedCount === 0
-              ? "Confirmed with no options selected"
-              : `Confirmed ${selectedCount} of ${totalOptions} ${totalOptions === 1 ? "option" : "options"}`}
+              ? t("decisionForms.interaction.confirmedNoOptions")
+              : t("decisionForms.interaction.confirmedOptions", { selected: selectedCount, count: totalOptions })}
           </span>
           <RequestConfirmationTargetChip interaction={interaction} target={target} />
         </div>
         {visibleLabels.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
             {visibleLabels.map((label, index) => (
-              <TaskField key={`${label}-${index}`} label="Selected" value={label} />
+              <TaskField key={`${label}-${index}`} label={t("decisionForms.interaction.selected")} value={label} />
             ))}
             {hasHiddenLabels ? (
               <button
@@ -2823,7 +2817,7 @@ function RequestCheckboxConfirmationResolution({
                 )}
                 aria-expanded={expanded}
               >
-                {expanded ? "Show less" : `+${hiddenCount} more`}
+                {expanded ? t("decisionForms.interaction.showLess") : t("decisionForms.interaction.moreOptions", { count: hiddenCount })}
               </button>
             ) : null}
           </div>
@@ -2843,7 +2837,7 @@ function RequestCheckboxConfirmationResolution({
   if (interaction.status === "failed") {
     return (
       <p className="text-sm leading-6 text-muted-foreground">
-        This request could not be resolved. Try again or create a new request.
+        {t("decisionForms.common.requestFailed")}
       </p>
     );
   }
@@ -2913,6 +2907,7 @@ function RequestCheckboxConfirmationCard({
   ) => Promise<void> | void;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
   const options = interaction.payload.options;
   const optionIds = useMemo(() => options.map((option) => option.id), [options]);
   const validOptionIds = useMemo(() => new Set(optionIds), [optionIds]);
@@ -2930,8 +2925,7 @@ function RequestCheckboxConfirmationCard({
   const [selectedOptionIds, setSelectedOptionIds] = useState<Set<string>>(() => new Set(defaultSelected));
   const [working, setWorking] = useState<"accept" | "reject" | null>(null);
   const [acceptAttempted, setAcceptAttempted] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
 
   const optionSeed = useMemo(() => optionIds.join("\n"), [optionIds]);
 
@@ -2947,7 +2941,7 @@ function RequestCheckboxConfirmationCard({
   const rejectRequiresReason = interaction.payload.rejectRequiresReason === true;
   const allowRevise = interaction.payload.allowDeclineReason !== false;
   const reasonPlaceholder =
-    interaction.payload.declineReasonPlaceholder ?? "Optional: tell the agent what you'd change.";
+    interaction.payload.declineReasonPlaceholder ?? t("decisionForms.interaction.revisionPlaceholder");
 
   const selectedCount = selectedOptionIds.size;
   const totalOptions = options.length;
@@ -2957,13 +2951,9 @@ function RequestCheckboxConfirmationCard({
   const selectionValid = !belowMin && !aboveMax;
 
   const validationMessage = belowMin
-    ? minSelected === 1
-      ? "Select at least 1 option."
-      : `Select at least ${minSelected} options.`
+    ? t("decisionForms.interaction.selectMin", { count: minSelected })
     : aboveMax && maxSelected != null
-      ? maxSelected === 1
-        ? "Select at most 1 option."
-        : `Select at most ${maxSelected} options.`
+      ? t("decisionForms.interaction.selectMax", { count: maxSelected })
       : null;
 
   function toggleOption(optionId: string, checked: boolean) {
@@ -2995,7 +2985,7 @@ function RequestCheckboxConfirmationCard({
     try {
       await onAcceptInteraction(interaction, undefined, [...selectedOptionIds]);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -3008,7 +2998,7 @@ function RequestCheckboxConfirmationCard({
     try {
       await onRejectInteraction(interaction, reason);
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
     } finally {
       setWorking(null);
     }
@@ -3023,12 +3013,12 @@ function RequestCheckboxConfirmationCard({
   }
 
   const selectionSummary = totalOptions > 0 && selectedCount === totalOptions
-    ? `All ${totalOptions} options selected`
-    : `${selectedCount} of ${totalOptions} ${totalOptions === 1 ? "option" : "options"} selected`;
+    ? t("decisionForms.interaction.allOptionsSelected", { count: totalOptions })
+    : t("decisionForms.interaction.optionsSelected", { selected: selectedCount, count: totalOptions });
   const boundsHint = maxSelected != null
-    ? `Pick ${minSelected === maxSelected ? `exactly ${maxSelected}` : `${minSelected}-${maxSelected}`}.`
+    ? minSelected === maxSelected ? t("decisionForms.interaction.pickExactly", { count: maxSelected }) : t("decisionForms.interaction.pickRange", { min: minSelected, max: maxSelected })
     : minSelected > 0
-      ? `Pick at least ${minSelected}.`
+      ? t("decisionForms.interaction.pickAtLeast", { count: minSelected })
       : null;
 
   return (
@@ -3063,7 +3053,7 @@ function RequestCheckboxConfirmationCard({
               disabled={working !== null || selectedCount === totalOptions || (maxSelected != null && selectedCount >= maxSelected)}
               onClick={handleSelectAll}
             >
-              Select all
+              {t("decisionForms.interaction.selectAll")}
             </Button>
             <Button
               size="sm"
@@ -3071,14 +3061,14 @@ function RequestCheckboxConfirmationCard({
               disabled={working !== null || selectedCount === 0}
               onClick={handleClearSelection}
             >
-              Clear selection
+              {t("decisionForms.interaction.clearSelection")}
             </Button>
           </div>
         </div>
 
         <div
           role="group"
-          aria-label="Selectable options"
+          aria-label={t("decisionForms.interaction.selectableOptions")}
           className="max-h-80 overflow-y-auto rounded-sm border border-border/70"
         >
           {options.map((option) => {
@@ -3103,8 +3093,8 @@ function RequestCheckboxConfirmationCard({
 
         <ConfirmationActionRow
           resetKey={`${interaction.id}:${interaction.status}`}
-          approveLabel={interaction.payload.acceptLabel ?? CONFIRMATION_APPROVE_LABEL}
-          rejectLabel={interaction.payload.rejectLabel ?? CONFIRMATION_REJECT_LABEL}
+          approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.common.approve")}
+          rejectLabel={interaction.payload.rejectLabel ?? t("decisionForms.common.reject")}
           primaryActionOnRight={primaryActionOnRight}
           allowRevise={allowRevise}
           rejectRequiresReason={rejectRequiresReason}
@@ -3124,18 +3114,18 @@ function RequestCheckboxConfirmationCard({
 
 // --- Per-item verdicts (C3) ---------------------------------------------
 
-const VERDICT_LABEL: Record<RequestItemVerdictValue, string> = {
-  approve: "Approve",
-  reject: "Reject",
-  defer: "Defer",
-};
+function verdictLabels(t: TFunction) { return {
+  approve: t("decisionForms.common.approve"),
+  reject: t("decisionForms.common.reject"),
+  defer: t("decisionForms.interaction.defer"),
+}; }
 
 /** Present-tense past-participle label for a resolved verdict chip. */
-const VERDICT_RESOLVED_LABEL: Record<RequestItemVerdictValue, string> = {
-  approve: "Approved",
-  reject: "Rejected",
-  defer: "Deferred",
-};
+function verdictResolvedLabels(t: TFunction) { return {
+  approve: t("decisionForms.common.approved"),
+  reject: t("decisionForms.common.rejected"),
+  defer: t("decisionForms.interaction.deferred"),
+}; }
 
 function verdictChipClasses(verdict: RequestItemVerdictValue) {
   switch (verdict) {
@@ -3149,6 +3139,7 @@ function verdictChipClasses(verdict: RequestItemVerdictValue) {
 }
 
 function VerdictConsequenceChip({ verdict }: { verdict: RequestItemVerdictValue }) {
+  const { t } = useTranslation();
   const Icon = verdict === "approve" ? CheckCircle2 : verdict === "reject" ? XCircle : MinusCircle;
   return (
     <span
@@ -3158,12 +3149,13 @@ function VerdictConsequenceChip({ verdict }: { verdict: RequestItemVerdictValue 
       )}
     >
       <Icon className="h-3.5 w-3.5" aria-hidden />
-      {VERDICT_RESOLVED_LABEL[verdict]}
+      {verdictResolvedLabels(t)[verdict]}
     </span>
   );
 }
 
 function ItemVerdictDeepLink({ item }: { item: RequestItemVerdictsItem }) {
+  const { t } = useTranslation();
   const href = item.href ? normalizeRequestConfirmationTargetHref(item.href) : null;
   if (!href) return null;
   const isInternal = href.startsWith("/") || href.startsWith("#");
@@ -3171,7 +3163,7 @@ function ItemVerdictDeepLink({ item }: { item: RequestItemVerdictsItem }) {
     "inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
   const label = (
     <>
-      Open
+      {t("decisionForms.interaction.open")}
       {isInternal ? <ArrowUpRight className="h-3 w-3" aria-hidden /> : <ExternalLink className="h-3 w-3" aria-hidden />}
     </>
   );
@@ -3202,10 +3194,11 @@ function ItemVerdictSegmentedControl({
   disabled: boolean;
   onSelect: (verdict: RequestItemVerdictValue) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div
       role="group"
-      aria-label="Choose a verdict"
+      aria-label={t("decisionForms.interaction.chooseVerdict")}
       className="flex shrink-0 flex-wrap items-center gap-2"
     >
       {verdicts.map((verdict) => {
@@ -3224,7 +3217,7 @@ function ItemVerdictSegmentedControl({
             variant={variant}
             disabled={disabled}
             aria-pressed={active}
-            aria-label={`${VERDICT_LABEL[verdict]} this item`}
+            aria-label={verdict === "approve" ? t("decisionForms.interaction.approveItem") : verdict === "reject" ? t("decisionForms.interaction.rejectItem") : t("decisionForms.interaction.deferItem")}
             className="min-h-11 min-w-24"
             onClick={() => onSelect(verdict)}
             data-verdict={verdict}
@@ -3232,7 +3225,7 @@ function ItemVerdictSegmentedControl({
             data-active={active}
           >
             <Icon className="h-4 w-4" aria-hidden />
-            {VERDICT_LABEL[verdict]}
+            {verdictLabels(t)[verdict]}
           </Button>
         );
       })}
@@ -3257,6 +3250,7 @@ function RequestItemVerdictsCard({
   ) => Promise<void> | void;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
+  const { t } = useTranslation();
   const payload = interaction.payload;
   const items = payload.items;
   const enabledVerdicts = useMemo<RequestItemVerdictValue[]>(
@@ -3268,7 +3262,7 @@ function RequestItemVerdictsCard({
     [payload.requireReasonOn],
   );
   const allowBulkApprove = payload.allowBulkApprove !== false && enabledVerdicts.includes("approve");
-  const reasonLabel = payload.reasonLabel ?? "Reason";
+  const reasonLabel = payload.reasonLabel ?? t("decisionForms.common.reason");
 
   const resolvedById = useMemo(
     () => new Map<string, RequestItemVerdictsResultItem>((interaction.result?.items ?? []).map((item) => [item.id, item])),
@@ -3279,8 +3273,7 @@ function RequestItemVerdictsCard({
   const [applyingItemIds, setApplyingItemIds] = useState<Set<string>>(new Set());
   const [working, setWorking] = useState(false);
   const [attempted, setAttempted] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const resolutionErrorMessage = useResolutionErrorMessage();
+  const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
 
   // When the server merges newly-resolved items, drop their local drafts and
   // clear the applying/working state so the terminal chips take over (S3 → S4).
@@ -3370,15 +3363,13 @@ function RequestItemVerdictsCard({
       // Success: the parent refetch updates `interaction.result`, the effect
       // above clears drafts + applying state, and terminal chips render.
     } catch (error) {
-      setActionError(resolutionErrorMessage(error));
+      setActionError({ cause: error });
       setApplyingItemIds(new Set());
       setWorking(false);
     }
   }
 
-  const applyLabel = draftCount === 0
-    ? "Apply 0 decisions"
-    : `Apply ${draftCount} decision${draftCount === 1 ? "" : "s"}`;
+  const applyLabel = t("decisionForms.interaction.applyDecisions", { count: draftCount });
 
   return (
     <div className="space-y-4">
@@ -3404,22 +3395,21 @@ function RequestItemVerdictsCard({
           <div className="flex items-center gap-2 font-medium">
             <AlertTriangle className="h-4 w-4" aria-hidden />
             {interaction.result?.outcome === "superseded_by_comment"
-              ? "This review expired after a later comment."
+              ? t("decisionForms.interaction.reviewExpiredComment")
               : interaction.result?.outcome === "stale_target"
-                ? "This review expired after the target changed."
-                : "This review expired."}
+                ? t("decisionForms.interaction.reviewExpiredTarget")
+                : t("decisionForms.interaction.reviewExpired")}
           </div>
           {progress.decided > 0 ? (
             <p className="mt-1 text-xs leading-5">
-              {progress.decided === 1 ? "1 item was" : `${progress.decided} items were`} already applied and cannot be
-              reverted. Remaining items were cancelled.
+              {t("decisionForms.interaction.itemsAlreadyApplied", { count: progress.decided })}
             </p>
           ) : null}
         </div>
       ) : null}
 
       {/* Item list (S1/S2/S3/S4) */}
-      <ul className="space-y-2" aria-label="Items to review">
+      <ul className="space-y-2" aria-label={t("decisionForms.interaction.itemsToReview")}>
         {items.map((item) => {
           const resolved = resolvedById.get(item.id);
           const applying = applyingItemIds.has(item.id);
@@ -3462,12 +3452,12 @@ function RequestItemVerdictsCard({
                   ) : applying ? (
                     <span className="inline-flex items-center gap-1.5 rounded-sm border border-border/70 bg-muted/40 px-2 py-0.5 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
                       <Loader2 className="h-3.5 w-3.5 motion-safe:animate-spin" aria-hidden />
-                      Applying…
+                      {t("decisionForms.interaction.applying")}
                     </span>
                   ) : isTerminal ? (
                     <span className="inline-flex items-center gap-1 rounded-sm border border-border/70 bg-muted/30 px-2 py-0.5 text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
                       <CircleDashed className="h-3.5 w-3.5" aria-hidden />
-                      Not decided
+                      {t("decisionForms.interaction.notDecided")}
                     </span>
                   ) : (
                     <ItemVerdictSegmentedControl
@@ -3494,7 +3484,7 @@ function RequestItemVerdictsCard({
                     id={`${interaction.id}-${item.id}-reason`}
                     value={draft.reason}
                     onChange={(event) => setDraftReason(item.id, event.target.value)}
-                    placeholder="Give the agent a reason so it can act on this item."
+                    placeholder={t("decisionForms.interaction.itemReasonPlaceholder")}
                     aria-invalid={attempted && invalidDraftIds.has(item.id)}
                     className={cn(
                       "min-h-16 bg-background text-sm",
@@ -3502,7 +3492,7 @@ function RequestItemVerdictsCard({
                     )}
                   />
                   {attempted && invalidDraftIds.has(item.id) ? (
-                    <p className="text-xs text-destructive">A reason is required to {VERDICT_LABEL[draft.verdict].toLowerCase()} this item.</p>
+                    <p className="text-xs text-destructive">{draft.verdict === "approve" ? t("decisionForms.interaction.reasonApprove") : draft.verdict === "reject" ? t("decisionForms.interaction.reasonReject") : t("decisionForms.interaction.reasonDefer")}</p>
                   ) : null}
                 </div>
               ) : null}
@@ -3516,8 +3506,8 @@ function RequestItemVerdictsCard({
         <div className="flex flex-wrap items-center gap-2 rounded-sm border border-emerald-500/50 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-900 dark:text-emerald-100">
           <CheckCircle2 className="h-4 w-4" aria-hidden />
           <span className="font-medium">
-            {progress.decided} decided · {progress.approved} approved · {progress.rejected} rejected
-            {progress.deferred > 0 ? ` · ${progress.deferred} deferred` : ""}
+            {t("decisionForms.interaction.verdictSummary", { decided: progress.decided, approved: progress.approved, rejected: progress.rejected })}
+            {progress.deferred > 0 ? t("decisionForms.interaction.verdictDeferred", { count: progress.deferred }) : ""}
           </span>
         </div>
       ) : null}
@@ -3527,8 +3517,8 @@ function RequestItemVerdictsCard({
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
           <div className="text-xs text-muted-foreground">
             {draftCount > 0
-              ? `${draftCount} draft verdict${draftCount === 1 ? "" : "s"} ready to apply`
-              : "Mark verdicts, then apply them in one pass."}
+              ? t("decisionForms.interaction.draftVerdicts", { count: draftCount })
+              : t("decisionForms.interaction.markVerdicts")}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {allowBulkApprove ? (
@@ -3540,7 +3530,7 @@ function RequestItemVerdictsCard({
                 onClick={handleApproveAll}
               >
                 <ThumbsUp className="h-4 w-4" aria-hidden />
-                Approve all
+                {t("decisionForms.interaction.approveAll")}
               </Button>
             ) : null}
             <Button
@@ -3554,7 +3544,7 @@ function RequestItemVerdictsCard({
               {working ? (
                 <>
                   <Loader2 className="h-4 w-4 motion-safe:animate-spin" aria-hidden />
-                  Applying…
+                  {t("decisionForms.interaction.applying")}
                 </>
               ) : (
                 applyLabel
@@ -3564,7 +3554,7 @@ function RequestItemVerdictsCard({
         </div>
       ) : null}
 
-      <InteractionActionError message={actionError} />
+      <InteractionActionError error={actionError} />
     </div>
   );
 }
@@ -3576,6 +3566,7 @@ function VerdictProgressBadge({
   progress: ReturnType<typeof getItemVerdictProgress>;
   pendingReason: boolean;
 }) {
+  const { t } = useTranslation();
   const pct = progress.total > 0 ? Math.round((progress.decided / progress.total) * 100) : 0;
   return (
     <div className="flex items-center gap-2">
@@ -3583,7 +3574,7 @@ function VerdictProgressBadge({
       {pendingReason ? (
         <span className="inline-flex items-center gap-1 rounded-sm border border-amber-500/60 bg-amber-500/10 px-1.5 py-0.5 text-(length:--text-nano) font-semibold uppercase tracking-(--tracking-eyebrow) text-amber-900 dark:text-amber-100">
           <AlertTriangle className="h-3 w-3" aria-hidden />
-          Reason needed
+          {t("decisionForms.interaction.reasonNeeded")}
         </span>
       ) : null}
       <div
@@ -3592,7 +3583,7 @@ function VerdictProgressBadge({
         aria-valuemin={0}
         aria-valuemax={progress.total}
         aria-valuenow={progress.decided}
-        aria-label={`${progress.decided} of ${progress.total} decided`}
+        aria-label={t("decisionForms.interaction.progress", { decided: progress.decided, total: progress.total })}
       >
         <div className="h-1.5 w-16 overflow-hidden rounded-full bg-muted">
           <div
@@ -3601,7 +3592,7 @@ function VerdictProgressBadge({
           />
         </div>
         <span className="whitespace-nowrap text-xs font-medium text-muted-foreground">
-          {progress.decided} of {progress.total} decided
+          {t("decisionForms.interaction.progress", { decided: progress.decided, total: progress.total })}
         </span>
       </div>
     </div>
@@ -3622,6 +3613,7 @@ export function IssueThreadInteractionCard({
   onUploadImage,
   externalReferences,
 }: IssueThreadInteractionCardProps) {
+  const { t } = useTranslation();
   // Single enforcement point (PAP-424, plan from PAP-420; extended by PAP-437):
   // a card that should never be drawn — a degenerate `ask_user_questions`
   // (placeholder junk like the onboarding `Test / A` card, no genuine question)
@@ -3650,13 +3642,13 @@ export function IssueThreadInteractionCard({
     isToolAction && interaction.kind === "request_confirmation"
       ? toolActionCardState(interaction)
       : null;
-  const toolActionStyles = toolActionState ? toolActionStatusClasses(toolActionState) : null;
+  const toolActionStyles = toolActionState ? toolActionStatusClasses(toolActionState, t) : null;
   const secretProposalState =
     isSecretProposal && interaction.kind === "request_confirmation"
       ? secretProposalCardState(interaction)
       : null;
   const secretProposalStyles = secretProposalState
-    ? secretProposalStatusClasses(secretProposalState)
+    ? secretProposalStatusClasses(secretProposalState, t)
     : null;
   const resumeFailure = requestConfirmationResumeFailure(interaction);
   const planStyles = isPlan
@@ -3664,6 +3656,7 @@ export function IssueThreadInteractionCard({
         interaction.status,
         resumeFailure,
         interaction.result && "outcome" in interaction.result ? interaction.result.outcome : null,
+        t,
       )
     : null;
   // Interactions can be directed at a specific agent or board user. Resolved
@@ -3676,13 +3669,13 @@ export function IssueThreadInteractionCard({
         agentMap,
         currentUserId,
         userLabelMap,
-      })
+      }, t)
     : null;
   const connectionAuthorizationStyles = connectionAuthorization && connectionAuthorizationState
     ? connectionAuthorizationStatusClasses(connectionAuthorizationState, {
         providerName: connectionAuthorization.providerName,
-        addresseeLabel: addresseeLabel ?? "the addressed person",
-      })
+        addresseeLabel: addresseeLabel ?? t("decisionForms.common.addressedPerson"),
+      }, t)
     : null;
   const activeStyles =
     connectionAuthorizationStyles ?? secretProposalStyles ?? toolActionStyles ?? planStyles;
@@ -3712,7 +3705,7 @@ export function IssueThreadInteractionCard({
     agentMap,
     currentUserId,
     userLabelMap,
-  });
+  }, t);
   const resolvedByLabel =
     interaction.resolvedByAgentId || interaction.resolvedByUserId
       ? resolveActorLabel({
@@ -3721,7 +3714,7 @@ export function IssueThreadInteractionCard({
           agentMap,
           currentUserId,
           userLabelMap,
-        })
+        }, t)
       : null;
   // P4: audit-visible distinction between agent and human resolution.
   const resolvedByAgent = Boolean(interaction.resolvedByAgentId);
@@ -3733,14 +3726,14 @@ export function IssueThreadInteractionCard({
     interaction,
     creatorLabel: createdByLabel,
     addresseeLabel,
-  });
+  }, t);
   if (interaction.kind === "connection_intent" && interaction.payload.accessRequest) {
     return (
       <div id={`interaction-${interaction.id}`}>
         <ConnectionIntentInteractionBody
           interaction={interaction}
           currentUserId={currentUserId}
-          addresseeLabel={addresseeLabel ?? "the addressed person"}
+          addresseeLabel={addresseeLabel ?? t("decisionForms.common.addressedPerson")}
         />
       </div>
     );
@@ -3760,12 +3753,12 @@ export function IssueThreadInteractionCard({
   }
   const statusText =
     adminOutcome === "withdrawn"
-      ? "Withdrawn"
+      ? t("decisionForms.common.withdrawn")
       : adminOutcome === "issue_closed"
-        ? "Expired · issue closed"
+        ? t("decisionForms.interaction.expiredIssueClosed")
         : activeStyles
           ? activeStyles.label
-          : statusLabel(interaction.status);
+          : statusLabel(interaction.status, t);
 
   return (
     // Every nested subcard resolves the same interaction, so they all explain a
@@ -3785,7 +3778,7 @@ export function IssueThreadInteractionCard({
                 <StatusIcon className={cn("h-3.5 w-3.5", iconSpin && "animate-spin")} />
                 {isSecretProposal ? (
                   <span className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                    <span>Secret binding</span>
+                    <span>{t("decisionForms.interaction.secretBinding")}</span>
                     <span className="hidden text-current/60 sm:inline">/</span>
                     <span>{statusText}</span>
                   </span>
@@ -3796,7 +3789,7 @@ export function IssueThreadInteractionCard({
                   <span>{statusText}</span>
                 ) : (
                   <>
-                    {isPlan ? "Plan" : interactionKindLabel(interaction.kind)}
+                    {isPlan ? t("decisionForms.common.plan") : interactionKindLabel(interaction.kind, t)}
                     <span className="text-current/60">/</span>
                     {statusText}
                   </>
@@ -3811,11 +3804,11 @@ export function IssueThreadInteractionCard({
                       data-testid="interaction-addressee-badge"
                     >
                       <Bot className="h-3 w-3" />
-                      For {addresseeLabel}
+                      {t("decisionForms.interaction.forAddressee", { name: addresseeLabel })}
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="max-w-xs text-xs">
-                    Directed to {addresseeLabel}. Agent-addressed interactions are owned by that agent and are kept out of the open organization attention feed.
+                    {t("decisionForms.interaction.directedTo", { name: addresseeLabel })}
                   </TooltipContent>
                 </Tooltip>
               ) : null}
@@ -3824,27 +3817,27 @@ export function IssueThreadInteractionCard({
             <div className="mt-3 text-lg font-bold text-foreground">
               {interaction.title
                 ?? (interaction.kind === "suggest_tasks"
-                  ? "Suggested task tree"
+                  ? t("decisionForms.interaction.suggestedTree")
                   : interaction.kind === "ask_user_questions"
                     // Only a human-only card is genuinely "for the operator";
                     // an open card is answerable by any teammate (PAP-17280).
                     ? interaction.payload.title
                       ?? (audience.policy === "human_only"
-                        ? "Questions for the operator"
-                        : "Questions to answer")
+                        ? t("decisionForms.interaction.questionsOperator")
+                        : t("decisionForms.interaction.questionsToAnswer"))
                   : interaction.kind === "request_checkbox_confirmation"
-                    ? "Checkbox confirmation requested"
+                    ? t("decisionForms.interaction.checkboxRequested")
                     : isSecretProposal
-                      ? "Secret binding requested"
+                      ? t("decisionForms.interaction.bindingRequested")
                     : connectionAuthorization
-                      ? `Connect your ${connectionAuthorization.providerName} to continue`
+                      ? t("decisionForms.interaction.connectToContinue", { provider: connectionAuthorization.providerName })
                     : isToolAction
-                      ? "Tool approval requested"
+                      ? t("decisionForms.interaction.toolApprovalRequested")
                       : interaction.kind === "request_item_verdicts"
-                        ? "Review these items"
+                        ? t("decisionForms.interaction.reviewItems")
                         : isPlan
-                          ? "Plan review"
-                          : "Confirmation requested")}
+                          ? t("decisionForms.interaction.planReview")
+                          : t("decisionForms.interaction.confirmationRequested"))}
             </div>
             {/* A connection-authorization card composes its own single body
                 below, because the closing sentence depends on whether the
@@ -3864,11 +3857,11 @@ export function IssueThreadInteractionCard({
             <TooltipTrigger asChild>
               <div className="rounded-sm border border-border/70 bg-transparent px-3 py-2 text-right text-xs text-muted-foreground">
                 <div className="font-medium text-foreground">{formatShortDate(interaction.createdAt)}</div>
-                <div>proposed by {createdByLabel}</div>
+                <div>{t("decisionForms.interaction.proposedBy", { name: createdByLabel })}</div>
               </div>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="text-xs">
-              Created {formatDateTime(interaction.createdAt)}
+              {t("decisionForms.interaction.createdAt", { date: formatDateTime(interaction.createdAt) })}
             </TooltipContent>
           </Tooltip>
         </div>
@@ -3906,7 +3899,7 @@ export function IssueThreadInteractionCard({
               state={connectionAuthorizationState}
               isAddressee={isConnectionAddressee}
               providerName={connectionAuthorization.providerName}
-              addresseeLabel={addresseeLabel ?? "the addressed person"}
+              addresseeLabel={addresseeLabel ?? t("decisionForms.common.addressedPerson")}
               requestingAgentLabel={connectionAuthorization.requestingAgentName ?? null}
               resolvedByLabel={resolvedByLabel}
               resolvedByAgent={resolvedByAgent}
@@ -3924,7 +3917,7 @@ export function IssueThreadInteractionCard({
             <ConnectionIntentInteractionBody
               interaction={interaction}
               currentUserId={currentUserId}
-              addresseeLabel={addresseeLabel ?? "the addressed person"}
+              addresseeLabel={addresseeLabel ?? t("decisionForms.common.addressedPerson")}
               addresseeName={interaction.addresseeUserId ? userLabelMap?.get(interaction.addresseeUserId) : undefined}
             />
           ) : interaction.kind === "request_item_verdicts" ? (
@@ -3952,10 +3945,9 @@ export function IssueThreadInteractionCard({
             data-testid="interaction-withdrawn-footer"
           >
             <div>
-              Withdrawn by{" "}
-              <span className="font-medium text-foreground">{resolvedByLabel ?? "an agent"}</span>
+              <Trans i18nKey="decisionForms.interaction.withdrawnBy" values={{ name: resolvedByLabel ?? t("decisionForms.common.anAgent") }} tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape components={{ actor: <span className="font-medium text-foreground" /> }} />
               {resolvedByAgent ? <ResolvedByAgentChip /> : null}
-              {interaction.resolvedAt ? ` on ${formatShortDate(interaction.resolvedAt)}` : ""}
+              {interaction.resolvedAt ? t("decisionForms.interaction.resolvedOn", { date: formatShortDate(interaction.resolvedAt) }) : ""}
             </div>
             {adminReason ? (
               <div className="mt-1 italic text-muted-foreground/90">"{adminReason}"</div>
@@ -3978,9 +3970,9 @@ export function IssueThreadInteractionCard({
             className="mt-4 flex flex-wrap items-center gap-x-1 gap-y-0.5 border-t border-border/60 pt-3 text-xs text-muted-foreground"
             data-testid="interaction-resolved-footer"
           >
-            Resolved by <span className="font-medium text-foreground">{resolvedByLabel}</span>
+            <Trans i18nKey="decisionForms.interaction.resolvedBy" values={{ name: resolvedByLabel }} tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape components={{ actor: <span className="font-medium text-foreground" /> }} />
             {resolvedByAgent ? <ResolvedByAgentChip /> : null}
-            {interaction.resolvedAt ? ` on ${formatShortDate(interaction.resolvedAt)}` : ""}
+            {interaction.resolvedAt ? t("decisionForms.interaction.resolvedOn", { date: formatShortDate(interaction.resolvedAt) }) : ""}
           </div>
         ) : null}
       </div>
@@ -3993,6 +3985,7 @@ export function IssueThreadInteractionCard({
  * than a human board member) — governed agent resolution introduced in P2.
  */
 function ResolvedByAgentChip() {
+  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -4002,11 +3995,11 @@ function ResolvedByAgentChip() {
           data-testid="interaction-resolved-by-agent-chip"
         >
           <Bot className="h-3 w-3" />
-          Agent
+          {t("decisionForms.common.agent")}
         </Badge>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-xs text-xs">
-        Resolved by an agent under the organization's interaction governance policy — audit-distinct from a human board resolution.
+        {t("decisionForms.interaction.agentResolutionGovernance")}
       </TooltipContent>
     </Tooltip>
   );

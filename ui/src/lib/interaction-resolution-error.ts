@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 /**
  * Plain-language copy for a *failed* issue-thread interaction resolution
  * (PAP-17287).
@@ -106,6 +108,7 @@ export type InteractionResolutionAudience = Pick<
 export function describeInteractionResolutionFailure(
   error: unknown,
   audience?: InteractionResolutionAudience | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): InteractionResolutionFailure {
   const code = interactionResolutionErrorCode(error);
   const reason = serverReason(error);
@@ -130,8 +133,8 @@ export function describeInteractionResolutionFailure(
       message: [
         reason
           ?? (coded
-            ? "You are not in this card's resolver audience."
-            : "You do not have permission to respond to this card."),
+            ? t("decisionForms.errors.audienceDenied")
+            : t("decisionForms.errors.permissionDenied")),
         responder,
       ]
         .filter(Boolean)
@@ -143,14 +146,14 @@ export function describeInteractionResolutionFailure(
     return {
       kind: "settled",
       code,
-      message: reason ?? "This request is no longer waiting for a decision.",
+      message: reason ?? t("decisionForms.errors.settled"),
     };
   }
 
   return {
     kind: "transient",
     code,
-    message: reason ? `${reason} Try again.` : "Couldn't submit. Try again.",
+    message: reason ? t("decisionForms.errors.retryReason", { reason }) : t("decisionForms.errors.submitFailed"),
   };
 }
 
@@ -158,6 +161,7 @@ export function describeInteractionResolutionFailure(
 export function interactionResolutionErrorMessage(
   error: unknown,
   audience?: InteractionResolutionAudience | null,
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
-  return describeInteractionResolutionFailure(error, audience).message;
+  return describeInteractionResolutionFailure(error, audience, t).message;
 }

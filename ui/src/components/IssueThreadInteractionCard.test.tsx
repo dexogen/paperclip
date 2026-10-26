@@ -6,6 +6,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Agent } from "@paperclipai/shared";
+import { i18n } from "@/i18n";
 import { ApiError } from "../api/client";
 import { IssueThreadInteractionCard } from "./IssueThreadInteractionCard";
 import { ThemeProvider } from "../context/ThemeContext";
@@ -1695,5 +1696,161 @@ describe("IssueThreadInteractionCard resolver audience", () => {
     expect(
       footer?.querySelector('[data-testid="interaction-resolved-by-agent-chip"]'),
     ).not.toBeNull();
+  });
+});
+
+describe("IssueThreadInteractionCard localization", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
+
+  async function switchLocale(locale: "en" | "ru") {
+    await act(async () => { await i18n.changeLanguage(locale); });
+  }
+
+  async function press(host: HTMLElement, label: string) {
+    const button = Array.from(host.querySelectorAll("button")).find((entry) => entry.textContent?.trim() === label);
+    expect(button, label).toBeTruthy();
+    await act(() => button!.click());
+  }
+
+  async function type(field: HTMLTextAreaElement, value: string) {
+    await act(() => {
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!.call(field, value);
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
+  it("preserves checkbox IDs and literal custom labels through EN RU EN before one explicit acceptance", async () => {
+    const accept = vi.fn();
+    const reject = vi.fn();
+    const interaction = {
+      ...pendingRequestCheckboxConfirmationInteraction,
+      payload: {
+        ...pendingRequestCheckboxConfirmationInteraction.payload,
+        acceptLabel: "Approve <b>custom</b>",
+        rejectLabel: "Reject <b>custom</b>",
+      },
+    };
+    const snapshot = JSON.stringify(interaction);
+    const host = renderCard({ interaction, onAcceptInteraction: accept, onRejectInteraction: reject });
+    const checkboxes = [...host.querySelectorAll<HTMLButtonElement>('button[role="checkbox"]')];
+    await act(() => checkboxes[1]!.click());
+    for (const locale of ["ru", "en", "ru"] as const) {
+      await switchLocale(locale);
+      expect(host.querySelectorAll('button[role="checkbox"]')[1]).toBe(checkboxes[1]);
+      expect(checkboxes[1]!.getAttribute("aria-checked")).toBe("true");
+      expect(host.textContent).toContain("Approve <b>custom</b>");
+      expect(host.textContent).toContain("Reject <b>custom</b>");
+      expect(host.querySelector("b")).toBeNull();
+      expect(accept).not.toHaveBeenCalled();
+      expect(reject).not.toHaveBeenCalled();
+    }
+    await press(host, "Approve <b>custom</b>");
+    expect(accept).toHaveBeenCalledExactlyOnceWith(interaction, undefined, [interaction.payload.options[1]!.id]);
+    expect(JSON.stringify(interaction)).toBe(snapshot);
+  });
+
+  it("keeps a required revision draft and localized validation without submitting on locale changes", async () => {
+    const reject = vi.fn();
+    const interaction = {
+      ...pendingRequestConfirmationInteraction,
+      payload: { ...pendingRequestConfirmationInteraction.payload, rejectRequiresReason: true, acceptLabel: undefined },
+    };
+    const host = renderCard({ interaction, onAcceptInteraction: vi.fn(), onRejectInteraction: reject });
+    await press(host, "Revise…");
+    await press(host, "Send revision");
+    expect(host.textContent).toContain("Add a note describing the changes you want.");
+    await switchLocale("ru");
+    expect(host.textContent).toContain("Опишите необходимые изменения.");
+    const field = host.querySelector<HTMLTextAreaElement>("textarea")!;
+    const draft = "Изменить <b>literal</b> & сохранить\nстроку";
+    await type(field, draft);
+    await switchLocale("en");
+    await switchLocale("ru");
+    expect(host.querySelector("textarea")).toBe(field);
+    expect(field.value).toBe(draft);
+    expect(reject).not.toHaveBeenCalled();
+    await press(host, "Отправить изменения");
+    expect(reject).toHaveBeenCalledExactlyOnceWith(interaction, draft);
+  });
+
+  it("keeps a 403 server reason literal and changes only its audience explanation without retry", async () => {
+    const rawReason = "Denied <b>provider</b> & literal";
+    const accept = vi.fn().mockRejectedValue(new ApiError(rawReason, 403, { error: rawReason, code: "interaction_human_only" }));
+    const host = renderCard({ interaction: humanOnlyRequestConfirmationInteraction, onAcceptInteraction: accept });
+    await act(async () => { [...host.querySelectorAll("button")].find((button) => button.textContent?.includes("Approve"))!.click(); });
+    expect(accept).toHaveBeenCalledTimes(1);
+    const error = host.querySelector('[data-testid="interaction-action-error"]')!;
+    expect(error.textContent).toContain("Only the board can respond.");
+    await switchLocale("ru");
+    expect(error.textContent).toContain(rawReason);
+    expect(error.textContent).toContain("Ответить может только оператор.");
+    expect(error.textContent).not.toMatch(/try again|повторите/i);
+    expect(error.querySelector("b")).toBeNull();
+    await switchLocale("en");
+    expect(error.textContent).toContain("Only the board can respond.");
+    expect(accept).toHaveBeenCalledTimes(1);
+  });
+
+  it("reformats a transient unknown failure instead of hiding it or sending again", async () => {
+    const accept = vi.fn().mockRejectedValue(null);
+    const host = renderCard({ interaction: humanOnlyRequestConfirmationInteraction, onAcceptInteraction: accept });
+    await act(async () => { [...host.querySelectorAll("button")].find((button) => button.textContent?.includes("Approve"))!.click(); });
+    expect(accept).toHaveBeenCalledTimes(1);
+    expect(host.textContent).toContain("Couldn't submit. Try again.");
+    await switchLocale("ru");
+    expect(host.textContent).toContain("Не удалось отправить. Повторите попытку.");
+    expect(accept).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([[1, "решение"], [2, "решения"], [5, "решений"], [11, "решений"], [21, "решение"], [22, "решения"], [25, "решений"]] as const)("keeps %i verdict drafts and Russian count grammar", async (count, noun) => {
+    const submit = vi.fn();
+    const interaction = {
+      ...pendingRequestItemVerdictsInteraction,
+      payload: {
+        ...pendingRequestItemVerdictsInteraction.payload,
+        items: Array.from({ length: count }, (_, index) => ({ id: `literal-${index}`, label: `Пункт ${index}` })),
+      },
+    };
+    const host = renderCard({ interaction, onSubmitInteractionVerdicts: submit });
+    await press(host, "Approve all");
+    await switchLocale("ru");
+    expect(host.textContent).toContain(`Применить ${count} ${noun}`);
+    await switchLocale("en");
+    expect(host.textContent).toContain(`Apply ${count} decision`);
+    await switchLocale("ru");
+    expect(submit).not.toHaveBeenCalled();
+    await press(host, `Применить ${count} ${noun}`);
+    expect(submit).toHaveBeenCalledExactlyOnceWith(interaction, interaction.payload.items.map((item) => ({ id: item.id, verdict: "approve", reason: undefined })));
+  });
+
+  it("keeps agent names and justification literal inside translated attribution and captions", async () => {
+    const name = "Agent <b>literal</b> & <actor>name</actor>";
+    const agentMap = new Map([[agentResolvedRequestConfirmationInteraction.resolvedByAgentId!, { name } as Agent]]);
+    const host = renderCard({ interaction: agentResolvedRequestConfirmationInteraction, agentMap });
+    for (const locale of ["ru", "en"] as const) {
+      await switchLocale(locale);
+      expect(host.querySelector('[data-testid="interaction-resolved-footer"]')?.textContent).toContain(name);
+      expect(host.querySelector("b, actor")).toBeNull();
+    }
+    await act(() => root!.unmount());
+    host.remove();
+    const justification = "Keep <b>exact</b> & перенос\nстроки";
+    const secret = renderCard({ interaction: { ...pendingSecretProposalInteraction, payload: { ...pendingSecretProposalInteraction.payload, secretProposal: { ...pendingSecretProposalInteraction.payload.secretProposal!, justification } } } });
+    await switchLocale("ru");
+    expect(secret.textContent).toContain("Обоснование агента");
+    expect(secret.textContent).toContain(justification);
+    expect(secret.querySelector("b")).toBeNull();
+  });
+
+  it("updates the audit date formatting without changing stored timestamps", async () => {
+    const interaction = { ...issueClosedRequestConfirmationInteraction };
+    const date = interaction.resolvedAt;
+    const host = renderCard({ interaction });
+    const footer = host.querySelector('[data-testid="interaction-issue-closed-footer"]')!;
+    await switchLocale("ru");
+    expect(footer.textContent).toBe(new Date(date!).toLocaleString("ru-RU", { month: "short", day: "numeric" }));
+    await switchLocale("en");
+    expect(footer.textContent).toBe(new Date(date!).toLocaleString("en-US", { month: "short", day: "numeric" }));
+    expect(interaction.resolvedAt).toBe(date);
   });
 });

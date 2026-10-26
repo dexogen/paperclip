@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+import { i18n, useTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
@@ -38,7 +40,9 @@ type Answer = PaperclipQuestionResponse["answers"][string];
  * outlive the next click rather than disappear the moment the reader touches
  * an option.
  */
-type FormError = { message: string; fromMissingAnswer?: boolean };
+type FormError =
+  | { cause: unknown; action: "submit" | "cancel"; fromMissingAnswer?: false }
+  | { questionNumber: number; fromMissingAnswer: true };
 
 export interface QuestionFormProps {
   id: string;
@@ -56,6 +60,7 @@ export interface QuestionFormProps {
    * takeover, which returns the plain composer without touching the request.
    */
   onCancel?: () => void | Promise<void>;
+  formatError?: (cause: unknown) => string;
 }
 
 function answerHasValue(answer: Answer | undefined): boolean {
@@ -69,29 +74,30 @@ function answerHasValue(answer: Answer | undefined): boolean {
 function answerError(
   question: Question,
   answer: Answer | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   if (question.required && !answerHasValue(answer))
-    return "This question is required.";
+    return t("decisionForms.questions.validation.required");
   if (
     question.answerMode !== "text" &&
     answer?.customText !== undefined &&
     !answer.customText.trim()
   ) {
-    return "Enter a custom answer.";
+    return t("decisionForms.questions.validation.customRequired");
   }
   const value =
     question.answerMode === "text" ? answer?.text : answer?.customText;
   if (value == null || value.length === 0) return null;
   const validation = question.textValidation;
   if (validation?.minLength != null && value.length < validation.minLength)
-    return `Enter at least ${validation.minLength} characters.`;
+    return t("decisionForms.questions.validation.minLength", { count: validation.minLength });
   if (validation?.maxLength != null && value.length > validation.maxLength)
-    return `Enter no more than ${validation.maxLength} characters.`;
+    return t("decisionForms.questions.validation.maxLength", { count: validation.maxLength });
   if (validation?.pattern) {
     const result = matchSafeQuestionValidationPattern(validation.pattern, value);
     if (result === "unsupported")
-      return "This question has an unsupported validation pattern.";
-    if (result === "no_match") return "Use the requested format.";
+      return t("decisionForms.questions.validation.unsupportedPattern");
+    if (result === "no_match") return t("decisionForms.questions.validation.format");
   }
   if (
     validation?.inputType === "number" ||
@@ -102,12 +108,12 @@ function answerError(
       !Number.isFinite(numeric) ||
       (validation.inputType === "integer" && !Number.isInteger(numeric))
     ) {
-      return `Enter a valid ${validation.inputType}.`;
+      return validation.inputType === "integer" ? t("decisionForms.questions.validation.integer") : t("decisionForms.questions.validation.number");
     }
     if (validation.minimum != null && numeric < validation.minimum)
-      return `Enter a value of at least ${validation.minimum}.`;
+      return t("decisionForms.questions.validation.minimum", { minimum: validation.minimum });
     if (validation.maximum != null && numeric > validation.maximum)
-      return `Enter a value no greater than ${validation.maximum}.`;
+      return t("decisionForms.questions.validation.maximum", { maximum: validation.maximum });
   }
   return null;
 }
@@ -131,6 +137,7 @@ function SelectOption({
   disabled: boolean;
   onClick: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -173,7 +180,7 @@ function SelectOption({
           <span>{label}</span>
           {recommended ? (
             <span className="rounded-sm bg-background/70 px-1.5 py-0.5 text-(length:--text-micro) font-medium text-muted-foreground">
-              Recommended
+              {t("decisionForms.questions.recommended")}
             </span>
           ) : null}
         </span>
@@ -194,6 +201,7 @@ export function QuestionResponseSummary({
   questionSet: PaperclipQuestionSet;
   response: PaperclipQuestionResponse;
 }) {
+  const { t } = useTranslation();
   return (
     <dl className="grid gap-2 text-sm">
       {questionSet.questions.map((question) => {
@@ -221,7 +229,7 @@ export function QuestionResponseSummary({
               </span>
             </dt>
             <dd className="mt-0.5 text-foreground">
-              {values.length > 0 ? values.join(", ") : "No answer"}
+              {values.length > 0 ? values.join(", ") : t("decisionForms.questions.noAnswer")}
             </dd>
           </div>
         );
@@ -247,7 +255,9 @@ function QuestionFormForRequest({
   mentions,
   onSubmit,
   onCancel,
+  formatError,
 }: QuestionFormProps) {
+  const { t } = useTranslation();
   const takeoverActions = useTaskChatComposerTakeoverActions();
   // A provider default is an editable draft only. An existing response or
   // saved draft, including an explicitly cleared value, always wins. State
@@ -317,10 +327,10 @@ function QuestionFormForRequest({
       Object.fromEntries(
         questionSet.questions.map((candidate) => [
           candidate.id,
-          answerError(candidate, answers[candidate.id]),
+          answerError(candidate, answers[candidate.id], t),
         ]),
       ),
-    [answers, questionSet.questions],
+    [answers, questionSet.questions, t],
   );
   const allValid = Object.values(validationErrors).every(
     (value) => value == null,
@@ -328,7 +338,7 @@ function QuestionFormForRequest({
   if (!question)
     return (
       <p className="text-sm text-muted-foreground">
-        No answerable questions were provided.
+        {t("decisionForms.questions.empty")}
       </p>
     );
   const answer = answers[question.id] ?? {};
@@ -400,7 +410,7 @@ function QuestionFormForRequest({
       // question and say so rather than dropping the send.
       setPage(invalidIndex);
       setError({
-        message: `Question ${invalidIndex + 1} needs an answer before you can send.`,
+        questionNumber: invalidIndex + 1,
         fromMissingAnswer: true,
       });
       return;
@@ -414,12 +424,7 @@ function QuestionFormForRequest({
       });
       if (draftKey) clearDraft(draftKey);
     } catch (cause) {
-      setError({
-        message:
-          cause instanceof Error
-            ? cause.message
-            : "The answers could not be submitted.",
-      });
+      setError({ cause, action: "submit" });
     } finally {
       setWorking(null);
     }
@@ -433,17 +438,23 @@ function QuestionFormForRequest({
       await onCancel();
       if (draftKey) clearDraft(draftKey);
     } catch (cause) {
-      setError({
-        message:
-          cause instanceof Error
-            ? cause.message
-            : "The questions could not be cancelled.",
-      });
+      setError({ cause, action: "cancel" });
     } finally {
       setWorking(null);
     }
   }
 
+  const errorMessage = error
+    ? error.fromMissingAnswer
+      ? t("decisionForms.questions.missingAnswer", { number: error.questionNumber })
+      : formatError
+        ? formatError(error.cause)
+        : error.cause instanceof Error
+          ? error.cause.message
+          : error.action === "submit"
+            ? t("decisionForms.questions.submitFailed")
+            : t("decisionForms.questions.cancelFailed")
+    : null;
   const currentError = validationErrors[question.id];
   const isLastPage = page === questionSet.questions.length - 1;
   const busy = disabled || working != null || inputUploading;
@@ -466,26 +477,26 @@ function QuestionFormForRequest({
     questionSet.questions.length > 1 ? (
       <nav
         className="flex shrink-0 items-center gap-1"
-        aria-label="Question pagination"
+        aria-label={t("decisionForms.questions.pagination")}
       >
         <Button
           type="button"
           size="icon-xs"
           variant="ghost"
-          aria-label="Previous question"
+          aria-label={t("decisionForms.questions.previousQuestion")}
           disabled={disabled || working != null || page === 0}
           onClick={() => setPage((current) => current - 1)}
         >
           <ChevronLeft aria-hidden />
         </Button>
         <span className="min-w-10 text-center tabular-nums">
-          {page + 1} of {questionSet.questions.length}
+          {t("decisionForms.questions.pageOf", { page: page + 1, total: questionSet.questions.length })}
         </span>
         <Button
           type="button"
           size="icon-xs"
           variant="ghost"
-          aria-label="Next question"
+          aria-label={t("decisionForms.questions.nextQuestion")}
           // The arrows browse; they do not validate. A send that finds an
           // earlier answer missing returns to that question (see submit).
           disabled={disabled || working != null || isLastPage}
@@ -532,7 +543,7 @@ function QuestionFormForRequest({
       {questionSet.description ? (
         <div
           role="region"
-          aria-label="Question context"
+          aria-label={t("decisionForms.questions.context")}
           tabIndex={0}
           className="mb-3 max-h-96 overflow-auto text-sm text-muted-foreground"
         >
@@ -541,7 +552,7 @@ function QuestionFormForRequest({
       ) : null}
       {question.answerMode === "text" ? (
         <div className="mb-2 flex items-center gap-3 text-xs text-muted-foreground">
-          {question.answerMode === "text" ? <span>Write an answer</span> : null}
+          {question.answerMode === "text" ? <span>{t("decisionForms.questions.writeAnswer")}</span> : null}
         </div>
       ) : null}
       {pagination ? (
@@ -583,7 +594,7 @@ function QuestionFormForRequest({
             value={answer.text ?? ""}
             disabled={disabled || working != null}
             onChange={(value) => updateAnswer({ text: value })}
-            placeholder="Write your answer"
+            placeholder={t("decisionForms.questions.answerPlaceholder")}
             imageUploadHandler={imageUploadHandler}
             mentions={mentions}
             autoFocus
@@ -591,7 +602,7 @@ function QuestionFormForRequest({
             onSubmit={() => {
               if (!inputUploading && currentError == null) progressOrSubmit();
             }}
-            attachAriaLabel={`Attach image to answer for ${question.prompt}`}
+            attachAriaLabel={t("decisionForms.questions.attachAnswer", { question: question.prompt })}
           />
         </div>
       ) : (
@@ -614,8 +625,8 @@ function QuestionFormForRequest({
                     [question.id]: event.target.value,
                   }))
                 }
-                placeholder="Filter choices"
-                aria-label={`Filter choices for ${question.prompt}`}
+                placeholder={t("decisionForms.questions.filterChoices")}
+                aria-label={t("decisionForms.questions.filterFor", { question: question.prompt })}
                 className="pl-8"
               />
             </label>
@@ -637,7 +648,7 @@ function QuestionFormForRequest({
             <div className="space-y-1.5">
               <SelectOption
                 id={`${id}-${question.id}-custom`}
-                label={question.customAnswer?.label ?? "Other"}
+                label={question.customAnswer?.label ?? t("decisionForms.questions.other")}
                 selected={isCustomActive}
                 multiple={multiple}
                 disabled={disabled || working != null}
@@ -649,7 +660,7 @@ function QuestionFormForRequest({
                   testId="question-other-answer-composer"
                   value={answer.customText ?? ""}
                   placeholder={
-                    question.customAnswer?.placeholder ?? "Type your answer"
+                    question.customAnswer?.placeholder ?? t("decisionForms.questions.customPlaceholder")
                   }
                   disabled={disabled || working != null}
                   onChange={(value) =>
@@ -663,7 +674,7 @@ function QuestionFormForRequest({
                     if (!inputUploading && currentError == null)
                       progressOrSubmit();
                   }}
-                  attachAriaLabel={`Attach image to other answer for ${question.prompt}`}
+                  attachAriaLabel={t("decisionForms.questions.attachCustomAnswer", { question: question.prompt })}
                 />
               ) : null}
             </div>
@@ -676,7 +687,7 @@ function QuestionFormForRequest({
       <div aria-live="assertive">
         {error ? (
           <div className="mt-2 rounded-sm border border-destructive/60 bg-destructive/10 px-2.5 py-2 text-sm text-destructive">
-            {error.message}
+            {errorMessage}
           </div>
         ) : null}
       </div>
@@ -692,7 +703,7 @@ function QuestionFormForRequest({
             {working === "cancel" ? (
               <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
             ) : null}{" "}
-            Cancel
+            {t("decisionForms.questions.cancel")}
           </Button>
         ) : null}
         {!question.required ? (
@@ -703,7 +714,7 @@ function QuestionFormForRequest({
             disabled={busy}
             onClick={skipQuestion}
           >
-            Skip
+            {t("decisionForms.questions.skip")}
           </Button>
         ) : null}
         <Button
@@ -715,7 +726,7 @@ function QuestionFormForRequest({
           {working === "submit" ? (
             <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
           ) : null}
-          {isLastPage ? (questionSet.submitLabel ?? "Submit answers") : "Next"}
+          {isLastPage ? (questionSet.submitLabel ?? t("decisionForms.questions.submit")) : t("decisionForms.questions.next")}
         </Button>
       </div>
     </div>
