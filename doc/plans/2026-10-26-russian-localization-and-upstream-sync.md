@@ -281,9 +281,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current catalog has 1,306 reviewed semantic families, 1,333 English forms, and
-1,387 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 20,068.
+The current combined catalog has 2,425 reviewed semantic families, 2,484 English
+forms, and 2,602 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,990.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -351,12 +351,11 @@ The search repair is published separately in
 tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
 comparisons passed. Unicode capability selection preserves existing databases.
 The recorded 10k-task timing run missed the 250 ms target; query plans and the
-limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The new real
-browser acceptance is still pending; the original failed result is retained.
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The original failed result is retained.
 
 The task-detail/properties and common-editor slice adds 650 reviewed families.
-The combined catalog has 1,956 families, 2,000 English forms and 2,088 Russian
-forms. The baseline removes 563 resolved occurrences and retains 19,505; twelve
+The combined catalog has 1,959 families, 2,003 English forms and 2,091 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,491; twelve
 exact technical exceptions describe enum guards and currency formatting.
 Independent agent reviews found and corrected terminology and two missing
 accessible labels. The actual installed MDXEditor regression first reproduced
@@ -365,6 +364,18 @@ its edited content, DOM and selection. UI typecheck, token gates, focused task,
 sharing, editor and composer tests passed. Combined Linux and browser acceptance
 of this expanded slice remains pending.
 
+A separate search correction at `cd50089b9c09276506293ee75e82e03a7f20746f`
+passed frozen installation, full Russian-default build and workspace typecheck on
+Linux. The real browser retry found Cyrillic titles and applied status filters in
+both active renderers. It then stopped at the language controls: a visible
+announcement covered the standard account menu, and the legacy menu had no
+language selector. No task writes or browser exceptions occurred; owned services
+stopped. The legacy menu now shares the real locale control and translated account
+labels. Its complete component suite passes 37 tests, including a regression that
+first failed with the missing selector. A revised browser recipe dismisses the
+announcement through its ordinary button and records the successful response.
+The complete browser retry on the combined source remains pending.
+
 The document/artifact side-panel slice covers 49 production files and adds 466
 reviewed semantic families (481 English forms and 511 Russian forms). Independent
 agent review corrected two count families for 21/101. Integration verified the
@@ -372,9 +383,9 @@ exact reviewed catalog and source digests, re-examined seven existing drag
 announcements in their tab context, and made six file-link interpolation contracts
 explicit. Nineteen exact exceptions identify technical discriminators, a diagnostic
 comparison and the Markdown format name. The baseline removes 501 resolved
-occurrences and retains 19,004; no new debt is accepted.
+occurrences and retains 18,990; no new debt is accepted.
 
-The combined catalog has 2,422 families with no actionable localization findings.
+The combined catalog has 2,425 families with no actionable localization findings.
 Focused component checks cover stored tabs, browser request counts, pending uploads,
 file selection/copy/media state, and a dirty document conflict across EN/RU without
 replaying mutations. These are fixture-based checks; combined Linux verification
