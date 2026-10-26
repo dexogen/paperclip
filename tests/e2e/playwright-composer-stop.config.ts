@@ -19,13 +19,23 @@ const holdFile = process.env.PAPERCLIP_STOP_HOLD_FILE ?? path.join(fixtureDir, "
 const workLogDirectory = process.env.PAPERCLIP_STOP_WORK_LOG_DIR ?? path.join(fixtureDir, "work-calls");
 process.env.PAPERCLIP_STOP_HOLD_FILE = holdFile;
 process.env.PAPERCLIP_STOP_WORK_LOG_DIR = workLogDirectory;
+const server = base.webServer;
+if (!server || Array.isArray(server)) throw new Error("Composer Stop requires one isolated test server");
 if (fixture) {
   if (!path.isAbsolute(fixture) || !fs.existsSync(fixture))
     throw new Error(
       "PAPERCLIP_STOP_FAKE_CODEX must name the built fake-codex-app-server binary",
     );
   fs.mkdirSync(path.join(fixtureDir, "codex-home"));
-  const providerScript = composerStopProviderScript({ binary: fixture, stateDirectory: fixtureDir, holdFile, setupLog: logPath, workLogDirectory });
+  const serverConfig = server.env?.PAPERCLIP_CONFIG;
+  if (!serverConfig || !path.isAbsolute(serverConfig)) throw new Error("Composer Stop requires an owned server config path");
+  const instanceRoot = path.dirname(serverConfig);
+  const providerScript = composerStopProviderScript({
+    binary: fixture, stateDirectory: fixtureDir, holdFile, setupLog: logPath, workLogDirectory,
+    nodeBinary: process.execPath,
+    runIdentityScript: path.resolve(import.meta.dirname, "fixtures/composer-stop-run-identity.mjs"),
+    runtimeRoot: path.join(instanceRoot, "runtime/paperclip-runner/durable-sessions"),
+  });
   fs.mkdirSync(workLogDirectory, { recursive: true, mode: 0o700 });
   if (fs.existsSync(holdFile)) throw new Error("Composer Stop work marker already exists");
   fs.writeFileSync(
@@ -34,8 +44,6 @@ if (fixture) {
     { mode: 0o755 },
   );
 }
-const server = base.webServer;
-if (!server || Array.isArray(server)) throw new Error("Composer Stop requires one isolated test server");
 export default defineConfig({
   ...base,
   testMatch: "composer-stop.spec.ts",
