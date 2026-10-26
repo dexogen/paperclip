@@ -882,8 +882,12 @@ translations, and publish immutable images only from verified `master` commits.
 They do not auto-merge or deploy. Scheduled sync and image publication require
 accepted default-branch integration and a successful first real run.
 
-Actions is enabled, but its default token is read-only and Actions PR creation is
-disabled. A sync App and registry publication have not been demonstrated. After
+Actions is enabled. On 2026-10-26 the repository setting permitting Actions to
+create and approve PRs was enabled and read back through the GitHub API
+(`can_approve_pull_request_reviews: true`); the default token remains read-only.
+The sync workflow grants only its declared job permissions. Reverting that setting
+to `false` disables this permission again. No sync App variable/private-key secret
+is configured, and registry publication has not been demonstrated. After
 an earlier `repository invocation blocked` cancellation, the owner re-enabled
 Actions on 2026-10-26. A new exact-SHA dispatch for `07332f25c` started real jobs;
 the [run finished with a failed integration gate](https://github.com/dexogen/paperclip/actions/runs/40291467289).
@@ -907,8 +911,10 @@ checks exact SHA `71f7e5d79dac4e55de63d9df4766342563a9bd34`, including project
 translations and the native cleanup fix. All nine jobs passed, including build,
 workspace typecheck, UI/CLI/shared/adapter tests, all six server partitions and
 the localization gate. The later agent-detail slice is published in
-[PR #24](https://github.com/dexogen/paperclip/pull/24) and has a separate pending
-check. Intermediate duplicate runs were cancelled; cancellation is not a passing result.
+[PR #24](https://github.com/dexogen/paperclip/pull/24). Its separate
+[exact-SHA run](https://github.com/dexogen/paperclip/actions/runs/40307651568)
+also passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`.
+Intermediate duplicate runs were cancelled; cancellation is not a passing result.
 The available evidence does not establish why GitHub disabled execution, and
 local passes do not make the failed hosted gate green.
 
