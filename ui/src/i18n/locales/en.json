@@ -8221,5 +8221,25 @@
       "pendingHint_one": "{{name}} will be able to access work and repositories in this project. Existing project access and low-trust restrictions stay in place.",
       "pendingHint_other": "{{name}} will be able to access work and repositories in these projects. Existing project access and low-trust restrictions stay in place."
     }
+  },
+  "agentChannelsUi": {
+    "heading": "Channels",
+    "description": "Chat and email identities connected to this agent.",
+    "connect": "Connect a channel",
+    "loading": "Loading channels…",
+    "empty": "No channels connected",
+    "emptyConnectorsHint": "Connect an agent identity from Connectors.",
+    "emptyEmailHint": "Connect AgentMail from Connectors.",
+    "openConnectors": "Open Connectors",
+    "providerIdentity": "Provider identity",
+    "openConnection": "Open connection",
+    "status": {
+      "draft": "draft",
+      "verifying": "verifying",
+      "active": "active",
+      "paused": "paused",
+      "attention": "attention",
+      "revoked": "revoked"
+    }
   }
 }

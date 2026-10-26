@@ -55,6 +55,16 @@ check an open policy, unsaved boundary type, canonical permission payloads and
 disabled/email gates. These component checks do not prove live authorization or
 persistence; use the reload recipe above for that evidence.
 
+Open **Channels** at `/agents/:agentId/channels` to inspect this agent's connected
+identities and follow a connection's settings link. The
+[channel-list locale cases](../../ui/src/components/ChatConnectorsExperimentalGate.test.tsx)
+retain a pending list request, raw identity labels, links, known/unknown status
+presentation, independent chat/GitHub flags and agent/archive filters through
+EN/RU/EN changes. They use mocked APIs and do not prove provider setup or delivery.
+For browser acceptance, change language while the list loads and after it appears;
+check the same visible identities and destinations. The existing list-query error
+can appear as an empty list; this separate error-surface gap remains unresolved.
+
 In `/agents/all`, select roster checkboxes and choose **Edit connection & model**.
 A mixed selection offers one action per harness. Each field is opt-in. The editor
 previews each changed value and excludes agents already at the target value.
