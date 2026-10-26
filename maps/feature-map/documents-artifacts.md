@@ -45,6 +45,13 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Use 
 
 Automated: [documents service](../../server/src/__tests__/documents-service.test.ts), [annotations](../../server/src/__tests__/document-annotations-service.test.ts), and [revision restore](../../server/src/__tests__/issue-document-restore-routes.test.ts) cover server contracts.
 
+[Document component tests](../../ui/src/components/IssueDocumentsSection.test.tsx)
+switch EN/RU with an unsaved draft and a revision conflict, retaining the editor,
+literal title/body and canonical save payload without repeating the save. The
+document and history controls are localized; advanced annotation tools remain a
+separate translation and verification scope. This fixture does not prove a live
+save or permission boundary.
+
 Manual: Edit a paragraph, save, reload, and compare revisions. Add an annotation to a specific selection and inspect it after another edit. Resolve it through the supported action. Restore a disposable revision and confirm the new current document and history agree.
 
 ### `task-output`
@@ -58,6 +65,15 @@ again and verify a separate suffixed document without overwriting the original.
 On a paused unassigned task, confirm upload does not start work or add comments.
 Verify agent-produced work products separately using an eligible test run.
 Test an inaccessible user/company and explicit missing workspace-only resources.
+
+Locale component checks cover [pending uploads](../../ui/src/hooks/useIssueArtifactUploads.test.tsx),
+[workspace selection](../../ui/src/components/WorkspaceFileBrowser.test.tsx),
+[file copy and preview state](../../ui/src/components/FileViewerSheet.copy.test.tsx),
+and [feedback, media and trust controls](../../ui/src/components/task-panels-locale.test.tsx).
+Switch EN/RU while those controls are open: names and source bytes remain literal,
+selection and drafts survive, and language changes must not upload, copy or submit
+feedback again. The complete rich work-product card and deep annotation/viewer
+branches still need separate checks. Real browser acceptance remains pending.
 
 ### `artifact-library`
 

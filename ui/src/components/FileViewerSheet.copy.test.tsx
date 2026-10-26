@@ -128,11 +128,13 @@ describe("FileViewerSheet copy actions", () => {
   async function click(label: string) {
     const button = document.body.querySelector(`button[aria-label="${label}"]`) as HTMLButtonElement | null;
     expect(button).not.toBeNull();
-    flushSync(() => {
-      button!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    await reactAct(async () => {
+      flushSync(() => {
+        button!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      });
+      await Promise.resolve();
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    await Promise.resolve();
-    await new Promise((resolve) => setTimeout(resolve, 0));
   }
 
   it("copies file contents and shows confirmation", async () => {

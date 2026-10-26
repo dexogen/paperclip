@@ -34,18 +34,17 @@ export function ArtifactFileChip({
   const viewer = useFileViewer();
   const display = typeof label !== "undefined" ? label : artifactFileDisplay(workspaceFileRef);
   const canOpen = !!(onOpen || viewer);
-  const values = { path: workspaceFileRef.displayPath, line: workspaceFileRef.line, column: workspaceFileRef.column };
   const ariaLabel = canOpen
     ? workspaceFileRef.line
       ? workspaceFileRef.column
-        ? t("taskPanels.file.openAtColumn", values)
-        : t("taskPanels.file.openAtLine", values)
-      : t("taskPanels.file.openViewer", values)
+        ? t("taskPanels.file.openAtColumn", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line, column: workspaceFileRef.column })
+        : t("taskPanels.file.openAtLine", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line })
+      : t("taskPanels.file.openViewer", { path: workspaceFileRef.displayPath })
     : workspaceFileRef.line
       ? workspaceFileRef.column
-        ? t("taskPanels.file.workspaceAtColumn", values)
-        : t("taskPanels.file.workspaceAtLine", values)
-      : t("taskPanels.file.workspace", values);
+        ? t("taskPanels.file.workspaceAtColumn", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line, column: workspaceFileRef.column })
+        : t("taskPanels.file.workspaceAtLine", { path: workspaceFileRef.displayPath, line: workspaceFileRef.line })
+      : t("taskPanels.file.workspace", { path: workspaceFileRef.displayPath });
   const tooltip = title ?? ariaLabel;
 
   const classNames = cn(

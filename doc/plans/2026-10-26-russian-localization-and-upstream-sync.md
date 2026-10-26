@@ -365,8 +365,22 @@ its edited content, DOM and selection. UI typecheck, token gates, focused task,
 sharing, editor and composer tests passed. Combined Linux and browser acceptance
 of this expanded slice remains pending.
 
-Document/artifact side panels are prepared as the next isolated slice. Full
-chat/composer, Activity, and remaining view branches still require separate work.
+The document/artifact side-panel slice covers 49 production files and adds 466
+reviewed semantic families (481 English forms and 511 Russian forms). Independent
+agent review corrected two count families for 21/101. Integration verified the
+exact reviewed catalog and source digests, re-examined seven existing drag
+announcements in their tab context, and made six file-link interpolation contracts
+explicit. Nineteen exact exceptions identify technical discriminators, a diagnostic
+comparison and the Markdown format name. The baseline removes 501 resolved
+occurrences and retains 19,004; no new debt is accepted.
+
+The combined catalog has 2,422 families with no actionable localization findings.
+Focused component checks cover stored tabs, browser request counts, pending uploads,
+file selection/copy/media state, and a dirty document conflict across EN/RU without
+replaying mutations. These are fixture-based checks; combined Linux verification
+and real browser acceptance of this expanded slice remain pending. Full
+chat/composer, Activity, advanced annotation tools, and remaining rich-card/viewer
+branches still require separate work.
 
 The detector and sync regressions pass all 47 cases, including conflict cleanup,
 manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition
