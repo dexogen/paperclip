@@ -34,10 +34,10 @@ describe("AnnouncementCard", () => {
       await act(async () => { await setLocale("ru"); });
       expect(div.querySelector("h2")).toBe(heading);
       expect(heading?.textContent).toBe("Предоставьте агентам нужный доступ");
-      expect(div.textContent).toContain("Новые подключения");
+      expect(div.textContent).toContain("Представляем коннекторы");
       expect(div.textContent).toContain("Подключите Gmail, GitHub, Notion и другие сервисы.");
       expect(div.querySelector('a[href="/apps"]')).toBe(link);
-      expect(link?.textContent).toBe("Посмотреть подключения");
+      expect(link?.textContent).toBe("Посмотреть коннекторы");
       expect(div.querySelector('a[href="https://paperclip.ing"]')?.textContent).toBe("Read publication notes");
       expect(div.querySelector("img")).toBe(poster);
       expect(poster?.getAttribute("src")).toBe("/api/announcements/2026-09-14-connectors/image");

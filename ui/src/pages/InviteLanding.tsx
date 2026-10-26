@@ -71,7 +71,7 @@ function readNestedString(value: unknown, path: string[]): string | null {
 
 const fieldClassName =
   "w-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-zinc-500";
-const panelClassName = "border border-zinc-800 bg-zinc-950/95 p-6";
+const panelClassName = "min-w-0 border border-zinc-800 bg-zinc-950/95 p-6";
 const modeButtonBaseClassName =
   "flex-1 border px-3 py-2 text-sm transition-colors";
 
@@ -831,7 +831,7 @@ export function InviteLandingPage() {
                   ) : null}
                   <Button
                     type="submit"
-                    className="w-full rounded-none"
+                    className="h-auto min-h-10 w-full whitespace-normal rounded-none"
                     disabled={authMutation.isPending}
                     aria-disabled={!authCanSubmit || authMutation.isPending}
                   >
