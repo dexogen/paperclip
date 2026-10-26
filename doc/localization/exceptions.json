@@ -584,6 +584,10 @@
     {
       "id": "0950855864811501c32a7fd9b80fc0cc1916382883d3062dbd5ffbce8d22ee13",
       "reason": "Canonical Muse credentialState comparison in the closed presentation mapper; only the result is localized through externalAgentUi.muse.credential. Unknown API value remains literal; authorization and readiness use the raw enum."
+    },
+    {
+      "id": "3780402f8e374c28f2f8b12ca9331d1f54aac0a5a5d335c89c7265ea7561a2a8",
+      "reason": "REVIEWED_TOKEN_FIELD_LABEL is a raw canonical GitHub registry caption used only as a copy-drift guard after trusted built-in provenance is established. The existing visible caption remains githubSetupUi.registry.keyLabel (Your GitHub key). A changed registry label is shown literally and a five-caption canonical contract test fails until its translation is reviewed; this sentinel does not infer ownership."
     }
   ]
 }

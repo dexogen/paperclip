@@ -52165,6 +52165,1112 @@
       "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
       "method": "agent",
       "reviewedAt": "2026-10-26T11:46:13.435Z"
+    },
+    "githubSetupUi.authorization.embedded_credentials": {
+      "sourceHash": "93dc996f937aac709619eedbdc946571d58681c9edb01e48d6c098d07e5b5cfa",
+      "translationHash": "8dcfb1be78fa99b168738464491fa15a0a9c1934966dc7a6faef07b4b0ab53dd",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.688Z"
+    },
+    "githubSetupUi.authorization.fragment": {
+      "sourceHash": "9c20d0c617b843fa04195d1821d114cbc05cd25278831221b33d27cac0b20f3a",
+      "translationHash": "3cd7178734f95676bc18c807517cda741dc4cdfb04552333793d2c4be35870a9",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.688Z"
+    },
+    "githubSetupUi.authorization.insecure_transport": {
+      "sourceHash": "1dfa0ddce34dd168a10ca11d6c580d6bb3a08daf829ec15dd697d797b3476eff",
+      "translationHash": "50eae9c516d06e894252471cb57b26f3f329fccdddfb10fab769d9b2b723492c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.688Z"
+    },
+    "githubSetupUi.authorization.malformed": {
+      "sourceHash": "aac8213240ef984e36cc05cdc740ca49413c40ce379744088875c7c3fc2f780a",
+      "translationHash": "73d63b75057bda8fa842b3ea6e97c1b189f9376ccea47f2fa5883e2d59cd734e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.authorization.missing": {
+      "sourceHash": "6d8dd8a81cbe064b6985914514aba0b295920059ef3ac5cd840b2b3befa0ee4c",
+      "translationHash": "062b8fb8fbf91b7819cf08a63fb8d183def9e5a684047ddce4245416605faba5",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.authorization.unsupported_scheme": {
+      "sourceHash": "2073a46a647bca0abc1913aca6ea7719229e80bcb477e24bc0fbe43be1c03e55",
+      "translationHash": "a9456eceb27d2dee5ce99a4b7d96ed7ac06c843bd8b0de3da4edbf2d56ec3b33",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.back": {
+      "sourceHash": "2f864f2a96dea8c78a2248f83874ecde309dd4f7a2027131194bfaefbb15044b",
+      "translationHash": "d10091158386c7c750817b59b13bc8ce9669b5ec364345e6e6bbdbba0a6052e8",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.backToApps": {
+      "sourceHash": "a8d0fe03239d9849330f504d39f8ea4c351453c690cefb80ca98e06fba25078f",
+      "translationHash": "f6ee5e5cd50c34598c58f4793915647b553db26c7ddda89ecb2dba6cf488f99b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.breadcrumbs.app": {
+      "sourceHash": "5b28356517bac83a482c1cd9a05371474957e11390be49e2feed1459a2801b57",
+      "translationHash": "76b060bae55a4a60048e79f2d17fbf867759e4efc3c3990fafe45a1fab400086",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.breadcrumbs.connectors": {
+      "sourceHash": "b5470492ca4ed94903e62151c24a41a92ec9e57ffe72b3de38b0f372bdf7b3f2",
+      "translationHash": "a888d4a7d2028898489f015f18dff94e1a032ccbcbf6b99552a50d7c120164b4",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.breadcrumbs.custom": {
+      "sourceHash": "aebc9426eeed45043bdf67ce39000fa11d27c3daf61bea049599865326665334",
+      "translationHash": "ab524c4d757061bff99410696a02e14bf500ceec8ff9d5cc255bbe14db560916",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.cancel": {
+      "sourceHash": "a3a5337daae96b65e9bc0b9287f0a91193732781b3f6be2ad8e2ae4d9127a518",
+      "translationHash": "b77946d45eaea820794916b7d7380026c05de362ed114065df1d4f26f9ab04fc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.cloud.checkFailed": {
+      "sourceHash": "f2cc7a4ed09ae317a4177f8038c5815d3d36760ca8f786214174ae71d088f719",
+      "translationHash": "c4921d8e9785532e12aaafc99f7a9288bfb1c47e1047c10a67f1eac6e5d4ab24",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.cloud.connect": {
+      "sourceHash": "105391ee4955eec8d4d70d95df7d168fd21cd210ce42e1e63b31cf7c54cb1a36",
+      "translationHash": "e6a0c77871908c46c70f94235eed6ed75660b889b1bd2d1881c4bbbdc8f0d766",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.689Z"
+    },
+    "githubSetupUi.cloud.customOAuth": {
+      "sourceHash": "37cc95bea1560bc18ec48826a26ce5700bb11ea6bfc899676aafbcd43a93faa4",
+      "translationHash": "013ae2ab92bd5eec9366d8a7bba54b1513906f621b6c33418ce0d804a18f7d47",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.cloud.enrollBody": {
+      "sourceHash": "82e3b7697995ed39b8bbccc6709c0f6de3a8f08aecb78a36b2962981cb3b76ee",
+      "translationHash": "3a15dc59ab456d66ef5d0adcf775b61d7608b93df4d3eefd480169949958d23f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.cloud.finish": {
+      "sourceHash": "0c8408597c77a6abc5bee0a9d4f7413baf4599721cb8a45003a80d7432b1d301",
+      "translationHash": "bd9c289e47f15e6c8cee6747a1786acc529481139e6f6ba1b420452e7a901a9e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.cloud.openTab": {
+      "sourceHash": "1f5b3c6026e08fc2a824af808591f45705eb2d52252ef6e13a4d54d40ead94b4",
+      "translationHash": "f1952db974a0ed7b38f9f1ec20caa37bcde833e55f417db9ba1fb628aa4ecae3",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.cloud.unavailableBody": {
+      "sourceHash": "970072b14978d4823bd6d8f4e2fc06d40df98f029ceebe1fb86cd50be64dc2f6",
+      "translationHash": "2e0b01016a9db84399b6da10194521758f521e0a887c26ca29a001d78597099f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.cloud.unavailableTitle": {
+      "sourceHash": "559581a19aa512aa00ad36b4b2f2229c48837b580f1caf2843a05896d487b590",
+      "translationHash": "2798711a072b015a7de031b5c948a468ed9c7a52cfda4f1b2d4c2ed7c98bae25",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.completion.ready": {
+      "sourceHash": "afe6bfbd881de692d13369fffdfbcb8a184a40a529c7c7bedef595d6eaf4d31c",
+      "translationHash": "9df6f2ccdf407fe5556ff2558c4c4578f934b7df7e35a83f9acc513b7006203b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.completion.view": {
+      "sourceHash": "bf45d7ebcd7fe27dc1e21c0ee1d538135c1fc69f59aa04de607b6fdb1f2d4a25",
+      "translationHash": "7f5563ed283dd3e9c58362393fd6677dee8185469c71dd90d10098c912d1137a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.configurerOnly": {
+      "sourceHash": "fad8139febd389149464766b14c421dce884c08ffa5b604af3d8aede52a0e49a",
+      "translationHash": "211a2345a1ef9c6bff40db7d2e4abfc166d6857c341a3353822117992c78924e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.connectFailed": {
+      "sourceHash": "8764ebde58614ba22859dad89da377e0a7a78529dbbe7cefbb762d1d0b186189",
+      "translationHash": "f362561292a27ce6e47d11813a43f8a1adfb00aa554f2f18f63fea0cd1c4a476",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.connectNew": {
+      "sourceHash": "4401724bc10f1d2bcf042026eeaecfb66867fd148be32532e7aaf21b9ecb87fc",
+      "translationHash": "f77017d3dff448d7bd2aeda33cb610bbdf9611aa492b991d79c7ae420d64399d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.continue": {
+      "sourceHash": "078e8aee0cf3ce0e1d246f44cb02d9d8ff00086b379d0d241cbc878eb14c14a6",
+      "translationHash": "d197faeb767fe4f1c0abeca1a299a2ba49d2d1b0c7c2edac9a3efc443a1c0a3f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.callbackDenied": {
+      "sourceHash": "a77907dc83abaea00d4dc585ada475a7a5dbf0ad1ea28f383958adb3fee276a1",
+      "translationHash": "1ed2b0326f5ab8989ece5389c0950b863d0cc68eed985957282a3feb868fbc02",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.callbackIncomplete": {
+      "sourceHash": "8201e7021cadce6097b9b66bb095ee4edc84adc76aef530993da88de6a7bd783",
+      "translationHash": "b061c1157eac85cf739c7cf1ab32846114b6626d536cb7c9e69fafa9092f3260",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.cancelled": {
+      "sourceHash": "a9017cdbeeb919ebb2c8713366f1f5c8d0ad3876266a60a6846c1290f033b451",
+      "translationHash": "85178bfaa4e179fcccd903f2fe2c1a77fbff4c2fc0b9e35fa592eb479e07f580",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.cloudUnreachable": {
+      "sourceHash": "e6173170eaefd12253e1823420f425819cd87e379db909ed1e59ef97fbbb786e",
+      "translationHash": "e6377a64928231f64d5e8a0a771f82d5b02b08d98a7e53d6179b9a21436ec7e7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.confirmFailed": {
+      "sourceHash": "678691a5a648c266bb7064a5e07cd76ac802229edcb7c8266da3745b0d2cff70",
+      "translationHash": "362dbf697c95741c0b4fb1d470b857491f1e2a03a5eb521e07c97a8dc7ea8ad9",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.enrollmentLinkMissing": {
+      "sourceHash": "ed0ad046fe79b85ebf6455e1241adb59347e60ec74d2eb01c2f209605376a993",
+      "translationHash": "cf613cd7375478b75b91eb529ce527dbc22152f6d7020b7cfff444c18ae86146",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.enrollmentTab": {
+      "sourceHash": "38e6f91725d358b65b16232c3f1579c257df89f60223c06f0494a396cdcbb102",
+      "translationHash": "d486f80a7d5b676c1aff58ab43c00c875722634b1b6df987d544263f537f2704",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.existingFailed": {
+      "sourceHash": "963388bce90d4e755b07157fcd2a9dad0369fc9e04e899907747544480ba6709",
+      "translationHash": "1f0136d2597eacae286512f35b36e7b790d22dd494a8e051e3309ad4250d07fe",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.expired": {
+      "sourceHash": "2c19c9f7f2022faff33d7adb687ef097cbb87c949e86132486701feb5705350f",
+      "translationHash": "9486039df235057d9a5e6cedcd60592e24288aff82ddb420c45b78cec705762c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.690Z"
+    },
+    "githubSetupUi.errors.finishInWindow": {
+      "sourceHash": "0844905fc9601b6e928fb28c4d9993f175ee58986592b2ca7cdd74629095b201",
+      "translationHash": "5292c505ec7c32f5db0a2094a6ec132b912818e1ad6c6012669365508df5a3a6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.githubAccessRequired": {
+      "sourceHash": "1fd981a84f0f5ea4ee1febddcb85c6aebfe9d7a41e3b519fe854c4daccdcc2b3",
+      "translationHash": "7f97354e5b868029861176a9f036fcbdb6ab1247ace86eb0b0703424b75fa5fc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.githubPopupClosed": {
+      "sourceHash": "a8357b4fe23cf549dd7f35d10c84d52fe70780986c09cfca06eaf4cda19ce87e",
+      "translationHash": "921ba3ddc51f9cc663f9d92a6b9fcddeb914f41ebb38daeae70144d113a6c6c1",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.incomplete": {
+      "sourceHash": "7646200be94809556df2346548dbd887cef2a460daa144179db336d5b648c812",
+      "translationHash": "d91dcd27b5eb67dac4f4953491d1e391962496285cc37975a9fcde3880cc5797",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.lookupFailed": {
+      "sourceHash": "76ed7de02fccf75ee986572a09b58d4517c686892bbfea9204e5815e30f2b39f",
+      "translationHash": "93d75c3be35cd19bd3d8ce9b3697c8a7d615446fbfa220905d70674433741fbc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.popupBlocked": {
+      "sourceHash": "68b4b6280c8879b92ba52297a991c9f2b36b9bf9aaf7b371a9090b042df6cef4",
+      "translationHash": "59c0bea49b96c2b298c09284ec6870962aeef3f26179420aa97061f1caa35e2f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.popupClosed": {
+      "sourceHash": "8928f1063400d901ffa389943c2f3fbe744343c88b837aa03b79cd96a0344188",
+      "translationHash": "d5e5be91afc16fc910c7398a11fd2f5bf58f57aa1d8d52228c78e30736283d35",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.preserveFailed": {
+      "sourceHash": "dc7989090ead0bb63106aca626105a72cef308bea7f8d4656ae7bcec342e8bd4",
+      "translationHash": "06b9b6aaaa3cfe07b1ddb73ea803aa27f6e1c028bec34f4b77540ccadaea0978",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.errors.startFailed": {
+      "sourceHash": "c2fa19b675b566dad75b4f68a69674767c76c6506e8d0be75d8b6ebcbe50079f",
+      "translationHash": "68fbda0be17ba638e023cd4fe4f4271b27c3b24a728d830d45807bd2426422cb",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.existingAppTitle": {
+      "sourceHash": "8057a6f3f5f12ecf739743c14bf8f8db07c3923824c3c09bb26d97aa9f677109",
+      "translationHash": "b2e183745b0e3348031e5de992c5bf1ce911c2c2211f3ea6426af5211c248072",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.existingAttention": {
+      "sourceHash": "b747f8f0f1b87ee6b2e180877f7c33bf6177248f6391f13bf477a22afab1ede2",
+      "translationHash": "7a753790fb05fcf6c5049fee96ef2f10249f35191397e40d82fc1e4f6ccc596d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.existingHint": {
+      "sourceHash": "3d89d06694c2292f2c06537fc68a8c3f5b7f705280038182b76a9ecc00daf33f",
+      "translationHash": "105b63798a8972a4a8e6823b786525cf093d175154ad8448bd0a126eaa64b153",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.existingReady": {
+      "sourceHash": "da7ddc7a837df004048cf33b38734aea7bd983fcb4fe4536de268d6433b33e3f",
+      "translationHash": "112689146c96a5522aa5156203372eec1d567b38d97558001fa75fde2125212c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.existingTitle": {
+      "sourceHash": "e38e40da02bb9c13cef1258462bae9ad975af2f38d274b0891636103e7b0e4b8",
+      "translationHash": "ece38f1e9ce7755847221cd4123ca530f2a4eb19c9da61cf456fb405ce009202",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.finishFailed": {
+      "sourceHash": "f9212f5782f40688ad6930036e4d27a754d5635709f13419135b5b47ea2799d3",
+      "translationHash": "9068bfef466bfe525ae686ae97c8e85f7f36973b9feb0c408e431e410cb1ae1d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.handoff.expired": {
+      "sourceHash": "368d1e782c95c3d287ec06d8b4e05e85644a6a2ce6d44b52452b7235e756377c",
+      "translationHash": "aaf8da8b76fff07b72e39f399d6cedfdfb4ec4df29b69745c4842fff63eb6825",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.handoff.forbidden": {
+      "sourceHash": "f724b23840c3b86233e9a2eab7d53d5ad3d5775075725a8f759ccaef180a31e4",
+      "translationHash": "9c002161ebafa48582138c725782b11a2207f0787c4ff481da7cd1f647e57d57",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.handoff.invalid_handoff": {
+      "sourceHash": "597c7593088542aef9e73c863b6cfb6953a9eca9024de9b9cfe7a5da1af65ea5",
+      "translationHash": "3dfc66932210d64322a54cf0ce59de3dbec97cd284537982cf4671a3aa3c58c7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.handoff.invalid_provider_address": {
+      "sourceHash": "c36730f4b243074e682bb8f357860143738ceedc341d4353d2b7ab554e097627",
+      "translationHash": "8acfbb9c35e1d0385c85e32e5feef029a2be82530ea6f0352831a51e27bb6896",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.handoff.unavailable": {
+      "sourceHash": "9925f41573f5e068a1271865cccc2e530f2b80d1c40373305817b8d9b323c281",
+      "translationHash": "4a2b420586b496c246511ed6c26f356ee94eecbd134d87880e40aa7dfb764197",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.connect": {
+      "sourceHash": "70ef27d7a79524bc3099979f32125d46966f77d7128ec061234334adafdd0b5e",
+      "translationHash": "1d56dc646095ac05a4f28fcfd8c675c024563035e98aaaecea5952a8924447de",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.custom": {
+      "sourceHash": "7446bfe0cd01f9870cdbda82c8ef5aea92107aec68c436ca0c0da6894b682092",
+      "translationHash": "2216e54e56aef4856899631830b72f7439e93527530ce5880175f10f6c4e32dc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.pick": {
+      "sourceHash": "733092f82672818aaa57035bf4681fb1dcf27fe7408fc101d5e7d2cc26897657",
+      "translationHash": "383e1109461bb05ebd7bc05f7f6b59b3e299dedfff623b946c895e42fd1bc47b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.progress": {
+      "sourceHash": "6f7d5e8b7445aa221b83af562670abbcf9389c8078eb1d1fae0d92ed9b1a1bb3",
+      "translationHash": "5f5e10856a7e78b5c58f2fcb06c799efa5fefda10d5e37b39f4f0e8b9da056a6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.step": {
+      "sourceHash": "507fde453d446cb2c01f3e3394a5f128bd4cea2b907adcb92b87bd40f12646bd",
+      "translationHash": "81ee44705f0835ec32faedeaf824a7fbc33899b599d119dbf40e54b29f46f39f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.header.vercel": {
+      "sourceHash": "19b3aa5064331d24e55ae3934076513f9514e582f2f521fdc6dba4258f5a1411",
+      "translationHash": "cdc1c5f02494c06cd61187e198ba2eb26a88ff7ef2009b9e6a512a041afb74d9",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.apiKey": {
+      "sourceHash": "a8b595077d68875cab09158e8ae6052e925299443ce98845cb8809cefd5e883b",
+      "translationHash": "d326ea865a370ccff96e6c7a5b2376b377b54c904bba296fd9a009f8dc19ab21",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.capabilityAria": {
+      "sourceHash": "1386a170a0f921356170dc9fb6199d2df0ef455be528f447eec1471fc0293ed7",
+      "translationHash": "c0b5d837dd50e4b2c599a20c78bd86b706dfdbdef039181db94cadae67d6ac6f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.checking": {
+      "sourceHash": "e0d55400b38db63959402450fdbc49deb1fa5e042f1c587d9153d6219e6ab106",
+      "translationHash": "7db307fc57a35f92aeb32b40c526815263876801a78d524622ad0cac600a275a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.chooseCapability": {
+      "sourceHash": "cb039b4dd779118f3fdd4e52fe66b8c38868991a406255e990298ecdc89fcf2a",
+      "translationHash": "c8a1e5f6150c8de49c55f889b6691e9d778c3849a478314727759f9bf0f3a53b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.chooseCapabilityHint": {
+      "sourceHash": "324c8251147672f000f022ba26605f0a81e24fdcea106a51e5900b80743f8d80",
+      "translationHash": "4b2d1fd7a1b87fba6ded69b39888307a5851af88cdc1d04ffdba302529f4b1e2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.691Z"
+    },
+    "githubSetupUi.key.chooseMethodHint": {
+      "sourceHash": "24fe5ff391eb34ff1be8f54d8bb9d813da4bb09df7c97ba8c3df8da9c4df397f",
+      "translationHash": "c979ec9b581baf4c09e01f6f4b1a897aaf542d390daefbbe5a529d64f2171968",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.connect": {
+      "sourceHash": "54a2030cb866c6305248641e4e868628e0d3c4d867ec5e1ea8a92246ace21a60",
+      "translationHash": "9203323891286861c478030f517c0e2124533b89788721066e32c3ee418e92f7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.continueGithub": {
+      "sourceHash": "93f75f086e9d175981776965a787a100a818733f1f350d2a2cd7892ff5a8f3ca",
+      "translationHash": "1d4ad47ebde0311dae0dc2aa0e958fe8ff32b534ec714c24441b709c976721bf",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.continueSignIn": {
+      "sourceHash": "b785a9208fd6471dafbc4faf9012cd6aab08f8bc2569e699803944aa293e2c63",
+      "translationHash": "9ca603775bd7ccb1e5a7dffbbd71d3cfd86ee1daed04030dfc8d76650b2a1b85",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.customOAuth": {
+      "sourceHash": "e06eb100743ce2953c9fda6effb4dea024a3c0a5c5899270af5134e3a551a24d",
+      "translationHash": "a76e9d601933d7e3e99cc5a46d0cac729589d747597f0d85ef528eb9049e9b6a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.method": {
+      "sourceHash": "04c371eec24b08dc1d50bc3d0744ed724bb12997ee06b09892d627407ccb79ee",
+      "translationHash": "f76021d3a31d1d48ef22d677f006702d09d0886e4a6c1137b1454a7ce21efa1f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.methodAria": {
+      "sourceHash": "dad64d7bfdea8cb77fa6663fb68f0043eeb93544f09fe994c64a608daadadb9d",
+      "translationHash": "275f03f90ebce763b61013a9f0383e9fb02a7c1ebdee3473c617ead44b3abc18",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.oauthApp": {
+      "sourceHash": "3b457ade966238f272232c1e58f2788250b196bcd5ae6c8808e14d8cf7cdf1fd",
+      "translationHash": "37559a50b436266849d0dd88634770ad3794903c6f52539fa530e6f6a5af1c71",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.paperclipInstead": {
+      "sourceHash": "e6c25e8289298a49f099bccc449df0adad6a094a7c2d719b7faafc055964523d",
+      "translationHash": "fe2b2be00340e1798f7d4433f0abd054cb46ddc9ecbd44853ec27a21d64743d6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.requirements": {
+      "sourceHash": "f5178d35ef92d7d6334bd17d97f4cc4b8d0c28adc48edc6c0991adc7f8e88ca3",
+      "translationHash": "d43442100a94e31d8add3d3a39847c2e6e53ecf34fd2e379db64fbbed20f396d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.signInWith": {
+      "sourceHash": "7061059bf35cfccde5dfa6a4489919f060f41be35cacb0717f4cce7efab02a78",
+      "translationHash": "af9f9b9789443992692c84d989d5e0c2ce2fb7133067c61c43833007a2a4ae60",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.validateConnect": {
+      "sourceHash": "508da425dee4b1cbae90e51d4b064fadd95199839454fbe7d0fb31023c7bf938",
+      "translationHash": "e271f0efc8992706213f1d48ee86c52a10aa258f9c203a5d6b22624aa857f3ad",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.validateContinue": {
+      "sourceHash": "321aeca4e645cc999f6adab43f79fb4776cd28a1e5fac129340f347e96f8b471",
+      "translationHash": "f7d65ba22b83d5255a985146d92b07d846c8396c3b728e225262902ae6f83c85",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.key.where": {
+      "sourceHash": "7897620234133eebe3d1fdb778f28c3488bc6dc69637b19e1e810eb88f6fdd15",
+      "translationHash": "2fe32e3f3719c36e73eab7f5d800ee3f9a41c423cda1bace0ac8cfe712804f99",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.keyInvalid": {
+      "sourceHash": "fd33f09e24420059f38105700f1dcee6cce65f3baa6335f92bc4716963decb65",
+      "translationHash": "88fafaa55657e4c2e7e95a866fb556d89cf3074a3c9832ea3bad208508e50e5e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.loadFailedBody": {
+      "sourceHash": "d89211c9f17b5157548594b40e8bdd78001c21d675def073b54bccb287fa9efe",
+      "translationHash": "3e4bee3850c85f5afe36b60661805d4a53ff7dd65dcf721f9a6bf98af2a9dbc7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.loadFailedTitle": {
+      "sourceHash": "60b70b6bce482755820968f2bf994216da08e61f116d55420131ea5798869ab6",
+      "translationHash": "948baddf5806fe2517ef1ce617b04dc0a0ac996b6a882ca8d8b4272ec91b5eb1",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.loadingRetained": {
+      "sourceHash": "838686b731b506f520f54253d4708409f4359cf90e1907c2aed4805812829bc2",
+      "translationHash": "5f5a063ee23dc2df9941008fea5a527e3c149e7b5ab45e275b65d9789d33741c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.loadingSaved": {
+      "sourceHash": "b8fc12384d92973b6c6bcac9c47a910bf3bb8edc0e6827ed826da2b94cbee0ff",
+      "translationHash": "a698b8e4e167e9daee8ceaa75a23211c7fe78ac307a07f479c43fb5d9b717dbc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.loadingSetup": {
+      "sourceHash": "3f088da8f6b4059002f0e02c699bec02af69fc96cb11911796d55403e3af3ba6",
+      "translationHash": "3c2c8e91691794d1e013c76de104527b48868d6cf61106a663727b49844be886",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.lookup.availabilityFailed": {
+      "sourceHash": "3dee49aaec91920b14f7cba4e870008b07c99d7fd196b089ce686a1afda52cdb",
+      "translationHash": "0df5823e93b64dfec45635cea09e8a8aead97a91efea45ccde5f226c7fad3ae6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.lookup.loadFailed": {
+      "sourceHash": "184e68d00a59a4fd292cd8aadb43b74713b74ce1e872e649cdcdd435260821ce",
+      "translationHash": "55c4a84471ec604556ca7c04788784fe177bf21b62466025044914fa45aaf85c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.692Z"
+    },
+    "githubSetupUi.lookup.loading": {
+      "sourceHash": "e3638520b9cd6458df687e7d7e82e2da6420b752163654a6702ca620f3f901ba",
+      "translationHash": "0124704c2788b00db0f00dec630619e36bd013d41eda23b08cdec912c8e50c90",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.693Z"
+    },
+    "githubSetupUi.lookup.memoryDisabled": {
+      "sourceHash": "14da27a2aad5d6710ae5fc81a4a0ba7e2f826522095199c322115ed18b58d666",
+      "translationHash": "e37eb929496bc34af01dda9a4fc14a7e2b2d4319a0697a5f6889bd2555d70fc7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.693Z"
+    },
+    "githubSetupUi.lookup.settingsLoading": {
+      "sourceHash": "a5e6392fae744a79bae73d3f2b4c1ab17c7f04acbc3095da6a8d86a1c181eb5c",
+      "translationHash": "51444e628059cb427dfdc0f4be224fb6397e16d9ba5287e29f3b525de65a6f41",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.693Z"
+    },
+    "githubSetupUi.lookup.unavailable": {
+      "sourceHash": "97497c5c71724b2359763099b0df8265d57f62546ce585d11e692cdf579bcc8d",
+      "translationHash": "378979abea4fb936e39fce74606840db47556771cf75e0520e33565d1392f76e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.managerOnly": {
+      "sourceHash": "131b4966d8a3214a16bccfb9a2f17545ee35796b4b2c2969ab209d3023c787f5",
+      "translationHash": "408e7fd0ec5912244683077f0deb2c65208d9aca66cb79b395a1f440afbe36c6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.methodUnavailable": {
+      "sourceHash": "3b686d1980861609b5fb3c6cbc66f3eaa13349b352c877918b7dc34c57ba1c38",
+      "translationHash": "93766b265645e81b6c19775773be44694be7adbe124e51c7c56dbd0bfe4cda7b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.continueTo": {
+      "sourceHash": "615e0b77725250e7f6c59dd112f3b735b442cde978ae94ad1adf78c4472a162e",
+      "translationHash": "ed272a9a1005fd0b0a06b7c562c523a2ad01c2bbc070ddd94a0def5d2fd8540b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.continueToGeneric": {
+      "sourceHash": "b549daaf824b129f6fce266e7f7ed59307f1572834568266e4eed99026cb4202",
+      "translationHash": "02fee6431c0ee974e345a5bee3f27415f0b76d2b448bfcb81a3e1833149a06e2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.entryBody": {
+      "sourceHash": "eb05d542b7dfc7f41af6f9337452236acfa90719475d1ee16ebca47dee4e0c24",
+      "translationHash": "07fd0d15572c5aa1c428ae2680c1705bfec32dcc400cc91a58a9a7fd02b98b23",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.entryBodyGeneric": {
+      "sourceHash": "fbeaaddd5ce814b77d8aef8095a1505d7e34eafe335cad88454b433c079ae07c",
+      "translationHash": "9139e6c111e93be7210c9754fb6eaece11b69a3230c71c5dfcae46318d9f47c2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.entryTitle": {
+      "sourceHash": "9496ca33d4ea664afcb64eb0ab0e775012f00d0bda1ffa05a31383f01ddb431e",
+      "translationHash": "5ff20bd30bde8f3e6cfbb63f129bcd40b94380e9e86f8b2ea6f2b752514968de",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.entryTitleGeneric": {
+      "sourceHash": "5e789ff3ac3762cc01ff0ae883f85a948d500c3bfbfb5631816edd915a058d92",
+      "translationHash": "c68067dd819d20ddab19f72a318e8ab5fe4e56a637d4685c79a63be23cc62d79",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.failedTitle": {
+      "sourceHash": "ca2fbfcf5498d59c1fd62df213b1256ea7125712ff57bc6d1c34800503b30584",
+      "translationHash": "d461ee4d2f4cc11240c8c2b7e34be8b369f1f0d622353b8b08b10593e4a7a63b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.failedTitleGeneric": {
+      "sourceHash": "7c2d1e2c7cd79bc254ef0d093a0ce95c2fb78b3d2cf05065a90c5eacef248f00",
+      "translationHash": "a990adf0f9e7ae357cf705643cf9f771a63c2f6be926e20cc12b79b64b816d21",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.finishWith": {
+      "sourceHash": "b6171d89c5925baefb4bd118bf118872f1cb35c8368eb26f1ee04ad2b7f75b02",
+      "translationHash": "490cbf1e1c4804c9e4bfde3f4f35c80f373660ca6491c7400b54d191187147e5",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.finishWithGeneric": {
+      "sourceHash": "68a773ee55c3380ceb35c745b96e690265fc435ce0d6580f544d1df6613b653c",
+      "translationHash": "a75d7d31aa159c909ee928f18666cf3c82d628b62a815dd4d717e4d9e7becbb0",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.installGithub": {
+      "sourceHash": "f1ef4667f87a33a746dc2d45e59ac302b613f624b0ce38dff369a8634c401954",
+      "translationHash": "82414cf15469453fc29d9487eda2f9868fea8f85d529a8e0bfb3bf4c0c75098a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.manageRepositories": {
+      "sourceHash": "4847661f589775b4b5b4db22dd81758b70ed545da1afa6cda718fac355496031",
+      "translationHash": "e3c02a9effe5581074847fa103dc1c544565bced9bbbd088b3c175fd20770e0c",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.opening": {
+      "sourceHash": "2599cf091a60aef26f2ea685c1c8a19ac036e1f5899c15bafc5e53483712b821",
+      "translationHash": "1c963a10c06f6559823862bcc5e6a84a60339d627d709bcfe1048a2c7f34e1ba",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingBody": {
+      "sourceHash": "da7c592c9b9965d852dc27685ad378b655215625b487e2127b1ec0f654f19b56",
+      "translationHash": "1e87163fbbb4f0ef995153c289dab1dcf5af8ce91c0141aea945b464633832af",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingBodyGeneric": {
+      "sourceHash": "3105f6c9ab478c3dc37533f522b43981ab5c136603adedba5a7dbc38768a2f23",
+      "translationHash": "17a6d368b3fd66512c2bde39d2b587560f9d710a7d13fc38d404183c09f45254",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingGeneric": {
+      "sourceHash": "439f7a3c7fa14a24a079411cfdc96dc94bbf96a0d4e3390dab93eddea54fe243",
+      "translationHash": "5491d5e8e2191b633c4b220aaa03dcfc2585c1397a5583a056bd8eb902c3bd64",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingHost": {
+      "sourceHash": "066a63157754dcd822046b139d7347ea7be0842b2e40604c90172a35b815ae42",
+      "translationHash": "0fa768856f300439f9ad43eeea0f299f6bbc08ff83829db43279f592678b8984",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingTitle": {
+      "sourceHash": "1fd3e8e0725597d93faecdef12b5be3878b338277f5c7b9bfcda51765db92120",
+      "translationHash": "eae5664d853234132de5976cbf7a8c92d06a48f26287d9579e5dc0952d0936f1",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openingTitleGeneric": {
+      "sourceHash": "1e9c8363ea403b96d8bb62e3d638f97be68f9b51c7fab99c9cf416ca7540a228",
+      "translationHash": "40f9e7c7ecc7e5ea08f167b8fabfde249f51c3a82902b70834fc1cf78bba1ee3",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.openTab": {
+      "sourceHash": "a9b930eb34dd11dd4dccdbf89ad532a427b3e402448c1adfb757e321a374dee0",
+      "translationHash": "9d2b789e9f83042a1dfc3af2d8481acb4e084a2d87722877f2777593f4e6a6b2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.preparing": {
+      "sourceHash": "4bb8b50ccfb5bffa00eb70d00108fd89c94ca75a000c902cf670faf9d10cc3da",
+      "translationHash": "ebe698c897c7cecdf8a431231da7c35eb27f23d3835018bf1ede49e71bee6ea7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.preparingBody": {
+      "sourceHash": "1dc605207c4387f6b41a848837892df53f5693a69063d3a758e900f8f0d7a074",
+      "translationHash": "b77a9436cdb82a913d24bb890f16635dacfd36ee35d55247d92883be8cabebe3",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.preparingBodyGeneric": {
+      "sourceHash": "33e3d313472c84fe96ff891f73ac12c2c2ae8e1b75e9cce9b4617cdf4d21936b",
+      "translationHash": "5ecbc0c958c20a87a56de0ef1520a64fd0d4f36973f7d9459910e01dc1a69ed2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.preparingTitle": {
+      "sourceHash": "87661dee0dd693df1bb522497417329a689f804e35b60b54944d04228242a231",
+      "translationHash": "769607a8a9100707e648e8c8be4bf6966d860bab1a3ad2c0bdf9b6d988d313d5",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.resumeBody": {
+      "sourceHash": "ef1b5be80a8ba632f64103eab47cc831bf996f4f3a0e682bbdafb4aab7fafcaf",
+      "translationHash": "8e6e2fcd31ec72acc479aecc09cae2cb38d40a3c3d6b74b0540992be7f4537d6",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.resumeBodyGeneric": {
+      "sourceHash": "d5b503d02f9cc300f7f693ae46b02676da2df54282d496a72d3fa4ab84966d93",
+      "translationHash": "23b54e1eb1e589db4b9160904d7d1e8a1fe413f6bc59d3f36a30cd689f238f6a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.694Z"
+    },
+    "githubSetupUi.oauth.resumeTitle": {
+      "sourceHash": "b508a62175158f8c3e45e0181c74402eadbfbbd888763eab1cb7b4acf073e09e",
+      "translationHash": "93c2b5fbc6266758d6d939f9ffd4662b26d75aef8a69c9a1390cd1944c1e8b02",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.oauth.resumeTitleGeneric": {
+      "sourceHash": "eb62767bd888f0a93f8a8487ea03033f3c4261c73569939c1f701a7114727765",
+      "translationHash": "1b863e2da301ab6e84e44ef3db361b9d3ccc01e33d2036c1d3f9b627428a4210",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.oauth.subtitle": {
+      "sourceHash": "5c527c43c2c78dc6386aa77a9140f2d4840a5cc875a4001a71865c9ae72b5245",
+      "translationHash": "dfec4d38e6e04decc027e4c17d3658e99bb4dd933bb405ef9862c99548eb84f9",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.providerLoadFailed": {
+      "sourceHash": "ec8c904e632b9eed8b5329508135ab2bde025e2ccdc7694594c349f8a30db641",
+      "translationHash": "43c88256a2ff93679cf82877dc8a95e019309c474c399e65db131e2435c98d08",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.reconnectFailedTitle": {
+      "sourceHash": "bc278bc15e00c6a2ad5bb17f7c69d8b02d3d924802075c7e91e4f84bc1928b1f",
+      "translationHash": "5cf3ba41edcf13887ddc8d2338c4af8dc4af9959fe1eb145db3e707b92c2c6ee",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.reconnectMismatch": {
+      "sourceHash": "59494e2fc224fdcd51162871c414b20a3948e8879d9808b13aee9ab579613d83",
+      "translationHash": "0abaab127ab771137c60dfa09207facdd8c9d2ba5d0f9fc3f498b4c02b855f11",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.reconnectMissing": {
+      "sourceHash": "b703b8abeab3aacd990d0e8ad9c43156693dbfb2ea958c06cfcd4d3f27cdbdd8",
+      "translationHash": "5b6761dea3e1d43013b9cd7f164cb78f0dc066a034bb72cc9dc45c6263737487",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.registry.copilot": {
+      "sourceHash": "f7e348eecf0a1971667dad6b868a5449e42bfc88790b821bf0c519c235ae2af7",
+      "translationHash": "d59567fea2dcb96bb25962e7e8197f99661a64c0e27e5aa314e0ab18ed6c1de7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.registry.keyHelp": {
+      "sourceHash": "c3449972d3e57e92c168fc2e97f21ffbf0aca1703e78941bc8034d2d63477920",
+      "translationHash": "1e5ccac26eee0e1117f65b6fa76f2dfce8e2f5e4bc1c0b838768b3a837391fa3",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.registry.keyLabel": {
+      "sourceHash": "cec0a8af51fd4930c24658dcb7ed50898b108d3d0ac0a1b97102ea4b5a89f13b",
+      "translationHash": "c57ad1465b25abdf748b135342801bbc73f7778317c975d671847afd6e05f8be",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.registry.managed": {
+      "sourceHash": "2173e59442f4effe03480ded52c71451d343892db287f198bdbfcef39ff30be6",
+      "translationHash": "b251cfa9c91bb91b77e09c7391c3e1e9f9ac36f3d1e40be949bb51a71073bf2e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.registry.token": {
+      "sourceHash": "df68546ef78068d66e9968608c94fbf9aa14a03c122d252c9b5cf552bdd58d42",
+      "translationHash": "132f0006b1dd5641dee67d23fe9f855528aef1d712eabc38cb65b07c9a3d350b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.requestingAgentOnly": {
+      "sourceHash": "a11c6a92b23ab817388aab952bbec3a7f9e618a6da3abcdc83362ab802bbf9ee",
+      "translationHash": "9d12de43d4f2ae2fa13c5621752764e642fa34e8f1d57009ab8bc8efb2600214",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.resumeFailedTitle": {
+      "sourceHash": "e13300aceef43e1339e57ca45d94c439b6e02ee1613bd3731d5852f2ef6f854e",
+      "translationHash": "070daee75d85e6fe717a5017848d620f597402dd7b245615632d94f94926d00f",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.resumeMismatch": {
+      "sourceHash": "ec15aebadc5374ad31d07f35815bdf307d1191580659d28a25c1868af8db43eb",
+      "translationHash": "014d0a671e0dec62f44d5023b6b7a1a595cbded0125a2267305bd95352273a8e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.resumeMissing": {
+      "sourceHash": "e75951b9431ffae04047d77b9387460f5fa92e0882b1fe4500884467b7f37b13",
+      "translationHash": "a512371fb2ff5a07f2d479cee6c17485ed0bcf5ec47cb91c49f8d9d42090b130",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.retry": {
+      "sourceHash": "c404067a7f9ab6a8817a571aa9be7ba10cb63340a10dc0bc0e7fad2d8db8e831",
+      "translationHash": "f5b43853cce1a34cdb1f27db090e6def85c642339dbf5effc56c7ca2f172f46d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.reviewSetup": {
+      "sourceHash": "ebdc5a9e6b4c34810770a522ae8122fb5f8ce4d2ae66cff3df96c834d012cff9",
+      "translationHash": "1390e1b50a6bafed9c5e35149f1d923f05d44eb03bcb83fe30098f50536cf62b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.selectCompany": {
+      "sourceHash": "aec5729aebf70d17f00255392b13ace8f51a0dbe5dc2a303cc8ba1c5641af9c6",
+      "translationHash": "d7e6a333f7dfe11f5f7625a60bb7e01317f13e4147f9a9cbebe535bf5a313100",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.steps.chooseConnection": {
+      "sourceHash": "13c5f1bbd4d45822c13a707276310595c047800bb9846bf979bf403093f2974d",
+      "translationHash": "ed33b6c718bd834d6d352ef07855acc7b635f984eb3ff4cda643798d903e6a64",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.695Z"
+    },
+    "githubSetupUi.steps.connectAccount": {
+      "sourceHash": "b6c13be7553884bd0a9de575f8120ad441a7ad917d7a85bac24a36010d6688bd",
+      "translationHash": "cb8806693135242d595e45126a1809eb6f246418a6f42c5b17acb1fc32b741e4",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.key": {
+      "sourceHash": "98f18a5d3a4812f14f2441508a5f42e757d443ec03710d896a1a6b840c021cfe",
+      "translationHash": "0c1084104952603590d2ec007a92950baa100cc2204e05ce8502a3ade62232f7",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.mcpUrl": {
+      "sourceHash": "c3923dd231b72c79ce21f5fda19fb0c58bb4b6bb19e0dad90af3f6725540da85",
+      "translationHash": "4ffd937749300c779436440e448ebe9ab26eee67c3e0c56995bac08fb711cfe2",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.pick": {
+      "sourceHash": "7f7e678d16a0c32931dae47f8e72da8ebdcd8b99079f4987a532626544f11d3e",
+      "translationHash": "018d77822d997322d093fb17de1bc4608c5743e16c1a2f7fcd02cced6f561431",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.reconnectAccount": {
+      "sourceHash": "8dd5c49ffb5bf9e5ef83ea87f93e275ec8af269c4145d48ad5ff9e87404a9583",
+      "translationHash": "b63a9dbcbde5b0dcb47ffb8c496e4bf1c959053c1f1d49867524ce51f5e5edfb",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.shareSheet": {
+      "sourceHash": "b13fcdad80f8638e62bb42ab5880ed1896e4eb45134c2fe6229407b12e3d90b1",
+      "translationHash": "eace969555d2ff2c3766142ca210bc9d118d12cf8de5ee6a49ba9359f35f16aa",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.steps.signIn": {
+      "sourceHash": "4987b09ebfc7ca9b77fa4711c97f398e0f3620a91f7fca855aded13fba5bd308",
+      "translationHash": "cff1c387bbe8bb3213432d4194c6c9ac218be99db97dea7c44694606a9094193",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.actions": {
+      "sourceHash": "7f9638dbfee70edcce81a20d6305612980801368a95721c830dce5126c192172",
+      "translationHash": "bb5d1c6bde25fe7a044b51cf234a22491727fbce5806bc474dfd8ca8c2549a65",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.agentIdentity": {
+      "sourceHash": "99efd32f4a132d5685328c76cb7599604e9fa36d3c1be52148ffe85f8a3ed392",
+      "translationHash": "3946c43de5c0be0fb9c5f8d24ed01b3759513723cce7a1253189374b7b060860",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.anyAgent": {
+      "sourceHash": "ae9eb92450d49eb0c4f35c7ce84ea6d6242428b05fda928f399eef359ea2c1ae",
+      "translationHash": "3489ddb15dd52f541b8a1c355561a9056c0c0ff6d3b25087a3ad02c33a0d3f9b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.available": {
+      "sourceHash": "4c66bcf35eb3ed893ad3fd1b40ea9931583340a6a2fbac48686fcb17874d0b8a",
+      "translationHash": "a283c410c7b72c5f4fdd6bc837bcdd06031c030c2a4eba204cc189e638796b1b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.enabled": {
+      "sourceHash": "8e1a6fb2f88f5808d6a5fa5fe7d39f81aa77632481c5fe89e7af93444446dd27",
+      "translationHash": "c686047f432ad81aa7e9331fb93c1eaecde0cbbab2595561471279c52af33efc",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.identity": {
+      "sourceHash": "d80aac2cd61123c0f2854f9c16d7443b8c3b8c3599866dd67e29d01d4dc26300",
+      "translationHash": "bb92565e57fc82a6f5bfa780a4be74a9590d6450578ffa804f6f7a28a003502d",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.noIdentity": {
+      "sourceHash": "5c3cd48fd8d2d1881faefa1bd0e6723d1f02d5055f19329c1b21755e51d1ea51",
+      "translationHash": "4478b3ef24f0bb0fe4717f735c2c4f525bfef296b4034ef246655270f72b2e7a",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.organizationIdentity": {
+      "sourceHash": "a876a55021696ac6993ed76243b240f076a8d91ed78c05fe81c98fafa9cea296",
+      "translationHash": "89ca84cabe3939a6d4e075a33d239d1b771142195b152e5bf3ffabf8c35f77d8",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.selected": {
+      "sourceHash": "11648355976b46dee3feee8b00e23496e8ec3f63518837036aa14e0daa121871",
+      "translationHash": "c46ab733bf9964172968b0ef6cc8168ceb5d779b54a133d135487cc32eb9c847",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.summary.yourIdentity": {
+      "sourceHash": "ed315b0e8302adebc36b11e03c6e6d863ac10bae170800358aa8b824301d83b4",
+      "translationHash": "770b2d3e7e36327c3e00ffc2030e78d0f48e0f68acae08413f90270146bf338e",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
+    },
+    "githubSetupUi.tryAgain": {
+      "sourceHash": "d53b4f655ee9930c87e725a28c5dd626d8b07e45d896b137e02a365d0cb116c6",
+      "translationHash": "545a4df2e885b32565d728b6e742a82583803507d2dfb1453eff449645e2f89b",
+      "reviewer": "Codex agent /root (EN/RU editorial review); /root/translate_task_panels (independent source/tests)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:59:56.696Z"
     }
   }
 }

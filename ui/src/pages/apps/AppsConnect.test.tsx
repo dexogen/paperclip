@@ -6,9 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CONNECTABLE_APP_DEFINITIONS, GOOGLE_WORKSPACE_CONNECTOR_PROFILES, getAppStoreDefinition } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
+import { i18n } from "@/i18n";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { queryKeys } from "@/lib/queryKeys";
-import { ConnectionSetupFlow } from "@/features/connections/ConnectionSetupFlow";
+import { ConnectionSetupFlow, OAuthConnectStateScreen } from "@/features/connections/ConnectionSetupFlow";
 import { rememberSkillSourceReturn, skillSourceReturnPath } from "@/lib/skill-source-connect-return";
 import { AppsConnect } from "./AppsConnect";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -348,7 +349,8 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
   let container: HTMLDivElement;
   let mountedRoot: Root | null;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     vi.resetAllMocks();
     experimentalMock.mockResolvedValue({ enableChatConnectors: false });
     window.sessionStorage.clear();
@@ -410,6 +412,7 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
     document.body.innerHTML = "";
     vi.restoreAllMocks();
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   async function render(queryClient?: QueryClient, byoOnly = false, content?: ReactNode) {
@@ -1710,6 +1713,123 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
       );
     },
   );
+
+  it("distinguishes a missing OAuth server name from literal provider names", async () => {
+    await i18n.changeLanguage("ru");
+    const onRetry = vi.fn();
+    const props = { phase: "entry" as const, onRetry, onBack: vi.fn(), onCancel: vi.fn() };
+    await render(undefined, false, <OAuthConnectStateScreen {...props} />);
+    expect(container.textContent).toContain("Подключение сервера к Paperclip");
+    expect(buttonByText("Перейти к серверу")).toBeDefined();
+    await act(async () => mountedRoot!.render(<OAuthConnectStateScreen {...props} identity={{ name: "this server", unverifiedHost: null }} />));
+    expect(container.textContent).toContain("Подключение this server к Paperclip");
+    expect(buttonByText("Перейти в this server")).toBeDefined();
+    await act(async () => mountedRoot!.render(<OAuthConnectStateScreen {...props} identity={{ name: "<b>raw & name</b>", unverifiedHost: null }} />));
+    expect(container.textContent).toContain("<b>raw & name</b>");
+    expect(container.querySelector("b")).toBeNull();
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
+  it("keeps the GitHub OAuth request and selected access stable across live locale changes", async () => {
+    mockSearch.value = "source=github";
+    listGalleryMock.mockResolvedValue({ apps: [GITHUB_MANAGED] });
+    let rejectConnect!: (reason: unknown) => void;
+    connectAppMock.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectConnect = reject; }));
+    await render();
+    await openAccessAdvanced();
+    await act(async () => radioContaining("Only agents I choose")!.click());
+    await act(async () => buttonByText("Continue to GitHub")!.click());
+    await flushReact();
+    expect(connectAppMock).toHaveBeenCalledTimes(1);
+    const submitted = structuredClone(connectAppMock.mock.calls[0]);
+    expect(container.textContent).toContain("Preparing secure sign-in");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Подготовка безопасного входа");
+    expect(buttonByText("Отмена")).toBeDefined();
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    expect(startOAuthMock).not.toHaveBeenCalled();
+    expect(navigateTopLevelMock).not.toHaveBeenCalled();
+    await act(async () => rejectConnect(null));
+    await flushReact();
+    expect(container.textContent).toContain("Не удалось начать безопасный вход. Попробуйте ещё раз.");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Paperclip couldn’t start secure sign-in. Try again.");
+    expect(container.textContent).toContain("no agents selected yet");
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    const providerError = "GitHub <policy> requires team_owner & custom_permission";
+    connectAppMock.mockRejectedValueOnce(new Error(providerError));
+    await act(async () => buttonByText("Try again")!.click());
+    await flushReact();
+    expect(connectAppMock).toHaveBeenCalledTimes(2);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain(providerError);
+    expect(container.querySelector("policy")).toBeNull();
+    expect(connectAppMock).toHaveBeenCalledTimes(2);
+    expect(startOAuthMock).not.toHaveBeenCalled();
+    expect(navigateTopLevelMock).not.toHaveBeenCalled();
+  });
+
+  it("updates an owned OAuth address failure without retrying or navigating", async () => {
+    mockSearch.value = "source=github";
+    listGalleryMock.mockResolvedValue({ apps: [GITHUB_MANAGED] });
+    const unsafe = "javascript:alert('private-fixture')";
+    connectAppMock.mockResolvedValue({ connectionId: "github-draft", connection: { id: "github-draft", credentialPolicy: "per_user", status: "draft" }, auth: { kind: "oauth", startUrl: unsafe } });
+    await render();
+    await act(async () => buttonByText("Continue to GitHub")!.click());
+    await flushReact();
+    expect(container.textContent).toContain("This server's sign-in address does not use https, so Paperclip stopped.");
+    expect(container.textContent).not.toContain(unsafe);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Адрес входа сервера не использует HTTPS. Paperclip остановил переход.");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("This server's sign-in address does not use https, so Paperclip stopped.");
+    expect(connectAppMock).toHaveBeenCalledTimes(1);
+    expect(putConnectionInstallsMock).toHaveBeenCalledTimes(1);
+    expect(startOAuthMock).not.toHaveBeenCalled();
+    expect(navigateTopLevelMock).not.toHaveBeenCalled();
+  });
+
+  it("keeps a GitHub token draft and selected method intact while translating registry captions", async () => {
+    mockSearch.value = "source=github&method=mcp-key";
+    listGalleryMock.mockResolvedValue({ apps: [JSON.parse(JSON.stringify({ ...GITHUB_MANAGED, displaySource: { registry: "paperclip-app-definitions", version: 1 } }))] });
+    let rejectConnect!: (reason: unknown) => void;
+    connectAppMock.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectConnect = reject; }));
+    await render();
+    await openAccessAdvanced();
+    const key = container.querySelector<HTMLInputElement>('input[aria-label="Your GitHub key"]')!;
+    expect(key).not.toBeNull();
+    const draft = "github_pat_<literal>&draft";
+    await act(async () => setInputValue(key, draft));
+    key.focus();
+    key.setSelectionRange(4, 12);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(radioContaining("Персональный токен доступа (дополнительно)")?.getAttribute("aria-checked")).toBe("true");
+    expect(container.querySelector('input[aria-label="Ваш ключ GitHub"]')).toBe(key);
+    expect(key.value).toBe(draft);
+    expect(document.activeElement).toBe(key);
+    expect([key.selectionStart, key.selectionEnd]).toEqual([4, 12]);
+    expect(connectAppMock).not.toHaveBeenCalled();
+    await act(async () => buttonByText("Подключить")!.click());
+    await flushReact();
+    expect(connectAppMock).toHaveBeenCalledTimes(1);
+    expect(connectAppMock).toHaveBeenCalledWith("company-1", expect.objectContaining({ galleryKey: "github", connectionMethodKey: "mcp-key", credentialValues: { "credentials.authorization": draft } }));
+    const submitted = structuredClone(connectAppMock.mock.calls[0]);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(buttonByText("Checking…")?.disabled).toBe(true);
+    expect(key.value).toBe(draft);
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    const diagnostic = "GitHub <policy> custom scope: repo_owner";
+    await act(async () => rejectConnect(new Error(diagnostic)));
+    await flushReact();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[role="alert"]')?.textContent).toBe(diagnostic);
+    expect(container.querySelector("policy")).toBeNull();
+    expect(container.querySelector('input[aria-label="Ваш ключ GitHub"]')).toBe(key);
+    expect(key.value).toBe(draft);
+    expect(connectAppMock.mock.calls).toEqual([submitted]);
+    expect(startOAuthMock).not.toHaveBeenCalled();
+    expect(navigateTopLevelMock).not.toHaveBeenCalled();
+  });
 
   it("labels GitHub's setup transition as the provider handoff it now is", async () => {
     mockSearch.value = "source=github";

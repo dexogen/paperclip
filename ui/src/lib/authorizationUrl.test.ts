@@ -48,6 +48,14 @@ describe("resolveAuthorizationTarget", () => {
     if (value) expect(target.message).not.toContain(value);
   });
 
+  it("retains the owned rejection reason without exposing the rejected URL", () => {
+    const target = resolveAuthorizationTarget("https://hidden-user:private-value@example.test/authorize");
+    expect(target).toMatchObject({ ok: false, displayCode: "embedded_credentials" });
+    if (target.ok) throw new Error("Expected rejection");
+    expect(target.message).toBe("This server's sign-in address hides a different site behind a username, so Paperclip stopped.");
+    expect(JSON.stringify(target)).not.toContain("private-value");
+  });
+
   it("allows a loopback authorization server only on a plaintext-http board", () => {
     serveBoardOver("http:");
     expect(resolveAuthorizationTarget("http://127.0.0.1:8930/authorize").ok).toBe(true);
@@ -56,6 +64,7 @@ describe("resolveAuthorizationTarget", () => {
     expect(resolveAuthorizationTarget("http://127.0.0.1:8930/authorize")).toEqual({
       ok: false,
       message: expect.stringContaining("secure"),
+      displayCode: "insecure_transport",
     });
     expect(resolveAuthorizationTarget("https://auth.example.test/authorize").ok).toBe(true);
   });

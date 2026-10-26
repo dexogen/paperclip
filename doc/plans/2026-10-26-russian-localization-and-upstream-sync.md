@@ -890,6 +890,24 @@ remain outstanding. The final strict audit passes with 7,379 reviewed families
 and 15,324 remaining source findings, with no pending/missing/invalid messages,
 new findings, source errors or resolved-debt residue. Map checks pass.
 
+The GitHub setup slice adds 158 reviewed families (160 English and 164 Russian
+forms). It covers the shared OAuth shell, saved setup, access summaries, advanced
+token controls and owned URL/handoff errors. Built-in registry captions require
+server-owned provenance or the canonical local object, then a reviewed-copy match.
+Changed or unknown copy stays raw. A canonical five-caption test detects registry
+copy drift without editing `github.json`. Plugin-supplied provenance is removed
+by the gallery route; authorization and request contracts remain unchanged.
+
+Genuine locale, error-descriptor, gallery-provenance and copy-drift regressions
+failed before their repairs. Ten complete UI suites pass 328 tests, and the
+complete PostgreSQL gallery suite passes 10, without skips. UI, shared and server
+typechecks, UI build and token gates pass. Root reviewed every message form and
+an independent agent reviewed all source/test changes. Only 109 resolved owned
+baseline entries are removed; one exact exception records a non-rendered copy
+guard. The final source audit and map checks are recorded with the handoff.
+These results do not certify live GitHub authorization or provider execution.
+Exact-head hosted CI and Greptile review remain pending.
+
 The remaining major packages are remaining provider setup,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
