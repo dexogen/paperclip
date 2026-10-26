@@ -5,6 +5,8 @@ import {
   useRef,
   useState,
 } from "react";
+import type { TFunction } from "i18next";
+import { i18n, t as currentT, useTranslation } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Check, Link2, Lock, Play, Plus, RefreshCw, RotateCcw, Terminal, Trash2, X } from "lucide-react";
 import { FitAddon } from "@xterm/addon-fit";
@@ -55,7 +57,7 @@ import {
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { useCompany } from "@/context/CompanyContext";
 import { useToast } from "@/context/ToastContext";
-import { environmentDisplayLabel, isPlatformManagedEnvironment } from "@/lib/managed-sandbox-environment";
+import { environmentDisplayLabel, environmentDriverLabel, isPlatformManagedEnvironment } from "@/lib/managed-sandbox-environment";
 import { queryKeys } from "@/lib/queryKeys";
 import { Link, useNavigate, useParams } from "@/lib/router";
 import { buildSameOriginWebSocketUrl } from "@/lib/websocket-url";
@@ -87,6 +89,32 @@ type CompanyEnvironmentsProps = {
   mode?: CompanyEnvironmentsMode;
 };
 
+type EnvironmentUiErrorCode = "secretCompany" | "noEnvironment" | "createCompany" | "probeCompany";
+class EnvironmentUiError extends Error {
+  constructor(readonly code: EnvironmentUiErrorCode) {
+    super(formatEnvironmentUiErrorCode(code, i18n.getFixedT("en")));
+  }
+}
+
+function formatEnvironmentUiErrorCode(code: EnvironmentUiErrorCode, t: TFunction): string {
+  switch (code) {
+    case "secretCompany": return t("environmentsUi.error.secretCompany");
+    case "noEnvironment": return t("environmentsUi.error.noEnvironment");
+    case "createCompany": return t("environmentsUi.error.createCompany");
+    case "probeCompany": return t("environmentsUi.error.probeCompany");
+  }
+}
+
+function formatEnvironmentFailure(cause: unknown, fallback: string, t: TFunction): string {
+  return cause instanceof EnvironmentUiError
+    ? formatEnvironmentUiErrorCode(cause.code, t)
+    : cause instanceof Error ? cause.message : fallback;
+}
+
+type EnvironmentProbeState =
+  | { kind: "result"; probe: EnvironmentProbeResult }
+  | { kind: "failure"; driver: EnvironmentProbeResult["driver"]; cause: unknown };
+
 const ENVIRONMENTS_PATH = "/company/settings/instance/environments";
 
 function environmentEditPath(environmentId: string) {
@@ -96,18 +124,18 @@ function environmentEditPath(environmentId: string) {
 // Keep in sync with environmentDeleteBlockMessage in server/src/routes/environments.ts —
 // the server enforces these gates with a 409; this copy lets the modal explain
 // the block before the user hits it.
-function environmentDeleteBlockMessage(impact: EnvironmentDeleteBlastRadius): string | null {
+function environmentDeleteBlockMessage(impact: EnvironmentDeleteBlastRadius, t: TFunction = i18n.getFixedT("en")): string | null {
   if (impact.staticReferences.isManagedLocal) {
-    return "Cannot delete the managed local environment.";
+    return t("environmentsUi.delete.managedBlock");
   }
   if (impact.staticReferences.isInstanceDefault) {
-    return "Cannot delete the current instance default environment. Set a new default environment before deleting this one.";
+    return t("environmentsUi.delete.defaultBlock");
   }
   if (impact.pendingCleanupLeaseCount > 0) {
-    return "Cannot delete this environment while a sandbox cleanup is pending. Wait for the cleanup sweep to destroy the orphan sandbox, then retry.";
+    return t("environmentsUi.delete.cleanupBlock");
   }
   if (impact.reusableSandboxLeaseCount > 0) {
-    return "Cannot delete this environment while it has a reusable sandbox lease. Remove the associated execution workspace or issue so Paperclip can destroy the sandbox, then retry.";
+    return t("environmentsUi.delete.leaseBlock");
   }
   return null;
 }
@@ -256,8 +284,6 @@ function createEnvironmentFormFromEnvironment(environment: Environment): Environ
   };
 }
 
-const DISCARD_ENVIRONMENT_CHANGES_MESSAGE = "Discard unsaved environment changes?";
-
 function stableJsonStringify(value: unknown): string {
   if (Array.isArray(value)) {
     return `[${value.map((item) => stableJsonStringify(item)).join(",")}]`;
@@ -310,10 +336,10 @@ function readEnvironmentSandboxProvider(environment: Environment): string | null
     : null;
 }
 
-function formatDateTime(value: string | Date | null | undefined): string | null {
+function formatDateTime(value: string | Date | null | undefined, locale?: string): string | null {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? null : date.toLocaleString(locale);
 }
 
 function formatShortId(value: string): string {
@@ -322,9 +348,9 @@ function formatShortId(value: string): string {
   return `${normalized.slice(0, 12)}…`;
 }
 
-function formatBootSourceDriftValue(value: unknown): string {
+function formatBootSourceDriftValue(value: unknown, t: TFunction = i18n.getFixedT("en")): string {
   if (typeof value === "string") return value;
-  if (value === null || value === undefined) return "none";
+  if (value === null || value === undefined) return t("environmentsUi.template.none");
   return JSON.stringify(value);
 }
 
@@ -337,16 +363,17 @@ function formatBootSourceDriftValue(value: unknown): string {
  */
 function formatBootSourceDriftSummary(
   drift: EnvironmentCustomImageActiveTemplateDrift | null | undefined,
+  t: TFunction = i18n.getFixedT("en"),
 ): string | null {
   if (!drift || drift.classification !== "boot_source_drift") return null;
   const parts = drift.driftedPaths
     .filter((entry) => "from" in entry || "to" in entry)
     .map(
       (entry) =>
-        `${entry.path} \`${formatBootSourceDriftValue(entry.from)}\` -> \`${formatBootSourceDriftValue(entry.to)}\``,
+        `${entry.path} \`${formatBootSourceDriftValue(entry.from, t)}\` -> \`${formatBootSourceDriftValue(entry.to, t)}\``,
     );
   if (parts.length === 0) return null;
-  return `Base image changed: ${parts.join("; ")}`;
+  return t("environmentsUi.template.baseChanged", { changes: parts.join("; ") });
 }
 
 function readConnectionCommand(payload: EnvironmentCustomImageConnectionPayload | null | undefined): string | null {
@@ -359,19 +386,19 @@ function setupConnectionFallbackMessage(input: {
   payload: EnvironmentCustomImageConnectionPayload | null;
   refreshError: unknown;
   isLoading: boolean;
-}): string | null {
+}, t: TFunction = i18n.getFixedT("en")): string | null {
   if (input.refreshError) {
-    return "Setup connection details could not be refreshed. You can still finish or cancel this setup.";
+    return t("environmentsUi.template.connectionRefreshError");
   }
   if (input.isLoading) return null;
   if (!input.payload) {
-    return "Connection details are not available yet. You can still finish or cancel this setup.";
+    return t("environmentsUi.template.connectionPending");
   }
   if (input.payload.type !== "ssh") {
-    return "Browser terminal is not available for this provider connection. Use the provider setup instructions, then finish or cancel here.";
+    return t("environmentsUi.template.connectionUnsupported");
   }
   if (!readConnectionCommand(input.payload)) {
-    return "Connection details are not available yet. You can still finish or cancel this setup.";
+    return t("environmentsUi.template.connectionPending");
   }
   return null;
 }
@@ -419,23 +446,23 @@ function parseTerminalFrame(raw: string): Record<string, unknown> | null {
   }
 }
 
-function customImageTerminalStatusCopy(state: CustomImageTerminalConnectionState) {
+function customImageTerminalStatusCopy(state: CustomImageTerminalConnectionState, t: TFunction = i18n.getFixedT("en")) {
   switch (state) {
     case "connecting":
-      return "Connecting";
+      return t("environmentsUi.terminal.connecting");
     case "connected":
-      return "Connected";
+      return t("environmentsUi.terminal.connected");
     case "closed":
-      return "Closed";
+      return t("environmentsUi.terminal.closed");
     case "error":
-      return "Connection failed";
+      return t("environmentsUi.terminal.error");
     case "idle":
     default:
-      return "Ready to connect";
+      return t("environmentsUi.terminal.idle");
   }
 }
 
-function customImageTerminalCloseReasonCopy(reason: unknown) {
+function customImageTerminalCloseReasonCopy(reason: unknown, t: TFunction = i18n.getFixedT("en")) {
   if (
     reason !== "expired"
     && reason !== "ssh_closed"
@@ -443,22 +470,39 @@ function customImageTerminalCloseReasonCopy(reason: unknown) {
     && reason !== "setup_finished"
     && reason !== "setup_cancelled"
   ) {
-    return typeof reason === "string" && reason.trim() ? "Terminal closed." : null;
+    return typeof reason === "string" && reason.trim() ? t("environmentsUi.terminal.closedReason") : null;
   }
 
   switch (reason) {
     case "expired":
-      return "Setup session expired.";
+      return t("environmentsUi.terminal.expired");
     case "ssh_closed":
-      return "SSH session closed.";
+      return t("environmentsUi.terminal.sshClosed");
     case "server_shutdown":
-      return "Terminal server shut down.";
+      return t("environmentsUi.terminal.shutdown");
     case "setup_finished":
-      return "Setup session finished.";
+      return t("environmentsUi.terminal.finished");
     case "setup_cancelled":
-      return "Setup session cancelled.";
+      return t("environmentsUi.terminal.cancelled");
     default:
       return null;
+  }
+}
+
+type TerminalFailure =
+  | { kind: "unavailable" | "frame" | "websocket" }
+  | { kind: "provider"; message: string }
+  | { kind: "closed"; reason: unknown }
+  | { kind: "open"; cause: unknown };
+
+function formatTerminalFailure(failure: TerminalFailure, t: TFunction): string | null {
+  switch (failure.kind) {
+    case "provider": return failure.message;
+    case "closed": return customImageTerminalCloseReasonCopy(failure.reason, t);
+    case "open": return failure.cause instanceof Error ? failure.cause.message : t("environmentsUi.terminal.openError");
+    case "unavailable": return t("environmentsUi.terminal.unavailable");
+    case "frame": return t("environmentsUi.terminal.frameError");
+    case "websocket": return t("environmentsUi.terminal.websocketError");
   }
 }
 
@@ -469,8 +513,10 @@ function EnvironmentCustomImageBrowserTerminal({
   autoConnect?: boolean;
   sessionId: string;
 }) {
+  const { t } = useTranslation();
   const [connectionState, setConnectionState] = useState<CustomImageTerminalConnectionState>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [terminalFailure, setTerminalFailure] = useState<TerminalFailure | null>(null);
+  const errorMessage = terminalFailure ? formatTerminalFailure(terminalFailure, t) : null;
   const terminalElementRef = useRef<HTMLDivElement | null>(null);
   const xtermRef = useRef<XTermTerminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -625,7 +671,7 @@ function EnvironmentCustomImageBrowserTerminal({
     autoConnectAttemptedSessionRef.current = null;
     lastSentResizeRef.current = null;
     setConnectionState("idle");
-    setErrorMessage(null);
+    setTerminalFailure(null);
     resetTerminalScreen();
   }, [closeSocket, resetTerminalScreen, sessionId]);
 
@@ -638,14 +684,14 @@ function EnvironmentCustomImageBrowserTerminal({
   const connectTerminal = useCallback(async () => {
     if (typeof WebSocket === "undefined") {
       setConnectionState("error");
-      setErrorMessage("Browser terminal is unavailable in this browser.");
+      setTerminalFailure({ kind: "unavailable" });
       return;
     }
 
     closeSocket("reconnect");
     setConnectionState("connecting");
     lastSentResizeRef.current = null;
-    setErrorMessage(null);
+    setTerminalFailure(null);
     resetTerminalScreen();
     xtermRef.current?.focus();
 
@@ -686,13 +732,13 @@ function EnvironmentCustomImageBrowserTerminal({
 
         if (frame.type === "error") {
           setConnectionState("error");
-          setErrorMessage(typeof frame.message === "string" ? frame.message : "Terminal connection failed.");
+          setTerminalFailure(typeof frame.message === "string" ? { kind: "provider", message: frame.message } : { kind: "frame" });
           return;
         }
 
         if (frame.type === "closed") {
           setConnectionState("closed");
-          setErrorMessage(customImageTerminalCloseReasonCopy(frame.reason));
+          setTerminalFailure({ kind: "closed", reason: frame.reason });
         }
       };
 
@@ -705,11 +751,11 @@ function EnvironmentCustomImageBrowserTerminal({
       socket.onerror = () => {
         if (socketRef.current !== socket) return;
         setConnectionState("error");
-        setErrorMessage("Terminal websocket connection failed.");
+        setTerminalFailure({ kind: "websocket" });
       };
     } catch (error) {
       setConnectionState("error");
-      setErrorMessage(error instanceof Error ? error.message : "Terminal session could not be opened.");
+      setTerminalFailure({ kind: "open", cause: error });
     }
   }, [closeSocket, fitTerminal, getTerminalDimensions, resetTerminalScreen, sendTerminalResize, sessionId]);
 
@@ -735,13 +781,13 @@ function EnvironmentCustomImageBrowserTerminal({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
         <div className="flex min-w-0 items-center gap-2 text-xs">
           <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-medium">Browser terminal</span>
-          <span className="text-muted-foreground">{customImageTerminalStatusCopy(connectionState)}</span>
+          <span className="font-medium">{t("environmentsUi.terminal.title")}</span>
+          <span className="text-muted-foreground">{customImageTerminalStatusCopy(connectionState, t)}</span>
         </div>
         <div className="flex items-center gap-2">
           {terminalInteractive ? (
             <Button size="sm" variant="ghost" onClick={disconnectTerminal}>
-              Disconnect
+              {t("environmentsUi.terminal.disconnect")}
             </Button>
           ) : (
             <Button
@@ -751,7 +797,7 @@ function EnvironmentCustomImageBrowserTerminal({
               disabled={connectionState === "connecting"}
             >
               <Terminal className="mr-1.5 h-3.5 w-3.5" />
-              {connectionState === "closed" || connectionState === "error" ? "Reconnect" : "Open terminal"}
+              {connectionState === "closed" || connectionState === "error" ? t("environmentsUi.terminal.reconnect") : t("environmentsUi.terminal.open")}
             </Button>
           )}
         </div>
@@ -760,7 +806,7 @@ function EnvironmentCustomImageBrowserTerminal({
         <div
           ref={terminalElementRef}
           data-testid={`custom-image-terminal-screen-${sessionId}`}
-          aria-label="Custom image browser terminal"
+          aria-label={t("environmentsUi.terminal.aria")}
           role="application"
           tabIndex={0}
           onFocus={() => xtermRef.current?.focus()}
@@ -777,48 +823,48 @@ function EnvironmentCustomImageBrowserTerminal({
   );
 }
 
-function capabilityState(capability: EnvironmentProviderCapability | null | undefined) {
+function capabilityState(capability: EnvironmentProviderCapability | null | undefined, t: TFunction = i18n.getFixedT("en")) {
   if (!capability || capability.status !== "supported" || !capability.supportsInteractiveSetup) {
     return {
       kind: "unsupported" as const,
-      label: "Unsupported provider",
-      reason: "This provider does not advertise interactive template setup.",
+      label: t("environmentsUi.template.unsupported"),
+      reason: t("environmentsUi.template.unsupportedReason"),
     };
   }
 
   if (!capability.supportsTemplateCapture) {
     return {
       kind: "capture_unavailable" as const,
-      label: "Setup capture unavailable",
-      reason: "This provider advertises setup, but image capture is unavailable.",
+      label: t("environmentsUi.template.captureUnavailable"),
+      reason: t("environmentsUi.template.captureUnavailableReason"),
     };
   }
 
   return {
     kind: "supported" as const,
-    label: "Template setup",
+    label: t("environmentsUi.template.setup"),
     reason: null,
   };
 }
 
-function sessionStatusCopy(status: EnvironmentCustomImageSetupSession["status"]) {
+function sessionStatusCopy(status: EnvironmentCustomImageSetupSession["status"], t: TFunction = i18n.getFixedT("en")) {
   switch (status) {
     case "starting":
-      return "Setup starting";
+      return t("environmentsUi.template.starting");
     case "waiting_for_user":
-      return "Setup running";
+      return t("environmentsUi.template.running");
     case "capturing":
-      return "Capturing template";
+      return t("environmentsUi.template.capturing");
     case "promoted":
-      return "Template captured";
+      return t("environmentsUi.template.captured");
     case "cancelled":
-      return "Setup cancelled";
+      return t("environmentsUi.template.cancelled");
     case "timed_out":
-      return "Setup expired";
+      return t("environmentsUi.template.expired");
     case "failed":
-      return "Setup failed";
+      return t("environmentsUi.template.failed");
     default:
-      return "Setup status";
+      return t("environmentsUi.template.status");
   }
 }
 
@@ -831,8 +877,8 @@ class RelinkConfirmationDeclined extends Error {
   }
 }
 
-function formatRelinkDriftValue(value: unknown): string {
-  if (value === null || value === undefined) return "(none)";
+function formatRelinkDriftValue(value: unknown, t: TFunction = i18n.getFixedT("en")): string {
+  if (value === null || value === undefined) return t("environmentsUi.template.noneParenthesized");
   if (typeof value === "string") return value;
   return JSON.stringify(value);
 }
@@ -840,17 +886,17 @@ function formatRelinkDriftValue(value: unknown): string {
 // Turns the sanitized 409 drift body into the operator warning. Value-bearing
 // drift shows the changed field; an unclassified result warns that the snapshot
 // will override the current base image.
-function relinkDriftWarning(conflict: EnvironmentCustomImageRelinkConflict): string {
+function relinkDriftWarning(conflict: EnvironmentCustomImageRelinkConflict, t: TFunction = i18n.getFixedT("en")): string {
   if (conflict.classification === "boot_source_drift") {
     const valued = conflict.driftedPaths.find(
       (entry) => entry.from !== undefined || entry.to !== undefined,
     );
     if (valued) {
-      return `The base image changed: ${valued.path} ${formatRelinkDriftValue(valued.from)} -> ${formatRelinkDriftValue(valued.to)}.`;
+      return t("environmentsUi.template.driftChanged", { path: valued.path, from: formatRelinkDriftValue(valued.from, t), to: formatRelinkDriftValue(valued.to, t) });
     }
-    return "The base image changed since this image was captured.";
+    return t("environmentsUi.template.driftGeneric");
   }
-  return "The server cannot verify the boot source; the snapshot will override the current base image.";
+  return t("environmentsUi.template.driftUnverified");
 }
 
 function EnvironmentImageTemplatePanel({
@@ -864,9 +910,10 @@ function EnvironmentImageTemplatePanel({
   providerCapability: EnvironmentProviderCapability | null | undefined;
   providerDisplayName: string;
 }) {
+  const { t } = useTranslation();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
-  const state = capabilityState(providerCapability);
+  const state = capabilityState(providerCapability, t);
   const overviewKey = queryKeys.environments.customImageTemplate(environment.id);
 
   const overviewQuery = useQuery({
@@ -912,15 +959,15 @@ function EnvironmentImageTemplatePanel({
       }));
       setSessionResult(result);
       pushToast({
-        title: "Setup session started",
-        body: "Connect details are available while the session is active.",
+        title: currentT("environmentsUi.templateToast.started"),
+        body: currentT("environmentsUi.templateToast.startedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to start setup",
-        body: error instanceof Error ? error.message : "Setup session could not be started.",
+        title: currentT("environmentsUi.templateToast.startFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.startError"),
         tone: "error",
       });
     },
@@ -937,15 +984,15 @@ function EnvironmentImageTemplatePanel({
       setSessionResult({ session: result.session, connectionPayload: null });
       invalidateOverview();
       pushToast({
-        title: "Template captured",
-        body: "Future runs can use the promoted template.",
+        title: currentT("environmentsUi.template.captured"),
+        body: currentT("environmentsUi.templateToast.capturedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to capture template",
-        body: error instanceof Error ? error.message : "Template capture failed.",
+        title: currentT("environmentsUi.templateToast.captureFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.captureError"),
         tone: "error",
       });
     },
@@ -963,15 +1010,15 @@ function EnvironmentImageTemplatePanel({
       setSessionResult({ session, connectionPayload: null });
       invalidateOverview();
       pushToast({
-        title: "Setup cancelled",
-        body: "The active template was not changed.",
+        title: currentT("environmentsUi.template.cancelled"),
+        body: currentT("environmentsUi.templateToast.cancelledBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to cancel setup",
-        body: error instanceof Error ? error.message : "Setup session could not be cancelled.",
+        title: currentT("environmentsUi.templateToast.cancelFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.cancelError"),
         tone: "error",
       });
     },
@@ -987,15 +1034,15 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template rolled back",
-        body: "Future runs will use the previous template.",
+        title: currentT("environmentsUi.templateToast.rolledBack"),
+        body: currentT("environmentsUi.templateToast.rolledBackBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to roll back template",
-        body: error instanceof Error ? error.message : "Rollback failed.",
+        title: currentT("environmentsUi.templateToast.rollbackFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.rollbackError"),
         tone: "error",
       });
     },
@@ -1010,8 +1057,8 @@ function EnvironmentImageTemplatePanel({
       } catch (error) {
         if (error instanceof ApiError && error.status === 409) {
           const conflict = (error.body as { details?: EnvironmentCustomImageRelinkConflict } | null)?.details;
-          const warning = conflict ? relinkDriftWarning(conflict) : error.message;
-          if (!window.confirm(`${warning}\n\nRelink this image anyway?`)) {
+          const warning = conflict ? relinkDriftWarning(conflict, i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)) : error.message;
+          if (!window.confirm(currentT("environmentsUi.template.relinkConfirm", { warning }))) {
             throw new RelinkConfirmationDeclined();
           }
           return await environmentsApi.relinkCustomImageTemplate(environment.id, companyId, {
@@ -1030,16 +1077,16 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template relinked",
-        body: "Runs use the captured image again.",
+        title: currentT("environmentsUi.templateToast.relinked"),
+        body: currentT("environmentsUi.templateToast.relinkedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       if (error instanceof RelinkConfirmationDeclined) return;
       pushToast({
-        title: "Failed to relink template",
-        body: error instanceof Error ? error.message : "Relink failed.",
+        title: currentT("environmentsUi.templateToast.relinkFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.relinkError"),
         tone: "error",
       });
     },
@@ -1055,15 +1102,15 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template disabled",
-        body: "Future runs will use the base provider configuration.",
+        title: currentT("environmentsUi.templateToast.disabled"),
+        body: currentT("environmentsUi.templateToast.disabledBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to disable template",
-        body: error instanceof Error ? error.message : "Disable failed.",
+        title: currentT("environmentsUi.templateToast.disableFailed"),
+        body: error instanceof Error ? error.message : currentT("environmentsUi.templateToast.disableError"),
         tone: "error",
       });
     },
@@ -1081,7 +1128,7 @@ function EnvironmentImageTemplatePanel({
   if (overviewQuery.isLoading) {
     return (
       <div className="mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground">
-        Loading template setup...
+        {t("environmentsUi.template.loading")}
       </div>
     );
   }
@@ -1089,7 +1136,7 @@ function EnvironmentImageTemplatePanel({
   if (overviewQuery.isError) {
     return (
       <div className="mt-3 border-t border-border/60 pt-3 text-xs text-destructive">
-        {overviewQuery.error instanceof Error ? overviewQuery.error.message : "Template setup could not be loaded."}
+        {overviewQuery.error instanceof Error ? overviewQuery.error.message : t("environmentsUi.template.loadError")}
       </div>
     );
   }
@@ -1110,11 +1157,11 @@ function EnvironmentImageTemplatePanel({
         payload: connectionPayload,
         refreshError: sessionQuery.isError ? sessionQuery.error : null,
         isLoading: sessionQuery.isLoading,
-      })
+      }, t)
     : null;
-  const sessionExpiresAt = formatDateTime(connectionPayload?.expiresAt ?? session?.expiresAt ?? null);
-  const capturedAt = formatDateTime(activeTemplate?.capturedAt ?? activeTemplate?.createdAt ?? null);
-  const lastUsedAt = formatDateTime(activeTemplate?.lastUsedAt ?? null);
+  const sessionExpiresAt = formatDateTime(connectionPayload?.expiresAt ?? session?.expiresAt ?? null, i18n.resolvedLanguage);
+  const capturedAt = formatDateTime(activeTemplate?.capturedAt ?? activeTemplate?.createdAt ?? null, i18n.resolvedLanguage);
+  const lastUsedAt = formatDateTime(activeTemplate?.lastUsedAt ?? null, i18n.resolvedLanguage);
   const isMutating =
     startSetupMutation.isPending ||
     finishSetupMutation.isPending ||
@@ -1129,9 +1176,9 @@ function EnvironmentImageTemplatePanel({
       <div className="mt-3 border-t border-border/60 pt-3" data-testid={`custom-image-template-state-${environment.id}`}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
-            <div className="text-xs font-medium">{sessionStatusCopy(session.status)}</div>
+            <div className="text-xs font-medium">{sessionStatusCopy(session.status, t)}</div>
             <div className="text-xs text-muted-foreground">
-              {providerDisplayName}{sessionExpiresAt ? ` · expires ${sessionExpiresAt}` : ""}
+              {sessionExpiresAt ? t("environmentsUi.template.providerExpires", { provider: providerDisplayName, date: sessionExpiresAt }) : providerDisplayName}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -1142,7 +1189,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating || session.status !== "waiting_for_user"}
             >
               <Check className="mr-1.5 h-3.5 w-3.5" />
-              Finished
+              {t("environmentsUi.template.finished")}
             </Button>
             <Button
               size="sm"
@@ -1151,13 +1198,13 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <X className="mr-1.5 h-3.5 w-3.5" />
-              Cancel
+              {t("environmentsUi.common.cancel")}
             </Button>
           </div>
         </div>
         {isCapturing ? (
           <div className="mt-2 text-xs text-muted-foreground">
-            Capture is in progress. If this state remains after a refresh or interrupted request, cancel it to return to the active template controls.
+            {t("environmentsUi.template.captureHint")}
           </div>
         ) : null}
         {session.status === "waiting_for_user" && connectionPayload?.type === "ssh" ? (
@@ -1166,7 +1213,7 @@ function EnvironmentImageTemplatePanel({
         {session.status === "waiting_for_user" && connectionCommand ? (
           <details className="mt-2 rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
             <summary className="cursor-pointer select-none font-medium text-foreground">
-              SSH command fallback
+              {t("environmentsUi.template.sshFallback")}
             </summary>
             <code className="mt-2 block overflow-x-auto whitespace-nowrap text-(length:--text-micro) leading-5">
               {connectionCommand}
@@ -1188,25 +1235,25 @@ function EnvironmentImageTemplatePanel({
   if (activeTemplate) {
     const templateRef = activeTemplate.templateRef?.trim() || null;
     const templateOutOfSync = overview?.activeTemplateMatchesConfig === false;
-    const bootSourceDriftSummary = formatBootSourceDriftSummary(overview?.activeTemplateDrift);
+    const bootSourceDriftSummary = formatBootSourceDriftSummary(overview?.activeTemplateDrift, t);
     return (
       <div className="mt-3 border-t border-border/60 pt-3" data-testid={`custom-image-template-state-${environment.id}`}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
-            <div className="text-xs font-medium">Active template</div>
+            <div className="text-xs font-medium">{t("environmentsUi.template.active")}</div>
             <div className="text-xs text-muted-foreground">
               {providerDisplayName} · {activeTemplate.templateKind}
               {" · "}
               <span
                 className="break-all font-mono text-foreground"
                 title={templateRef
-                  ? `Provider ${activeTemplate.templateKind} ref ${templateRef} (Paperclip template ${activeTemplate.id})`
+                  ? t("environmentsUi.template.providerRef", { kind: activeTemplate.templateKind, ref: templateRef, id: activeTemplate.id })
                   : activeTemplate.id}
               >
-                {templateRef ?? `id ${formatShortId(activeTemplate.id)}`}
+                {templateRef ?? t("environmentsUi.template.shortId", { id: formatShortId(activeTemplate.id) })}
               </span>
-              {capturedAt ? ` · captured ${capturedAt}` : ""}
-              {lastUsedAt ? ` · last used ${lastUsedAt}` : ""}
+              {capturedAt ? <>{" · "}{t("environmentsUi.template.capturedAt", { date: capturedAt })}</> : null}
+              {lastUsedAt ? <>{" · "}{t("environmentsUi.template.lastUsedAt", { date: lastUsedAt })}</> : null}
             </div>
             {templateOutOfSync ? (
               <div
@@ -1214,8 +1261,8 @@ function EnvironmentImageTemplatePanel({
                 data-testid={`custom-image-template-out-of-sync-${environment.id}`}
               >
                 {bootSourceDriftSummary
-                  ? `Not in use — ${bootSourceDriftSummary}. Runs fall back to the base configuration until you relink this image or capture a new one.`
-                  : "Not in use — the environment configuration changed since this image was captured. Runs fall back to the base configuration until you relink this image or capture a new one."}
+                  ? t("environmentsUi.template.outOfSync", { summary: bootSourceDriftSummary })
+                  : t("environmentsUi.template.outOfSyncGeneric")}
               </div>
             ) : null}
           </div>
@@ -1227,7 +1274,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-              Refresh
+              {t("environmentsUi.template.refresh")}
             </Button>
             <Button
               size="sm"
@@ -1237,7 +1284,7 @@ function EnvironmentImageTemplatePanel({
               data-testid={`custom-image-template-relink-${environment.id}`}
             >
               <Link2 className="mr-1.5 h-3.5 w-3.5" />
-              Relink
+              {t("environmentsUi.template.relink")}
             </Button>
             <Button
               size="sm"
@@ -1246,7 +1293,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              Rollback
+              {t("environmentsUi.template.rollback")}
             </Button>
             <Button
               size="sm"
@@ -1255,7 +1302,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-              Disable
+              {t("environmentsUi.template.disable")}
             </Button>
           </div>
         </div>
@@ -1267,11 +1314,11 @@ function EnvironmentImageTemplatePanel({
     <div className="mt-3 border-t border-border/60 pt-3" data-testid={`custom-image-template-state-${environment.id}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <div className="text-xs font-medium">Not configured</div>
+          <div className="text-xs font-medium">{t("environmentsUi.template.notConfigured")}</div>
           <div className="text-xs text-muted-foreground">
             {latestSession
-              ? sessionStatusCopy(latestSession.status)
-              : `Capture a custom ${providerDisplayName} image with your tools already logged in.`}
+              ? sessionStatusCopy(latestSession.status, t)
+              : t("environmentsUi.template.configureHint", { provider: providerDisplayName })}
           </div>
           {latestSession?.failureReason ? (
             <div className="text-xs text-destructive">{latestSession.failureReason}</div>
@@ -1284,7 +1331,7 @@ function EnvironmentImageTemplatePanel({
           disabled={isMutating}
         >
           <Play className="mr-1.5 h-3.5 w-3.5" />
-          Configure image
+          {t("environmentsUi.template.configure")}
         </Button>
       </div>
     </div>
@@ -1296,6 +1343,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const navigate = useNavigate();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
+  const { t } = useTranslation();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
   const isEnvironmentFormPage = mode === "create" || mode === "edit";
@@ -1306,7 +1354,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   // Fingerprint of the form as initialized; null until the form page has loaded its data.
   const [environmentFormBaselineKey, setEnvironmentFormBaselineKey] = useState<string | null>(null);
   const [environmentVariablesDirty, setEnvironmentVariablesDirty] = useState(false);
-  const [probeResults, setProbeResults] = useState<Record<string, EnvironmentProbeResult | null>>({});
+  const [probeResults, setProbeResults] = useState<Record<string, EnvironmentProbeState | null>>({});
   const [testingEnvironmentId, setTestingEnvironmentId] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   // "" means "inherit the instance default", mirroring the agent config form's
@@ -1319,15 +1367,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
   useEffect(() => {
     const crumbs = [
-      { label: "Settings", href: "/company/settings" },
+      { label: t("environmentsUi.common.settings"), href: "/company/settings" },
       isEnvironmentFormPage
-        ? { label: "Environments", href: ENVIRONMENTS_PATH }
-        : { label: "Environments" },
+        ? { label: t("environmentsUi.common.environments"), href: ENVIRONMENTS_PATH }
+        : { label: t("environmentsUi.common.environments") },
     ];
-    if (mode === "create") crumbs.push({ label: "Add environment" });
-    if (mode === "edit") crumbs.push({ label: "Edit environment" });
+    if (mode === "create") crumbs.push({ label: t("environmentsUi.common.add") });
+    if (mode === "edit") crumbs.push({ label: t("environmentsUi.common.edit") });
     setBreadcrumbs(crumbs);
-  }, [isEnvironmentFormPage, mode, setBreadcrumbs]);
+  }, [isEnvironmentFormPage, mode, setBreadcrumbs, t]);
 
   const { data: instanceSettings } = useQuery({
     queryKey: queryKeys.instance.settings,
@@ -1409,7 +1457,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   });
   const createSecret = useMutation({
     mutationFn: (input: { name: string; value: string }) => {
-      if (!selectedCompanyId) throw new Error("Select an organization to create secrets");
+      if (!selectedCompanyId) throw new EnvironmentUiError("secretCompany");
       return secretsApi.create(selectedCompanyId, input);
     },
     onSuccess: async () => {
@@ -1424,7 +1472,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   // shape the floor admits.
   const managedEnvironmentEnvVarsMutation = useMutation({
     mutationFn: async (envVars: EnvironmentFormState["envVars"]) => {
-      if (!editingEnvironmentId) throw new Error("No environment selected");
+      if (!editingEnvironmentId) throw new EnvironmentUiError("noEnvironment");
       return await environmentsApi.update(editingEnvironmentId, { envVars }, selectedCompanyId);
     },
     onSuccess: async (environment) => {
@@ -1439,15 +1487,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       setEnvironmentVariablesDirty(false);
       navigate(ENVIRONMENTS_PATH, { replace: true });
       pushToast({
-        title: "Environment variables updated",
-        body: `${environment.name} will inject the updated variables into future runs.`,
+        title: currentT("environmentsUi.toast.envVarsUpdated"),
+        body: currentT("environmentsUi.toast.envVarsUpdatedBody", { name: environment.name }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment variables",
-        body: error instanceof Error ? error.message : "Environment variables save failed.",
+        title: currentT("environmentsUi.error.saveEnvVars"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.saveEnvVarsFallback"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1461,7 +1509,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
         return await environmentsApi.update(editingEnvironmentId, body, selectedCompanyId);
       }
 
-      if (!selectedCompanyId) throw new Error("Select a company to create environments");
+      if (!selectedCompanyId) throw new EnvironmentUiError("createCompany");
       return await environmentsApi.create(selectedCompanyId!, body);
     },
     onSuccess: async (environment) => {
@@ -1482,29 +1530,29 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       draftEnvironmentProbeMutation.reset();
       navigate(ENVIRONMENTS_PATH, { replace: true });
       pushToast({
-        title: wasEditing ? "Environment updated" : "Environment created",
-        body: `${environment.name} is ready.`,
+        title: wasEditing ? currentT("environmentsUi.toast.updated") : currentT("environmentsUi.toast.created"),
+        body: currentT("environmentsUi.toast.ready", { name: environment.name }),
         tone: "success",
       });
       const reconciliation = (environment as EnvironmentUpdateResult).customImageReconciliation;
       if (reconciliation?.action === "relinked") {
         pushToast({
-          title: "Custom image kept active",
-          body: "The captured image was re-linked to the updated configuration automatically.",
+          title: currentT("environmentsUi.toast.imageKept"),
+          body: currentT("environmentsUi.toast.imageKeptBody"),
           tone: "info",
         });
       } else if (reconciliation?.action === "detached") {
         pushToast({
-          title: "Custom image no longer applies",
-          body: "This change alters what the captured image was built from. Runs use the base configuration until you capture a new image.",
+          title: currentT("environmentsUi.toast.imageDetached"),
+          body: currentT("environmentsUi.toast.imageDetachedBody"),
           tone: "warn",
         });
       }
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment",
-        body: error instanceof Error ? error.message : "Environment save failed.",
+        title: currentT("environmentsUi.error.save"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.saveFallback"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1516,15 +1564,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.instance.settings });
       pushToast({
-        title: "Default environment updated",
-        body: "Agent inheritance now follows the updated instance default.",
+        title: currentT("environmentsUi.toast.defaultUpdated"),
+        body: currentT("environmentsUi.toast.defaultUpdatedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to update default environment",
-        body: error instanceof Error ? error.message : "Default environment update failed.",
+        title: currentT("environmentsUi.toast.defaultFailed"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.default"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1567,11 +1615,11 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       navigate(ENVIRONMENTS_PATH, { replace: true });
       const destroyedCount = environment.destroyedReusableSandboxLeaseCount ?? 0;
       pushToast({
-        title: "Environment deleted",
+        title: currentT("environmentsUi.toast.deleted"),
         body:
           destroyedCount > 0
-            ? `${environment.name} was deleted. Destroyed ${destroyedCount === 1 ? "1 reusable sandbox" : `${destroyedCount} reusable sandboxes`}.`
-            : `${environment.name} was deleted.`,
+            ? currentT("environmentsUi.toast.deletedSandboxes", { name: environment.name, count: destroyedCount })
+            : currentT("environmentsUi.toast.deletedBody", { name: environment.name }),
         tone: "success",
       });
     },
@@ -1585,8 +1633,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
         queryKey: ["environment-delete-blast-radius", input.environment.id],
       });
       pushToast({
-        title: "Failed to delete environment",
-        body: error instanceof Error ? error.message : "Environment delete failed.",
+        title: currentT("environmentsUi.toast.deleteFailed"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.delete"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1603,10 +1651,10 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     onSuccess: (probe, environmentId) => {
       setProbeResults((current) => ({
         ...current,
-        [environmentId]: probe,
+        [environmentId]: { kind: "result", probe },
       }));
       pushToast({
-        title: probe.ok ? "Environment probe passed" : "Environment probe failed",
+        title: probe.ok ? currentT("environmentsUi.probe.passed") : currentT("environmentsUi.probe.failed"),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
@@ -1616,15 +1664,14 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       setProbeResults((current) => ({
         ...current,
         [environmentId]: {
-          ok: false,
+          kind: "failure",
           driver: failedEnvironment?.driver ?? "local",
-          summary: error instanceof Error ? error.message : "Environment probe failed.",
-          details: null,
+          cause: error,
         },
       }));
       pushToast({
-        title: "Environment probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: currentT("environmentsUi.probe.failed"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.probe"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1632,21 +1679,21 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
   const draftEnvironmentProbeMutation = useMutation({
     mutationFn: async (form: EnvironmentFormState) => {
-      if (!selectedCompanyId) throw new Error("Select a company to test environments");
+      if (!selectedCompanyId) throw new EnvironmentUiError("probeCompany");
       const body = buildEnvironmentPayload(form);
       return await environmentsApi.probeConfig(selectedCompanyId, body);
     },
     onSuccess: (probe) => {
       pushToast({
-        title: probe.ok ? "Draft probe passed" : "Draft probe failed",
+        title: probe.ok ? currentT("environmentsUi.probe.draftPassed") : currentT("environmentsUi.probe.draftFailed"),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Draft probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: currentT("environmentsUi.probe.draftFailed"),
+        body: formatEnvironmentFailure(error, currentT("environmentsUi.error.probe"), i18n.getFixedT(i18n.resolvedLanguage ?? i18n.language)),
         tone: "error",
       });
     },
@@ -1714,7 +1761,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     return (
       !environmentHasUnsavedChanges ||
       typeof window === "undefined" ||
-      window.confirm(DISCARD_ENVIRONMENT_CHANGES_MESSAGE)
+      window.confirm(currentT("environmentsUi.form.discard"))
     );
   }
 
@@ -1756,7 +1803,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
         return;
       }
 
-      if (window.confirm(DISCARD_ENVIRONMENT_CHANGES_MESSAGE)) return;
+      if (window.confirm(currentT("environmentsUi.form.discard"))) return;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -1852,7 +1899,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const editingSandboxCapability = editingSandboxProvider
     ? environmentCapabilities?.sandboxProviders?.[editingSandboxProvider]
     : null;
-  const editingSandboxDisplayName = editingSandboxCapability?.displayName ?? editingSandboxProvider ?? "sandbox";
+  const editingSandboxDisplayName = editingSandboxCapability?.displayName ?? editingSandboxProvider ?? t("environmentsUi.driver.sandbox");
   const nonLocalEnvironments = savedEnvironments.filter((environment) => !isLocalEnvironment(environment));
   const instanceDefaultEnvironmentId = normalizeNonLocalEnvironmentId(
     instanceSettings?.defaultEnvironmentId ?? null,
@@ -1869,7 +1916,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
     deleteBlastRadius.deleteBlockedReasons.length > 0 &&
     deleteBlastRadius.deleteBlockedReasons.every((reason) => reason === "reusable_sandbox_lease");
   const deleteBlockMessage =
-    deleteBlastRadius && !reusableLeaseOnlyBlock ? environmentDeleteBlockMessage(deleteBlastRadius) : null;
+    deleteBlastRadius && !reusableLeaseOnlyBlock ? environmentDeleteBlockMessage(deleteBlastRadius, t) : null;
   const deleteUsageLoading = deleteBlastRadiusQuery.isPending || companyAgentsQuery.isPending;
   const deleteUsageError = deleteBlastRadiusQuery.isError || companyAgentsQuery.isError;
   // Environments are instance-scoped while the agent list is company-scoped, so
@@ -1884,11 +1931,11 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const reassignTargetEnvironments = nonLocalEnvironments.filter(
     (environment) => environment.id !== editingEnvironmentId,
   );
-  const deleteImpactNotes: string[] = [];
+  const deleteImpactNotes: { id: string; message: string }[] = [];
   if (deleteBlastRadius && !deleteBlockMessage) {
     if (deleteBlastRadius.staticReferences.agentDefaultCount > agentsUsingEnvironment.length) {
       deleteImpactNotes.push(
-        "Other references to this environment (agents in other organizations or terminated agents) fall back to the instance default.",
+        { id: "references", message: t("environmentsUi.delete.otherReferences") },
       );
     }
     const selectionCount =
@@ -1897,16 +1944,16 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       deleteBlastRadius.staticReferences.projectSelectionCount;
     if (selectionCount > 0) {
       deleteImpactNotes.push(
-        `${selectionCount} workspace, issue, or project environment ${selectionCount === 1 ? "selection" : "selections"} will be cleared.`,
+        { id: "selections", message: t("environmentsUi.delete.selections", { count: selectionCount }) },
       );
     }
     if (deleteBlastRadius.staticReferences.secretBindingCount > 0) {
       deleteImpactNotes.push(
-        `${deleteBlastRadius.staticReferences.secretBindingCount} secret ${deleteBlastRadius.staticReferences.secretBindingCount === 1 ? "binding" : "bindings"} will be removed.`,
+        { id: "bindings", message: t("environmentsUi.delete.bindings", { count: deleteBlastRadius.staticReferences.secretBindingCount }) },
       );
     }
     if (deleteBlastRadius.activeRuntimeUse.hasActiveRuntimeUse) {
-      deleteImpactNotes.push("Active runs or sandbox leases currently resolve to this environment.");
+      deleteImpactNotes.push({ id: "active", message: t("environmentsUi.delete.activeUse") });
     }
   }
   // One row per workspace holding blocking sandbox leases (several leases can
@@ -1914,7 +1961,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const reusableLeaseHolderGroups = (() => {
     const groups = new Map<
       string,
-      { workspaceId: string | null; label: string; issueLabels: string[]; leaseCount: number }
+      { key: string; workspaceId: string | null; label: string | null; issueLabels: string[]; leaseCount: number }
     >();
     for (const holder of deleteBlastRadius?.reusableSandboxLeaseHolders ?? []) {
       const key = holder.executionWorkspaceId ?? `lease:${holder.leaseId}`;
@@ -1925,12 +1972,13 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
         if (issueLabel && !existing.issueLabels.includes(issueLabel)) existing.issueLabels.push(issueLabel);
       } else {
         groups.set(key, {
+          key,
           workspaceId: holder.executionWorkspaceId,
           label:
             holder.executionWorkspaceName
             ?? holder.issueIdentifier
             ?? holder.issueTitle
-            ?? "Workspace no longer on record",
+            ?? null,
           issueLabels: issueLabel ? [issueLabel] : [],
           leaseCount: 1,
         });
@@ -1940,14 +1988,14 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   })();
 
   if (!selectedCompanyId) {
-    return <div className="text-sm text-muted-foreground">Select an organization context to manage environment secrets and bindings.</div>;
+    return <div className="text-sm text-muted-foreground">{t("environmentsUi.common.companyRequired")}</div>;
   }
 
   if (!environmentsEnabled) {
     return (
       <div className="max-w-6xl space-y-4">
         <div className="text-sm text-muted-foreground">
-          Enable Environments in instance experimental settings to manage shared execution targets.
+          {t("environmentsUi.common.enable")}
         </div>
       </div>
     );
@@ -1959,10 +2007,10 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <label className="flex flex-wrap items-center gap-3 text-sm font-medium">
-            <span>Default</span>
+            <span>{t("environmentsUi.common.default")}</span>
             <span>
               <select
-                aria-label="Default environment"
+                aria-label={t("environmentsUi.common.defaultEnvironment")}
                 className="min-w-(--sz-12rem) max-w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-normal outline-none"
                 value={instanceDefaultEnvironmentId}
                 onChange={(event) =>
@@ -1975,22 +2023,22 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   // placeholder only renders while no default is stamped yet.
                   instanceDefaultEnvironmentId === "" ? (
                     <option value="" disabled>
-                      Select environment
+                      {t("environmentsUi.common.selectEnvironment")}
                     </option>
                   ) : null
                 ) : (
-                  <option value="">Local</option>
+                  <option value="">{t("environmentsUi.common.local")}</option>
                 )}
                 {nonLocalEnvironments.map((environment) => (
                   <option key={environment.id} value={environment.id}>
-                    {environmentDisplayLabel(environment)}
+                    {environmentDisplayLabel(environment, t)}
                   </option>
                 ))}
               </select>
             </span>
           </label>
           <Button size="icon-sm" variant="ghost" asChild>
-            <Link to={`${ENVIRONMENTS_PATH}/new`} aria-label="Add environment" title="Add environment">
+            <Link to={`${ENVIRONMENTS_PATH}/new`} aria-label={t("environmentsUi.common.add")} title={t("environmentsUi.common.add")}>
               <Plus className="h-4 w-4" />
             </Link>
           </Button>
@@ -1998,13 +2046,19 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
         <div className="space-y-1">
           {savedEnvironments.map((environment) => {
-            const probe = probeResults[environment.id] ?? null;
+            const probeState = probeResults[environment.id];
+            const probe = probeState?.kind === "result" ? probeState.probe : probeState ? {
+              ok: false,
+              driver: probeState.driver,
+              summary: formatEnvironmentFailure(probeState.cause, t("environmentsUi.error.probe"), t),
+              details: null,
+            } : null;
             const sandboxProvider = readEnvironmentSandboxProvider(environment);
             const sandboxProviderCapability = sandboxProvider
               ? environmentCapabilities?.sandboxProviders?.[sandboxProvider]
               : null;
             const sandboxProviderDisplayName =
-              sandboxProviderCapability?.displayName ?? sandboxProvider ?? "sandbox";
+              sandboxProviderCapability?.displayName ?? sandboxProvider ?? t("environmentsUi.driver.sandbox");
             return (
               <div
                 key={environment.id}
@@ -2016,13 +2070,13 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       <span>
                         {environment.name}
                         {isPlatformManagedEnvironment(environment) ? null : (
-                          <span className="text-muted-foreground"> · {environment.driver}</span>
+                          <span className="text-muted-foreground"> · {environmentDriverLabel(environment.driver, t)}</span>
                         )}
                       </span>
                       {isPlatformManagedEnvironment(environment) ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-normal text-muted-foreground">
                           <Lock className="h-3 w-3" aria-hidden />
-                          Managed by Paperclip
+                          {t("environmentsUi.common.managed")}
                         </span>
                       ) : null}
                     </div>
@@ -2031,8 +2085,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     ) : null}
                     {environment.driver === "ssh" ? (
                       <div className="text-xs text-muted-foreground">
-                        {typeof environment.config.host === "string" ? environment.config.host : "SSH host"} ·{" "}
-                        {typeof environment.config.username === "string" ? environment.config.username : "user"}
+                        {typeof environment.config.host === "string" ? environment.config.host : t("environmentsUi.common.sshHost")} ·{" "}
+                        {typeof environment.config.username === "string" ? environment.config.username : t("environmentsUi.common.sshUser")}
                       </div>
                     ) : environment.driver === "sandbox" ? (
                       <div className="text-xs text-muted-foreground">
@@ -2043,13 +2097,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                           // "sandbox provider" next to the default environment
                           // is noise the product avoids.
                           if (isPlatformManagedEnvironment(environment)) {
-                            return summary ?? "Provisioned and maintained for you.";
+                            return summary ?? t("environmentsUi.common.provisioned");
                           }
-                          return `${sandboxProviderDisplayName} sandbox provider${summary ? ` · ${summary}` : ""}`;
+                          return summary
+                            ? t("environmentsUi.common.providerSummary", { provider: sandboxProviderDisplayName, summary })
+                            : t("environmentsUi.common.provider", { provider: sandboxProviderDisplayName });
                         })()}
                       </div>
                     ) : (
-                      <div className="text-xs text-muted-foreground">Runs on this Paperclip host.</div>
+                      <div className="text-xs text-muted-foreground">{t("environmentsUi.common.runsLocally")}</div>
                     )}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -2061,14 +2117,14 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                         disabled={testingEnvironmentId === environment.id}
                       >
                         {testingEnvironmentId === environment.id
-                          ? "Testing..."
+                          ? t("environmentsUi.probe.testing")
                           : environment.driver === "ssh"
-                            ? "Test connection"
-                            : "Test provider"}
+                            ? t("environmentsUi.probe.connection")
+                            : t("environmentsUi.probe.provider")}
                       </Button>
                     ) : null}
                     <Button size="sm" variant="ghost" asChild>
-                      <Link to={environmentEditPath(environment.id)}>Edit</Link>
+                      <Link to={environmentEditPath(environment.id)}>{t("environmentsUi.common.editAction")}</Link>
                     </Button>
                   </div>
                 </div>
@@ -2095,16 +2151,16 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
       {isEnvironmentFormPage && mode === "edit" && environments === undefined ? (
         <div className="text-sm text-muted-foreground">
-          Loading environment...
+          {t("environmentsUi.common.loading")}
         </div>
       ) : null}
 
       {isEnvironmentFormPage && mode === "edit" && environments !== undefined && !editingEnvironment ? (
         <div className="space-y-3 text-sm">
-          <div className="font-medium">Environment not found</div>
-          <div className="text-muted-foreground">The environment may have been removed or is not available in this organization.</div>
+          <div className="font-medium">{t("environmentsUi.common.notFound")}</div>
+          <div className="text-muted-foreground">{t("environmentsUi.common.notFoundHint")}</div>
           <Button size="sm" variant="outline" asChild>
-            <Link to={ENVIRONMENTS_PATH}>Back to environments</Link>
+            <Link to={ENVIRONMENTS_PATH}>{t("environmentsUi.common.back")}</Link>
           </Button>
         </div>
       ) : null}
@@ -2117,7 +2173,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               <Button size="sm" variant="ghost" asChild>
                 <Link to={ENVIRONMENTS_PATH}>
                   <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
-                  Environments
+                  {t("environmentsUi.common.environments")}
                 </Link>
               </Button>
             </div>
@@ -2125,27 +2181,27 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               <h1 className="text-lg font-semibold">{editingEnvironment.name}</h1>
               <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                 <Lock className="h-3 w-3" aria-hidden />
-                Managed by Paperclip
+                {t("environmentsUi.common.managed")}
               </span>
             </div>
             <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-              {editingEnvironment.description ?? "Your agent runs on a computer managed by Paperclip."}
+              {editingEnvironment.description ?? t("environmentsUi.form.managedDescription")}
             </p>
             <p className="mt-1 max-w-3xl text-xs text-muted-foreground">
-              This environment is provisioned and maintained for you. You can add environment
-              variables for your agents; its name and configuration are managed by Paperclip.
+              {t("environmentsUi.form.managedHint")}
             </p>
           </div>
           <div className="py-4">
             <Field
-              label="Environment variables"
-              hint="Injected into runs that resolve through this environment. Use plain values or organization secrets."
+              label={t("environmentsUi.form.envVars")}
+              hint={t("environmentsUi.form.envVarsHint")}
             >
               <EnvironmentVariablesEditor
                 ref={environmentVariablesEditorRef}
                 value={environmentForm.envVars}
                 secrets={secrets ?? []}
                 onCreateSecret={async (name, value) => await createSecret.mutateAsync({ name, value })}
+                renderCreateSecretError={(cause) => formatEnvironmentFailure(cause, t("formsUi.secret.createFailed"), t)}
                 onChange={(env) =>
                   setEnvironmentForm((current) => ({ ...current, envVars: env ?? {} }))}
                 onDirtyChange={setEnvironmentVariablesDirty}
@@ -2153,9 +2209,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
             </Field>
             {managedEnvironmentEnvVarsMutation.isError ? (
               <div className="mt-3 text-xs text-destructive">
-                {managedEnvironmentEnvVarsMutation.error instanceof Error
-                  ? managedEnvironmentEnvVarsMutation.error.message
-                  : "Failed to save environment variables"}
+                {formatEnvironmentFailure(managedEnvironmentEnvVarsMutation.error, t("environmentsUi.error.saveEnvVars"), t)}
               </div>
             ) : null}
           </div>
@@ -2165,13 +2219,13 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               onClick={closeEnvironmentForm}
               disabled={managedEnvironmentEnvVarsMutation.isPending}
             >
-              Cancel
+              {t("environmentsUi.common.cancel")}
             </Button>
             <Button
               onClick={() => managedEnvironmentEnvVarsMutation.mutate(flushEnvironmentForm().envVars)}
               disabled={managedEnvironmentEnvVarsMutation.isPending}
             >
-              {managedEnvironmentEnvVarsMutation.isPending ? "Saving..." : "Save environment variables"}
+              {managedEnvironmentEnvVarsMutation.isPending ? t("environmentsUi.form.saving") : t("environmentsUi.form.saveEnvVars")}
             </Button>
           </div>
         </div>
@@ -2187,7 +2241,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               <Button size="sm" variant="ghost" asChild>
                 <Link to={ENVIRONMENTS_PATH}>
                   <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
-                  Environments
+                  {t("environmentsUi.common.environments")}
                 </Link>
               </Button>
               {editingEnvironment ? (
@@ -2195,8 +2249,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   size="icon-sm"
                   variant="ghost"
                   className="text-muted-foreground hover:text-destructive"
-                  aria-label={`Delete ${editingEnvironment.name}`}
-                  title="Delete environment"
+                  aria-label={t("environmentsUi.form.deleteAria", { name: editingEnvironment.name })}
+                  title={t("environmentsUi.delete.confirm")}
                   data-testid="environment-delete-button"
                   onClick={() => {
                     setReassignEnvironmentTargetId("");
@@ -2207,15 +2261,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                 </Button>
               ) : null}
             </div>
-            <h1 className="text-lg font-semibold">{editingEnvironmentId ? "Edit environment" : "Add environment"}</h1>
+            <h1 className="text-lg font-semibold">{editingEnvironmentId ? t("environmentsUi.common.edit") : t("environmentsUi.common.add")}</h1>
             <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-              Configure a reusable execution target for your agents. Saved changes affect future runs; Paperclip may start fresh sessions or sandbox leases after environment config changes.
+              {t("environmentsUi.form.description")}
             </p>
           </div>
 
           <div className="py-4">
             <div className="space-y-4">
-              <Field label="Name" hint="Operator-facing name for this execution target.">
+              <Field label={t("environmentsUi.form.name")} hint={t("environmentsUi.form.nameHint")}>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -2223,7 +2277,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, name: e.target.value }))}
                 />
               </Field>
-              <Field label="Description" hint="Optional note about what this machine is for.">
+              <Field label={t("environmentsUi.form.descriptionLabel")} hint={t("environmentsUi.form.descriptionHint")}>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -2231,7 +2285,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, description: e.target.value }))}
                 />
               </Field>
-              <Field label="Driver" hint="Sandbox stores plugin-backed provider config on the shared environment seam. SSH stores a remote machine target.">
+              <Field label={t("environmentsUi.form.driver")} hint={t("environmentsUi.form.driverHint")}>
                 <select
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   value={environmentForm.driver}
@@ -2256,18 +2310,18 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     }))}
                 >
                   {sandboxCreationEnabled || environmentForm.driver === "sandbox" ? (
-                    <option value="sandbox">Sandbox</option>
+                    <option value="sandbox">{t("environmentsUi.common.sandbox")}</option>
                   ) : null}
-                  <option value="ssh">SSH</option>
+                  <option value="ssh">{t("environmentsUi.common.ssh")}</option>
                   {environmentForm.driver === "local" ? (
-                    <option value="local">Local</option>
+                    <option value="local">{t("environmentsUi.common.local")}</option>
                   ) : null}
                 </select>
               </Field>
 
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Host" hint="DNS name or IP address for the remote machine.">
+                  <Field label={t("environmentsUi.form.host")} hint={t("environmentsUi.form.hostHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2275,7 +2329,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field label={t("environmentsUi.form.port")} hint={t("environmentsUi.form.portHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -2285,7 +2339,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH username.">
+                  <Field label={t("environmentsUi.form.username")} hint={t("environmentsUi.form.usernameHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2300,7 +2354,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     the platform-managed environment owns; an SSH environment the
                     user configured is outside that contract.
                   */}
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field label={t("environmentsUi.form.workspace")} hint={t("environmentsUi.form.workspaceHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2310,7 +2364,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field label={t("environmentsUi.form.privateKey")} hint={t("environmentsUi.form.privateKeyHint")}>
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -2322,7 +2376,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">{t("environmentsUi.form.noSecret")}</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -2335,7 +2389,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field label={t("environmentsUi.form.knownHosts")} hint={t("environmentsUi.form.knownHostsHint")}>
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -2344,8 +2398,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   </Field>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label={t("environmentsUi.form.strictHost")}
+                      hint={t("environmentsUi.form.strictHostHint")}
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -2356,7 +2410,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="space-y-3">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field label={t("environmentsUi.form.provider")} hint={t("environmentsUi.form.providerHint")}>
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -2397,12 +2451,12 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     />
                   ) : (
                     <div className="text-xs text-muted-foreground">
-                      This provider does not declare additional configuration fields.
+                      {t("environmentsUi.form.noProviderFields")}
                     </div>
                   )}
                   <ToggleField
-                    label="Stream run logs"
-                    hint="Stream the agent CLI's output live while runs execute (recommended). Turn off to deliver output only when the run finishes."
+                    label={t("environmentsUi.form.streamLogs")}
+                    hint={t("environmentsUi.form.streamLogsHint")}
                     checked={environmentForm.sandboxConfig.streamRunLogs !== false}
                     onChange={(checked) =>
                       setEnvironmentForm((current) => ({
@@ -2418,10 +2472,9 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               environmentForm.driver === "sandbox" &&
               selectedCompanyId ? (
                 <div className="space-y-2 py-3">
-                  <div className="text-sm font-medium">Custom image</div>
+                  <div className="text-sm font-medium">{t("environmentsUi.form.customImage")}</div>
                   <div className="text-xs text-muted-foreground">
-                    Start a setup sandbox, SSH in to customize the instance, then capture the
-                    running machine as a reusable image for future runs.
+                    {t("environmentsUi.form.customImageHint")}
                   </div>
                   <EnvironmentImageTemplatePanel
                     environment={editingEnvironment}
@@ -2433,14 +2486,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               ) : null}
 
               <Field
-                label="Environment variables"
-                hint="Injected into runs that resolve through this environment. Use plain values or organization secrets."
+                label={t("environmentsUi.form.envVars")}
+                hint={t("environmentsUi.form.envVarsHint")}
               >
                 <EnvironmentVariablesEditor
                   ref={environmentVariablesEditorRef}
                   value={environmentForm.envVars}
                   secrets={secrets ?? []}
                   onCreateSecret={async (name, value) => await createSecret.mutateAsync({ name, value })}
+                  renderCreateSecretError={(cause) => formatEnvironmentFailure(cause, t("formsUi.secret.createFailed"), t)}
                   onChange={(env) =>
                     setEnvironmentForm((current) => ({ ...current, envVars: env ?? {} }))}
                   onDirtyChange={setEnvironmentVariablesDirty}
@@ -2449,9 +2503,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
               {environmentMutation.isError ? (
                 <div className="text-xs text-destructive">
-                  {environmentMutation.error instanceof Error
-                    ? environmentMutation.error.message
-                    : "Failed to save environment"}
+                  {formatEnvironmentFailure(environmentMutation.error, t("environmentsUi.error.save"), t)}
                 </div>
               ) : null}
               {draftEnvironmentProbeMutation.data ? (
@@ -2468,7 +2520,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               onClick={closeEnvironmentForm}
               disabled={environmentMutation.isPending}
             >
-              Cancel
+              {t("environmentsUi.common.cancel")}
             </Button>
             {environmentForm.driver !== "local" ? (
               <Button
@@ -2476,7 +2528,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                 onClick={() => draftEnvironmentProbeMutation.mutate(flushEnvironmentForm())}
                 disabled={draftEnvironmentProbeMutation.isPending || !environmentFormValid}
               >
-                {draftEnvironmentProbeMutation.isPending ? "Testing..." : "Test"}
+                {draftEnvironmentProbeMutation.isPending ? t("environmentsUi.probe.testing") : t("environmentsUi.probe.test")}
               </Button>
             ) : null}
             <Button
@@ -2485,11 +2537,11 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
             >
               {environmentMutation.isPending
                 ? editingEnvironmentId
-                  ? "Saving..."
-                  : "Creating..."
+                  ? t("environmentsUi.form.saving")
+                  : t("environmentsUi.form.creating")
                 : editingEnvironmentId
-                  ? "Save environment"
-                  : "Create environment"}
+                  ? t("environmentsUi.form.save")
+                  : t("environmentsUi.form.create")}
             </Button>
           </div>
 
@@ -2503,45 +2555,45 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
             >
               <AlertDialogContent data-testid="environment-delete-dialog">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete {editingEnvironment.name}?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("environmentsUi.delete.title", { name: editingEnvironment.name })}</AlertDialogTitle>
                   <AlertDialogDescription>
                     {deleteUsageLoading
-                      ? "Checking what uses this environment..."
+                      ? t("environmentsUi.delete.checking")
                       : deleteUsageError
-                        ? "Could not check what uses this environment. Close this dialog and retry."
+                        ? t("environmentsUi.delete.checkError")
                         : deleteBlockMessage
                           ?? ([
                             reusableLeaseOnlyBlock && deleteBlastRadius
-                              ? `${deleteBlastRadius.reusableSandboxLeaseCount === 1 ? "1 reusable sandbox" : `${deleteBlastRadius.reusableSandboxLeaseCount} reusable sandboxes`} will be destroyed; the workspaces holding them stay open and provision a fresh sandbox on their next run.`
+                              ? t("environmentsUi.delete.sandboxes", { count: deleteBlastRadius.reusableSandboxLeaseCount })
                               : null,
                             agentsUsingEnvironment.length > 0
-                              ? `${agentsUsingEnvironment.length === 1 ? "1 agent uses" : `${agentsUsingEnvironment.length} agents use`} this environment as their default. Choose the environment those agents should be reassigned to.`
+                              ? t("environmentsUi.delete.agents", { count: agentsUsingEnvironment.length })
                               : null,
                           ]
                             .filter(Boolean)
                             .join(" ")
-                            || "This environment will be permanently deleted and future runs stop resolving to it.")}
+                            || t("environmentsUi.delete.permanent"))}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 {reusableLeaseHolderGroups.length > 0 ? (
                   <div className="space-y-1.5" data-testid="environment-delete-lease-holders">
-                    <div className="text-xs font-medium text-muted-foreground">Sandbox leases held by</div>
+                    <div className="text-xs font-medium text-muted-foreground">{t("environmentsUi.delete.heldBy")}</div>
                     <ul className="space-y-1">
                       {reusableLeaseHolderGroups.map((group) => (
-                        <li key={group.workspaceId ?? group.label} className="text-sm">
+                        <li key={group.key} className="text-sm">
                           {group.workspaceId ? (
                             <Link
                               className="underline underline-offset-2 hover:text-foreground"
                               to={`/execution-workspaces/${group.workspaceId}`}
                             >
-                              {group.label}
+                              {group.label ?? t("environmentsUi.delete.missingWorkspace")}
                             </Link>
                           ) : (
-                            <span>{group.label}</span>
+                            <span>{group.label ?? t("environmentsUi.delete.missingWorkspace")}</span>
                           )}
                           <span className="text-xs text-muted-foreground">
                             {" "}
-                            · {group.leaseCount === 1 ? "1 sandbox lease" : `${group.leaseCount} sandbox leases`}
+                            · {t("environmentsUi.delete.leases", { count: group.leaseCount })}
                             {group.issueLabels.length > 0 ? ` · ${group.issueLabels.join(", ")}` : ""}
                           </span>
                         </li>
@@ -2549,8 +2601,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     </ul>
                     <div className="text-xs text-muted-foreground">
                       {reusableLeaseOnlyBlock
-                        ? "Deleting destroys these sandboxes; the workspaces stay open."
-                        : "Close these workspaces to let Paperclip destroy their sandboxes, then retry the delete."}
+                        ? t("environmentsUi.delete.destroyHint")
+                        : t("environmentsUi.delete.closeHint")}
                     </div>
                   </div>
                 ) : null}
@@ -2559,42 +2611,42 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     {agentsUsingEnvironment.length > 0 ? (
                       <label className="block space-y-1.5 text-sm">
                         <span className="font-medium">
-                          Reassign {agentsUsingEnvironment.length === 1 ? "agent" : "agents"} to
+                          {t("environmentsUi.delete.reassign", { count: agentsUsingEnvironment.length })}
                         </span>
                         <select
-                          aria-label="Reassign agents to environment"
+                          aria-label={t("environmentsUi.delete.reassignAria")}
                           data-testid="environment-delete-reassign-select"
                           className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-normal outline-none"
                           value={reassignEnvironmentTargetId}
                           onChange={(event) => setReassignEnvironmentTargetId(event.target.value)}
                         >
                           <option value="">
-                            Default: {instanceDefaultEnvironment
-                              ? `${instanceDefaultEnvironment.name} · ${instanceDefaultEnvironment.driver}`
-                              : "Local"}
+                            {t("environmentsUi.delete.default", { environment: instanceDefaultEnvironment
+                              ? `${instanceDefaultEnvironment.name} · ${environmentDriverLabel(instanceDefaultEnvironment.driver, t)}`
+                              : t("environmentsUi.common.local") })}
                           </option>
                           {reassignTargetEnvironments.map((environment) => (
                             <option key={environment.id} value={environment.id}>
-                              {environment.name} · {environment.driver}
+                              {environment.name} · {environmentDriverLabel(environment.driver, t)}
                             </option>
                           ))}
                         </select>
                         <span className="block text-xs text-muted-foreground">
-                          Affected: {agentsUsingEnvironment.map((agent) => agent.name).join(", ")}
+                          {t("environmentsUi.delete.affected", { agents: agentsUsingEnvironment.map((agent) => agent.name).join(", ") })}
                         </span>
                       </label>
                     ) : null}
                     {deleteImpactNotes.length > 0 ? (
                       <ul className="space-y-1 text-xs text-muted-foreground">
                         {deleteImpactNotes.map((note) => (
-                          <li key={note}>{note}</li>
+                          <li key={note.id}>{note.message}</li>
                         ))}
                       </ul>
                     ) : null}
                   </div>
                 ) : null}
                 <AlertDialogFooter>
-                  <AlertDialogCancel disabled={deleteEnvironmentMutation.isPending}>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel disabled={deleteEnvironmentMutation.isPending}>{t("environmentsUi.common.cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     data-testid="environment-delete-confirm"
@@ -2615,10 +2667,10 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     }}
                   >
                     {deleteEnvironmentMutation.isPending
-                      ? "Deleting..."
+                      ? t("environmentsUi.delete.deleting")
                       : reusableLeaseOnlyBlock && deleteBlastRadius
-                        ? `Destroy ${deleteBlastRadius.reusableSandboxLeaseCount === 1 ? "1 sandbox" : `${deleteBlastRadius.reusableSandboxLeaseCount} sandboxes`} and delete`
-                        : "Delete environment"}
+                        ? t("environmentsUi.delete.destroy", { count: deleteBlastRadius.reusableSandboxLeaseCount })
+                        : t("environmentsUi.delete.confirm")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

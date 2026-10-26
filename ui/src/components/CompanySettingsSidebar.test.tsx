@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+import { act as reactAct } from "react";
+import { i18n } from "@/i18n";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -107,7 +109,8 @@ async function flushReact() {
 describe("CompanySettingsSidebar", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     mockSidebarBadgesApi.get.mockResolvedValue({
@@ -124,7 +127,8 @@ describe("CompanySettingsSidebar", () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
@@ -326,7 +330,10 @@ describe("CompanySettingsSidebar", () => {
     });
   });
 
-  it("renders instance plugin links while filtering sandbox-provider-only plugins", async () => {
+  it.each([
+    ["streamlined", CompanySettingsSidebar],
+    ["production", ProductionCompanySettingsSidebar],
+  ] as const)("retains plugin identities and hidden-provider filtering across locales in the %s settings sidebar", async (_mode, Sidebar) => {
     mockPluginsApi.list.mockResolvedValue([
       {
         id: "linear",
@@ -364,7 +371,7 @@ describe("CompanySettingsSidebar", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <CompanySettingsSidebar />
+          <Sidebar />
         </QueryClientProvider>,
       );
     });
@@ -380,6 +387,18 @@ describe("CompanySettingsSidebar", () => {
     expect(container.textContent).toContain("Linear");
     expect(container.textContent).toContain("Hybrid");
     expect(container.textContent).not.toContain("Sandbox only");
+
+    const queries = [mockPluginsApi.list.mock.calls.length, mockSidebarBadgesApi.get.mock.calls.length];
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Среды выполнения");
+    expect(container.textContent).toContain("Подключения");
+    expect(container.textContent).toContain("Linear");
+    expect(container.textContent).toContain("Hybrid");
+    expect(container.textContent).not.toContain("Sandbox only");
+    expect([...container.querySelectorAll('a[href^="/company/settings/instance/plugins/"]')]).toEqual(pluginLinks);
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Environments");
+    expect([mockPluginsApi.list.mock.calls.length, mockSidebarBadgesApi.get.mock.calls.length]).toEqual(queries);
 
     await act(async () => {
       root.unmount();

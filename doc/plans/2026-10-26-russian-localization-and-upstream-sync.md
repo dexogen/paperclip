@@ -868,9 +868,24 @@ Only 68 resolved roster/editor baseline entries were pruned; no exception was ad
 These are mocked component checks, not live backend permission, conflict or
 persistence proof. Exact-head hosted CI and Greptile review remain pending.
 
+The environment-settings UI slice adds 231 reviewed message families (239 English
+and 255 Russian forms). It covers the active editor/list, image setup, terminal
+captions, delete confirmation and both settings sidebars. Component regressions
+preserve dirty SSH/environment values, focus, pending requests, raw provider
+messages and schemas, terminal identity and ordered reassignment before deletion.
+The latest complete runs of five affected suites pass 204 tests, including
+existing agent/project helper consumers; the page was rerun after final edits.
+UI typecheck, build, token gates and map checks pass. The strict audit passes
+with 7,450 reviewed families, 15,288 remaining source findings and zero pending,
+missing, invalid or new findings. Only 200 resolved source entries were removed;
+no exception was added. These mocked checks do not prove live provider or terminal
+behavior. Backend probe summaries require a separate typed-provenance change;
+provider-schema localization remains a later bounded slice. Exact-head CI,
+browser qualification and deployment remain pending for this candidate.
+
 The remaining major packages are agent invitations,
-project workspaces/environments, dashboard/activity/costs, member access/secrets,
-connections and routines. Skills/teams/portability/plugin hosts have additional
+project workspaces and environment backend/schema copy, dashboard/activity/costs,
+member access/secrets, connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
 components cover every host. Use the source audit and actual imports to set each
 bounded scope; do not translate sandbox fixtures to reduce the baseline.

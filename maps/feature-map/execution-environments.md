@@ -51,8 +51,14 @@ version. Confirm no save, probe or secret creation occurs until an explicit acti
 Custom schema captions, values and provider errors must stay literal. The
 [environment editor tests](../../ui/src/components/environment-variables-editor/EnvironmentVariablesEditor.test.tsx)
 and [schema tests](../../ui/src/components/JsonSchemaForm.locale.test.tsx) cover
-component state with mocked requests. This recipe does not establish live provider
-acceptance or complete localization of the environment settings page.
+component state with mocked requests. The active environment page and both
+settings sidebars also translate their owned captions. The page tests preserve
+pending probe/default actions, dirty SSH and environment-variable drafts, raw
+schema/provider text, XTerm/WebSocket identity and reassignment-before-delete
+ordering through EN/RU/EN changes. Existing helper consumers retain fixed English
+unless they pass a translator. Backend probe summaries and provider-schema
+captions remain separate work. These checks do not establish live provider
+acceptance, terminal transport or image capture.
 
 For an immutable sandbox image, pin the OCI image with `@sha256`, or select
 a Daytona snapshot whose provider ID can be verified, and explicitly probe the saved environment in the intended company. The existing connection
