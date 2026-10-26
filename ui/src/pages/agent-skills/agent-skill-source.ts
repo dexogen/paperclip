@@ -1,4 +1,6 @@
 import { Boxes, Folder, Link2, Paperclip, type LucideIcon } from "lucide-react";
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import { GithubIcon } from "@/components/icons/github-icon";
 import type { CompanySkillListItem } from "@paperclipai/shared";
 
@@ -76,19 +78,19 @@ function isFilesystemLikeLabel(value: string) {
   );
 }
 
-function displayLocalSourceLabel(label: string | null | undefined) {
+function displayLocalSourceLabel(label: string | null | undefined, t: TFunction) {
   const trimmed = label?.trim();
-  if (!trimmed || isFilesystemLikeLabel(trimmed)) return "Local folder";
+  if (!trimmed || isFilesystemLikeLabel(trimmed)) return t("agentSkillsUi.source.local");
   return trimmed;
 }
 
-function displayCatalogSourceLabel(label: string | null | undefined) {
+function displayCatalogSourceLabel(label: string | null | undefined, t: TFunction) {
   const trimmed = label?.trim();
-  if (!trimmed || isFilesystemLikeLabel(trimmed)) return "Catalog";
+  if (!trimmed || isFilesystemLikeLabel(trimmed)) return t("agentSkillsUi.source.catalog");
   return trimmed;
 }
 
-export function buildAgentSkillSourceMeta(skill: SourceSkill): AgentSkillSourceMeta {
+export function buildAgentSkillSourceMeta(skill: SourceSkill, t: TFunction = i18n.getFixedT("en")): AgentSkillSourceMeta {
   if (skill.sourceBadge === "github" || skill.sourceType === "github") {
     const repo = githubRepoLabel(skill.sourceLabel) ?? githubRepoLabel(skill.sourceLocator);
     return { icon: GithubIcon, label: repo ? `GitHub · ${repo}` : "GitHub" };
@@ -104,16 +106,16 @@ export function buildAgentSkillSourceMeta(skill: SourceSkill): AgentSkillSourceM
   }
 
   if (skill.sourceBadge === "paperclip") {
-    return { icon: Paperclip, label: skill.sourceLabel?.trim() || "Paperclip managed" };
+    return { icon: Paperclip, label: skill.sourceLabel?.trim() || t("agentSkillsUi.source.managed") };
   }
 
   if (skill.sourceBadge === "catalog" || skill.sourceType === "catalog") {
-    return { icon: Boxes, label: displayCatalogSourceLabel(skill.sourceLabel) };
+    return { icon: Boxes, label: displayCatalogSourceLabel(skill.sourceLabel, t) };
   }
 
   if (skill.sourceBadge === "local" || skill.sourceType === "local_path") {
-    return { icon: Folder, label: displayLocalSourceLabel(skill.sourceLabel) };
+    return { icon: Folder, label: displayLocalSourceLabel(skill.sourceLabel, t) };
   }
 
-  return { icon: Boxes, label: displayCatalogSourceLabel(skill.sourceLabel) };
+  return { icon: Boxes, label: displayCatalogSourceLabel(skill.sourceLabel, t) };
 }

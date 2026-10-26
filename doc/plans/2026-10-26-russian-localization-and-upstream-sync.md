@@ -808,7 +808,25 @@ production code. The complete 55-case editor suite then passed. The other 29
 complete suites passed in the original run. Integrated UI typecheck, build,
 token gates and map checks passed; these results do not claim full repository CI.
 
-The remaining major packages are agent trust/tools/skills/channels, bulk controls and invitations,
+The agent-skills slice adds 42 reviewed EN/RU message pairs for the active tab,
+rows, release picker and source fallbacks. Root reviewed all pairs and the source
+and test changes; three reused adapter-label contexts were also reviewed. Only
+32 resolved baseline entries were removed, with no new exceptions or dynamic
+keys. The standalone strict audit passes with 6,952 reviewed families and 15,734
+remaining source findings, no pending/missing/invalid messages, new findings or
+source errors.
+
+Three locale cases failed against the original source before implementation.
+Six complete affected suites then passed 43 tests with no skips. After fixture
+type corrections, the two affected suites passed all 10 cases again; the other
+four suites remained unchanged. UI typecheck, build, token gates and map checks
+pass. The real row and release picker preserve pending toggle/version-pin drafts,
+search, focus, selection, raw names and exact requests across EN/RU/EN changes.
+Autosave timing and existing eligibility gates are unchanged. This is component
+evidence with mocked APIs, not live materialization or a complete Skills catalog
+translation. Exact-head hosted CI and Greptile review remain pending.
+
+The remaining major packages are agent trust/tools/channels, bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

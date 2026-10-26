@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CompanySkillVersion } from "@paperclipai/shared";
+import { i18n } from "../../i18n";
 import {
   formatReleaseDate,
   releaseName,
@@ -78,4 +79,17 @@ describe("releaseShortLabel", () => {
   it("uses the whole name when there is no separator", () => {
     expect(releaseShortLabel(makeRelease({ releaseName: "Champion", label: null }))).toBe("Champion");
   });
+});
+
+it("localizes only owned release captions and preserves raw names and calendar dates", () => {
+  const ru = i18n.getFixedT("ru");
+  const raw = makeRelease({ releaseName: "Release <b>raw</b>" });
+  expect(releaseOptionLabel(raw, ru)).toBe("Release <b>raw</b> · дата выпуска: 2026-07-21");
+  expect(releaseName(raw, ru)).toBe("Release <b>raw</b>");
+  expect(releaseShortLabel(raw, ru)).toBe("Release <b>raw</b>");
+  const absent = makeRelease({ releaseName: null, label: null, releaseId: null });
+  expect(releaseName(absent, ru)).toBe("Выпуск");
+  expect(releaseShortLabel(absent, ru)).toBe("Выпуск");
+  expect(releaseName(absent)).toBe("Release");
+  expect(releaseName(makeRelease({ releaseName: "Release" }), ru)).toBe("Release");
 });

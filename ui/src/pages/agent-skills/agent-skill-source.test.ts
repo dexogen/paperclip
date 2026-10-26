@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { i18n } from "../../i18n";
 import { buildAgentSkillSourceMeta } from "./agent-skill-source";
 
 function source(overrides: Parameters<typeof buildAgentSkillSourceMeta>[0]) {
@@ -50,4 +51,19 @@ describe("buildAgentSkillSourceMeta", () => {
       sourceType: "catalog",
     })).toBe("Bundled catalog");
   });
+});
+
+it("translates selected fallbacks while preserving source labels that resemble them", () => {
+  const ru = i18n.getFixedT("ru");
+  const local = { sourceBadge: "local", sourceLabel: "/hidden/path", sourceLocator: null, sourceType: "local_path" } as const;
+  expect(buildAgentSkillSourceMeta(local, ru).label).toBe("Локальная папка");
+  expect(buildAgentSkillSourceMeta(local).label).toBe("Local folder");
+  expect(buildAgentSkillSourceMeta({ ...local, sourceLabel: "Local folder" }, ru).label).toBe("Local folder");
+  const catalog = { ...local, sourceBadge: "catalog", sourceType: "catalog" } as const;
+  expect(buildAgentSkillSourceMeta(catalog, ru).label).toBe("Каталог");
+  expect(buildAgentSkillSourceMeta({ ...catalog, sourceLabel: "Catalog" }, ru).label).toBe("Catalog");
+  const managed = { ...catalog, sourceBadge: "paperclip", sourceLabel: null } as const;
+  expect(buildAgentSkillSourceMeta(managed, ru).label).toBe("Под управлением Paperclip");
+  expect(buildAgentSkillSourceMeta({ ...managed, sourceLabel: "Paperclip managed" }, ru).label).toBe("Paperclip managed");
+  expect(buildAgentSkillSourceMeta({ ...managed, sourceLabel: "Raw <b>literal</b>" }, ru).label).toBe("Raw <b>literal</b>");
 });

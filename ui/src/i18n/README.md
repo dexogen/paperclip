@@ -247,9 +247,22 @@ dynamic-key declarations in the detector configuration. Unknown lifecycle values
 are not treated as active phases. Component tests preserve drafts, focus, pending
 actions, selected revisions and exact payloads through EN/RU/EN changes. They do
 not establish live key authentication, arbitrary plugin behavior or provisioning.
-Trust/project restrictions, tools, skills, channels, external invitations and
+Trust/project restrictions, tools, channels, external invitations and
 bulk editing remain separate slices. FileTree error/retry branches are also
 outside the active agent consumer's coverage.
+
+The agent-skills slice covers the active skills tab, skill rows, release picker
+and source fallback labels. The enabled/total caption is one complete message.
+Skill and release names, descriptions, source labels, paths, keys and provider
+errors remain literal. Optional helper translators keep fixed English defaults.
+
+Locale regressions use the real row and release picker with mocked requests.
+They preserve search, focus, selection and pending toggle/version-pin drafts
+through EN/RU/EN changes, without extra queries or writes. The 250 ms autosave
+debounce, failed-draft retry guard, native legacy-skill restriction, beta-release
+gate and automatic read-only rows retain their existing behavior. These checks
+do not establish live skill materialization or translate Skills Manager, Studio,
+Store and skill contents.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
