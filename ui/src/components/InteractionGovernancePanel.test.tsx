@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 
 import { act as reactAct } from "react";
+import { setLocale } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ISSUE_THREAD_INTERACTION_KINDS as INTERACTION_KINDS,
   type InteractionResolverGovernance,
@@ -54,16 +55,36 @@ function triggerText(host: HTMLElement, testId: string): string {
   return (trigger?.textContent ?? "").replace(/\s+/g, " ").trim();
 }
 
-afterEach(() => {
+beforeEach(async () => { await setLocale("en"); });
+
+afterEach(async () => {
   if (root) {
-    act(() => root?.unmount());
+    await act(() => root?.unmount());
   }
   container?.remove();
   root = null;
   container = null;
+  await setLocale("en");
 });
 
 describe("InteractionGovernancePanel", () => {
+  it("updates Russian audience labels without changing stored governance values", async () => {
+    const governance: InteractionResolverGovernance = {
+      request_confirmation: { defaultPolicy: "human_only", cap: "not_creator" },
+    };
+    const { host, onChange } = renderPanel(governance);
+    await act(async () => setLocale("ru"));
+    expect(triggerText(host, "governance-request_confirmation-default")).toBe("Только человек");
+    expect(triggerText(host, "governance-request_confirmation-cap")).toBe("Все, кроме автора");
+    expect(host.textContent).toContain("Правила ответов");
+    expect(host.querySelector('[data-testid="governance-request_confirmation-default"]')?.getAttribute("aria-label"))
+      .toBe("Кто может отвечать по умолчанию: «Подтверждения»");
+    expect(onChange).not.toHaveBeenCalled();
+    expect(governance).toEqual({ request_confirmation: { defaultPolicy: "human_only", cap: "not_creator" } });
+    await act(async () => setLocale("en"));
+    expect(triggerText(host, "governance-request_confirmation-default")).toBe("Human only");
+  });
+
   it("presents Anyone as the visible default for a company with no overrides", () => {
     const { host } = renderPanel();
 

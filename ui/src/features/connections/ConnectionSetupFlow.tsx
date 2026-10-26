@@ -1,3 +1,4 @@
+import { Trans, t, useTranslation } from "@/i18n";
 import { StepHeader } from "./ConnectionSetupHeader";
 import { GoogleWorkspaceServicesDialog } from "./GoogleWorkspaceServices";
 import type { GoogleWorkspaceServiceSelection } from "@paperclipai/shared";
@@ -4292,6 +4293,7 @@ export function AccessStepContent({
   // "Only agents I choose" / "Just agents I pick" means agents this person may actually edit. When the server
   // has not told us, fall back to every live agent rather than an empty list —
   // an empty picker would read as "you have no agents".
+  const { t } = useTranslation();
   const editableAgentIds = capabilities?.editableAgentIds;
   const agents = editableAgentIds
     ? allAgents.filter((agent) => editableAgentIds.includes(agent.id))
@@ -4317,17 +4319,17 @@ export function AccessStepContent({
     ? canSetCompanyInstall
     : installAgentIds.size > 0);
   const lockedAgentName = lockedAgentId
-    ? allAgents.find((agent) => agent.id === lockedAgentId)?.name ?? "the requesting agent"
+    ? allAgents.find((agent) => agent.id === lockedAgentId)?.name ?? t("providerSetup.access.requestingAgent")
     : null;
-  const identityHeading = githubIdentity ? "Connect GitHub as" : "Which humans can use this credential?";
+  const identityHeading = githubIdentity ? t("providerSetup.access.gitHubIdentityHeading") : t("providerSetup.access.identityHeading");
   const agentAccessHeading = grantKind === "agent"
-    ? "Which agent owns this GitHub account?"
+    ? t("providerSetup.access.ownerAgentHeading")
     : githubIdentity && grantKind === "user"
-      ? "Which agents may use your GitHub when you’re responsible?"
+      ? t("providerSetup.access.personalAgentsHeading")
       : githubIdentity
-        ? "Which agents may use the shared GitHub account?"
-        : "Which agents can use this connection?";
-  const agentAccessLabel = githubIdentity ? agentAccessHeading : "Which agents can use this connection?";
+        ? t("providerSetup.access.sharedAgentsHeading")
+        : t("providerSetup.access.agentsHeading");
+  const agentAccessLabel = githubIdentity ? agentAccessHeading : t("providerSetup.access.agentsHeading");
 
   return (
     <div className={bare ? "" : "mx-auto max-w-2xl"}>
@@ -4336,10 +4338,10 @@ export function AccessStepContent({
           <section className="p-6">
             <h2 className="text-sm font-semibold text-foreground">{identityHeading}</h2>
             {githubIdentity && grantKind === "agent" ? (
-              <p className="mt-2 text-sm text-muted-foreground">This agent uses this GitHub account for everyone’s work, instead of the person giving instructions.</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("providerSetup.access.dedicatedExplanation")}</p>
             ) : null}
             {identityLoading ? (
-              <div className="mt-4 grid gap-2 sm:grid-cols-2" aria-label="Loading connection identity">
+              <div className="mt-4 grid gap-2 sm:grid-cols-2" aria-label={t("providerSetup.access.loadingIdentity")}>
                 <Skeleton className="h-20 w-full rounded-md" />
                 <Skeleton className="h-20 w-full rounded-md" />
               </div>
@@ -4355,25 +4357,25 @@ export function AccessStepContent({
                 <div>
                   <div className="text-sm font-medium text-foreground">
                     {allowedGrantKinds[0] === "user"
-                      ? githubIdentity ? "My GitHub account" : "Just me"
+                      ? githubIdentity ? t("providerSetup.access.myGitHub") : t("providerSetup.access.justMe")
                       : allowedGrantKinds[0] === "agent"
-                        ? "A dedicated account for an agent"
-                        : githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"}
+                        ? t("providerSetup.access.dedicatedAgent")
+                        : githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman")}
                   </div>
                   {githubIdentity ? (
                     <p className="mt-1 text-xs text-muted-foreground">
                       {allowedGrantKinds[0] === "user"
-                        ? "Agents use it only for runs where you are the responsible person."
+                        ? t("providerSetup.access.personalHint")
                         : allowedGrantKinds[0] === "agent"
-                          ? "That agent always uses this account, regardless of who starts the run."
-                          : "Eligible agents use one shared credential, regardless of who starts the run."}
+                          ? t("providerSetup.access.dedicatedHint")
+                          : t("providerSetup.access.sharedHint")}
                     </p>
                   ) : null}
                 </div>
               </div>
             ) : needsIdentityChoice ? (
               <RadioCardGroup
-                ariaLabel={githubIdentity ? identityHeading : "Which humans can use this credential?"}
+                ariaLabel={githubIdentity ? identityHeading : t("providerSetup.access.identityHeading")}
                 className="mt-4 sm:grid-cols-2"
                 value={grantKind}
                 onValueChange={(next) => {
@@ -4387,35 +4389,34 @@ export function AccessStepContent({
                 options={[
                   {
                     value: "user",
-                    title: githubIdentity ? "My GitHub account" : "Just me",
+                    title: githubIdentity ? t("providerSetup.access.myGitHub") : t("providerSetup.access.justMe"),
                     description: githubIdentity
-                      ? "Agents use it only for runs where you are the responsible person."
+                      ? t("providerSetup.access.personalHint")
                       : undefined,
                     icon: <UserRound className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "agent",
-                    title: "A dedicated account for an agent",
+                    title: t("providerSetup.access.dedicatedAgent"),
                     description: githubIdentity
-                      ? "That agent always uses this account, regardless of who starts the run."
+                      ? t("providerSetup.access.dedicatedHint")
                       : undefined,
                     icon: <Bot className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "organization",
-                    title: githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization",
+                    title: githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman"),
                     description: githubIdentity
-                      ? "Eligible agents use one shared credential, regardless of who starts the run."
+                      ? t("providerSetup.access.sharedHint")
                       : undefined,
                     icon: <UsersRound className="h-4 w-4" aria-hidden="true" />,
                     accessibleLabel: canCreateOrganizationGrant
-                      ? githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"
-                      : `${githubIdentity ? "Shared organization GitHub account (advanced)" : "Any human in the organization"}. Unavailable: ${capabilities?.organizationGrantReason ??
-                        "Only a connection manager can share this credential with the organization."}`,
+                      ? githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman")
+                      : t("providerSetup.access.unavailableChoice", { label: githubIdentity ? t("providerSetup.access.sharedGitHub") : t("providerSetup.access.anyHuman"), reason: capabilities?.organizationGrantReason ?? t("providerSetup.access.managerOnly") }),
                     tooltip: canCreateOrganizationGrant
                       ? undefined
                       : capabilities?.organizationGrantReason ??
-                        "Only a connection manager can share this credential with the organization.",
+                        t("providerSetup.access.managerOnly"),
                     disabled: !canCreateOrganizationGrant,
                   },
                 ].filter((option) => allowedGrantKinds.includes(option.value as ConnectionGrantKind))}
@@ -4423,7 +4424,7 @@ export function AccessStepContent({
             ) : (
               // A connection with no credential has no identity to choose, so
               // asking would be a meaningless decision.
-              <p className="mt-4 text-sm text-muted-foreground">No identity required</p>
+              <p className="mt-4 text-sm text-muted-foreground">{t("providerSetup.access.noIdentity")}</p>
             )}
           </section>
 
@@ -4433,20 +4434,19 @@ export function AccessStepContent({
               <div className="mt-4 flex items-start gap-3 rounded-md border border-border bg-muted/40 p-4">
                 <UsersRound className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                 <div>
-                  <div className="text-sm font-medium text-foreground">Existing agent access stays the same</div>
+                  <div className="text-sm font-medium text-foreground">{t("providerSetup.access.accessPreserved")}</div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Reconnecting replaces the credential without changing which agents can use it.
+                    {t("providerSetup.access.reconnectHint")}
                   </p>
                 </div>
               </div>
             ) : lockedAgentId ? (
               <p className="mt-2 text-sm text-muted-foreground">
-                This task grants access only to <span className="font-medium text-foreground">{lockedAgentName}</span>.
-                Existing connection access is left unchanged.
+                <Trans i18nKey="providerSetup.access.lockedAgent" tOptions={{ interpolation: { escapeValue: true } }} shouldUnescape values={{ name: lockedAgentName }} components={{ agent: <span className="font-medium text-foreground" /> }} />
               </p>
             ) : (
               grantKind === "agent" ? (
-                <p className="mt-2 text-sm text-muted-foreground">Choose exactly one agent. This identity cannot be shared with other agents.</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t("providerSetup.access.chooseOne")}</p>
               ) : <RadioCardGroup
                 ariaLabel={agentAccessLabel}
                 className="mt-4 sm:grid-cols-2"
@@ -4455,31 +4455,30 @@ export function AccessStepContent({
                 options={[
                   {
                     value: "specific",
-                    title: githubIdentity ? "Only agents I choose" : "Just agents I pick",
+                    title: githubIdentity ? t("providerSetup.access.onlyChosen") : t("providerSetup.access.justChosen"),
                     description: githubIdentity
                       ? grantKind === "user"
-                        ? "Only selected agents may use your GitHub when you’re responsible."
-                        : "Only selected agents may use the shared account."
+                        ? t("providerSetup.access.chosenPersonalHint")
+                        : t("providerSetup.access.chosenSharedHint")
                       : undefined,
                     icon: <Bot className="h-4 w-4" aria-hidden="true" />,
                   },
                   {
                     value: "all",
-                    title: "Any agent",
+                    title: t("providerSetup.access.anyAgent"),
                     description: githubIdentity
                       ? grantKind === "user"
-                        ? "Every agent may use your GitHub when you’re responsible."
-                        : "Every agent may use the shared account."
+                        ? t("providerSetup.access.allPersonalHint")
+                        : t("providerSetup.access.allSharedHint")
                       : undefined,
                     icon: <BotGroupIcon />,
                     accessibleLabel: canSetCompanyInstall
-                      ? "Any agent"
-                      : `Any agent. Unavailable: ${capabilities?.companyInstallReason ??
-                        "Only someone who can configure this connection can choose this."}`,
+                      ? t("providerSetup.access.anyAgent")
+                      : t("providerSetup.access.anyAgentUnavailable", { reason: capabilities?.companyInstallReason ?? t("providerSetup.access.configurerOnly") }),
                     tooltip: canSetCompanyInstall
                       ? undefined
                       : capabilities?.companyInstallReason ??
-                        "Only someone who can configure this connection can choose this.",
+                        t("providerSetup.access.configurerOnly"),
                     disabled: !canSetCompanyInstall,
                   },
                 ]}
@@ -4494,7 +4493,7 @@ export function AccessStepContent({
                     grantKind === "agent" && next.size > 1 ? new Set([[...next].at(-1)!]) : next,
                   )}
                   loading={agentsLoading}
-                  emptyMessage="You cannot edit any agents yet."
+                  emptyMessage={t("providerSetup.access.noEditableAgents")}
                   showSelectionPreview={false}
                 />
               </div>
@@ -4507,7 +4506,7 @@ export function AccessStepContent({
           reading order; desktop keeps Back on the left. */}
       {hideFooter ? null : <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
         <Button variant="ghost" className="w-full sm:w-auto" onClick={onBack} disabled={pending}>
-          Back
+          {t("providerSetup.access.back")}
         </Button>
         <Button
           className="w-full sm:w-auto"
@@ -4539,23 +4538,32 @@ export function connectionDefaultSummarySentence(input: {
   lockedAgentId?: string | null;
   preserveAgentAccess?: boolean;
 }): string {
-  const identity = input.authKind === "none"
-    ? "No sign-in needed"
-    : input.grantKind === "user"
-      ? "Connects as you"
-      : input.grantKind === "agent"
-        ? "Connects as a dedicated agent account"
-        : "Connects for everyone in your organization";
-  const reach = input.preserveAgentAccess
-    ? "agent access stays as it is"
-    : input.lockedAgentId
-      ? "available to the agent that asked for it"
-      : input.installChoice === "all"
-        ? "available to all agents"
-        : input.installCount === 0
-          ? "no agents selected yet"
-          : `available to ${input.installCount} selected ${input.installCount === 1 ? "agent" : "agents"}`;
-  return `${identity}, ${reach}.`;
+  if (input.authKind === "none") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.none.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.none.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.none.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.none.empty");
+    return t("providerSetup.access.summary.none.selected", { count: input.installCount });
+  }
+  if (input.grantKind === "user") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.user.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.user.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.user.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.user.empty");
+    return t("providerSetup.access.summary.user.selected", { count: input.installCount });
+  }
+  if (input.grantKind === "agent") {
+    if (input.preserveAgentAccess) return t("providerSetup.access.summary.agent.preserved");
+    if (input.lockedAgentId) return t("providerSetup.access.summary.agent.requested");
+    if (input.installChoice === "all") return t("providerSetup.access.summary.agent.all");
+    if (input.installCount === 0) return t("providerSetup.access.summary.agent.empty");
+    return t("providerSetup.access.summary.agent.selected", { count: input.installCount });
+  }
+  if (input.preserveAgentAccess) return t("providerSetup.access.summary.organization.preserved");
+  if (input.lockedAgentId) return t("providerSetup.access.summary.organization.requested");
+  if (input.installChoice === "all") return t("providerSetup.access.summary.organization.all");
+  if (input.installCount === 0) return t("providerSetup.access.summary.organization.empty");
+  return t("providerSetup.access.summary.organization.selected", { count: input.installCount });
 }
 
 /**
@@ -4594,6 +4602,7 @@ export function ConnectionAccessDefaults({
   forceOpen?: boolean;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const expanded = open || forceOpen;
   return (
@@ -4606,7 +4615,7 @@ export function ConnectionAccessDefaults({
           className="h-auto p-0 text-xs font-semibold underline underline-offset-2"
           disabled={disabled}
         >
-          Change
+          {t("providerSetup.access.change")}
         </Button></CollapsibleTrigger>
       </div>
       {(notice ?? []).map((reason) => (

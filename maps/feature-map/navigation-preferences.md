@@ -67,7 +67,8 @@ Sources: [Command palette](../../ui/src/components/CommandPalette.tsx), [shortcu
 
 ### `locale`
 
-Use the language control at sign-in or in the sidebar account menu. The fork starts
+Use the language control at sign-in, first-administrator bootstrap, the active
+onboarding wizard, or in the sidebar account menu. The fork starts
 in Russian unless `VITE_DEFAULT_LOCALE` overrides it; a saved `paperclip.locale`
 preference wins. This is browser-local presentation, not an account-wide setting.
 
@@ -76,6 +77,14 @@ Automated: [locale preferences](../../ui/src/i18n/locale-preferences.test.ts),
 [profile](../../ui/src/pages/ProfileSettings.test.tsx), and
 [formatting](../../ui/src/lib/utils.localization.test.ts) cover storage failure,
 language changes, draft preservation, and display contracts with fixtures.
+
+[Bootstrap](../../ui/src/components/BootstrapPendingPage.test.tsx),
+[onboarding](../../ui/src/components/onboarding/OnboardingLocalization.test.tsx),
+[provider setup](../../ui/src/components/ai-connections/AiProviderSetup.test.tsx),
+[local provider login](../../ui/src/components/ai-connections/useLocalAiLogin.test.tsx),
+and [instance access](../../ui/src/pages/InstanceAccess.test.tsx) check that a
+language change preserves drafts, selected permission values, and local errors
+without starting a claim, reconnecting, or submitting a form.
 
 Manual: switch EN/RU/EN with a profile or task draft open, reload, and inspect the
 document language, labels, accessible names, dates, and currency. Verify both UI

@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import type { Environment } from "@paperclipai/shared";
 
 /**
@@ -11,9 +12,7 @@ import type { Environment } from "@paperclipai/shared";
 export class ManagedSandboxUnavailableForTestError extends Error {
   constructor() {
     super(
-      "This instance runs agents only in its managed sandbox environment, but no " +
-        "managed sandbox environment is available to test in. Check that the managed " +
-        "sandbox provider is active, then retry the test.",
+      t("runtimeSelect.managedSandboxUnavailable"),
     );
     this.name = "ManagedSandboxUnavailableForTestError";
   }

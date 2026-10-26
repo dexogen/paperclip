@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 
 import { createRoot } from "react-dom/client";
+import { act as reactAct } from "react";
 import { flushSync } from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryKeys } from "@/lib/queryKeys";
 import { CompanySettingsNav, getCompanySettingsTab } from "./CompanySettingsNav";
+import { i18n } from "@/i18n";
 
 let currentPathname = "/company/settings";
 const navigateMock = vi.hoisted(() => vi.fn());
@@ -53,13 +55,15 @@ async function act(callback: () => void | Promise<void>) {
 describe("CompanySettingsNav", () => {
   let container: HTMLDivElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
     container = document.createElement("div");
     document.body.appendChild(container);
     currentPathname = "/company/settings";
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
     container.remove();
     document.body.innerHTML = "";
     vi.clearAllMocks();
@@ -228,5 +232,28 @@ describe("CompanySettingsNav", () => {
     await act(async () => {
       root.unmount();
     });
+  });
+
+  it("updates Russian tab labels while preserving hidden tabs, selection, and navigation routes", async () => {
+    currentPathname = "/PAP/company/settings/members";
+    const root = createRoot(container);
+    try {
+      await reactAct(async () => { renderNav(root, ["instance.plugins"], { managed: true }); });
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      const props = pageTabBarMock.mock.calls.at(-1)![0];
+      expect(props.value).toBe("members");
+      expect(props.items).toContainEqual({ value: "members", label: "Участники" });
+      expect(props.items).toContainEqual({ value: "connections", label: "Подключения" });
+      expect(props.items).toContainEqual({ value: "secrets", label: "Секреты" });
+      expect(props.items.map((item: { value: string }) => item.value)).not.toContain("import");
+      expect(props.items.map((item: { value: string }) => item.value)).not.toContain("instance-plugins");
+      expect(navigateMock).not.toHaveBeenCalled();
+      await reactAct(async () => { props.onValueChange("secrets"); });
+      expect(navigateMock).toHaveBeenCalledWith("/company/settings/secrets");
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(pageTabBarMock.mock.calls.at(-1)![0].items).toContainEqual({ value: "members", label: "Members" });
+    } finally {
+      await reactAct(async () => { root.unmount(); });
+    }
   });
 });

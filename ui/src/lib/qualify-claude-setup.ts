@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import type { AgentRunner, AgentRunnerChoice, Environment, EnvironmentProbeResult } from "@paperclipai/shared";
 import type { AdapterInfo } from "../api/adapters";
 
@@ -38,7 +39,7 @@ export async function qualifyRunnerEnvironment(input: {
     const harness = adapters.find(adapter => adapter.type === input.adapterType);
     const runner = harness?.defaultRunner;
     if (!harness || (runner !== "paperclip" && runner !== "legacy") || !harness.supportedRunners?.includes(runner)) {
-      throw new Error("Could not confirm runner availability for this environment. Retry setup.");
+      throw new Error(t("runtimeSelect.confirmationError"));
     }
     return { runner, harness };
   };
@@ -54,7 +55,7 @@ export async function qualifyRunnerEnvironment(input: {
     || typeof probe.details.leaseId !== "string" || !probe.details.leaseId) {
     throw new Error(typeof probe.details?.platformQualificationDiagnostic === "string"
       ? probe.details.platformQualificationDiagnostic
-      : probe.summary || "The environment's platform qualification could not be confirmed. Retry the connection probe or select Legacy runner in Advanced.");
+      : probe.summary || t("onboarding.errors.platformQualification"));
   }
   adapters = await input.readAdapters();
   if (!input.isCurrent()) return undefined;

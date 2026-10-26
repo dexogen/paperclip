@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { StrictMode } from "react";
+import { act, StrictMode } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -105,4 +106,26 @@ it("hides a failed device prompt and lets the user restart sign-in", async () =>
   flushSync(() => Array.from(host.querySelectorAll("button")).find(b => b.textContent === "Start sign-in again")!.click());
   await vi.waitFor(() => expect(host.textContent).toContain("NEW-CODE"));
   expect(host.querySelector('[role="alert"]')).toBeNull();
+});
+
+
+it.each([false, true])("updates an expired local login message without restarting the attempt (provider diagnostic: %s)", async providerDiagnostic => {
+  await i18n.changeLanguage("en");
+  const diagnostic = "Provider diagnostic: device session expired (E42)";
+  api.checkLocalLogin.mockResolvedValue({ status: "expired", ...(providerDiagnostic ? { error: diagnostic } : {}) });
+  try {
+    flushSync(() => root.render(<Harness />));
+    await vi.waitFor(() => expect(host.querySelector('[role="alert"]')?.textContent).toContain(providerDiagnostic ? diagnostic : "This sign-in attempt expired. Start sign-in again."));
+    const request = api.startLocalLogin.mock.calls[0];
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(host.querySelector('[role="alert"]')?.textContent).toContain(providerDiagnostic ? diagnostic : "Срок действия попытки входа истёк. Начните вход заново.");
+    expect(api.startLocalLogin).toHaveBeenCalledTimes(1);
+    expect(api.startLocalLogin.mock.calls[0]).toEqual(request);
+    expect(api.checkLocalLogin).toHaveBeenCalledTimes(1);
+    expect(api.cancelLocalLogin).not.toHaveBeenCalled();
+    expect(api.connectLocal).not.toHaveBeenCalled();
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(host.querySelector('[role="alert"]')?.textContent).toContain(providerDiagnostic ? diagnostic : "This sign-in attempt expired. Start sign-in again.");
+    expect(api.startLocalLogin).toHaveBeenCalledTimes(1);
+  } finally { await act(async () => { await i18n.changeLanguage("en"); }); }
 });

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -25,6 +27,9 @@ vi.mock("../context/BreadcrumbContext", () => ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+
+beforeEach(async () => { await setLocale("en"); });
+afterEach(async () => { await setLocale("en"); });
 
 const SELF_HOSTED_HEALTH = {
   status: "ok" as const,
@@ -203,6 +208,30 @@ describe("InstanceGeneralSettings sign-out", () => {
     resolveSettings?.();
     await vi.waitFor(() => expect(signOutButton()?.disabled).toBe(false));
   });
+
+  it("updates translated retention and sharing controls using the same numeric and enum payloads", async () => {
+    await renderPage(SELF_HOSTED_HEALTH);
+    await act(async () => setLocale("ru"));
+    expect(container.querySelector("h1")?.textContent).toBe("Общие");
+    expect(container.textContent).toContain("3 дня");
+    expect(container.textContent).toContain("7 дней");
+    expect(container.textContent).toContain("1 неделя");
+    expect(container.textContent).toContain("2 недели");
+    expect(container.textContent).toContain("1 месяц");
+    expect(container.textContent).toContain("6 месяцев");
+    const weeks = Array.from(container.querySelectorAll("button")).find(button => button.textContent === "2 недели");
+    await act(async () => weeks!.click());
+    await vi.waitFor(() => expect(mockInstanceSettingsApi.updateGeneral.mock.calls[0]?.[0]).toEqual({
+      backupRetention: { dailyDays: 7, weeklyWeeks: 2, monthlyMonths: 1 },
+    }));
+    const allow = Array.from(container.querySelectorAll("button")).find(button => button.textContent?.startsWith("Всегда разрешать"));
+    await act(async () => allow!.click());
+    await vi.waitFor(() => expect(mockInstanceSettingsApi.updateGeneral.mock.calls.at(-1)?.[0]).toEqual({ feedbackDataSharingPreference: "allowed" }));
+    await act(async () => setLocale("en"));
+    expect(container.querySelector("h1")?.textContent).toBe("General");
+    expect(container.textContent).toContain("1 week");
+  });
+
 });
 
 describe("InstanceGeneralSettings operator-hidden sections", () => {

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, StrictMode } from "react";
+import { setLocale } from "../i18n";
 import { buildClaudeLocalConfig } from "../../../packages/adapters/claude-local/src/ui/build-config";
 import type { CreateConfigValues } from "@paperclipai/adapter-utils";
 import type { LocalAiLoginStatus } from "@paperclipai/shared";
@@ -1429,6 +1430,21 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       for (let tick = 0; tick < 8; tick++) await flushReact();
       return { ...handles, draft };
     }
+
+    it("renders the completed first-agent setup in Russian without translating the saved identity", async () => {
+      await setLocale("ru");
+      const { root, draft } = await openSavedReview("/SC/onboarding");
+      try {
+        expect(document.body.textContent).toContain("Можно начинать…");
+        expect(document.body.textContent).toContain("Saved lead готов к работе!");
+        expect([...document.querySelectorAll("button")].some(button => button.textContent?.trim() === "Начать работу")).toBe(true);
+        expect(JSON.parse(window.localStorage.getItem(ONBOARDING_STORAGE_KEY)!)).toMatchObject(draft);
+        expect(mockAgentsApi.hire).not.toHaveBeenCalled();
+      } finally {
+        await act(async () => root.unmount());
+        await setLocale("en");
+      }
+    });
 
     it.each([
       ["/onboarding", "auto"], ["/SC/onboarding", "auto"],

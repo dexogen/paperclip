@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 /** Redacted presentation contracts shared with the production API. */
 import type { AiProvider, AiAuthMethod, AiManagedConnectionSummary, AiConnectionBinding } from "@paperclipai/shared";
 export type { AiProvider, AiAuthMethod, AiConnectionBinding } from "@paperclipai/shared";
@@ -85,12 +86,16 @@ export function personalAiDefault(
 
 export function aiConnectionProblem(connection?: AiConnectionSummary) {
   if (!connection)
-    return "No connection selected. Connect an account to continue.";
+    return t("providerSetup.select.noneSelected");
   return (
     connection.unavailableReason ??
     (connection.status === "connected"
       ? null
-      : `${AI_CONNECTION_STATUS[connection.status]}. Reconnect this account to continue.`)
+      : connection.status === "needs_attention"
+        ? t("providerSetup.select.needsAttention")
+        : connection.status === "expired"
+          ? t("providerSetup.select.expired")
+          : t("providerSetup.select.revoked"))
   );
 }
 

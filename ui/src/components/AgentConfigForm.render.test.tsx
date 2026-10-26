@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { useState } from "react";
+import { setLocale } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -1134,6 +1135,7 @@ describe("AgentConfigForm environment selector", () => {
     roots = [];
     document.body.innerHTML = "";
     vi.clearAllMocks();
+    await setLocale("en");
   });
 
   it.each([false, true])("uses Grok connection verification without native controls (compact: %s)", async compactTestFeedback => {
@@ -1721,6 +1723,37 @@ describe("AgentConfigForm environment selector", () => {
       await act(() => root.unmount());
       container.remove();
     }
+  });
+
+  it("switches model origin badges without changing model IDs or selection", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    roots.push(root);
+    const onChange = vi.fn();
+    const onOpenChange = vi.fn();
+    await act(async () => {
+      root.render(<TooltipProvider>
+        <ModelDropdown models={[]} value="custom/current-model" onChange={onChange} open
+          onOpenChange={onOpenChange} allowDefault={false} required groupByProvider={false}
+          detectedModel="custom/detected-model" detectedModelCandidates={["custom/config-model"]} />
+      </TooltipProvider>);
+    });
+    expect(document.body.textContent).toContain("custom/current-modelcurrent");
+    expect(document.body.textContent).toContain("custom/detected-modeldetected");
+    expect(document.body.textContent).toContain("custom/config-modelconfig");
+    await act(async () => { await setLocale("ru"); });
+    expect(document.body.textContent).toContain("custom/current-modelтекущая");
+    expect(document.body.textContent).toContain("custom/detected-modelопределена");
+    expect(document.body.textContent).toContain("custom/config-modelиз конфигурации");
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')]
+      .find(item => item.textContent?.includes("custom/config-model"));
+    expect(option).toBeTruthy();
+    await clickElement(option);
+    expect(onChange).toHaveBeenCalledWith("custom/config-model");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it("hides the Login button before Test and shows it after the adapter_auth_missing check for a Codex sandbox", async () => {
@@ -3253,6 +3286,15 @@ describe("AgentConfigForm environment selector", () => {
     // The panel never shows the provider failure message, which could carry a
     // secret.
     expect(result.container.textContent).not.toContain("the provider rejected the browser code");
+    const startsBeforeSwitch = mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length;
+    const cancelsBeforeSwitch = mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length;
+    await act(async () => { await setLocale("ru"); });
+    expect(result.container.textContent).toContain("Вход не завершён. Начните вход заново.");
+    expect(result.container.textContent).not.toContain("The login did not finish");
+    expect(mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length).toBe(startsBeforeSwitch);
+    expect(mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length).toBe(cancelsBeforeSwitch);
+    await act(async () => { await setLocale("en"); });
+    expect(result.container.textContent).toContain("The login did not finish");
   });
 
   it("returns to its start state on a server timed_out state", async () => {
@@ -3674,6 +3716,15 @@ describe("AgentConfigForm environment selector", () => {
       // Advance past the server deadline. The panel enters the timed-out state.
       // Total elapsed after this step is 1 second past `serverDeadlineMs`.
       await advanceFake(serverDeadlineMs - 66_000 + 1_000);
+      expect(container.textContent).toContain("The login timed out");
+      const startsBeforeSwitch = mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length;
+      const cancelsBeforeSwitch = mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length;
+      await act(async () => { await setLocale("ru"); });
+      expect(container.textContent).toContain("Время ожидания входа истекло. Начните вход заново.");
+      expect(container.textContent).not.toContain("The login timed out");
+      expect(mockAgentsApi.startClaudeSetupTokenLogin.mock.calls.length).toBe(startsBeforeSwitch);
+      expect(mockAgentsApi.cancelClaudeSetupTokenLogin.mock.calls.length).toBe(cancelsBeforeSwitch);
+      await act(async () => { await setLocale("en"); });
       expect(container.textContent).toContain("The login timed out");
       // The panel released the server session when the cutoff fired. The cancel
       // frees the per-owner reservation now, so an immediate retry by the same

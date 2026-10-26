@@ -1,4 +1,25 @@
 {
   "schemaVersion": 1,
-  "entries": []
+  "entries": [
+    {
+      "id": "6f808fad7601b361cefceec235b362c016a64f1e9c987a568d956dc52384ebf2",
+      "reason": "AiConnectionSelect compares c.status against the technical connection-status enum connected. The label output is a translated reconnectName message or the saved user-provided c.name; the enum literal itself is never rendered."
+    },
+    {
+      "id": "7ddb757c8df346a677f723955d8c0f04cc59cc3d0e6d7770c9fdbbd2a2d618d7",
+      "reason": "AiProviderSetup displayLabel compares the provider ID against gateway. This technical provider discriminator selects the translated providerSetup.setup.gateway message; gateway is not rendered by this conditional."
+    },
+    {
+      "id": "d9104aaf6a8e8736a5cee7f989429b5d7d98489b8aa188a1079470dc91689666",
+      "reason": "AiProviderSetup displayLabel compares the provider ID against local. This technical provider discriminator selects the translated providerSetup.setup.local message; local is not rendered by this conditional."
+    },
+    {
+      "id": "e49298cacac59aadf280afe1ab54df9ba2bcccdd45fe38a852f926708f3cd2a3",
+      "reason": "useLocalAiLogin errorMessage uses the message property name in a TypeScript union guard (\"message\" in error). The property name is never rendered; output preserves the provider diagnostic or selects an already translated localErrors entry."
+    },
+    {
+      "id": "f23a3dd8efec52232cc4ea889d70de56f17eea4acbbeb431771ec0a8b7b42bec",
+      "reason": "AgentProviderConnection errorMessage uses the message property name in a TypeScript union guard (\"message\" in error). The property name is never rendered; output preserves the provider diagnostic or selects an already translated localErrors entry."
+    }
+  ]
 }

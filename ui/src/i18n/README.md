@@ -27,6 +27,13 @@ placeholders. Do not interpolate executable HTML. Translate a plural family with
 `_many`, and `_other`. The latter also covers fractional counts. Do not construct
 Russian endings by concatenating strings.
 
+When `Trans` interpolates user content, pass
+`tOptions={{ interpolation: { escapeValue: true } }}` and `shouldUnescape`.
+This preserves literal names such as `Operator <strong>name</strong>` instead of
+interpreting them as translation markup. React still escapes the resulting text.
+Keep local error identifiers in state and translate them during rendering so an
+existing error follows a language change without repeating the failed operation.
+
 `message-validation.ts` is the pure validator shared by runtime and the source
 audit. It rejects unknown keys, non-string leaves, blank translations, changed
 parameters/markup placeholders, unsafe content, and excessive length. Missing
@@ -46,9 +53,15 @@ The initial localized surfaces include self-hosted sign-in, organization
 selection, primary navigation, account actions, agent-list controls, and task
 creation controls, warnings, and notifications; profile preferences; project browsing;
 and the modern task collection toolbar, list copy, and main filter popover.
-The legacy task list, board/column renderers, onboarding, detail pages, and most
-organization settings remain follow-up work. Shared child components may still
-contain untranslated copy; the source audit tracks that debt.
+The next slice adds first-administrator bootstrap, access-gate messages, board
+claim, the active onboarding wizard and its model/provider setup controls,
+organization settings, instance general/access settings, and their permission
+controls. Provider account selection and the shared access step are included;
+the complete Connections catalog and its other setup steps are not.
+The legacy task list, board/column renderers, full task/agent/project detail pages,
+the rest of agent configuration, dashboards, and remaining settings still need
+translation. Shared child components may contain untranslated copy; the source
+audit tracks that debt.
 An English/Russian key match is not a claim of complete application localization.
 Formatting helpers update when their host component renders. Screens that do not
 yet subscribe to locale changes, such as Costs and Dashboard, may retain their

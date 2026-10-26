@@ -10,6 +10,9 @@ parameters; user-entered names and machine identifiers are never translated.
 | Task | Задача | Also use for user-facing issue terminology. |
 | Project | Проект | Do not confuse a project with an organization or a task. |
 | Agent | Агент | A managed execution identity, not a human user. |
+| Human/user | Пользователь | Use for people when permissions distinguish them from agents. |
+| Harness | Инструмент агента | For Claude/Codex and other execution tools; distinct from the agent's role. |
+| Execution environment | Среда выполнения | The machine, container, or other environment where an agent runs. |
 | Run | Запуск | One execution attempt, distinct from the task. |
 | Inbox | Входящие | The person's task inbox. |
 | Approval | Согласование | A governed decision; use «Подтвердить» for a simple confirmation action. |

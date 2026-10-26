@@ -277,12 +277,36 @@ organization selection, agent lists, task creation copy, profile preferences, pr
 browsing, shared status labels, and the modern task list/filter controls. It retains
 raw server/provider diagnostics and user-entered content.
 
-Remaining work includes onboarding, full task/agent/project detail screens, most
-organization settings and connections, and older/alternative task renderers
+At that foundation checkpoint, remaining work included onboarding,
+task/agent/project detail screens, organization settings and connections, and older/alternative task renderers
 (`LegacyIssuesList`, `IssueColumns`, `KanbanBoard`, `IssueFilterPanel`). Shared child
 components can still display English. This checkpoint is an integration preview;
 it does not meet the final full-web-UI release acceptance above. The source baseline
 is migration debt, never a translated-coverage percentage.
+
+The next slice, `codex/russian-ui-journeys`, follows the integration branch with
+upstream `5a28f7acf8a8c86536c4f5c5369bfeb49a46c41a`. It adds the active onboarding
+wizard, provider selection and sign-in controls, first-administrator bootstrap,
+board claim, organization settings, instance general/access settings, and the
+shared provider permission step. English and Russian now contain 1,101 semantic
+messages (1,119 English forms and 1,155 Russian forms). Independent agent reviews
+cover all registered messages; no human approval is claimed. The source baseline
+shrinks by 652 occurrences to 20,205. Five narrow exceptions identify technical
+enum/property guards whose literals are never displayed.
+
+Targeted checks prove language changes preserve setup drafts, permission IDs,
+claim URL credentials, and literal user/agent names. Local error messages follow
+the language without repeating provider sign-in or administrator claims. UI
+typecheck, token gates, and the localization audit pass. Full-stack verification
+and complete repository verification of this combined revision remain pending.
+The latest parent/integration hosted runs were cancelled with the GitHub check
+annotation `repository invocation blocked`; they are not successful checks.
+
+Full task/agent/project detail screens, older task renderers, the complete
+Connections catalog, remaining agent configuration/settings, and dashboards are
+still outside the verified translation scope. The preview is not a completed
+full-web-UI release. See the [UI localization guide](../../ui/src/i18n/README.md)
+for the current supported surfaces and constraints.
 
 Three workflows prepare reviewed upstream merges, verify source and translations,
 and publish immutable integration images from verified master commits. They preserve
