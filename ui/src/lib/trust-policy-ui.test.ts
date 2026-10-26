@@ -1,6 +1,11 @@
 // @vitest-environment node
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { i18n } from "../i18n";
 import {
+  getTrustPresetLabels,
+  getTrustPresetDescriptions,
+  TRUST_PRESET_LABELS,
+  TRUST_PRESET_DESCRIPTIONS,
   buildPermissionsForTrustPreset,
   clearSingleLowTrustBoundaryTarget,
   getLowTrustBoundary,
@@ -137,4 +142,19 @@ describe("trust-policy-ui low-trust boundary helpers", () => {
       allowedSecretBindingIds: ["binding-1"],
     });
   });
+});
+
+
+afterEach(async () => { await i18n.changeLanguage("en"); });
+
+it("keeps legacy English labels under a Russian UI and localizes only requested presentation", async () => {
+  const permissions = setSingleLowTrustBoundaryTarget(null, "company-1", { type: "project", id: "project-1" });
+  const before = JSON.stringify(permissions);
+  await i18n.changeLanguage("ru");
+  expect(getTrustPresetLabels()).toEqual(TRUST_PRESET_LABELS);
+  expect(getTrustPresetDescriptions()).toEqual(TRUST_PRESET_DESCRIPTIONS);
+  expect(getTrustPresetLabels(i18n.getFixedT("ru"))).toEqual({ standard: "Стандартный", low_trust_review: "Проверка с ограниченным доверием" });
+  expect(getTrustPresetDescriptions(i18n.getFixedT("ru")).low_trust_review).toContain("Доступ к API Paperclip сужен");
+  expect(summarizeLowTrustBoundaryTarget(getLowTrustBoundary(permissions))).toBe("Project project-");
+  expect(JSON.stringify(permissions)).toBe(before);
 });

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
+import { act } from "react";
+import { i18n } from "../i18n";
 import { createRoot, type Root } from "react-dom/client";
-import { flushSync } from "react-dom";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentPermissions } from "@paperclipai/shared";
 import { TrustPresetSection } from "./TrustPresetSection";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,13 +12,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
 
-function renderSection(permissions: Partial<AgentPermissions>) {
+async function renderSection(permissions: Partial<AgentPermissions>, options: { disabled?: boolean; allowSingleIssue?: boolean } = {}) {
   container = document.createElement("div");
   document.body.appendChild(container);
   const onChange = vi.fn();
   const createdRoot = createRoot(container);
   root = createdRoot;
-  flushSync(() => {
+  await act(async () => {
     createdRoot.render(
       <TooltipProvider>
         <TrustPresetSection
@@ -26,6 +27,7 @@ function renderSection(permissions: Partial<AgentPermissions>) {
           companyId="company-1"
           projectCandidates={[{ id: "project-1", label: "Paperclip App" }]}
           issueCandidates={[{ id: "issue-1", label: "PAP-1 · Review PR" }]}
+          {...options}
         />
       </TooltipProvider>,
     );
@@ -33,26 +35,29 @@ function renderSection(permissions: Partial<AgentPermissions>) {
   return { onChange, text: () => container?.textContent ?? "" };
 }
 
-afterEach(() => {
+beforeEach(async () => { await i18n.changeLanguage("en"); });
+
+afterEach(async () => {
   if (root) {
-    flushSync(() => root?.unmount());
+    await act(async () => root?.unmount());
   }
   container?.remove();
   root = null;
   container = null;
+  await i18n.changeLanguage("en");
 });
 
 describe("TrustPresetSection", () => {
-  it("hides the CE boundary editor under Standard", () => {
-    const view = renderSection({ canCreateAgents: false, trustPreset: "standard" });
+  it("hides the CE boundary editor under Standard", async () => {
+    const view = await renderSection({ canCreateAgents: false, trustPreset: "standard" });
 
     expect(view.text()).toContain("Trust preset");
     expect(view.text()).not.toContain("Boundary type");
     expect(view.text()).not.toContain("Get Paperclip EE.");
   });
 
-  it("shows a selectable CE boundary editor for low-trust review", () => {
-    const view = renderSection({
+  it("shows a selectable CE boundary editor for low-trust review", async () => {
+    const view = await renderSection({
       canCreateAgents: false,
       trustPreset: "low_trust_review",
       authorizationPolicy: {
@@ -72,8 +77,8 @@ describe("TrustPresetSection", () => {
     expect(view.text()).not.toContain("Managed by EE/API");
   });
 
-  it("renders multi-boundary policies as read-only", () => {
-    const view = renderSection({
+  it("renders multi-boundary policies as read-only", async () => {
+    const view = await renderSection({
       canCreateAgents: false,
       trustPreset: "low_trust_review",
       authorizationPolicy: {
@@ -90,4 +95,55 @@ describe("TrustPresetSection", () => {
     expect(view.text()).toContain("2 boundaries");
     expect(view.text()).not.toContain("Clear boundary");
   });
+});
+
+
+it("preserves an open policy and unsaved boundary type across EN/RU/EN without writing permissions", async () => {
+  const view = await renderSection({
+    canCreateAgents: false,
+    trustPreset: "low_trust_review",
+    authorizationPolicy: {
+      trustBoundary: { mode: "low_trust_review", companyId: "company-1", projectIds: ["project-1"] },
+    },
+  });
+  const selects = container!.querySelectorAll("select");
+  const targetType = selects[1]!;
+  await act(async () => {
+    targetType.value = "root_issue";
+    targetType.dispatchEvent(new Event("change", { bubbles: true }));
+    [...container!.querySelectorAll("button")].find(button => button.textContent?.includes("View policy"))!.click();
+  });
+  expect(targetType.value).toBe("root_issue");
+  expect(view.onChange).not.toHaveBeenCalled();
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(view.text()).toContain("Режим доверия");
+  expect(view.text()).toContain("Тип границы");
+  expect(view.text()).toContain("Разрешённые инструменты");
+  expect(container!.querySelectorAll("select")[1]).toBe(targetType);
+  expect(targetType.value).toBe("root_issue");
+  expect(view.text()).toContain("PAP-1 · Review PR");
+  expect(view.onChange).not.toHaveBeenCalled();
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(container!.querySelectorAll("select")[1]).toBe(targetType);
+  expect(targetType.value).toBe("root_issue");
+  const candidate = container!.querySelectorAll("select")[2]!;
+  await act(async () => {
+    candidate.value = "issue-1";
+    candidate.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  expect(view.onChange).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+    authorizationPolicy: expect.objectContaining({
+      trustBoundary: { mode: "low_trust_review", companyId: "company-1", rootIssueId: "issue-1" },
+    }),
+  }));
+});
+
+
+it("keeps disabled trust controls and the email single-issue restriction after a language change", async () => {
+  const view = await renderSection({ trustPreset: "low_trust_review" }, { disabled: true, allowSingleIssue: false });
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(view.text()).toContain("Граница доступа не настроена");
+  expect(container!.querySelector('option[value="issue"]')).toBeNull();
+  expect([...container!.querySelectorAll("select")].every(select => select.disabled)).toBe(true);
+  expect(view.onChange).not.toHaveBeenCalled();
 });
