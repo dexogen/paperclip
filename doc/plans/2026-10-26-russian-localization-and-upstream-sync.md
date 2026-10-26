@@ -934,10 +934,25 @@ source findings; pending/missing/invalid messages, new findings, source errors a
 resolved-debt residue are zero. Map checks pass. This is scoped UI verification,
 not a fresh full-workspace test/build or live-provider qualification.
 
-The remaining major packages are remaining provider setup,
-global execution-workspace pages and environments, dashboard/activity/costs,
-member access/secrets,
-connections and routines. Skills/teams/portability/plugin hosts have additional
+The environment-settings UI slice adds 231 reviewed message families (239 English
+and 255 Russian forms). It covers the active editor/list, image setup, terminal
+captions, delete confirmation and both settings sidebars. Component regressions
+preserve dirty SSH/environment values, focus, pending requests, raw provider
+messages and schemas, terminal identity and ordered reassignment before deletion.
+The latest complete runs of five affected suites pass 204 tests, including
+existing agent/project helper consumers; the page was rerun after final edits.
+UI typecheck, build, token gates and map checks pass. The strict audit passes
+with 7,450 reviewed families, 15,288 remaining source findings and zero pending,
+missing, invalid or new findings. Only 200 resolved source entries were removed;
+no exception was added. These mocked checks do not prove live provider or terminal
+behavior. Backend probe summaries require a separate typed-provenance change;
+provider-schema localization remains a later bounded slice. Exact-head CI,
+browser qualification and deployment remain pending for this candidate.
+
+The remaining major packages are remaining provider setup, global execution-
+workspace pages, environment backend/schema copy, dashboard/activity/costs,
+member access/secrets, connections and routines. Skills/teams/portability/plugin
+hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated
 components cover every host. Use the source audit and actual imports to set each
 bounded scope; do not translate sandbox fixtures to reduce the baseline.

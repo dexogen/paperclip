@@ -353,6 +353,20 @@ errors, binding revisions, expiry, idempotency and delivery/reply guards are unc
 Component checks cover the controller and existing consumers; they do not establish
 real OAuth, credential storage, external delivery, stop or recovery acceptance.
 
+The environment-settings slice covers the active list and editor, owned probe
+controls, image-template setup, browser-terminal captions, delete preflight and
+both company-settings sidebars. Driver labels use canonical IDs; the optional
+helper translator keeps fixed English for older callers. Names, plugin schemas,
+commands, credentials, terminal output and provider errors remain literal.
+
+Stored UI failures retain their cause and translate when rendered. Toasts use the
+language current at completion and then keep that snapshot. Component checks
+preserve dirty environment/SSH fields, focus, query identity, terminal resources
+and ordered agent reassignment before deletion through EN/RU/EN changes. They use
+mocked providers and sockets. Backend probe summaries still use their original
+text; typed provenance and provider-schema captions are separate follow-up work.
+These checks do not establish a live SSH connection, image capture or deployment.
+
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
