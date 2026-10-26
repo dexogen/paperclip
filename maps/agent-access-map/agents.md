@@ -308,6 +308,13 @@ Evidence: `source-only` — [routes](../../server/src/routes/grok-bot.ts), [shar
 
 Verification: `not-run` — deployed acceptance pending; focused protocol/authorization and actual Rust backend tests; run fresh/saved setup, assigned and proactive tasks, duplicate calls, stale sessions, restart, ambiguous delivery, stop and recovery through the real client on the serving managed candidate.
 
+The [setup locale regression](../../ui/src/components/new-agent/GrokBotSetup.locale.test.tsx)
+checks company/agent IDs, canonical role and manager, binding revision and exact
+routine credential payload through language changes. Pending operations and raw
+failures are retained without extra calls; generated prompts and consent/delivery
+checks keep their original inputs. This is mocked UI contract evidence, not proof
+of server permissions, actual secret persistence or authenticated provider access.
+
 Gaps: deployed two-way work and unattended first-time onboarding remain unqualified; remote termination, provider transcript streaming and usage accounting are unavailable.
 
 ## `api-keys`

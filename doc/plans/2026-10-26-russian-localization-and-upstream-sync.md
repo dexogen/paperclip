@@ -885,10 +885,29 @@ provider errors, including identical English text, remain literal. Five complete
 fallback messages avoid treating a missing company name as a quoted real name.
 Nine exact exceptions cover canonical enum comparisons; 232 resolved baseline
 entries were removed from the six owned files. Component evidence does not qualify real external
-invitations, provider execution or cleanup. Dedicated Grok setup/connection panels
-remain outstanding. The final strict audit passes with 7,379 reviewed families
+invitations, provider execution or cleanup. Grok setup/connection coverage is
+described separately below. The final strict audit passes with 7,379 reviewed families
 and 15,324 remaining source findings, with no pending/missing/invalid messages,
 new findings, source errors or resolved-debt residue. Map checks pass.
+
+The Grok setup/connection slice adds 97 EN/RU families in two presentation owners
+and a missing-company flag forwarded through two existing controller/wrapper owners.
+Twelve existing role-label contexts were read again. Both new locale regressions
+failed against the unchanged English source before implementation. Three complete
+direct suites then pass eight tests; two existing consumer suites pass 191 tests:
+five unique suites and 199 tests, with no skips. The checks preserve dirty identity,
+role and routine credential drafts, pending writes, raw errors, masked code-copy
+retries and generated instruction bytes through EN/RU/EN. Canonical revisions,
+expiry, idempotency and consent/delivery/reply predicates remain unchanged. These
+mocked component tests do not qualify real OAuth, external delivery, credential
+storage, stop or recovery. Only 103 resolved baseline entries in the two display
+owners were removed; no new exception was introduced.
+
+UI typecheck, build and token gates pass on the final source/catalog snapshot.
+The final strict audit passes with 7,549 reviewed families and 15,153 remaining
+source findings; pending/missing/invalid messages, new findings, source errors and
+resolved-debt residue are zero. Map checks pass. This is scoped UI verification,
+not a fresh full-workspace test/build or live-provider qualification.
 
 The remaining major packages are remaining provider setup,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,

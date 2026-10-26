@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
+import { act } from "react";
+import { i18n } from "@/i18n";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { GrokBotSetup } from "./GrokBotSetup";
 import { GrokBotSetupContent } from "./GrokBotSetupContent";
@@ -16,7 +18,8 @@ vi.mock("@/api/agents", () => ({ agentsApi: { list: async () => [] } }));
 let root: Root;
 let host: HTMLDivElement;
 let cache: QueryClient;
-afterEach(() => { flushSync(() => root?.unmount()); host?.remove(); cache?.clear(); vi.resetAllMocks(); });
+beforeEach(async () => { await i18n.changeLanguage("en"); });
+afterEach(async () => { flushSync(() => root?.unmount()); host?.remove(); cache?.clear(); vi.resetAllMocks(); await i18n.changeLanguage("en"); });
 
 it("restores the same saved agent when a failed initial resume succeeds on retry", async () => {
   const companyId = "company-fixture", agentId = "agent-saved-night-shift";
@@ -62,7 +65,7 @@ it("copies the masked pairing code and offers a retry after a clipboard failure"
   const pairingCode = "test_code_for_agent_pairing_12345";
   vi.mocked(copyTextToClipboard).mockRejectedValueOnce(new Error("Clipboard unavailable")).mockResolvedValueOnce();
   host = document.createElement("div"); document.body.appendChild(host); root = createRoot(host);
-  flushSync(() => root.render(<Dialog open><DialogContent><GrokBotSetupContent step={1} companyName="Acme" created
+  flushSync(() => root.render(<Dialog open><DialogContent><GrokBotSetupContent step={1} companyName="your organization" companyNameIsFallback created
     details={{ name: "Night Shift", botName: "Night Shift", role: "researcher", reportsTo: null }} managers={[]}
     pairing={{ bindingId: "binding-fixture", pairingCode, expiresAt: new Date(Date.now() + 60_000).toISOString() }}
     webhookUrl="" webhookKey="" onDetails={() => {}} onCredentials={() => {}} onBack={() => {}}
@@ -76,6 +79,18 @@ it("copies the masked pairing code and offers a retry after a clipboard failure"
   const copy = document.querySelector<HTMLButtonElement>('button[aria-label="Copy pairing code"]')!;
   flushSync(() => copy.click());
   await vi.waitFor(() => expect(document.body.textContent).toContain("Copy failed"));
+  const steps = [...document.querySelectorAll("ol li")];
+  input.focus(); input.setSelectionRange(2, 8);
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(document.querySelector('button[aria-label="Копировать код сопряжения"]')).toBe(copy);
+  expect(document.activeElement).toBe(input);
+  expect([input.selectionStart, input.selectionEnd]).toEqual([2, 8]);
+  expect(input.value).toBe(pairingCode);
+  expect(document.body.textContent).toContain("Пригласите существующего бота в свою организацию.");
+  expect(document.body.textContent).not.toContain("your organization");
+  expect([...document.querySelectorAll("ol li")]).toEqual(steps);
+  expect(copyTextToClipboard).toHaveBeenCalledTimes(1);
+  await act(async () => { await i18n.changeLanguage("en"); });
   flushSync(() => copy.click());
   await vi.waitFor(() => expect(document.body.textContent).toContain("Copied!"));
   expect(copyTextToClipboard).toHaveBeenNthCalledWith(1, pairingCode);
@@ -122,4 +137,14 @@ it("copies a masked reconnect code without adding it to Bot instructions and ret
   expect(vi.mocked(copyTextToClipboard).mock.calls[2]![0]).toContain("https://paperclip.example/mcp/runner");
   expect(vi.mocked(copyTextToClipboard).mock.calls[2]![0]).not.toContain(pairingCode);
   expect(api.pair).toHaveBeenCalledExactlyOnceWith("company-fixture", "agent-fixture", undefined);
+  const preview = document.querySelector('[aria-label="Setup prompt"]')!;
+  const prompt = preview.textContent;
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(document.querySelector('[aria-label="Инструкции настройки"]')).toBe(preview);
+  expect(preview.textContent).toBe(prompt);
+  expect(copy.getAttribute("aria-label")).toBe("Копировать код сопряжения");
+  expect(copyTextToClipboard).toHaveBeenCalledTimes(3);
+  expect(api.pair).toHaveBeenCalledTimes(1);
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(document.querySelector('[aria-label="Setup prompt"]')).toBe(preview);
 });

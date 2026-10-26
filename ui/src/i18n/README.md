@@ -326,7 +326,16 @@ are unchanged. Known status captions use closed mappings with literal unknown
 fallbacks. Receiver contact, background reply, operator attestation and worker
 quiescence retain separate evidence claims. These component checks include shared
 prompt consumers; they do not establish live invitation, provider execution or
-cleanup. Grok's dedicated setup and connection panels remain a separate slice.
+cleanup.
+
+Grok Bot setup and connection panels translate wizard steps, role captions, pairing,
+routine credentials, verification and recovery controls. Language changes retain
+raw names, dirty credentials, focus, pending request identity, masked pairing codes
+and generated prompt bytes. Only an explicit missing-company flag selects localized
+fallback copy; a real name equal to the English fallback remains literal. Provider
+errors, binding revisions, expiry, idempotency and delivery/reply guards are unchanged.
+Component checks cover the controller and existing consumers; they do not establish
+real OAuth, credential storage, external delivery, stop or recovery acceptance.
 
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in

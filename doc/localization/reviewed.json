@@ -32499,86 +32499,86 @@
     "searchUi.palette.roles.ceo": {
       "sourceHash": "78d21bf69756a652cb035ac5ce9cc585e4b41b466e752baf5dc0837211d065dd",
       "translationHash": "eeb63810e7a785354c2d9398c06433f211f9db3b39a79964092b2f6cf64bb431",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.cfo": {
       "sourceHash": "41ca908a873b2ac0ca10d4a6c6ae17b1521743150fe765212bb23598fd925f7d",
       "translationHash": "5aa39bed1fa1e826d5132ceafd7f7bfdaa431da18f053ed5212f88c3505b7032",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.cmo": {
       "sourceHash": "ef11c049ffb15faa7e036744221687c9aed1badd5bd2f09afc3981bd63ed11bf",
       "translationHash": "2609d9174ccdf950317f6e71649481cb10d82405131a6a41c5e3166ccfe544f2",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.cto": {
       "sourceHash": "d65972ce210dd3ab132e4461b8bf80f00a7dc3395d0eda3833f9f83d1cc25ab4",
       "translationHash": "c5f8624b4ca4de36d107bff280322d87be2c198cfb053634831a1a013bd41f6a",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.designer": {
       "sourceHash": "7d832c2822aadf9312aa80066591bd3873560095384a6ee67c7995cbb9ee96a8",
       "translationHash": "87ced8b562e318a60ef74297e7c21f8f2e1cb06101caf2f9c5cad9d34d7abcef",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.devops": {
       "sourceHash": "b9ca772e475642212978484fb6b8505ccae56b589d2621037828900cfd8b8f08",
       "translationHash": "5d03526fca9360792390c17982f89150173c8b376457c08e21ba6ccc62f7159d",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.engineer": {
       "sourceHash": "2d8708dc64b9b5c04b2413606d4934638cd7127bc3611330b73c77f919cf3ca0",
       "translationHash": "963c47f1f0f1e5d4de30c29620da3f65e75bf0d75f5d3203ee51603240185eb2",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.general": {
       "sourceHash": "d7120aa5a824239163809559ecbd4f55185e77fa8b5678bfb1ec9c757ee6d75d",
       "translationHash": "c64bf0c14525e5ed52778603d169973ef90b0641ff9b8af34bddea9b41720404",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.pm": {
       "sourceHash": "05378dba3b5191b13df1e84cf597533564a6f8c49a36dc05a7bffc5cc6c0e119",
       "translationHash": "536137023e65a3a79493b686812ff214a563fed4f08fb4703b755f16bf4abd7e",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.qa": {
       "sourceHash": "fdec85453ffbb2b5ff6914f5e71501792df2bd16ea76dcd88ab1e356951a9b79",
       "translationHash": "d1104fcf707e9f42268b145e199cc475bd322985c1caf5395bec85e74ea38366",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.researcher": {
       "sourceHash": "a2795f59afca519b0a973d678f1af4ef8e62450986d9bdf0f11947dfeb4d3f50",
       "translationHash": "061a863730b35e4c62f679eb4a647f6503438dfa86509f9fe2f14c6e01aa0ebd",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.roles.security": {
       "sourceHash": "7cdc6b744ac16c7601267d793af35e286fdb715bd45e6f9cb235de164f255a72",
       "translationHash": "ca5800778f7ae64e54a10e8c22ef5300a7e38a30facdf1b7d97e7198b1f76828",
-      "reviewer": "Codex agent /root/translate_task_panels (Muse role picker context and EN/RU review)",
+      "reviewer": "Codex agent /root/translate_task_panels (Grok role display context review)",
       "method": "agent",
-      "reviewedAt": "2026-10-26T11:46:13.435Z"
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     },
     "searchUi.palette.search": {
       "sourceHash": "a1cabf353e9732fc453132a9245434c1dfdd15b61648b1bcd1ee451ffa9d23f5",
@@ -52165,6 +52165,685 @@
       "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
       "method": "agent",
       "reviewedAt": "2026-10-26T11:46:13.435Z"
+    },
+    "grokSetupUi.common.botName": {
+      "sourceHash": "3625577dd51cc6fe5593e93fd5404882719867b726ed813ee7327334e37b52d4",
+      "translationHash": "191e7bfef4fa2e5a9f63613dcd6754d6b4156aa3395650e074dc033488ddd644",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.727Z"
+    },
+    "grokSetupUi.common.code": {
+      "sourceHash": "237c80085ce2ac263e0a6167e55b3eaa25fa2c8d99e90c08932e787397ddcb27",
+      "translationHash": "6c75a8ec4f7b8a606d5c823b64fb66761f7b68e3f17a2e2d85a77b7005561ac2",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.copyCode": {
+      "sourceHash": "1bf7f5f66550a828663261cde80d8f88dc35e21a8c25e154f59c17a27d2edec5",
+      "translationHash": "3b8874d9e6c99898e1e64de30ab00b89a086d9b5d07482efda6f9162e2e16463",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.copyCodeAria": {
+      "sourceHash": "7f0b3087e343ff94c9c7a88992cc65b086d4b3119344de935a7a2d75b6ec698b",
+      "translationHash": "384e083e03f854db122ebcde49c64b9f99acb2ab2dee88abf1579090919d33be",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.copyConnection": {
+      "sourceHash": "676018c29a40ccf16db4f8b29bc60b25d2a3afa7e3fda090a8b4fa306fc8dc9e",
+      "translationHash": "b16a15a00947f1fc4a4a789476d5fe58eef3bbc12d0950717178bbeed638565c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.copyRoutine": {
+      "sourceHash": "045247e9a1545c5f0bdb9a6f579cba78a570a76df081849ac11537d0da4b124b",
+      "translationHash": "36ee4201902a599072342e6b698a84ddcc2b90466c2752ea269603938b9ca9fc",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.enableAssignments": {
+      "sourceHash": "3c8f9ac21aa906cb7cca48f1063db7a76de94085f675f325e65cd64ef18e71c1",
+      "translationHash": "273de7b279a3e765f93375bb9bc00686d012c981b4b36154addcdb3035d120c9",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.replace": {
+      "sourceHash": "be348fc0b5452a5cc794d33200eee878317e32048a725b09eef048631e94745f",
+      "translationHash": "bceb5d770c136e6fed7ca578f71a91ccdc9388387306f95007d21ceee55dc1df",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.verify": {
+      "sourceHash": "20d6a103fff074f847be47355ba37b3994bf787eada4152ba0e36ae1914ec962",
+      "translationHash": "94e0281fca5a3307e39fdcb80075205e71401c8783524bc5841f5ebba408921f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.webhookKey": {
+      "sourceHash": "3f0b3a00c01411bc835dc15f0e1af4277b91a979fed1c3e062be8737e17ee2fe",
+      "translationHash": "6f9d7a24d1eb19f6c6f5e14e8a99d134c0994d57ecacea15d3cfba3b5cac7cac",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.common.webhookUrl": {
+      "sourceHash": "c196c7afb09cfcacebbbb7d3edbe399031f169f362de910236c40a083d079cb2",
+      "translationHash": "c0261f6e63bd58d69e604b4371f8e88fed10fa62236bb49d33a3f70bb45b728c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.accessDescription": {
+      "sourceHash": "186b127ee838f040ad0d9654eba309e108c2e994b858ee275da734ae1146524c",
+      "translationHash": "6728b836fe11103e4803e2342efab3bdde754095e61ba3cc1d52973d26c472c9",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.accessTitle": {
+      "sourceHash": "e462c4d982ea2e0f0fc48926ac97a3401db9cfc48eea1e0d52fe5d842f18e293",
+      "translationHash": "be2b3f720e76bdd71ede4b76567152ef2a21f5263dc3f008f2352ed82d1f0546",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.accessUnverified": {
+      "sourceHash": "9c4c8e8d27dfd651d220d1814870b203fc3f4a5082d3d27f762dc14d73a62cf4",
+      "translationHash": "039d0805c99dd4abb2d999932eb5899071cb7eb4a7d5b9735b9e418ffd3706be",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.accessVerified": {
+      "sourceHash": "7b2f1bfbc969ac87d7c645c5f3e4b7cbef26c38fdafdd9dc34645c6d18a38054",
+      "translationHash": "d703cba4ff4cc62866e3886c758f757dca8b5d814334afca2570afcf967fb7d4",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.awaitingAck": {
+      "sourceHash": "5a7569132db70f773b0e4bd4a9e99d19aa548093ac8b06b21fe9e0f5ae7633f7",
+      "translationHash": "6a9267242017d724cb21d7faf2c95a5f4839f332ff5991837f999c42989c4cdc",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.bot": {
+      "sourceHash": "b452664ca822b3787add8b06f3c287fc6b72efbf54af372946c152403a6e3cbe",
+      "translationHash": "3971ec7244ff4cfab61562d727c7452615d1c0d5fee05eba08c80dc54e9261cd",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.clearHold": {
+      "sourceHash": "1f9a1428be4763b5bf9e7634f9630c7eefd51eed74c67096d4b29c844426ac5c",
+      "translationHash": "7e967b4c72198dff25fba32eaf12aec22fb29e30f9965ab51d5f141b59070a22",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.codeHelp": {
+      "sourceHash": "1d466c04b597045e1e90c5577e2b5c9714d6bc4f65f588c19356a32391910881",
+      "translationHash": "f0f70958fe97bca3e43feb29578a0acc05a7442a5a16c81e4dc03b045388ec34",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.deliveredNoReply": {
+      "sourceHash": "fdbe18426b7d22c80cd50786d01a05138e1e724f695b1f91cb92ce6b955294b5",
+      "translationHash": "68c0e9fd166328e388977a51eccb29ebce904716a226762778c0a83b71a4533c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.deliveredReply": {
+      "sourceHash": "839702d9c8c6aeb50cbd8433945b81f9816065d3354461c674471ad9a4c5b99c",
+      "translationHash": "2345daaa211cdc796a89a6ef8c6371831a84eee0ce3f5a0c0a1d1ba3e557fc8d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.description": {
+      "sourceHash": "c6bc6c60af0cd8c6fdf615f9424205f9f7bb1fca21023be2766b77153fec1b3c",
+      "translationHash": "e422cd6fdeed17767caedcda58067d5f107a560753410033cb79c9e62211a1c8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.disconnect": {
+      "sourceHash": "9ba74e6b22fe8f40a8702cfd376b55f5a9113bdd23108daee316b8536c4a1d35",
+      "translationHash": "d1b1845d11dd9c1e4cc0983386a0c3bb9c91de223df2a8cb75dcfdfab31d7c44",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.enable": {
+      "sourceHash": "d2878a3b482a3faaceaee19cfefa0027aa2ffd3d5a9e3a7a2d70c5e17ac9a11f",
+      "translationHash": "e404f1409c28e4b6886e17ca17f2fb5e2fa319ce1f8d6a9ba7221230f06a1da8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.inspection": {
+      "sourceHash": "32e9378ea90448ac72113b0ec8ebf0e31c7c62f8b6941a2467e69d52db7459c0",
+      "translationHash": "7541050f27a3aad4076d9ef5dbb6c0a1c4d2798a9d70c66354e78b4b4e7f9ba3",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.label": {
+      "sourceHash": "cd541e797d12e36d06fc4561e6aa52caf6095f054db46975ecb328e85f5a69b5",
+      "translationHash": "eac247719e16f0b0f0f5abb6c6dcdfb941ac2f755fb41e1da66e96fad890cc26",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.lastContact": {
+      "sourceHash": "def4f8f97d3d197aa78bf4a459b5f34ba2aa4efbed34cf3e5bed96655a3aee2b",
+      "translationHash": "8e4fd67d3cb6abc8bc6a8f53b60148e80774b1a293e722ca56d184579027e9dc",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.lastExchange": {
+      "sourceHash": "2d086ad71b521bfb75a2cdde5743a6e6ebf6acfa58c9190ac17244cf7b1cf986",
+      "translationHash": "7d45d3179966381d9a1b60e6edea4dd744287f141d63d38c97b82e9fcdefd65e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.loading": {
+      "sourceHash": "52662d2083b0aa55d31faeac2b590ab66d174ddf7be15bb59926be3f67d6e219",
+      "translationHash": "afd28725fb0539ead717dc950d6275f3beef7994e993e454fe934ee5a3569441",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.notConfigured": {
+      "sourceHash": "d6bad3e15b392f42e5c53f639fb6b7d59fe236a581f27a59a230006312d3d406",
+      "translationHash": "66c5f2c58ebe82866d9913381d309aee4311e24562b709bbd20b5b3b41480d3c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.notObserved": {
+      "sourceHash": "66842043097c2b851783fbdcc7db7d345de624e5ef6f3ef8d222ddf8c61d312c",
+      "translationHash": "d0671ae0d2e83aba27aeebceea285d7de90e1481463348a2f61b86841f12265a",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.notVerified": {
+      "sourceHash": "0e21f834ed9f034e6259c5832c104cab7921ae797e1aff32f8d97b54c2eba39b",
+      "translationHash": "aa47d5cf0233b6be2bfe47495eed974c9142c4895a8cff7623a395ca3894831e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.reconnect": {
+      "sourceHash": "e9acb9d3b4bc4758f24874bcd3ca86558083f608f6d2a6478ee92fd6e79f0208",
+      "translationHash": "791b0c0770b42cc109f1d5f3b3c79c6f1f435cade1df90f1b271d73e99ed1f73",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.recoveryHelp": {
+      "sourceHash": "dd474cf6ec430771e00d9108066f1e5254b2fe558f0b4f96ad434696181464f6",
+      "translationHash": "269573988371e46039c1b7f6e5a525f821c84066813bfeca7c1960019cbe015e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.recoveryReceipt": {
+      "sourceHash": "4f15f748660299ee77797d0b8ae9006d18f44b51562abd508c45280093e5f00d",
+      "translationHash": "e92053766e3a7126cead30bbf14297dc7871a1fb83cba6b1f048805880018747",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.recoveryTitle": {
+      "sourceHash": "cfe7ffb227af83dce87e4dbf77411bf8f597a701b8ef2a9100cef269fe829e04",
+      "translationHash": "95a8a96a5940a83762bd872860419d6a81efe1453d68d8a56970a61aa1b7577d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.rejectedHelp": {
+      "sourceHash": "3a01fad43a9ed465099239bdc9b4c5a290d9963ef6ae5cc1f750c2648f5094d6",
+      "translationHash": "10e349740e966784b8ea49ea9ed83e5e8fa064a3972d5e07d943e9697b3ad42e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.retry": {
+      "sourceHash": "f827e4b7aa815a56ee4abe2abe400b5806c5d6fa4e5ca719f4b084614c4c398a",
+      "translationHash": "096b8bd9065961fbc36612048d410f20bcd8be4e668571321faf764a544f26fa",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.routineDescription": {
+      "sourceHash": "2fb736e33fa95557225238f5467388edf2eba9e1e714d70c46ba8ee8da89341b",
+      "translationHash": "45f4a2139d8482ac26675894214291bf27dd94a6743a58fbe3e6d4d3557c60a8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.saveFirst": {
+      "sourceHash": "1653c40271eddac22e4ab74bf08c544778a9e609f0283103b5e124ba0af1afbe",
+      "translationHash": "af35171ef87116dc56537be73bde49002f03ee29a18e6e016706a0621440d242",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.saveRoutine": {
+      "sourceHash": "ce1abe24aadbf3a87f2baa46e37e59968d0e0d86b232dc6b21e0a0ed3c31b36f",
+      "translationHash": "84b1ad3f48a2c93a795b89864e191abcf6247aa88eca9dca03f6324186492923",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.stop": {
+      "sourceHash": "a7e656db8b219d6da2d95b3860677fdc4fd3a676f53355ee401da9fbf0451d16",
+      "translationHash": "3b5df5d2624054883f87146d611aff77048b25ec50a1caa1962149021a2d23bf",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.stopHelp": {
+      "sourceHash": "b20ff5281288f1cfd0dc3669c1075d73bf8047c5d4f0e4ca00f0c0f855c886f1",
+      "translationHash": "a4dea88fe4c4faf578b38715be07d91f18114b4feb185029fd50ff1f31db239f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.unconfirmedNoReply": {
+      "sourceHash": "0760a5d4b6d9e9cf6da8787d24f257b3c6e7cbc7484064d4e12bf09ad74c997d",
+      "translationHash": "705f5612e94746e99c0a15e128f871393f3f743d4b40f36ec41ae54deef96d8d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.unconfirmedReply": {
+      "sourceHash": "0737555bcd91b80fc418162200ecaf2edfb5401885d07ff80acdd7e524bad25b",
+      "translationHash": "70a6e633b799705ee82fcb5730c4288f3580c899c99a18f12521bb35f33606a2",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.connection.working": {
+      "sourceHash": "7afd1aefaa79a9f8c5fff459175dfcab47552390f02031517feeabefb327317b",
+      "translationHash": "e56d8e995a915f33d780c7bd192d3384d43477ee9ef34bcce240a0e3c358c658",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.728Z"
+    },
+    "grokSetupUi.setup.accessConnected": {
+      "sourceHash": "24efc123a3c245677b0f43fbf1c249dab8f6739c91f1af7ccae06b96797ef184",
+      "translationHash": "af9cd90e3601540c976a79982b4f045ebf9393e718651a7e196ff1de59e2f0ab",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.accessDescription": {
+      "sourceHash": "fa2d4d472d7f8543898d17aba3efe2546ca6e6653cfc8704ea93a962f982ea2c",
+      "translationHash": "26ba8ea000993291a2def900a7bf127ff49f7688a6ecd2cf48dc8a84c999f74d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.accessHelp": {
+      "sourceHash": "26cf0b044e633ad8af67116820a4959f464724067f34c3204ad85f623baa3aaa",
+      "translationHash": "40e4d5c0fddbb3f5d259023498c7af2f34d5bf40e0cd1fc533d88e82e1d1b248",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.accessTitle": {
+      "sourceHash": "bf096c4d897fd3dbb29e53e19e57a121dc1666c16a8346e9c8b2c738e0e0a7a3",
+      "translationHash": "dee21e3db69563c2e72098085089555f3e5d31a29a5ad6a78b6f963422812964",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.accessWaiting": {
+      "sourceHash": "87e1dcd15fd889bec1d31ecfdeccc0fd9da892413327106806a7b8e95c77dc36",
+      "translationHash": "935d0cd92c1ca58d8bf5533c5ce53f12d9067a4e1910f6e7c470bd57de8dd92c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.accountWide": {
+      "sourceHash": "a1a066be0fa0d726fb28db5e487ed4f7207b432215e5e4c708750385b190a6a9",
+      "translationHash": "87de90bf2fa7cd4f559c80920867e7c7c6ce5613a3f84ab034a488cd165f945b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.approval": {
+      "sourceHash": "35fce83963e67ac8b898287ec632a4e7368a59b509cff71adce1585953636087",
+      "translationHash": "115728c36232965e6a4c87a37d2ad6181efc11aa373a5056b7be4f064003906e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.back": {
+      "sourceHash": "61aad9de30ceec8d60f9c115ac62f5d853877cfa92df5897a509abd640ff6398",
+      "translationHash": "1b819f46a1cbb46f249d11c3914ef2a2fbd9f9b2c52c31285f5400f639857bc9",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.challenge": {
+      "sourceHash": "baedf02b84a7a7b6366a9eb05198e6d8ba2ac162265439c25f5b297dc155b34d",
+      "translationHash": "c328c80e8fbd395ff812011fb39af40f6a1a022a9d22a5e1b90e1ba2040f2f83",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.checks": {
+      "sourceHash": "4dfd4c3c475b79d62d4ea110253c30fd311c6981253622fc97d7791402cb7c7d",
+      "translationHash": "0cc76632611fbd9c96b38ea24859d9c5a29294e5e0b595ea2cb35287d3f0679f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.codeHelp": {
+      "sourceHash": "876ca90bf23690079f5cf2fced49755c4537c0ed6e04e52b29115a3d8daee1ab",
+      "translationHash": "a95bd14f4ef49786220041f536a6c8155bb24b9f55cca2860035b675a29548da",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.complete": {
+      "sourceHash": "149036935fcd130534396ff25fe6ad104f2da3d8413d03858cb6f61defec1238",
+      "translationHash": "e19aeee833a8e83ca87fd0c4f6ebb1c766b33c8b6a0340911fac6a1089ef92de",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.connectedTitle": {
+      "sourceHash": "9d4e871f8a197e3a8a21d38001436531fb369f66783a74dc5994e2b3f003a781",
+      "translationHash": "d40528b70e44b66cbc2b104a56ea06504e485eeb269ce422a079dfeea201c372",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.continue": {
+      "sourceHash": "07e5489843848db5e7b6f3345a02662b9eb87d0babcc82ef773b93c67386630c",
+      "translationHash": "d0a32144f4c2f75f5228ca3218b517ea3f8d1c28e2b8e539c7b5e71938623f36",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.credentialsHelp": {
+      "sourceHash": "02aec4361c99907dd7e76f661973e20728daf929636b55faef2efff4f39d259c",
+      "translationHash": "77055e6c9bb99d69001ba7538234a8d23e65f854b344a39cbaab19d5c7ac5d8d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.credentialsStored": {
+      "sourceHash": "de63262aadd8552355dde989d2489ed59e5105245f13e01163f7d551f804ba78",
+      "translationHash": "45bb7e0fc861941489294d72dc61085f52b31a9201df7bcd2f7225682363f2f1",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.delivered": {
+      "sourceHash": "4303dae79ca1523d01ce711510074b3919bbda7c59de2e3908db21fd3fefae5f",
+      "translationHash": "08cc335e2578239ec4c778e42b982329b953dac52cb79c1c2e1921fd86977541",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.deliveredWaiting": {
+      "sourceHash": "68cd517bdbcea2f8e3b4b21998d650c021c3805a8d4b65440b5b79bb10b55842",
+      "translationHash": "6c85e48a36de2f49eb0722849b5eafa3a76693991b0a4c2059d6ce97ad60bb3e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.descriptionFallback": {
+      "sourceHash": "e09f5373d31262e27f269f78104a9a61392fe806b5f402e638a56d53b8a62cb6",
+      "translationHash": "d05be142f56a4a5a7b211765131545a2d92d5b421a113881dd23d14a7db6933c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.descriptionNamed": {
+      "sourceHash": "aacea6b0049a4ef4dd1ddcec817ec78b38e88b856cf085d7d8ec1661bc66ad3b",
+      "translationHash": "7384adbe3a169b04cc3981e034763230f5693f7c7d3b6e23d6f20400eb2e43de",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.done": {
+      "sourceHash": "1b1d6d15ab687ce6605deaf86ea8abf6afbe38485fd5b394664cea291d1a0ecf",
+      "translationHash": "c4440b02a2ff3d9b4f09e099afa3437acac810303d67770895b56f8203d54e52",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.exit": {
+      "sourceHash": "0a0c86625eb6000c716addd0e3c1432d36265230a882d04302dfb5a935e6de10",
+      "translationHash": "756a157006ff2a75575c4ddf333ad58baf9e187d5bc1615eb088e4cdf4725bf9",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.externalHelp": {
+      "sourceHash": "4d14bedcd8d2aa5024ef5f0bc59de45b42c15dfa334b69125f1a872b4d266e6f",
+      "translationHash": "cb1765dc3e6bd8acc29298f8be8f203c0e6cd7f7638e19dc820ab5a2b31a71e8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.finishing": {
+      "sourceHash": "498f552a57bd233a1d2bca90feb43c3ee2a017c54bd953a81456e3cef117e9cf",
+      "translationHash": "84e60981b5e00ad3c7508f5275ce8e9f8f0ab2016b94ea77881fd71a579f014b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.finishingAction": {
+      "sourceHash": "2edeff78054118ba473f47ed6558c2d765f8182eadc9cc6e4f1e6d35612a6f86",
+      "translationHash": "5558a445121e4697952cc9c0a823e5d5f95030bfa4db450fd7e3934e7fde064b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.label": {
+      "sourceHash": "12804ce21512064b84fe52435f45c299af6b1a649aa16c3ed9a664a342013e50",
+      "translationHash": "cf7fb635fbdd8fd55896b61e8b5f2e7615e0caf1650418435cee100aeb2bd99e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.manager": {
+      "sourceHash": "ec6cdd42b195de4f0e67be1e5d99c0b15498b1693d1e6a1de347739c22db18d3",
+      "translationHash": "9fcdc49c32ad7a8cb52a4171bdf18e2fe878bdc81bcb09d6b75d7525f7fa1824",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.name": {
+      "sourceHash": "d17c05b64a2f99c55d646c57593b90acc532ca1688660d6e31c067bc45be0a6b",
+      "translationHash": "1e67e1f57ac9141b18bb3d13500e9e8afb54e9e4c6e121d7f94738ced062e398",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.nameHelp": {
+      "sourceHash": "78240d4f2f6ca3f4af31be990f5b8ddc326337e99e48f958bf5a030951ae9f7c",
+      "translationHash": "4f74615fdca3c0e8a24a5813e0ad9138d890cda4b772200ccce59b114d3248db",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.noManager": {
+      "sourceHash": "606fb7f84fa83a694a0d00be50ce8db710dc10f2e2f8be548677b4a4c449c496",
+      "translationHash": "e59ca9081146b812ff7c0053dc8787b76b3062b8a072a9811fe2d9d1e667348f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.ready": {
+      "sourceHash": "b131ecac144b1afb5a81c0bed6dbdeac3f9823318a6252680507b5d58dff1fe2",
+      "translationHash": "c3156413e99bd7708a29c2916512644fbcd61e1196a6638b39ebf5df368bf0f3",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.readyFallback": {
+      "sourceHash": "1e5974b0f42dae4bb102a56c7001afb8dcab72689867550e63fd46bd16624607",
+      "translationHash": "8f291b7778d23261aefbcabddac7732bf6a79f9ed2394129475cf0cbd4b6e6f8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.readyNamed": {
+      "sourceHash": "ab93b3e41590abfdcef7a9483a0ad237628a534af284a0e13e24363399b4255c",
+      "translationHash": "363d7d2617292b7a97c362a5b8dcd2f55726ed7d854f6644f28053c8557ff59d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.recovery": {
+      "sourceHash": "4faa3f86c437b1a7e7c979d154101bd3f935535fcc0e66ecff0d983bcd134ca6",
+      "translationHash": "dc536cc0932e0a3dbb1423516db577325cf599efa7073f30a9ebb70fe49924e8",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.rejected": {
+      "sourceHash": "7b179d652173a12e0c126322e427d62499fdb1d4ff67d3e09fb9cef96881a721",
+      "translationHash": "ea85b2ee5c06d78179a633aba5c3ce6d60a477651857f3183af5287e26a0ea2c",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.reply": {
+      "sourceHash": "cc791ca36c18a1d9eb760a3a2ce91048528aa4912f0c60bbd25991cb3b3e776e",
+      "translationHash": "d02681913d4a8d9668e848d98208e392ae393f54f33dc9184104cdbfd49de798",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.restoring": {
+      "sourceHash": "7d5070ec59af49ff92556fb6bd5c39fc29bf721eb35d8873ce1f47365d49215f",
+      "translationHash": "e27d0f2fe660d8d856716b6991845f569dd6cedde04af4f87ecc40ecf33ced0e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.retry": {
+      "sourceHash": "dc56426ce7749ad2b95f5ddbb64b6f91a8894d809e35cb1e8ad707f2ca49c31f",
+      "translationHash": "6d97b9ffebc4a49525aac9590fb0ae45b5ac3fb78983176938a9152acca3308f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.reviewApproval": {
+      "sourceHash": "8a672f63d26a29a1a307bc59789e51ef020cedec4af3f0b8f04387ce22b9be73",
+      "translationHash": "cc9d4c6ef91f1106794b4f97a2c1ce7ff9fb20a848d207c0020b0671db03640a",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.role": {
+      "sourceHash": "745806af5dd2f4ed0498a5024c06912a682755c3ec8432c30e165fe62a32de2c",
+      "translationHash": "49ba660c4c3e5d6d7cd5e66f605f63af63e84046946f0a6eea4bdb242e6ef72e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.routineDescription": {
+      "sourceHash": "4286017f5d8283ce37c5f4a8888f0f02af527f0389a0085e0015c6f25cf92ea2",
+      "translationHash": "5db228adcb216822c862630238c2feac808c7b0cfd6292cc3148031184477a65",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.routineHelp": {
+      "sourceHash": "b411960731055442437c65643d02d2826285f08298e0722608cc1a70bce07acb",
+      "translationHash": "e95de9f2b17febda1fa3521998ba889cba14c7c8af28fb1104eaead514c9de56",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.routineNavigation": {
+      "sourceHash": "196eae617afa7343de01fc49d60092f327f926f6f6d2882a690ec26e10e46ec4",
+      "translationHash": "dd912eb69cd88af03080e8e1cd06ad30ffcd235cb6e51e1a96657e5fd865d68f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.saving": {
+      "sourceHash": "4ade069fe5a720c934426f0570567fdbe1cdfa6ca8d9bf4ec9c6ad2b15b65f66",
+      "translationHash": "da603ff18976dfc803941cbdaa77e3d11481cbd547a946b06a3099c09ca374db",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.steps.access": {
+      "sourceHash": "78b0090eef81ed5afb88b1bdf90917fb37d2f6b2b4631013f52cfae205239065",
+      "translationHash": "e86e9d130b35fc998ae8403b250d5020a91cc91e5d3340be9b9ebd7c345a4d48",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.steps.assignments": {
+      "sourceHash": "ea20fa71d06accc85a4cf19060db2c391550fb6f95e36af39c1dbfda99f0b2b8",
+      "translationHash": "7080f7942352c7f770efeeb50270ca1ea3f012579c22fce5bb638aecb3d83d4d",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.steps.identify": {
+      "sourceHash": "d3a4da0da7de0d686a71640084702b35e579d22752ff251bbb4403b0c3ca32bb",
+      "translationHash": "08fab91cb2e789be7219ae29ac6c3526bceb51ef6467035357d4cf9105f7084e",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.steps.verify": {
+      "sourceHash": "f9961066b4af444f45a420244ffd398ed5ce9a06c6753d5cc62d232da0bbf267",
+      "translationHash": "9e278af9809943bc1e5f07ff0e5443c692d119900412b1a0037193a0857023e7",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.title": {
+      "sourceHash": "5c2bb5b5e293643442e1ebaccac08c234a51235b5cf9827acd5dda9821eb6fc1",
+      "translationHash": "9b38be7784c2f0ee6f28239529ef45af11d669bd83744faa21a72fb83b80227b",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.waiting": {
+      "sourceHash": "ed1a43dee6024ac6a1b1bdd83da8cc4361d0f2c076781ccc85f826bbac98f682",
+      "translationHash": "cb2de7f99caa5ec1459519cf927afd20cdf2af97c2686148be5cf9880730ef7f",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
+    },
+    "grokSetupUi.setup.waitingReply": {
+      "sourceHash": "ecae66f25bf312941a13f242af6fc1fdc3b58cd21ae744aae1c4b08beaf805fb",
+      "translationHash": "f9449483eeca74287b5ea4129942d2472a6242a00c050081e736d6c2b8ad51ec",
+      "reviewer": "Codex agent /root (independent source, tests and EN/RU review)",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T12:16:04.729Z"
     }
   }
 }

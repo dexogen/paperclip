@@ -332,6 +332,17 @@ queued counts and the existing polling schedule. The summary reports observed
 Paperclip activity; it does not certify complete Bot activity or availability.
 These tests use mocked responses and do not qualify invitation or recovery actions.
 
+[Setup locale checks](../../ui/src/components/new-agent/GrokBotSetup.locale.test.tsx)
+exercise the actual wizard/controller and saved connection panel through EN/RU/EN:
+identity/role drafts and credential fields retain focus and values, pending writes
+keep their original company, agent, binding and revision, and provider failures remain
+literal. [Existing setup checks](../../ui/src/components/new-agent/GrokBotSetup.render.test.tsx)
+also preserve masked pairing-code retries and generated instructions when the language
+changes. To inspect locally, switch language with a dirty draft or pending save, then
+retry the explicit action; no additional request should occur merely from the switch.
+The prompt builder remains fixed and these mocked component checks do not qualify
+real pairing, delivery, external cleanup or deployed provider acceptance.
+
 ### Documentation scope: Agents, organization, and runtime setup
 
 Per-harness/model/account capabilities, every instruction-file error, and complete built-in-agent lifecycle variants remain separate qualification matrices.
