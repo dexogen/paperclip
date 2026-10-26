@@ -8318,5 +8318,63 @@
       "title": "Could not load this view",
       "retry": "Retry"
     }
+  },
+  "agentSkillsUi": {
+    "materializationNote": "Enabled skills are materialized into the stable Paperclip-managed prompt bundle on the agent's next run.",
+    "application": {
+      "persistent": "Kept in workspace",
+      "ephemeral": "Applied on next run",
+      "unsupported": "Tracked only"
+    },
+    "unsupported": {
+      "customAcp": "Paperclip cannot manage skills for custom ACP commands yet.",
+      "openClaw": "Paperclip cannot manage OpenClaw skills here. Visit your OpenClaw instance to manage this agent's skills.",
+      "adapter": "Paperclip cannot manage skills for this adapter yet. Manage them in the adapter directly."
+    },
+    "legacyBlocked": "Paperclip Runner uses native semantic coordination and cannot attach the legacy Paperclip operational skill.",
+    "betaRelease": "Beta · {{release}}",
+    "enabledSummary": "{{enabled}} of {{total}} enabled",
+    "search": "Search skills",
+    "browseStore": "Browse skills store",
+    "updateFailed": "Failed to update skills",
+    "missingSkill": "<skill/> is enabled but missing from the organization library.",
+    "remove": "Remove",
+    "enabledHeading": "Enabled on this agent",
+    "availableHeading": "Available from the library",
+    "empty": {
+      "enabledSearch": "No enabled skills match your search.",
+      "enabled": "No skills enabled on this agent yet.",
+      "availableSearch": "No available skills match your search.",
+      "import": "Import skills into the organization library to enable them here.",
+      "allEnabled": "Every library skill is enabled on this agent.",
+      "detectedSearch": "No detected skills match your search.",
+      "library": "No skills in the organization library",
+      "libraryHint": "Install skills to the organization, then enable them on this agent."
+    },
+    "detectedHeading": "Automatic and detected skills (read-only)",
+    "adapter": "Adapter: {{name}}",
+    "save": {
+      "pending": "Saving…",
+      "error": "Couldn’t save",
+      "unsaved": "Saving soon…",
+      "saved": "Saved"
+    },
+    "row": {
+      "readOnly": "Read-only",
+      "enable": "Enable {{name}}",
+      "disable": "Disable {{name}}"
+    },
+    "release": {
+      "default": "Default — current (recommended)",
+      "fallback": "Release",
+      "dated": "{{name}} · released {{date}}",
+      "label": "Skill release",
+      "beta": "Beta"
+    },
+    "source": {
+      "local": "Local folder",
+      "catalog": "Catalog",
+      "managed": "Paperclip managed"
+    }
   }
 }

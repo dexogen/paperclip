@@ -166,6 +166,17 @@ canonical callbacks and pending state through EN/RU/EN changes. Provider error
 text stays literal. Repeat these changes in a browser before claiming a live
 instruction save, resource reset or lifecycle transition.
 
+The [skills locale regressions](../../ui/src/pages/agent-skills/AgentSkillsTab.localization.test.tsx)
+use the real skill row and release picker with mocked API requests. They check
+EN/RU/EN changes during a pending toggle or version-pin save, with stable search,
+focus, selection, exact payloads and no extra requests. Own error captions change
+language; provider errors, names, keys and source paths remain literal. Existing
+native legacy-skill, beta-release and automatic read-only gates remain covered.
+For live acceptance, toggle a skill and choose a release through the UI, change
+language while each save is pending, then reload and compare persisted skill keys
+and version pins. These component tests do not prove server permissions or skill
+materialization. Skills Manager, Studio and Store have separate coverage.
+
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
 For failed setup, use an unavailable model or invalid command on a disposable agent.
