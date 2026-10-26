@@ -8505,6 +8505,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
             scope={treeControlScope}
             affectedCount={previewAffectedIssueCount}
             affectedAgentCount={previewAffectedAgentCount}
+            warnings={treeControlPreview?.warnings}
             loading={treeControlPreviewLoading}
             error={
               treeControlPreviewError
@@ -8526,7 +8527,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
               executeTreeControl.mutate({
                 mode: treeControlMode,
                 scope: treeControlScope,
-                wakeAgents: treeControlWakeAgentsOnResume,
+                wakeAgents: treeControlWakeAgentsOnResume && previewAffectedAgentCount > 0,
               })
             }
           />

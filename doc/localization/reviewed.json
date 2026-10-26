@@ -12140,6 +12140,48 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T03:04:53.688Z"
     },
+    "taskProperties.tree.warnings.noAffectedIssues": {
+      "sourceHash": "e821abab337b60587d48c81f9b37f6b5757f70e1faf3c7458541fa6d5ac4ac0a",
+      "translationHash": "0e3f19e62fa269d317ecf367c7b3acf6097503b3aec033ff159f1874f898b937",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
+    },
+    "taskProperties.tree.warnings.noPauseHolds": {
+      "sourceHash": "5e5cf8dc545196323c2fc0446c9e4c4085e29f86ce7c1bab73c2fa47ce6cb395",
+      "translationHash": "b67a35c21c4b0af4a0462afdecaebe0634049e71f4b5ec2e1bbd9be2ccc36231",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
+    },
+    "taskProperties.tree.warnings.queuedRuns": {
+      "sourceHash": "d874cf132f18bb8e8ae196f3e6d03caca2512e518a9bc0e3f26ce31a1b708570",
+      "translationHash": "11e0c41a1d96683d4f5db82d57bb9f453fffd6901159def7cb3055096012c4a3",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
+    },
+    "taskProperties.tree.warnings.remainIdle": {
+      "sourceHash": "27f47627b86fcd816b36ae1d4da51bdc8bdb97ac139e36302b02c5eeb194aa6a",
+      "translationHash": "cae6ef7e943cd03ca23c302706cfd997411a6bfae76dec96dc79c6d79dfb0799",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
+    },
+    "taskProperties.tree.warnings.restoreConflicts": {
+      "sourceHash": "c671bd1b5caaed582ef6608dc2432371613ef52591b5ab09973af918f57f6020",
+      "translationHash": "140c04fceb1f37b0dc1ecf49a681dc4d84be73af3900cdfe2aa4a022e8d8bc3d",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.854Z"
+    },
+    "taskProperties.tree.warnings.runningRuns": {
+      "sourceHash": "eeed6affbca3891b9f307078b561f7a2ca8136b9c436db8604efd8cfca1176bb",
+      "translationHash": "d7707c1c4314c7b041b561e2611346511559de0a2d74fe6a803d04d3dfba7fa7",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
+    },
     "taskProperties.tree.willCancel": {
       "sourceHash": "d122afed1d21ba25cbf24bf0bed608d3aba341dfb806a37d24da2ffd936e0990",
       "translationHash": "8047abb56925a7090fce412e9233036a2784c1b122bf14a04a54fc78d42c6a36",
@@ -12155,11 +12197,11 @@
       "reviewedAt": "2026-10-26T03:04:53.688Z"
     },
     "taskProperties.tree.willResume": {
-      "sourceHash": "2ce3b77a383dd74fbaab0e9f4c6afb1d83c555c6c51272a8b3beb51d2673869d",
-      "translationHash": "09b5d650ec7c247b306ff5b30ea9230d71fcc291bc487ab1834835c55ed67c40",
-      "reviewer": "Codex agent /root/translate_task_panels",
+      "sourceHash": "e69e5d49e3b81609b9d850023ed312d3208ccc5a8b04abd7f6c682b36f95b282",
+      "translationHash": "1b0a411eeeb4360a94fe4adc54b826dc73aadd50459c5e40d569a1f23b0c9956",
+      "reviewer": "Codex foundation: independent upstream warning and pause-removal review",
       "method": "agent",
-      "reviewedAt": "2026-10-26T03:04:53.688Z"
+      "reviewedAt": "2026-10-26T03:53:50.853Z"
     },
     "taskProperties.viaAgent": {
       "sourceHash": "489110906453c381a8a6c10003e7947d488a43ee16a6d516a6439892ce7a0671",
