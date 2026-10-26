@@ -152,10 +152,20 @@ builds use the fork's Russian default.
 Six original workspace/recovery tests failed because Git reports a non-repository
 directory differently at a filesystem boundary. A controlled
 `GIT_DISCOVERY_ACROSS_FILESYSTEM=1` comparison identified the cause. The integration
-fix accepts the exact boundary diagnostic only for explicitly declared plain task
-directories; strict checkouts, explicit Git overrides, symlinks, and unexpected
-errors still fail. A real filesystem-boundary regression first failed, then passed
-with the fix. Test jobs use Git's ordinary discovery behavior again.
+fix shares an exact diagnostic recognizer between managed checkout preparation and
+the heartbeat worktree probe. Each caller retains its own exit, signal, and Git
+override checks. Plain task directories still require explicit authority; heartbeat
+also requires proof that Git metadata is absent and the workspace is an explicit
+local-path source. Damaged metadata and unexpected errors remain reportable. Real
+filesystem-boundary regressions first failed, then passed with the fix. Test jobs
+use Git's ordinary discovery behavior again.
+
+The Linux full-suite run also exposed diagnostic corruption from an inherited
+`XDG_SESSION_CLASS=user`: the secret collector treated the standard session class
+as an unknown credential and masked `user` inside error codes. Only this exact
+inherited key/value pair is now public. Explicitly declared secrets, non-inherited
+bindings, and unknown values remain private. Regression checks preserve those
+privacy boundaries and the original heartbeat recovery assertions.
 
 A separate sandbox test accepts a positive shell exit status for denied redirection:
 shells can return either 1 or 2. It still verifies a successful in-workspace write,
@@ -182,6 +192,12 @@ The tests use temporary Git repositories and stubbed API calls; they do not publ
 branches, PRs, or images. They cover ancestry, conflict cleanup, preserved unmerged
 work, exact-source dispatch, and publication qualification. A local pass is not
 proof of GitHub App configuration or a hosted workflow run.
+
+An enabled workflow is not evidence that GitHub accepted its execution. If jobs
+are cancelled with `repository invocation blocked`, preserve the run and annotation
+and ask the repository owner to check GitHub's account/repository notices. The
+annotation alone does not establish a billing or policy cause. Do not disable the
+required checks or treat a separate local test run as a successful hosted run.
 
 Keep prior image digests for rollback. Reverting an image is insufficient when an
 upstream update changed database compatibility; take and test appropriate backups

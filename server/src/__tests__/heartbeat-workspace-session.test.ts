@@ -1,4 +1,5 @@
 import { execFile as execFileCallback } from "node:child_process";
+import { existsSync, statSync } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -612,6 +613,41 @@ describe("assertGitWorktreeBaseWorkspaceReady", () => {
       });
     } finally { await fs.rm(cwd, { recursive: true, force: true }); }
   });
+
+  it.skipIf(process.platform !== "linux" || !existsSync("/dev/shm") || statSync("/dev/shm").dev === statSync("/").dev)(
+    "classifies a filesystem boundary without hiding damaged metadata or Git overrides",
+    async () => {
+      const cwd = await fs.mkdtemp("/dev/shm/paperclip-local-path-boundary-");
+      for (const key of ["GIT_DISCOVERY_ACROSS_FILESYSTEM", "GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR"]) {
+        vi.stubEnv(key, undefined);
+      }
+      try {
+        const gitFailure = await execFile("git", ["rev-parse", "--show-toplevel"], {
+          cwd, env: { ...process.env, LC_ALL: "C" },
+        }).catch((error) => error);
+        expect(gitFailure).toMatchObject({ code: 128, stderr: expect.stringContaining("Stopping at filesystem boundary") });
+        await expect(assertGitWorktreeBaseWorkspaceReady(configuredLocalPathInput(cwd))).rejects.toMatchObject({
+          code: "workspace_validation_failed",
+          resultJson: { workspaceValidation: {
+            reason: "git_worktree_base_not_git_checkout",
+            configurationReason: "local_path_requires_git_checkout",
+          } },
+        });
+        await fs.mkdir(path.join(cwd, ".git"));
+        const damaged = await assertGitWorktreeBaseWorkspaceReady(configuredLocalPathInput(cwd)).catch((error) => error);
+        expect(damaged.code).toBe("workspace_validation_failed");
+        expect(damaged.resultJson.workspaceValidation.configurationReason).toBeUndefined();
+        await fs.rm(path.join(cwd, ".git"), { recursive: true });
+        vi.stubEnv("GIT_WORK_TREE", cwd);
+        const overridden = await assertGitWorktreeBaseWorkspaceReady(configuredLocalPathInput(cwd)).catch((error) => error);
+        expect(overridden.code).toBe("workspace_validation_failed");
+        expect(overridden.resultJson.workspaceValidation.configurationReason).toBeUndefined();
+      } finally {
+        vi.unstubAllEnvs();
+        await fs.rm(cwd, { recursive: true, force: true });
+      }
+    },
+  );
 
   it.each(["legacy", "repository", "fallback", "materialization", "session", "unbound"])(
     "does not mark ambiguous non-Git workspace evidence as a configuration-only failure: %s", async (kind) => {
