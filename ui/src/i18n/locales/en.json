@@ -8897,5 +8897,78 @@
       "unconfirmedReply": "Assignment delivered: Unconfirmed. Reply received: Yes.",
       "unconfirmedNoReply": "Assignment delivered: Unconfirmed. Reply received: No."
     }
+  },
+  "liveDashboardUi": {
+    "page": {
+      "dashboard": "Dashboard",
+      "liveRuns": "Live runs",
+      "title": "Live agent runs",
+      "description": "Active runs first, followed by the most recent completed runs.",
+      "limit": "Showing up to {{limit}}",
+      "activeRecent": "Active / recent",
+      "empty": "No active or recent agent runs.",
+      "createCompany": "Create an organization to view live runs.",
+      "selectCompany": "Select an organization to view live runs."
+    },
+    "panel": {
+      "title": "Agents",
+      "empty": "No recent agent runs.",
+      "all": "View all runs",
+      "more_one": "{{count}} more active/recent run",
+      "more_other": "{{count}} more active/recent runs"
+    },
+    "card": {
+      "status": {
+        "running": "Running",
+        "queued": "Queued",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "timed_out": "Timed out",
+        "cancelled": "Cancelled",
+        "interrupted": "Interrupted"
+      },
+      "finished": "Finished {{time}}",
+      "started": "Started {{time}}",
+      "queued": "Queued {{time}}",
+      "unavailable": "Task unavailable",
+      "loading": "Loading task…",
+      "runTitle": "{{name}} — {{status}} · {{time}}",
+      "viewRun": "{{name}} — {{status}}. View run",
+      "taskStatus": "Task {{status}}",
+      "scheduled": "Scheduled heartbeat",
+      "noTask": "No linked task"
+    },
+    "chart": {
+      "noRuns": "No runs yet",
+      "noTasks": "No tasks",
+      "succeeded": "Succeeded",
+      "recovered": "Recovered",
+      "failed": "Failed",
+      "other": "Other",
+      "succeededCount": "  succeeded: {{count}}",
+      "recoveredCount": "  recovered: {{count}} (retry succeeded)",
+      "failedCount": "  failed: {{count}}",
+      "otherCount": "  other: {{count}}",
+      "todo": "To Do",
+      "in_progress": "In Progress",
+      "in_review": "In Review",
+      "done": "Done",
+      "blocked": "Blocked",
+      "cancelled": "Cancelled",
+      "backlog": "Backlog",
+      "runs_one": "{{date}}: {{count}} run",
+      "runs_other": "{{date}}: {{count}} runs",
+      "tasks_one": "{{date}}: {{count}} issue",
+      "tasks_other": "{{date}}: {{count}} issues"
+    },
+    "smoke": {
+      "title": "Integration smoke",
+      "green": "All paths passing",
+      "amber": "Needs a run",
+      "red": "Failing paths",
+      "unknown": "No runs yet",
+      "lastRun": "Last run {{time}}",
+      "start": "Run one from the Smoke Lab tab"
+    }
   }
 }

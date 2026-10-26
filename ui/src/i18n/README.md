@@ -337,6 +337,15 @@ errors, binding revisions, expiry, idempotency and delivery/reply guards are unc
 Component checks cover the controller and existing consumers; they do not establish
 real OAuth, credential storage, external delivery, stop or recovery acceptance.
 
+The live dashboard, shared agent-run cards, activity charts and integration-smoke
+card translate their own captions and date display. EN/RU changes preserve card
+and legend nodes, focus, task/run links, query scope, limits and explicit caption
+overrides. Run deduplication, leader-only polling, date buckets, recovered-run
+aggregation, chart geometry, raw error codes and smoke path IDs remain unchanged.
+The focused component suites use mocked APIs; they do not prove live polling,
+provider health or translation of the recent-activity feed, audit pages and the
+optional run transcript surface.
+
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
