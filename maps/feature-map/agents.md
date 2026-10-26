@@ -222,6 +222,14 @@ keeps raw names and instruction bodies, filters inactive connections and retries
 the same agent/company after a load failure. These are mocked component checks, not
 proof that a live task received the connection's instructions.
 
+The [AI account field regression](../../ui/src/components/ai-connections/AiConnectionField.test.tsx)
+checks duplicate provider names, account identity in choices and adoption confirmation,
+the exact selected grant, and disabled unavailable accounts with authorized metadata fixtures.
+Manually compare a personal API key and shared subscription with the same name in
+Harness / Runtime. Confirm their method, scope and available identity before saving.
+Reload the saved choice and verify the next eligible task uses it; labels alone
+do not establish credential validity or change account access.
+
 Manual: Save a harmless instruction edit, reload, and verify its revision and effect in the next eligible run. Pause and resume the disposable agent; confirm pause prevents new work and does not erase previous runs.
 
 For failed setup, use an unavailable model or invalid command on a disposable agent.

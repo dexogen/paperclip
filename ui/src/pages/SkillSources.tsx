@@ -172,7 +172,7 @@ export function SkillSources() {
             action={<Link to={`/skills/sources/${source.id}`} className="font-medium text-destructive underline underline-offset-2">{t("skillsGap.reviewSource")}</Link>} />}
           {source.lastError && (source.repairAction === 'connection' || (!source.repairAction && !source.connectionId)) && <Button variant="outline" size="sm" className="self-start" onClick={() => setRepairSourceId(source.id)}>{t("skillsGap.chooseConnection")}</Button>}
           {source.lastError && source.repairAction === 'branch' && (source.accessScope === 'projects' || source.projects?.some(project => project.active)
-            ? <div className="flex flex-wrap gap-3">{source.projects?.filter(project => project.active).map(project => <Link key={project.id} to={`/projects/${project.id}`} className="text-sm underline">{t("skillsGap.update")}{" "}{project.name} repository</Link>)}</div>
+            ? <div className="flex flex-wrap gap-3">{source.projects?.filter(project => project.active).map(project => <Link key={project.id} to={`/projects/${project.id}`} className="text-sm underline">{t("skillsGap.updateProjectRepository", { name: project.name })}</Link>)}</div>
             : <Button variant="outline" size="sm" className="self-start" onClick={() => setBranchSourceId(source.id)}>{t("skillsGap.chooseANewBranch")}</Button>)}
         </section>;
       })}

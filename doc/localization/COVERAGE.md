@@ -96,10 +96,20 @@ embedded PostgreSQL; component tests use controlled fixtures. Integrated UI and
 server typechecks and token gates also passed before the next upstream merge.
 Final-commit CI and deployment verification are separate acceptance steps.
 
-The source audit resolved 1,990 baseline candidates in this correction and
-still found 12,330 remaining candidates. No new untranslated text was added to
+The integrated source audit, including upstream `063a498b54a9106843647ce5aaf2e6d84a4b6c3e`,
+resolved 2,002 baseline candidates and still found 12,318 remaining candidates.
+No new untranslated text was added to
 the baseline. This does not establish that all remaining candidates are UI
 copy, or that all runtime text is detectable by this scanner.
+
+The full skills editorial pass examined 946 message families, corrected 19
+formulations and replaced four composed sentences with parameterized messages.
+Residual source review also found and corrected the download-stage label,
+repository-repair link and shared health/decision/loading/tracking captions.
+Whole-message regressions passed 59 tests; residual-display checks passed 37;
+upstream account-identity integration passed 32. These results overlap earlier
+suites and must not be summed into a total. Unknown statuses, custom labels,
+names, paths, account identities and user-authored content remain literal.
 
 ## Runtime variants
 

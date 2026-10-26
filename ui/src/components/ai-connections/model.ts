@@ -54,9 +54,27 @@ export function defaultAiConnectionName(ownerName: string | undefined, provider:
 }
 
 export function aiMethodLabel(provider: AiProvider, method: AiAuthMethod) {
-  return method === "subscription"
-    ? (AI_PROVIDERS[provider].subscriptionName ?? "Subscription unavailable")
-    : provider === "github" ? "Personal access token" : "API key";
+  if (method === "subscription") {
+    switch (provider) {
+      case "anthropic": return t("upstreamGap.claudeSubscription");
+      case "openai": return t("upstreamGap.chatGptSubscription");
+      case "xai": return t("upstreamGap.grokSubscription");
+      default: return t("upstreamGap.subscriptionUnavailable");
+    }
+  }
+  return provider === "github"
+    ? t("upstreamGap.personalAccessToken")
+    : t("providerSetup.credentials.apiKey");
+}
+
+export function aiConnectionDisplayLabel(connection: AiConnectionSummary) {
+  const personal = connection.ownership === "personal";
+  return [
+    connection.name,
+    aiMethodLabel(connection.provider, connection.method),
+    personal ? t("upstreamGap.connectionPersonal") : t("upstreamGap.connectionCompanyShared"),
+    connection.accountLabel || connection.ownerName,
+  ].filter(Boolean).join(" · ");
 }
 
 export function matchesAiRequirement(

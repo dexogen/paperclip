@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { TFunction } from "i18next";
-import { i18n } from "@/i18n";
+import { i18n, t, useTranslation } from "@/i18n";
 import type {
   ToolRiskLevel,
   ToolConnectionHealthStatus,
@@ -82,6 +82,21 @@ function healthToStatusKey(status: string): string {
   }
 }
 
+function healthDisplayLabel(status: string): string {
+  switch (status) {
+    case "healthy": return t("surfacesGap.health.healthy");
+    case "ok": return t("surfacesGap.health.ok");
+    case "degraded": return t("surfacesGap.health.degraded");
+    case "warning": return t("surfacesGap.health.warning");
+    case "error": return t("surfacesGap.health.error");
+    case "unhealthy": return t("surfacesGap.health.unhealthy");
+    case "critical": return t("surfacesGap.health.critical");
+    case "unchecked": return t("surfacesGap.health.unchecked");
+    case "unknown": return t("surfacesGap.health.unknown");
+    default: return status;
+  }
+}
+
 /** Connection / runtime health badge, mapped onto canonical status colors. */
 export function HealthBadge({
   status,
@@ -90,33 +105,34 @@ export function HealthBadge({
   status: ToolConnectionHealthStatus | string | null | undefined;
   label?: string;
 }) {
+  useTranslation();
   const raw = (status ?? "unknown").toString();
-  return <StatusBadge status={healthToStatusKey(raw)} label={label ?? raw} />;
+  return <StatusBadge status={healthToStatusKey(raw)} label={label ?? healthDisplayLabel(raw)} />;
 }
 
 function decisionToStatusKey(decision: string): { key: string; label: string } {
   switch (decision) {
     case "allow":
     case "allowed":
-      return { key: "allowed", label: "allowed" };
+      return { key: "allowed", label: t("surfacesGap.decisions.allowed") };
     case "deny":
     case "denied":
-      return { key: "denied", label: "denied" };
+      return { key: "denied", label: t("surfacesGap.decisions.denied") };
     case "block":
-      return { key: "block", label: "block" };
+      return { key: "block", label: t("surfacesGap.decisions.block") };
     case "require_approval":
     case "requires_approval":
-      return { key: "require-approval", label: "require approval" };
+      return { key: "require-approval", label: t("surfacesGap.decisions.requireApproval") };
     case "redact":
     case "redacted":
-      return { key: "redacted", label: "redacted" };
+      return { key: "redacted", label: t("surfacesGap.decisions.redacted") };
     case "rate_limited":
-      return { key: "rate-limit", label: "rate limited" };
+      return { key: "rate-limit", label: t("surfacesGap.decisions.rateLimited") };
     case "defer":
     case "deferred":
-      return { key: "deferred", label: "deferred" };
+      return { key: "deferred", label: t("surfacesGap.decisions.deferred") };
     case "hidden":
-      return { key: "hidden", label: "hidden" };
+      return { key: "hidden", label: t("surfacesGap.decisions.hidden") };
     default:
       return { key: decision, label: decision };
   }
@@ -124,6 +140,7 @@ function decisionToStatusKey(decision: string): { key: string; label: string } {
 
 /** Policy/gateway decision badge — canonical status colors. */
 export function DecisionBadge({ decision }: { decision: ToolPolicyDecision | string | null | undefined }) {
+  useTranslation();
   if (!decision) return <Badge variant="outline">—</Badge>;
   const { key, label } = decisionToStatusKey(decision.toString());
   return <StatusBadge status={key} label={label} />;
@@ -170,11 +187,12 @@ export function ToolsPageHeader({
   );
 }
 
-export function LoadingState({ label = "Loading…" }: { label?: string }) {
+export function LoadingState({ label }: { label?: string }) {
+  useTranslation();
   return (
     <div className="flex items-center gap-2 py-10 text-sm text-muted-foreground">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground" />
-      {label}
+      {label ?? t("surfacesGap.audit.loading")}
     </div>
   );
 }
@@ -234,6 +252,7 @@ export function PendingBackendNotice({
   body: ReactNode;
   issue?: { identifier: string; href: string };
 }) {
+  useTranslation();
   return (
     <Card className="border-dashed">
       <CardContent className="flex flex-col gap-2 py-8">
@@ -244,7 +263,7 @@ export function PendingBackendNotice({
         <p className="max-w-2xl text-sm text-muted-foreground">{body}</p>
         {issue ? (
           <a href={issue.href} className="text-sm font-medium text-primary hover:underline">
-            Tracked in {issue.identifier} →
+            {t("surfacesGap.trackedIn", { identifier: issue.identifier })}
           </a>
         ) : null}
       </CardContent>

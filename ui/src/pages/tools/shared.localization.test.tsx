@@ -6,7 +6,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import type { ToolRiskLevel } from "@paperclipai/shared";
 import { i18n, useTranslation } from "@/i18n";
 import { ApiError } from "@/api/client";
-import { CapabilityBadges, ErrorState, RelativeTime, RiskBadge } from "./shared";
+import { CapabilityBadges, DecisionBadge, ErrorState, HealthBadge, LoadingState, PendingBackendNotice, RelativeTime, RiskBadge } from "./shared";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 let root: ReturnType<typeof createRoot>;
@@ -97,4 +97,31 @@ it("localizes relative timestamps with the same rounding and fixed-English defau
     expect(container.querySelector('[data-testid="localized"]')?.textContent).toBe("5 мин. назадчерез 2 чникогда");
     expect(container.querySelector('[data-testid="legacy"]')?.textContent).toBe("5m agoin 2hnever");
   } finally { clock.mockRestore(); }
+});
+
+
+it("updates owned health, decision and utility labels while preserving explicit and unknown values", async () => {
+  container = document.createElement("div"); document.body.appendChild(container);
+  await act(async () => {
+    await i18n.changeLanguage("en"); root = createRoot(container);
+    root.render(<>
+      <section data-testid="owned"><HealthBadge status="healthy" /><HealthBadge status="degraded" /><HealthBadge status="unknown" />
+        <DecisionBadge decision="allow" /><DecisionBadge decision="requires_approval" /><DecisionBadge decision="rate_limited" />
+        <LoadingState /><PendingBackendNotice title="Status" body="Caller content" issue={{ identifier: "GH-42", href: "/issues/GH-42" }} /></section>
+      <section data-testid="literal"><HealthBadge status="healthy" label="User healthy" /><HealthBadge status="constructor" />
+        <DecisionBadge decision="__proto__" /><LoadingState label="Provider loading" /></section>
+    </>);
+  });
+  const owned = container.querySelector('[data-testid="owned"]')!;
+  const literal = container.querySelector('[data-testid="literal"]')!;
+  expect(owned.textContent).toContain("healthydegradedunknownallowedrequire approvalrate limitedLoading…");
+  const link = owned.querySelector("a")!;
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(owned.textContent).toContain("В нормеРаботает с ограничениямиНеизвестноРазрешеноТребуется согласованиеОграничено по частотеЗагрузка…");
+  expect(link.textContent).toBe("Задача GH-42 →");
+  expect(link.getAttribute("href")).toBe("/issues/GH-42");
+  expect(literal.textContent).toBe("User healthyconstructor__proto__Provider loading");
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(link.isConnected).toBe(true);
+  expect(link.textContent).toBe("Tracked in GH-42 →");
 });

@@ -2,6 +2,8 @@ import { i18n } from "@/i18n";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   aiConnectionProblem,
+  aiConnectionDisplayLabel,
+  aiMethodLabel,
   defaultAiConnectionName,
   bindingProblem,
   matchesAiRequirement,
@@ -183,5 +185,40 @@ describe("default AI account names", () => {
     expect(defaultAiConnectionName("Dotta", "openai", "subscription")).toBe("Dotta's ChatGPT subscription account");
     expect(defaultAiConnectionName("You", "openai", "api_key")).toBe("My OpenAI API account");
     expect(defaultAiConnectionName(undefined, "openrouter", "api_key")).toBe("My OpenRouter API account");
+  });
+});
+
+
+describe("localized account display labels", () => {
+  it.each([
+    ["anthropic", "subscription", "Claude subscription", "Подписка Claude"],
+    ["openai", "subscription", "ChatGPT subscription", "Подписка ChatGPT"],
+    ["xai", "subscription", "Grok subscription", "Подписка Grok"],
+    ["google", "subscription", "Subscription unavailable", "Подписка недоступна"],
+    ["github", "api_key", "Personal access token", "Персональный токен доступа"],
+    ["openai", "api_key", "API key", "API-ключ"],
+  ] as const)("localizes %s/%s display copy without changing provider identity", async (provider, method, english, russian) => {
+    await i18n.changeLanguage("en");
+    expect(aiMethodLabel(provider, method)).toBe(english);
+    await i18n.changeLanguage("ru");
+    expect(aiMethodLabel(provider, method)).toBe(russian);
+    await i18n.changeLanguage("en");
+    expect(aiMethodLabel(provider, method)).toBe(english);
+  });
+
+  it("preserves account and owner labels, preferring account identity over owner fallback", async () => {
+    const shared: AiConnectionSummary = {
+      ...account, name: "Release Engineering", provider: "openai", method: "api_key",
+      ownership: "shared", accountLabel: "builds@example.test", ownerName: "Avery",
+    };
+    const original = { ...shared };
+    await i18n.changeLanguage("ru");
+    expect(aiConnectionDisplayLabel(shared)).toBe("Release Engineering · API-ключ · Общее для организации · builds@example.test");
+    expect(aiConnectionDisplayLabel({ ...shared, accountLabel: "", ownership: "personal" })).toBe("Release Engineering · API-ключ · Личное · Avery");
+    expect(aiConnectionDisplayLabel({ ...shared, accountLabel: undefined, ownerName: undefined })).toBe("Release Engineering · API-ключ · Общее для организации");
+    expect(shared).toEqual(original);
+    expect(defaultAiConnectionName("Dotta", "openai", "subscription")).toBe("Dotta's ChatGPT subscription account");
+    await i18n.changeLanguage("en");
+    expect(aiConnectionDisplayLabel(shared)).toBe("Release Engineering · API key · Company shared · builds@example.test");
   });
 });

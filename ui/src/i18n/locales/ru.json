@@ -11455,7 +11455,29 @@
       "minutesAhead": "через {{value}} мин",
       "hoursAhead": "через {{value}} ч",
       "daysAhead": "через {{value}} дн."
-    }
+    },
+    "health": {
+      "healthy": "В норме",
+      "ok": "В норме",
+      "degraded": "Работает с ограничениями",
+      "warning": "Предупреждение",
+      "error": "Ошибка",
+      "unhealthy": "Не работает",
+      "critical": "Критическое состояние",
+      "unchecked": "Не проверено",
+      "unknown": "Неизвестно"
+    },
+    "decisions": {
+      "allowed": "Разрешено",
+      "denied": "Запрещено",
+      "block": "Блокировка",
+      "requireApproval": "Требуется согласование",
+      "redacted": "Данные скрыты",
+      "rateLimited": "Ограничено по частоте",
+      "deferred": "Отложено",
+      "hidden": "Скрыто"
+    },
+    "trackedIn": "Задача {{identifier}} →"
   },
   "skillsGap": {
     "githubManaged": "Управляется через GitHub",
@@ -12524,7 +12546,9 @@
     "deleteFolderRoutines_one": "{{count}} регулярное задание в этой папке не будет удалено. Оно перейдёт в раздел «Без папки».",
     "deleteFolderRoutines_few": "{{count}} регулярных задания в этой папке не будут удалены. Они перейдут в раздел «Без папки».",
     "deleteFolderRoutines_many": "{{count}} регулярных заданий в этой папке не будут удалены. Они перейдут в раздел «Без папки».",
-    "deleteFolderRoutines_other": "Регулярные задания в этой папке ({{count}}) не будут удалены. Они перейдут в раздел «Без папки»."
+    "deleteFolderRoutines_other": "Регулярные задания в этой папке ({{count}}) не будут удалены. Они перейдут в раздел «Без папки».",
+    "updateProjectRepository": "Настроить репозиторий проекта «{{name}}»",
+    "downloadStage": "Загрузка"
   },
   "onboardingGap": {
     "projectName": "Начало работы",
@@ -12539,5 +12563,14 @@
       "taskLabel": "У меня уже есть задача",
       "taskDescription": "Опишите её, и я предложу, как её выполнить."
     }
+  },
+  "upstreamGap": {
+    "claudeSubscription": "Подписка Claude",
+    "chatGptSubscription": "Подписка ChatGPT",
+    "grokSubscription": "Подписка Grok",
+    "subscriptionUnavailable": "Подписка недоступна",
+    "personalAccessToken": "Персональный токен доступа",
+    "connectionPersonal": "Личное",
+    "connectionCompanyShared": "Общее для организации"
   }
 }

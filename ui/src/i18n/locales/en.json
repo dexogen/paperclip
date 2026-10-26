@@ -10877,7 +10877,29 @@
       "minutesAhead": "in {{value}}m",
       "hoursAhead": "in {{value}}h",
       "daysAhead": "in {{value}}d"
-    }
+    },
+    "health": {
+      "healthy": "healthy",
+      "ok": "ok",
+      "degraded": "degraded",
+      "warning": "warning",
+      "error": "error",
+      "unhealthy": "unhealthy",
+      "critical": "critical",
+      "unchecked": "unchecked",
+      "unknown": "unknown"
+    },
+    "decisions": {
+      "allowed": "allowed",
+      "denied": "denied",
+      "block": "block",
+      "requireApproval": "require approval",
+      "redacted": "redacted",
+      "rateLimited": "rate limited",
+      "deferred": "deferred",
+      "hidden": "hidden"
+    },
+    "trackedIn": "Tracked in {{identifier}} →"
   },
   "skillsGap": {
     "githubManaged": "GitHub managed",
@@ -11868,7 +11890,9 @@
     "deleteFolderSkills_one": "The {{count}} skills in this folder won't be deleted. They'll move to Unfiled.",
     "deleteFolderSkills_other": "The {{count}} skills in this folder won't be deleted. They'll move to Unfiled.",
     "deleteFolderRoutines_one": "The {{count}} routines in this folder won't be deleted. They'll move to Unfiled.",
-    "deleteFolderRoutines_other": "The {{count}} routines in this folder won't be deleted. They'll move to Unfiled."
+    "deleteFolderRoutines_other": "The {{count}} routines in this folder won't be deleted. They'll move to Unfiled.",
+    "updateProjectRepository": "Update {{name}} repository",
+    "downloadStage": "Download"
   },
   "onboardingGap": {
     "projectName": "Onboarding",
@@ -11883,5 +11907,14 @@
       "taskLabel": "I have a task in mind",
       "taskDescription": "Describe it and I'll propose how to get it done."
     }
+  },
+  "upstreamGap": {
+    "claudeSubscription": "Claude subscription",
+    "chatGptSubscription": "ChatGPT subscription",
+    "grokSubscription": "Grok subscription",
+    "subscriptionUnavailable": "Subscription unavailable",
+    "personalAccessToken": "Personal access token",
+    "connectionPersonal": "Personal",
+    "connectionCompanyShared": "Company shared"
   }
 }

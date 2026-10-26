@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { flushSync } from "react-dom";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -17,7 +18,6 @@ vi.mock("./AiConnectionCredentialStep", () => ({
     return <div>Provider sign-in</div>;
   },
 }));
-vi.mock("./AiConnectionManagement", () => ({ AiConnectionLegacyNotice: () => null }));
 vi.mock("./AiProviderSetup", () => ({ AiProviderSetup: () => <div>Advanced provider setup</div> }));
 vi.mock("@/pages/apps/AppLogo", () => ({ AppLogo: () => null }));
 
@@ -70,7 +70,7 @@ beforeEach(() => {
   root = createRoot(container);
   client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
 });
-afterEach(() => { flushSync(() => root.unmount()); client.clear(); container.remove(); });
+afterEach(async () => { flushSync(() => root.unmount()); client.clear(); container.remove(); await i18n.changeLanguage("en"); });
 
 it("reconnects the unavailable personal default in place", async () => {
   await mount([account()]);
@@ -80,6 +80,45 @@ it("reconnects the unavailable personal default in place", async () => {
   await settle();
   expect(mocks.setDefault).not.toHaveBeenCalled();
   expect(onChange).toHaveBeenCalledWith({ provider: "anthropic", method: "subscription", mode: "responsible_user" });
+});
+
+it.each(["en", "ru"] as const)("identifies duplicate-named accounts in %s before adopting the exact personal grant", async locale => {
+  await i18n.changeLanguage(locale);
+  const copy = locale === "ru" ? {
+    choose: "Выбрать управляемое подключение", connection: "Подключение", save: "Применить эту привязку при сохранении",
+    personal: "OpenAI · API-ключ · Личное · Avery",
+    shared: "OpenAI · Подписка ChatGPT · Общее для организации · engineering@example.test",
+    sharedKey: "OpenAI · API-ключ · Общее для организации · Engineering",
+  } : {
+    choose: "Choose a managed connection", connection: "Connection", save: "Use this binding when saved",
+    personal: "OpenAI · API key · Personal · Avery",
+    shared: "OpenAI · ChatGPT subscription · Company shared · engineering@example.test",
+    sharedKey: "OpenAI · API key · Company shared · Engineering",
+  };
+  const personal = account({ id: "00000000-0000-4000-8000-000000000001", grantId: "00000000-0000-4000-8000-000000000002", provider: "openai", method: "api_key", name: "OpenAI", ownerName: "Avery", status: "connected", isDefault: false });
+  const shared = account({ id: "00000000-0000-4000-8000-000000000003", grantId: "00000000-0000-4000-8000-000000000004", provider: "openai", method: "subscription", name: "OpenAI", accountLabel: "engineering@example.test", ownership: "shared", ownerUserId: undefined, status: "connected", isDefault: false });
+  const sharedKey = account({ id: "00000000-0000-4000-8000-000000000005", grantId: "00000000-0000-4000-8000-000000000006", provider: "openai", method: "api_key", name: "OpenAI", ownerName: "Engineering", ownership: "shared", ownerUserId: undefined, status: "connected", isDefault: false });
+  const unavailable = account({ id: "expired-account", grantId: "expired-grant", provider: "openai", method: "api_key", name: "Expired account", ownerName: "Avery" });
+  mocks.list.mockResolvedValue({ currentUserId: "owner", connections: [shared, personal, sharedKey, unavailable], canManageConnections: true });
+  flushSync(() => root.render(<QueryClientProvider client={client}>
+    <AiConnectionField companyId="company" agentId="agent" agentName="Nova" adapterType="codex_local" legacy onChange={onChange} />
+  </QueryClientProvider>));
+  await settle();
+  await click(copy.choose);
+  const trigger = container.querySelector(`[role="combobox"][aria-label="${copy.connection}"]`)!;
+  flushSync(() => trigger.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true })));
+  await settle();
+  const choices = [...document.querySelectorAll<HTMLElement>('[role="option"]')];
+  expect(choices.map(choice => choice.textContent)).toContain(copy.personal);
+  expect(choices.map(choice => choice.textContent)).toContain(copy.shared);
+  expect(choices.map(choice => choice.textContent)).toContain(copy.sharedKey);
+  expect(choices.find(choice => choice.textContent?.includes("Expired account"))?.getAttribute("aria-disabled")).toBe("true");
+  flushSync(() => choices.find(choice => choice.textContent === copy.personal)!.click());
+  await settle();
+  expect(document.querySelector('[role="dialog"]')?.textContent).toContain(copy.personal);
+  expect(onChange).not.toHaveBeenCalled();
+  await click(copy.save);
+  expect(onChange).toHaveBeenCalledExactlyOnceWith({ provider: "openai", method: "api_key", mode: "delegated", connectionId: personal.id, grantId: personal.grantId });
 });
 
 it("opens provider setup directly when connecting from the advanced mode", async () => {
@@ -163,7 +202,7 @@ it("offers Pi account selection before choosing its required model", async () =>
 });
 
 it.each(["openai", "anthropic", "google", "openrouter"] as const)("keeps a matching saved Pi %s API-key account selectable", async provider => {
-  const saved = account({ provider, method: "api_key", name: "Pi provider account", status: "connected" });
+  const saved = account({ provider, method: "api_key", name: "Pi provider account", accountLabel: "avery@example.test", status: "connected" });
   mocks.list.mockResolvedValue({ currentUserId: "owner", connections: [saved], canManageConnections: true });
   flushSync(() => root.render(<QueryClientProvider client={client}>
     <AiConnectionField companyId="company" agentId="agent" agentName="Pi" adapterType="pi_local" model={`${provider}/provider-model`}
@@ -174,6 +213,7 @@ it.each(["openai", "anthropic", "google", "openrouter"] as const)("keeps a match
   expect(container.textContent).not.toContain("incompatible");
   expect(container.textContent).not.toContain("does not support");
   const trigger = container.querySelector('[role="combobox"][aria-label="Connection"]')!;
+  expect(trigger.getAttribute("title")).toBe("Pi provider account · API key · Personal · avery@example.test");
   flushSync(() => trigger.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true })));
   await settle();
   const choice = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(node => node.textContent?.includes("Pi provider account"));

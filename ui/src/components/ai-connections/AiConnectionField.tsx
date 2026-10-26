@@ -15,6 +15,7 @@ import { AiConnectionSelect } from "./AiConnectionSelect";
 import { AiProviderSetup } from "./AiProviderSetup";
 import { AiConnectionCredentialStep } from "./AiConnectionCredentialStep";
 import { AiConnectionLegacyNotice } from "./AiConnectionManagement";
+import { aiConnectionDisplayLabel } from "./model";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -91,6 +92,11 @@ export function AiConnectionField({
     enabled: Boolean(provider),
   });
   const personalDefault = accounts.data?.connections.find((account) => account.provider === provider && account.isDefault && account.ownership === "personal" && account.ownerUserId === accounts.data.currentUserId);
+  const pendingAccount = pendingAdoption?.mode === "responsible_user"
+    ? personalDefault
+    : pendingAdoption && pendingAdoption.mode !== "router"
+      ? accounts.data?.connections.find(account => account.id === pendingAdoption.connectionId && account.grantId === pendingAdoption.grantId)
+      : undefined;
   const selectDefault = useMutation({
     mutationFn: async (result: NonNullable<typeof savedAccount>) => {
       // Reconnect retains the existing default and its access. A new account
@@ -178,10 +184,8 @@ export function AiConnectionField({
           </DialogHeader>
           {pendingAdoption?.mode !== "router" && <p className="text-sm">
             {pendingAdoption?.mode === "responsible_user"
-              ? t("providerSetup.accounts.defaultExplanation", { name: accounts.data?.connections.find((account) => account.isDefault && account.provider === provider)?.name ?? t("providerSetup.accounts.notConnected") })
-              : accounts.data?.connections.find(
-                  (account) => account.id === pendingAdoption?.connectionId,
-                )?.name}
+              ? t("providerSetup.accounts.defaultExplanation", { name: pendingAccount ? aiConnectionDisplayLabel(pendingAccount) : t("providerSetup.accounts.notConnected") })
+              : pendingAccount && aiConnectionDisplayLabel(pendingAccount)}
           </p>}
           {pendingAdoption?.mode !== "router" && <p className="text-xs text-muted-foreground">
             {t("providerSetup.accounts.adoptWarning")}
