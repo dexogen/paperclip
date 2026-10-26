@@ -1047,8 +1047,30 @@ Costs.tsx are pruned; no exception is added. Child subscription/quota/finance an
 accounting-recovery cards remain separate work. These mocked checks do not prove
 live billing, provider quota or budget enforcement.
 
+The recent-activity slice translates four owners: ActivityRow (both layouts),
+ActivityList, IssueReferenceActivitySummary and the display branch of
+`formatActivityVerb`. Its fourth translator defaults to English; the two
+AuditFeed consumers and `formatIssueActivityAction` retain their legacy output.
+The independent editorial/source reviewer examined all 163 new families (169 EN,
+181 RU forms). Three proposed wording fixes were applied before verification;
+12 existing status/priority contexts were rechecked. Unknown action fallback,
+raw user/provider content, event selection, reference IDs and row order remain
+unchanged. Reference keys now use canonical added/removed IDs.
+
+Two genuine regressions failed before implementation. The complete four-suite
+run then passes all 48 tests without skips, including both row layouts, reference
+DOM/focus, named identities, raw markup, relation counts 1/2/5/21 and unchanged
+AuditFeed/Dashboard consumers. UI typecheck, build and token gates pass. Only
+three resolved baseline entries in the list/reference owners are removed;
+no exception or new baseline entry is added. Final strict audit passes with
+7,768 reviewed families, zero actionable findings and 15,116 baseline entries.
+Map and diff checks also pass. The static baseline did not capture
+the old event verb table, so its small decrease is not the coverage count.
+This scope does not claim full AuditFeed/IssueDetail history translation or live
+API, event-stream, privacy or provider acceptance.
+
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment schema/remaining backend copy, activity and cost cards,
+workspace pages, environment schema/remaining backend copy, full audit/history and cost cards,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

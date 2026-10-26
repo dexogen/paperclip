@@ -383,8 +383,18 @@ and legend nodes, focus, task/run links, query scope, limits and explicit captio
 overrides. Run deduplication, leader-only polling, date buckets, recovered-run
 aggregation, chart geometry, raw error codes and smoke path IDs remain unchanged.
 The focused component suites use mocked APIs; they do not prove live polling,
-provider health or translation of the recent-activity feed, audit pages and the
-optional run transcript surface.
+provider health or translation of audit pages and the optional run transcript
+surface.
+
+The recent-activity row, refreshed list and reference summary translate their own
+captions at render time. `formatActivityVerb` accepts a fourth translator and
+keeps fixed English when it is omitted; `formatIssueActivityAction` remains the
+legacy English API. Raw event selection, actor identities, names, reference IDs,
+links and counts remain unchanged. Named relations and count messages have
+separate whole-message forms. EN/RU/EN checks preserve row/reference DOM and focus,
+including explicit English list-label overrides. The shared summary's own ARIA
+labels also update in IssueDetail; this does not translate that entire history or
+the AuditFeed host. No live permissions or event-stream acceptance is claimed.
 
 The GitHub setup slice translates the shared OAuth shell, retained-draft recovery,
 access summaries, advanced token controls and owned URL/handoff failures. Local

@@ -9879,5 +9879,228 @@
     "sandboxProviderProbePassed": "Sandbox provider \"{{provider}}\" probe passed.",
     "sandboxProviderProbeFailed": "Sandbox provider \"{{provider}}\" probe failed.",
     "fakeSandboxReady": "Fake sandbox provider is ready for image {{image}}."
+  },
+  "activityUi": {
+    "verbs": {
+      "case": {
+        "created": "created",
+        "updated": "updated",
+        "fields_changed": "updated details on",
+        "status_changed": "changed status on",
+        "issue_linked": "linked a task to",
+        "issue_unlinked": "unlinked a task from",
+        "child_linked": "linked a child to",
+        "attachment_added": "attached a file to",
+        "label_added": "added a label to",
+        "label_removed": "removed a label from",
+        "document_revised": "updated a document on",
+        "handoff_requested": "requested a handoff for",
+        "handoff_applied": "handed off",
+        "handoff_delivered": "delivered a handoff for",
+        "handoff_retry_requested": "retried a handoff for",
+        "handoff_cancelled": "cancelled a handoff for",
+        "handoff_completed": "completed"
+      },
+      "issue": {
+        "created": "created",
+        "updated": "updated",
+        "read_marked": "read",
+        "read_unmarked": "marked unread",
+        "checked_out": "checked out",
+        "released": "released",
+        "comment_added": "commented on",
+        "comment_cancelled": "cancelled a queued comment on",
+        "queued_comment_edited": "edited a queued comment on",
+        "queued_comments_reordered": "reordered queued comments on",
+        "queued_comment_discarded": "discarded a queued comment on",
+        "comment_deleted": "deleted a comment on",
+        "attachment_added": "attached file to",
+        "attachment_removed": "removed attachment from",
+        "document_created": "created document for",
+        "document_updated": "updated document on",
+        "document_locked": "locked document on",
+        "document_unlocked": "unlocked document on",
+        "document_deleted": "deleted document from",
+        "monitor_scheduled": "scheduled monitor on",
+        "monitor_triggered": "triggered monitor for",
+        "monitor_cleared": "cleared monitor on",
+        "monitor_skipped": "skipped monitor for",
+        "monitor_exhausted": "exhausted monitor on",
+        "monitor_recovery_wake_queued": "queued monitor recovery for",
+        "monitor_recovery_issue_created": "created monitor recovery for",
+        "monitor_escalated_to_board": "escalated monitor for",
+        "commented": "commented on",
+        "deleted": "deleted",
+        "successful_run_handoff_required": "flagged missing next step on",
+        "successful_run_handoff_resolved": "recorded next step chosen on",
+        "successful_run_handoff_escalated": "escalated missing next step on",
+        "accepted_plan_decomposition_updated": "updated accepted-plan decomposition on",
+        "recovery_action_opened": "opened a recovery action on",
+        "workspace_recovered": "recovered saved work for",
+        "workspace_recovery_requested": "requested workspace recovery for",
+        "recovery_action_resolved": "resolved the recovery action on",
+        "recovery_action_escalated": "escalated the recovery action on",
+        "thread_interaction_created": "asked for a decision on",
+        "thread_interaction_accepted": "accepted the request on",
+        "thread_interaction_rejected": "rejected the request on",
+        "thread_interaction_answered": "answered the request on",
+        "thread_interaction_withdrawn": "withdrew the request on",
+        "thread_interaction_cancelled": "cancelled the request on",
+        "thread_interaction_skipped": "skipped the request on",
+        "thread_interaction_dismissed": "deferred the request on",
+        "thread_interaction_expired": "expired the request on",
+        "thread_interaction_item_verdicts_submitted": "submitted verdicts on",
+        "stalled_review_decided": "recorded a review verdict on"
+      },
+      "agent": {
+        "created": "created",
+        "updated": "updated",
+        "paused": "paused",
+        "resumed": "resumed",
+        "error_cleared": "cleared error on",
+        "terminated": "terminated",
+        "key_created": "created API key for",
+        "budget_updated": "updated budget for",
+        "runtime_session_reset": "reset session for"
+      },
+      "heartbeat": {
+        "invoked": "invoked heartbeat for",
+        "cancelled": "cancelled heartbeat for",
+        "output_stale_source_resolved": "system-folded stale run on",
+        "output_stale_recovery_recursion_refused": "refused recovery-on-recovery for"
+      },
+      "approval": {
+        "created": "requested approval",
+        "approved": "approved",
+        "rejected": "rejected"
+      },
+      "project": {
+        "created": "created",
+        "updated": "updated",
+        "deleted": "deleted"
+      },
+      "goal": {
+        "created": "created",
+        "updated": "updated",
+        "deleted": "deleted"
+      },
+      "cost": {
+        "reported": "reported cost for",
+        "recorded": "recorded cost for"
+      },
+      "company": {
+        "created": "created organization",
+        "updated": "updated organization",
+        "archived": "archived",
+        "reactivated": "reactivated",
+        "budget_updated": "updated budget for"
+      },
+      "audit": {
+        "exported": "exported the agent audit log for"
+      },
+      "tool_app": {
+        "connected": "connected",
+        "oauth_connected": "connected credentials for",
+        "oauth_failed": "failed to connect credentials for",
+        "oauth_access_finalized": "finished credential access for",
+        "finished": "finished setup for",
+        "reconnected": "reconnected"
+      },
+      "tool_connection": {
+        "created": "created",
+        "updated": "updated",
+        "archived": "removed",
+        "catalog_refresh": "refreshed actions for",
+        "installs_synced": "changed agent installs for",
+        "install_access_extended": "extended agent access for",
+        "grant_audience_replaced": "changed human access for",
+        "grant_added": "added credentials to",
+        "grant_revoked": "revoked credentials from",
+        "grant_delegated": "delegated credentials for",
+        "grant_delegation_revoked": "revoked credential delegation for"
+      }
+    },
+    "recent": "Recent activity",
+    "actor": {
+      "system": "System",
+      "board": "Board",
+      "unknown": "Unknown",
+      "you": "You",
+      "user": "user {{id}}",
+      "agent": "agent"
+    },
+    "subject": {
+      "task": "Task"
+    },
+    "reference": {
+      "task": "task"
+    },
+    "references": {
+      "added": "Added references",
+      "removed": "Removed references"
+    },
+    "value": {
+      "none": "none"
+    },
+    "status": {
+      "fromTo": "changed status from {{from}} to {{to}} on",
+      "to": "changed status to {{to}} on"
+    },
+    "priority": {
+      "fromTo": "changed priority from {{from}} to {{to}} on",
+      "to": "changed priority to {{to}} on"
+    },
+    "review": {
+      "approve": "approved the review on",
+      "requestChanges": "requested changes on the review on",
+      "sendBack": "sent the review back to work on"
+    },
+    "outcome": {
+      "acceptConfirmation": "approved the request on",
+      "acceptSuggestions": "accepted the task suggestions on",
+      "acceptAnswers": "accepted the answers on",
+      "rejectConfirmation": "rejected the request on",
+      "rejectSuggestions": "declined the task suggestions on",
+      "rejectQuestions": "declined the questions on"
+    },
+    "gateway": {
+      "action": "an app action",
+      "tested": "tested {{tool}} on",
+      "used": "used {{tool}} on",
+      "testStarted": "started a test of {{tool}} on",
+      "allowed": "was allowed to use {{tool}} on",
+      "denied": "was blocked from using {{tool}} on",
+      "requested": "asked to use {{tool}} on",
+      "sessionCreated": "opened an app session for",
+      "sessionRejected": "was blocked from opening an app session for",
+      "discovery": "discovered app actions for"
+    },
+    "blockers": {
+      "addNamed": "added blocker {{name}} to",
+      "addCount_one": "added {{count}} blocker to",
+      "addCount_other": "added {{count}} blockers to",
+      "removeNamed": "removed blocker {{name}} from",
+      "removeCount_one": "removed {{count}} blocker from",
+      "removeCount_other": "removed {{count}} blockers from",
+      "updated": "updated blockers on"
+    },
+    "reviewers": {
+      "addNamed": "added reviewer {{name}} to",
+      "addCount_one": "added {{count}} reviewer to",
+      "addCount_other": "added {{count}} reviewers to",
+      "removeNamed": "removed reviewer {{name}} from",
+      "removeCount_one": "removed {{count}} reviewer from",
+      "removeCount_other": "removed {{count}} reviewers from",
+      "updated": "updated reviewers on"
+    },
+    "approvers": {
+      "addNamed": "added approver {{name}} to",
+      "addCount_one": "added {{count}} approver to",
+      "addCount_other": "added {{count}} approvers to",
+      "removeNamed": "removed approver {{name}} from",
+      "removeCount_one": "removed {{count}} approver from",
+      "removeCount_other": "removed {{count}} approvers from",
+      "updated": "updated approvers on"
+    }
   }
 }

@@ -1,5 +1,6 @@
 import type { Agent } from "@paperclipai/shared";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
 import { formatActivityVerb, formatIssueActivityAction } from "./activity-format";
 
 describe("activity formatting", () => {
@@ -161,4 +162,70 @@ describe("activity formatting", () => {
       "Run finished without a next step - recovery escalated",
     );
   });
+});
+
+
+describe("localized activity presentation", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
+
+  it("translates selected event semantics while legacy consumers stay in English", async () => {
+    await i18n.changeLanguage("ru");
+    const ru = i18n.getFixedT("ru");
+    const settled = { status: "in_review", externalConversationState: "waiting", _previous: { status: "in_progress" } };
+    expect(formatActivityVerb("issue.updated", settled, {}, ru)).toBe("изменил статус с «В работе» на «Ожидает» у");
+    expect(formatActivityVerb("issue.updated", settled)).toBe("changed status from in progress to idle on");
+    expect(formatIssueActivityAction("issue.updated", settled)).toBe("changed the status from in progress to idle");
+    expect(formatActivityVerb("issue.thread_interaction_accepted", { interactionKind: "request_confirmation" }, {}, ru)).toBe("подтвердил запрос по");
+    expect(formatActivityVerb("issue.thread_interaction_accepted", { interactionKind: "suggest_tasks" }, {}, ru)).toBe("принял предложенные задачи по");
+    expect(formatActivityVerb("issue.thread_interaction_accepted", { interactionKind: "future_kind" }, {}, ru)).toBe("принял запрос по");
+    expect(formatActivityVerb("issue.stalled_review_decided", { action: "send_back" }, {}, ru)).toBe("вернул в работу после проверки");
+    expect(formatActivityVerb("issue.updated", { priority: "future_priority" }, {}, ru)).toBe("изменил приоритет на «future priority» у");
+    expect(formatActivityVerb("future.action_name", null, {}, ru)).toBe("future action name");
+    expect(formatActivityVerb("toString", null, {}, ru)).toBe("toString");
+    expect(formatActivityVerb("issue.thread_interaction_accepted", { interactionKind: "toString" }, {}, ru)).toBe("принял запрос по");
+  });
+  it("keeps named participants literal and uses whole relation count messages", () => {
+    const ru = i18n.getFixedT("ru");
+    const options = { userProfileMap: new Map([["named-you", { label: "You", image: null }], ["named-board", { label: "Board <em>raw</em>", image: null }]]), currentUserId: "current-user" };
+    const participant = (userId: string) => ({ type: "user", userId });
+    expect(formatActivityVerb("issue.reviewers_updated", { addedParticipants: [participant("named-you")] }, options, ru)).toBe('добавил проверяющего «You» для');
+    expect(formatActivityVerb("issue.approvers_updated", { removedParticipants: [participant("named-board")] }, options, ru)).toBe('убрал согласующего «Board <em>raw</em>» у');
+    expect(formatActivityVerb("issue.reviewers_updated", { addedParticipants: [participant("current-user")] }, options, ru)).toBe('добавил проверяющего «Вы» для');
+    expect(formatActivityVerb("issue.reviewers_updated", { addedParticipants: [participant("local-board")] }, options, ru)).toBe('добавил проверяющего «Оператор» для');
+    const nouns = [
+      [2, "блокирующие задачи", "проверяющих", "согласующих"],
+      [5, "блокирующих задач", "проверяющих", "согласующих"],
+      [21, "блокирующую задачу", "проверяющего", "согласующего"],
+    ] as const;
+    for (const [count, blocker, reviewer, approver] of nouns) {
+      const references = Array.from({ length: count }, (_, i) => ({ id: `issue-${i}`, identifier: `TASK-${i}` }));
+      const participants = Array.from({ length: count }, (_, i) => participant(`user-${i}`));
+      for (const [action, added, removed, values, noun] of [
+        ["issue.blockers_updated", "addedBlockedByIssues", "removedBlockedByIssues", references, blocker],
+        ["issue.reviewers_updated", "addedParticipants", "removedParticipants", participants, reviewer],
+        ["issue.approvers_updated", "addedParticipants", "removedParticipants", participants, approver],
+      ] as const) {
+        expect(formatActivityVerb(action, { [added]: values, [removed]: [] }, options, ru)).toBe(`добавил ${count} ${noun} для`);
+        expect(formatActivityVerb(action, { [added]: [], [removed]: values }, options, ru)).toBe(`убрал ${count} ${noun} у`);
+      }
+    }
+    const details = { addedBlockedByIssues: [{ identifier: "TASK-1", title: "unselected raw title" }], removedBlockedByIssues: [] };
+    expect(formatActivityVerb("issue.blockers_updated", details, options, ru)).toBe('добавил блокирующую задачу «TASK-1» для');
+    expect(formatActivityVerb("issue.reviewers_updated", { addedParticipants: [participant("a")], removedParticipants: [participant("b")] }, options, ru)).toBe("обновил список проверяющих для");
+    expect(formatIssueActivityAction("issue.blockers_updated", details, options)).toBe("added blocker TASK-1");
+  });
+
+  it("preserves tool provenance, raw normalization and source payloads", () => {
+    const ru = i18n.getFixedT("ru");
+    const details = { tool: "Provider.<strong>raw_name</strong>", upstreamToolName: "ignored", source: "test" };
+    const before = JSON.stringify(details);
+    expect(formatActivityVerb("tool_gateway.call_completed", details, {}, ru)).toBe('проверил «Provider <strong>raw name</strong>» для');
+    expect(formatActivityVerb("tool_gateway.call_completed", { upstreamToolName: "an app action" }, {}, ru)).toBe('использовал «an app action» для');
+    expect(formatActivityVerb("tool_gateway.call_completed", {}, {}, ru)).toBe('использовал «действие приложения» для');
+    expect(formatActivityVerb("tool_gateway.call_allowed", { source: "test" }, {}, ru)).toBe('начал проверку «действие приложения» для');
+    expect(formatActivityVerb("tool_gateway.call_allowed", {}, {}, ru)).toBe('получил разрешение использовать «действие приложения» для');
+    expect(formatActivityVerb("tool_gateway.call_completed", details)).toBe("tested Provider <strong>raw name</strong> on");
+    expect(JSON.stringify(details)).toBe(before);
+  });
+
 });

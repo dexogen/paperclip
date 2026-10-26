@@ -10391,5 +10391,240 @@
     "sandboxProviderProbePassed": "Проверка провайдера песочницы «{{provider}}» пройдена.",
     "sandboxProviderProbeFailed": "Проверка провайдера песочницы «{{provider}}» не пройдена.",
     "fakeSandboxReady": "Тестовый провайдер песочницы готов к работе с образом {{image}}."
+  },
+  "activityUi": {
+    "verbs": {
+      "case": {
+        "created": "создал",
+        "updated": "обновил",
+        "fields_changed": "обновил сведения о",
+        "status_changed": "изменил статус у",
+        "issue_linked": "связал задачу с",
+        "issue_unlinked": "убрал связь задачи с",
+        "child_linked": "связал дочерний элемент с",
+        "attachment_added": "прикрепил файл к",
+        "label_added": "добавил метку к",
+        "label_removed": "убрал метку у",
+        "document_revised": "обновил документ у",
+        "handoff_requested": "запросил передачу для",
+        "handoff_applied": "передал",
+        "handoff_delivered": "доставил задание получателю по",
+        "handoff_retry_requested": "повторил передачу для",
+        "handoff_cancelled": "отменил передачу для",
+        "handoff_completed": "завершил"
+      },
+      "issue": {
+        "created": "создал",
+        "updated": "обновил",
+        "read_marked": "прочитал",
+        "read_unmarked": "снял отметку о прочтении у",
+        "checked_out": "взял в работу",
+        "released": "освободил",
+        "comment_added": "добавил комментарий к",
+        "comment_cancelled": "отменил комментарий в очереди для",
+        "queued_comment_edited": "изменил комментарий в очереди для",
+        "queued_comments_reordered": "изменил порядок комментариев в очереди для",
+        "queued_comment_discarded": "убрал комментарий из очереди для",
+        "comment_deleted": "удалил комментарий у",
+        "attachment_added": "прикрепил файл к",
+        "attachment_removed": "убрал вложение у",
+        "document_created": "создал документ для",
+        "document_updated": "обновил документ у",
+        "document_locked": "заблокировал документ у",
+        "document_unlocked": "разблокировал документ у",
+        "document_deleted": "удалил документ у",
+        "monitor_scheduled": "запланировал мониторинг для",
+        "monitor_triggered": "запустил проверку мониторинга для",
+        "monitor_cleared": "сбросил мониторинг для",
+        "monitor_skipped": "пропустил проверку мониторинга для",
+        "monitor_exhausted": "исчерпал попытки мониторинга для",
+        "monitor_recovery_wake_queued": "поставил восстановление мониторинга в очередь для",
+        "monitor_recovery_issue_created": "создал задачу восстановления мониторинга для",
+        "monitor_escalated_to_board": "передал оператору проблему мониторинга для",
+        "commented": "добавил комментарий к",
+        "deleted": "удалил",
+        "successful_run_handoff_required": "отметил отсутствие следующего шага у",
+        "successful_run_handoff_resolved": "зафиксировал выбор следующего шага для",
+        "successful_run_handoff_escalated": "передал на рассмотрение отсутствие следующего шага у",
+        "accepted_plan_decomposition_updated": "обновил разбиение принятого плана на задачи для",
+        "recovery_action_opened": "создал действие по восстановлению для",
+        "workspace_recovered": "восстановил сохранённую работу для",
+        "workspace_recovery_requested": "запросил восстановление рабочего пространства для",
+        "recovery_action_resolved": "завершил действие по восстановлению для",
+        "recovery_action_escalated": "передал на рассмотрение действие по восстановлению для",
+        "thread_interaction_created": "запросил решение по",
+        "thread_interaction_accepted": "принял запрос по",
+        "thread_interaction_rejected": "отклонил запрос по",
+        "thread_interaction_answered": "ответил на запрос по",
+        "thread_interaction_withdrawn": "отозвал запрос по",
+        "thread_interaction_cancelled": "отменил запрос по",
+        "thread_interaction_skipped": "пропустил запрос по",
+        "thread_interaction_dismissed": "отложил запрос по",
+        "thread_interaction_expired": "закрыл запрос с истёкшим сроком по",
+        "thread_interaction_item_verdicts_submitted": "отправил решения по",
+        "stalled_review_decided": "зафиксировал решение проверки по"
+      },
+      "agent": {
+        "created": "создал",
+        "updated": "обновил",
+        "paused": "приостановил",
+        "resumed": "возобновил работу",
+        "error_cleared": "сбросил ошибку у",
+        "terminated": "завершил работу",
+        "key_created": "создал ключ API для",
+        "budget_updated": "обновил бюджет для",
+        "runtime_session_reset": "сбросил сеанс для"
+      },
+      "heartbeat": {
+        "invoked": "запустил рабочий цикл для",
+        "cancelled": "отменил рабочий цикл для",
+        "output_stale_source_resolved": "закрыл устаревший запуск у",
+        "output_stale_recovery_recursion_refused": "отклонил повторное восстановление самого восстановления для"
+      },
+      "approval": {
+        "created": "запросил согласование",
+        "approved": "согласовал",
+        "rejected": "отклонил"
+      },
+      "project": {
+        "created": "создал",
+        "updated": "обновил",
+        "deleted": "удалил"
+      },
+      "goal": {
+        "created": "создал",
+        "updated": "обновил",
+        "deleted": "удалил"
+      },
+      "cost": {
+        "reported": "сообщил о расходах для",
+        "recorded": "записал расходы для"
+      },
+      "company": {
+        "created": "создал организацию",
+        "updated": "обновил организацию",
+        "archived": "архивировал",
+        "reactivated": "возобновил работу",
+        "budget_updated": "обновил бюджет для"
+      },
+      "audit": {
+        "exported": "экспортировал журнал аудита агента для"
+      },
+      "tool_app": {
+        "connected": "подключил",
+        "oauth_connected": "подключил учётные данные для",
+        "oauth_failed": "не смог подключить учётные данные для",
+        "oauth_access_finalized": "завершил настройку доступа к учётным данным для",
+        "finished": "завершил настройку",
+        "reconnected": "подключил заново"
+      },
+      "tool_connection": {
+        "created": "создал",
+        "updated": "обновил",
+        "archived": "убрал",
+        "catalog_refresh": "обновил список действий для",
+        "installs_synced": "изменил подключения агентов для",
+        "install_access_extended": "расширил доступ агентов к",
+        "grant_audience_replaced": "изменил доступ пользователей к",
+        "grant_added": "добавил учётные данные для",
+        "grant_revoked": "отозвал учётные данные для",
+        "grant_delegated": "делегировал учётные данные для",
+        "grant_delegation_revoked": "отозвал делегирование учётных данных для"
+      }
+    },
+    "recent": "Последние действия",
+    "actor": {
+      "system": "Системный процесс",
+      "board": "Оператор",
+      "unknown": "Неизвестный участник",
+      "you": "Вы",
+      "user": "пользователь {{id}}",
+      "agent": "агент"
+    },
+    "subject": {
+      "task": "Задача"
+    },
+    "reference": {
+      "task": "задача"
+    },
+    "references": {
+      "added": "Добавленные ссылки",
+      "removed": "Удалённые ссылки"
+    },
+    "value": {
+      "none": "не задано"
+    },
+    "status": {
+      "fromTo": "изменил статус с «{{from}}» на «{{to}}» у",
+      "to": "изменил статус на «{{to}}» у"
+    },
+    "priority": {
+      "fromTo": "изменил приоритет с «{{from}}» на «{{to}}» у",
+      "to": "изменил приоритет на «{{to}}» у"
+    },
+    "review": {
+      "approve": "одобрил результат проверки по",
+      "requestChanges": "запросил изменения по результатам проверки по",
+      "sendBack": "вернул в работу после проверки"
+    },
+    "outcome": {
+      "acceptConfirmation": "подтвердил запрос по",
+      "acceptSuggestions": "принял предложенные задачи по",
+      "acceptAnswers": "принял ответы по",
+      "rejectConfirmation": "отклонил запрос по",
+      "rejectSuggestions": "отклонил предложенные задачи по",
+      "rejectQuestions": "отклонил вопросы по"
+    },
+    "gateway": {
+      "action": "действие приложения",
+      "tested": "проверил «{{tool}}» для",
+      "used": "использовал «{{tool}}» для",
+      "testStarted": "начал проверку «{{tool}}» для",
+      "allowed": "получил разрешение использовать «{{tool}}» для",
+      "denied": "не получил разрешение использовать «{{tool}}» для",
+      "requested": "запросил использование «{{tool}}» для",
+      "sessionCreated": "открыл сеанс приложения для",
+      "sessionRejected": "не получил разрешение открыть сеанс приложения для",
+      "discovery": "обнаружил действия приложения для"
+    },
+    "blockers": {
+      "addNamed": "добавил блокирующую задачу «{{name}}» для",
+      "addCount_one": "добавил {{count}} блокирующую задачу для",
+      "addCount_few": "добавил {{count}} блокирующие задачи для",
+      "addCount_many": "добавил {{count}} блокирующих задач для",
+      "addCount_other": "добавил {{count}} блокирующей задачи для",
+      "removeNamed": "убрал блокирующую задачу «{{name}}» у",
+      "removeCount_one": "убрал {{count}} блокирующую задачу у",
+      "removeCount_few": "убрал {{count}} блокирующие задачи у",
+      "removeCount_many": "убрал {{count}} блокирующих задач у",
+      "removeCount_other": "убрал {{count}} блокирующей задачи у",
+      "updated": "обновил блокирующие задачи для"
+    },
+    "reviewers": {
+      "addNamed": "добавил проверяющего «{{name}}» для",
+      "addCount_one": "добавил {{count}} проверяющего для",
+      "addCount_few": "добавил {{count}} проверяющих для",
+      "addCount_many": "добавил {{count}} проверяющих для",
+      "addCount_other": "добавил {{count}} проверяющего для",
+      "removeNamed": "убрал проверяющего «{{name}}» у",
+      "removeCount_one": "убрал {{count}} проверяющего у",
+      "removeCount_few": "убрал {{count}} проверяющих у",
+      "removeCount_many": "убрал {{count}} проверяющих у",
+      "removeCount_other": "убрал {{count}} проверяющего у",
+      "updated": "обновил список проверяющих для"
+    },
+    "approvers": {
+      "addNamed": "добавил согласующего «{{name}}» для",
+      "addCount_one": "добавил {{count}} согласующего для",
+      "addCount_few": "добавил {{count}} согласующих для",
+      "addCount_many": "добавил {{count}} согласующих для",
+      "addCount_other": "добавил {{count}} согласующего для",
+      "removeNamed": "убрал согласующего «{{name}}» у",
+      "removeCount_one": "убрал {{count}} согласующего у",
+      "removeCount_few": "убрал {{count}} согласующих у",
+      "removeCount_many": "убрал {{count}} согласующих у",
+      "removeCount_other": "убрал {{count}} согласующего у",
+      "updated": "обновил список согласующих для"
+    }
   }
 }

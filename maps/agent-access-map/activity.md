@@ -79,6 +79,12 @@ denied writes, extra path segments, and company audit routes. With a real
 sandbox agent, read an authorized issue's activity, then verify denial for an
 inaccessible issue, another company, and company-wide audit.
 
+The [activity display regression](../../ui/src/components/ActivityRow.locale.test.tsx)
+keeps actor/resource IDs, raw event data and destinations stable across language
+changes. [Formatting tests](../../ui/src/lib/activity-format.test.ts) keep canonical
+event selection and existing English consumers intact. These read-only UI changes
+add no endpoint, grant or write; they do not establish the live policy checks above.
+
 Gaps: Audit export and raw activity creation have extra restrictions; do not
 equate them with issue activity reading. Live sandbox access remains unverified.
 
