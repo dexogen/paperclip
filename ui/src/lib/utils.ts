@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { i18n, t } from "../i18n";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -146,14 +147,14 @@ export function providerDisplayName(provider: string): string {
   return map[provider.toLowerCase()] ?? provider;
 }
 
-export function billingTypeDisplayName(billingType: BillingType): string {
+export function billingTypeDisplayName(billingType: BillingType, t: TFunction = i18n.getFixedT("en")): string {
   const map: Record<BillingType, string> = {
-    metered_api: "Metered API",
-    subscription_included: "Subscription",
-    subscription_overage: "Subscription overage",
-    credits: "Credits",
-    fixed: "Fixed",
-    unknown: "Unknown",
+    metered_api: t("costsUi.billingApi"),
+    subscription_included: t("costsUi.billingSubscription"),
+    subscription_overage: t("costsUi.billingOverage"),
+    credits: t("costsUi.billingCredits"),
+    fixed: t("costsUi.billingFixed"),
+    unknown: t("costsUi.billingUnknown"),
   };
   return map[billingType];
 }

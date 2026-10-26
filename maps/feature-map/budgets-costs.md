@@ -52,6 +52,14 @@ Preconditions: follow the [baseline](./README.md#before-driving-a-journey). Use 
 
 Automated: [costs service](../../server/src/__tests__/costs-service.test.ts) covers cost contracts; [embedded costs UI](../../ui/src/pages/Costs.test.tsx) has narrow Audit-host coverage.
 
+Locale cases in the Costs UI suite preserve custom date inputs and request bounds,
+expanded model rows, raw names, focus and a pending budget save through EN/RU/EN.
+Switch language while only the first custom date is set, then complete the period
+and check the same report bounds. In a disposable budget, retain a dirty value
+through a failed save and confirm that language changes send no extra mutation.
+The component checks use mocked APIs; they do not prove live billing or budget
+enforcement and do not qualify all child-card translations.
+
 Manual: Inspect a known fixture run and reconcile recorded spend with the chosen
 period and resource. Switch the report period/company and inspect the **By
 project** breakdown; it is not a project-selector filter. Reload and check empty

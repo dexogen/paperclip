@@ -403,6 +403,16 @@ boundaries. They do not establish a live GitHub grant, callback or tool invocati
 Completion-toast locale and stable step keys are source-reviewed; no dedicated
 runtime assertions are claimed for those two details.
 
+The Costs page translates its overview, report periods, table headings, budget
+sections, finance summaries and owned failures. The active page passes a translator
+to date-preset and billing-type helpers; older callers retain fixed English and
+the existing preset-label constant. Query identities, date boundaries, amount
+calculations, raw names and pending budget writes are unchanged. Component checks
+preserve custom dates, focus, expanded model rows, exact cents and failed drafts
+through EN/RU/EN. They use mocked APIs and do not qualify live billing or budget
+enforcement. Subscription, quota, finance-detail and accounting-recovery child
+cards retain separate translation work.
+
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
@@ -410,8 +420,8 @@ pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.
 An English/Russian key match is not a claim of complete application localization.
 Formatting helpers update when their host component renders. Screens that do not
-yet subscribe to locale changes, such as Costs, may retain their
-previous display formatting until that next render.
+yet subscribe to locale changes may retain their previous display formatting
+until that next render.
 
 The initial foundation adapts the 19-file diff from
 [upstream PR #17546](https://github.com/paperclipai/paperclip/pull/17546), head
