@@ -215,6 +215,20 @@ remains literal. Legacy trust helpers retain their English defaults. Component
 checks include the existing email setup consumer; live permission enforcement
 requires separate verification.
 
+The bulk agent roster and editor translate selection, filters, model/connection
+summaries, validation and save receipts. Language changes preserve hidden selections,
+canonical harness order, open model drafts, pending saves and exact expected-value
+patches. Partial failures retry only failed agents; a lost response is read back
+before another write. Raw connection/model names are deduplicated before display,
+including names that match English defaults. Application errors translate when
+rendered; provider Error messages remain literal. Display helpers retain English
+defaults. The optional binding formatter changes only its four owned messages;
+its existing delegated status messages still use the current locale.
+
+Component tests cover both roster implementations and the real editor with mocked
+APIs. They do not certify backend authorization, conflict handling or persisted
+settings; the agent configuration map retains those live verification steps.
+
 The agent-channel list translates its captions and six known endpoint statuses.
 Provider brands, raw identity labels and the original display fallback for unknown
 statuses stay unchanged. Locale tests retain pending requests, links, independent
@@ -271,8 +285,8 @@ dynamic-key declarations in the detector configuration. Unknown lifecycle values
 are not treated as active phases. Component tests preserve drafts, focus, pending
 actions, selected revisions and exact payloads through EN/RU/EN changes. They do
 not establish live key authentication, arbitrary plugin behavior or provisioning.
-External invitations and bulk editing remain separate slices. The channel list
-is covered above; provider setup and delivery remain outside that slice.
+External invitations remain a separate slice. Bulk editing and the channel list
+are covered above; provider setup and delivery remain outside the channel slice.
 FileTree error/retry branches are also
 outside the active agent consumer's coverage.
 

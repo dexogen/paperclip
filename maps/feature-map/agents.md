@@ -80,6 +80,16 @@ validation, access checks, revisions and audit logging still apply. Live runs
 retain their existing settings; model changes can reset saved sessions. Connection
 adoption can require an explicit reset of existing sessions.
 
+The [roster locale cases](../../ui/src/pages/Agents.test.tsx) exercise both active
+layouts with hidden selections, canonical filter order and raw names. The
+[bulk editor cases](../../ui/src/components/agents/AgentBulkSettingsSheet.test.tsx)
+preserve an open model input, pending saves, exact connection/model patches,
+partial success and read-back after a lost response through EN/RU/EN changes.
+Owned errors update their language without another request; provider errors stay
+literal. These use mocked APIs. For browser acceptance, switch language while
+editing and saving, then perform the reload and conflict checks above; component
+results do not prove persistence or authorization.
+
 ### `organization`
 
 Use the roster’s organization view; `/org` redirects to the roster in the streamlined shell.

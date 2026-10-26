@@ -1,6 +1,16 @@
+import { i18n } from "@/i18n";
+import { getAdapterLabel } from "@/adapters/adapter-display-registry";
+import type { TFunction } from "i18next";
 import { agentRuntimeSettingsHarness, aiRuntimeConnectionBindingSchema, type Agent, type AiConnectionBinding, type AiConnectionList, type AiRuntimeConnectionBinding } from "@paperclipai/shared";
 
 export const bulkAgentHarness = (agent: Agent) => agentRuntimeSettingsHarness(agent.adapterType, agent.adapterConfig);
+export function bulkAgentHarnessLabel(harness: string, t: TFunction = i18n.getFixedT("en")) {
+  if (harness === "process") return t("agentConfigUi.process");
+  if (harness === "acpx_local") return t("agentConfigUi.retiredAcpx");
+  if (harness === "muse") return t("agentConfigUi.musePersonal");
+  return getAdapterLabel(harness);
+}
+
 export const agentDefaultModel = (agent: Agent) => typeof agent.adapterConfig.model === "string" ? agent.adapterConfig.model.trim() || null : null;
 export const agentConnection = (agent: Agent) => aiRuntimeConnectionBindingSchema.safeParse(agent.runtimeConfig.aiConnection).data;
 export const sameBinding = (a: AiRuntimeConnectionBinding | undefined, b: AiRuntimeConnectionBinding | undefined) => {
@@ -8,10 +18,10 @@ export const sameBinding = (a: AiRuntimeConnectionBinding | undefined, b: AiRunt
   return canonical(a) === canonical(b);
 };
 
-export function bulkAgentDisabledReason(agent: Agent): string | undefined {
-  if (["terminated", "pending_approval"].includes(agent.status)) return "This agent is not available for bulk edits";
-  if (agentConnection(agent)?.mode === "router") return "Edit connection pool members on the agent's configuration page";
-  if (!["codex_local", "claude_local", "gemini_local", "grok_local", "opencode_local", "hermes_local", "pi_local", "copilot_runtime", "cursor_local"].includes(bulkAgentHarness(agent))) return "Connection and model are managed externally";
+export function bulkAgentDisabledReason(agent: Agent, t: TFunction = i18n.getFixedT("en")): string | undefined {
+  if (["terminated", "pending_approval"].includes(agent.status)) return t("agentBulkUi.display.unavailable");
+  if (agentConnection(agent)?.mode === "router") return t("agentBulkUi.display.poolMembers");
+  if (!["codex_local", "claude_local", "gemini_local", "grok_local", "opencode_local", "hermes_local", "pi_local", "copilot_runtime", "cursor_local"].includes(bulkAgentHarness(agent))) return t("agentBulkUi.display.managedExternally");
 }
 
 export function resolveBulkConnection(binding: AiConnectionBinding | undefined, accounts: AiConnectionList) {
@@ -20,11 +30,11 @@ export function resolveBulkConnection(binding: AiConnectionBinding | undefined, 
     : c.id === binding?.connectionId && c.grantId === binding?.grantId);
 }
 
-export function bulkConnectionName(binding: AiRuntimeConnectionBinding | undefined, accounts?: AiConnectionList) {
-  if (!binding) return "Local credentials";
-  if (binding.mode === "router") return "Connection pool";
-  if (binding.mode === "responsible_user") return "Responsible user's default";
-  return accounts?.connections.find(c => c.id === binding.connectionId && c.grantId === binding.grantId)?.name ?? "Assigned connection";
+export function bulkConnectionName(binding: AiRuntimeConnectionBinding | undefined, accounts?: AiConnectionList, t: TFunction = i18n.getFixedT("en")) {
+  if (!binding) return t("agentBulkUi.display.localCredentials");
+  if (binding.mode === "router") return t("agentBulkUi.display.pool");
+  if (binding.mode === "responsible_user") return t("agentBulkUi.display.responsibleDefault");
+  return accounts?.connections.find(c => c.id === binding.connectionId && c.grantId === binding.grantId)?.name ?? t("agentBulkUi.display.assigned");
 }
 
 /** Bound probes and mutations; failures belong to individual agents. */
