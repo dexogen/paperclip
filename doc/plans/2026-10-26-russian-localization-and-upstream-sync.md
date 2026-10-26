@@ -681,8 +681,10 @@ parity does not establish full application coverage. Detector/sync tests pass
 47/47 and token gates pass. The first full type check found an incomplete test
 upload receipt, now fixed with the complete typed contract. A second check and
 build found an incomplete local Copilot asset installation. The verified installer
-recreated the ignored files from the pinned package; complete build/type checks
-are running again. Publication and live qualification remain pending. Split into
+recreated the ignored files from the pinned package. The complete `pnpm build`
+and `pnpm -r typecheck` then passed on checkpoint `1a2bae9c2`. This does not certify
+the later split trees or a complete fresh test suite. Publication and live
+qualification remain pending. Split into
 buildable run/recovery and chat/composer PRs below the repository's file limit.
 
 After chat, the remaining major packages are agent creation/configuration,
