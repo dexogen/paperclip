@@ -8140,5 +8140,102 @@
       "log": "Failed to load run log",
       "logMore": "Failed to load more run log"
     }
+  },
+  "agentToolsUi": {
+    "github": {
+      "title": "GitHub identity",
+      "loading": "Checking GitHub identity…",
+      "loadFailed": "Could not load GitHub identity",
+      "loadFailedHelp": "Paperclip could not verify this agent's current connection. Your existing setup was not changed.",
+      "dedicated": "Dedicated GitHub account",
+      "dedicatedHelp": "Used only by {{agentName}}. This dedicated connection takes precedence over the responsible person's GitHub.",
+      "responsible": "Use responsible person's GitHub",
+      "responsibleHelp": "At run start, Paperclip uses the personal GitHub connection of the person responsible for the task.",
+      "connectedAs": "Your account is connected as @{{login}}.",
+      "connected": "Your account is connected.",
+      "retry": "Retry",
+      "manageDedicated": "Manage GitHub identity",
+      "managePersonal": "Manage my GitHub",
+      "connectPersonal": "Connect my GitHub",
+      "useDedicated": "Use a dedicated account"
+    },
+    "install": {
+      "title": "Installed apps",
+      "description": "Installed apps load tools into {{agentName}}'s context on every run. Permitted-only apps do not add context cost.",
+      "explanation": "Has access means the app is permitted. Installed means its tools are added to this agent's runtime context.",
+      "empty": "No permitted apps yet. Bind an access profile to make apps available here.",
+      "label": "Install {{connectionName}} on {{agentName}}",
+      "saving": "Saving...",
+      "allHelp": "Installed from the app page for every agent. Remove the all-agents install there.",
+      "loadedHelp": "Loaded into this agent's runtime context.",
+      "hint": "Has access — tick to load its tools into this agent's context.",
+      "permissions": "Open permissions",
+      "notLoaded": "Permitted but not installed — tools will not appear in runs.",
+      "all": "Installed for all",
+      "installed": "Installed",
+      "permitted": "Permitted only",
+      "notPermitted": "Not permitted",
+      "failed": "Could not save",
+      "unsaved": "Unsaved changes",
+      "saved": "Saved"
+    },
+    "access": {
+      "loading": "Resolving effective access…",
+      "title": "Effective access",
+      "description": "This is exactly the tool set Paperclip will accept for <agent>{{agentName}}</agent>. Profile and policy edits are reflected within ~5 seconds. The agent's prompt can narrow this list but <restriction>cannot expand it</restriction> — everything else is blocked by default.",
+      "allowed": "Allowed tools",
+      "empty": "No tools are allowed for this agent. Bind a tool profile to grant access.",
+      "tool": "Tool",
+      "capability": "Capability",
+      "risk": "Risk",
+      "source": "Source",
+      "why": "Why these tools?",
+      "profiles": "Access profiles",
+      "check": "Check access",
+      "noProfiles": "No active profile applies to this agent, so it has no allowed tools.",
+      "organizationDefault": "Organization default",
+      "unavailable": "Unavailable tools",
+      "checking": "Checking tools…",
+      "allAllowed": "Every known tool this agent could name is allowed.",
+      "blockedHelp": "Tools the agent could name but Paperclip would block:",
+      "count_one": "{{count}} tool",
+      "count_other": "{{count}} tools",
+      "more_one": "+{{count}} more",
+      "more_other": "+{{count}} more"
+    },
+    "policy": {
+      "title": "Active policies",
+      "loading": "Loading policies…",
+      "empty": "No enabled policy currently mutates this agent's allow list.",
+      "label": "Policy #{{order}}: {{name}}",
+      "allow": "allow",
+      "block": "block",
+      "deny": "deny",
+      "requireApproval": "require approval",
+      "redact": "redact",
+      "rateLimit": "rate limit"
+    },
+    "risk": {
+      "unknown": "unknown",
+      "low": "low",
+      "medium": "medium",
+      "high": "high",
+      "critical": "critical",
+      "read": "read",
+      "write": "write",
+      "destructive": "destructive"
+    },
+    "capability": {
+      "readOnly": "read-only",
+      "write": "write",
+      "destructive": "destructive"
+    },
+    "error": {
+      "forbidden": "You do not have permission to view this. Tools & Access requires board/admin access.",
+      "unavailable": "Tools & Access isn't available on this server yet — try refreshing after the next deployment.",
+      "unknown": "Something went wrong.",
+      "title": "Could not load this view",
+      "retry": "Retry"
+    }
   }
 }
