@@ -345,13 +345,34 @@ problem requiring correction before accepting the Russian task journey; replacin
 the test query with English would not establish acceptance. Both attempts retained
 their original evidence and stopped their owned runtime, database, and listener.
 
-The next isolated translation slices cover task detail/properties and document/
-artifact side panels. They do not alter the frozen task-collection candidate. Full
+The search repair is published separately in
+[draft PR #6](https://github.com/dexogen/paperclip/pull/6), at
+`cd50089b9c09276506293ee75e82e03a7f20746f`. All four affected files passed 246
+tests; server TypeScript checking and 20 original-versus-candidate ASCII SQL
+comparisons passed. Unicode capability selection preserves existing databases.
+The recorded 10k-task timing run missed the 250 ms target; query plans and the
+limitation are in [SEARCH.md](../SEARCH.md#unicode-task-queries). The new real
+browser acceptance is still pending; the original failed result is retained.
+
+The task-detail/properties and common-editor slice adds 650 reviewed families.
+The combined catalog has 1,956 families, 2,000 English forms and 2,088 Russian
+forms. The baseline removes 563 resolved occurrences and retains 19,505; twelve
+exact technical exceptions describe enum guards and currency formatting.
+Independent agent reviews found and corrected terminology and two missing
+accessible labels. The actual installed MDXEditor regression first reproduced
+a stale language callback, then passed with live translation updates preserving
+its edited content, DOM and selection. UI typecheck, token gates, focused task,
+sharing, editor and composer tests passed. Combined Linux and browser acceptance
+of this expanded slice remains pending.
+
+Document/artifact side panels are prepared as the next isolated slice. Full
 chat/composer, Activity, and remaining view branches still require separate work.
 
-The detector and sync regressions pass all 35 cases, including conflict cleanup,
+The detector and sync regressions pass all 47 cases, including conflict cleanup,
 manual-edit preservation, workflow ownership, exact-SHA dispatch, and partition
-coverage. Token gates and map checks pass. Static analysis and API-fixture browser
+coverage. Typed translator helpers now use lexical bindings, preserve namespace
+boundaries and fail on unsupported prefixes. Token gates and map checks pass.
+Static analysis and API-fixture browser
 tests have their documented limits and do not replace real user journeys.
 
 ### Workflow activation
