@@ -148,6 +148,14 @@ Automated: [attention resolver](../../ui/src/components/AttentionInteractionReso
 covers preparing-request refresh without accepting it. The resolution-route
 tests above cover the API, not every Decisions or Inbox navigation path.
 
+Locale coverage in [decision pages](../../ui/src/pages/DecisionPages.locale.test.tsx),
+[queue rows](../../ui/src/components/AttentionQueueRow.locale.test.tsx) and
+[display metadata](../../ui/src/lib/attention-display.test.ts) checks canonical
+filter/action values, fixed bilingual search aliases, literal custom text, open
+controls and drafts across EN/RU/EN. The [attention service](../../server/src/__tests__/attention-service.test.ts)
+checks app-owned metadata and company/private-task boundaries on PostgreSQL.
+These component and service tests do not establish a complete browser journey.
+
 Manual: open the same pending request in an attention row and task tab. Resolve
 from the row; both surfaces must settle after refresh. Check an empty queue,
 loading, permission denial, and a stale request. Repeat with combined Inbox/Tasks
@@ -158,7 +166,11 @@ manual coverage gap.
 
 Automated: [approval service](../../server/src/__tests__/approvals-service.test.ts)
 and [idempotency routes](../../server/src/__tests__/approval-routes-idempotency.test.ts)
-cover persistence and duplicate decisions. They do not drive the approval pages.
+cover persistence and duplicate decisions. [Approval pages](../../ui/src/pages/ApprovalDetail.test.tsx)
+and [payloads](../../ui/src/components/ApprovalPayload.test.tsx) check locale changes,
+raw content, focused comment drafts, relative time, budget gates, explicit resolution
+payloads and delete confirmation. Their APIs are mocked; they do not establish
+server permission or browser acceptance.
 
 Manual: create disposable formal approval requests; approve one from the list,
 reject another from details, and request revision on a third. Resubmit that

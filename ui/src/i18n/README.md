@@ -121,9 +121,27 @@ Stored errors keep the original cause and translate at render time. A locale
 change keeps drafts, selected IDs, focus, pending uploads and submitted payloads.
 Optional helper translators retain English defaults for unconverted consumers.
 Custom prompts, labels, provider errors and names stay literal. The secret proposal
-page only translates its justification caption. Complete Decisions queues and the
-chat/composer still need separate work. Component evidence uses mocked APIs and
+page only translates its justification caption. The complete chat/composer still needs separate work. Component evidence uses mocked APIs and
 editors; real server authorization and browser acceptance are separate checks.
+
+The Decisions slice covers both queue pages, rows, filters, date controls, triage,
+shelves and review actions, plus the classic approval list, detail and payloads.
+Language changes preserve query/filter selection, open date ranges, decision and
+comment drafts, literal payloads and mutation counts. Filter matching includes
+fixed English and Russian aliases; group sorting and action variants use canonical
+values before display translation. Count captions now use locale-aware grouping
+in English as well as Russian. Existing toast snapshots keep their creation locale.
+
+The attention feed adds six optional display slots with closed codes and explicit
+primitive arguments. The server supplies them only where it generates its own
+fallback text. The UI validates the slot/code/arguments and otherwise preserves the
+raw string; older servers and custom strings keep their existing behavior. Stored
+queue names, recovery prose and provider diagnostics remain literal without
+reliable provenance. The source detector scans client call sites, not all server
+message producers, so server changes also require a manual provenance review.
+No database field or API action changes. The date picker forwards trigger props
+and refs so the existing Custom control can open and retain its range across locales.
+The task-list date separator also passes the active translator.
 
 `lib/markdown-editor-i18n.ts` maps the 43 built-in message keys used by the enabled
 plugins in `@mdxeditor/editor` 4.2.3. Unknown library keys retain their supplied

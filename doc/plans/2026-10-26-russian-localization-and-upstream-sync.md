@@ -288,9 +288,9 @@ the browser has an explicit preference. Language changes retain drafts and store
 canonical values; technical commands, user content, and provider diagnostics stay
 verbatim.
 
-The current combined catalog has 3,096 reviewed semantic families, 3,191 English
-forms, and 3,381 Russian forms. Review records identify agent review; no human editorial
-approval is claimed. The original 20,857 source occurrences have shrunk to 18,356.
+The current combined catalog has 3,427 reviewed semantic families, 3,536 English
+forms, and 3,754 Russian forms. Review records identify agent review; no human editorial
+approval is claimed. The original 20,857 source occurrences have shrunk to 18,112.
 That baseline is migration debt, never a translated-coverage percentage. Strict
 candidate checks and the latest upstream delta have no actionable findings.
 
@@ -485,9 +485,21 @@ run, not a green qualification. The focused contract correction and behavioral r
 regression passed both complete test files (172 tests). Backend and live phases
 did not start on the original candidate; process and database cleanup passed.
 The frozen Inbox candidate `e80fc1532ce417f18c4c864f7d8ddabcc457c874` includes
-that correction and has passed frozen installation, full Russian-default build
-and full workspace typecheck. Its complete UI/backend and browser phases are
-still in progress. This is not complete runtime acceptance.
+that correction. It passed frozen installation, full Russian-default build,
+workspace typecheck, all 810 UI files / 9,299 tests and seven affected backend
+files / 257 tests, with no skips. Fresh Chromium list/detail journeys passed
+12 and 11 checks respectively, including Cyrillic search, both list variants,
+mobile layout and dirty-editor locale changes. Exceptions were absent, but
+25 list and 23 detail ERR_ABORTED requests remain recorded. These local-trusted
+journeys are not authenticated or production acceptance.
+
+Four paused-composer cases and process Stop passed. Native Stop failed before
+the work run because the deterministic provider also held the mandatory setup
+hello. Read-only evidence confirms the pending setup turn. The overall run
+remains failed; later S3/S4 and upstream changes are not covered. Process cleanup
+passed. The E2E database cleanup remains unconfirmed due to retained marker files;
+a separate observation found no active processes or listeners. Earlier failed
+reports remain unchanged.
 
 ### Inbox integration
 
@@ -553,6 +565,56 @@ journey. After normal integration with Inbox, the same ten complete files passed
 194 tests again. UI typecheck, all 47 detector/sync regressions, token gates, map
 validation and the strict source/catalog audit passed. These focused checks do
 not replace the pending combined Linux and live qualification.
+
+### Decisions, classic approvals and attention provenance
+
+This slice adds 331 reviewed semantic families: 87 app-owned feed messages,
+182 client captions and 62 classic approval messages. It adds 345 English and
+373 Russian forms. Five exact exceptions describe non-rendered action enums;
+244 resolved occurrences leave the source baseline, without accepting new debt.
+
+Six optional metadata slots identify server-generated text. Closed codes and
+named primitive arguments preserve original raw fields, null/empty behavior,
+authority, SQL, ordering and pagination. The UI rejects unknown, malformed or
+cross-slot descriptors and keeps the raw fallback. Custom text equal to an English
+fallback is still custom text. Stored queue names and recovery/provider prose
+remain literal without provenance. Bilingual search aliases and canonical sorting
+keep matches and rows stable when language changes. Number captions now group
+large English counts too.
+
+Independent source and editorial review corrected a missing relative-time
+translator and distinguished an agent's job title from a request title. Their
+regressions failed first and then passed. Existing Custom date controls lost
+Radix trigger props; the bounded forwarding fix opens the real popover and retains
+its range across locales. A live screenshot also exposed an English task-list
+date separator; its active-translator regression failed before the one-call fix.
+
+The feed's five complete suites passed 97 tests, including company/private-task
+boundaries on real PostgreSQL and both existing 16,400-row fixtures. Teardown
+uses TRUNCATE CASCADE only in its disposable test database. It does not change
+production SQL or relax timeouts. The keyed scale test took 167.58 seconds under
+its existing 180-second limit; a prior body timeout remains evidence of possible
+performance instability. Earlier hook failures remain recorded.
+
+The client owner's six suites passed 117 tests and the helper passed 28. Classic
+approval's final two files passed 15 tests. The combined serial 10-file snapshot
+was 207/211: two genuine classic-approval RED findings were later fixed, while
+two existing large-tree IssuesList cases still exceeded their 5-second limits.
+The separator regression passed. This is not a complete local green run; the next
+frozen Linux qualification must include the complete UI suite. Shared/direct
+server and UI typechecks passed. Component APIs are mocked where stated.
+
+Final source/catalog audit passed with zero pending, missing, invalid or new
+findings and zero source errors. All 47 detector/sync regressions, eight fixture
+checks, UI typecheck, token gates, map and diff checks passed on the integrated
+source. These do not replace the pending full Linux and browser qualification.
+
+The deterministic Stop fixture now lets setup complete, then enables an exclusive
+work marker after authoritative ready/idle checks. Logs must match each actual
+work/resumed run UUID; setup calls cannot satisfy the assertion. Four new shell
+contract tests and four existing loader tests passed, as did narrow strict typing
+and discovery. No real native rerun is claimed by those eight tests. The prior
+failed qualification is retained. No production Runner or Rust code changed.
 
 ### Workflow activation
 

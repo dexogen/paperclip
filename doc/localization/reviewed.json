@@ -471,6 +471,440 @@
       "method": "agent",
       "reviewedAt": "2026-10-25T22:12:18.758Z"
     },
+    "approvalsUi.adapter": {
+      "sourceHash": "abd75021f3563b6deb596df47aa75ab8f8d8823006bc67cd53a5c52fab09a6be",
+      "translationHash": "f8d6ebda57ccde52efd21e1c54db37a5ec25d758de79ccdf717135ba77b9bf6a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.agent": {
+      "sourceHash": "f3f2a611a2955484d9b79d5ebf8273c3ab3c7075a3e0d5c5c4f7b79d67c8e8a4",
+      "translationHash": "dbb42b9423487d5446d2b0d378a42e1eb3073200675f959950e64178737e7e34",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.all": {
+      "sourceHash": "d861f9a40d25196d4f79a1b795d02227d1d18a568ddae661eb387cc7e79bccfe",
+      "translationHash": "e2925c22c043a11f63bbdb7e0d6bdc04928b3ae8652e1e48a2bd057c33fb6eb7",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.approve": {
+      "sourceHash": "f5856c6fb4eb435c62896be40f42e1acb3f4b6f43280cc115773ff0830148ea7",
+      "translationHash": "006f93f9bbb092f73be9c07ee8201ec11e37024c04710bf5e5baa13576d91ac8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.approveDetailFailed": {
+      "sourceHash": "e601538a63259670e70551b18083359bef0f2d3f3ea9764c25147275e2b5a66e",
+      "translationHash": "a768600ca5a3fe47111e758ed5677d5c319cd1df8835d3966d6b0571ccd8f208",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.approveFailed": {
+      "sourceHash": "50ac6e0b5370d11347371920295d004f0012b92255ac3bb85f77d2bcdd21d5b0",
+      "translationHash": "9b2771c0ad53eb18c7e53375be0f056fa35677f18058c7e1cce9129e0b1bd6e1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.approving": {
+      "sourceHash": "20809cbec31fb5e901b4de07f6b919cad95f48b8bf233b1c845dc89074776c9e",
+      "translationHash": "73716d6b913c90c3884dcdb3ce868346066c22cb5f0b9a7b232f5a47b866492a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.back": {
+      "sourceHash": "7b5a4f60edca9edca37bab551dfcbfb130031fa9f2e9dd0825d2e420800894a5",
+      "translationHash": "6aa592420999e1ca987bc176638ecd4b3dfd968c3db29b2f88afd90ee56abe26",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.board": {
+      "sourceHash": "cd138a279c00f49b0afe2d21734d23c1d0a9a13a6e3e89a3755b3fa0fee5396d",
+      "translationHash": "a8d511b284df0bb2347b15264db651ff6f53c6b1c01e6f819ca47e06a8d8af9f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.budgetHint": {
+      "sourceHash": "cd93499e66703876df6c260d47a151a4ff74a6bf851f1259b5fd52da2871dc65",
+      "translationHash": "3ed25ed5b51384ee6099368154b1773db03d70a1ac1ce3195788fae1b2e2a003",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.budgetValues": {
+      "sourceHash": "27ae5e82f3001f64ddb56efcce58a8504db1acc131bc44860551839bc357554c",
+      "translationHash": "971d21567eb50d03b2381f8b5ad2db9fd762a6ae8c838350fcced05afee7dba5",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.capabilities": {
+      "sourceHash": "5a45546723ec086bed9f87e66a21d4156e3ad87fa6e218023bdfc546f714217d",
+      "translationHash": "9ed0b84078da5cd48dd3169522476f81edf8e58c5706e7450ae2193fcfb49b02",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.commentFailed": {
+      "sourceHash": "14b10e1b9c0b59a95d8b3dc15bfd2830f3c7a0ebcb012a6c398d4651c1090381",
+      "translationHash": "4e97c6f224463c05a59ace48867e94c4dded4d40fc00883b9e04c26610b6e786",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.commentPlaceholder": {
+      "sourceHash": "d4d2f1689b94acfd96212be1ffd49ec835da4c0f7b598b0f3e2ca3a8ab096d58",
+      "translationHash": "45de1576bb59cac29af79329c67fef09d63d499f6bf3bfff35d4fd880880ff6e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.comments": {
+      "sourceHash": "29d4122f02e89ecac11b6ffb50b7142f3e68813a4b36c36315e60fa7ffcf27b9",
+      "translationHash": "7176a711c9b752a8ed86a5b14a465e8c352cbe78bbdc0ea8a8521fbc9f4716f9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.548Z"
+    },
+    "approvalsUi.confirmed": {
+      "sourceHash": "6dc9b508340d33030ee4ebab01ebba85471c3a0178c70d97f06bb629346df6e6",
+      "translationHash": "1c00d1765b96b20a4c4450633e248d526c3d78cc61d58c3d853ca2a1ae58b820",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.createdAgo": {
+      "sourceHash": "fc2f86673d24a02acb008f61e96115596c4468d4a7d96863ea0939d1c53b6a4f",
+      "translationHash": "db88d85abba7dbdf9959cdef112778f65b3d07bded657627f4265a6add3406f0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.decisionNote": {
+      "sourceHash": "97b79125aa230e9b63ec610865c16d46f40ced5cbce787c4017db1c8c8cdf731",
+      "translationHash": "8d617539d13f1161c8b4a311070607f573bf90e50c338a141c7bcb149d250b2e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.decisionNoteLabel": {
+      "sourceHash": "e722e90a3f0465f3885066739198381f9fdcafc32d1ff7646006f21df66922d9",
+      "translationHash": "067831b8feb76f3632d650a77fd0c76a8341f861583ed34fb2bd60a347bdee10",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.deleteAgent": {
+      "sourceHash": "b3ad911bc2e677a55b0e9e6bb82c84a8aef0142d7ae20559f6b0e88257c18e4b",
+      "translationHash": "f84bf42be025e3170526cb939d8bbb81fdfe8126295a7837e61631948c549234",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.deleteAgentConfirm": {
+      "sourceHash": "20a8aec9e38b8e705755bf2f43f7c621900718000ca9f700b1595e6c36732248",
+      "translationHash": "80ded44e495ec2c60b78ebec1a8eba84a13d6f794af3c64279d80d1788dce179",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.deleteFailed": {
+      "sourceHash": "ba75bae5db21f2b8f69d3149dc10cfdd144127a2e62a7757e2752901dc6a7fa4",
+      "translationHash": "5f7801004fd730b319b3a9937373b8625c429fb46bc9dacad902e463f5e5315d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.empty": {
+      "sourceHash": "4a8952a2a37d870af6e75dacba106003aa4ecb85e912dd52c3519a348b7474b0",
+      "translationHash": "5e13c9b247642a5faa453e19105f9cd523ea454d9c035d07b29c39a0c3b2ec79",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.emptyPending": {
+      "sourceHash": "ca4bfab1d99255fd8eda204dcd9c2da9d1957996d3879078aed8bf84cb1b3b6b",
+      "translationHash": "a806f7aba9b88b1d5d36d991d4a0fd3b180cfd4eaa01e140b7f02de19641d45a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.fullRequest": {
+      "sourceHash": "dc65c571f5f1f98a28e68d80f2ead0cdead89d569d0450e6471b0349d6651669",
+      "translationHash": "95a9727545578b5cb5fba3c56950e9fba92a044c31f72bd45b1331c52174362a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.heading": {
+      "sourceHash": "b618f2d3fcf87dfd0a7846addc6b6126ff36b1dddef87dd4b12df2ed7c003046",
+      "translationHash": "52787986ca039ecf44c9ed4833fe72800b3313d138a05e658e93ff94bea8787e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.icon": {
+      "sourceHash": "28038eb9a3bd5be3a131fd1bf1f60b76d2408624b7763d3c7c9b6403609307d9",
+      "translationHash": "0d881396156f1b23b5dcefd19b7f4cb3e829987f3ee792f5c65daac127d4b9ec",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.jobTitle": {
+      "sourceHash": "14e6649bfd8e0aef2e9863e5479794a3b153c1dd854888be3f77a31f7abb285a",
+      "translationHash": "6207e6bc9d523460056c42e9f7d7930f91f499611da3819d56ccbf1ef6525917",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.linkedTask": {
+      "sourceHash": "007b8e068fed52c09321a33cfb119d581560b86037911ab6c424eeca5a77bfd4",
+      "translationHash": "804ef1d11020428feef9b4cab9450e9dd47e65601d0a449fe2d1b12c05f2adf6",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.linkedTasks": {
+      "sourceHash": "2b0f92c292921d82ae8673af2f66d6a040004a27c6f6e41fe6874cf655f57a47",
+      "translationHash": "98d4d493c748b20321918e506cced447ddcd68015ab62e4a31048b70e849267d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.linkedTasksHeading": {
+      "sourceHash": "defde80dabfbf2710ece458daf0f879c91fe7fdb72c2dcbc872eef0133febce6",
+      "translationHash": "07d1451cec71b5ffcbd59044f3d0d68029173d293b9869eab4ad81d489b54ce4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.linkedTasksHint": {
+      "sourceHash": "90f2dd80ad5755f92c29efd4a8e0b7a9900287d440078ab8ce13ff2fa603f806",
+      "translationHash": "c6d8a6e949513dbc76cb93c280b48b7df1aecde84074557d8806134d2c4a39e7",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.metric": {
+      "sourceHash": "0328c128ef28bae631d30349f892840b20f0625f52bc44735cb3a163db8dc8fc",
+      "translationHash": "99302f15e96d535b7dc5ff00361c0ced8865e30cf69eca304cab6f064019b1d4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.name": {
+      "sourceHash": "3d2b27314103510f82d5f4a56f0b1684809d8047bbb5fed3939672528a5861fd",
+      "translationHash": "3ab863cb9322c93281e3d73765f295d93a9237d79900b128249b033d507b7af0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.notFound": {
+      "sourceHash": "ae29df430d8dd62e9d1b64af019a54abb395e6fd7392dc045293190b8b3db4c0",
+      "translationHash": "9174da174af05021cf0d7d86355672f5688ef480e8d9712d2837068c72156004",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.onApproval": {
+      "sourceHash": "7b3adb860270173c8ae223f854c25ef8f1edb59ad36edd80234d52b34f560247",
+      "translationHash": "1ec2bb75f72a688a56834e11fc4a9c10a46de74a4b96751236d128c0b915675f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.openHiredAgent": {
+      "sourceHash": "b585be5e72f8704a9f8f1ae270b0be341bc36f60f3bdf1e54fb48eb30815468c",
+      "translationHash": "a2260f1b253790569a9a2ae938dd732ea976aac22fdcffe12060e9381426b230",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.pending": {
+      "sourceHash": "e9e877ace12c124e3a1011ab36aeed699a0d22e9cff85c32723fde12fb11abf2",
+      "translationHash": "e55c5e2a5210217dbe623d8924b74e2718a590a5b0221595a38f25ea8d40162b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.postComment": {
+      "sourceHash": "16fae750699d6419c4f4886383571455efa799d03ed4b8622e854d6313af9a22",
+      "translationHash": "50bcf661cd84d4ee0c1fb5b9225648349e4cf7a51bcf4656bcc5fd2f5b81f01b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.posting": {
+      "sourceHash": "809bdcdcf0d8958cdaf06ef7fbd26901cbcafa90e200df2021ae43016f0465bf",
+      "translationHash": "c55cf62f71c4047b45dd5e7bcc1245d9c0bef110244df91d417f6d6c00cec6de",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.proposedComment": {
+      "sourceHash": "2f408bcc3c7927e091b55b60951297e9b2bb7a7c757f776b14c526b5e485f768",
+      "translationHash": "57f694d703f9a9f4a7198b435b621888ccfc5c4a7ec6441d4a4fa93da9446d41",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.recommendedAction": {
+      "sourceHash": "9cf20ef46ec4bcc65f96f5f6cddca482d56e81ce7774afcfd9b9c800a0c31480",
+      "translationHash": "fe9aa39905807d641a39f2afe0b2a5e7cd45c2a2cc78c3865e1e2227e5bf6403",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.reject": {
+      "sourceHash": "02ef775ca142d921f20f498cbeca7a188db94e56871bcd828e03fb608783fc3c",
+      "translationHash": "376b2e70763e396b5d7ee9304947743c5f1dc90e8e0c2426a166ab21aa50ada1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.rejectDetailFailed": {
+      "sourceHash": "1f6fb4f91e69baab051fdf96c722a0dcfb532ce6acca779975201085c62aad30",
+      "translationHash": "2c8656545397739e2b88c35c4b4148ed86606f8ceeb12facc6f711434c83a2f4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.rejectFailed": {
+      "sourceHash": "55607ac1842c90f7f85c7ccda14b15d986b3db72dc13fb898ff1b865bdda2e99",
+      "translationHash": "43284d44c0c54f4364f6ae1940d0c56e67a8b78cdf3f0f65f3687fca2fc50c4c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.rejecting": {
+      "sourceHash": "fce01317928359018cd11af8a3970fdaad4ab6d457aa763f8c97ddbfab2a826c",
+      "translationHash": "8a337085d8dc567164a74df2bbfbfa3180190f2bb6e98f839c079ff1db41229d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.requestedBy": {
+      "sourceHash": "29edd45a82c2ee1c98e252ea410bb5cfa7f26dd6a80c46181d0ca2a19a0037e6",
+      "translationHash": "9c29e9fbb6ac502c40d91ecabf97689a3f7e12d3580c4d856a023c71f27f7c2e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.requesterNotified": {
+      "sourceHash": "477f2d1e891ff608d6969b04a5ed7072d8a588c5787c1594eefb0acce6e237bb",
+      "translationHash": "8fdb70d21b4e12d06dab5b004806db3adc6109a17b95a16cefd4db8e0f04ca2b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.requestRevision": {
+      "sourceHash": "fb0256f00903ddb395f8dab2b761fbe1ffff0f660beb19e10b74b1cf63e2b242",
+      "translationHash": "85ad2f660da706f24fc3a6eef8b2aa3e0f4715017dae0419415a49a432dce8c0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.resubmit": {
+      "sourceHash": "a08fd650dfee3806a56212b926f20d678b1834e12d8b28f5dbff47fe0ee21fe1",
+      "translationHash": "670a371fbf1da225c08f59a90036affc4d919380dae1e83116d54d000078a26d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.resubmitFailed": {
+      "sourceHash": "92679b434e233a8f9fe619376403f9aa12ee3bb06749d5b2a857145adba8d6d9",
+      "translationHash": "e3d0ce580343671826ee8507aa2fd9e0e595e707b592d872b18c4956b4a7bd15",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.revisionFailed": {
+      "sourceHash": "8fe89502e8125d62bbfe0550a0bacfe91c22666f8ca4ae644015ae00b94426ae",
+      "translationHash": "8a06b08a7e0b52f4eec9ba8a5f9f4f84193f1cf36e4d30c1d644d43126939312",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.risks": {
+      "sourceHash": "e4a9724dbd2caec62cfd5128cf3b8e1e891c31206818e95de4cc0ed252635b08",
+      "translationHash": "a1dd33aafdeb8d737e1f3b0c65d19ded7cf1d347f3bce8e50aec870e91c129ca",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.role": {
+      "sourceHash": "cd2326ca799a265acbc7f1fbe7625ba41b65b5088146ec48810107c54b8863cd",
+      "translationHash": "c6b3531bd6f71f62f2f97275ae91f2760a177d3b32c256c3d646bfa57ace911f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.scope": {
+      "sourceHash": "3045fefe084e803e98b8f8251ffb57222697749a2a502538927e6cc22a91342a",
+      "translationHash": "b2229cfb3f7e8a0872895fd6bd11dd3082e5c7f38b349e047e5c4aeb9bae5b51",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.selectOrganization": {
+      "sourceHash": "f7f75cbd1d8bd8a5c47b42536a21fd86d21908a7244ea3810f95cb839a942bda",
+      "translationHash": "9c2b9e58b2f26f68bb7f1952234de89d24659c54f82663c3f6f5b92aa2f05d38",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.single": {
+      "sourceHash": "44cb5afa02774e40d7f1fc85f249bc7fa7aaf402db8a4dc5fa15e094c4418990",
+      "translationHash": "eb383fa211a55ca41f10481c69a9a3006d1b8bb7a1dbdac3a435cb5cc9d98716",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.skills": {
+      "sourceHash": "2498296e19336c38cd997abaac9492d553499152479d9c58233dfe56e5b1787e",
+      "translationHash": "ceaa2dae244f94e855953634fab91ade34c9aa64244b6a74a72086876b98c67d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.summary": {
+      "sourceHash": "f5bb819dd4525c5a1d87a2549aeb9cebe911c47bff487a9621ec3f213bf966f1",
+      "translationHash": "c31f1feebf291f94e049950592578a32e4ba068fd361a8b076fad2d37ac00eab",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.title": {
+      "sourceHash": "6a4c50429b6892ba0605e5e3a7259d8aeff267109fa4672062aa0c0491b94893",
+      "translationHash": "740fd9f8034d6dd12042ad8fa689511016600cfe0fdc6d6c562fcf3a9328e04a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.viewDetails": {
+      "sourceHash": "d04c1b6bace0a738d241b829752039fbf3085fe1c99d23e91882794eb407c0f7",
+      "translationHash": "517210bb3f1bd5ebcc7d1e6f7ae1be59a8ac606d05640c41a656b07ef187006e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "approvalsUi.window": {
+      "sourceHash": "0f0c4756ab00cc39db47ce4ad830425c500ac7736ca72ed43a1c3ebb3dc7c933",
+      "translationHash": "e720ad1d896a758fb4f4ea5543fb55d030179d4c84e2ca739220709f88938fbb",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
     "auth.createAccount": {
       "sourceHash": "4b3389d76155901edf859707da14db8438cbded13a010f6558ce7d3336667474",
       "translationHash": "9156078b52d1bc2457ffc7bed5c3a0eae92f51ffd89d9dff4af445a893c3779e",
@@ -4236,6 +4670,1889 @@
       "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
       "method": "agent",
       "reviewedAt": "2026-10-26T04:41:50.508Z"
+    },
+    "decisionsUi.bundle.agent": {
+      "sourceHash": "baec6b6b7675d230374a3d3f2c94b61472045d824736b8e6bfdb7c3ee22c9a4f",
+      "translationHash": "87eab305e8d3d8ccfe795ff7a24ab39ccf386f0ba4a0a1104e693bc2444146ea",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.bundle.from": {
+      "sourceHash": "fcd113fe100a5785d3a50129207ea46ac930405e2e0e75fd0990f0dab04c5f24",
+      "translationHash": "6bc9dc0ea485d5ebd5829e208fa566828599bb3ca97b332a2d09cd0b2c31af72",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.bundle.pending": {
+      "sourceHash": "40cce20e02ddb71a2a6f2f9d1d3213c9e2fe629d9feb5daf533028baf07f2e06",
+      "translationHash": "3c18c0a243f813894635f65e68e675916b1439d6efdb0e48c93effee1d8d68ee",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.bundle.proposed": {
+      "sourceHash": "9df0673cc9dc77180549aad83261d0ddccb3db0315972fe44508bf8304d78459",
+      "translationHash": "2ef9b633ea57f9cd26037f1630bb879de21623ec9db61509afc314e7dcbbb4df",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.common.aging": {
+      "sourceHash": "4d3b435bb95d0ff7e110492d2423d59075bb2147c51665fffb7290b480fcfd4e",
+      "translationHash": "2d62a177d95c57983ae565e9e0d05e703e9e196a1463ef1e2bb8f904cd372b48",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.common.cancel": {
+      "sourceHash": "4766c47232c204021de31e4d2b9c56b3ad8a6945fffb8c7b5e0c11fe5bc9fa95",
+      "translationHash": "c505ec6bf260ba7f850528951001dfde8cfb3796e1c6c657320c5ef3ceb73880",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.common.clear": {
+      "sourceHash": "736758e71eaf9fc62f2041906e360425959bc17e4951a36b00611126e2dfae39",
+      "translationHash": "e5bf05dbdd4a22d4a4923d6f4c34cb0a3252ff66863eaab1856aee352076779d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.549Z"
+    },
+    "decisionsUi.common.create": {
+      "sourceHash": "a1fb88c7c0c67e93d30ee5c719ca299a9f3081501b16aaa482dce7e3fd75c404",
+      "translationHash": "fba76277aaf51ac06d3859ee16aa38d24886bcaad7d30e1a9b66e9d1b879f67a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.custom": {
+      "sourceHash": "77b182d3f4abcff24553394bbf29897129b189e6b5e844f8fc909df36c053465",
+      "translationHash": "ba8449794ec78dc8964434439fe72f62870ae22edbac3a0b1417f45280f4d6aa",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.dismiss": {
+      "sourceHash": "9b9210022cf45721f26675460fe40c46b8575f2722fff4892f469257143fec50",
+      "translationHash": "16b1fe56d0e735bea30c7c813e64d61336ed642ca6923a3891c926037934d314",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.dismissed": {
+      "sourceHash": "fe60fee852a7eca4b4ef5b05fa1f68f2ad1a4aa366f71d9b435681239b1772da",
+      "translationHash": "6cdd871a42816200642e3a19ef0070294739f85aadaa8bdbad521e1ac5ccd6ec",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.expired": {
+      "sourceHash": "ab20b140c7979a2eaefc6c3c3783ebaec912bab823f35bd4da0890117bc0c25e",
+      "translationHash": "11ac07586f86b27dd1eb0146f930d169ef94988d5237e370a351acf438b3d533",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.noProject": {
+      "sourceHash": "65848ee1780ecf209bdc0f93da4936dce3a928d41c3f1efcf92dfeff34b0b85e",
+      "translationHash": "b06ad677728fc9750a4a84f6e0186ba3b072339b7e2f5922ed5847685c922c27",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.noWorkspace": {
+      "sourceHash": "2cd0e1ebf65cd1d75ed840846acb8c2f1862c9cbe08fb59ffc9ff06a59961d50",
+      "translationHash": "6148b0f0e610d82a4b791e3e04921f4ef0c208aa37d4c96508fd7028071253d8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.open": {
+      "sourceHash": "a78a63df2b55abf3140c040522f6108c9cc1250f64638afa1fd4c0e46c5819e5",
+      "translationHash": "1db52588a7154019102049f6df39bb03548dcd90a9fae0bf2628173bc23990bd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.restore": {
+      "sourceHash": "d7d364366a82cc84aea7d1076c2fb1610e95fec08a55172210d4f844f2e598d2",
+      "translationHash": "379d909af1220c59ecbac596aae893bebf1c304ec72bbae820d9a48788d0ef40",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.selectOrganization": {
+      "sourceHash": "f00c3b43d7bef9afe5713c6743b389761211998ff1d614d318ffb1791fdcced7",
+      "translationHash": "7c5488d824507a41e3f214eeda50571e9cdace4074a49efd946f46ad6a978fec",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.snooze": {
+      "sourceHash": "0d4c6217d54d0adff9687f46cc4dd16cfc84437e339ea028eb885d5dc2f190a4",
+      "translationHash": "f5a07ebde3cb4959e993013254f991270017cb294758ff68c9f1b0b7df88064b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.snoozed": {
+      "sourceHash": "0ee58f23ee0922ef526e2cfc7202416cb09c9e3a746bb1065716edf746050138",
+      "translationHash": "f29ab76ef4da63e0a1101969a3eec7407eee649a113cd3a2de6188dad588c128",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.title": {
+      "sourceHash": "171d570e0ab922782de10ffe7222bd9076a3e3f3d24b1b7000cad2a16a2d85ef",
+      "translationHash": "b5c2af112e613dced3479b9083b3c0936376f87556cc4a848034383ce06b9656",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.tryAgain": {
+      "sourceHash": "dcda2e4c668d7fcbb98d11d61f7b3d128e2d9c5837b386f0a490e8ed9ffa1852",
+      "translationHash": "34b581095954ee68e4467b18bd8da68a178fd432aad8383f7a8a41f3471d8872",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.common.undo": {
+      "sourceHash": "5331ca696a9e8ee4ea12e701bcecea775177fdfef6e5b3bfe76313ba902f5c6c",
+      "translationHash": "810bf434170b96880c29b5e733a16a5a96a59595d22f8f399822ee5aed158665",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.all": {
+      "sourceHash": "5b941b82b19da1488f2b3ed1ba3dff694f8b985d4455ffb8bd3e40b090ff54e0",
+      "translationHash": "d286e19d57de3b2536558e8f24d006ea618301b5f52dc4359a0a6d8ed047cab3",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.from": {
+      "sourceHash": "8309bf0c11db92dc7415a95fa1bebeb133695552ffa932dcaa408f3e7cd9cec4",
+      "translationHash": "2bf3e00dcdee39bbfae57b413fcf9b527f9eb7374464aca23b0a6e75b041484c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.last7Days": {
+      "sourceHash": "ba7a5756fd3cf0be30f861bb6456d9046d02e07dd76976fa2523727766c5783a",
+      "translationHash": "1548a713e86d8782d51331d19a2b527b15753ec4f3928a5c8b8f84b7a659c35e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.notSet": {
+      "sourceHash": "449687ec307691c4bcb8b6f6d54cf7ada623303b6c46d647c387d7673142fb71",
+      "translationHash": "ddaaccaa28364cf9ec4d4d9961d809778cf6c92faadcd0e64d0b85dd19119097",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.thisMonth": {
+      "sourceHash": "846aefef1b8557fdbaad7090886a727cfd65301c75dfa1c41d9d3c528b1b6c16",
+      "translationHash": "4062caeaace5840604641f528ad9100fca623b03c011cc0662424cfc69f54515",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.thisWeek": {
+      "sourceHash": "0ae5b680308175b8109c83c3233aff2014f27afa148f462e32c07b064064979e",
+      "translationHash": "eb4645d3292cf8d206a8e262b84c755601105759bd6291a238f2b2b33af3f526",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.to": {
+      "sourceHash": "1695c4488b798ceddc663f00c1e430a004548b4fc71643cbceee3221fdf0d10d",
+      "translationHash": "c5d34a281e799897f9574c82dc0ebe22684d0e7ac3368784256ba0907cd60b86",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.today": {
+      "sourceHash": "1fffb5a3d9d2c2538d09d0dc2c5eb1437d1bceac15a4f0b8d0877cc9b8866dee",
+      "translationHash": "c85d864a4602c7d8bf2ec31234cd2cc8dfe95d4249d61219256c087cb08cceb6",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.value": {
+      "sourceHash": "69961d871bf6efeb89fcb321e064703bc7ac26f197b352179cb3be247e816b2d",
+      "translationHash": "b4c314c5d6afeeaf9564d39e46ae32269934c3b90bd6ce07d078a02c5e9d8409",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.whenever": {
+      "sourceHash": "c9721ab4096a3bf7c72c20c1cf79b5e1d10fa35bcac52d7a7f19a4641ba92d82",
+      "translationHash": "9392705adffbd509f4d91eac2932fc8b997474d2f88fcb4589532ab8b9d65435",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.date.yesterday": {
+      "sourceHash": "80de7c7fe3cf1d437fbd981bd3f630384d0f7eda2cc635593ce55bc3c27b43ef",
+      "translationHash": "af539ed8485ab60ec227eaf690ac4762e3b8c464fbe7453b407ff4b40a2d9d3f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.desk.decideNow": {
+      "sourceHash": "8da3d9271cba198a78d4fc5b2daffd87824cf1fbb8ab3c655284b18aaf441592",
+      "translationHash": "0ff9fcf25329f7edf109a34da7dfcc4d5343216aa2945f0e34df02a316c51845",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.desk.earlier": {
+      "sourceHash": "a480be29823d6d4c76de2473bfc635af9aa32bf0f6d60aa750ee231ff742ac23",
+      "translationHash": "d904e22f53f4071c386fa3fe4c277532a194c37ab8a102e0e6a4814db15fedfc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.550Z"
+    },
+    "decisionsUi.desk.newToday": {
+      "sourceHash": "d2cbcf45a090090f2128fdf73884c92fed758f52d4978ca241c3e5e0b63142dc",
+      "translationHash": "5f8d7ae98d4f2de4142408e7e762482169aef6f096acf02e1e3c390b043b53ef",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.blockedBy": {
+      "sourceHash": "018c0d8bd1b12d9b1fa8fb936336c0471334281e19ca3d36d8665d523d8038e5",
+      "translationHash": "096024f430a1ba281972018e1061e9e61f0c20f6aae06715024dd1eff14e1276",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.budget": {
+      "sourceHash": "2053f497bba5d1c89d2a42ba86ce82035fd765383385dee5dc8461d187bdb68b",
+      "translationHash": "fc5c211188a0fbc94606265066db82922362132feb1697a9180028a623cf53a4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.options": {
+      "sourceHash": "f13d43bc0ddcdebeca0918107f4f9c4aeb69d431d4ae21d41ef80c56913a990c",
+      "translationHash": "303b7aad1d3e0adbd6d0c695ee777b02ce13400759b93730aeb9e6d83cc496f1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.questions": {
+      "sourceHash": "2ce5c3f2bb847d443f1600e585d3af4fca9ef2a96f3d7dadab1ee626d179dfa7",
+      "translationHash": "16d6a73d1ab6d559826495ef26608dc983a72f3774ec620d1148e5c8786f9441",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.tasks": {
+      "sourceHash": "63196d74bdb5fcf8549e7b6b7411ace217d619b1573da8963793f35df392fd21",
+      "translationHash": "f08b025b85b994d4e844bbfd90546442ba35225e68684973dbea84d86f119c3f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.verdicts": {
+      "sourceHash": "e2a2cdc5709e7d6eaa89311e72f32ded06882ed896aba9c9a73b3e05293ecd8a",
+      "translationHash": "fdf44bce7c4afe96a558ebcb3d4fb5c95d476d5ad4cae5c57af087c133d0735d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.detail.withExcerpt": {
+      "sourceHash": "c65c36d79606cebaceaf7888a5bfa3740b49721906dffd4543063b94cfa326a4",
+      "translationHash": "d17ca43953a626548c3e0c7a53022addba4b0e4bb639903190f65177870185f1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.agent.dismiss": {
+      "sourceHash": "31865e022db7cfb357b93dce6922c09e948ec210b5759a78874f16a06a4ee84b",
+      "translationHash": "4ca1485f26ef7a3451980f74e18423d071ce52573be83f6674eca62ad9df2515",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.agent.inspect": {
+      "sourceHash": "a635995fcb4741be1856480a918c02d70b8ab47e8d4c48f7332a5a6ba6e23061",
+      "translationHash": "8052d82bd1401d747dda1169ab6e0d0bd0d2518c40788b19478ea080b7d9be05",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.approval.approve": {
+      "sourceHash": "ebdd64b68db9b6e2c96a7d0fd7d8b46b19fe4d0b52552b5b6a545136705adbb4",
+      "translationHash": "6fc347df847d46375b5eabe2cf6a3fa16c01042bde0650d40c6bbe8aa6e222c1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.approval.reject": {
+      "sourceHash": "921cf4ab58495db9a3ee9e04f7e1a40309826e1b3f6888424124ad718a637e86",
+      "translationHash": "06f162c288820adaa15cceffba1961ec197ed106afbc399534a3128d186aa9f1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.approval.revision": {
+      "sourceHash": "de5d88cc923d52ae92bdf85a638b86497b1cf6ab04aa754a6febfc11d7433dbf",
+      "translationHash": "9d3331c5ff541a59d89ba7c95e1991e535609cab0e51869db68b56d85b2f49cc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.blocker.nudge": {
+      "sourceHash": "18cfd26d236d6f0dbe50331059f9891f776b6177e5dc83be066ccd685943d4f2",
+      "translationHash": "32e1d9831ceaf8217ad1d10d03abb293cff787345b7059f1a90c3d8ba74eacba",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.blocker.reassign": {
+      "sourceHash": "14445a02e57089847b0d9ff68f927edf0be106e312fee372e21b3a1e1e82234f",
+      "translationHash": "e91bfe13121a4fa918e8136e3bcccc39eb8d0f18a466ad8afa56a9437f885fae",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.blocker.repair": {
+      "sourceHash": "5573fd29f689681ecdb32d7e0350acd43773f95a071db038af3b1702584e5559",
+      "translationHash": "ef0faed681d3c74d1e0512c50c271aa7100690a073ff6518f11b2596dee876b1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.blocker.route": {
+      "sourceHash": "378a5c18c64dad9f859597b3072c6e3069ca5df856fec070efc4cf9e4782c39b",
+      "translationHash": "a2f694f48929377deecd527113424e8ca7d1de9ab4161ba002e8b8b536bb3aa1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.budget.keepPaused": {
+      "sourceHash": "35553d51aebe9841c7aecf150dd023771cff02c439c450d6ff487d45f58f249c",
+      "translationHash": "a0077e6a5fa978c013babadbb695536059e48c607a6fd9130d1fa6b6c0e7bebf",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.budget.raise": {
+      "sourceHash": "531a56c51eb94d48844ed8a417a9bcf3b7c6f1cc83596e59946badef701989d0",
+      "translationHash": "5eb8cce355317ef1bac4e5f896cfaf97a507bf775e002b7efbfbb9b92548da5a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.confirmation.accept": {
+      "sourceHash": "1eb4c33e9518c73ee916536088127fdfeca1dcff56b560695ca15458db726862",
+      "translationHash": "637588aede4ec0bebe0771dec856725e6f0d9681693f117aa21932a59c336c91",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.confirmation.reject": {
+      "sourceHash": "386c6a96df25a95c1cda2b01c64b40b7c59736de766dcdba18a022432bc711be",
+      "translationHash": "6653855da4891de05861ace5dd46e4a94dc40416e01252a48d046de23defb1c4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.decision.review": {
+      "sourceHash": "5d7e0d966d69a4bcc84d7a9de4b86be3770b86216f6c0e09bf1451aaa7d0d82e",
+      "translationHash": "9ba7416bb3e74701259b6c71f3148b7bd5511a48036581aff2cbf847ec9e6112",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.interaction.accept": {
+      "sourceHash": "77d87a0b275aa1d969951bca3f961b73fa07e76aa334941a1d552621be484231",
+      "translationHash": "f008efd3cfae9b98a4cf3d66dd38884edb76f6559ed365ad14af86bee1e2c73d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.interaction.reject": {
+      "sourceHash": "523f523d14a248c39a84aeed7cddc872236b69197099e339ad49be291b059778",
+      "translationHash": "e0c4afea7d75e5891818b7833ffc1746047edc5beb83a21879aca1670ea79506",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.join.approve": {
+      "sourceHash": "454c34fe44f3b9c0bc99832fcd63048daa57dc35b231c85cf21146f88b917704",
+      "translationHash": "ff29afccdcf9ad6b091951f32bd63550ca3d1edda3fb91614a3dcfc22871b7b6",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.join.reject": {
+      "sourceHash": "379b81c44cc9e57065616cb53d50dad24028a89ada60830a1755b1cab833d3bd",
+      "translationHash": "e455c9592926b7c9d23b169537593cb025949552beef30c13284c4072cfffe40",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.questions.respond": {
+      "sourceHash": "56a0fc5a6076b33887f3a1a0197bc1c1d38f90ead5f4fbafc1dd695e83e7c105",
+      "translationHash": "22cf8cceac159706e106e8b29ce7009cf0c0b652cc32f74562655e9d14d8ae04",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.recovery.cancel": {
+      "sourceHash": "a73481aed24fca5563c1a3404e1f967b23f6a33b192e90d9683812f895c8d2bc",
+      "translationHash": "95217a8288132f5b9c316231d955e418bab7c7cf31e994650960fb0b8cf03bcf",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.recovery.reassign": {
+      "sourceHash": "c5387632417392b49aaf7fa6353c1113663097281cf387fdb69064bd3a456fd9",
+      "translationHash": "7f2c818327f374f746972ebe06ff244f690be2031138e64639290e23dc90739c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.recovery.resolve": {
+      "sourceHash": "389dfdf0533f92f8d3ec031d814cfb487fcae219e19783d490308cf3f448669d",
+      "translationHash": "bfe2535369e1c10eada33468735e535309d64509d560484fa70d7c04b970dd2b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.review.approve": {
+      "sourceHash": "896d507ce62420fab0d5cf9e6b5a7e3b4dd2193235c7defa10cb8d05de3c899f",
+      "translationHash": "289e2fdb02be1f76de53782bf4393cfbff0b83c2f21a8ca5a2d72c05c0f8b705",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.review.changes": {
+      "sourceHash": "9f8d011363611b49df426c4b229f238e298c5424bef9910512b35bac46a8b838",
+      "translationHash": "a52fb95a8634f84166a9e76d5cd03a0ad18f5b1f6738ac91f73bea30cc51c293",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.review.path": {
+      "sourceHash": "5a4c8e158cfbcbc92ce90b545dc38d439157a6411b613321dc34cd2a2e2bfd80",
+      "translationHash": "7b4d3f2aee876232e4415a113b40d376f90c47a59aca1890203102046fa0a545",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.run.dismiss": {
+      "sourceHash": "e09004782830745283d644facb32a9beca821365e4239e008fdc71d2e3cb7293",
+      "translationHash": "70469c509b1da57267db7fbbd2e8c197cf3d0d4fd513b1b87a9d454922399834",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.run.reassign": {
+      "sourceHash": "62db2041bcf7407a728e18e1e57193a7164fb6a8bd51c2940ed942602433b5a7",
+      "translationHash": "e6eb59a7c7b04380069ad23b8ccd0089d4d650eef92178b09db831f55e0ff4b0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.description.run.retry": {
+      "sourceHash": "9d0fc29b39c2a44ca77283c4cda061a63a2b2b8131e3631e2d2131cfdf277427",
+      "translationHash": "800213dabba3f473af256ec7eea0c665b19a14e72f0651eac1826adfc9a18e8d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.detail.plan.defaultTitle": {
+      "sourceHash": "38d1fb659531c7a2999eeb1b095db69f8842f950c6deb7d1e3ea5c706247232c",
+      "translationHash": "07ea1d80389a8ffc4cf20d218b705b98468aea92c19be5ce60f49a630b36728f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.approval.boardApproval": {
+      "sourceHash": "24d6ecca8717593d45d1f73ae712a77fb31f5d429d5b1854c41f1e617bd46b45",
+      "translationHash": "16fe4d760529ea73f65e72f425551e6a385b0ea369849456c754b084957d6bfe",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.approval.budgetOverride": {
+      "sourceHash": "054f130aefdc76a43cf82aff64bc5fc144ff2508c87c11b39e61c0b0fb95c51d",
+      "translationHash": "bcb65f470eccfe5159244684f9ddb1ce91615c86559f430880b8b6206f36b1e3",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.approval.ceoStrategy": {
+      "sourceHash": "548f625bfacf47d187529d8949631a8a32b7994adeaeee60d3718797f312c928",
+      "translationHash": "c6054db677fe51e08bb86ffd5dd35e57d06d9f562351bb329373660fb472b46b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.approval.hireAgent": {
+      "sourceHash": "e6e73096d1a9d01e58e3e0fecb0d25e8323f0a211c0b0b87f4a693e05a5d996f",
+      "translationHash": "73e93bf2eb5d7294db26739cbae219673932ae81017aaba3f19227e070ad881c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.budget.hardStop": {
+      "sourceHash": "0717e46510828ac1d20c4834fb70cff1ff8308421d6c9958d5b5bfba5a436b83",
+      "translationHash": "f410657a951928762904b64e3c2807a5a5b6549de58de1d5e68a6bfa165c88d9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.budget.warning": {
+      "sourceHash": "8be931c1bec7e2633faf36df87d0b89f5ebcc3c3bc2d2dac92b5b67c3120d165",
+      "translationHash": "38c0966d7c55ec917b2bdbd1763f6ae90df289d4a6aed9335045753d391a3bba",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.checkbox": {
+      "sourceHash": "2cab9bab64de295957bf8d87c82eef0c1f1886217a3159e9f4c59fb8e806c8e8",
+      "translationHash": "523638e47a7db190e3de83ba1402a5ec0a00df3f4fbedb9141cbc4e6a2483e35",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.confirmation": {
+      "sourceHash": "2c3bab127f74caee9aa5e5ec11d4339c4c8d0ab3e00f51f882bd12af8e718b8e",
+      "translationHash": "d4e367357104d911852122f9e52d155035fcb36a24bf6ee2b2915cc797cb0ea9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.generic": {
+      "sourceHash": "f737e614180f65e557e327b723a39bbfcd9b1282a6153c9c2fa1af8e03877122",
+      "translationHash": "cbf91a23ee52eaeee3d1bd97b16d8f9bdd2ab58eb073dce92f77bb696ab96778",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.questions": {
+      "sourceHash": "eaee3b49a83a75e78ac04705264ca9b2a580cf9e8aa60d9a45e3e6eea7353a74",
+      "translationHash": "19750ce404fa3b09970962e019ffabcb826f549b612461ed4c8cfb5f7a2e61cd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.tasks": {
+      "sourceHash": "63e9f48074a3b7a356ed0af112328ed02d88c482792ae2e02be7bb0d9371dbc5",
+      "translationHash": "b41dc1972670ea26601ffc4c404656ce63c32e7ebf34349f84a5b1032878371b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.interaction.verdicts": {
+      "sourceHash": "6ddc0911cfc302037f1e63bc397ce1e473d21dd43825007aa6eb07c64414dd7c",
+      "translationHash": "40776eaf51105045c1efbe0b8ebdc14f780fcdb85e0dc90294ec0b26a4543564",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.join.agent": {
+      "sourceHash": "15a6e2d77a4b6ddb6b22562d128b0dd552c37b053bde6434d1d5b71a3a13ee69",
+      "translationHash": "d51907e03339954192c1502290d0d5059c7b3b0c2eddba616ccad57053654c4b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.join.human": {
+      "sourceHash": "ef92897328528798eb63617cde8e2148005188a1425fabcd622c9ffb0c93784a",
+      "translationHash": "d9233935dc801474a8b1d3d49a94b28ba898182dfdb0fa963c4a794159f8ba1b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.planApproval": {
+      "sourceHash": "b962e94953792d94d5dab38c574ad6ffc2be09b4787a1569d6783d48f5613d1c",
+      "translationHash": "7a69f76603fb387912606af963b2912ad4cf1cb6dc8878f88ec549bce2fc71b1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.run.failed": {
+      "sourceHash": "cbb98d8676fa9314d9c2bdb6cd061dc3ee4702ef4586dd0e5b95aaa9ca8a05c0",
+      "translationHash": "7f72684bd6a22ac5882fcd2d06b2cd8db247e417efa0d3d20099bd6ce1aa6391",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.title.run.timedOut": {
+      "sourceHash": "1c187599da7e72044c769bdceaf245aa44b72d30bf15f217bd9dc9c277d50e32",
+      "translationHash": "1b77df287896bb114a424f9507336de3f0bf894bbd4aa5cc5226f47514731783",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.verb.accept": {
+      "sourceHash": "1d55912dd82106aefeefff35d5f90275b13428d28d2e5c2b322a031e422c76d8",
+      "translationHash": "d5bdc8bc2337ca67499cf9e0bf64ac146d7bc6e91ff714b54c3cec06685b6080",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.verb.approve": {
+      "sourceHash": "5bad7ee64c9880da37a35079a4d558028e49b6abf73901893c242584049f20c5",
+      "translationHash": "da5ee394fc001f579390595aaebff4b8164837675865fe3c9af61e5fcaa29e6f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.551Z"
+    },
+    "decisionsUi.feed.verb.cancel": {
+      "sourceHash": "7a55cd7d4317f878ef55b145afa3b3a7f7fb56db46f91e4a1e1e5e572644bae9",
+      "translationHash": "e95cce49ed30448cbda7c83fd866e63f16a7554713c1ede6487c2fe54ce26733",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.chooseReviewPath": {
+      "sourceHash": "0d356cdf3ded09c0249a2d5818cde6cc6b83af88540d14a674e3c56d010bd9e2",
+      "translationHash": "a723c4dd17a749b44fffd61ab45c35fc033f782dd21dde12e69c8a42e295623c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.confirm": {
+      "sourceHash": "7238776b9e456e689d044eaf6b076f6d2353bcb5638b137afb7320cf43ffe01e",
+      "translationHash": "fc0b52202c96c745c339d33737f4a9fdc5f7fdbea862d45cbd700005b044ad80",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.decline": {
+      "sourceHash": "047d7b680a85ef1fd67d3499b8f1c14be8ff55e3f3aab2e4b5b6ca2394b5550d",
+      "translationHash": "6bebe42fc1132ce1e3668078a22d9a1ff1e7451d06beae64a4fac898037cd3bf",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.dismiss": {
+      "sourceHash": "2116a7cdd43791381a855c25e0594fd1e11535c18a298e97a541f96ed48d88ee",
+      "translationHash": "9a687919a64c14ded4e79f90cd448f3371c3f35799fc87cfa99815d99e82219e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.inspect": {
+      "sourceHash": "21f44132df1f19bebc53818c31017bdd527691cb11308d360ad16cb97271b601",
+      "translationHash": "e64d9d5ee8a0cd2eab71afe99627fb2191e5b7da9283d731ca0c4a2d3913cd66",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.keepPaused": {
+      "sourceHash": "74fbb8911b9632dd623839644c02ddfef9ab0d9046118e1686d3448d13592135",
+      "translationHash": "a0f0fba810d666c9a468a90b903c0558be6c39e9dddfd52b5f395953dc692542",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.nudge": {
+      "sourceHash": "191f174728986c09c979af8c99906fdd2dd127f4f405d3c6041ed596ed2e3725",
+      "translationHash": "4e49228d56846b023b3f25d416e3aa6238ec51c0671a9f9ba6bebb57a1f253f1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.raiseBudget": {
+      "sourceHash": "ffe1e28a5ef86b9e962c81cdfdc702fab8ad78df97d62f0d90add3fcfdd43a73",
+      "translationHash": "4185f83d5ce0695ad4405a7b97e434c2c24522b9dd0ad6cf5debd928a831e9ce",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.reassign": {
+      "sourceHash": "01a939331c3ed795b603f24cea167be11bf8b15f7c867a0d88035a9faf89283c",
+      "translationHash": "63b1551162b2e6f39a8df12e93e3cb5c980193137cc84dde8706b56a5992006f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.reject": {
+      "sourceHash": "da067c44ee8785ca9a64b5e89d7cb8093bbf4704ed88a1e1ee577498143d5024",
+      "translationHash": "acc6c9127cf5fb38b4f74cd0c63a828ed0d98465ec74f1301786e8de2416c13b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.requestChanges": {
+      "sourceHash": "ffca70bc9baaaf741be0ed6e9b74c2c23a9b655882afd875481713ccf3a44f0f",
+      "translationHash": "663bf18c97db59b2f6ea5e5c8af9d71b13850583b087b290c35f4f87340ff1fc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.requestRevision": {
+      "sourceHash": "137564510fbcf5db3c37430cebdd492fc0d315f0a93008a1ecf2c37f0461596f",
+      "translationHash": "3b00e12b86ea9aea78acfb173233bab794a08d06a70a5a6982a9602345feebf9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.resolve": {
+      "sourceHash": "e95bab8d8c23c3c7ee914d405b7d164a391b33a92961dddc009e247f45ddc697",
+      "translationHash": "a248084c1d13f5d1041d7e4dc741c8578cdb2c5d5838cf7a7823079a54f17cb4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.respond": {
+      "sourceHash": "8eaf963cf33df1ddaef2b02cabb16518c9bcfbcde0a2f3c508f43c27157f83d7",
+      "translationHash": "bf56d2ce816999eb3a7527fd1a00b9bf57aa9136a99170e0661d300c4b90fd99",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.retry": {
+      "sourceHash": "cfd678337e1312cafa8f81f2302e172bb930487cdb447b3036074d8dc0a82a26",
+      "translationHash": "885b58e6b8055ff6942acdadcf93f19498eb306c3d68fa6502bdc043e71c90ee",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.review": {
+      "sourceHash": "9fdf203a0b0e52bf73e5b6e142ce5eb9b228acddeae96a55f68d0a8131e6edec",
+      "translationHash": "6a82a698e077ff65726cd3a6d3878d0e85c3c9613c98a9542d655c444594a409",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.verb.unblock": {
+      "sourceHash": "1b2faa902678d32e1bdf8c01f842691ee1b18e0d4ed8f295487eaf0811dd2733",
+      "translationHash": "6f503a92f6717752e0ffca7d74d5c2dc297572e067912d759a19877a8878b7dd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.agent.error": {
+      "sourceHash": "fdc83b7ffe6a5fdf5ec8e08294ac37635859b171295bc704ef0e779bcf543df3",
+      "translationHash": "e84b5c2ec695331182ff23ca77a59858601584c99493afa3629190290562df8a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.approval.pending": {
+      "sourceHash": "1885a56e98f8e5fd54d31931eb79b6ea664127eccecf3d20a4d2793f02cb2fff",
+      "translationHash": "a830eae97289c1d7746b0c09d7235a4ad974aca7e29fe475ac0173aa4ccd5d1f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.blocker.needsAttention": {
+      "sourceHash": "3c66dd5a7dbe91999e7ce1799c33015ac8c52c8c4e85c6eefae666f4a32d1a0d",
+      "translationHash": "d340cdd79c9f2aa2421776f22c92aa92816f631f964ecd58d66a4f1077bcf72a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.blocker.stalled": {
+      "sourceHash": "dbaaee783eb784a0ab48c9e00bdb9bb563d8a06c04404a508325976ccbbe9ee7",
+      "translationHash": "afe9912100dfd3e35dab66c2da5d6672832e97b73e2fed9cd7aa246bc911e785",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.budget.hardStop": {
+      "sourceHash": "1269fbee2d578ca683232ef233d5b4961e87ab188c6c41fa4a8eb3c2671b0cd6",
+      "translationHash": "cece039dbe9329a80d660542e18e21b9b48314d30b4dfedfdd4835865a4c46f0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.budget.warning": {
+      "sourceHash": "cde42c8547fcf021f300c954acbcafa1e282b1b80ae82bf820cd3f5625988c8b",
+      "translationHash": "5f0357da68800da043c285425ac3f46e859660ee84a5cf2fc389226ec0264728",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.decision.pending": {
+      "sourceHash": "38aaafbe8d017fe00d734a5024ef9a29126d5640952f654525aa93e9d4ad28b0",
+      "translationHash": "65ad131f27a61256c69c30cfd0f7d3a6fea0da62bd32b47a045a474d952abce8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.checkbox": {
+      "sourceHash": "c35686d3f59eebb344aa98d0a293392bcb65e43f34d3f0f8b55981cda10d1050",
+      "translationHash": "75d903cc777b0cd8ed543cd5a19a6676eaf106e02959d42c597bf9d280eb57dc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.confirmation": {
+      "sourceHash": "59e37111070dc6a00813a549ef83c3460bd960cd01b84a322a54a9f19c1d2d1c",
+      "translationHash": "4cbae32a983e3dfe48a0ab8fe5a48b80e2aba901dbc292017226c15a59da353f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.generic": {
+      "sourceHash": "d5be9cd2c88266511b9db40e9a5501d9ed95ddd9b219830d2bedc2649ce7f4a5",
+      "translationHash": "33ebdf0e1e11c0b737c31676f52adeab89ff24c7f7fba9d15e87b861979d42a5",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.questions": {
+      "sourceHash": "e617d28b0b225e24db51a3b2084931ddf884d6d53f5204a690021bb215bd5aa1",
+      "translationHash": "ecc85c35d3ec20f915756df4b1aaafc99c4db22c18804b52d2fa0cda9fa4f1a7",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.tasks": {
+      "sourceHash": "3de5a312744e9978feba09a2af323d1a29657ef8c2de3427e13c2288a947d8ad",
+      "translationHash": "872c9bc9787bc25ba31c70267f1ed5d9d81807b3164be9c7ec9987ae9e026609",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.interaction.verdicts": {
+      "sourceHash": "e4c7f3e15dcd0cdeddaae3e7a49efe27ae089d97ccb0b654c67a7f3cf329d9e9",
+      "translationHash": "714d4a71dd649a74ab2573978f6814f389aba8852df76ad71e015636e746d400",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.join.pending": {
+      "sourceHash": "c50470471080de2d3f71f6de062ad92ec54e2665b3af278252b4ca7ba789757b",
+      "translationHash": "b4e4b173f86c8a23ff7437dede972fe41f76af48f28fe03f06c22da1b9b8c3b1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.recovery.assigned": {
+      "sourceHash": "3b336001d3154d99fe6c01cd7d105e154712816bcd673da1bc17a86f9c74a5f2",
+      "translationHash": "71bb1ce149d570d8268bc30c5521f1eb526ad71a6c63075c822bf09ea4ae369f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.recovery.escalated": {
+      "sourceHash": "58e34f9989c28ac3e11f064ec4674707d487b9e47c2bdb002757cbc1dfd15638",
+      "translationHash": "be8177bcb397e2a349bada97eb202286134e7e1e2e0529f6f19f189ff587d1e1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.552Z"
+    },
+    "decisionsUi.feed.why.review.approval": {
+      "sourceHash": "c29f411740a30e38cfbc584a96357d6c2045a4e09298ed47038ec227eecc3656",
+      "translationHash": "965a3b36f7782967b17d835b37bce95c40be85435020947b4a1a1396c6d51b96",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.feed.why.review.assigned": {
+      "sourceHash": "a53047f57ccdc8c169fdcfe8b0625380882dff3dd9183fa7c329683236a20f64",
+      "translationHash": "b5f0872f112bfebd553332fc2f6355fef5fabdc693d26d44756efdde05e6fac1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.feed.why.review.participant": {
+      "sourceHash": "23162bb4f58a024074788e5d2aa2437619100754906d282276d78a168275d106",
+      "translationHash": "b5182c995f31f0e4d00e4b9dd32531d3c446b9562e46b40590c4d0e9a05a3329",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.feed.why.review.stalled": {
+      "sourceHash": "d1ac8d24a59c08479b12699cf654f9905cfe3fa06adf663124006d7b14f3289d",
+      "translationHash": "99071b5a0621e5e120fde563b57a1e1f801171f962ea54fa536a235612e5d1cc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.feed.why.run.exhausted": {
+      "sourceHash": "1552652ad896703e17cb166cd3226693eb7a288a2aa83b67abe00d74d6475a5e",
+      "translationHash": "9ed767f681160c9180242d43f89b17b5b3432ecb5633c07e730005ef171a8654",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.group.date": {
+      "sourceHash": "d4b5fe10828dca62f43ce10940ddab6bc906315767b348a6dc35b7751b05878a",
+      "translationHash": "6791a1052889bda29a68af6057f39b90876eea7cec532092e8451852dd3c36d0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.group.none": {
+      "sourceHash": "4b9aae402d6203b3c9353b5e38dfb31e166940a96f34c704d28c3ed05394e4c2",
+      "translationHash": "b9a931e323a048d769b0dad330abb9b9bcc7a4eded9f338d62020aca4e847145",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.group.project": {
+      "sourceHash": "e7ca04bc4bdfe6aab779c19b075ae0898f3f4b68147fc130d896de363b07ae18",
+      "translationHash": "496f104f5b06ea1d9ffe1a4ba704e516eb0c740b816ab362ae130cad52907002",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.group.severity": {
+      "sourceHash": "cddea9cdf201d0ec1b68f61b0634f5d7ad066b51d21eea0759c9602da094b14c",
+      "translationHash": "c80f7c4790e9ebf98511e6c1de6ea37748a8552c809df494f8b5c0c97c44d8f9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.group.type": {
+      "sourceHash": "91146aa22053f304097052d25ba78057b3e77812060c45cc31e113274c0d8bf5",
+      "translationHash": "85fba53781da591343384aadffe3b3d782d2d4b28b3e7408be3364c5d398b0d1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.adjustFilters": {
+      "sourceHash": "24cab7f6edf39144a7d8053a86b403f6fe8635a50dd5535efe225096aa84ef7c",
+      "translationHash": "be5bfcc4ac6f231538c38d834dc4e6756b05f62daec1cf2c1eda4a35c78a18a1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.agingDesk": {
+      "sourceHash": "097a029b7019e1db43b670ff7b8e4495c0b34b734605f1ee1b68cddeda5d7c92",
+      "translationHash": "06efed4ede19fa1ff96f23819c21cf0e3ab3aa34b76e8a25ab0771a82fdd9790",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.caughtUp": {
+      "sourceHash": "a0d3974f23dfd7f29cc97456ecf7f8f947eaf06baa8c25bd115569f1c9666bb8",
+      "translationHash": "f7399168b40224ffc2903411dd68cef86d5c433853029c0262f940a85d47dea1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.caughtUpTitle": {
+      "sourceHash": "6c44ce14b7a18bad815108d341f7b9f7304b74196ae79a50b4bd9f2f4590d63c",
+      "translationHash": "8b6f2520e76c65af20b1df7584fc84412d4f7f546d8318295622ad7b4f98a279",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.decided": {
+      "sourceHash": "25af1ff8a6b7bcb30ebbf4a835833e0130b591d4a2a26a9be39361cf5f239fda",
+      "translationHash": "2701be6f90cc94711fca2861b2f9c3bb16a9866475ca30825af84f70698e4e9e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.dismissed": {
+      "sourceHash": "f207806d9fe96ce23175e2b469e56639f85fac32fd3acd12acf8e2c2e6d2db5a",
+      "translationHash": "266ef78f5ef920091159861dd93cb63b29a114b5e33f860924e70175a33f2a45",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.loadingDecided": {
+      "sourceHash": "9a136683b499f8749bf5ca261210336ff0942c3d6a8674e6f21be7eaa0d5f7f1",
+      "translationHash": "b7c0d597afb5f14169ea90f12404fa73466de739dcdc29bb5cb180dd3246f771",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.loadingExpired": {
+      "sourceHash": "3fc6c8cc709c125dad66cf9505b32ffc54d239bd73df80bd80042c99adf72a94",
+      "translationHash": "bf2303402d4da05def2cfc32f483ce25356637db682b1f6ef0b7c8b4367a0a00",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.noDecided": {
+      "sourceHash": "d17bd6f8fc0e1d68a9dc43e29b986191307ad9fffb094beef9cd0fc45fa94342",
+      "translationHash": "1925e72454a5d3034d9244ad168f26f5b3349579ab7173366ba47bca6749e014",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.noExpired": {
+      "sourceHash": "4b76fbdb70d71cbd8b8d7f6b74972ecda4533df641f436f1766300851d00df0e",
+      "translationHash": "08eed0cae6c72331b7da2173405d23e36ba19c72fe6dca3f8c84c780f5ed2c95",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.noMatches": {
+      "sourceHash": "4e721640a80f69b8749cece0b3e55d9a6688a0efe76676e1313ed73ca8af209c",
+      "translationHash": "92f04d6ad9998b163239139c58198068546da7126916c8248f1febdaf0cd1b4b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.page.nothingNeedsDecision": {
+      "sourceHash": "56d89d9be68a9cc45d2fe8b33b70eae97ccf8b96420c8a26e2da2a6ebb2f5971",
+      "translationHash": "0f3b754a7c0aac5e42b2fb73890ad2aefa6d6c67fdbc7d83404e028db8bf842a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.aging": {
+      "sourceHash": "40f1c64a53922bcd8d5b85921d5fd3756829b02020f7aed504be4af095df9cb3",
+      "translationHash": "e9734de719829637eae60fa5babf7fcaeffb349a5c30139bafa92613f4c6876c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.disable": {
+      "sourceHash": "4137f3a19f8bc3bbc52b1cac775355783de718bf61aafc9ae54a7b5a08d8bc3d",
+      "translationHash": "08f2a6da6c692db30569d2b1d78a54206af2deb86889f25f6f4f3b282f41dc65",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.disableHint": {
+      "sourceHash": "64c4ecac38580701ac4bfaf01458575dbd8153060aa1e4ff6c1c0bd645eba5e5",
+      "translationHash": "1ef8e38c07f189a79f5bd2b2a25e7a6c7663ff59cc6407c9f759f11ef88711cc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.empty": {
+      "sourceHash": "28292ff76278f5796a1edd44e8b0ea44b66f3cf12c3628885f00c438379aa64a",
+      "translationHash": "d71c6e913c9e49b33fceb666263e92b1b76991d108d27926d0bf2475941ce922",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.emptyHint": {
+      "sourceHash": "7a979f4d3830e7dd61b7d7b62e72002dca4bbba418968ab0cd2e1a6649e51905",
+      "translationHash": "ece077b2c432ca9702ccda277209368b2a469c66f82632a2a33754a66c781077",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.enable": {
+      "sourceHash": "7914693f65fa582faed1d272ba4776f28466d5ab2379b1d311d8cd4fc47429aa",
+      "translationHash": "dcfd5cd168e0c478cf63c53fc5287f42e47d1dc4a468394b8227d9c4cd5c889d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.enableHint": {
+      "sourceHash": "bdb4d3f1b0cd8be4d5f803f437262c0c7c3ee9b08118bf92ebb27655f420af5c",
+      "translationHash": "03d3e2303ef62c79d37a26e59c0342ac821a78a710ac9eee3440f8704bdb7297",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.exclude": {
+      "sourceHash": "68a6610ebe87e2b9c6a7eeb81b026d75a538ee7e9a98b8bad8bc4dfdd26d7fd7",
+      "translationHash": "11a62385c5c71ec079329a5942d4d896127ff63e5fc56ff12f41d670dec44c22",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.excludeError": {
+      "sourceHash": "296331086b0f194ecfec189cc52ea8275751265dc15837e45002c46a35b86e32",
+      "translationHash": "9bdb82a914c5766839c1574accc7e147c7371c94edc743dd12807dd84dab9923",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.reason": {
+      "sourceHash": "379b9c57a17cb3b98462ec2281386117b3bf3dc997fd2ef928b2dc3e0451365b",
+      "translationHash": "421f2e871542e78d6c51563b5c6d3d9a47d1562344eace1726ec05f116914006",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.remove": {
+      "sourceHash": "eddca109bb6c436c212e9f3a135d0fa34a01cc589f90609acdfdec55096adb3a",
+      "translationHash": "2713ced78b9ce54a1f2f7ec8c2923b6738b0861d8898a89465b76f4ee65fdd29",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.removed": {
+      "sourceHash": "6606355360e7f477a756b620bb34e47d969d9a3f6693a64d710f64e8b8828757",
+      "translationHash": "c2b553449509f161fc8cd3d15c5246037735afd21d3fc997251c412587df1a7f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.seedingError": {
+      "sourceHash": "adbaef4c43177e5fa70388e92175645fe4c29d67d3b379172bbc7faca2f62c1d",
+      "translationHash": "655c67820042efacf16e77d5115d931127f708e7e68d683c9c141b7afa933b06",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.seedingOff": {
+      "sourceHash": "46ac6baa7153dc516ce11c719ef732d9d558b047cd58603ffb800e98f01fbb22",
+      "translationHash": "3fac2a2e32ae87274dae69e397aec9bacdade52f1158acb45d7e980a330207db",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.seedingOffHint": {
+      "sourceHash": "9c712fb71c2be82e511de1ef24f030c045d88f54179c80f4161a0f0f6d62a9b0",
+      "translationHash": "59a1c1abc3d4364d8c8d7ef66be90069dfe2810c171538539608c4f1232f574a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.seedingOn": {
+      "sourceHash": "22586a2855022efb696d9cb68c6c5cdbaf388fc14bee84b7618683150771f685",
+      "translationHash": "8f7195330110f7afb35f3159ffc160667be319d855ba5908b28ee0827dc9d7a0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.queue.seedingOnHint": {
+      "sourceHash": "8b447c0d0a9d903f80b3bba8391f4615bd244fa8619119243827ee333e94328e",
+      "translationHash": "33dbc33badbe6f515f5a23d313111a3fdc8ac6ee4e1b2e7c9846a0c2cc40fa11",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.rail.label": {
+      "sourceHash": "1a514652bac93142f919098d0da953d84c013b9f7b54532b05467b71b41b4610",
+      "translationHash": "919f65b38fcb4ed55f5482ebc4da6b1102e81f998d6d37d2b0c5478f59472ea3",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.rail.recent": {
+      "sourceHash": "37a12501149a0cde8685afe65f8be6c009b1c97d2b4c941d41b5f226b669ca0b",
+      "translationHash": "4cc31bee4da0fb3e58daa468b2f76949c9f50b4a9689fcff15b1f21b8b1f67cc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.approve": {
+      "sourceHash": "8cab0f9f6f0abc4eac8a68b37528cf10d08e933e908df8fe4f2d65aea4389d07",
+      "translationHash": "67c674a3ea6fbcf242fd59fb7fa081154b1ae63d1982025f477629c34e5d666f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.approved": {
+      "sourceHash": "57b16cee883c143a73cc1c924ba6987cdb8857dec99ebf19ace0bfdf9fcb0157",
+      "translationHash": "5e99b1b0741ffd263e713f38939ae0944922e64b4f7ee5c8a91c44b863a96487",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.changesRequested": {
+      "sourceHash": "fd82c1626464f86f2e7a51beedf742ffd444b323e80023b68c4bc26596687f64",
+      "translationHash": "cb0797da49c3e97f35c1ed64610cd06f2ad71664e1a2c6032da80078d060318f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.error": {
+      "sourceHash": "e43cd4acd268066bcc26b8ef34dc4b851277e7341ff69f246bce535a636e93f6",
+      "translationHash": "163daeee4b0eb26e9fa5e845c506bedf3c618aed1656bf7eec4f9f21e2bce81a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.note": {
+      "sourceHash": "04958bafbab6dbee83390c134027103675940cab265daa04ab158e37ddcbbfbb",
+      "translationHash": "cfd809f712fc05232e161d175fcb2d29c32c95349f8dc2b6c552de2a69780a89",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.noteRequired": {
+      "sourceHash": "65aef845d4143aec1c6a9923ce469c8792b89959d1758772f145e4af600e239d",
+      "translationHash": "f663d1c302f052832ab7111ce6654270f3e4ee7b2acb75ed1d3c4cbca29d4043",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.requestChanges": {
+      "sourceHash": "b30a3f475f1eaebc031957fd4d7105867c2717846b281307bd53c82bd5f3cd9b",
+      "translationHash": "c864c5ead5e48756b70f2029cb74061bbfc00c68e3f4b4d7f7e61928e83b6509",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.sendBack": {
+      "sourceHash": "a632645f58a54258c42e08a0c66657dde29b104e6e74a106334aff83f75dd3a6",
+      "translationHash": "84e314d15ef3136725478af3c30f0248a19469449ce0cb4eed647f37d356ee4a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.553Z"
+    },
+    "decisionsUi.review.sentBack": {
+      "sourceHash": "facc1f152252392b0ba3bd1736755cbb3502938d3c48453cb15736ad7d5e9236",
+      "translationHash": "1b7cb7b56741d9a688f0d6ea9c4c95c7a23741b137b18865094ffb5d1fc69942",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.actions": {
+      "sourceHash": "ef2bdb779bca263c6ec34c8570aa86404005a1abd384cf3938c5a18e9268abda",
+      "translationHash": "0a2771c419e43474488007fb75273e986391e6f7ae77c1eb9b7e4248e1434233",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.agent": {
+      "sourceHash": "22410068de689577925f227c19021d247dba2544af9f4c82812eb9f131cf9358",
+      "translationHash": "23112f75fe039f276bdbf7b7e763c78c3412669d9cb674a4dbd6ed3ca634a768",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.approvalApproved": {
+      "sourceHash": "b0e3af957fa522c07a57c50ac02a95ed34eb1aedb0ec17d0d3bad00c6fa5e051",
+      "translationHash": "cc16f548d5006b0ba39aa8921aaf496bb11a6b89676c3b1385405722e7e7ef52",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.approvalRejected": {
+      "sourceHash": "9d4566ad40634d0e32bafdb3fe5e286b2226315ad8fd282538f04cb6d5532550",
+      "translationHash": "36f0a97dd6a90ea0ec163229c5bc3e024ded0245cf559bcba98d19ff0a2b3bb8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.approvalRevision": {
+      "sourceHash": "3171d778b4b8b57d649dc3b47f081510cbb41d822633c3af7e2bfff3927e06f3",
+      "translationHash": "8b36bb5f6f590d646d7ee1210011771a4eb8bc5a83adb00c9a1c2fecef1ac3c6",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.approveError": {
+      "sourceHash": "4535e9ccdb5ef673c408c3d14e6959c53faf6fbcd4fb789ca34c67f8e8567652",
+      "translationHash": "9411951dc6e017d7403dff4be96250736874b69f93373e8102c3aa97a5cb654c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.collapse": {
+      "sourceHash": "d4e483165bcaf61b105ea55ecd5d25e7eb27933b804b59e2a129f6a8b1dc8239",
+      "translationHash": "96136de48623357a4fc8a833cdf95365621a73efadba6cf138284fdc655669b8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.confirmed": {
+      "sourceHash": "609b8d4d5b84cdfa1fe622291953ff627764d49bbc247cfda8a943c9d8bcb7fb",
+      "translationHash": "6c22e5100d2a224a1695e2c02e4b71c9cfeb689e4e8d80cea3e7166fee548e4a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.decisionActions": {
+      "sourceHash": "b4066ce2be95bef7183e2538e8feda98868a94149c8019c81f03ba066532eb61",
+      "translationHash": "24afaee74d739125aa9b0f5b1a5e3f38186fe1c2712e04be030941d8fe651568",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.declined": {
+      "sourceHash": "2bbdb05e7a9e9db021530d62c7052b9a8a5305154bc933e3e862859749717d9c",
+      "translationHash": "c71bfdeb266fa6fa43ed2c6556c409e4b5b7068efc7a3516aeb2b93a6d984bc9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.detailRequired": {
+      "sourceHash": "b20ef881868ff5e3e619280282b9d04bb2c11744c8f2d858318d9538f65d072d",
+      "translationHash": "041de2205485d007f06b42f29df88cb902dc6d593102e118ab6d14d25f75aa89",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.expand": {
+      "sourceHash": "f77814678a82f6324e9117e26c36fb2ddc3ccc31bc72ff1567ecd46b617df131",
+      "translationHash": "615e3ea774dce2ef1a5a57daed50063fda36fd3111b5488a2b6e6a45e59cc350",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.joinApproved": {
+      "sourceHash": "b5beadec32153a3e88f77c3db07510b1e33551bee1741cf097ff982ce10e4f67",
+      "translationHash": "26f0f9d3008e889af6eb9d30818cbceda0d56188e543d39923adc46afb031d8f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.joinRejected": {
+      "sourceHash": "8af21c97d28ba4a6e6b6125629fc0e1257ee6c4708f5356473398723ddf1be51",
+      "translationHash": "127fa9cfb20f938536a3191a8dfaf7839cdc2cf9fb3023b80699b0cf3cdd7a2a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.less": {
+      "sourceHash": "2d5f9a62b38a0f9dcb55dc3710d8f3380e84557fd80e024d64cceaa69b1243f9",
+      "translationHash": "9261d9718f1aa7a1e365cfef381109df4257ac9cdbc7b51f88e8db0e27f15b67",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.missingIssue": {
+      "sourceHash": "57e1ede1f0e43cbb9c864f6f0a689816de1ba4dd29a6c259efba097698ed129f",
+      "translationHash": "87b79cd61474cc0c06089beb52d6c7ef007eb3e69cb26b8f51f33556c3a22b18",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.more": {
+      "sourceHash": "ead27de368f513e8dbf895081e6153a2cb02b49600a5cf0d7d9270ca830bdd6f",
+      "translationHash": "3a96edcd25d93aa70627baa19de56ceb30e92f617f1e347e69752d344ace0519",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.moreImages": {
+      "sourceHash": "0686d94ddb5909c4978e479b5dee2cdf5465e86152f0a2e9be697ff767d147d9",
+      "translationHash": "284708dabd9d6b744fbd0b5433aafc84ef12802ee74db629bd1969c6355be811",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.note": {
+      "sourceHash": "366cbfffd6415284378c51678e4dbdfe426a74e0c000206408b8dcf372d0960a",
+      "translationHash": "335186bd19716b32f8f2f85c2a80c987f1f645af56fc1bee2f13cf3109f7cccf",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.openSource": {
+      "sourceHash": "8fa232f76c53ef4e30679f622f2d9ea03db1e6e52e16a1f8f8764243aad88db9",
+      "translationHash": "805918cbdb557db2d1832fa8e485f519524c8a50be24555d6772adb0fff18591",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reappears": {
+      "sourceHash": "fd83c2123da0bda59fca6a8c1e95819968d9001545fec04e1224a9c9e80317e0",
+      "translationHash": "b03275bf057c3303ea9cc63698342a0b6929e76befd4a3ebf2788df6ed7a03c8",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reappearsDays": {
+      "sourceHash": "03e64d4a8d806e073dcc1f87e285f7eed48f5b42198d2b1aad881fc7096d7c10",
+      "translationHash": "66255dcc29dc14fbb0c4c7e95afa545a7a7b9649573d44f9ca647c79a13248ad",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reappearsHours": {
+      "sourceHash": "70a6ba8a357509d52a9939b930e2f5ae88a99ab6fdc06d02a73f09b225820330",
+      "translationHash": "a8ae8e609f50591d0fff9596924cbf455c465366238840bf3badc48c90f429ef",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reappearsMinutes": {
+      "sourceHash": "f6b65ca98694e713ffb252dcb86d7cddf40442e98c1b8bf0bfa5932be001ecda",
+      "translationHash": "1833edd406ad28c32ec4ead35e9a7a57f5c77ae6f7b1bd327fd637fb1a96a4bd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reappearsSoon": {
+      "sourceHash": "992147c8c1e658d728412ee12a4d43db814aea20ceca28866eb2c18d851f7897",
+      "translationHash": "2332c030376f4f0669e92ae6a5640a0c8e67d7323c9fc93ff37298f10027265b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.reject": {
+      "sourceHash": "fae06beaaaf404767895a122f1f075d48dc540c62301f43e6ade98e329500ecd",
+      "translationHash": "6aafb19dd136c1003f14c18246f80e7bdaa4d8b2429e3ed230111b5e9ff9ad98",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.rejectError": {
+      "sourceHash": "91642515db24f2fab1c2cb25d7201facd00241a45042894101c7e030796216f8",
+      "translationHash": "63156e41c918ec8d9553e57ad612ccc9c0787bb6c0933868ff0f294b7c75e49d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.requestRevision": {
+      "sourceHash": "e89a14d6fdebda7bddefc0946793797bc27eb8f3e4d2ac57ff2b1cd09d30e7a8",
+      "translationHash": "37bae8da14af1e410facae158b75c74fdd1be49cff0f2b5ca213c06454af38e2",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.revisionError": {
+      "sourceHash": "7d26620ff4f99d03c2798f7b0be4ede8541feb31ce66357fcc87b7f2cc95c67e",
+      "translationHash": "4231d8a8424cd765a57c534ecec7cb9385f727c1a14baff6a43b88e7cd348f26",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.setBy": {
+      "sourceHash": "9ebb15efa31f902a07b495419050a71bd90eb0b7a9b31a8b482789bbeb763741",
+      "translationHash": "15022c2862727b78e39d5227f62a37430633c5d4b1db2873eaf2c16abfb8fbaa",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.setByInline": {
+      "sourceHash": "0b4ab4d2b218b71c8a23aa7171ee4d1d912f1a18ee5e695e2edc77fe9a45024c",
+      "translationHash": "426fc4d343704935cfa279bf5af3d8e14cf70454e1d85373535e865f6d0a74ed",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.setByYou": {
+      "sourceHash": "153ee493679d0da852a9a89669b670efbd5e95933f76a5a506383cf5aeb3299a",
+      "translationHash": "f306b7580a77430f45ae2f5961d014d69285e32fcea8c1077ce18d36acefaa38",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.setByYouInline": {
+      "sourceHash": "5779a781ad32750c054112aedec96518e7e3e898f97e9911ad8e4d4d9f214248",
+      "translationHash": "8bbba1e64ce6515fa2d1dd553162302e078a816d5e5d06a5d6fc7a99a2c31076",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.row.viewIssue": {
+      "sourceHash": "9c32da3b23169d13b288b1ffed54902a5502de2dfabb30e4afad90b30cb56bfe",
+      "translationHash": "f7dc321dc83bb98ca48c0058cfd10423b17aed074c1284dae0f0250ae8ce0acd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.severity.critical": {
+      "sourceHash": "ad4d7acae91f8a7bc1cc0d450b7214d2687137e3556cb517c00fbb661d236c71",
+      "translationHash": "1e2737cce7200cca1064e86f3479a2bdb303a1d1de446d9061850a8ecf338c5f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.severity.high": {
+      "sourceHash": "de9580616c16da832b18e8161208aa81b2686571bf52bb4b61fde76c186c2a8e",
+      "translationHash": "1c1d6f0898f6a3eaafda3c563b19d0b8686fb11d682c27d6155b757823aa24fc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.severity.low": {
+      "sourceHash": "1a1ba1efeab5c9addc55028d974bdca197867436f9130c3dc73d5efe0b71d1aa",
+      "translationHash": "640f13e3a34f3dcffb8b9a24af04a66c0813f6952fbb5adb0b4ff3c10fce110a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.severity.medium": {
+      "sourceHash": "35650dca58514ab505db9441c3cac41198188eb359f17b37bbd33f27acefc611",
+      "translationHash": "ca553fa3c72c31de5e7cbbddeb2688294a5268a76a4ffaebd4f73269607cdbd7",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.shelf.idle": {
+      "sourceHash": "7e694f0be58b75188e638cef60577686812e699a8a9a0298d6ca3faf13e00581",
+      "translationHash": "f0aa592e22b98c227460b3a97d0b374fa8a7091169c110e57e4e214623b8dfbc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.shelf.keep": {
+      "sourceHash": "14cfa72e17c8e35ab7eb39045446d9c865936a96feb273ee8c560ba2ee55e8aa",
+      "translationHash": "5aad02d35d8111ff846ae7085f83c86532fd1e0aab254a8edc565b94696c0c3a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.shelf.keepError": {
+      "sourceHash": "a062bdf0e77209deda1f38db68d748f727ad6e63a7b93e2c89d7d9bffa9f9ec8",
+      "translationHash": "303de8457c3608cf0c5f82255fe5827eaf2cf12900b643d254a7180b5ee25adc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.shelf.keepSuccess": {
+      "sourceHash": "060907f9d7bb41a165853afe757372e29819eb28ad12dde91776634dee7225c4",
+      "translationHash": "ee0209625a9b18a299112081cd7e289dbce54e1195e103f5b1627ad58e05eb86",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.shelf.kept": {
+      "sourceHash": "b2f78d5f05c47229ccd7c3f801e5cf397aa5ae1649536a971cf8fa72d810f0a8",
+      "translationHash": "3efc268ec8ae8d0b83e8c1d23478a9d2c0f79f5428ac3063e041c9f22ae6ee5b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.custom": {
+      "sourceHash": "c9cf6c3da5c439dafe4ea860b1f656488b098dbb44209eb98c449f34773510bc",
+      "translationHash": "1a2a890a7a8b547b1fe5d4336f1d9ead38b318d79272ce47e438d1c1a03dc902",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.customDate": {
+      "sourceHash": "2f08c80ef6cf93c646fc72e3af00c864fa3e05e076d6917a55e849cf746ea920",
+      "translationHash": "09563003f4bdda3e536475f948ea6dfbc9caf8408dd7cf2bbf3261d63b04d974",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.fourHours": {
+      "sourceHash": "a850e236017bd31c36e75ad4d1135468713c18a6687398c7b38e4419f4bfdc6c",
+      "translationHash": "d9c146d93dd3bbb05574e276aa92dff40fc126c4cdacb34ffcc59006cea1c6e0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.hour": {
+      "sourceHash": "dc61f6b4c5c8d3cc3f2a5bab87e39ef8458d80b8b8526626b887a3bda788db91",
+      "translationHash": "58165c3447b7dc340e6a0bd6a659980dbe36a61071c8d62a546e6a794e88358b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.nextWeek": {
+      "sourceHash": "954b0f23fdd4056fd8fd2733a91027841e6ca7fcee172d54e9ba08103e229d62",
+      "translationHash": "86cd5c33a4055b6a9579ffed3e8bb24f8b7e504c4f96bd302c9d1e7786c88b1c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.tomorrow": {
+      "sourceHash": "de64453ef5d077263aac6d31d595f458233738ec0c946f4ddc11030d7087aaf7",
+      "translationHash": "55f6524e563deca296cee2408b0749665d2a846c71793e66c1f3ec43042db3b4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.tomorrowMorning": {
+      "sourceHash": "9e92cfac058df8e52072b24b3df2e84c8976a2d9df5f41dfa4e6da59bfe8e7a6",
+      "translationHash": "5c2a831464f98a6ac2e68cae1ecc2d3ccb7153447dc1903fb631cdc58c3d8008",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.snooze.until": {
+      "sourceHash": "f33a212b0e732db0438a7819921cadd0b5a36a7714238924b843bb6f19517886",
+      "translationHash": "b8d711af151acfae8601a5d0284bc8eb06156db9060659fd6bcaca546768dd20",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.sort.newest": {
+      "sourceHash": "251537dd97ea3237b508678a210c59d2cc1f57d0729128a95ec65d6a683f5d6c",
+      "translationHash": "93c0e60e010d48e249f9743cc24bc7d1c5978f03cb70221732135ba8f3206066",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.554Z"
+    },
+    "decisionsUi.sort.oldest": {
+      "sourceHash": "5c21672fb36873ef07b7c9ae0ecfb4d0e27e802fed856682e912686db8427a7a",
+      "translationHash": "44c0bacf66930d52e1c430da9b4c4367f54a2c0be6aac01f7ca31b964749a773",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.agentError": {
+      "sourceHash": "7d313db13efac7825c2ebc9f8d36f28f40e20fafe24c108e0df3258ced6b6a01",
+      "translationHash": "b8d4b791ff4867bdd2806f3e9fde1807cec45dd25c4b4cd5070d242660fbbf0f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.approval": {
+      "sourceHash": "2d08a8211cef366a4dcc192d367f76da89511f3261be7c5aba7124cad3eebeaf",
+      "translationHash": "c345197dbc7d1b0d25ba4445d70d9ac50bbee57313fbd5c0ff690381a927478a",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.blocker": {
+      "sourceHash": "b43c7d40905dbdfba7e66436da88a8673217640e64843c6f28d54c8f290946ff",
+      "translationHash": "a4744192e0d5508ee8cb9c274b63bcdab929cf5d7146f280f0a5ca31c8ddbabc",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.budget": {
+      "sourceHash": "a1699c7033f549aa8909bd001679e78d1a1e8df16f0a2daa402387337c670639",
+      "translationHash": "cc086a7e513839102e1e14c2a90cf4ec56924b2586c2e1f91f2cfcb4590bf037",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.decision": {
+      "sourceHash": "cb4a071743e587f813e4c691cf95b92928d24f3a114c14f4db4cb2294f9f203a",
+      "translationHash": "526e2ab808fced3b4bcdadd076808ba2f8504903f372a27b3da6f7cd7c68a1a2",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.failedRun": {
+      "sourceHash": "b6fa6cfe5c42c1dd2ae10a8e4dae0aaa235fa85ba95b59a0f46caf90a2688d4a",
+      "translationHash": "51557d2fd57f648b4e42c5b0c3868e134755a1ebdbb225d65706adf31c75483e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.interaction": {
+      "sourceHash": "65e145c2ebeca809576cf754185b6f8bddf9c0f6f7bb4f18423f16f4b0fffd83",
+      "translationHash": "d09322fe45fd695cbf61fb143becc3828c285c5c60c54b3eaf98c3d14c85ab3c",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.join": {
+      "sourceHash": "ebc3ffd6bed555ed69159fe67bd49289fc4e2f8cf0aa8c4d18179df2188f4539",
+      "translationHash": "e387eee898f750ca63e35be90cf934b49e0fe2e09b147a6246aeeabf736df2e6",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.recovery": {
+      "sourceHash": "312b2cd7cc5c9020dd0d48d96ec095e874593f197802e7d0187462c7b4c4500e",
+      "translationHash": "69e8c0e8ba18f3582a84302e2fc1f9b8849806de07385c41768ace23915e2781",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.review": {
+      "sourceHash": "a0fd002c10b028d213ad47ffa8e5d8a9467fab12893d9679d1bee1b61b4b1525",
+      "translationHash": "df1ba0a830f267887bf71cd058baecd4124a764984edfdfae15a9a1b77ad46e1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.source.task": {
+      "sourceHash": "3f4f78a6182063d0ee0d6c80e2aee02deb276c3d1999c5bc612664a202b33c35",
+      "translationHash": "8b399f3d2766c035c8285b8532c81e5781e4dffdf1f54ec1e7f44e918d453b3b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.count": {
+      "sourceHash": "141a1ec11de59ebbb89603b28e14e96f7ec419082eef0269749e092cc3cc3b24",
+      "translationHash": "c2772f32e74464952ad6b88a6a113c8902c8ba11ff2e4b421fd56fb4fc7ee44d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.filter": {
+      "sourceHash": "cc963e9e4107611e7547090a851e22625f4c9a559158ffe37fc693f0600f5f2b",
+      "translationHash": "4c17903df47f5a5340d5c41abc604e47334aab8e01d82072fd561e01cf40c170",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.group": {
+      "sourceHash": "6d28dcf3382843474c10a467ce425d822f3a5df03372c2ab33d1bb91c037cc71",
+      "translationHash": "00d5de8c2ba89386f09248ff2e0ad82e258d70ee052156cd34c6b3992c75bae1",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.label": {
+      "sourceHash": "b37d4bcde34cf59fd0fc3e5b6b54eda409d38378c788d2e47afa5d997609c91b",
+      "translationHash": "02721bf2aaf9e0bddd2491eb6d9c117b3916109f5e64dd9976a066f7eef5ebdd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.search": {
+      "sourceHash": "c838045bc24687dd3961a1639125e0b05aae280d3f4023769e4d36a8d1c5467f",
+      "translationHash": "2f07c891f38f05ab691361b73b1df25050be02905148fb0fd94cd65d6060101d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.searchPlaceholder": {
+      "sourceHash": "342a33c6811d925d5bdbca6d35637652af52492c0518a3188a3e94c78887ec65",
+      "translationHash": "0c3c0a138cb6ee95fb0381abcbb3834afb2ed61421baa36ca0490fa59f4ab5e0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.sort": {
+      "sourceHash": "dc6c6f348ee99dabd8d30fce99cee447c588de7334f77465a0484cf378c6649f",
+      "translationHash": "d886b17d93d82a0184904335b54c2cec12a3a0f50105e799a3e81451d65d5e4b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.toolbar.workspace": {
+      "sourceHash": "041aa88578be31b1652a061f5133077829dbe6c27e5991dc411f18ef25dcb1ed",
+      "translationHash": "2da62c5accedc3a649a7d935555926eb82e122a3494967aceec036caa2489146",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.addQueueError": {
+      "sourceHash": "a560659b00732939fb0163ee25f6caf4a89b05360a43bee6cbfeaa61850e1f85",
+      "translationHash": "693dc3568074f5970619daf82c73c675c2a3811c5f3f85f979aa1940b62ff3f5",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.askAgent": {
+      "sourceHash": "26fb2ff92fd3e1f02477b429b2f53dcb5f763ffb2996a476509aaefda87b1b8c",
+      "translationHash": "f609351993a6ff43faa71c83681964648d9c63bb2aefab6a1a4d8a04967906dd",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.asked": {
+      "sourceHash": "fbb1d75bf89c2fcca0b80381ceee8ed1df66ccecb8992b7b7fd818a921670d6a",
+      "translationHash": "39f62fcdd0309b7e4ed07f311394176528e13c98a1299338108f964752123483",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.createQueueError": {
+      "sourceHash": "1e78a8902aba6c60681e6379c017a339ace0dbf92673bf031c175b6fb10f0fb6",
+      "translationHash": "8183ad8086a3c43329c343ce20a1dd349a688c77ff330c6057a264c1a989e561",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.decideByError": {
+      "sourceHash": "d46f819e3ff5b968b8411735904407828439232646d2c1f52e0f645056e83532",
+      "translationHash": "461d58dd536da02af51c398b17a710d44b60c7af3f17dbf701fbd20618c54b1b",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.expired": {
+      "sourceHash": "a30ddc762da8c924d1e29cc12954da0e5409d0511922444d75ae006acd1ddf55",
+      "translationHash": "e8877118144b1ca8c71f3a0a4e8a3bab7a7ffd95ddc46f242015a9fc5d9c9d17",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.expiresDays": {
+      "sourceHash": "b72b2fad26557c289eedef40d01dc733825005bf65e42140f311f3bbcdb09e10",
+      "translationHash": "79cf5dee66d400aae8ebc7ecf2838cffdfa4cccab33ae803dd8d89cc998e3c31",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.expiresHours": {
+      "sourceHash": "4b3f79a41c24afd8f7ca940067ed838931483ec6f7bbecf5c6e691f8452e4efb",
+      "translationHash": "3201f6ba78fb5c412d31d3e3dec04704394c3cd0c036f46dd0f11f2e2abee87d",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.expiresMinutes": {
+      "sourceHash": "548e2ce8dbbb6207cec335cb0878096bb69e146d621df9a47968ec83f98b3fd9",
+      "translationHash": "ef9ac32e75b082ba767dccc27c52b3f3720be3e79c3ff95a46ed3caa766fab09",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.newQueue": {
+      "sourceHash": "349485558d4c748879401832ebe7273b44b52b6242151d0c5df56b18a0a4447b",
+      "translationHash": "3f961768a3aaf7857a6855f72ea103b3132ec74073bbbc06daf12e608008edf9",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.noOtherQueues": {
+      "sourceHash": "fbdcbc8cf6480581c3f460c882917671f2185f62a78345f60d44c95dfdef5057",
+      "translationHash": "dd2f032a6874c8bd1155f55b013b2f91886cf32de0feefd37e2d8b211ed297ae",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.noTask": {
+      "sourceHash": "5a3eea75638e385f4dd1ccc67889648ee39fc8c8c1a33112302134b49fcd09a2",
+      "translationHash": "84b825ca8d9c121718229e588489d75a5231655a7735cbdfe76d371ae432e0c0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.noTaskHint": {
+      "sourceHash": "a79ae196536b3a6f2eea9ba38ecacb39678bfbb95f2b6945f56e4f6ec2666f71",
+      "translationHash": "7baacd6e54c1e64eb6372584c679b93c0d31029891ba52ab01db561955cf3479",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.pickDate": {
+      "sourceHash": "6ffdf10e9c01b36cf360b4cc43a39590a5f539ea08b34a3f561a308d40f8cd41",
+      "translationHash": "a9a9bc2ca85a2df9fc170a311d2b94c8df12003c41f418ec845a69559a79099e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.queue": {
+      "sourceHash": "f2b3d14979f6134552a9747f26fc6b5770e184894a967aecfd8910f9f732ec78",
+      "translationHash": "2f3bac6e8dab6bbe03cc265df06a00e2bdc6247e06acb262118b0c49c6ffa812",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.queueName": {
+      "sourceHash": "2c0baf9c9e7f174108e5c5d1a012032e955046c2b8073cf73ea8405c4feabf99",
+      "translationHash": "d9d6cffd895f740ad0aeadb92c07c6421ff58399e2a3c8236e03c6f29ce59c9e",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.queues": {
+      "sourceHash": "b5a8d960394894d12460c9ad941d80def498b1d3b52e775dfde8425e2bbda569",
+      "translationHash": "92cbd7b7c6dc983e3e8bdc844484ccd3b3d301de1c3d531d729fdddf38acd216",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.recommendationError": {
+      "sourceHash": "6193deeedafd172008af84c55e33138df2993ba8a76fe4aa2e7e74c8130ef7e2",
+      "translationHash": "2bed69137b5e1badf1bd0ec73d7f170235b6bcaf60bb6073d5e48fab2694fdc4",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.removeFrom": {
+      "sourceHash": "51d9438343b1a09650851c519992131c6f20c488f00b57981a163ba0d8a21a9e",
+      "translationHash": "c2811f5b261002a4e9cc843374a1583a8de47173be906b64f573d27003a74f9f",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.removeQueueError": {
+      "sourceHash": "f6d5dcc12244c2864b9ed5eefb71bf7ad9fd518a2abe0bb11147632fcc133cf0",
+      "translationHash": "20c10a7f5e424d8aa63b4ba368a363addf14dde11f954cfc14d1ed188fb6fd81",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.snoozeError": {
+      "sourceHash": "430567eb6eb01235276f7e5feb74c26e56d9d8920ab8e704c328c40a7be1ff89",
+      "translationHash": "ae9d61c0bb6b4314aa9d647b4363dddb3df5c47329f10ccc38232a5a302e58af",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
+    },
+    "decisionsUi.triage.when": {
+      "sourceHash": "a0e44fdf982af3058a312ffcc85b192ead1553627f7d54ee462888a25b3616b0",
+      "translationHash": "4926295f7bc63f534c7bbb7e632dfa800e0a82ffa3e2c30ac98714d8b2fe68e0",
+      "reviewer": "Codex agent source and Russian editorial review; independent classic-approval review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T05:18:24.555Z"
     },
     "deferredOverlay.cancel": {
       "sourceHash": "27eadede230b1ad70dfa014b1499f46f01d08e4bb0b9d638e9ab087050e18f60",

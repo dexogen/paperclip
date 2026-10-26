@@ -180,6 +180,26 @@
     {
       "id": "725f55b8e30441d36ca6418d7dda5a0ab3f761a91cf1901fae323df53940214d",
       "reason": "TaskChatRichInput uses the message property name in a union guard to preserve a provider diagnostic or select a translated upload fallback. The property name is not rendered."
+    },
+    {
+      "id": "357413733f71f1456eda6a321eb963e740be306bea7b263d9d3791c8f835a9a2",
+      "reason": "CompactDecisionActions compares the canonical action discriminator request_revision to select a translated toast title. The discriminator is never rendered."
+    },
+    {
+      "id": "3bacf6d4cb05e6e0bdb1b4c0ddecd2c18ecc67ae1d16017271635938469e5fda",
+      "reason": "CompactDecisionActions compares the canonical action discriminator reject to select a translated toast title. The discriminator is never rendered."
+    },
+    {
+      "id": "716b8f005d7fa87664d1c84d44d0337ea08da61df17e87cc7cc4b2165e69d30b",
+      "reason": "StalledReviewActions compares the canonical review action approve to select a translated completed-action toast. The action identifier is not rendered."
+    },
+    {
+      "id": "d6dcad15d6a739a597ac5221f65a46fb3ac8211ae83329abcb45196626db50fe",
+      "reason": "StalledReviewActions compares the canonical review action request_changes to select a translated completed-action toast. The action identifier is not rendered."
+    },
+    {
+      "id": "539da01f772b0e58074b7b87dd0fcfb646a207e8b208bfe45d51e07b003b401c",
+      "reason": "Approvals compares the stored action-error discriminator against approve while rendering its translated fallback. The canonical action identifier is not rendered."
     }
   ]
 }
