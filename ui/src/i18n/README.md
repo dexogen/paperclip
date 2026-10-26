@@ -192,6 +192,14 @@ compatible. Rare local errors passed to unconverted external renderers still use
 their English Error.message. Secret proposal review and inner Dot/Muse panels are
 outside this slice. Mocked component tests do not certify live provisioning.
 
+The agent tools tab translates effective access, GitHub identity, installed-app
+states, tool counts and policy/risk captions. Locale changes preserve the queued
+install draft and 250 ms autosave behavior without extra reads, writes or retries.
+Raw connection, tool, profile and policy text stays literal. Three shared
+presentation components accept an optional translator; existing callers keep
+fixed English defaults. This does not cover Apps setup or profile management,
+and mocked requests do not qualify a live GitHub connection or tool execution.
+
 Shared form controls translate their default captions, local validation, path
 instructions, copy receipts, environment-variable rows and secret-binding controls.
 Custom captions, schema titles/descriptions, enum values, variable names/values,

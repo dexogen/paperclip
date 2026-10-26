@@ -7373,6 +7373,559 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T07:52:28.337Z"
     },
+    "agentToolsUi.access.allAllowed": {
+      "sourceHash": "e25babf66f9e424cbee216ab7f189a9b7a44f20fdbcbfa927c2cac07e52e1fc8",
+      "translationHash": "aaf5f45be3e07bf4949d483a0170eb85b976427a2613311ef1cfc7ebbdc07051",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.894Z"
+    },
+    "agentToolsUi.access.allowed": {
+      "sourceHash": "e7505dcf40ea4e6134973fcb15cc3647890a8f67853d3b26e39a8a93eb89e676",
+      "translationHash": "0c7201db447ce094bdea27a55cc43446d1217f0f009f8f303df8329cb4a32084",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.894Z"
+    },
+    "agentToolsUi.access.blockedHelp": {
+      "sourceHash": "d080cbf238fd9127191cd8962f515b3e3aa471d8d93c502246577404113204b4",
+      "translationHash": "ebbb0cfaa860a703782caa2a4621a1ebe8df727d3ee5a7cf9883f2f9b0ec96a0",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.894Z"
+    },
+    "agentToolsUi.access.capability": {
+      "sourceHash": "b27db6a0228f047cbd295a68305bed5f60a9b4ee62c821fafad1948844e5357d",
+      "translationHash": "b4143cceee79b95529f63550b348c74297ee6db6bc1e2352eb751d6d6c521d64",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.894Z"
+    },
+    "agentToolsUi.access.check": {
+      "sourceHash": "cf2dad14951ea1c28670779645b506ecac1de9ddb982077b2816629e939fcbc6",
+      "translationHash": "4f5ee6e9b1b2ef9556bc78e8da61332964aa9cb5d331171f8a2511ab09e9e975",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.895Z"
+    },
+    "agentToolsUi.access.checking": {
+      "sourceHash": "ac7e3d6d68fd406d5332a5d271d8e31e5349c7f129285c2fcc3a2d402efe32e7",
+      "translationHash": "0be535d990618a57ed562705bc43072751eebdf60c015339a5317affb29fa0a4",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.895Z"
+    },
+    "agentToolsUi.access.count": {
+      "sourceHash": "64b442d15c61626c95638a0071c2407808112d03ac49fd3918dd25a55a1c4124",
+      "translationHash": "791dde8addb4952bdf4f94c2df5dd3d4ef1b0647b4e88c3c29f2d0167e5d7223",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.895Z"
+    },
+    "agentToolsUi.access.description": {
+      "sourceHash": "270d83599f88c3322fb362549006f13fceab643bda26a082c9a5f10ccaa153ec",
+      "translationHash": "35f83f807b64baf080ce6762869bad759f12e3217df956ff6bde80e8baaf023c",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.empty": {
+      "sourceHash": "a60135662c6ded09b7e81f90ca524dbc6a87d651dfdd92cf2612a0e2247155ad",
+      "translationHash": "6ab797e68b567ce995c3249c8fdd8c8faac1287d65e7b477213a05ce2c3e6f4c",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.loading": {
+      "sourceHash": "f9a54c3557f580bfcb5999875fcea25365622cb5bbf3ec341f2ef73ab02d9e3a",
+      "translationHash": "ebad96c294c90aca1e5d37f16f5e47f8584ab25aced7ec3101aa168db23f62a7",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.more": {
+      "sourceHash": "50093090b8886225e0f83080eb37809e6bb3a2e840087e2a9e61d72b035d5cf0",
+      "translationHash": "f7937ac5c76f492b3207d1bf8a832b332cfe339dd27b48f3a3dac40f00638bce",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.noProfiles": {
+      "sourceHash": "777e93b0eac87c0666eafe26dda2af17756b73e08f076a2509fd1d2f18a09cfa",
+      "translationHash": "b35346d639eb77191d677c7eeac600b6fe60c2bd1a18c9d5c51786aefe70f3bf",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.organizationDefault": {
+      "sourceHash": "b6c36f0ed06a107b6c0c75ee7dfc8c6617a3822c23236bc351068646c5cac346",
+      "translationHash": "9b00fb4f1a60f9f270a570993c5200400eabfc5c2d962314ca117c15a43d2d39",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.profiles": {
+      "sourceHash": "2a39c5f72ad18f9449a3639d2455eaaf546608db55c0665bd707877a8e3680f5",
+      "translationHash": "ec2c0afcffedf7c3e2e06df0a81f4a21c675ca9090f75af6ef5620726357a41b",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.risk": {
+      "sourceHash": "115e4f1ebf6b2abf050c040d0ff7c989e53bd3c7e5b543b1929b0c07a22cd7a3",
+      "translationHash": "51f5ca3302f47d6d251c584ded08c5e29bbbf5d25b124b73532e36d3672b50b9",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.896Z"
+    },
+    "agentToolsUi.access.source": {
+      "sourceHash": "5e590e8841cc7b39a3f243dc07faf751bbf7c5e3d3584f9317dabe1de86e44a9",
+      "translationHash": "de5fc9ce8a87405da4955c1364d17412865c65d638b07f629258b293c0decfde",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.access.title": {
+      "sourceHash": "f9d629cbd21e40049caed1899ada05d0022eea62626deb599cba859bcda20665",
+      "translationHash": "8bc07c4d8b92199306248ba9e8009bc273142fda1bd4a79c468e5663e74de5d2",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.access.tool": {
+      "sourceHash": "ef61dc850c675a58cef88a6d7c8e30b3307d3263fbf23d0759fad45a12e71989",
+      "translationHash": "f5b602c3d47059da734009bfac210679577b56f42fac55d71de2b6b09eddf149",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.access.unavailable": {
+      "sourceHash": "8db11ec3d3f89db7fdd54c9b3b3d5e1ed4aba4712d2d516eef3a8d436642e61b",
+      "translationHash": "ebb7bc2e4808f49016de5382608d5983abf47908c199bf552bb8ded82f63b388",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.access.why": {
+      "sourceHash": "95b61987b5a859aa598dbc5a7c37939ba16eb08705b7d8514746ee61ca4602a8",
+      "translationHash": "55cc3df4c4ac72c47217a7919f72171836fc941060180f07536b97a517fb7618",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.capability.destructive": {
+      "sourceHash": "efce7be7dfba02a05c7fafbd1e83cfa90d1a433d1884dc5e5adc409e79f0729b",
+      "translationHash": "4c057c66b2dff5f9f6c39e71cafad170d0140912db57a9371de671014b335d99",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.capability.readOnly": {
+      "sourceHash": "aacd206afc85ec9cf96bd3e65f93e49843db8830b59b387febb64ca300a772f6",
+      "translationHash": "9d5204e4e01c315409583659a216fb77433bb61096d8d676f0ef39b42f3da284",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.capability.write": {
+      "sourceHash": "72627775fcfcb360f028896cd7230455a92ba9a35a1982690611c4488e35ee20",
+      "translationHash": "0c6dd711b1fae7b822e23cb2036e7e35cfb5340802539897fc8d7d9a1a433923",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.error.forbidden": {
+      "sourceHash": "034b22ff0be6cbaa5f869afdf57fba2cbb65e6680170b0217561f1f6040747b6",
+      "translationHash": "4520df7aac264a21972e443f92a2db557912c9fb262f2992dbde7ef1b0e1b447",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.error.retry": {
+      "sourceHash": "0cbace7303c2683a9f095fffc36e95b8584ddfbdccd99d6456b94c0e1b4b5f4f",
+      "translationHash": "7fc4ad6c962a2351d712dd144b73e32458b6403b8e3c875290bf636cebd9cb18",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.897Z"
+    },
+    "agentToolsUi.error.title": {
+      "sourceHash": "634ed080b3b6af76b22a5961b6ce5e885d2b8317932d49d0ea206f6ce027d3ba",
+      "translationHash": "ed412f61f4d48ecc00b6be7e1618aca96f195de92c7c9f6e05e74ec685936d4e",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.error.unavailable": {
+      "sourceHash": "a93b983fa3ef21bd44f93168e32860f24897a8476e07f1abe46bdfac70162d11",
+      "translationHash": "a30682d4f881df9b5249a4fd38172e79e33fe8d15e589c697e1116f7ff7bc24a",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.error.unknown": {
+      "sourceHash": "bac3c1abea78a96abbc792ee444dcc6c1975ab7ca9ff332c045562dd23d6744e",
+      "translationHash": "9cc22bffc2aa0fdc81d9f0f45ebc4f0fdf15fb63d91029661797897183650e71",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.connected": {
+      "sourceHash": "81afadeb2739c99132739545973abd02ff3ace877f3b838d2ede6877c5568d2b",
+      "translationHash": "521a4923d91101a3f2f534443fff7cb77a51ac54275d535d501d1cea62fa183e",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.connectedAs": {
+      "sourceHash": "93cb9c170abf15c5c63cb997131dd2a4f28a1e3ce823d1f0b13d44ea144f5e7d",
+      "translationHash": "c2c730ba66acdcf9b61b3f09d907e31a7947bf0aabe91721b08591c204521a8b",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.connectPersonal": {
+      "sourceHash": "2fe0f1953789a06bac13052597082103907c2c272e14892cb62a2e10fec62725",
+      "translationHash": "4a1a8b43320d3ff68adcca81e6350275ea331940d585e9f3cd43384733978065",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.dedicated": {
+      "sourceHash": "336aadd89856ad11c95e21cab2b2d73b894c3c60bf5d0300e8a42cf976837248",
+      "translationHash": "4e8887985723b8100d058ee15e34459d9654635bfcb9a9195f7df3044df1760b",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.dedicatedHelp": {
+      "sourceHash": "032c3a0c340a72db47e39baa2f9d8994e9783521d4a0a0ebfc8e005c1d345445",
+      "translationHash": "6d000aa3486da82edcbc1b6e4e07ec502b2bee20773a9c289483201dd9b7a950",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.loadFailed": {
+      "sourceHash": "20834f0c5b53ac530ee284e8bfb19520f18aa49828b1db30494682c8afb4c3e9",
+      "translationHash": "1c27b463c6a55b5b809d39006b8b4ee332c7f23e3e2c23f9dff77b53bd3409f6",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.loadFailedHelp": {
+      "sourceHash": "519f33084d0ead243129c44b6733e20c437b6b14000d50d3ef66d90abb8bef0d",
+      "translationHash": "28c036ec6c62e7e3159a8fa5c0b0535fc871d0f0f798e661991a1b64638b4124",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.loading": {
+      "sourceHash": "c2f669b82e32c202db056d50a473c7d248c97902180f406b3cf8c798b318e611",
+      "translationHash": "917c747b56c90b6b926010b5abbdec8257609d330e276298e6a8f087550d37a5",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.manageDedicated": {
+      "sourceHash": "ec1c188ef94b4b3334a2794fdf30d0f2f31a2c6dec8e42fe99075d98b293e029",
+      "translationHash": "08fc11892b769e599af4aa9fa093599012bd2e0e215eb693d6d08ab32d044f12",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.898Z"
+    },
+    "agentToolsUi.github.managePersonal": {
+      "sourceHash": "25c5b3820b8d209d33faf981ee124779eee0b23ec428c27980b7aa1f61c0b79e",
+      "translationHash": "e44d12702c18dc3f20488cd63cb9f39fe434a063b54b7201257d42aca73536a1",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.github.responsible": {
+      "sourceHash": "afa9636a4d9dae0457db9e1c733f04d2258a8e4b30ee776687c1f816a764d085",
+      "translationHash": "6132f91167126686b04d680361f39c9e4d899cb682a89e4530de81e8fed48171",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.github.responsibleHelp": {
+      "sourceHash": "be192b7f8606fed158ee97916d759e51ab51d136594f20900935d82a5fb96c3e",
+      "translationHash": "a54b1043561c97c78d7aa1705e5007a6b0372aeeabf31e18440122a042f41ef3",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.github.retry": {
+      "sourceHash": "4a31b0d027bb4a0ada63fd6cd3eefbc52af1aa410ea057d90294c26331293b38",
+      "translationHash": "72421287734dec4873fdf88f0803f989979133a2b1931a78262d871fff6ee584",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.github.title": {
+      "sourceHash": "bdf1fcbcd6f3fbd62220570200df0e1b273c4aba31a73cc11e9fefc1dee0348a",
+      "translationHash": "4e4f5df789371f6fd00d6a88aca0798d9370a73c5f9f9098930592bcb746371f",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.github.useDedicated": {
+      "sourceHash": "99cbc216521bd555fda4ed21ae5cc451ee90bc834f285693553089e8c50d4fac",
+      "translationHash": "8fc5d9c06794e44c781e0623b447f18037e4892ed809914c19951b691ec618af",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.all": {
+      "sourceHash": "4168257c0a9c025d115e158571a416532578c903a0085662d8be5a371bf36306",
+      "translationHash": "ea12b855022582c67597a83b82092bcd59b2947ef75a3140914819489dc43c22",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.allHelp": {
+      "sourceHash": "cadd2e60de2343609b26576093492b858ff503113435b7a4a0a72070ffce55ec",
+      "translationHash": "9209881610c5b0de519a709b0126610aa14b06a72c01c0bda01800b9c80a84c3",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.description": {
+      "sourceHash": "c5a6a37495fe2187d72984cc83b38a42dbace25984faa6e5bba27d2831889229",
+      "translationHash": "3b027e4adc8e9d091009d129f81cd325eb7d205295b06d0ed8e8ee7f3d3b8e26",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.empty": {
+      "sourceHash": "78cc2912d7e2bd208365f4a46c3aee1ac17012d80d25990a9797103a0fe2ee2e",
+      "translationHash": "4a540499759dac5071212805928ad3ffc4cea42e644d808eecc38a2dc3c3e321",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.explanation": {
+      "sourceHash": "02a7ebef4ebb55e5a96763291b624c0b7e338a1f911a72596f7baeb0579a2033",
+      "translationHash": "db5a4bbb3933595bd0b661f8c19b6e8616b4714d186a7648c80780e03924f4ab",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.failed": {
+      "sourceHash": "d3ba1b677005a28aea0a23ab95b008ea8e5887f4bb8f9472de7d50541def0e38",
+      "translationHash": "2ec77997928b7d31b4120d1a399bd213cafdc8ea1069001da96b688157448774",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.hint": {
+      "sourceHash": "db5bf7d1fe8500d6f63ff9b8879fd756ebc2187ea4c6bac4f02219663515f451",
+      "translationHash": "806cdf64f3c3da39dd26e0cfa0653758b275f612799b2f4de1fe19871d7c81d3",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.installed": {
+      "sourceHash": "7c52de8116515515a78f851fbb84c36b119d150c8da824d0fe7382e09b9107db",
+      "translationHash": "3c0a7514a31658ef86e9c16f1ed72b55cbff70c9682ff67501d0fa924762f95e",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.label": {
+      "sourceHash": "38b4318956d3b32da9580376fc9e08fc2026595f708ca3eee2d6e220d757d75b",
+      "translationHash": "e8c667819312f42c3a1dc4d0eaa405209b69d4ea6396dc518703c4ba6f1910a7",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.loadedHelp": {
+      "sourceHash": "e4ea1d09d5fcb7eccb8d1d94525daba4037be23d4fb477f86835a46129343561",
+      "translationHash": "6989daa1dbb0645f16cf5bff46e17415239c5c850592e6cdb4195ccca91dd79d",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.notLoaded": {
+      "sourceHash": "0054cf18cc6c7f4c837bdff019f60b9ef2b7e1cadf538d93854bfeec7f9942f7",
+      "translationHash": "765d844e51f78a8c2b49e99aa7c2cd63f15ed530b792aff53ab4ae6292e49ecf",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.notPermitted": {
+      "sourceHash": "a0a5965190e6387f297f619af59b34039622193c074119221ec8cf0d5910cfc0",
+      "translationHash": "6329ea17e8ce7b6005d9ec34285c5706f6d9c119991717860d09179fc2002868",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.permissions": {
+      "sourceHash": "ed4568fc1eff32c8d2bca4eba10dc7d325041bb8a93049213bf9c68b5e83b375",
+      "translationHash": "930574d9b313f2f3716c24fa8b77cdf3c3c2612a154bf374c63cb0e914ac14ea",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.permitted": {
+      "sourceHash": "eacd1b41fb653a01ace9ead598a0a57c3605a5e5c219119f22c3ed0520e05760",
+      "translationHash": "4476ffeee126a47e5a80f0999955beaf6195deca0254c8d1caaa91a0751b340e",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.saved": {
+      "sourceHash": "bd91fe69b5647cff4bc0ac6cff752a4d813fb9fcaf3040e5465a2b4dc7e5414a",
+      "translationHash": "d420a6849af12e665364029658330b66a3cbb3625ae08a805a3ee8112d06f3f4",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.saving": {
+      "sourceHash": "a17021ad06b582c3c37ca37bc9421d2b5374cb5076b293e669e7fab4007b6832",
+      "translationHash": "14148042e1dba3d09f309bd6f49f1afeb2196b08d4407a22f5d2f56a4b6c15c5",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.title": {
+      "sourceHash": "e2f2e665bc2ccd82d78340d1a6f6fd492780f92669f46611dbd6b5b7791846cc",
+      "translationHash": "cff58d38cc664ae120ab5e388cc98276944725856a4e9ab0fb18423327abe126",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.install.unsaved": {
+      "sourceHash": "2266f7e8d8362e112278b2211d1fdf87725534cb5080e101e9ea026e065e502d",
+      "translationHash": "5fd3091cd4993ab47e7f2fc5597f6eff588bab56d8ac0f681052baecf6da49df",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.allow": {
+      "sourceHash": "9b1f69967d4ab266292dd9166ef2f78414fa02d9b6961e0331437bd77ff37e15",
+      "translationHash": "17edeba6b01cec4aba28ab3b2b5a9c1b69c7c878435d1a55541cb2337156feeb",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.block": {
+      "sourceHash": "b780867d774af1ce37b0876f2e50d7bb7e26c966095ab9e1beaa751d879ca42d",
+      "translationHash": "660c6150f611865f52c2e024f98d2b4713ce3a0ce96f3b95499793335fd6c0d6",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.deny": {
+      "sourceHash": "14e7ae72d7a3fff68bb2843d24a1fcf267483afa2b97a2034907895eecebcee5",
+      "translationHash": "20a5d81d5a8f684cbaf937ee59dc4173dba36cae98e5c51956a8ba03d828d314",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.empty": {
+      "sourceHash": "b894d533aa5662991ee5f18d6dfed7d6373c1354722a7b71106d0c9c89c3c639",
+      "translationHash": "80fee8643f7154b80008548917027cb0b7114798557c89ecd42a623ddbc716e2",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.label": {
+      "sourceHash": "d28dec84adc1dda388b409c58db8ef933de9d0509bfdd02a8b5f193142f9979c",
+      "translationHash": "6febad821449821f47efbe1addced18ae940a7a3edca159f96df1119761d3914",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.loading": {
+      "sourceHash": "c78e217b8098b994bfc53c2b9483c618dab2a0e175e8b7cd0a1d0f111bee565f",
+      "translationHash": "7bfc7f775db8b60558497d1545f7db5ac95c06fdecd3b188219c4b115a86c8d9",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.899Z"
+    },
+    "agentToolsUi.policy.rateLimit": {
+      "sourceHash": "1236e32741af9d425bd524bf47e313c4c61afac1617dcfbb19367a788164782a",
+      "translationHash": "94a26df302c87f1263efcf1f88203a6d7f45b17000ce9b9ced59168c0063d55f",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.policy.redact": {
+      "sourceHash": "3e00d13cdfc0bef041d5feeea00d07521d7773c7dcec7566f24b5924c52b4e4b",
+      "translationHash": "003747eede5052b9676773b87c4d8c76ce20957576ea9450753fad5b0e176736",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.policy.requireApproval": {
+      "sourceHash": "eb7958f147db1519e11a9f6257e95325daed23f81bb7c2447141ea036e5a41dd",
+      "translationHash": "b43d899f2d2ecb683bcbc8fcd6c8e9c1d45a5561a2e372d45e90dc42c31946ab",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.policy.title": {
+      "sourceHash": "9c80a17d64a156b28de6bcc73662ab15a7759226fc94e2a7092c7b30b4038d1b",
+      "translationHash": "783867dcccd7d9dee8b2fe537505bf112808477f8e89969e724d95616c18fbed",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.critical": {
+      "sourceHash": "d9cf3ac020c5c7ccc1be8f2a0a0584a28727711eeaec421b45ac1f4f1ed03d2a",
+      "translationHash": "df7d743c44f0101820e93d9487f9d6f3a6c5c9dea7aca7a034f4a6c4f5682b01",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.destructive": {
+      "sourceHash": "731767be4544a463b1937ff84f14ef3cc79a5cb85cb5a17371b43c9a171a3d76",
+      "translationHash": "185f588c849544de3671bb6ddaf9d2902b05198c22ce0f9a4adf985ad3e8de23",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.high": {
+      "sourceHash": "f3827bddc3fde09b89b4e4c5ab7ecee47876a660b7044496b95078200d747a3b",
+      "translationHash": "1bd6f91ec9250e532a8844ea8b4eee9ab305e973aabf0083d01de016d4a7fa69",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.low": {
+      "sourceHash": "cab64475152e4815475b141125bd993fb6ce6158d11f047ed4d926751b62b1b8",
+      "translationHash": "25ee90bb53752c28aff237ca656918f4ff71d79c359a2353961d79537099912a",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.medium": {
+      "sourceHash": "4d9e9c0c16f1fa92dc1fae9e3d018ae202120d8d8cc69a0998080321e860f516",
+      "translationHash": "4bc758907f04cc5993c699218b1268e8bd437170d340845c07ff2b5dcf4cd1e8",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.read": {
+      "sourceHash": "78e7a315c6c6305e660835f074375a4c231d61a936e15c59b94486abbbfccc76",
+      "translationHash": "00ea8a907f7409a6953319e29b8d3a11ad1370e7e04f2f13268b150b97e71c21",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.unknown": {
+      "sourceHash": "ead35db502a33e26319ed33e6d6bcb9c753c76f7aa14aff4c218f52da9f05ae0",
+      "translationHash": "e0664085f9df8abcb30c003ba7f12a6a064fcbf4fe9926354b98ddafe5517751",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
+    "agentToolsUi.risk.write": {
+      "sourceHash": "24f2c20e5e84e020785b7c8fe2e313b53f5351385df8c2b6fb6a4e65452f03be",
+      "translationHash": "fe0ff4ce080ef4df902db2e535560d49087b9f3c2dece3ce030126b187c5ce60",
+      "reviewer": "codex-root-editorial-review",
+      "method": "agent",
+      "reviewedAt": "2026-10-26T10:42:58.900Z"
+    },
     "app.cloudCreateUnavailable": {
       "sourceHash": "21541186c133eba2aa8f08fe8cc2e6238759e97796c6b938ad63e61be3db13d0",
       "translationHash": "73edb3ec2c6720654ea4a72a6db15388899ab66549d7b9ae08a6cf6a5350ad89",

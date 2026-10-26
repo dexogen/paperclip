@@ -820,7 +820,19 @@ it, and the corrected complete suite passed. Permission builders remain unchange
 Component tests preserve selected projects, pending saves, raw names/errors and
 locale-independent requests; they do not establish live permission enforcement.
 
-The remaining major packages are agent tools/skills/channels, bulk controls and invitations,
+The agent-tools slice adds 79 reviewed families (81 English and 85 Russian forms).
+Nine complete related suites passed 57 tests without skips, including shared
+component consumers. UI typecheck, build, token gates and map checks passed.
+Its strict audit reports 6,989 reviewed families and 15,697 existing findings,
+with no pending/missing/invalid messages, new findings or source errors. Only 69
+resolved baseline entries were removed; no exception was added. Regressions
+preserve pending/queued installs, failed-draft suppression, canonical requests,
+company-wide locks and raw profile/provider text. Initial cold-import timing and
+an incorrect ApiError test fixture were corrected without relaxing assertions or
+timeouts. The three changed shared presentation exports retain fixed-English
+defaults. Live GitHub/tool access and the other Apps owners remain unverified.
+
+The remaining major packages are agent skills/channels, bulk controls and invitations,
 project workspaces/environments, dashboard/activity/costs, member access/secrets,
 connections and routines. Skills/teams/portability/plugin hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

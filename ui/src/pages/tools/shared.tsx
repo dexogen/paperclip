@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
+import { i18n } from "@/i18n";
 import type {
   ToolRiskLevel,
   ToolConnectionHealthStatus,
@@ -11,15 +13,26 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { ApiError } from "@/api/client";
 
 /** Risk classification badge for a catalog tool. */
-export function RiskBadge({ risk }: { risk: ToolRiskLevel | null | undefined }) {
-  if (!risk) return <Badge variant="outline">unknown</Badge>;
+export function RiskBadge({ risk, t = i18n.getFixedT("en") }: { risk: ToolRiskLevel | null | undefined; t?: TFunction }) {
+  if (!risk) return <Badge variant="outline">{t("agentToolsUi.risk.unknown")}</Badge>;
+  let label: string;
+  switch (risk) {
+    case "low": label = t("agentToolsUi.risk.low"); break;
+    case "medium": label = t("agentToolsUi.risk.medium"); break;
+    case "high": label = t("agentToolsUi.risk.high"); break;
+    case "critical": label = t("agentToolsUi.risk.critical"); break;
+    case "read": label = t("agentToolsUi.risk.read"); break;
+    case "write": label = t("agentToolsUi.risk.write"); break;
+    case "destructive": label = t("agentToolsUi.risk.destructive"); break;
+    default: label = risk;
+  }
   const variant =
     risk === "high" || risk === "critical"
       ? "destructive"
       : risk === "medium"
         ? "secondary"
         : "outline";
-  return <Badge variant={variant}>{risk}</Badge>;
+  return <Badge variant={variant}>{label}</Badge>;
 }
 
 /** Read/Write/Destructive capability chips. */
@@ -27,16 +40,18 @@ export function CapabilityBadges({
   isReadOnly,
   isWrite,
   isDestructive,
+  t = i18n.getFixedT("en"),
 }: {
   isReadOnly?: boolean;
   isWrite?: boolean;
   isDestructive?: boolean;
+  t?: TFunction;
 }) {
   return (
     <span className="inline-flex flex-wrap gap-1">
-      {isReadOnly ? <Badge variant="outline">read-only</Badge> : null}
-      {isWrite ? <Badge variant="secondary">write</Badge> : null}
-      {isDestructive ? <Badge variant="destructive">destructive</Badge> : null}
+      {isReadOnly ? <Badge variant="outline">{t("agentToolsUi.capability.readOnly")}</Badge> : null}
+      {isWrite ? <Badge variant="secondary">{t("agentToolsUi.capability.write")}</Badge> : null}
+      {isDestructive ? <Badge variant="destructive">{t("agentToolsUi.capability.destructive")}</Badge> : null}
     </span>
   );
 }
@@ -167,21 +182,21 @@ export function LoadingState({ label = "Loading…" }: { label?: string }) {
 }
 
 /** Actionable error surface — surfaces the server message and HTTP status. */
-export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
+export function ErrorState({ error, onRetry, t = i18n.getFixedT("en") }: { error: unknown; onRetry?: () => void; t?: TFunction }) {
   let message: string;
   if (error instanceof ApiError) {
     if (error.status === 403) {
-      message = "You do not have permission to view this. Tools & Access requires board/admin access.";
+      message = t("agentToolsUi.error.forbidden");
     } else if (error.status === 404 || /route not found/i.test(error.message)) {
       // Snapshot-skew window: the route exists in this build but not on the live server snapshot yet.
-      message = "Tools & Access isn't available on this server yet — try refreshing after the next deployment.";
+      message = t("agentToolsUi.error.unavailable");
     } else {
       message = error.message;
     }
   } else if (error instanceof Error) {
     message = error.message;
   } else {
-    message = "Something went wrong.";
+    message = t("agentToolsUi.error.unknown");
   }
   return (
     <Card className="border-destructive/40">
@@ -189,7 +204,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
         <div className="flex items-start gap-2 text-sm text-destructive">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <p className="font-medium">Could not load this view</p>
+            <p className="font-medium">{t("agentToolsUi.error.title")}</p>
             <p className="text-destructive/80">{message}</p>
           </div>
         </div>
@@ -199,7 +214,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
             onClick={onRetry}
             className="self-start rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent"
           >
-            Retry
+            {t("agentToolsUi.error.retry")}
           </button>
         ) : null}
       </CardContent>
