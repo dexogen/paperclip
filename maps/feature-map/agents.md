@@ -116,6 +116,24 @@ submission and during an owned pending request, then verify the same agent ID
 after reload and prove execution with an explicit test. A translated success
 caption alone does not prove provider qualification or permission enforcement.
 
+The [external invitation locale cases](../../ui/src/components/new-agent/ExternalAgentInviteDialog.muse.test.tsx),
+[preset/provenance controls](../../ui/src/components/new-agent/ExternalAgentInviteContent.locale.test.tsx),
+[setup prompt](../../ui/src/components/AgentSetupPrompt.locale.test.tsx),
+[Dot connection](../../ui/src/components/DotRunnerConnection.test.tsx) and
+[Muse connection](../../ui/src/components/MuseRunnerConnection.test.tsx) retain
+EN/RU/EN state with dirty name/role drafts, selected text, pending clipboard and
+create requests, the original pairing deadline and exact detector observations.
+They use mocked APIs and clipboard. Real names, prompt bytes and provider errors
+remain literal; locale changes do not create or attest again. The local stale
+snapshot error is distinct from an identical provider message.
+
+For browser acceptance, choose **Invite an external agent** in a disposable,
+authorized setup and switch languages before and during explicit actions. Check
+the same draft, pairing identity/deadline and observation fields. Verify the saved
+result independently; a translated receiver-contact or completion caption does
+not prove background execution, provider access or remote cleanup. Grok's dedicated
+setup and connection panels have separate translation coverage.
+
 Manual: Hire an agent with a distinct name and role. Complete any required approval, reload the roster, and open its configuration. Confirm manager, adapter, and model persisted; run a small task to prove execution readiness.
 
 For a new Codex hire, choose the Codex harness. Automatic selection uses Paperclip

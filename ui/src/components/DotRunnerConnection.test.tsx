@@ -3,6 +3,7 @@ import { act, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import { DotRunnerConnection } from "./DotRunnerConnection";
 import { copyTextToClipboard } from "@/lib/clipboard";
 
@@ -25,12 +26,13 @@ async function render() {
   await act(async () => root.render(<QueryClientProvider client={client}><Form /></QueryClientProvider>));
   await flush();
 }
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
   api.get.mockResolvedValue({ enabled: true, resourceUrl: "https://paperclip.example/mcp/runner", binding: null });
 });
-afterEach(async () => { await act(async () => root.unmount()); client.clear(); container.remove(); vi.resetAllMocks(); });
+afterEach(async () => { await act(async () => root.unmount()); client.clear(); container.remove(); vi.resetAllMocks(); await i18n.changeLanguage("en"); });
 
 it("restores the server binding when the form is reopened after pairing without saving", async () => {
   api.post.mockImplementation(async () => {
@@ -145,7 +147,22 @@ it("removes the copy action and open preview when the pairing code expires", asy
     await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Pair Dot")!.click());
     await act(async () => { await vi.advanceTimersByTimeAsync(20); });
     await act(async () => container.querySelector<HTMLButtonElement>('[aria-label="Set up with Dot"]')!.click());
-    expect(document.querySelector('[aria-label="Setup prompt"]')?.textContent).toContain("soon-expiring-pairing-code");
+    const preview = document.querySelector('[aria-label="Setup prompt"]')!;
+    const prompt = preview.textContent;
+    const reads = api.get.mock.calls.length;
+    const bindingWrites = onBinding.mock.calls.length;
+    expect(prompt).toContain("soon-expiring-pairing-code");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.querySelector('[aria-label="Настроить с помощью Dot"]')).not.toBeNull();
+    expect(document.querySelector('[aria-label="Инструкции настройки"]')).toBe(preview);
+    expect(preview.textContent).toBe(prompt);
+    expect(container.querySelector("output")?.textContent).toBe(binding.id);
+    expect(api.get).toHaveBeenCalledTimes(reads);
+    expect(api.post).toHaveBeenCalledTimes(1);
+    expect(onBinding).toHaveBeenCalledTimes(bindingWrites);
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(document.querySelector('[aria-label="Setup prompt"]')).toBe(preview);
+    expect(copyTextToClipboard).toHaveBeenCalledExactlyOnceWith(prompt);
     await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
     expect(container.querySelector('[aria-label="Set up with Dot"]')).toBeNull();
     expect(document.querySelector('[aria-label="Setup prompt"]')).toBeNull();
