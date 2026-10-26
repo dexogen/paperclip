@@ -806,7 +806,11 @@ committed it before the assertion. Wrapping that case's existing flush in React
 `act` fixed the test's synchronization, without changing its assertion, timers or
 production code. The complete 55-case editor suite then passed. The other 29
 complete suites passed in the original run. Integrated UI typecheck, build,
-token gates and map checks passed; these results do not claim full repository CI.
+token gates and map checks passed. The [complete agent-detail CI run](https://github.com/dexogen/paperclip/actions/runs/40307651568)
+then passed all nine jobs on `cd48cf31dbfdc0805aba6d50620b93b009d71927`,
+including the workspace build and typecheck, all test partitions, localization
+browser journeys and the integration gate. This does not include later agent-tab
+or external-agent changes, and no live provider acceptance is inferred.
 
 The combined agent-tab package adds 206 reviewed message families: trust and
 project access (69), tools (79), skills (42), and channels (16). Three reused
@@ -820,7 +824,10 @@ All 168 tests in 20 complete related suites pass together on the combined source
 at `677104493d393bc8362028b361bad3e5ae0076c1`, without skips. Combined UI typecheck,
 build, token gates and map checks pass. Later documentation and review-record
 ordering edits preserve that tested source and all parsed review records.
-Exact-head hosted CI and Greptile review for the combined PR remain pending.
+The combined tabs are published in [PR #27](https://github.com/dexogen/paperclip/pull/27).
+[Exact-head hosted CI](https://github.com/dexogen/paperclip/actions/runs/40312816178)
+is running on `f5ee0146a166c42abfbdd9b707d5b3a07478bf34`; its localization
+job has passed. Complete CI and Greptile review remain pending.
 
 The regressions retain drafts, focus, selected projects, permission payloads,
 tool-install queues, failed-draft suppression, skill version pins and channel
