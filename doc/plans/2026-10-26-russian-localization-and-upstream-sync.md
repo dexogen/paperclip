@@ -949,8 +949,23 @@ behavior. Backend probe summaries require a separate typed-provenance change;
 provider-schema localization remains a later bounded slice. Exact-head CI,
 browser qualification and deployment remain pending for this candidate.
 
+The dashboard page adds 34 independently reviewed message families (37 English
+and 43 Russian forms). It translates summary cards, budget and paused-agent
+banners, chart headings and recent-task headings. The existing sequential resume
+operation, partial-failure handling and query invalidation remain unchanged.
+One new behavioral test failed on the original English-only button, then both
+complete owning suites passed all five tests after translation. They preserve
+raw task content and link identity through EN/RU/EN during a pending resume.
+The nested panels are mocked; their translation, real shared polling and live
+agent resumption remain separate work. The source audit removes only 38 resolved
+findings from Dashboard.tsx, with no new exceptions. The one English budget-
+override phrase now uses its singular form when the count is one.
+UI typecheck, token gates and map checks pass. The strict audit passes with
+7,486 reviewed families, 15,218 remaining findings and no actionable findings.
+A full build and browser acceptance of the integrated candidate remain pending.
+
 The remaining major packages are remaining provider setup, global execution-
-workspace pages, environment backend/schema copy, dashboard/activity/costs,
+workspace pages, environment backend/schema copy, live dashboards/activity/costs,
 member access/secrets, connections and routines. Skills/teams/portability/plugin
 hosts have additional
 coverage gaps. These are outstanding packages, not a claim that shared translated

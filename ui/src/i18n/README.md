@@ -367,6 +367,13 @@ mocked providers and sockets. Backend probe summaries still use their original
 text; typed provenance and provider-schema captions are separate follow-up work.
 These checks do not establish a live SSH connection, image capture or deployment.
 
+The dashboard page translates summary metrics, budget and paused-agent banners,
+chart headings and recent-task headings. Changing language preserves the current
+query identities and a pending sequential import-resume action. Raw task titles,
+identifiers and links remain unchanged. The focused component check mocks nested
+panels: live dashboards, activity rows, chart internals and Smoke Lab remain
+separate translation and acceptance work.
+
 Unconverted task-detail child panels, additional agent controls,
 dashboards and remaining settings still need translation. Shared task rows also appear in
 Inbox, projects, and routines; their translation does not cover those entire host
@@ -374,7 +381,7 @@ pages. Shared child components may contain untranslated copy; the source audit
 tracks that debt.
 An English/Russian key match is not a claim of complete application localization.
 Formatting helpers update when their host component renders. Screens that do not
-yet subscribe to locale changes, such as Costs and Dashboard, may retain their
+yet subscribe to locale changes, such as Costs, may retain their
 previous display formatting until that next render.
 
 The initial foundation adapts the 19-file diff from
