@@ -57,17 +57,20 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     `], { encoding: "utf8" }));
     expect(hookEnv.parent).toBeNull();
     expect(hookEnv.child.BASH_ENV).toContain(relocated);
-    const command = spawnSync("bash", ["-c", 'printf "%s" "$1"; exit 7', "bash", "literal ' $() value"], {
-      env: { ...process.env, ...hookEnv.child }, encoding: "utf8",
-    });
-    expect(command.stdout).toBe("literal ' $() value");
-    expect(command.status).toBe(7);
-    if (process.platform === "linux") {
-      const parentScore = await fs.readFile("/proc/self/oom_score_adj", "utf8");
-      expect(execFileSync("bash", ["-c", "cat /proc/self/oom_score_adj"], {
-        env: { ...process.env, ...hookEnv.child }, encoding: "utf8",
-      }).trim()).toBe("1000");
-      expect(await fs.readFile("/proc/self/oom_score_adj", "utf8")).toBe(parentScore);
+    for (const sshEnvironment of [{}, { SSH_CLIENT: "127.0.0.1 12345 22", SHLVL: "0" }]) {
+      const childEnv = { ...process.env, ...hookEnv.child, ...sshEnvironment };
+      const command = spawnSync("bash", ["--norc", "-c", 'printf "%s" "$1"; exit 7', "bash", "literal ' $() value"], {
+        env: childEnv, encoding: "utf8",
+      });
+      expect(command.stdout).toBe("literal ' $() value");
+      expect(command.status).toBe(7);
+      if (process.platform === "linux") {
+        const parentScore = await fs.readFile("/proc/self/oom_score_adj", "utf8");
+        expect(execFileSync("bash", ["--norc", "-c", "cat /proc/self/oom_score_adj"], {
+          env: childEnv, encoding: "utf8",
+        }).trim()).toBe("1000");
+        expect(await fs.readFile("/proc/self/oom_score_adj", "utf8")).toBe(parentScore);
+      }
     }
     const config = JSON.parse(await fs.readFile(path.join(relocated, "opencode", "opencode.json"), "utf8"));
     expect(config).toMatchObject({ plugin: ["operator-plugin"], permission: { bash: "ask" } });
