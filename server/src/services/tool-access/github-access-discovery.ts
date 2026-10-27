@@ -238,6 +238,7 @@ export async function loadGitHubGrantMetadata(
         "The Paperclip GitHub installation is suspended. Unsuspend it on GitHub before refreshing access.",
         {
           code: "github_installation_required",
+          displayMessage: { source: "paperclip-github", version: 1, code: "installation_suspended" },
           installationUrl,
           managementUrl:
             suspendedManagementUrls.size === 1
@@ -250,6 +251,7 @@ export async function loadGitHubGrantMetadata(
       "GitHub access is required. Install Paperclip and grant at least one repository before refreshing access.",
       {
         code: "github_installation_required",
+        displayMessage: { source: "paperclip-github", version: 1, code: "installation_required" },
         installationUrl,
         managementUrl: "https://github.com/settings/installations",
       },

@@ -4,6 +4,18 @@ import { connectionGrants, toolConnectionInstalls, toolConnections } from "@pape
 import type { ToolConnection, ToolConnectionInstall } from "@paperclipai/shared";
 import { isRetiredComposioConnection, RETIRED_COMPOSIO_MESSAGE } from "@paperclipai/shared";
 
+/** A marker is valid only for the same owned GitHub health observation. */
+export function githubHealthDisplay(row: Pick<typeof toolConnections.$inferSelect, "config" | "healthMessage" | "healthCheckedAt">): ToolConnection["healthMessageDisplay"] {
+  const value = row.config && Object.hasOwn(row.config, "paperclipHealthDisplay") ? row.config.paperclipHealthDisplay : null;
+  if (row.config?.sourceTemplateKey !== "github" || !value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const marker = value as Record<string, unknown>;
+  if (!["source", "version", "code", "message", "checkedAt"].every(key => Object.hasOwn(marker, key)) ||
+      marker.source !== "paperclip-github" || marker.version !== 1 || marker.message !== row.healthMessage ||
+      !(row.healthCheckedAt instanceof Date) || marker.checkedAt !== row.healthCheckedAt.toISOString() ||
+      (marker.code !== "installation_suspended" && marker.code !== "installation_required")) return undefined;
+  return { source: "paperclip-github", version: 1, code: marker.code };
+}
+
 export function toConnection(row: typeof toolConnections.$inferSelect): ToolConnection {
   connectionPurposeTransportSchema.parse(row);
   const retired = isRetiredComposioConnection(row);
@@ -30,6 +42,7 @@ export function toConnection(row: typeof toolConnections.$inferSelect): ToolConn
     credentialSecretRefs: row.credentialSecretRefs ?? [],
     healthStatus: retired ? "error" : row.healthStatus,
     healthMessage: retired ? RETIRED_COMPOSIO_MESSAGE : row.healthMessage,
+    ...(!retired && githubHealthDisplay(row) ? { healthMessageDisplay: githubHealthDisplay(row) } : {}),
     healthCheckedAt: row.healthCheckedAt,
     lastHealthAt: row.lastHealthAt,
     lastCatalogRefreshAt: row.lastCatalogRefreshAt,

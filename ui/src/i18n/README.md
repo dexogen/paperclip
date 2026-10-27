@@ -110,6 +110,13 @@ active phases. The following boundaries require source review when producers cha
   against reviewed English source; changed or unknown copy falls back to raw.
   The five-caption `github.json` contract test detects upstream copy drift that
   the generic UI scanner cannot see. This metadata grants no authority.
+- Project Git API errors carry closed `details.displayMessage` descriptors. GitHub
+  installation failures retain a versioned producer marker in connection config;
+  projection accepts it only for the matching health message and observation time.
+  New health checks clear obsolete markers without replacing unrelated config.
+  Codex retirement metadata translates only the reviewed rejection caption and hint;
+  native/provider messages and details remain literal. Unknown, changed or stale
+  descriptors retain raw text. Producer and locale tests detect source-copy drift.
 - Built-in agent captions use closed definition IDs, not stored names. Onboarding
   seed titles and descriptions and first-party announcements require their
   specific provenance and exact known source checks; arbitrary edited content

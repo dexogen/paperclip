@@ -75,6 +75,7 @@ describe("GitHub Refresh access recovery", () => {
       message: expect.stringContaining("suspended"),
       details: {
         code: "github_installation_required",
+        displayMessage: { source: "paperclip-github", version: 1, code: "installation_suspended" },
         managementUrl: SUSPENDED_INSTALLATION_URL,
         installationUrl: "https://github.com/apps/paperclip-staging/installations/new",
         connection: { id: "conn-1", healthStatus: "error", healthMessage: expect.stringContaining("suspended") },

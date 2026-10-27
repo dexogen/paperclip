@@ -1,3 +1,5 @@
+import { ApiError } from "@/api/client";
+import { formatOwnedApiError } from "@/lib/owned-diagnostic-display";
 import type { TOptions } from "i18next";
 import { i18n, t } from "@/i18n";
 
@@ -64,14 +66,15 @@ type AppDisplayKey = AppDisplayErrorKey
   | "fullApps.unable_to_update_slack_search_2986f9"
   | "fullApps.we_couldn_t_save_that_audience_cc1aaa";
 
-export type AppDisplayText = string | { readonly displayKey: AppDisplayKey; readonly displayValues?: TOptions };
+export type AppDisplayText = string | { readonly apiError: ApiError } | { readonly displayKey: AppDisplayKey; readonly displayValues?: TOptions };
 
 export function ownAppDisplayText(displayKey: AppDisplayKey, displayValues?: TOptions): AppDisplayText {
   return { displayKey, displayValues };
 }
 
 export function renderAppDisplayText(value: AppDisplayText | null): string | null {
-  return typeof value === "string" || value === null ? value : t(value.displayKey, value.displayValues);
+  return typeof value === "string" || value === null ? value : "apiError" in value
+    ? formatOwnedApiError(value.apiError) : t(value.displayKey, value.displayValues);
 }
 
 export class AppDisplayError extends Error {
@@ -81,9 +84,10 @@ export class AppDisplayError extends Error {
 }
 
 export function appErrorDisplay(error: Error): AppDisplayText {
-  return error instanceof AppDisplayError ? ownAppDisplayText(error.displayKey, error.displayValues) : error.message;
+  return error instanceof AppDisplayError ? ownAppDisplayText(error.displayKey, error.displayValues)
+    : error instanceof ApiError ? { apiError: error } : error.message;
 }
 
 export function renderAppError(error: Error): string {
-  return error instanceof AppDisplayError ? t(error.displayKey, error.displayValues) : error.message;
+  return error instanceof AppDisplayError ? t(error.displayKey, error.displayValues) : formatOwnedApiError(error);
 }

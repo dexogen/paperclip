@@ -6884,6 +6884,14 @@
     {
       "id": "9b4f1df57512ffc8dd906fb32e17ec4f1e445867d1c2cb96315cba82156bf4f1",
       "reason": "Canonical English PRESET_LABELS compatibility export. Costs UI uses datePresetLabel(preset, t); locale switching must preserve date ranges and query keys. Its default translator deliberately remains English."
+    },
+    {
+      "id": "e3bbdee66e1c64e2007382b24e3e2b059d31fce95735702e36d7417358f230d7",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "eea1ed9fd6a67baa199d57e6a25ec84026d6e5b9b4fff46e11419ced95ea7ac0",
+      "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
     }
   ]
 }

@@ -49,7 +49,11 @@ const support = await getEmbeddedPostgresTestSupport();
     }
     it("uses explicit project consent without a task and journals consent changes", async () => {
       const f = await projectAuthorizationFixture();
-      await expect(f.service.resolve(f.request, f.scope)).rejects.toThrow("Authorize this project");
+      await expect(f.service.resolve(f.request, f.scope)).rejects.toMatchObject({
+        status: 403,
+        message: "Authorize this project's GitHub connection before provisioning private repositories",
+        details: { displayMessage: { source: "paperclip-project-git", version: 1, code: "consent_required" } },
+      });
       expect(await f.service.read(f.input.companyId, f.project.id, "B")).toMatchObject({ options: [] });
       await expect(f.service.set(f.input.companyId, f.project.id, "B", f.selected.id)).rejects.toThrow("own active");
       const saved = await f.service.set(f.input.companyId, f.project.id, "A", f.selected.id);

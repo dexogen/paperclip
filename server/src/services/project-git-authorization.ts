@@ -25,7 +25,7 @@ import { isCurrentCloudOwnerInstanceAdmin, loadCurrentCloudOwnerAuthority } from
 
 function transientGitToken(token: string | undefined): string {
   if (!token || token.length > 4096 || /[\0\r\n]/.test(token) || token.startsWith("secret://")) {
-    throw forbidden("GitHub credential unavailable");
+    throw forbidden("GitHub credential unavailable", { displayMessage: { source: "paperclip-project-git", version: 1, code: "credential_unavailable" } });
   }
   return token;
 }
@@ -37,7 +37,7 @@ export function projectGitAuthorizationService(db: Db) {
       .select()
       .from(projects)
       .where(and(eq(projects.companyId, companyId), eq(projects.id, projectId)));
-    if (!row || (!allowArchived && row.archivedAt)) throw notFound("Active project not found");
+    if (!row || (!allowArchived && row.archivedAt)) throw notFound("Active project not found", { displayMessage: { source: "paperclip-project-git", version: 1, code: "project_not_found" } });
     return row;
   }
   async function eligible(companyId: string, userId: string) {
@@ -108,9 +108,9 @@ export function projectGitAuthorizationService(db: Db) {
           .from(projects)
           .where(and(eq(projects.companyId, companyId), eq(projects.id, projectId)))
           .for("update");
-        if (!row || (row.archivedAt && grantId)) throw notFound("Active project not found");
+        if (!row || (row.archivedAt && grantId)) throw notFound("Active project not found", { displayMessage: { source: "paperclip-project-git", version: 1, code: "project_not_found" } });
         if (grantId && !(await eligible(companyId, userId)).some(({ grant }) => grant.id === grantId)) {
-          throw forbidden("Select your own active company-installed GitHub authorization");
+          throw forbidden("Select your own active company-installed GitHub authorization", { displayMessage: { source: "paperclip-project-git", version: 1, code: "own_authorization_required" } });
         }
         await tx
           .update(projects)
@@ -150,7 +150,7 @@ export function projectGitAuthorizationService(db: Db) {
         scope.projectId !== input.projectId ||
         (scope.workspaceId && scope.workspaceId !== input.workspaceId)
       )
-        throw forbidden("Git credentials require a matching host project operation");
+        throw forbidden("Git credentials require a matching host project operation", { displayMessage: { source: "paperclip-project-git", version: 1, code: "host_operation_required" } });
       const cleanup = scope.workspaceId === input.workspaceId && !scope.runId && !scope.agentId &&
         (scope.operation === "inspect" || scope.operation === "remove");
       const row = await project(input.companyId, input.projectId, cleanup);
@@ -164,11 +164,11 @@ export function projectGitAuthorizationService(db: Db) {
             eq(projectWorkspaces.id, input.workspaceId),
           ),
         );
-      if (!workspace?.repoUrl) throw forbidden("Git credentials require a configured project repository");
+      if (!workspace?.repoUrl) throw forbidden("Git credentials require a configured project repository", { displayMessage: { source: "paperclip-project-git", version: 1, code: "repository_required" } });
       const repo = normalizeProjectRepositoryUrl(workspace.repoUrl);
       const isPrivate = await projectRepositoryIsPrivate(db, input.companyId, workspace);
       if (scope.runId || scope.agentId) {
-        if (!scope.runId || !scope.agentId) throw forbidden("Incomplete foreground Git identity");
+        if (!scope.runId || !scope.agentId) throw forbidden("Incomplete foreground Git identity", { displayMessage: { source: "paperclip-project-git", version: 1, code: "foreground_identity_incomplete" } });
         const [run] = await db
           .select({
             status: heartbeatRuns.status,
@@ -195,7 +195,7 @@ export function projectGitAuthorizationService(db: Db) {
                 .where(and(eq(issues.id, issueId), eq(issues.companyId, input.companyId)))
             : [];
         if (!run || run.status !== "running" || !issue || typeof issueId !== "string")
-          throw forbidden("Active task run is unavailable");
+          throw forbidden("Active task run is unavailable", { displayMessage: { source: "paperclip-project-git", version: 1, code: "active_run_unavailable" } });
         await assertTaskWorkspaceExecutionAccess(db, {
           type: "agent", source: "agent_jwt", companyId: input.companyId,
           agentId: scope.agentId, runId: scope.runId,
@@ -214,14 +214,14 @@ export function projectGitAuthorizationService(db: Db) {
       }
       if (!isPrivate) return null;
       if (!row.gitAuthorizationGrantId)
-        throw forbidden("Authorize this project's GitHub connection before provisioning private repositories");
+        throw forbidden("Authorize this project's GitHub connection before provisioning private repositories", { displayMessage: { source: "paperclip-project-git", version: 1, code: "consent_required" } });
       const selected =
         row.gitAuthorizedByUserId &&
         (await eligible(input.companyId, row.gitAuthorizedByUserId)).find(
           ({ grant }) => grant.id === row.gitAuthorizationGrantId,
         );
       if (!row.gitAuthorizedByUserId || !selected)
-        throw forbidden("Project GitHub authorization is unavailable; reconnect or select an authorization");
+        throw forbidden("Project GitHub authorization is unavailable; reconnect or select an authorization", { displayMessage: { source: "paperclip-project-git", version: 1, code: "authorization_unavailable" } });
       const cloud = isCloudManagedInstance();
       const isInstanceAdmin = cloud && await isCurrentCloudOwnerInstanceAdmin(db, row.gitAuthorizedByUserId,
         await loadCurrentCloudOwnerAuthority(row.gitAuthorizedByUserId));
@@ -229,14 +229,14 @@ export function projectGitAuthorizationService(db: Db) {
         type: "board", source: cloud ? "cloud_tenant" : "session", userId: row.gitAuthorizedByUserId, isInstanceAdmin,
       }, input.companyId, row.id);
       if (resolveCoreTrustPreset({ companyId: input.companyId, workspaceSourceProject: row }).kind !== "standard")
-        throw forbidden("GitHub credentials are not available to low-trust or unverified projects");
+        throw forbidden("GitHub credentials are not available to low-trust or unverified projects", { displayMessage: { source: "paperclip-project-git", version: 1, code: "project_untrusted" } });
       // Project consent follows this connection's repository access, including future project sources.
       if (
         !selected.grant.providerTenant?.github?.repositories?.some(
           (r) => r.fullName.toLowerCase() === repo.fullName.toLowerCase(),
         )
       ) {
-        throw forbidden("Project GitHub authorization does not include this repository; refresh Connector access");
+        throw forbidden("Project GitHub authorization does not include this repository; refresh Connector access", { displayMessage: { source: "paperclip-project-git", version: 1, code: "repository_not_authorized" } });
       }
       const resolved = await resolveManagedGitHubCredential(db, secretService(db), input.companyId, {
         responsibleUserId: row.gitAuthorizedByUserId,
@@ -244,7 +244,7 @@ export function projectGitAuthorizationService(db: Db) {
         allowStandingDelegation: false,
       });
       if (!resolved.credential || resolved.credential.grantId !== row.gitAuthorizationGrantId)
-        throw forbidden("Project GitHub credential unavailable; reconnect the selected authorization");
+        throw forbidden("Project GitHub credential unavailable; reconnect the selected authorization", { displayMessage: { source: "paperclip-project-git", version: 1, code: "reconnect_required" } });
       return transientGitToken(resolved.credential.token);
     },
   };

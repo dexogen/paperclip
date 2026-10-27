@@ -1,3 +1,5 @@
+import { formatOwnedDiagnostic, formatOwnedApiError } from "@/lib/owned-diagnostic-display";
+import { useTranslation } from "@/i18n";
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
 
@@ -19,23 +21,27 @@ function githubAccessRecoveryUrl(error: unknown): string | null {
  * message, a link to the GitHub page that fixes the last failed refresh, and a
  * retry.
  */
-export function AccessRetryBanner({ message, error, pending, onRetry }: {
+export function AccessRetryBanner({ message, displayMessage, error, pending, onRetry }: {
   message: string | null | undefined;
+  displayMessage?: unknown;
   error: unknown;
   pending: boolean;
   onRetry: () => void;
 }) {
+  const { t } = useTranslation();
   const recoveryUrl = githubAccessRecoveryUrl(error);
+  const ownedError = error instanceof ApiError && error.message === message ? formatOwnedApiError(error, t) : null;
+  const display = message ? (ownedError ?? formatOwnedDiagnostic(message, displayMessage, t)) : null;
   return (
     <div role="status">
-      <p>{message || "GitHub access could not be checked. Try again."}</p>
+      <p>{display || t("fullApps.github_access_could_not_be_checked_try_again_688543")}</p>
       {recoveryUrl ? (
         <Button asChild variant="outline">
-          <a href={recoveryUrl} target="_blank" rel="noreferrer">Open installation settings on GitHub</a>
+          <a href={recoveryUrl} target="_blank" rel="noreferrer">{t("fullApps.githubInstallationSettings")}</a>
         </Button>
       ) : null}
       <Button variant="outline" disabled={pending} onClick={onRetry}>
-        Retry access
+        {t("fullApps.retry_access_e52222")}
       </Button>
     </div>
   );

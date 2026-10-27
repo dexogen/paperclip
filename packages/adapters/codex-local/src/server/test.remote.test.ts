@@ -396,6 +396,7 @@ describe("codex remote environment diagnostics", () => {
     expect(rejected).toMatchObject({
       level: "error",
       message: "The Codex backend rejected gpt-5.5 for this ChatGPT account.",
+      codexRetirement: { source: "paperclip-codex", version: 1, model: "gpt-5.5", retiredOn: "2026-10-14", replacement: "gpt-6.1-sol (gpt-6-luna on Free and Go plans)" },
       hint: "OpenAI retired gpt-5.5 from Codex with ChatGPT sign-in on 2026-10-14. Choose gpt-6.1-sol (gpt-6-luna on Free and Go plans), or use an OpenAI API key; API-key sessions are not affected.",
     });
     expect(rejected?.hint).not.toContain("Upgrade Codex");

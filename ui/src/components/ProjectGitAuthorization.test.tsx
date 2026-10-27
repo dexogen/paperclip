@@ -6,6 +6,7 @@ import type { Project } from "@paperclipai/shared";
 import { describe, expect, it, vi } from "vitest";
 import { projectsApi } from "@/api/projects";
 import { ProjectGitAuthorization } from "./ProjectGitAuthorization";
+import { i18n } from "@/i18n";
 
 vi.mock("@/api/projects", () => ({
   projectsApi: {
@@ -54,6 +55,13 @@ describe("ProjectGitAuthorization", () => {
       expect(container.textContent).toContain("Manage repository access in the GitHub connection");
       expect(container.textContent).toContain("Task runs continue to use their own identity");
       expect(container.textContent).toContain("fixture-login");
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Разрешение действует до отзыва");
+      expect(container.textContent).toContain("Провайдер получит учётные данные коннектора с его текущими правами в GitHub");
+      expect(container.textContent).toContain("Запуски задач по-прежнему используют собственную учётную запись");
+      expect(container.textContent).toContain("Доступ предоставлен: fixture-login");
+      expect(projectsApi.setGitAuthorization).not.toHaveBeenCalled();
+      await act(async () => { await i18n.changeLanguage("en"); });
       const authorize = [...container.querySelectorAll("button")].find(
         (button) => button.textContent === "Authorize project",
       )!;
@@ -74,6 +82,7 @@ describe("ProjectGitAuthorization", () => {
       await act(async () => root.unmount());
       container.remove();
       client.clear();
+      await i18n.changeLanguage("en");
     }
   });
 });

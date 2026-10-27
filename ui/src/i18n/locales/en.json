@@ -1475,7 +1475,8 @@
         "fresh": "Fresh",
         "stale": "Stale",
         "auth_required": "Requires auth",
-        "unreachable": "Unreachable"
+        "unreachable": "Unreachable",
+        "rate_limited": "Rate limited"
       },
       "type": {
         "pull_request": "pull request",
@@ -7530,7 +7531,9 @@
       "environmentSettings": "Could not load environment settings to determine which environment to test in. Retry the test.",
       "testFailed": "Environment test failed",
       "refreshModelsFailed": "Failed to refresh adapter models.",
-      "loadModelsFailed": "Failed to load adapter models."
+      "loadModelsFailed": "Failed to load adapter models.",
+      "testSettingsChanged": "Agent settings changed during the test. Run test again.",
+      "testSavedComputer": "Could not verify the saved computer. Run test again."
     },
     "test": "Test",
     "testing": "Test...",
@@ -14523,7 +14526,8 @@
     "configAppCount_one": "We found {{count}} app in that config",
     "configAppCount_other": "We found {{count}} apps in that config",
     "reviewAppActions": "Review actions for {{name}}",
-    "repositoriesEnabledSummary": "{{enabled}} of {{total}} repositories enabled. Toggle all applies across the entire connection."
+    "repositoriesEnabledSummary": "{{enabled}} of {{total}} repositories enabled. Toggle all applies across the entire connection.",
+    "githubInstallationSettings": "Open installation settings on GitHub"
   },
   "fullPages": {
     "external": "External",
@@ -19590,5 +19594,41 @@
     "retryComputerPreparationFailed": "Could not retry computer preparation.",
     "retrySavingEnvironment": "Retry saving environment",
     "saveEnvironmentFailed": "Could not save the environment."
+  },
+  "projectGitAuthorization": {
+    "title": "Background GitHub authorization",
+    "description": "Allow this project’s workspace provider to use your GitHub Connector for repository provisioning and maintenance until revoked. This shares the Connector credential with the provider using its existing GitHub permissions. Project repository editors can add repositories covered by this connection. Manage repository access in the GitHub connection. Task runs continue to use their own identity.",
+    "authorized": "Authorized: {{account}}",
+    "unavailableGrant": "selected grant (unavailable or owned by another member)",
+    "accountLabel": "Your GitHub authorization",
+    "accountPlaceholder": "Select your GitHub account",
+    "authorize": "Authorize project",
+    "revoke": "Revoke authorization",
+    "connectAccount": "Connect your GitHub account and install the Connector for this company to authorize it."
+  },
+  "ownedDiagnostic": {
+    "projectGit": {
+      "credential_unavailable": "GitHub credential unavailable",
+      "project_not_found": "Active project not found",
+      "own_authorization_required": "Select your own active company-installed GitHub authorization",
+      "host_operation_required": "Git credentials require a matching host project operation",
+      "repository_required": "Git credentials require a configured project repository",
+      "foreground_identity_incomplete": "Incomplete foreground Git identity",
+      "active_run_unavailable": "Active task run is unavailable",
+      "consent_required": "Authorize this project's GitHub connection before provisioning private repositories",
+      "authorization_unavailable": "Project GitHub authorization is unavailable; reconnect or select an authorization",
+      "project_untrusted": "GitHub credentials are not available to low-trust or unverified projects",
+      "repository_not_authorized": "Project GitHub authorization does not include this repository; refresh Connector access",
+      "reconnect_required": "Project GitHub credential unavailable; reconnect the selected authorization"
+    },
+    "github": {
+      "installation_suspended": "The Paperclip GitHub installation is suspended. Unsuspend it on GitHub before refreshing access.",
+      "installation_required": "GitHub access is required. Install Paperclip and grant at least one repository before refreshing access."
+    },
+    "codex": {
+      "rejected": "The Codex backend rejected {{model}} for this ChatGPT account.",
+      "retired": "OpenAI retired {{model}} from Codex with ChatGPT sign-in on {{date}}. Choose {{replacement}}, or use an OpenAI API key; API-key sessions are not affected.",
+      "solReplacement": "gpt-6.1-sol (gpt-6-luna on Free and Go plans)"
+    }
   }
 }

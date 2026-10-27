@@ -63,3 +63,28 @@ it("keeps result diagnostics, expanded details, and explicit test identity acros
     container.remove();
   }
 });
+
+it("updates an owned Codex retirement hint across locales while retaining provider evidence", async () => {
+  const container = document.createElement("div");
+  const root = createRoot(container);
+  const onTest = vi.fn();
+  const raw = "Provider <b>account rejection</b>";
+  const result = {
+    adapterType: "paperclip_runner", status: "fail" as const, testedAt: "2026-10-27T09:00:00Z",
+    checks: [{ code: "codex_hello_probe_failed", level: "error" as const, message: raw,
+      hint: "OpenAI retired gpt-5.5 from Codex with ChatGPT sign-in on 2026-10-14. Choose gpt-6.1-sol (gpt-6-luna on Free and Go plans), or use an OpenAI API key; API-key sessions are not affected.",
+      codexRetirement: { source: "paperclip-codex" as const, version: 1 as const, model: "gpt-5.5", retiredOn: "2026-10-14", replacement: "gpt-6.1-sol (gpt-6-luna on Free and Go plans)" },
+    }],
+  };
+  try {
+    await act(async () => { await setLocale("ru"); root.render(<RuntimeTestCard state="fail" onTest={onTest} result={result} />); });
+    expect(container.textContent).toContain("на тарифах Free и Go");
+    expect(container.textContent).toContain(raw);
+    expect(container.querySelector("b")).toBeNull();
+    await act(async () => setLocale("en"));
+    expect(container.textContent).toContain(result.checks[0].hint);
+    expect(onTest).not.toHaveBeenCalled();
+  } finally {
+    await act(async () => { root.unmount(); await setLocale("en"); });
+  }
+});

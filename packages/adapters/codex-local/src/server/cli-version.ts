@@ -4,6 +4,7 @@ import { runAdapterExecutionTargetProcess } from "@paperclipai/adapter-utils/exe
 import {
   CODEX_CHATGPT_MODEL_REJECTION_RE,
   codexChatGptRetirementHint,
+  codexChatGptRetirementForModel,
   codexCliVersionAtLeast,
   minimumCodexCliVersionForModel,
   normalizeCodexModel,
@@ -117,6 +118,8 @@ export function codexHelloProbeModelRejectionCheck(input: {
     : "";
   return {
     code: CODEX_HELLO_PROBE_MODEL_REJECTED_CHECK_CODE,
+    ...(retirementHint ? { codexRetirement: { source: "paperclip-codex" as const, version: 1 as const,
+      model: normalizeCodexModel(model), ...codexChatGptRetirementForModel(model)! } } : {}),
     level: "error",
     message: `The Codex backend rejected ${model} for this ChatGPT account.`,
     detail: `${match[0]}${versionNote}`,

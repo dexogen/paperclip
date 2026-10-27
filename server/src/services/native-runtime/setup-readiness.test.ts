@@ -24,6 +24,9 @@ vi.mock("./native-codex-runner.js", () => ({ resolvePaperclipRunnerBinary: selec
 vi.mock("../../vendor/paperclip-runner/index.js", async original => ({ ...await original<typeof import("../../vendor/paperclip-runner/index.js")>(), probeNativeRunnerEnvironment: nativeProbe }));
 vi.mock("./native-session-executor.js", async original => ({ ...await original<typeof import("./native-session-executor.js")>(), createRemoteNativeArtifactPreparation: nativeArtifacts, createRemoteRunnerProcessLauncher: remoteLauncher }));
 import { testNativeRunnerAuthentication } from "./setup-readiness.js";
+// Load the mocked executor before the first test's deadline. Its real exports are
+// used by the mock; cold source transforms are suite setup, not probe execution.
+await import("./native-session-executor.js");
 const context = {
   companyId: "company", adapterType: "paperclip_runner", config: { externallySandboxed: false, env: { PAPERCLIP_RUNNER_EXTERNAL_SANDBOX: "false" } },
   executionTarget: { kind: "remote" as const, transport: "sandbox" as const, providerKey: "test", remoteCwd: "/workspace", runner: { execute: vi.fn() } },
@@ -439,6 +442,7 @@ describe("Codex selected native account verification", () => {
     expect(result.status).toBe("fail");
     expect(result.checks[0]).toMatchObject({ code: "codex_hello_probe_failed", level: "error" });
     expect(result.checks[0].hint).toContain("OpenAI retired gpt-5.5 from Codex with ChatGPT sign-in on 2026-10-14");
+    expect(result.checks[0].codexRetirement).toEqual({ source: "paperclip-codex", version: 1, model: "gpt-5.5", retiredOn: "2026-10-14", replacement: "gpt-6.1-sol (gpt-6-luna on Free and Go plans)" });
     expect(result.checks[0].hint).toContain("gpt-6.1-sol");
   });
   it("keeps the generic hint when the backend rejects a model that is not retired", async () => {

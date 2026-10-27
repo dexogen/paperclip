@@ -1,3 +1,4 @@
+import { formatCodexProbeField } from "@/lib/owned-diagnostic-display";
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { t as translate, useTranslation, t, i18n } from "../i18n";
@@ -114,6 +115,8 @@ const configErrorMessages = {
   upgradeFailed: "agentConfigUi.errors.upgradeFailed",
   environmentSettings: "agentConfigUi.errors.environmentSettings",
   testFailed: "agentConfigUi.errors.testFailed",
+  testSettingsChanged: "agentConfigUi.errors.testSettingsChanged",
+  testSavedComputer: "agentConfigUi.errors.testSavedComputer",
   refreshModelsFailed: "agentConfigUi.errors.refreshModelsFailed",
   loadModelsFailed: "agentConfigUi.errors.loadModelsFailed",
 } as const;
@@ -1261,9 +1264,10 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
         // Qualify only the saved computer. The strict agent-scoped endpoint
         // accepts no draft provider config, credentials or replacement target.
         const qualification = await agentsApi.qualifyRunner(props.agent.id, environmentId, selectedCompanyId);
-        if (runnerSettingsTargetRef.current !== target) throw new Error("Agent settings changed during the test. Run test again.");
+        if (runnerSettingsTargetRef.current !== target) throw new AgentConfigError("testSettingsChanged");
         if (qualification.ok !== true || qualification.details?.platformQualificationRecorded !== true) {
-          throw new Error(qualification.summary || "Could not verify the saved computer. Run test again.");
+          if (qualification.summary) throw new Error(qualification.summary);
+          throw new AgentConfigError("testSavedComputer");
         }
       }
       if (props.compactTestFeedback) {
@@ -3862,9 +3866,9 @@ export function AdapterEnvironmentResult({ result }: { result: AdapterEnvironmen
               {Object.hasOwn(levelLabels, check.level) ? levelLabels[check.level] : check.level}
             </span>
             <span className="mx-1 opacity-60">·</span>
-            <span>{check.message}</span>
+            <span>{formatCodexProbeField(check, "message", t)}</span>
             {check.detail && <span className="block opacity-75 break-all">({check.detail})</span>}
-            {check.hint && <span className="block opacity-90 break-words">{t("agentConfigUi.hint", { hint: check.hint })}</span>}
+            {check.hint && <span className="block opacity-90 break-words">{t("agentConfigUi.hint", { hint: formatCodexProbeField(check, "hint", t) })}</span>}
           </div>
         ))}
       </div>
