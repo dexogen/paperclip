@@ -1,23 +1,29 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { assertSha, git, isAncestor } from './git.mjs';
+import { validateSource } from './source.mjs';
 
 export const STATE_PATH = 'doc/localization/upstream.json';
 
 export function readState(cwd, commit) {
   const state = JSON.parse(git(cwd, ['show', `${assertSha(commit)}:${STATE_PATH}`]).stdout);
   assertSha(state.lastAcceptedUpstreamSha, 'lastAcceptedUpstreamSha');
-  if (state.schemaVersion !== 1 || state.upstreamRepository !== 'paperclipai/paperclip' ||
+  if (state.schemaVersion !== 2 || state.upstreamRepository !== 'paperclipai/paperclip' ||
       state.upstreamBranch !== 'master' || state.forkBranch !== 'russian' ||
-      state.syncBranch !== 'codex/upstream-sync') {
+      state.syncBranch !== 'codex/upstream-sync' || state.trackingChannel !== 'stable') {
     throw new Error('Unsupported upstream tracking configuration; review it before synchronizing');
+  }
+  if (validateSource(state.acceptedSource).upstreamSha !== state.lastAcceptedUpstreamSha) {
+    throw new Error('Accepted source and upstream tracking SHA disagree');
   }
   return state;
 }
 
-export function prepareCandidate({ cwd, directory, baseSha, upstreamSha, state, existingBranchSha }) {
+export function prepareCandidate({ cwd, directory, baseSha, upstreamSha, state, existingBranchSha,
+  source = { channel: 'master', upstreamSha, baseTag: state.acceptedSource.baseTag, baseSha: state.acceptedSource.baseSha } }) {
   assertSha(baseSha, 'fork base');
   assertSha(upstreamSha, 'upstream head');
+  if (validateSource(source).upstreamSha !== upstreamSha) throw new Error('Candidate source SHA mismatch');
   if (!isAncestor(cwd, state.lastAcceptedUpstreamSha, baseSha)) {
     throw new Error('The accepted upstream commit is not in fork history; preserve ancestry when merging sync PRs');
   }
@@ -38,7 +44,7 @@ export function prepareCandidate({ cwd, directory, baseSha, upstreamSha, state, 
   }
   const stateFile = join(directory, STATE_PATH);
   mkdirSync(dirname(stateFile), { recursive: true });
-  writeFileSync(stateFile, `${JSON.stringify({ ...state, lastAcceptedUpstreamSha: upstreamSha }, null, 2)}\n`);
+  writeFileSync(stateFile, `${JSON.stringify({ ...state, lastAcceptedUpstreamSha: upstreamSha, acceptedSource: source }, null, 2)}\n`);
   git(directory, ['add', '--', STATE_PATH]);
   git(directory, ['-c', 'user.name=paperclip-sync[bot]', '-c', 'user.email=paperclip-sync[bot]@users.noreply.github.com',
     'commit', '-m', `Merge upstream ${upstreamSha.slice(0, 12)} for localization review\n\nCo-Authored-By: Paperclip <noreply@paperclip.ing>`]);

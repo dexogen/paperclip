@@ -1,5 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { parseGitDescribeVersion, resolveServerVersion } from "../version.js";
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe("parseGitDescribeVersion", () => {
   it("reports drift from the nearest release tag as a PEP 440 local version", () => {
@@ -160,11 +164,39 @@ describe("resolveServerVersion", () => {
     ).toBe("2026.725.0-canary.2");
   });
 
-  it("keeps the live git-derived version even when a build version is stamped", () => {
+  it("uses an explicit build version before live git metadata in a source checkout", () => {
+    const gitDescribeCommand = vi.fn(() => "v2026.626.0-58-g518fc71ce\n");
+
     expect(
       resolveServerVersion({
-        // A stamped version is only a fallback: a real checkout's git describe wins.
-        buildVersion: "v2020.1.1-0-g0000000",
+        buildVersion: "2026.1023.0+ru.1",
+        packageVersion: "0.3.1",
+        gitDescribeCommand,
+        debugLog: vi.fn(),
+      }),
+    ).toBe("2026.1023.0+ru.1");
+    expect(gitDescribeCommand).not.toHaveBeenCalled();
+  });
+
+  it("uses the deployment environment version before live git metadata", () => {
+    vi.stubEnv("PAPERCLIP_BUILD_VERSION", "2026.1023.0+master.0cb3fc7db591.ru.e80c7306cb1d");
+    const gitDescribeCommand = vi.fn(() => "v2026.626.0-58-g518fc71ce\n");
+
+    expect(
+      resolveServerVersion({
+        packageVersion: "0.3.1",
+        gitDescribeCommand,
+        debugLog: vi.fn(),
+      }),
+    ).toBe("2026.1023.0+master.0cb3fc7db591.ru.e80c7306cb1d");
+    expect(gitDescribeCommand).not.toHaveBeenCalled();
+  });
+
+  it("ignores an invalid deployment version and keeps normal git resolution", () => {
+    vi.stubEnv("PAPERCLIP_BUILD_VERSION", "2026.1023.0+ru.1\ninvalid");
+
+    expect(
+      resolveServerVersion({
         packageVersion: "0.3.1",
         gitDescribeCommand: () => "v2026.626.0-58-g518fc71ce\n",
         debugLog: vi.fn(),

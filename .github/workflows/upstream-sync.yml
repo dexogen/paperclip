@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '23 4 * * *'
   workflow_dispatch:
+    inputs:
+      channel:
+        description: Stable upstream release, or explicit manual master integration
+        required: true
+        default: stable
+        type: choice
+        options: [stable, master]
 
 permissions: {}
 concurrency:
@@ -53,6 +60,7 @@ jobs:
           GH_TOKEN: ${{ steps.app.outputs.token || github.token }}
           SYNC_PUSH_TRIGGERS_WORKFLOWS: ${{ steps.app.outputs.token != '' }}
           SYNC_REPORT_DIR: ${{ runner.temp }}/upstream-reports
+          SYNC_CHANNEL: ${{ inputs.channel || 'stable' }}
         run: node scripts/upstream-sync/run.mjs
       - name: Keep source delta and conflict evidence
         if: always()
