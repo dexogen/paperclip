@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { Identity } from "@/components/Identity";
@@ -44,7 +45,7 @@ export function MemberMultiSelect({
   triggerFullWidth = true,
   triggerClassName,
   contentAlign = "start",
-  emptyMessage = "No members yet.",
+  emptyMessage = fullSharedT("fullShared.no_members_yet_12dc83"),
   showSelectionPreview = true,
   filterPlaceholder = "Filter people",
   onOpenChange,
@@ -68,6 +69,7 @@ export function MemberMultiSelect({
   filterPlaceholder?: string;
   onOpenChange?: (open: boolean) => void;
 }): ReactNode {
+  useFullSharedTranslation();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
   const [draftUserIds, setDraftUserIds] = useState<Set<string>>(new Set(selectedUserIds));
@@ -123,8 +125,8 @@ export function MemberMultiSelect({
             <span className="flex min-w-0 items-center">
               <span className="truncate">
                 {triggerLabel ?? (selectedCount === 0
-                  ? "Select people"
-                  : `${selectedCount} ${selectedCount === 1 ? "person" : "people"} selected`)}
+                  ? fullSharedT("fullShared.select_people_45008c")
+                  : fullSharedT("fullShared.selected_c735a2", { value1: selectedCount, value2: selectedCount === 1 ? "person" : "people" }))}
               </span>
             </span>
             <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -160,7 +162,7 @@ export function MemberMultiSelect({
                   >
                     <Checkbox
                       checked={workingUserIds.has(member.userId)}
-                      aria-label={`Allow ${label}`}
+                      aria-label={fullSharedT("fullShared.allow_791559", { value1: label })}
                       onCheckedChange={(checked) => {
                         const next = new Set(workingUserIds);
                         if (checked) next.add(member.userId);
@@ -178,19 +180,17 @@ export function MemberMultiSelect({
                 );
               })}
               {filteredMembers.length === 0 ? (
-                <div className="px-3 py-4 text-sm text-muted-foreground">No matches.</div>
+                <div className="px-3 py-4 text-sm text-muted-foreground">{fullSharedT("providerSetup.access.picker.noMatches")}</div>
               ) : null}
             </div>
           )}
           <div className="flex items-center justify-between border-t border-border px-3 py-2">
             <span className="text-xs text-muted-foreground" aria-live="polite">
-              {workingUserIds.size === 0 ? "No people selected" : `${workingUserIds.size} selected`}
+              {workingUserIds.size === 0 ? fullSharedT("fullShared.no_people_selected_24d7ce") : fullSharedT("fullShared.selected_601c71", { value1: workingUserIds.size })}
             </span>
             <div className="flex items-center gap-2">
               {staged ? (
-                <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={pending}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={pending}>{fullSharedT("fullShared.cancel_19766e")}</Button>
               ) : null}
               <Button
                 type="button"
@@ -201,7 +201,7 @@ export function MemberMultiSelect({
                 }}
                 disabled={pending}
               >
-                {staged ? (pending ? "Saving…" : "Save") : "Done"}
+                {staged ? (pending ? fullSharedT("fullShared.saving_23e392") : fullSharedT("inboxPolicy.save")) : fullSharedT("fullShared.done_11a676")}
               </Button>
             </div>
           </div>
@@ -215,9 +215,7 @@ export function MemberMultiSelect({
             </div>
           ))}
           {selectedMembers.length > 3 ? (
-            <p className="px-1.5 pt-0.5 text-xs text-muted-foreground">
-              and {selectedMembers.length - 3} more
-            </p>
+            <p className="px-1.5 pt-0.5 text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.and_more_4f5b23" components={{ part1: <>{selectedMembers.length - 3}</> }} /></p>
           ) : null}
         </div>
       ) : null}

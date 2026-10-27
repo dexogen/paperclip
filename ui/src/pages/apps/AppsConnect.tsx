@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { AiProviderSetup } from "@/components/ai-connections/AiProviderSetup";
@@ -21,6 +22,7 @@ export function AppsConnect({ byoOnly = false, credentialSource = "paperclip_vau
   byoOnly?: boolean;
   credentialSource?: ToolConnectionCredentialSource;
 } = {}) {
+  useFullAppsTranslation();
   const { selectedCompanyId } = useCompany();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -45,19 +47,19 @@ export function AppsConnect({ byoOnly = false, credentialSource = "paperclip_vau
   useEffect(() => {
     if (hasSavedComposio) navigate(`/apps?source=composio&targetToolkit=${encodeURIComponent(toolkit!)}`, { replace: true });
   }, [hasSavedComposio, toolkit, navigate]);
-  if (reuseComposio && selectedCompanyId && (saved.isPending || hasSavedComposio)) return <p role="status" className="text-sm text-muted-foreground">Checking saved Composio accounts…</p>;
+  if (reuseComposio && selectedCompanyId && (saved.isPending || hasSavedComposio)) return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.checking_saved_composio_accounts_a3d61c")}</p>;
   if (reuseComposio && saved.isError) return <div className="space-y-3">
-    <p role="alert" className="text-sm text-destructive">Couldn’t load your Composio accounts.</p>
-    <div className="flex items-center justify-between"><Button variant="ghost" onClick={() => navigate("/apps")}>Cancel</Button><Button onClick={() => void saved.refetch()}>Try again</Button></div>
+    <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_your_composio_accounts_f3aea3")}</p>
+    <div className="flex items-center justify-between"><Button variant="ghost" onClick={() => navigate("/apps")}>{fullAppsT("fullApps.cancel_19766e")}</Button><Button onClick={() => void saved.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button></div>
   </div>;
   const returningToSkills = source === "github" && selectedCompanyId && skillSourceReturnPath(selectedCompanyId);
   function returnToSkills() {
     const path = selectedCompanyId && consumeSkillSourceReturn(selectedCompanyId);
     if (path) navigate(path);
   }
-  if (aiReconnectRequested && aiAccounts.isPending) return <p role="status">Loading connection…</p>;
-  if (aiReconnectRequested && aiAccounts.isError) return <p role="alert">Could not load this connection. Refresh to try again.</p>;
-  if (aiReconnectRequested && !aiReconnect) return <p role="alert">This connection is unavailable. Return to Connectors to choose an account.</p>;
+  if (aiReconnectRequested && aiAccounts.isPending) return <p role="status">{fullAppsT("grokSetupUi.connection.loading")}</p>;
+  if (aiReconnectRequested && aiAccounts.isError) return <p role="alert">{fullAppsT("fullApps.could_not_load_this_connection_refresh_to_try_again_b55864")}</p>;
+  if (aiReconnectRequested && !aiReconnect) return <p role="alert">{fullAppsT("fullApps.this_connection_is_unavailable_return_to_connectors__44c422")}</p>;
   if (selectedCompanyId && (preset || aiReconnect?.routing)) return (
     <AiProviderSetup
       key={reconnectId ?? source}
@@ -71,8 +73,8 @@ export function AppsConnect({ byoOnly = false, credentialSource = "paperclip_vau
     />
   );
   if (source?.startsWith("ai-router-")) {
-    if (gallery.isPending) return <p role="status">Loading connector…</p>;
-    if (!router) return <p role="alert">{gallery.error?.message ?? "This connection pool plugin is unavailable. Enable it in Plugins."}</p>;
+    if (gallery.isPending) return <p role="status">{fullAppsT("fullApps.loading_connector_6cd606")}</p>;
+    if (!router) return <p role="alert">{gallery.error?.message ?? fullAppsT("fullApps.this_connection_pool_plugin_is_unavailable_enable_it_4088b7")}</p>;
     return <AiConnectionPoolConnector pluginKey={router.pluginKey} />;
   }
   return <ConnectionSetupFlow byoOnly={byoOnly} credentialSource={credentialSource} host="page"

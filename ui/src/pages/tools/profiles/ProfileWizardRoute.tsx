@@ -1,3 +1,5 @@
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect } from "react";
 import { useParams, useSearchParams } from "@/lib/router";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
@@ -14,6 +16,7 @@ import { TEMPLATES, type TemplateKey } from "./profile-model";
  * the rest of the tool-access surface.
  */
 export function ProfileWizardRoute({ mode }: { mode: "new" | "edit" }) {
+  useFullAppsTranslation();
   const { selectedCompany, selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const params = useParams<{ profileId?: string }>();
@@ -28,16 +31,16 @@ export function ProfileWizardRoute({ mode }: { mode: "new" | "edit" }) {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Organization", href: "/dashboard" },
-      { label: "Apps", href: "/apps" },
-      { label: "Access profiles", href: advancedTabHref("profiles") },
-      { label: mode === "edit" ? "Resume draft" : "New profile" },
+      { label: selectedCompany?.name ?? fullAppsT("sidebar.organization"), href: "/dashboard" },
+      { label: fullAppsT("agentDetailUi.nav.apps"), href: "/apps" },
+      { label: fullAppsT("agentToolsUi.access.profiles"), href: advancedTabHref("profiles") },
+      { label: mode === "edit" ? fullAppsT("fullApps.resume_draft_13af11") : fullAppsT("fullApps.new_profile_fcf4f3") },
     ]);
     return () => setBreadcrumbs([]);
-  }, [setBreadcrumbs, selectedCompany?.name, mode]);
+  }, [setBreadcrumbs, selectedCompany?.name, mode, fullAppsI18n.resolvedLanguage]);
 
   if (!selectedCompanyId) {
-    return <div className="p-6 text-sm text-muted-foreground">Select an organization to create a profile.</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{fullAppsT("fullApps.select_an_organization_to_create_a_profile_3f7c06")}</div>;
   }
 
   return (
@@ -45,11 +48,9 @@ export function ProfileWizardRoute({ mode }: { mode: "new" | "edit" }) {
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 p-4 sm:p-6">
         <header>
           <h1 className="text-xl font-bold text-foreground">
-            {mode === "edit" ? "Finish your profile" : "New access profile"}
+            {mode === "edit" ? fullAppsT("fullApps.finish_your_profile_a29dd2") : fullAppsT("fullApps.new_access_profile_c7e9f5")}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Choose which tools this profile allows, then assign it to the agents that need them.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.choose_which_tools_this_profile_allows_then_assign_i_7c7739")}</p>
         </header>
         <ProfileWizard
           companyId={selectedCompanyId}

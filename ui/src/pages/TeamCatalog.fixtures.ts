@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type {
   CatalogTeam,
   CatalogTeamSkillPreparation,
@@ -17,9 +18,8 @@ export const sampleTeam: CatalogTeam = {
   kind: "bundled",
   category: "company-defaults",
   slug: "core-exec-team",
-  name: "Core Exec Team",
-  description:
-    "A starter executive team: a CEO who manages a CTO and a CMO, plus a launch project and a weekly standup routine. Installs ready-to-run agents you can customize.",
+  get name() { return t("fullPages.fixtureCoreTeam"); },
+  get description() { return t("fullPages.fixtureCoreDescription"); },
   path: "catalog/bundled/company-defaults/core-exec-team",
   entrypoint: "TEAM.md",
   schema: "agentcompanies/v1",
@@ -72,8 +72,8 @@ export const optionalTeam: CatalogTeam = {
   kind: "optional",
   category: "software-development",
   slug: "platform-pod",
-  name: "Platform Engineering Pod",
-  description: "An optional platform pod with a tech lead and two engineers.",
+  get name() { return t("fullPages.fixturePlatform"); },
+  get description() { return t("fullPages.fixturePlatformDescription"); },
   recommendedForCompanyTypes: [],
   counts: { ...sampleTeam.counts, agents: 4, routines: 2 },
   rootAgentSlugs: ["tech-lead"],
@@ -84,9 +84,10 @@ export const optionalTeam: CatalogTeam = {
 
 export const warnTeam: CatalogTeam = {
   ...sampleTeam,
+  get description() { return sampleTeam.description; },
   id: "paperclipai:optional:research:lab-with-local-source",
   slug: "lab-with-local-source",
-  name: "Research Lab (local source)",
+  get name() { return t("fullPages.fixtureResearch"); },
   kind: "optional",
   category: "research",
   trustLevel: "scripts_executables",
@@ -117,7 +118,7 @@ export const currentInstalledState: InstalledCatalogTeam = {
 
 export const sampleSkillPreparations: CatalogTeamSkillPreparation[] = [
   { type: "catalog", ref: "engineering/code-review", agentSlugs: ["cto"], action: "already_in_package", catalogSkillId: "skill-1", catalogSkillKey: "engineering/code-review", sourceLocator: null, sourceRef: null, reason: null },
-  { type: "github", ref: "acme/growth-playbook@v1.2.0", agentSlugs: ["cmo"], action: "external_import_required", catalogSkillId: null, catalogSkillKey: null, sourceLocator: "github.com/acme/growth-playbook", sourceRef: "v1.2.0", reason: "Resolved from GitHub at install time" },
+  { type: "github", ref: "acme/growth-playbook@v1.2.0", agentSlugs: ["cmo"], action: "external_import_required", catalogSkillId: null, catalogSkillKey: null, sourceLocator: "github.com/acme/growth-playbook", sourceRef: "v1.2.0", get reason() { return t("fullPages.fixtureGithubReason"); } },
 ];
 
 // Onboarding "Pick a starter team" grid (design §6): `defaultInstall` bundled
@@ -126,6 +127,8 @@ export const sampleSkillPreparations: CatalogTeamSkillPreparation[] = [
 export const onboardingTeams: CatalogTeam[] = [
   {
     ...sampleTeam,
+    get name() { return sampleTeam.name; },
+    get description() { return sampleTeam.description; },
     trustLevel: "markdown_only",
     sourceRefs: [],
     requiredSkills: [],
@@ -136,9 +139,8 @@ export const onboardingTeams: CatalogTeam[] = [
     id: "paperclipai:bundled:company-defaults:growth-pod",
     key: "paperclipai/bundled/company-defaults/growth-pod",
     slug: "growth-pod",
-    name: "Growth Pod",
-    description:
-      "A lean growth squad: a head of growth managing a content marketer and a data analyst, wired to a launch project and a weekly metrics routine.",
+    get name() { return t("fullPages.fixtureGrowth"); },
+    get description() { return t("fullPages.fixtureGrowthDescription"); },
     tags: ["growth", "marketing", "starter"],
     counts: { agents: 3, projects: 1, tasks: 0, routines: 1, localSkills: 0, catalogSkills: 0, externalSkillSources: 0 },
     rootAgentSlugs: ["head-of-growth"],
@@ -152,8 +154,8 @@ export const onboardingTeams: CatalogTeam[] = [
     id: "paperclipai:bundled:company-defaults:support-pod",
     key: "paperclipai/bundled/company-defaults/support-pod",
     slug: "support-pod",
-    name: "Support Pod",
-    description: "A two-person support desk with a lead and an agent, plus a triage routine.",
+    get name() { return t("fullPages.fixtureSupport"); },
+    get description() { return t("fullPages.fixtureSupportDescription"); },
     tags: ["support", "ops"],
     counts: { agents: 2, projects: 0, tasks: 0, routines: 1, localSkills: 0, catalogSkills: 0, externalSkillSources: 0 },
     rootAgentSlugs: ["support-lead"],

@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import * as React from "react"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Select as SelectPrimitive } from "radix-ui"
@@ -8,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 export const nativeSelectClassName = "w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm leading-5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
 export function NativeSelect({ className, ...props }: React.ComponentProps<"select">) {
+  useFullSharedTranslation();
   return <select {...props} className={cn(nativeSelectClassName, className)} />
 }
 
@@ -26,7 +28,7 @@ export function SelectPopover({
   value,
   onValueChange,
   options = [],
-  placeholder = "Select…",
+  placeholder = fullSharedT("fullShared.select_731fe0"),
   displayValue,
   "aria-label": ariaLabel,
   "aria-busy": ariaBusy,
@@ -51,6 +53,7 @@ export function SelectPopover({
   onCloseAutoFocus?: React.ComponentProps<typeof PopoverContent>["onCloseAutoFocus"];
   children?: React.ReactNode;
 }) {
+  useFullSharedTranslation();
   const [localOpen, setLocalOpen] = React.useState(false);
   const open = controlledOpen ?? localOpen;
   const setOpen = (next: boolean) => {
@@ -113,6 +116,7 @@ export function SelectPopover({
 }
 
 export function SelectPopoverItem({ selected, className, ...props }: React.ComponentProps<"button"> & { selected?: boolean }) {
+  useFullSharedTranslation();
   return <button {...props} type="button" role="option" aria-selected={selected ?? false}
     className={cn("flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm outline-none hover:bg-accent/50 focus-visible:bg-accent disabled:cursor-not-allowed disabled:opacity-40", selected && "bg-accent", className)} />;
 }
@@ -120,18 +124,21 @@ export function SelectPopoverItem({ selected, className, ...props }: React.Compo
 function Select({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  useFullSharedTranslation();
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
 function SelectGroup({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Group>) {
+  useFullSharedTranslation();
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
 
 function SelectValue({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Value>) {
+  useFullSharedTranslation();
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
@@ -143,6 +150,7 @@ function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: "sm" | "default"
 }) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -168,6 +176,7 @@ function SelectContent({
   align = "center",
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -202,6 +211,7 @@ function SelectLabel({
   className,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Label>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.Label
       data-slot="select-label"
@@ -216,6 +226,7 @@ function SelectItem({
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Item>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
@@ -242,6 +253,7 @@ function SelectSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
@@ -255,6 +267,7 @@ function SelectScrollUpButton({
   className,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.ScrollUpButton
       data-slot="select-scroll-up-button"
@@ -273,6 +286,7 @@ function SelectScrollDownButton({
   className,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
+  useFullSharedTranslation();
   return (
     <SelectPrimitive.ScrollDownButton
       data-slot="select-scroll-down-button"

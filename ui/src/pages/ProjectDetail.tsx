@@ -1,3 +1,5 @@
+import { i18n } from "@/i18n";
+import { t } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { ProjectTilePicker } from "../components/ProjectTilePicker";
 import { useShowAgentCreatedTasks } from "../hooks/useShowAgentCreatedTasks";
@@ -71,6 +73,7 @@ function resolveProjectTab(pathname: string, projectId: string): ProjectTab | nu
 /* ── List (issues) tab content ── */
 
 function ProjectIssuesList({ projectId, companyId }: { projectId: string; companyId: string }) {
+  useTranslation();
   const showAgentCreatedTasks = useShowAgentCreatedTasks(companyId, "paperclip:project-issues-view");
   const queryClient = useQueryClient();
 
@@ -144,6 +147,7 @@ function ProjectPluginOperationsList({
   companyId: string;
   pluginKey: string;
 }) {
+  useTranslation();
   const queryClient = useQueryClient();
   const originKindPrefix = `plugin:${pluginKey}`;
 
@@ -370,7 +374,7 @@ export function ProjectDetail() {
 
   const uploadImage = useMutation({
     mutationFn: async (file: File) => {
-      if (!resolvedCompanyId) throw new Error("No organization selected");
+      if (!resolvedCompanyId) throw new Error(t("newIssue.noOrganization"));
       return assetsApi.uploadImage(resolvedCompanyId, file, `projects/${projectLookupRef || "draft"}`);
     },
   });
@@ -388,7 +392,7 @@ export function ProjectDetail() {
       { label: t("projectConfigUi.detail.projects"), href: "/projects" },
       { label: project?.name ?? routeProjectRef ?? t("projectConfigUi.detail.project") },
     ]);
-  }, [setBreadcrumbs, project, routeProjectRef, t]);
+  }, [setBreadcrumbs, project, routeProjectRef, t, i18n.language]);
 
   useEffect(() => {
     if (!project) return;

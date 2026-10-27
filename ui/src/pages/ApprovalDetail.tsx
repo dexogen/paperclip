@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { Trans, useTranslation } from "@/i18n";
 import { formatDateTime } from "../lib/utils";
 import { AgentIdentity } from "@/components/AgentIdentity";
@@ -72,7 +73,7 @@ export function ApprovalDetail() {
       { label: t("approvalsUi.heading"), href: "/approvals" },
       { label: approval?.id?.slice(0, 8) ?? approvalId ?? t("approvalsUi.single") },
     ]);
-  }, [setBreadcrumbs, approval, approvalId, t]);
+  }, [setBreadcrumbs, approval, approvalId, t, i18n.language]);
 
   const refresh = () => {
     if (!approvalId) return;

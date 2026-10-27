@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { Boxes, Folder, Link2, Paperclip, type LucideIcon } from "lucide-react";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
@@ -102,7 +103,7 @@ export function buildAgentSkillSourceMeta(skill: SourceSkill, t: TFunction = i18
   }
 
   if (skill.sourceBadge === "url" || skill.sourceType === "url") {
-    return { icon: Link2, label: hostLabel(skill.sourceLabel) ?? hostLabel(skill.sourceLocator) ?? "URL" };
+    return { icon: Link2, label: hostLabel(skill.sourceLabel) ?? hostLabel(skill.sourceLocator) ?? t("taskDisplay.external.type.url_link") };
   }
 
   if (skill.sourceBadge === "paperclip") {

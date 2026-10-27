@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -58,6 +59,7 @@ const ORGANIZATION_ACTION_CLASS =
   "h-(--organization-popover-action-row-height) gap-(--organization-popover-row-gap) rounded-lg px-2.5 py-0 text-(length:--text-compact) font-medium leading-(--organization-popover-action-line-height) text-foreground focus:bg-accent/50 focus:text-foreground";
 
 function WorkspaceIcon({ company, inPopover = false }: { company: Company; inPopover?: boolean }) {
+  useFullSharedTranslation();
   return (
     <CompanyPatternIcon
       companyName={company.name}
@@ -78,6 +80,7 @@ function SortableCompanyItem({
   isSelected: boolean;
   onSelect: (company: Company) => void;
 }) {
+  useFullSharedTranslation();
   const {
     attributes,
     listeners,
@@ -124,7 +127,7 @@ function SortableCompanyItem({
         <button
           type="button"
           ref={setActivatorNodeRef}
-          aria-label={`Reorder ${company.name}`}
+          aria-label={fullSharedT("fullShared.reorder_ac91bb", { value1: company.name })}
           className="inline-flex size-8 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-(length:--rad-2) focus-visible:ring-ring"
           onClick={(event) => {
             event.preventDefault();
@@ -145,6 +148,7 @@ function SortableCompanyItem({
 }
 
 export function SidebarCompanyMenu(props: SidebarCompanyMenuProps = {}) {
+  useFullSharedTranslation();
   return (
     <PluginOrganizationSwitcher {...props}>
       <BuiltinCompanyMenu {...props} />
@@ -153,6 +157,7 @@ export function SidebarCompanyMenu(props: SidebarCompanyMenuProps = {}) {
 }
 
 function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompanyMenuProps) {
+  useFullSharedTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const [isEditingOrder, setIsEditingOrder] = useState(false);
   const { companies, selectedCompany, setSelectedCompanyId, companyListUnavailable, retryCompanies } =
@@ -268,8 +273,8 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
           className="h-9 min-w-0 flex-1 justify-start gap-2 px-4 text-left hover:bg-accent/50 hover:text-foreground has-[>svg]:px-4 dark:hover:bg-accent/50"
           aria-label={
             currentName
-              ? `Open ${currentName} ${switcherNoun} switcher`
-              : `Open ${switcherNoun} switcher`
+              ? fullSharedT("fullShared.open_switcher_1c986a", { value1: currentName, value2: switcherNoun })
+              : fullSharedT("fullShared.open_switcher_3eec7a", { value1: switcherNoun })
           }
         >
           <span className="flex min-w-0 flex-1 items-center gap-2">
@@ -285,7 +290,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
               )}
               title={currentName ?? undefined}
             >
-              {currentName ?? `Select ${switcherNoun}`}
+              {currentName ?? fullSharedT("fullShared.select_dbe65a", { value1: switcherNoun })}
             </span>
           </span>
           {!rail && <ChevronsUpDown className="size-3.5 shrink-0 text-muted-foreground" />}
@@ -297,9 +302,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
         className="ml-2 w-(--organization-popover-width) max-w-(--sz-calc-24) overflow-hidden rounded-xl border-border bg-popover p-0 shadow-(--shadow-profile-popover)"
       >
         <div className="flex h-(--organization-popover-header-height) items-center justify-between gap-2 px-3.5">
-          <DropdownMenuLabel className="p-0 text-(length:--text-compact) font-semibold text-foreground">
-            Organizations
-          </DropdownMenuLabel>
+          <DropdownMenuLabel className="p-0 text-(length:--text-compact) font-semibold text-foreground">{fullSharedT("companySwitcher.organizations")}</DropdownMenuLabel>
           <button
             type="button"
             onClick={(event) => {
@@ -309,7 +312,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
             }}
             className="rounded px-1.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            {isEditingOrder ? "Done" : "Edit"}
+            {isEditingOrder ? fullSharedT("fullShared.done_11a676") : fullSharedT("fullShared.edit_464c4f")}
           </button>
         </div>
         <div className="flex max-h-96 flex-col gap-0.5 overflow-y-auto px-2.5 pb-2 pt-1">
@@ -340,7 +343,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
             // offer the way back.
             companyListUnavailable ? (
               <>
-                <DropdownMenuItem disabled>Couldn&apos;t load companies</DropdownMenuItem>
+                <DropdownMenuItem disabled>{fullSharedT("fullShared.couldn_t_load_companies_dee9b8")}</DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={(event) => {
                     // Keep the menu open so the result of the retry is visible.
@@ -348,12 +351,10 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
                     void retryCompanies();
                   }}
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Try again
-                </DropdownMenuItem>
+                  <RefreshCw className="h-4 w-4 mr-2" />{fullSharedT("fullShared.try_again_d8b839")}</DropdownMenuItem>
               </>
             ) : (
-              <DropdownMenuItem disabled>No companies</DropdownMenuItem>
+              <DropdownMenuItem disabled>{fullSharedT("fullShared.no_companies_4562e3")}</DropdownMenuItem>
             )
           ) : null}
         </div>
@@ -367,7 +368,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
               <span className="flex size-5 shrink-0 items-center justify-center text-muted-foreground">
                 <Plus className="size-4" />
               </span>
-              <span className="min-w-0 flex-1 truncate">Create organization</span>
+              <span className="min-w-0 flex-1 truncate">{fullSharedT("fullShared.create_organization_f14e1b")}</span>
             </DropdownMenuItem>
           )}
           {showInvitePeople ? (
@@ -391,8 +392,8 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
                 </span>
                 <span className="min-w-0 flex-1 truncate">
                   {currentName
-                    ? `Invite people to ${currentName}`
-                    : "Invite people"}
+                    ? fullSharedT("fullShared.invite_people_to_847cd1", { value1: currentName })
+                    : fullSharedT("fullShared.invite_people_27bf0f")}
                 </span>
               </Link>
             </DropdownMenuItem>
@@ -407,7 +408,7 @@ function BuiltinCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompa
                 <LogOut className="size-4" />
               </span>
               <span className="min-w-0 flex-1 truncate">
-                {signOutMutation.isPending ? "Signing out..." : "Sign out"}
+                {signOutMutation.isPending ? fullSharedT("accountMenu.signingOut") : fullSharedT("accountMenu.signOut")}
               </span>
             </DropdownMenuItem>
           ) : null}

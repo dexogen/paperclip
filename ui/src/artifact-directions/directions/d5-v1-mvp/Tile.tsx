@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import type { LabArtifact, LabGroup } from "../../kit";
 import { Front } from "./Front";
@@ -21,6 +23,7 @@ import { countLabel, updatedLabel } from "./when";
  */
 
 function Caption({ title, identifier, facts }: { title: string; identifier: string; facts: string[] }) {
+  useFullSharedTranslation();
   return (
     <div className="flex w-full flex-col items-center gap-3">
       <p className="line-clamp-2 w-full break-words text-center text-base font-medium leading-5 text-foreground" title={title}>
@@ -44,6 +47,7 @@ function Caption({ title, identifier, facts }: { title: string; identifier: stri
 }
 
 function Tile({ label, children, caption }: { label: string; children: ReactNode; caption: ReactNode }) {
+  useFullSharedTranslation();
   return (
     <li className="min-w-0">
       <button
@@ -61,9 +65,10 @@ function Tile({ label, children, caption }: { label: string; children: ReactNode
 
 /** A task with several artifacts: its newest one on top of a stack, the task's title underneath. Every stack stands on the frame's bottom edge so their tops align. */
 export function StackTile({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const front = group.artifacts[0];
   return (
-    <Tile label={`Open ${group.taskIdentifier} ${group.title}, ${countLabel(group.count)}`} caption={<Caption title={group.title} identifier={group.taskIdentifier} facts={[countLabel(group.count), `Updated ${updatedLabel(front.updatedAt)}`]} />}>
+    <Tile label={t("fullDiagnostics.open_61d430", { value1: group.taskIdentifier, value2: group.title, value3: countLabel(group.count) })} caption={<Caption title={group.title} identifier={group.taskIdentifier} facts={[countLabel(group.count), t("fullDiagnostics.updatedAt", { date: updatedLabel(front.updatedAt) })]} />}>
       <StackComposition front={front} />
     </Tile>
   );
@@ -71,9 +76,10 @@ export function StackTile({ group }: { group: LabGroup }) {
 
 /** One artifact on its own: its file name underneath. */
 export function SingleTile({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   const name = artifact.filename ?? artifact.title;
   return (
-    <Tile label={`Open ${name}`} caption={<Caption title={name} identifier={artifact.taskIdentifier} facts={[`Updated ${updatedLabel(artifact.updatedAt)}`]} />}>
+    <Tile label={fullSharedT("fullShared.open_839d6d", { value1: name })} caption={<Caption title={name} identifier={artifact.taskIdentifier} facts={[t("fullDiagnostics.updatedAt", { date: updatedLabel(artifact.updatedAt) })]} />}>
       <Front artifact={artifact} />
     </Tile>
   );

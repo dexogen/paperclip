@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { ExternalLink, RefreshCw } from "lucide-react";
 import type { ChatEndpoint } from "@/api/chatEndpoints";
 import { AgentAvatarDownload } from "@/components/AgentAvatarDownload";
@@ -24,12 +25,13 @@ export function gitHubAppSettingsUrl(endpoint: ChatEndpoint) {
 }
 
 export function GitHubBotMention({ endpoint }: { endpoint: ChatEndpoint }) {
+  useFullAppsTranslation();
   const mention = gitHubBotMention(endpoint);
   return mention ? (
     <CopyText
       text={mention}
-      ariaLabel="Copy GitHub mention"
-      title="Copy GitHub mention"
+      ariaLabel={fullAppsT("fullApps.copy_82f925a4e05e")}
+      title={fullAppsT("fullApps.copy_github_mention_82f925")}
       className="break-all font-mono text-xs"
     >
       {mention}
@@ -45,19 +47,17 @@ export function GitHubAppBranding({
   endpoint: ChatEndpoint;
   avatarUrl?: string;
 }) {
+  useFullAppsTranslation();
   return (
-    <GitHubSettingsDisclosure title="GitHub App name and logo">
+    <GitHubSettingsDisclosure title={fullAppsT("fullApps.github_app_name_and_logo_b8dc68")}>
       <div className="mt-4 space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Change the name or upload a logo in the App’s Display information
-          settings on GitHub.
-        </p>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.change_the_name_or_upload_a_logo_in_the_app_s_displa_9b0ba1")}</p>
         <div className="flex flex-wrap items-center gap-3">
           {avatarUrl && (
             <>
               <img
                 src={avatarUrl}
-                alt={`${endpoint.assignedAgentName}’s avatar for download`}
+                alt={fullAppsT("fullApps.s_avatar_for_download_ec9de2", { value1: endpoint.assignedAgentName })}
                 className="size-12 shrink-0 object-contain"
               />
               <AgentAvatarDownload
@@ -71,22 +71,16 @@ export function GitHubAppBranding({
               href={gitHubAppSettingsUrl(endpoint)}
               target="_blank"
               rel="noreferrer"
-              aria-label="Edit App name and logo on GitHub"
-            >
-              Edit on GitHub <ExternalLink className="size-4" />
+              aria-label={fullAppsT("fullApps.edit_app_name_and_logo_on_github_a2f0e5")}
+            >{fullAppsT("fullApps.edit_on_github_8dbf35")}<ExternalLink className="size-4" />
             </a>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Renaming also changes its @mention.{" "}
+        <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.renaming_also_changes_its_mention_c236bc")}{" "}
           <Link
             className="underline underline-offset-4"
             to={`/apps/chat/connect?provider=github&resume=${endpoint.id}&reconnect=1`}
-          >
-            Reconnect afterward
-          </Link>{" "}
-          to update it here.
-        </p>
+          >{fullAppsT("fullApps.reconnect_afterward_d13ca0")}</Link>{" "}{fullAppsT("fullApps.to_update_it_here_1bc5e0")}</p>
       </div>
     </GitHubSettingsDisclosure>
   );
@@ -100,6 +94,7 @@ export function GitHubAppIdentityActions({
   endpoint: ChatEndpoint;
   avatarUrl?: string;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="flex flex-wrap items-center gap-1">
       {avatarUrl && (
@@ -114,17 +109,16 @@ export function GitHubAppIdentityActions({
           href={gitHubAppSettingsUrl(endpoint)}
           target="_blank"
           rel="noreferrer"
-          aria-label="Edit App name and logo on GitHub"
-          title="Change the App name or upload its logo on GitHub"
-        >
-          Edit App <ExternalLink className="size-3.5" />
+          aria-label={fullAppsT("fullApps.edit_app_name_and_logo_on_github_a2f0e5")}
+          title={fullAppsT("fullApps.change_the_app_name_or_upload_its_logo_on_github_fcf24c")}
+        >{fullAppsT("fullApps.edit_app_90fedb")}<ExternalLink className="size-3.5" />
         </a>
       </Button>
       <Button variant="ghost" size="icon" asChild>
         <Link
           to={`/apps/chat/connect?provider=github&resume=${endpoint.id}&reconnect=1`}
-          aria-label="Refresh GitHub App identity"
-          title="Reconnect after renaming the App to refresh its @mention"
+          aria-label={fullAppsT("fullApps.refresh_github_app_identity_3538e9")}
+          title={fullAppsT("fullApps.reconnect_after_renaming_the_app_to_refresh_its_ment_1f7827")}
         >
           <RefreshCw className="size-3.5" />
         </Link>

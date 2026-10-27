@@ -3,7 +3,7 @@
   <a href="README.ru.md">🇷🇺 Русский</a>
 </p>
 
-> This fork maintains a partial Russian UI translation on the [`russian` branch](https://github.com/dexogen/paperclip/tree/russian). See the [Russian source quickstart](README.ru.md#russian-fork) and [supported localization scope](ui/src/i18n/README.md). The official `paperclipai` npm package does not include this fork’s changes.
+> This fork maintains the Russian edition on the [`russian` branch](https://github.com/dexogen/paperclip/tree/russian), translating application-owned UI copy in both UI shells. See the [source coverage and runtime boundaries](doc/localization/COVERAGE.md), [Russian source quickstart](README.ru.md#russian-fork), and [upstream maintenance procedure](doc/localization/UPSTREAM.md). User content and external provider output remain literal; source coverage does not certify every runtime state. The official `paperclipai` npm package does not include this fork’s changes.
 
 <p align="center">
   <img src="doc/assets/banner.jpg" alt="Paperclip is the app people use to manage AI agents for work." width="720" />

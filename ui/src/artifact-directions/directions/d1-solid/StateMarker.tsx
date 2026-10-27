@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
 import { MOTION, SLAB_FILL, SLAB_JOINTS } from "./slab";
@@ -17,11 +18,12 @@ import { MOTION, SLAB_FILL, SLAB_JOINTS } from "./slab";
 
 /** The one state vocabulary: label and dot fill per state. Counts.tsx counts in the same dots. */
 export const STATE = {
-  needs_review: { label: "Review", dot: "bg-(--solid-state-review)" },
-  changes_requested: { label: "Changes requested", dot: "bg-(--solid-state-changes)" },
+  needs_review: { get label() { return fullSharedT("fullShared.review_aff076"); }, dot: "bg-(--solid-state-review)" },
+  changes_requested: { get label() { return fullSharedT("taskPanels.workProduct.changesRequested"); }, dot: "bg-(--solid-state-changes)" },
 } as const;
 
 export function StateDot({ state, className }: { state: keyof typeof STATE; className?: string }) {
+  useFullSharedTranslation();
   return <span aria-hidden className={cn("inline-block size-1.5 shrink-0 rounded-full", STATE[state].dot, className)} />;
 }
 
@@ -58,6 +60,7 @@ export function StateMarker({
   collapse?: boolean;
   className?: string;
 }) {
+  useFullSharedTranslation();
   if (!review) return null;
   return (
     <span

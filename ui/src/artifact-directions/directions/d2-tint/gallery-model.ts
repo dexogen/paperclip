@@ -1,3 +1,5 @@
+import { i18n } from "@/i18n";
+import { artifactQuantity } from "../../localized-copy";
 import type { LabArtifact, LabGroup, LabKind } from "../../kit";
 import { hasTextPreview } from "./kinds";
 
@@ -75,12 +77,12 @@ export interface StackSection {
 }
 
 const sameYear = (iso: string) => iso.slice(0, 4) === String(new Date().getFullYear());
-const monthDay = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric" });
+const monthDay = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString(i18n.language, { month: "long", day: "numeric" });
 
 function spanLabel(newest: string, oldest: string): string {
   const [from, to] = [monthDay(oldest), monthDay(newest)];
   const sameMonth = oldest.slice(0, 7) === newest.slice(0, 7);
-  return `${from} – ${sameMonth ? to.split(" ").pop() : to}`;
+  return i18n.language.startsWith("en") ? `${from} – ${sameMonth ? to.split(" ").pop() : to}` : `${from} – ${to}`;
 }
 
 /**
@@ -122,4 +124,4 @@ export function stackSections(artifacts: LabArtifact[], columns = 3): StackSecti
   return sections;
 }
 
-export const artifactCount = (count: number) => `${count} ${count === 1 ? "artifact" : "artifacts"}`;
+export const artifactCount = (count: number) => artifactQuantity(count, "artifact");

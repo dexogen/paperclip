@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import type { WorkspaceFileSelector } from "@paperclipai/shared";
 import type { SidePanelTabRecord, SidePanelTabsState } from "@/components/side-panel";
@@ -32,6 +33,7 @@ export function openSkillPanelState(
 
 export type TaskSidePanelTabPayload =
   | { kind: "browser"; browserId: string }
+  | { kind: "plugin-panel"; pluginKey: string; slotId: string; entityId: string }
   | { kind: "properties" }
   | { kind: "subtasks" }
   | { kind: "artifacts" }
@@ -93,6 +95,8 @@ function parsePayload(value: unknown): TaskSidePanelTabPayload | null {
   if (!input) return null;
   const kind = input.kind;
   if (kind === "browser") return typeof input.browserId === "string" && /^[0-9a-f-]{36}$/i.test(input.browserId) ? { kind, browserId: input.browserId } : null;
+  if (kind === "plugin-panel") return [input.pluginKey, input.slotId, input.entityId].every(value => typeof value === "string" && value.length > 0)
+    ? { kind, pluginKey: input.pluginKey as string, slotId: input.slotId as string, entityId: input.entityId as string } : null;
   if (kind === "properties") return { kind };
   if (kind === "subtasks") return { kind };
   if (kind === "artifacts") return { kind };
@@ -221,20 +225,20 @@ export function writeTaskSidePanelState(
 }
 
 export function taskPanelPropertiesTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "properties", type: "properties", label: "Properties", closable: true, contentMode: "padded", payload: { kind: "properties" } };
+  return { id: "properties", type: "properties", label: fullSharedT("taskPanels.tabs.properties"), closable: true, contentMode: "padded", payload: { kind: "properties" } };
 }
 
 export function taskPanelSubtasksTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "subtasks", type: "subtasks", label: "Subtasks", closable: true, contentMode: "padded", payload: { kind: "subtasks" } };
+  return { id: "subtasks", type: "subtasks", label: fullSharedT("taskPanels.tabs.subtasks"), closable: true, contentMode: "padded", payload: { kind: "subtasks" } };
 }
 
 /** Agent chats only: every task the conversation's agent has worked on. */
 export function taskPanelAgentTasksTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "agent-tasks", type: "agent-tasks", label: "Tasks", closable: true, contentMode: "padded", payload: { kind: "agent-tasks" } };
+  return { id: "agent-tasks", type: "agent-tasks", label: fullSharedT("sidebar.tasks"), closable: true, contentMode: "padded", payload: { kind: "agent-tasks" } };
 }
 
 export function taskPanelArtifactsTab(): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: "artifacts", type: "artifacts", label: "Artifacts", closable: true, contentMode: "padded", payload: { kind: "artifacts" } };
+  return { id: "artifacts", type: "artifacts", label: fullSharedT("sidebar.artifacts"), closable: true, contentMode: "padded", payload: { kind: "artifacts" } };
 }
 
 export function taskPanelSkillTab(skillId: string, label = "Skill"): SidePanelTabRecord<TaskSidePanelTabPayload> {
@@ -256,7 +260,7 @@ export function taskPanelFilesTab(): SidePanelTabRecord<TaskSidePanelTabPayload>
   return {
     id: "files",
     type: "files-browser",
-    label: "Files",
+    label: fullSharedT("taskPanels.tabs.files"),
     closable: true,
     contentMode: "full-bleed",
     payload: { kind: "files-browser", query: null, folderPath: null, projectId: null, workspaceId: null },
@@ -298,7 +302,7 @@ export function taskPanelAttachmentTab(attachmentId: string, title: string): Sid
 }
 
 export function taskPanelBrowserTab(browserId: string): SidePanelTabRecord<TaskSidePanelTabPayload> {
-  return { id: `browser:${browserId}`, type: "browser", label: "Browser", closable: true, contentMode: "full-bleed", payload: { kind: "browser", browserId } };
+  return { id: `browser:${browserId}`, type: "browser", label: fullSharedT("taskPanels.tabs.browser"), closable: true, contentMode: "full-bleed", payload: { kind: "browser", browserId } };
 }
 
 export function taskPanelDisplayLabel(tab: SidePanelTabRecord<TaskSidePanelTabPayload>, t: TFunction): string {
@@ -311,4 +315,8 @@ export function taskPanelDisplayLabel(tab: SidePanelTabRecord<TaskSidePanelTabPa
     case "browser": return t("taskPanels.tabs.browser");
     default: return tab.label;
   }
+}
+
+export function taskPanelPluginTab(panel: { entityId: string; slot: { pluginKey: string; id: string; displayName: string } }): SidePanelTabRecord<TaskSidePanelTabPayload> {
+  return { id: `plugin:${panel.slot.pluginKey}:${panel.slot.id}:${panel.entityId}`, type: "plugin-panel", label: panel.slot.displayName, closable: true, contentMode: "padded", payload: { kind: "plugin-panel", pluginKey: panel.slot.pluginKey, slotId: panel.slot.id, entityId: panel.entityId } };
 }

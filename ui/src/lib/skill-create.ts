@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type {
   CompanySkillCreateRequest,
   CompanySkillDetail,
@@ -49,7 +50,7 @@ export function splitCategoryDraft(value: string) {
 }
 
 export function defaultSkillMarkdown(name: string, tagline: string) {
-  const title = name.trim() || "New Skill";
+  const title = name.trim() || fullSharedT("skillsGap.newSkill");
   const summary = tagline.trim() || "Describe when agents should use this skill.";
   return [
     "---",

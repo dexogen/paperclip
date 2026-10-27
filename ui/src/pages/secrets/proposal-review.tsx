@@ -1,4 +1,4 @@
-import { useTranslation } from "@/i18n";
+import { useTranslation, i18n, Trans } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { useCallback, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -42,7 +42,7 @@ import { SecretPathName } from "./SecretPathName";
 
 /** Short, non-reversible fingerprint label. Never renders the value. */
 export function fingerprintLabel(fingerprint: string | null, length: number | null): string {
-  const digest = fingerprint ? `sha256:${fingerprint.slice(0, 10)}…` : "no fingerprint";
+  const digest = fingerprint ? `sha256:${fingerprint.slice(0, 10)}…` : i18n.t("fullRoutinesSecrets.noFingerprint");
   const size = typeof length === "number" ? `${length} ${length === 1 ? "byte" : "bytes"}` : null;
   return size ? `${digest} · ${size}` : digest;
 }
@@ -61,6 +61,7 @@ export function FingerprintChip({
   length: number | null;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const { pushToast } = useToastActions();
   const label = fingerprintLabel(fingerprint, length);
   if (!fingerprint) {
@@ -77,10 +78,10 @@ export function FingerprintChip({
       type="button"
       onClick={() => {
         copyTextToClipboard(full)
-          .then(() => pushToast({ title: "Fingerprint copied", tone: "success" }))
-          .catch(() => pushToast({ title: "Couldn’t copy fingerprint", tone: "error" }));
+          .then(() => pushToast({ title: t("fullRoutinesSecrets.fingerprintCopied"), tone: "success" }))
+          .catch(() => pushToast({ title: t("fullRoutinesSecrets.couldnTCopyFingerprint"), tone: "error" }));
       }}
-      title={`Copy full digest — ${full}`}
+      title={t("fullRoutinesSecrets.copyFullDigest", { "full": full })}
       className={cn(
         "inline-flex items-center gap-1 font-mono hover:text-foreground",
         className,
@@ -126,6 +127,7 @@ export function AgentRefChip({
   agent: SecretProposalAgentRef;
   className?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <span className={cn("inline-flex min-w-0 items-center gap-1", className)}>
       <AgentAvatar agent={agent} size={16} className="h-3.5 w-3.5 shrink-0 text-muted-foreground"/>
@@ -136,6 +138,7 @@ export function AgentRefChip({
 
 /** Env-var vs API-access delivery badge for a binding `configPath`. */
 export function DeliveryBadge({ configPath }: { configPath: string | null }) {
+  const { t } = useTranslation();
   const mode = deliveryModeForConfigPath(configPath);
   const isEnv = mode === "env";
   const isApi = mode === "api";
@@ -157,6 +160,7 @@ export function DeliveryBadge({ configPath }: { configPath: string | null }) {
 
 /** Distinct "Proposed" pill used wherever a proposal is inlined among live rows. */
 export function ProposedBadge({ className }: { className?: string }) {
+  const { t } = useTranslation();
   return (
     <Badge
       variant="outline"
@@ -166,8 +170,7 @@ export function ProposedBadge({ className }: { className?: string }) {
         className,
       )}
     >
-      <ShieldAlert className="size-3" /> Proposed
-    </Badge>
+      <ShieldAlert className="size-3" />{" "}{t("fullRoutinesSecrets.proposed")}</Badge>
   );
 }
 
@@ -182,15 +185,15 @@ export function bindingSecretLabel(proposal: SecretProposalView): {
   pending: boolean;
 } {
   if (proposal.secretProposalId) {
-    return { name: proposal.secretProposalName ?? "proposed secret", pending: true };
+    return { name: proposal.secretProposalName ?? i18n.t("fullRoutinesSecrets.proposedSecret"), pending: true };
   }
   return { name: proposal.secretName ?? "secret", pending: false };
 }
 
 function readableError(error: unknown): string {
-  if (error instanceof ApiError) return error.message || `Request failed: ${error.status}`;
+  if (error instanceof ApiError) return error.message || i18n.t("fullRoutinesSecrets.requestFailedStatus", { status: error.status });
   if (error instanceof Error) return error.message;
-  return "Something went wrong. Try again.";
+  return i18n.t("fullRoutinesSecrets.somethingWentWrongTryAgain");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -228,6 +231,7 @@ export function useProposalReview(
   companyId: string | null,
   providerConfigs: CompanySecretProviderConfig[] = [],
 ): UseProposalReview {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
 
@@ -240,7 +244,7 @@ export function useProposalReview(
     if (!companyId) return;
     queryClient.invalidateQueries({ queryKey: ["secret-proposals", companyId] });
     queryClient.invalidateQueries({ queryKey: queryKeys.secrets.list(companyId) });
-  }, [companyId, queryClient]);
+  }, [companyId, queryClient, t]);
 
   const approveMutation = useMutation({
     mutationFn: (draft: ApproveDraft) => {
@@ -263,11 +267,11 @@ export function useProposalReview(
     },
     onSuccess: (result) => {
       pushToast({
-        title: result.kind === "secret" ? "Secret approved" : "Binding approved",
+        title: result.kind === "secret" ? t("fullRoutinesSecrets.secretApproved") : t("fullRoutinesSecrets.bindingApproved"),
         body:
           result.kind === "secret"
-            ? (result.proposedName ?? "Secret created")
-            : `${result.target?.name ?? "Agent"} · ${bindingEnvKey(result) || "binding"}`,
+            ? (result.proposedName ?? i18n.t("fullRoutinesSecrets.secretCreated"))
+            : `${result.target?.name ?? i18n.t("fullRoutinesSecrets.agent131")} · ${bindingEnvKey(result) || i18n.t("fullRoutinesSecrets.bindingFallback")}`,
         tone: "success",
       });
       setApproveDraft(null);
@@ -282,7 +286,7 @@ export function useProposalReview(
       secretsApi.rejectProposal(companyId!, proposal.id, { reason: reason.trim() }),
     onSuccess: (result) => {
       pushToast({
-        title: "Proposal rejected",
+        title: t("fullRoutinesSecrets.proposalRejected"),
         body: result.kind === "secret" ? (result.proposedName ?? undefined) : undefined,
         tone: "info",
       });
@@ -313,14 +317,14 @@ export function useProposalReview(
         cascade: Boolean(proposal.secretProposalId),
       });
     },
-    [providerConfigs],
+    [providerConfigs, t],
   );
 
   const requestReject = useCallback((proposal: SecretProposalView) => {
     setError(null);
     setRejectReason("");
     setRejectTarget(proposal);
-  }, []);
+  }, [t]);
 
   const dialogs = (
     <>
@@ -383,6 +387,7 @@ function ApproveDialog({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const { t } = useTranslation();
   const isSecret = draft?.proposal.kind === "secret";
   const previewName = draft
     ? draft.folder.trim()
@@ -399,19 +404,19 @@ function ApproveDialog({
           <>
             <DialogHeader>
               <DialogTitle>
-                {isSecret ? "Approve & create secret" : "Approve binding"}
+                {isSecret ? t("fullRoutinesSecrets.approveCreateSecret") : t("fullRoutinesSecrets.approveBinding")}
               </DialogTitle>
               <DialogDescription>
                 {isSecret
-                  ? "The value is created as the proposing agent recorded it. Re-folder or rename it before it lands."
-                  : "Grant the target agent access to this secret. This runs with your permissions."}
+                  ? t("fullRoutinesSecrets.theValueIsCreatedAsTheProposingAgentRecorded")
+                  : t("fullRoutinesSecrets.grantTheTargetAgentAccessToThisSecretThis")}
               </DialogDescription>
             </DialogHeader>
 
             {/* Provenance recap — keeps the social-engineering surface visible. */}
             <div className="space-y-1.5 rounded-md border border-border bg-muted/30 p-2.5 text-xs">
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <span>Proposed by</span>
+                <span>{t("fullRoutinesSecrets.proposedBy")}</span>
                 <AgentRefChip agent={draft.proposal.proposedBy} className="font-medium text-foreground" />
               </div>
               <ProposalJustification justification={draft.proposal.justification} />
@@ -421,7 +426,7 @@ function ApproveDialog({
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <Label htmlFor="approve-folder">Folder</Label>
+                    <Label htmlFor="approve-folder">{t("fullRoutinesSecrets.folder")}</Label>
                     <Input
                       id="approve-folder"
                       value={draft.folder}
@@ -431,7 +436,7 @@ function ApproveDialog({
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="approve-name">Name</Label>
+                    <Label htmlFor="approve-name">{t("fullRoutinesSecrets.name")}</Label>
                     <Input
                       id="approve-name"
                       value={draft.leaf}
@@ -443,28 +448,27 @@ function ApproveDialog({
                     />
                   </div>
                 </div>
-                <p className="text-(length:--text-micro) text-muted-foreground">
-                  Lands as{" "}
+                <p className="text-(length:--text-micro) text-muted-foreground">{t("fullRoutinesSecrets.landsAs")}{" "}
                   {previewName ? (
                     <SecretPathName name={previewName} className="font-mono" />
                   ) : (
-                    <span className="italic">enter a name</span>
+                    <span className="italic">{t("fullRoutinesSecrets.enterAName")}</span>
                   )}
                 </p>
 
                 <div className="space-y-1">
-                  <Label htmlFor="approve-description">Description</Label>
+                  <Label htmlFor="approve-description">{t("fullRoutinesSecrets.description")}</Label>
                   <Input
                     id="approve-description"
                     value={draft.description}
                     onChange={(event) => onChange({ ...draft, description: event.target.value })}
-                    placeholder="Optional"
+                    placeholder={t("fullRoutinesSecrets.optional975")}
                   />
                 </div>
 
                 {localConfigs.length > 0 ? (
                   <div className="space-y-1">
-                    <Label htmlFor="approve-provider-config">Provider vault</Label>
+                    <Label htmlFor="approve-provider-config">{t("fullRoutinesSecrets.providerVault")}</Label>
                     <select
                       id="approve-provider-config"
                       value={draft.providerConfigId}
@@ -473,7 +477,7 @@ function ApproveDialog({
                       }
                       className="h-9 w-full rounded-md border border-input bg-transparent px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
-                      <option value="">Deployment default</option>
+                      <option value="">{t("fullRoutinesSecrets.deploymentDefault")}</option>
                       {localConfigs.map((config) => (
                         <option key={config.id} value={config.id}>
                           {config.displayName}
@@ -501,17 +505,15 @@ function ApproveDialog({
             ) : null}
 
             <DialogFooter>
-              <Button variant="ghost" onClick={onCancel} disabled={pending}>
-                Cancel
-              </Button>
+              <Button variant="ghost" onClick={onCancel} disabled={pending}>{t("fullRoutinesSecrets.cancel")}</Button>
               <Button onClick={onConfirm} disabled={pending || !canConfirm}>
                 {pending
-                  ? "Approving…"
+                  ? t("fullRoutinesSecrets.approving")
                   : isSecret
-                    ? "Approve & create"
+                    ? t("fullRoutinesSecrets.approveCreate")
                     : draft.cascade
-                      ? "Approve secret & bind"
-                      : "Approve binding"}
+                      ? t("fullRoutinesSecrets.approveSecretBind")
+                      : t("fullRoutinesSecrets.approveBinding")}
               </Button>
             </DialogFooter>
           </>
@@ -528,6 +530,7 @@ function BindingApproveBody({
   draft: ApproveDraft;
   onChange: (next: ApproveDraft) => void;
 }) {
+  const { t } = useTranslation();
   const { proposal } = draft;
   const secret = bindingSecretLabel(proposal);
   const envKey = bindingEnvKey(proposal);
@@ -535,7 +538,7 @@ function BindingApproveBody({
     <div className="space-y-3 text-sm">
       <div className="space-y-2 rounded-md border border-border p-3">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">Target agent</span>
+          <span className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.targetAgent")}</span>
           {proposal.target ? (
             <AgentRefChip agent={proposal.target} className="text-sm font-medium" />
           ) : (
@@ -543,14 +546,14 @@ function BindingApproveBody({
           )}
         </div>
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">Delivered as</span>
+          <span className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.deliveredAs")}</span>
           <span className="flex items-center gap-1.5">
             <DeliveryBadge configPath={proposal.configPath} />
             <code className="font-mono text-xs">{envKey || proposal.configPath}</code>
           </span>
         </div>
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">Secret</span>
+          <span className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.secret")}</span>
           <span className="flex items-center gap-1.5">
             <KeyRound className="size-3.5 text-muted-foreground" />
             <span className="font-medium">{secret.name}</span>
@@ -566,13 +569,9 @@ function BindingApproveBody({
             checked={draft.cascade}
             onCheckedChange={(checked) => onChange({ ...draft, cascade: checked === true })}
             className="mt-0.5"
-            aria-label="Also approve the proposed secret"
+            aria-label={t("fullRoutinesSecrets.alsoApproveTheProposedSecret")}
           />
-          <span className="text-foreground/90">
-            Also approve the proposed secret{" "}
-            <span className="font-medium">{secret.name}</span> and create it in the same step. The
-            binding can’t land without it.
-          </span>
+          <span className="text-foreground/90"><Trans i18nKey="fullRoutinesSecrets.alsoApproveTheProposedSecretAndCreateItIn" values={{ "value1": secret.name }} components={{ c1: <span className="font-medium" /> }} /></span>
         </label>
       ) : null}
     </div>
@@ -600,6 +599,7 @@ function RejectDialog({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const { t } = useTranslation();
   const canConfirm = reason.trim().length > 0;
   return (
     <Dialog open={Boolean(proposal)} onOpenChange={(open) => !open && onCancel()}>
@@ -607,22 +607,18 @@ function RejectDialog({
         {proposal ? (
           <>
             <DialogHeader>
-              <DialogTitle>Reject proposal</DialogTitle>
-              <DialogDescription>
-                The reason is sent back to{" "}
-                <AgentRefChip agent={proposal.proposedBy} className="text-foreground" />. Dependent
-                bindings are rejected too.
-              </DialogDescription>
+              <DialogTitle>{t("fullRoutinesSecrets.rejectProposal")}</DialogTitle>
+              <DialogDescription><Trans i18nKey="fullRoutinesSecrets.rejectReasonRecipient" components={{ agent: <AgentRefChip agent={proposal.proposedBy} className="text-foreground" /> }} /></DialogDescription>
             </DialogHeader>
             <div className="space-y-1">
-              <Label htmlFor="reject-reason">Reason</Label>
+              <Label htmlFor="reject-reason">{t("fullRoutinesSecrets.reason")}</Label>
               <Textarea
                 id="reject-reason"
                 value={reason}
                 onChange={(event) => onReasonChange(event.target.value)}
                 rows={3}
                 autoFocus
-                placeholder="Why is this being rejected?"
+                placeholder={t("fullRoutinesSecrets.whyIsThisBeingRejected")}
               />
             </div>
             {error ? (
@@ -631,11 +627,9 @@ function RejectDialog({
               </p>
             ) : null}
             <DialogFooter>
-              <Button variant="ghost" onClick={onCancel} disabled={pending}>
-                Cancel
-              </Button>
+              <Button variant="ghost" onClick={onCancel} disabled={pending}>{t("fullRoutinesSecrets.cancel")}</Button>
               <Button variant="destructive" onClick={onConfirm} disabled={pending || !canConfirm}>
-                {pending ? "Rejecting…" : "Reject"}
+                {pending ? t("fullRoutinesSecrets.rejecting") : t("fullRoutinesSecrets.reject")}
               </Button>
             </DialogFooter>
           </>
@@ -662,6 +656,7 @@ export function ProposalActions({
   disabled?: boolean;
   size?: "sm" | "xs";
 }) {
+  const { t } = useTranslation();
   const blocked = !proposal.viewerCanApprove;
   const heightClass = size === "xs" ? "h-7 px-2 text-xs" : "";
   const approveButton = (
@@ -670,9 +665,7 @@ export function ProposalActions({
       className={heightClass}
       disabled={disabled || blocked}
       onClick={() => onApprove(proposal)}
-    >
-      Approve
-    </Button>
+    >{t("fullRoutinesSecrets.approve")}</Button>
   );
   return (
     <div className="flex items-center gap-1.5">
@@ -683,7 +676,7 @@ export function ProposalActions({
               <span tabIndex={0}>{approveButton}</span>
             </TooltipTrigger>
             <TooltipContent className="max-w-72">
-              {proposal.approveBlockReason ?? "You don’t have permission to approve this."}
+              {proposal.approveBlockReason ?? t("fullRoutinesSecrets.youDonTHavePermissionToApproveThis")}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -696,9 +689,7 @@ export function ProposalActions({
         className={heightClass}
         disabled={disabled}
         onClick={() => onReject(proposal)}
-      >
-        Reject
-      </Button>
+      >{t("fullRoutinesSecrets.reject")}</Button>
     </div>
   );
 }

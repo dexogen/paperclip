@@ -1,3 +1,4 @@
+import { useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useTranslation, Trans, i18n } from "@/i18n";
 import type { TFunction } from "i18next";
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -23,7 +24,7 @@ import { AGENT_ROLE_LABELS } from "@paperclipai/shared";
 /* ---- Help text for (?) tooltips ---- */
 export const help: Record<string, string> = {
   name: "Display name for this agent.",
-  title: "Job title shown in the org chart.",
+  title: i18n.getFixedT("en")("agentConfigUi.help.title"),
   role: "Organizational role. Determines position and capabilities.",
   reportsTo: "The agent this one reports to in the org hierarchy.",
   capabilities: "Describes what this agent can do. Shown in the org chart and used for task routing.",
@@ -156,6 +157,7 @@ export function agentConfigRoleLabel(role: string, t: TFunction = i18n.getFixedT
 /* ---- Primitive components ---- */
 
 export function HintIcon({ text }: { text: string }) {
+  useFullSharedTranslation();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -171,6 +173,7 @@ export function HintIcon({ text }: { text: string }) {
 }
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode; configSection?: import("../adapters/types").AdapterConfigSection }) {
+  useFullSharedTranslation();
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-1">
@@ -195,6 +198,7 @@ export function ToggleField({
   onChange: (v: boolean) => void;
   toggleTestId?: string;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-1.5">
@@ -237,6 +241,7 @@ export function ToggleWithNumber({
   numberPrefix?: string;
   showNumber: boolean;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
@@ -281,6 +286,7 @@ export function CollapsibleSection({
   bordered?: boolean;
   children: React.ReactNode;
 }) {
+  useFullSharedTranslation();
   return (
     <div className={cn(bordered && "border-t border-border")}>
       <button
@@ -311,6 +317,7 @@ export function AutoExpandTextarea({
   placeholder?: string;
   minRows?: number;
 }) {
+  useFullSharedTranslation();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const rows = minRows ?? 3;
   const lineHeight = 20;
@@ -354,6 +361,7 @@ export function DraftInput({
   immediate?: boolean;
   className?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "className">) {
+  useFullSharedTranslation();
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
 
@@ -389,6 +397,7 @@ export function DraftTextarea({
   placeholder?: string;
   minRows?: number;
 }) {
+  useFullSharedTranslation();
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
 
@@ -439,6 +448,7 @@ export function DraftNumberInput({
   immediate?: boolean;
   className?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "className" | "type">) {
+  useFullSharedTranslation();
   const [draft, setDraft] = useState(String(value));
   useEffect(() => setDraft(String(value)), [value]);
 
@@ -527,6 +537,7 @@ export function ChoosePathButton() {
  * Label + input rendered on the same line (inline layout for compact fields).
  */
 export function InlineField({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  useFullSharedTranslation();
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-1.5 shrink-0">

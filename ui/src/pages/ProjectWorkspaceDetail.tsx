@@ -311,7 +311,7 @@ export function ProjectWorkspaceDetail() {
   );
   const tabItems = useMemo(
     () => orderProjectWorkspaceTabItems([{ value: "configuration", label: t("projectWorkspacesUi.page.configuration"), order: 30 }, ...pluginTabItems]),
-    [pluginTabItems, t],
+    [pluginTabItems, t, i18n.language],
   );
 
   useEffect(() => {
@@ -333,7 +333,7 @@ export function ProjectWorkspaceDetail() {
       { label: t("projectWorkspacesUi.page.workspaces"), href: `/projects/${canonicalProjectRef}/workspaces` },
       { label: workspace?.name ?? routeWorkspaceId },
     ]);
-  }, [setBreadcrumbs, project, canonicalProjectRef, workspace?.name, routeWorkspaceId, t]);
+  }, [setBreadcrumbs, project, canonicalProjectRef, workspace?.name, routeWorkspaceId, t, i18n.language]);
 
   useEffect(() => {
     if (!project) return;

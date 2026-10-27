@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabGroup } from "../../kit";
 import { Counts } from "./Counts";
@@ -35,7 +36,8 @@ const GRID = "grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3";
 const COUNT_LINE = cn(META_TEXT, "px-1 text-muted-foreground");
 
 export function GalleryStacks({ groups }: { groups: LabGroup[] }) {
-  if (groups.length === 0) return <p className="px-1 py-16 text-center text-sm font-medium text-foreground">No artifact stacks yet.</p>;
+  useFullSharedTranslation();
+  if (groups.length === 0) return <p className="px-1 py-16 text-center text-sm font-medium text-foreground">{fullSharedT("surfacesGap.artifacts.noStacks")}</p>;
   const all = groups.flatMap((group) => group.artifacts);
   const total = groups.reduce((sum, group) => sum + group.count, 0);
   return (
@@ -56,6 +58,7 @@ export function GalleryStacks({ groups }: { groups: LabGroup[] }) {
 }
 
 function Day({ id, section }: { id: string; section: DaySection }) {
+  useFullSharedTranslation();
   return (
     <section data-solid="gallery-day" aria-labelledby={id} className="flex flex-col gap-4">
       <header className="flex flex-col gap-0.5 px-1">
@@ -86,8 +89,9 @@ function Day({ id, section }: { id: string; section: DaySection }) {
 const flat = () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("days") === "off";
 
 export function GalleryStack({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   if (group.artifacts.length === 0) {
-    return <p className="px-1 py-16 text-center text-sm font-medium text-foreground">No artifacts in this stack match the current filters.</p>;
+    return <p className="px-1 py-16 text-center text-sm font-medium text-foreground">{fullSharedT("surfacesGap.artifacts.noStackMatch")}</p>;
   }
   return (
     <div data-solid="gallery-stack" className="flex flex-col gap-6">

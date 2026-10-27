@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,7 +36,7 @@ export function InstanceGeneralSettings({ embedded = false }: { embedded?: boole
       { label: t("instanceGeneral.settings"), href: "/company/settings" },
       { label: t("instanceGeneral.general") },
     ]);
-  }, [embedded, setBreadcrumbs, t]);
+  }, [embedded, setBreadcrumbs, t, i18n.language]);
 
   const generalQuery = useQuery({
     queryKey: queryKeys.instance.generalSettings,

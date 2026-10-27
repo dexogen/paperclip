@@ -1,3 +1,5 @@
+import { artifactUnit } from "../../localized-copy";
+import { t, useTranslation } from "@/i18n";
 import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -96,6 +98,7 @@ const SHOWN = [
 ];
 
 function Table({ csv, rows, single, mono, className }: { csv: string; rows: number; single: boolean; mono: string; className?: string }) {
+  useTranslation();
   const [head, ...body] = csv
     .trim()
     .split("\n")
@@ -117,7 +120,7 @@ function Table({ csv, rows, single, mono, className }: { csv: string; rows: numb
               total > note.columns ? (
                 <th key={note.columns} className={cn("w-7 text-right font-normal whitespace-nowrap @2xs:w-14", note.when)}>
                   +{total - note.columns}
-                  <span className="hidden @2xs:inline"> {total - note.columns === 1 ? "col" : "cols"}</span>
+                  <span className="hidden @2xs:inline"> {artifactUnit(total - note.columns, "column")}</span>
                 </th>
               ) : null,
             )}
@@ -152,6 +155,7 @@ export function ExcerptSheet({
   /** Sizing. A plate or a cell fills what it is given; a drawer is as tall as its lines. */
   className?: string;
 }) {
+  useTranslation();
   const text = artifact.excerpt ?? "";
   const drawer = shape === "drawer";
   const cell = shape === "cell";

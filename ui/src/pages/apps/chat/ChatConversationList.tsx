@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { MessageSquare } from "lucide-react";
 import type { ChatConversation, ChatProvider } from "@/api/chatEndpoints";
 import { EmptyState } from "@/components/EmptyState";
@@ -34,23 +35,24 @@ export function ChatConversationList({
   rows: ChatConversation[];
   provider: ChatProvider;
 }) {
+  useFullAppsTranslation();
   if (!rows.length)
     return (
       <EmptyState
         icon={MessageSquare}
-        message="No conversations yet"
+        message={fullAppsT("fullApps.no_conversations_yet_0d6008")}
         description={
           provider === "speko"
-            ? "Open an assigned task and choose Talk to agent."
+            ? fullAppsT("fullApps.open_an_assigned_task_and_choose_talk_to_agent_ebcdc4")
             : provider === "agentmail"
-            ? "Send an email to this agent’s address to start one."
-            : "Mention the agent in an enabled destination to start one."
+            ? fullAppsT("fullApps.send_an_email_to_this_agent_s_address_to_start_one_11765c")
+            : fullAppsT("fullApps.mention_the_agent_in_an_enabled_destination_to_start_54fb00")
         }
       />
     );
   return (
     <ul
-      aria-label="Conversations"
+      aria-label={fullAppsT("fullApps.conversations_1d432f")}
       className="divide-y divide-border border-y border-border"
     >
       {rows.map((row) => (
@@ -73,11 +75,11 @@ export function ChatConversationList({
                   className="break-words font-medium hover:underline"
                   to={`/issues/${row.issueId}`}
                 >
-                  {row.issueTitle ?? row.issueIdentifier ?? "Paperclip task"}
+                  {row.issueTitle ?? row.issueIdentifier ?? fullAppsT("fullApps.paperclip_task_ff44b3")}
                 </Link>
               ) : (
                 <span className="font-medium">
-                  {row.issueTitle ?? "Waiting for task"}
+                  {row.issueTitle ?? fullAppsT("fullApps.waiting_for_task_2d3edb")}
                 </span>
               )}
             </div>
@@ -99,7 +101,7 @@ export function ChatConversationList({
                   {formatDateTime(row.updatedAt)}
                 </time>
               )}
-              {row.state === "completed" && <span>Completed</span>}
+              {row.state === "completed" && <span>{fullAppsT("fullApps.completed_22a970")}</span>}
             </div>
           </div>
           {row.state !== "active" && row.state !== "completed" && (

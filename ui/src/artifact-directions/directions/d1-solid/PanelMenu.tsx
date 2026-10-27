@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { Ellipsis } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import type { LabArtifact } from "../../kit";
@@ -12,10 +13,11 @@ import { ICON_BUTTON } from "./slab";
  * an unlabelled icon.
  */
 export function PanelMenu({ actions, artifact }: { actions: SolidAction[]; artifact: LabArtifact }) {
+  useFullSharedTranslation();
   if (actions.length === 0) return null;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger data-secondary aria-label={`More actions: ${artifact.title}`} title="More actions" className={ICON_BUTTON}>
+      <DropdownMenuTrigger data-secondary aria-label={fullSharedT("fullShared.more_actions_1c61ce", { value1: artifact.title })} title={fullSharedT("taskDetail.copy.moreActions")} className={ICON_BUTTON}>
         <Ellipsis aria-hidden className="size-3.5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

@@ -1,3 +1,5 @@
+import { AppDisplayError, renderAppError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -48,6 +50,7 @@ export function ConnectionIntentInteractionBody({
   addresseeName,
   renderSetup,
 }: ConnectionIntentInteractionBodyProps) {
+  useFullAppsTranslation();
   const [open, setOpen] = useState(false);
   const [adoptionConnectionId, setAdoptionConnectionId] = useState<string | null>(null);
   const focusTargetRef = useRef<HTMLDivElement>(null);
@@ -209,7 +212,7 @@ export function ConnectionIntentInteractionBody({
           const agent = await agentsApi.get(interaction.payload.requestingAgentId, interaction.companyId);
           const current = agent.runtimeConfig.aiConnection;
           if (!current || current.mode === "responsible_user" || current.mode === "router" || current.connectionId !== previous.id || current.grantId !== previous.grantId) {
-            throw new Error("The agent’s AI connection changed. Reload the task and try again.");
+            throw new AppDisplayError("fullApps.the_agent_s_ai_connection_changed_reload_the_task_an_8afd21");
           }
           if (result.generation !== setupGeneration.current) return;
           await agentsApi.update(agent.id, {
@@ -243,35 +246,35 @@ export function ConnectionIntentInteractionBody({
     interaction.status === "accepted"
       ? {
           icon: CheckCircle2,
-          title: accessRequest ? `${serviceName} access granted` : interaction.payload.upstreamService ? "External provider connected" : `${serviceName} connected`,
-          body: accessRequest ? null : interaction.payload.upstreamService ? `${interaction.payload.requestingAgentName} can now verify and authorize ${interaction.payload.upstreamService.name} through this provider. The app is not yet verified.` : isAi ? "This agent can now use the connection." : `${interaction.payload.requestingAgentName} can use this connection on the continuation run.`,
+          title: accessRequest ? fullAppsT("fullApps.access_granted_30a67d", { value1: serviceName }) : interaction.payload.upstreamService ? fullAppsT("fullApps.external_provider_connected_ec0ff2") : fullAppsT("fullApps.connected_166733", { value1: serviceName }),
+          body: accessRequest ? null : interaction.payload.upstreamService ? fullAppsT("fullApps.message_62da29762e07", { value1: interaction.payload.requestingAgentName, value2: interaction.payload.upstreamService.name }) : isAi ? fullAppsT("fullApps.this_agent_can_now_use_the_connection_4e9842") : fullAppsT("fullApps.message_1f425c9caf86", { value1: interaction.payload.requestingAgentName }),
         }
       : interaction.status === "cancelled"
         ? {
             icon: XCircle,
-            title: "Connection request withdrawn",
-            body: "This request is no longer active.",
+            title: fullAppsT("fullApps.connection_request_withdrawn_3070c0"),
+            body: fullAppsT("fullApps.this_request_is_no_longer_active_98de09"),
           }
       : interaction.status === "rejected"
         ? {
             icon: XCircle,
-            title: accessRequest ? "Access declined" : "Connection declined",
-            body: accessRequest ? null : isAi ? "The task still needs a working AI connection before it can run." : `${interaction.payload.requestingAgentName} was notified and can continue without it.`,
+            title: accessRequest ? fullAppsT("fullApps.access_declined_044e4a") : fullAppsT("fullApps.connection_declined_b17945"),
+            body: accessRequest ? null : isAi ? fullAppsT("fullApps.the_task_still_needs_a_working_ai_connection_before__8c8b8b") : fullAppsT("fullApps.message_4edbe874c2a7", { value1: interaction.payload.requestingAgentName }),
           }
         : interaction.status === "expired"
           ? {
               icon: Clock,
               title:
                 resultOutcome === "superseded"
-                  ? "Request superseded"
-                  : "Connection request expired",
+                  ? fullAppsT("fullApps.request_superseded_1f6759")
+                  : fullAppsT("fullApps.connection_request_expired_cc0c7b"),
               body:
                 resultOutcome === "superseded"
-                  ? "This request was replaced. Use the latest connection card instead."
+                  ? fullAppsT("fullApps.this_request_was_replaced_use_the_latest_connection__a8df97")
                   : // The server stores the reason an expiry happened and what to
                     // do next; without it the card only says the request is gone.
                     interaction.result?.reason?.trim()
-                    || "This request is no longer active.",
+                    || fullAppsT("fullApps.this_request_is_no_longer_active_98de09"),
             }
           : null;
   const StatusIcon = status?.icon;
@@ -312,13 +315,8 @@ export function ConnectionIntentInteractionBody({
         >
           <Clock className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
-            <p className="font-medium text-foreground">
-              Waiting for {addresseeLabel}
-            </p>
-            {!accessRequest ? <p className="mt-1 text-sm text-muted-foreground">
-              Only the addressed person can choose an identity or authorize this
-              connection.
-            </p> : null}
+            <p className="font-medium text-foreground"><FullAppsTrans i18nKey="fullApps.waiting_for_3f4d9b" components={{ part1: <>{addresseeLabel}</> }} /></p>
+            {!accessRequest ? <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.only_the_addressed_person_can_choose_an_identity_or__5729ea")}</p> : null}
           </div>
         </div>
       </div>
@@ -335,22 +333,22 @@ export function ConnectionIntentInteractionBody({
         <div className="flex items-center gap-3">
           <AgentAvatar agent={agentQuery.data ?? { id: interaction.payload.requestingAgentId, name: interaction.payload.requestingAgentName }} size={32} label={interaction.payload.requestingAgentName} />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-foreground">Grant {interaction.payload.requestingAgentName} access to “{accessRequest.connectionName}”?</p>
+            <p className="text-sm font-medium text-foreground"><FullAppsTrans i18nKey="fullApps.grant_access_to_74a38e" components={{ part1: <>{interaction.payload.requestingAgentName}</>, part2: <>{accessRequest.connectionName}</> }} /></p>
           </div>
           <AppLogo name={interaction.payload.serviceName} logoUrl={interaction.payload.serviceLogoUrl} darkLogoUrl={interaction.payload.serviceDarkLogoUrl} size={32} />
         </div>
-        <ul aria-label="Tool permissions" className="max-h-48 space-y-2 overflow-y-auto text-xs">
+        <ul aria-label={fullAppsT("fullApps.tool_permissions_a7b006")} className="max-h-48 space-y-2 overflow-y-auto text-xs">
           {accessRequest.tools.map(tool => <li key={tool.catalogEntryId} className="flex items-start justify-between gap-3">
             <span className="min-w-0 break-all font-mono text-foreground">{tool.toolName}</span>
-            <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? "Allowed" : "Ask first"}</span>
+            <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? fullAppsT("fullApps.allowed_1bb201") : fullAppsT("fullApps.ask_first_4a9e8c")}</span>
           </li>)}
         </ul>
-        {setupQuery.isError || completeMutation.isError || declineMutation.isError ? <p role="alert" className="text-sm text-destructive">{(completeMutation.error ?? declineMutation.error ?? setupQuery.error)?.message ?? "Couldn’t update this access request."}</p> : null}
-        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">Connection manager required.</p> : null}
+        {setupQuery.isError || completeMutation.isError || declineMutation.isError ? <p role="alert" className="text-sm text-destructive">{(completeMutation.error ?? declineMutation.error ?? setupQuery.error)?.message ?? fullAppsT("fullApps.couldn_t_update_this_access_request_180397")}</p> : null}
+        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.connection_manager_required_35fdb9")}</p> : null}
         <div className="flex items-center justify-between gap-2">
-          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>Not now</Button>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>{fullAppsT("decisionForms.common.notNow")}</Button>
           <Button size="sm" disabled={busy || !setupQuery.data?.canGrantAccess} onClick={() => completeMutation.mutate(accessRequest.connectionId)}>
-            {completeMutation.isPending ? "Granting access…" : "Grant access"}
+            {completeMutation.isPending ? fullAppsT("fullApps.granting_access_376bec") : fullAppsT("fullApps.grant_access_869376")}
           </Button>
         </div>
       </div>
@@ -364,26 +362,20 @@ export function ConnectionIntentInteractionBody({
     : null;
   const setupContent = setupQuery.isLoading ? (
                 <div className="flex min-h-48 items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Loading
-                  connection options…
-                </div>
+                  <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_connection_options_f7bb47")}</div>
               ) : setupQuery.isError ? (
                 <div className="py-8 text-center">
-                  <p className="font-medium text-foreground">
-                    Couldn’t load connection setup
-                  </p>
+                  <p className="font-medium text-foreground">{fullAppsT("githubSetupUi.loadFailedTitle")}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {setupQuery.error instanceof Error
-                      ? setupQuery.error.message
-                      : "Try again."}
+                      ? renderAppError(setupQuery.error)
+                      : fullAppsT("projectConfigUi.membership.retry")}
                   </p>
                   <Button
                     className="mt-4"
                     variant="outline"
                     onClick={() => setupQuery.refetch()}
-                  >
-                    Try again
-                  </Button>
+                  >{fullAppsT("fullApps.try_again_d8b839")}</Button>
                 </div>
               ) : setupProps ? (
                 renderSetup ? renderSetup(setupProps) : <ConnectionSetupFlow {...setupProps} />
@@ -393,18 +385,15 @@ export function ConnectionIntentInteractionBody({
   const aiProviderName = aiConnection ? AI_CONNECTION_CAPABILITIES[aiConnection.provider].name : serviceName;
   const inlineContent = setupQuery.isLoading || setupQuery.isError ? setupContent
     : readyForAdoption ? <div className="space-y-3">
-        <p className="text-sm">
-          Use your {aiProviderName} connection for {interaction.payload.requestingAgentName}? This replaces the agent’s existing authentication
-          with each responsible person’s own account. The model stays the same.
-        </p>
+        <p className="text-sm"><FullAppsTrans i18nKey="fullApps.use_your_connection_for_this_replaces_the_agent_s_ex_3d9172" components={{ part1: <>{aiProviderName}</>, part2: <>{interaction.payload.requestingAgentName}</> }} /></p>
         <Button disabled={adoptMutation.isPending} onClick={() => adoptMutation.mutate(readyForAdoption)}>
-          {adoptMutation.isPending ? "Checking connection…" : "Use connection and continue"}
+          {adoptMutation.isPending ? fullAppsT("fullApps.checking_connection_de9fc3") : fullAppsT("fullApps.use_connection_and_continue_26036a")}
         </Button>
       </div>
     : selectedReady ? <div className="space-y-3">
-        <p className="text-sm">{repair.connection.name} is ready.</p>
+        <p className="text-sm"><FullAppsTrans i18nKey="fullApps.is_ready_a3cb75" components={{ part1: <>{repair.connection.name}</> }} /></p>
         <Button disabled={completeMutation.isPending} onClick={() => completeMutation.mutate(repair.connection.id)}>
-          {completeMutation.isPending ? "Continuing…" : "Continue task"}
+          {completeMutation.isPending ? fullAppsT("fullApps.continuing_207f6c") : fullAppsT("fullApps.continue_task_17255a")}
         </Button>
       </div>
     : repair ? repair.canReconnect ? repair.connection.routing ? <AiProviderSetup
@@ -427,12 +416,9 @@ export function ConnectionIntentInteractionBody({
         allAgents={false}
         onComplete={(result) => selectAiAccountMutation.mutate({ ...result, generation })}
         onCancel={() => { closeSetup(); returnFocusToCard(); }}
-      /> : <p role="status" className="text-sm text-muted-foreground">
-        {repair.connection.ownership === "personal" ? `${repair.connection.ownerName ?? "The account owner"} must reconnect ${repair.connection.name}.` : `The account owner must reconnect ${repair.connection.name}.`}
-        {" "}You can continue here once it is restored.
-      </p>
+      /> : <p role="status" className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.you_can_continue_here_once_it_is_restored_9df45d" components={{ part1: <>{repair.connection.ownership === "personal" && repair.connection.ownerName ? fullAppsT("fullApps.ownerReconnect", { owner: repair.connection.ownerName, name: repair.connection.name }) : fullAppsT("fullApps.accountOwnerReconnect", { name: repair.connection.name })}</>, part2: <>{" "}</> }} /></p>
     : aiConnection && aiConnection.mode !== "responsible_user"
-      ? <p role="status" className="text-sm text-muted-foreground">The selected account is no longer available to you. Ask its owner to restore access, or choose an available AI connection in the agent’s settings.</p>
+      ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.the_selected_account_is_no_longer_available_to_you_a_fbec34")}</p>
       : aiConnection ? <AiConnectionCredentialStep
           companyId={interaction.companyId}
           provider={aiConnection.provider}
@@ -463,32 +449,29 @@ export function ConnectionIntentInteractionBody({
           />
           <div>
             <p className="font-medium text-foreground">
-              {readyForAdoption ? `Use your ${aiProviderName} account` : needsOwnAiConnection ? `Connect your ${aiProviderName} account` : isAi ? `${aiProviderName} authentication required` : `${interaction.payload.requestingAgentName} needs ${interaction.payload.serviceName}`}
+              {readyForAdoption ? fullAppsT("fullApps.use_your_account_d26ced", { value1: aiProviderName }) : needsOwnAiConnection ? fullAppsT("fullApps.connect_your_account_1a72cb", { value1: aiProviderName }) : isAi ? fullAppsT("fullApps.authentication_required_c5a29c", { value1: aiProviderName }) : fullAppsT("fullApps.needs_ab6e34", { value1: interaction.payload.requestingAgentName, value2: interaction.payload.serviceName })}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {readyForAdoption
-                ? `Your account is connected. Use it for ${interaction.payload.requestingAgentName} to resume this task.`
+                ? fullAppsT("fullApps.your_account_is_connected_use_it_for_to_resume_this__5a1d3d", { value1: interaction.payload.requestingAgentName })
                 : needsOwnAiConnection
-                ? `${interaction.payload.requestingAgentName} needs your own AI connection. Connect here and the task will resume automatically.`
+                ? fullAppsT("fullApps.needs_your_own_ai_connection_connect_here_and_the_ta_805258", { value1: interaction.payload.requestingAgentName })
                 : interaction.payload.purpose === "ai"
-                ? "This task can’t run until the agent has a valid AI connection. Connect here and the task will resume automatically."
-                : isEmail ? "Connect AgentMail to create an email address for this agent."
-                : "Connect your identity or reuse an eligible connection. Access is added only for this agent."}
+                ? fullAppsT("fullApps.this_task_can_t_run_until_the_agent_has_a_valid_ai_c_fe44fc")
+                : isEmail ? fullAppsT("fullApps.connect_agentmail_to_create_an_email_address_for_thi_a69d55")
+                : fullAppsT("fullApps.connect_your_identity_or_reuse_an_eligible_connectio_ce8bf3")}
             </p>
           </div>
         </div>
 
         {needsRetry ? (
           <p className="mt-4 flex items-center gap-2 text-sm text-destructive">
-            <RotateCcw className="h-4 w-4" />
-            Authorization didn’t finish. Your previous choices are safe; try
-            again.
-          </p>
+            <RotateCcw className="h-4 w-4" />{fullAppsT("fullApps.authorization_didn_t_finish_your_previous_choices_ar_acbb9d")}</p>
         ) : null}
 
         {isEmail ? setupQuery.isLoading || setupQuery.isError ? <>
           {setupContent}
-          <Button type="button" variant="ghost" disabled={declineMutation.isPending} onClick={() => declineMutation.mutate()}>Not now</Button>
+          <Button type="button" variant="ghost" disabled={declineMutation.isPending} onClick={() => declineMutation.mutate()}>{fullAppsT("decisionForms.common.notNow")}</Button>
         </> : <AgentMailIntentSetup
           companyId={interaction.companyId}
           agentId={interaction.payload.requestingAgentId}
@@ -504,11 +487,9 @@ export function ConnectionIntentInteractionBody({
             variant="ghost"
             disabled={declineMutation.isPending || completeMutation.isPending || authorizing}
             onClick={() => declineMutation.mutate()}
-          >
-            Not now
-          </Button>}
+          >{fullAppsT("decisionForms.common.notNow")}</Button>}
           {isAi ? <Button type="button" disabled={completeMutation.isPending || adoptMutation.isPending || selectAiAccountMutation.isPending} onClick={() => open ? closeSetup() : setOpen(true)}>
-            <Plug className="h-4 w-4" />{open ? "Close setup" : readyForAdoption ? "Continue setup" : needsOwnAiConnection ? `Connect ${aiProviderName}` : "Fix connection"}
+            <Plug className="h-4 w-4" />{open ? fullAppsT("fullApps.close_setup_ef0e47") : readyForAdoption ? fullAppsT("fullApps.continue_setup_c5702c") : needsOwnAiConnection ? fullAppsT("fullApps.connect_60c786", { value1: aiProviderName }) : fullAppsT("fullApps.fix_connection_5855b3")}
           </Button> : <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button type="button">
@@ -518,10 +499,10 @@ export function ConnectionIntentInteractionBody({
                   <Plug className="h-4 w-4" />
                 )}
                 {authorizing
-                  ? "Continue setup"
+                  ? fullAppsT("fullApps.continue_setup_c5702c")
                   : needsRetry
-                    ? "Try again"
-                    : setupQuery.data?.existingConnections.length ? "Connect / Use existing" : "Connect"}
+                    ? fullAppsT("fullApps.try_again_d8b839")
+                    : setupQuery.data?.existingConnections.length ? fullAppsT("fullApps.connect_use_existing_77cbde") : fullAppsT("fullApps.connect_1a2303")}
               </Button>
             </DialogTrigger>
             <DialogContent
@@ -533,12 +514,8 @@ export function ConnectionIntentInteractionBody({
               }}
             >
               <DialogHeader className="sr-only">
-                <DialogTitle>
-                  Connect {interaction.payload.serviceName}
-                </DialogTitle>
-                <DialogDescription>
-                  Complete connection setup without leaving this task.
-                </DialogDescription>
+                <DialogTitle><FullAppsTrans i18nKey="fullApps.connect_ef0d09" components={{ part1: <>{interaction.payload.serviceName}</> }} /></DialogTitle>
+                <DialogDescription>{fullAppsT("fullApps.complete_connection_setup_without_leaving_this_task_759ccd")}</DialogDescription>
               </DialogHeader>
               {setupContent}
             </DialogContent>
@@ -564,13 +541,11 @@ export function ConnectionIntentInteractionBody({
                   declineMutation.error ??
                   phaseMutation.error
                 )?.message
-              : "Couldn’t update this connection request."}
+              : fullAppsT("fullApps.couldn_t_update_this_connection_request_1a99d1")}
           </p>
         ) : null}
         {selectAiAccountMutation.isError && selectAiAccountMutation.variables?.generation === generation && (
-          <Button className="mt-3" onClick={() => selectAiAccountMutation.mutate(selectAiAccountMutation.variables!)}>
-            Retry using this connection
-          </Button>
+          <Button className="mt-3" onClick={() => selectAiAccountMutation.mutate(selectAiAccountMutation.variables!)}>{fullAppsT("fullApps.retry_using_this_connection_3aebb4")}</Button>
         )}
       </div>
     </div>

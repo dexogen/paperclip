@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { Download, ExternalLink, Maximize2, MessageSquare, PanelRight, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const OVER_SLOT = "@3xs/desk:after:absolute @3xs/desk:after:inset-y-0 @3xs/desk:
 export const BUTTON_RING = cn("focus-visible:border-transparent", RING, RING_ON.desk);
 
 function TextAction({ action, title, primary, overSlot }: { action: ArtifactAction; title: string; primary: boolean; overSlot: boolean }) {
+  useTranslation();
   const label = `${action.label}: ${title}`;
   const className = cn("h-7 px-2.5", BUTTON_RING, primary ? overSlot && OVER_SLOT : "relative text-(--tac-meta) hover:text-foreground");
   const content = (
@@ -44,6 +46,7 @@ function TextAction({ action, title, primary, overSlot }: { action: ArtifactActi
 }
 
 function IconAction({ action, title }: { action: ArtifactAction; title: string }) {
+  useTranslation();
   const Icon = ICON[action.icon];
   return (
     <Button asChild variant="ghost" size="icon-xs" className={cn("relative text-(--tac-meta) hover:text-foreground", BUTTON_RING)}>
@@ -55,6 +58,7 @@ function IconAction({ action, title }: { action: ArtifactAction; title: string }
 }
 
 export function PanelActions({ artifact, overSlot }: { artifact: LabArtifact; /** The object lies in a slot beside the caption (not across the desk). */ overSlot: boolean }) {
+  useTranslation();
   const [primary, ...rest] = panelActions(artifact);
   const icons = panelIconActions(artifact);
   const comments = artifact.commentCount;
@@ -72,7 +76,7 @@ export function PanelActions({ artifact, overSlot }: { artifact: LabArtifact; /*
               variant="ghost"
               size="xs"
               className={cn("relative px-1.5 text-(--tac-meta) hover:text-foreground", BUTTON_RING)}
-              aria-label={`${comments} ${comments === 1 ? "comment" : "comments"}: ${artifact.title}`}
+              aria-label={t("fullDiagnostics.commentAction", { count: comments, title: artifact.title })}
             >
               <MessageSquare aria-hidden />
               <span className="font-mono">{comments}</span>

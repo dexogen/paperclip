@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 type TranscriptDensity = "comfortable" | "compact";
@@ -190,7 +191,7 @@ function readToolDetailValue(value: unknown, max = 200): string | null {
 export function describeToolInput(name: string, input: unknown, t?: TFunction): ToolInputDetail[] {
   if (typeof input === "string") {
     const summary = compactWhitespace(isCommandTool(name, input) ? stripWrappedShell(input) : input);
-    return summary ? [{ label: isCommandTool(name, input) ? "Command" : "Input", value: truncate(summary, 200), tone: "code", ...(t ? { display: { label: isCommandTool(name, input) ? t("runUi.transcript.detail.command") : t("runUi.transcript.detail.input"), value: truncate(summary, 200) } } : {}) }] : [];
+    return summary ? [{ label: isCommandTool(name, input) ? fullSharedT("runUi.transcript.detail.command") : fullSharedT("fullShared.input_36ecb4"), value: truncate(summary, 200), tone: "code", ...(t ? { display: { label: isCommandTool(name, input) ? t("runUi.transcript.detail.command") : t("runUi.transcript.detail.input"), value: truncate(summary, 200) } } : {}) }] : [];
   }
 
   const record = asRecord(input);

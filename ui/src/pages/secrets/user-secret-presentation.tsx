@@ -1,3 +1,4 @@
+import { i18n, useTranslation } from "@/i18n";
 import type { SecretStatus, UserSecretCoverageSummary } from "@paperclipai/shared";
 import { UserRound } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -13,7 +14,8 @@ export const USER_SECRET_ACCENT_BORDER = "border-violet-500/30";
 export const USER_SECRET_ACCENT_BG = "bg-violet-500/10";
 
 /** Small pill used to mark user-scoped rows and headers. */
-export function UserSecretChip({ className, label = "User secret" }: { className?: string; label?: string }) {
+export function UserSecretChip({ className, label = i18n.t("fullRoutinesSecrets.userSecret") }: { className?: string; label?: string }) {
+  const { t } = useTranslation();
   return (
     <Badge variant="outline"
       className={cn(
@@ -61,11 +63,11 @@ export function myValueTone(state: MyValueState): string {
 export function myValueLabel(state: MyValueState): string {
   switch (state) {
     case "set":
-      return "Value set";
+      return i18n.t("fullRoutinesSecrets.valueSet");
     case "not_set":
-      return "Not set";
+      return i18n.t("fullRoutinesSecrets.notSet995");
     case "inactive":
-      return "Disabled";
+      return i18n.t("fullRoutinesSecrets.disabled661");
   }
 }
 
@@ -76,5 +78,5 @@ export function myValueLabel(state: MyValueState): string {
 export function coverageSummaryLabel(summary: UserSecretCoverageSummary | undefined): string {
   if (!summary) return "—";
   const total = summary.configuredCount + summary.missingCount + summary.inactiveCount;
-  return `${summary.configuredCount} of ${total} set`;
+  return i18n.t("fullRoutinesSecrets.ofSet", { "value1": summary.configuredCount, "total": total });
 }

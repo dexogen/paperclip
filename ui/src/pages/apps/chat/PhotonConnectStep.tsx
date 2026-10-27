@@ -1,3 +1,5 @@
+import { renderAppDisplayText } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -7,7 +9,7 @@ import {
   type ChatEndpoint,
   type ChatEndpointSetupAction,
 } from "@/api/chatEndpoints";
-import { sanitizedSetupErrorMessage } from "./chat-setup-error";
+import { sanitizedSetupErrorDisplay } from "./chat-setup-error";
 
 export function PhotonConnectStep({
   endpoint,
@@ -25,6 +27,7 @@ export function PhotonConnectStep({
     values?: Record<string, string>,
   ): void;
 }) {
+  useFullAppsTranslation();
   const [projectId, setProjectId] = useState(endpoint.providerAccountId ?? "");
   const [projectSecret, setProjectSecret] = useState("");
   const [lineId, setLineId] = useState("");
@@ -46,41 +49,28 @@ export function PhotonConnectStep({
   return (
     <div className="space-y-5">
       <div className="space-y-2">
-        <h1 className="text-xl font-bold">Connect iMessage Photon</h1>
-        <p className="text-sm text-muted-foreground">
-          Connect {agentName} to Photon Cloud. Pro supports direct messages through
-          a shared line. Dedicated numbers also support individually enabled groups.
-        </p>
+        <h1 className="text-xl font-bold">{fullAppsT("fullApps.connect_imessage_photon_32def6")}</h1>
+        <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.connect_to_photon_cloud_pro_supports_direct_messages_b64f7a" components={{ part1: <>{agentName}</> }} /></p>
         <p className="text-sm">
           <a
             className="underline"
             href="https://app.photon.codes/"
             target="_blank"
             rel="noreferrer"
-          >
-            Photon dashboard
-          </a>
+          >{fullAppsT("fullApps.photon_dashboard_5da11f")}</a>
           {" · "}
           <a
             className="underline"
             href="https://photon.codes/docs/spectrum-ts/providers/imessage/connection-and-routing"
             target="_blank"
             rel="noreferrer"
-          >
-            Photon line setup
-          </a>
+          >{fullAppsT("fullApps.photon_line_setup_d3a4d1")}</a>
         </p>
       </div>
       {repairing && (
-        <p className="text-sm text-muted-foreground">
-          Reconnect keeps this project and{" "}
-          {endpoint.photonAllocation === "shared" ? "shared DM allocation" : endpoint.botExternalId ?? "dedicated number"}. Leave the secret blank
-          to reuse the saved connection.
-        </p>
+        <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.reconnect_keeps_this_project_and_leave_the_secret_bl_d3f2d7" components={{ part1: <>{" "}</>, part2: <>{endpoint.photonAllocation === "shared" ? fullAppsT("fullApps.shared_dm_allocation_10e5a4") : endpoint.botExternalId ?? fullAppsT("fullApps.dedicated_number_4475cb")}</> }} /></p>
       )}
-      <label className="grid gap-2 text-sm font-medium">
-        Project ID
-        <Input
+      <label className="grid gap-2 text-sm font-medium">{fullAppsT("companySettings.observability.projectId")}<Input
           value={projectId}
           autoComplete="off"
           disabled={pending || inspection.isPending || !!endpoint.botExternalId}
@@ -90,9 +80,7 @@ export function PhotonConnectStep({
           }}
         />
       </label>
-      <label className="grid gap-2 text-sm font-medium">
-        Project secret
-        <Input
+      <label className="grid gap-2 text-sm font-medium">{fullAppsT("fullApps.project_secret_e34f01")}<Input
           type="password"
           value={projectSecret}
           autoComplete="new-password"
@@ -110,31 +98,25 @@ export function PhotonConnectStep({
         }
         onClick={() => inspection.mutate()}
       >
-        {inspection.isPending ? "Inspecting Photon…" : "Inspect Photon project"}
+        {inspection.isPending ? fullAppsT("fullApps.inspecting_photon_7906bc") : fullAppsT("fullApps.inspect_photon_project_f3ed32")}
       </Button>
       {inspection.isError && (
         <p role="alert" className="text-sm text-destructive">
-          {sanitizedSetupErrorMessage(inspection.error, { projectSecret })}
+          {renderAppDisplayText(sanitizedSetupErrorDisplay(inspection.error, { projectSecret }))}
         </p>
       )}
       {inspection.data && (
         <fieldset className="space-y-3">
-          <legend className="text-sm font-medium">
-            {inspection.data.allocation === "shared" ? "Shared DMs" : "Dedicated numbers"} in {inspection.data.projectName}
-          </legend>
+          <legend className="text-sm font-medium"><FullAppsTrans i18nKey="fullApps.in_1c37be" components={{ part1: <>{inspection.data.allocation === "shared" ? fullAppsT("fullApps.shared_dms_d71f88") : fullAppsT("fullApps.dedicated_numbers_4c9a8c")}</>, part2: <>{inspection.data.projectName}</> }} /></legend>
           {!inspection.data.eligible && (
             <p role="alert" className="text-sm text-destructive">
               {inspection.data.allocation === "shared"
-                ? "This shared project already belongs to another channel. Use a separate Photon project for each agent."
-                : "No eligible dedicated number is available. Check the line allocation in Photon and existing Paperclip channels."}
+                ? fullAppsT("fullApps.this_shared_project_already_belongs_to_another_chann_2dd07c")
+                : fullAppsT("fullApps.no_eligible_dedicated_number_is_available_check_the__56febe")}
             </p>
           )}
           {inspection.data.allocation === "shared" && inspection.data.eligible && (
-            <p className="text-sm text-muted-foreground">
-              Direct messages only. Enroll each test sender in your Photon project's Users page,
-              then use the number Photon assigns to that sender. Paperclip identity linking is
-              still required. Groups cannot be enabled on this channel.
-            </p>
+            <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.direct_messages_only_enroll_each_test_sender_in_your_9cc8aa")}</p>
           )}
           {inspection.data.lines.map((line) => (
             <label
@@ -181,10 +163,10 @@ export function PhotonConnectStep({
           }
         >
           {pending
-            ? "Connecting…"
+            ? fullAppsT("onboarding.progress.connecting")
             : repairing
-              ? "Reconnect Photon"
-              : inspection.data?.allocation === "shared" ? "Connect shared DMs" : "Connect selected number"}
+              ? fullAppsT("fullApps.reconnect_photon_7d2393")
+              : inspection.data?.allocation === "shared" ? fullAppsT("fullApps.connect_shared_dms_889e11") : fullAppsT("fullApps.connect_selected_number_1a1bb1")}
         </Button>
       </div>
     </div>

@@ -17,6 +17,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProviderVaultsTab, Secrets } from "./Secrets";
 import { ApiError } from "../api/client";
 import { queryKeys } from "../lib/queryKeys";
+import { i18n } from "@/i18n";
+
+afterEach(async () => { await i18n.changeLanguage("en"); });
 
 const mockSecretsApi = vi.hoisted(() => ({
   list: vi.fn(),
@@ -322,6 +325,13 @@ const userSecretCoverage: UserSecretCoverageSummary = {
   missingCount: 2,
   inactiveCount: 0,
 };
+
+function inputByLabel(text: string): HTMLInputElement | null {
+  return ([...document.querySelectorAll<HTMLLabelElement>("label")].find((label) => {
+    const content = label.textContent?.trim();
+    return content === text || content === `${text} (optional)`;
+  })?.control as HTMLInputElement | null) ?? null;
+}
 
 function setInputValue(input: HTMLInputElement, value: string) {
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
@@ -992,8 +1002,8 @@ describe("Secrets page layout", () => {
     expect(discoveryButton).not.toBeNull();
     expect(discoveryButton?.disabled).toBe(true);
 
-    const regionInput = document.getElementById("provider-vault-aws-region") as HTMLInputElement | null;
-    const prefixInput = document.getElementById("provider-vault-secret-name-prefix") as HTMLInputElement | null;
+    const regionInput = inputByLabel("AWS region") as HTMLInputElement | null;
+    const prefixInput = inputByLabel("Secret name prefix") as HTMLInputElement | null;
     expect(regionInput).not.toBeNull();
     await act(async () => {
       setInputValue(regionInput!, "us-east-1");
@@ -1032,11 +1042,11 @@ describe("Secrets page layout", () => {
     await flushReact();
 
     expect((document.getElementById("vault-name") as HTMLInputElement).value).toBe("AWS production");
-    expect((document.getElementById("provider-vault-namespace") as HTMLInputElement).value).toBe("prod-use1");
-    expect((document.getElementById("provider-vault-secret-name-prefix") as HTMLInputElement).value).toBe("paperclip");
-    expect((document.getElementById("provider-vault-kms-key-id") as HTMLInputElement).value).toBe("alias/paperclip-secrets");
-    expect((document.getElementById("provider-vault-owner-tag") as HTMLInputElement).value).toBe("platform");
-    expect((document.getElementById("provider-vault-environment-tag") as HTMLInputElement).value).toBe("production");
+    expect((inputByLabel("Namespace") as HTMLInputElement).value).toBe("prod-use1");
+    expect((inputByLabel("Secret name prefix") as HTMLInputElement).value).toBe("paperclip");
+    expect((inputByLabel("KMS key id") as HTMLInputElement).value).toBe("alias/paperclip-secrets");
+    expect((inputByLabel("Owner tag") as HTMLInputElement).value).toBe("platform");
+    expect((inputByLabel("Environment tag") as HTMLInputElement).value).toBe("production");
     expect(mockSecretsApi.createProviderConfig).not.toHaveBeenCalled();
 
     await act(async () => {
@@ -1069,8 +1079,8 @@ describe("Secrets page layout", () => {
     const root = await renderSecrets(container);
     await openAwsVaultDialog();
 
-    const regionInput = document.getElementById("provider-vault-aws-region") as HTMLInputElement;
-    const namespaceInput = document.getElementById("provider-vault-namespace") as HTMLInputElement;
+    const regionInput = inputByLabel("AWS region") as HTMLInputElement;
+    const namespaceInput = inputByLabel("Namespace") as HTMLInputElement;
     await act(async () => {
       setInputValue(regionInput, "us-west-2");
       setInputValue(namespaceInput, "manual-prod");
@@ -1122,7 +1132,7 @@ describe("Secrets page layout", () => {
     const root = await renderSecrets(container);
     await openAwsVaultDialog();
 
-    const regionInput = document.getElementById("provider-vault-aws-region") as HTMLInputElement;
+    const regionInput = inputByLabel("AWS region") as HTMLInputElement;
     await act(async () => {
       setInputValue(regionInput, "us-west-1");
     });
@@ -1308,7 +1318,7 @@ describe("Secrets page layout", () => {
     const root = await renderSecrets(container);
     await openAwsVaultDialog();
 
-    const regionInput = document.getElementById("provider-vault-aws-region") as HTMLInputElement;
+    const regionInput = inputByLabel("AWS region") as HTMLInputElement;
     await act(async () => {
       setInputValue(regionInput, "us-east-2");
     });
@@ -1536,6 +1546,17 @@ describe("Secrets folder view (PAP-14698)", () => {
     expect(container.querySelector('[role="alert"]')?.textContent).toContain(
       "Folder name cannot contain slashes.",
     );
+
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await flushReact();
+    expect(folderInput.value).toBe("bad/name");
+    expect(folderInput.getAttribute("aria-label")).toBe("Имя папки");
+    expect(container.querySelector('[role="alert"]')?.textContent).not.toContain("Folder name");
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain("слеши");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    await flushReact();
+    expect(folderInput.value).toBe("bad/name");
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain("Folder name cannot contain slashes.");
 
     await act(async () => setInputValue(folderInput, "  staged  "));
     await flushReact();

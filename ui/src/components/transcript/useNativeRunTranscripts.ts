@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { HeartbeatRunEvent } from "@paperclipai/shared";
 import type { TranscriptEntry } from "@/adapters";
@@ -25,6 +26,7 @@ function isLive(status: string): boolean {
 }
 
 export function useNativeRunTranscripts(runs: readonly NativeRunTranscriptSource[]) {
+  useFullSharedTranslation();
   const nativeRunsKey = runs
     .filter((run) => run.runtimeMode === "native")
     .map((run) => `${run.id}:${run.status}:${Boolean(run.conversationOnly)}`)
@@ -116,7 +118,7 @@ export function useNativeRunTranscripts(runs: readonly NativeRunTranscriptSource
           if (previous.has(run.id)) return previous;
           const next = new Map(previous);
           next.set(run.id, {
-            message: error instanceof Error ? error.message : "Native run activity could not be loaded",
+            message: error instanceof Error ? error.message : fullSharedT("fullShared.native_run_activity_could_not_be_loaded_87c3b8"),
             failedAt: new Date().toISOString(),
           });
           return next;

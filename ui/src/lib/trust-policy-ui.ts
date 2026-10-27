@@ -18,16 +18,9 @@ export type LowTrustBoundaryTarget =
   | { type: "root_issue"; id: string }
   | { type: "issue"; id: string };
 
-export const TRUST_PRESET_LABELS: Record<TrustPreset, string> = {
-  standard: "Standard",
-  low_trust_review: "Low-trust review",
-};
+export const TRUST_PRESET_LABELS: Record<TrustPreset, string> = getTrustPresetLabels();
 
-export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = {
-  standard: "Organization-visible collaboration. This is the default for normal work.",
-  low_trust_review:
-    "Contained for hostile or untrusted input. Narrow Paperclip API, quarantined output. Use for PR review and external-content triage.",
-};
+export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = getTrustPresetDescriptions();
 
 export function getTrustPresetLabels(t: TFunction = i18n.getFixedT("en")): Record<TrustPreset, string> {
   return { standard: t("agentAccessUi.trust.standard"), low_trust_review: t("agentAccessUi.trust.lowTrust") };

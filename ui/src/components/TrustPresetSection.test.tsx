@@ -12,7 +12,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
 
-async function renderSection(permissions: Partial<AgentPermissions>, options: { disabled?: boolean; allowSingleIssue?: boolean } = {}) {
+async function renderSection(permissions: Partial<AgentPermissions>, options: { disabled?: boolean; allowSingleIssue?: boolean } = {}, withProjectEditor = false) {
   container = document.createElement("div");
   document.body.appendChild(container);
   const onChange = vi.fn();
@@ -22,6 +22,7 @@ async function renderSection(permissions: Partial<AgentPermissions>, options: { 
     createdRoot.render(
       <TooltipProvider>
         <TrustPresetSection
+          projectAccessEditor={withProjectEditor ? <div>Allowed projects</div> : undefined}
           permissions={permissions}
           onChange={onChange}
           companyId="company-1"
@@ -75,6 +76,22 @@ describe("TrustPresetSection", () => {
     expect(view.text()).toContain("Paperclip App");
     expect(view.text()).toContain("Get Paperclip EE.");
     expect(view.text()).not.toContain("Managed by EE/API");
+  });
+
+  it("keeps the single-boundary controls when the allowed-project editor is present", async () => {
+    const view = await renderSection({ trustPreset: "low_trust_review", authorizationPolicy: {
+      trustPreset: "low_trust_review", trustBoundary: {
+        mode: "low_trust_review", companyId: "company-1", projectIds: ["project-1"],
+      },
+    } }, {}, true);
+    expect(view.text()).toContain("Allowed projects");
+    expect(view.text()).toContain("Boundary type");
+    const clear = [...container!.querySelectorAll("button")].find(button => button.textContent === "Clear boundary");
+    expect(clear).toBeDefined();
+    await act(async () => clear!.click());
+    const changed = view.onChange.mock.calls[0][0];
+    expect(changed.trustPreset).toBe("low_trust_review");
+    expect(changed.authorizationPolicy.trustBoundary.projectIds).toBeUndefined();
   });
 
   it("renders multi-boundary policies as read-only", async () => {

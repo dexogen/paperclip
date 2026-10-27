@@ -1,3 +1,5 @@
+import { t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState } from "react";
 import { AiConnectionPicker } from "./AiConnectionPicker";
 import { LocalProviderLoginInstructions, ProviderApiKeyCard } from "@/components/AdapterLoginChrome";
@@ -26,6 +28,8 @@ const account: AiConnectionSummary = {
 };
 
 export function AiConnectionDesignExamples() {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const [binding, setBinding] = useState<AiConnectionBinding>({
     provider: "anthropic",
     method: "subscription",
@@ -33,13 +37,8 @@ export function AiConnectionDesignExamples() {
   });
   return (
     <div className="flex max-w-2xl flex-col gap-5">
-      <p className="text-sm text-muted-foreground">
-        Shared AI connection identity, account selection, and existing
-        authentication chrome. The full interactive state matrix lives in
-        Storybook under AI Connections / Review. Example controls below do not
-        connect accounts.
-      </p>
-      <p className="text-sm text-muted-foreground">Provider lists and account management use Browse and AppDetail from the Connectors interface. The picker below uses ConnectionChoiceList, also used by ConnectionSetupFlow.</p>
+      <p className="text-sm text-muted-foreground">{fullSharedTailT("fullSharedTail.shared_ai_connection_identity_account_selection_and__9b2eec")}</p>
+      <p className="text-sm text-muted-foreground">{fullSharedTailT("fullSharedTail.provider_lists_and_account_management_use_browse_and_14339f")}</p>
       <AiConnectionPicker
         requirement={requirement}
         connections={[account]}
@@ -57,7 +56,7 @@ export function AiConnectionDesignExamples() {
         disabled
         onChange={() => {}}
         onSubmit={() => {}}
-        placeholder="Enter API key here"
+        placeholder={fullSharedT("onboarding.credentials.placeholder")}
       />
       <LocalProviderLoginInstructions
         adapterType="claude_local"

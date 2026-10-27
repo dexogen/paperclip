@@ -55,7 +55,12 @@ COPY server/src/services/copilot-connection-probe.ts server/src/services/
 
 # CI owns repository lock updates. Resolve manifest changes in the image's
 # private build tree, then install from that exact generated lock.
-RUN pnpm install --resolution-only --ignore-scripts --no-frozen-lockfile && pnpm install --frozen-lockfile
+ARG PAPERCLIP_DEPENDENCY_LOCK_SHA256
+RUN if [ -n "$PAPERCLIP_DEPENDENCY_LOCK_SHA256" ]; then \
+      printf '%s  pnpm-lock.yaml\n' "$PAPERCLIP_DEPENDENCY_LOCK_SHA256" | sha256sum --check --strict -; \
+    else \
+      pnpm install --resolution-only --ignore-scripts --no-frozen-lockfile; \
+    fi && pnpm install --frozen-lockfile
 
 FROM base AS rust-toolchain
 WORKDIR /app
@@ -194,7 +199,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 COPY --chown=node:node --from=build /app /app
 
-COPY --from=runner-provider-pack /provider-pack /opt/paperclip-runner/provider-pack
+COPY --chown=0:0 --from=runner-provider-pack /provider-pack /opt/paperclip-runner/provider-pack
 COPY --from=runner-provider-pack /provider-pack-transport/ /opt/paperclip-runner/
 # Managed deployments can remap node's UID at startup. This immutable pack
 # contains public code and integrity metadata, never credentials; it must remain

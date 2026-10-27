@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useTranslation } from "../i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -78,7 +79,7 @@ export function Projects() {
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("projects.title") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   const { data: allProjects, isLoading, error } = useQuery({
     queryKey: queryKeys.projects.list(selectedCompanyId!),

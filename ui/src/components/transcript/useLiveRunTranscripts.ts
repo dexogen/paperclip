@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { usePageVisibility } from "../../lib/page-visibility";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { readTranscriptRequest } from "./read-transcript-request";
@@ -105,6 +106,8 @@ export function useLiveRunTranscripts({
   logReadLimitBytes = LOG_READ_LIMIT_BYTES,
   enableRealtimeUpdates = true,
 }: UseLiveRunTranscriptsOptions) {
+  const { i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   // Ticker consumers opt into the silent chunk-count cap; full task views use a
   // byte budget that collapses (not discards) the oldest output when exceeded.
   const { visible } = usePageVisibility();
@@ -144,6 +147,7 @@ export function useLiveRunTranscripts({
   const pendingLogRowsByRunRef = useRef(new Map<string, string>());
   const logOffsetByRunRef = useRef(new Map<string, number>());
   const logReadLimitByRunRef = useRef(new Map<string, number>());
+  const [truncatedRunIds, setTruncatedRunIds] = useState<ReadonlySet<string>>(new Set());
   const missingTerminalLogRunIdsRef = useRef(new Set<string>());
   // PAP-462 B3: buffered runs that dropped out of the `runs` list, mapped to the
   // wall-clock deadline (ms) after which their buffer may be pruned. A run still
@@ -162,6 +166,7 @@ export function useLiveRunTranscripts({
     chunks: RunLogChunk[];
     censorUsernameInLogs: boolean;
     parserTick: number;
+    locale: string;
     transcript: TranscriptEntry[];
   }>());
   // Tick counter to force transcript recomputation when dynamic parser loads
@@ -260,6 +265,10 @@ export function useLiveRunTranscripts({
       const next = new Map([...previous].filter(([id]) => retainedRunIds.has(id)));
       return next.size === previous.size ? previous : next;
     });
+    setTruncatedRunIds((previous) => {
+      const next = new Set([...previous].filter((id) => retainedRunIds.has(id)));
+      return next.size === previous.size ? previous : next;
+    });
 
     for (const key of pendingLogRowsByRunRef.current.keys()) {
       const runId = key.replace(/:records$/, "");
@@ -340,6 +349,15 @@ export function useLiveRunTranscripts({
 
         // Commit the expanded window only after success so retries still align
         // its first record and failed reads leave the previous parser intact.
+        if (previousReadLimit === undefined || rewinding) {
+          setTruncatedRunIds((previous) => {
+            if (previous.has(run.id) === (offset > 0)) return previous;
+            const next = new Set(previous);
+            if (offset > 0) next.add(run.id);
+            else next.delete(run.id);
+            return next;
+          });
+        }
         logReadLimitByRunRef.current.set(run.id, logReadLimitBytes);
         if (rewinding) {
           pendingLogRowsByRunRef.current.delete(run.id);
@@ -567,7 +585,8 @@ export function useLiveRunTranscripts({
         cached.adapterType === run.adapterType &&
         cached.chunks === chunks &&
         cached.censorUsernameInLogs === censorUsernameInLogs &&
-        cached.parserTick === parserTick
+        cached.parserTick === parserTick &&
+        cached.locale === locale
       ) {
         next.set(run.id, cached.transcript);
         continue;
@@ -582,6 +601,7 @@ export function useLiveRunTranscripts({
         chunks,
         censorUsernameInLogs,
         parserTick,
+        locale,
         transcript,
       });
       next.set(run.id, transcript);
@@ -592,11 +612,11 @@ export function useLiveRunTranscripts({
       }
     }
     return next;
-  }, [chunksByRun, generalSettings?.censorUsernameInLogs, normalizedRuns, parserTick]);
+  }, [chunksByRun, generalSettings?.censorUsernameInLogs, normalizedRuns, parserTick, locale]);
 
   return {
     transcriptByRun,
-    hydratedRunIds, errorsByRun, retry,
+    hydratedRunIds, truncatedRunIds, errorsByRun, retry,
     isInitialHydrating: normalizedRuns.some((run) => canReadPersistedLog(run) && !hydratedRunIds.has(run.id)),
     hasOutputForRun(runId: string) {
       return (chunksByRun.get(runId)?.length ?? 0) > 0 || runById.get(runId)?.hasStoredOutput === true;

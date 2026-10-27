@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DIRECTION_IDS, KIT_META, type DirectionId } from "../kit";
 import { labSearch, type LabTheme, type LabView } from "../lab-state";
@@ -24,6 +26,7 @@ interface TileProps {
 }
 
 function Tile({ direction, view, theme, anim, maxHeight }: TileProps) {
+  useFullSharedTranslation();
   const wrapRef = useRef<HTMLAnchorElement>(null);
   const contentObserver = useRef<ResizeObserver | null>(null);
   const [scale, setScale] = useState(0);
@@ -57,7 +60,7 @@ function Tile({ direction, view, theme, anim, maxHeight }: TileProps) {
     <a
       ref={wrapRef}
       href={labSearch({ direction, view, theme, chrome: true, anim })}
-      title={`Open ${KIT_META[direction].name} · ${view}`}
+      title={t("fullDiagnostics.open_d84a26", { value1: KIT_META[direction].name, value2: view })}
       className="block overflow-hidden rounded-sm border border-border outline-none focus-visible:ring-2 focus-visible:ring-ring"
       style={{ height: scale ? shown * scale : undefined }}
     >
@@ -75,11 +78,13 @@ function Tile({ direction, view, theme, anim, maxHeight }: TileProps) {
 }
 
 function ColumnHead({ children }: { children: string }) {
+  useFullSharedTranslation();
   return <span className={LABEL}>{children}</span>;
 }
 
 /** One kit: its four surfaces side by side. */
 function KitBoard({ direction, theme, anim }: { direction: DirectionId; theme: LabTheme; anim: boolean }) {
+  useFullSharedTranslation();
   const views: LabView[] = ["thread", "panel", "gallery", "stack"];
   return (
     <div className="grid grid-cols-4 items-start gap-4">
@@ -95,12 +100,13 @@ function KitBoard({ direction, theme, anim }: { direction: DirectionId; theme: L
 
 /** Every kit: one row each, one column per surface. */
 function AllBoard({ theme, anim }: { theme: LabTheme; anim: boolean }) {
+  useFullSharedTranslation();
   return (
     <div className="grid grid-cols-(--gtc-board) items-start gap-x-4 gap-y-8" style={{ "--gtc-board": "7rem repeat(3, minmax(0, 1fr))" } as React.CSSProperties}>
       <span />
-      <ColumnHead>Thread</ColumnHead>
-      <ColumnHead>Panel</ColumnHead>
-      <ColumnHead>Gallery + stack</ColumnHead>
+      <ColumnHead>{t("fullDiagnostics.thread")}</ColumnHead>
+      <ColumnHead>{t("fullDiagnostics.panel")}</ColumnHead>
+      <ColumnHead>{t("fullDiagnostics.galleryStack")}</ColumnHead>
       {DIRECTION_IDS.map((direction) => (
         <div key={direction} className="contents">
           <div className="flex flex-col gap-1">
@@ -120,11 +126,12 @@ function AllBoard({ theme, anim }: { theme: LabTheme; anim: boolean }) {
 }
 
 export function Board({ direction, theme, anim }: { direction: DirectionId | "all"; theme: LabTheme; anim: boolean }) {
+  useFullSharedTranslation();
   return (
     <div className="flex min-h-225 flex-col gap-6 bg-background p-6 text-foreground">
       <header className="flex flex-col gap-1">
-        <p className={LABEL}>Contact sheet · {theme}</p>
-        <h1 className="text-lg font-semibold">{direction === "all" ? "All directions" : KIT_META[direction].name}</h1>
+        <p className={LABEL}>{t("fullDiagnostics.contactSheet")}{" "}{theme}</p>
+        <h1 className="text-lg font-semibold">{direction === "all" ? fullSharedT("runUi.inspector.allDirections") : KIT_META[direction].name}</h1>
       </header>
       {direction === "all" ? <AllBoard theme={theme} anim={anim} /> : <KitBoard direction={direction} theme={theme} anim={anim} />}
     </div>

@@ -19,7 +19,10 @@ const visibleNames = new Set([
   "alt", "tooltip", "help", "helpText", "hint", "message", "emptyMessage", "emptyText",
   "confirmLabel", "cancelLabel", "submitLabel", "badgeLabel", "buttonText", "header",
   "loadingText", "successMessage", "errorMessage", "text", "caption",
+  "disabledLabel", "actionLabel", "secondaryLabel", "labelText", "body",
+  "searchPlaceholder", "loadingMessage", "noneLabel", "mobileTitle", "triggerAriaLabel",
 ]);
+const displayMapName = /(?:_LABELS|_TITLES|_DESCRIPTIONS|_MESSAGES|_COPY|_NAMES)$|(?:Labels|Titles|Descriptions|Messages|Copy|Names)$/i;
 const scalarText = (node) => node?.type === "StringLiteral" ? node.value
   : node?.type === "TemplateLiteral" && node.expressions.length === 0 ? node.quasis[0].value.cooked : undefined;
 const propertyName = (node) => node?.name ?? scalarText(node);
@@ -251,25 +254,36 @@ export function scanSource(path, source) {
   };
   const sinkFor = (node) => {
     if (node.type === "JSXText") return "jsx-text";
-    for (let parent = parents.get(node); parent; parent = parents.get(parent)) {
+    for (let child = node, parent = parents.get(node); parent; child = parent, parent = parents.get(parent)) {
       if (isTranslationCall(parent)) return null;
       if (parent.type === "TemplateLiteral") return null;
+      // These literals select a value; they cannot themselves become display
+      // copy. Keep both result branches and string concatenation in the audit.
+      if (parent.type === "ConditionalExpression" && child === parent.test) return null;
+      if (parent.type === "BinaryExpression" && parent.operator !== "+") return null;
+      if (parent.type === "LogicalExpression" && parent.operator === "&&" && child === parent.left) return null;
+      if (parent.type === "UnaryExpression" || parent.type.startsWith("TS") && !["TSAsExpression", "TSSatisfiesExpression", "TSNonNullExpression"].includes(parent.type)) return null;
+      if (["MemberExpression", "OptionalMemberExpression"].includes(parent.type) && child === parent.property) return null;
       if (parent.type === "JSXAttribute") return visibleNames.has(propertyName(parent.name)) ? `attribute:${propertyName(parent.name)}` : null;
+      if (parent.type === "ObjectMethod" && child === parent.key) return null;
       if (parent.type === "ObjectProperty") {
+        if (child === parent.key) return null;
         const name = propertyName(parent.key);
         if (visibleNames.has(name)) return `property:${name}`;
         let declaration = parents.get(parent);
         while (declaration && declaration.type !== "VariableDeclarator" && !/Statement$/.test(declaration.type)) declaration = parents.get(declaration);
-        return declaration?.type === "VariableDeclarator" && /(?:_LABELS|_TITLES|_DESCRIPTIONS|_MESSAGES)$/.test(declaration.id.name ?? "") ? "display-map" : null;
+        return declaration?.type === "VariableDeclarator" && displayMapName.test(declaration.id.name ?? "") ? "display-map" : null;
       }
       if (parent.type === "CallExpression") {
+        if (child === parent.callee && child.type === "MemberExpression"
+          && child.object.type === "ArrayExpression" && propertyName(child.property) === "map") continue;
         const name = textOf(parent.callee);
         return /^(?:toast|notify|notification)(?:\.(?:success|error|info|warning|warn|loading|message))?$/.test(name)
           || /^(?:window\.)?(?:alert|confirm|prompt)$/.test(name)
           || /^set(?:Error|Message|Notice|Success)(?:Message|Text)?$/.test(name) ? `call:${name}` : null;
       }
       if (parent.type === "JSXExpressionContainer" && ["JSXElement", "JSXFragment"].includes(parents.get(parent)?.type)) return "jsx-expression";
-      if (parent.type === "VariableDeclarator") return /(?:Label|Title|Description|Text|Message|Placeholder)$/i.test(parent.id.name ?? "") ? "display-variable" : null;
+      if (parent.type === "VariableDeclarator") return /(?:Label|Title|Description|Text|Message|Placeholder)$/i.test(parent.id.name ?? "") ? "display-variable" : displayMapName.test(parent.id.name ?? "") ? "display-map" : null;
       if (/Statement$/.test(parent.type) || parent.type === "JSXOpeningElement") return null;
     }
     return null;

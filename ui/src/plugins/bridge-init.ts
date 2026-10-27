@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 /**
  * Plugin bridge initialization.
  *
@@ -215,6 +217,7 @@ type PluginProjectPickerProps = {
 };
 
 function PluginSdkMarkdownEditor(props: PluginMarkdownEditorProps) {
+  useFullSharedTranslation();
   const [Editor, setEditor] = useState<ComponentType<PluginMarkdownEditorProps> | null>(null);
 
   useEffect(() => {
@@ -256,6 +259,7 @@ function PluginSdkIssuesList({
   createIssueLabel,
   searchWithinLoadedIssues = true,
 }: PluginIssuesListProps) {
+  useFullSharedTranslation();
   const queryClient = useQueryClient();
   const issueFilters = useMemo(
     () => compactIssueFilters({
@@ -347,15 +351,16 @@ function PluginSdkAssigneePicker({
   companyId,
   value,
   onChange,
-  placeholder = "Responsible",
-  noneLabel = "No responsible",
-  searchPlaceholder = "Search responsible...",
-  emptyMessage = "No responsible found.",
+  placeholder = fullSharedT("taskViews.column_assignee"),
+  noneLabel = fullSharedT("taskChatUi.classic.noResponsible"),
+  searchPlaceholder = fullSharedTailT("fullSharedTail.searchResponsible"),
+  emptyMessage = fullSharedT("taskChatUi.classic.noneResponsible"),
   includeUsers = true,
   includeTerminatedAgents = false,
   className,
   onConfirm,
 }: PluginAssigneePickerProps) {
+  useFullSharedTranslation();
   const hostContext = useHostContext();
   const resolvedCompanyId = companyId ?? hostContext.companyId ?? null;
   const { data: session } = useQuery({
@@ -457,14 +462,15 @@ function PluginSdkProjectPicker({
   companyId,
   value,
   onChange,
-  placeholder = "Project",
-  noneLabel = "No project",
-  searchPlaceholder = "Search projects...",
-  emptyMessage = "No projects found.",
+  placeholder = fullSharedT("newIssue.project"),
+  noneLabel = fullSharedT("newIssue.noProject"),
+  searchPlaceholder = fullSharedTailT("fullSharedTail.searchProjects"),
+  emptyMessage = fullSharedT("newIssue.noProjectsFound"),
   includeArchived = false,
   className,
   onConfirm,
 }: PluginProjectPickerProps) {
+  useFullSharedTranslation();
   const hostContext = useHostContext();
   const resolvedCompanyId = companyId ?? hostContext.companyId ?? null;
   const { data: session } = useQuery({
@@ -579,7 +585,7 @@ type PluginDataTableProps = {
   emptyMessage?: string;
 };
 
-function PluginSdkDataTable({ columns, rows, loading, emptyMessage = "No rows." }: PluginDataTableProps) {
+function PluginSdkDataTable({ columns, rows, loading, emptyMessage = fullSharedT("fullShared.no_rows_1c6c8e") }: PluginDataTableProps) {
   if (loading) return createElement("div", { className: "text-sm text-muted-foreground" }, "Loading...");
   if (!rows.length) return createElement("div", { className: "text-sm text-muted-foreground" }, emptyMessage);
   const gridColumns = columns.map((column) => column.width ?? "minmax(0, 1fr)").join(" ");
@@ -643,7 +649,7 @@ function PluginSdkJsonTree({ data }: { data: unknown }) {
   return createElement("pre", { className: "max-h-80 overflow-auto rounded-md border bg-muted/30 p-2 text-xs" }, JSON.stringify(data, null, 2));
 }
 
-function PluginSdkSpinner({ label = "Loading" }: { size?: "sm" | "md" | "lg"; label?: string }) {
+function PluginSdkSpinner({ label = fullSharedT("fullShared.loading_dc3808") }: { size?: "sm" | "md" | "lg"; label?: string }) {
   return createElement("span", {
     className: "inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-foreground align-middle",
     role: "status",

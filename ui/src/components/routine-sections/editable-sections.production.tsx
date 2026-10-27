@@ -1,3 +1,6 @@
+import { routinePolicyLabel, routineRunStatusLabel } from "@/lib/routine-display-labels";
+import { routineTriggerKindLabel, routineSigningModeLabel } from "@/lib/routine-display-labels";
+import { i18n, useTranslation, Trans } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -40,70 +43,69 @@ import type { EnvBinding, RoutineDetail as RoutineDetailType } from "@paperclipa
 const concurrencyPolicyOptions = [
   {
     value: "coalesce_if_active",
-    title: "Coalesce if active",
-    description: "Keep one follow-up run queued while an active run is still working.",
+    get title() { return i18n.t("fullRoutinesSecrets.coalesceIfActive"); },
+    get description() { return i18n.t("fullRoutinesSecrets.keepOneFollowUpRunQueuedWhileAnActive"); },
   },
   {
     value: "always_enqueue",
-    title: "Always enqueue",
-    description: "Queue every trigger occurrence, even if several runs stack up.",
+    get title() { return i18n.t("fullRoutinesSecrets.alwaysEnqueue"); },
+    get description() { return i18n.t("fullRoutinesSecrets.queueEveryTriggerOccurrenceEvenIfSeveralRunsStack"); },
   },
   {
     value: "skip_if_active",
-    title: "Skip if active",
-    description: "Drop overlapping trigger occurrences while the routine is already active.",
+    get title() { return i18n.t("fullRoutinesSecrets.skipIfActive"); },
+    get description() { return i18n.t("fullRoutinesSecrets.dropOverlappingTriggerOccurrencesWhileTheRoutineIsAlready"); },
   },
 ];
 
 const catchUpPolicyOptions = [
   {
     value: "skip_missed",
-    title: "Skip missed",
-    description: "Ignore schedule windows that were missed while paused.",
+    get title() { return i18n.t("fullRoutinesSecrets.skipMissed"); },
+    get description() { return i18n.t("fullRoutinesSecrets.ignoreScheduleWindowsThatWereMissedWhilePaused"); },
   },
   {
     value: "enqueue_missed_with_cap",
-    title: "Enqueue missed with cap",
-    description: "Catch up missed schedule windows after recovery; sub-hourly schedules are combined into one catch-up run, slower schedules replay each missed window up to a cap.",
+    get title() { return i18n.t("fullRoutinesSecrets.enqueueMissedWithCap"); },
+    get description() { return i18n.t("fullRoutinesSecrets.catchUpMissedScheduleWindowsAfterRecoverySubHourly"); },
   },
 ];
 
 const activityGatePolicyOptions = [
   {
     value: "always",
-    title: "Run on every scheduled tick",
-    description: "Fire on the schedule no matter what — the default behavior.",
+    get title() { return i18n.t("fullRoutinesSecrets.runOnEveryScheduledTick"); },
+    get description() { return i18n.t("fullRoutinesSecrets.fireOnTheScheduleNoMatterWhatTheDefault"); },
   },
   {
     value: "require_external_activity",
-    title: "Skip when there's been no activity since the last run",
-    description:
-      "On a scheduled tick, only run if something happened since the last run that finished. Lets a watcher-style routine stay asleep while the system is settled instead of burning tokens.",
+    get title() { return i18n.t("fullRoutinesSecrets.skipWhenThereSBeenNoActivitySinceThe"); },
+    get description() { return i18n.t("fullRoutinesSecrets.onAScheduledTickOnlyRunIfSomethingHappened"); },
   },
 ];
 
 const activityGateScopeOptions = [
   {
     value: "company",
-    title: "Company-wide",
-    description: "Any activity across the company counts as a reason to run.",
+    get title() { return i18n.t("fullRoutinesSecrets.companyWide"); },
+    get description() { return i18n.t("fullRoutinesSecrets.anyActivityAcrossTheCompanyCountsAsAReason"); },
   },
   {
     value: "project",
-    title: "This project",
-    description: "Only activity in the routine's project counts as a reason to run.",
+    get title() { return i18n.t("fullRoutinesSecrets.thisProject"); },
+    get description() { return i18n.t("fullRoutinesSecrets.onlyActivityInTheRoutineSProjectCountsAs"); },
   },
 ];
 
 const triggerKinds = ["schedule", "webhook"];
 const signingModes = ["app_webhook", "bearer", "hmac_sha256", "github_hmac", "none"];
 const signingModeDescriptions: Record<string, string> = {
-  bearer: "Send Authorization: Bearer <secret> with each request.",
-  hmac_sha256: "Send X-Paperclip-Timestamp and X-Paperclip-Signature: sha256=<hex>, signing timestamp + a dot + the exact JSON body.",
-  github_hmac: "Accept GitHub-style X-Hub-Signature-256 header (HMAC over raw body, no timestamp).",
-  app_webhook: "Accept a bearer token or an HMAC-SHA256 signature over the exact request body in X-Hub-Signature or X-Hub-Signature-256.",
-  fireflies_hmac: "Signed webhook (legacy).",
-  none: "No authentication — the webhook URL itself acts as a shared secret.",
+  get bearer() { return i18n.t("fullRoutinesSecrets.sendAuthorizationBearerSecretWithEachRequest"); },
+  get hmac_sha256() { return i18n.t("fullRoutinesSecrets.sendXPaperclipTimestampAndXPaperclipSignatureShaHex"); },
+  get github_hmac() { return i18n.t("fullRoutinesSecrets.acceptGitHubStyleXHubSignatureHeaderHMACOverRaw"); },
+  get app_webhook() { return i18n.t("fullRoutinesSecrets.acceptABearerTokenOrAnHMACSHASignatureOver"); },
+  get fireflies_hmac() { return i18n.t("fullRoutinesSecrets.signedWebhookLegacy"); },
+  get none() { return i18n.t("fullRoutinesSecrets.noAuthenticationTheWebhookURLItselfActsAsAShared"); },
 };
 const SIGNING_MODES_WITHOUT_REPLAY_WINDOW = new Set(["app_webhook", "bearer", "github_hmac", "fireflies_hmac", "none"]);
 
@@ -112,6 +114,7 @@ export function OverviewSection({
 }: {
   defaultDescriptionAnnotationsOpen?: boolean;
 } = {}) {
+  const { t } = useTranslation();
   const ctx = useRoutineDetail();
   const {
     routine,
@@ -144,8 +147,8 @@ export function OverviewSection({
       .filter((trigger) => trigger.kind === "schedule" && trigger.nextRunAt)
       .map((trigger) => new Date(trigger.nextRunAt as Date))
       .sort((a, b) => a.getTime() - b.getTime())[0];
-    return upcoming ? upcoming.toLocaleString() : null;
-  }, [routine.triggers]);
+    return upcoming ? upcoming.toLocaleString(i18n.resolvedLanguage) : null;
+  }, [routine.triggers, t]);
   const boundSecrets = editDraft.env ? Object.keys(editDraft.env).length : 0;
   const lastRun = (routineRuns ?? [])[0] ?? null;
   const recentActivity = (activity ?? []).slice(0, 5);
@@ -155,16 +158,16 @@ export function OverviewSection({
       {/* Assignment row */}
       <div className="overflow-x-auto overscroll-x-contain">
         <div className="inline-flex min-w-full flex-wrap items-center gap-2 text-sm text-muted-foreground sm:min-w-max sm:flex-nowrap">
-          <span>For</span>
+          <span>{t("fullRoutinesSecrets.for")}</span>
           <InlineEntitySelector
             ref={assigneeSelectorRef}
             value={editDraft.assigneeAgentId}
             options={assigneeOptions}
             recentOptionIds={recentAssigneeIds}
-            placeholder="Responsible"
-            noneLabel="No responsible"
-            searchPlaceholder="Search responsible..."
-            emptyMessage="No responsible found."
+            placeholder={t("fullRoutinesSecrets.responsible")}
+            noneLabel={i18n.t("fullRoutinesSecrets.noResponsible")}
+            searchPlaceholder={i18n.t("fullRoutinesSecrets.searchResponsible")}
+            emptyMessage={t("fullRoutinesSecrets.noResponsibleFound")}
             onChange={(assigneeAgentId) =>
               setEditDraft((current) => ({ ...current, assigneeAgentId }))
             }
@@ -186,7 +189,7 @@ export function OverviewSection({
                   <span className="truncate">{option.label}</span>
                 )
               ) : (
-                <span className="text-muted-foreground">Responsible</span>
+                <span className="text-muted-foreground">{t("fullRoutinesSecrets.responsible")}</span>
               )
             }
             renderOption={(option) => {
@@ -202,16 +205,16 @@ export function OverviewSection({
               );
             }}
           />
-          <span>in</span>
+          <span>{t("fullRoutinesSecrets.in")}</span>
           <InlineEntitySelector
             ref={projectSelectorRef}
             value={editDraft.projectId}
             options={projectOptions}
             recentOptionIds={recentProjectIds}
-            placeholder="Project"
-            noneLabel="No project"
-            searchPlaceholder="Search projects..."
-            emptyMessage="No projects found."
+            placeholder={t("fullRoutinesSecrets.project")}
+            noneLabel={i18n.t("fullRoutinesSecrets.noProject")}
+            searchPlaceholder={i18n.t("fullRoutinesSecrets.searchProjects")}
+            emptyMessage={t("fullRoutinesSecrets.noProjectsFound")}
             onChange={(projectId) => setEditDraft((current) => ({ ...current, projectId }))}
             onConfirm={() => descriptionEditorRef.current?.focus()}
             renderTriggerValue={(option) =>
@@ -224,7 +227,7 @@ export function OverviewSection({
                   <span className="truncate">{option.label}</span>
                 </>
               ) : (
-                <span className="text-muted-foreground">Project</span>
+                <span className="text-muted-foreground">{t("fullRoutinesSecrets.project")}</span>
               )
             }
             renderOption={(option) => {
@@ -245,10 +248,7 @@ export function OverviewSection({
       </div>
 
       {!routine.assigneeAgentId ? (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-200">
-          Default agent required. This routine can stay as a draft and still run manually, but
-          automation stays paused until you assign a default agent.
-        </div>
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-200">{t("fullRoutinesSecrets.defaultAgentRequiredThisRoutineCanStayAsA")}</div>
       ) : null}
 
       {/* Instructions */}
@@ -281,7 +281,7 @@ export function OverviewSection({
               ref={descriptionEditorRef}
               value={editDraft.description}
               onChange={(description) => setEditDraft((current) => ({ ...current, description }))}
-              placeholder="Add instructions..."
+              placeholder={t("fullRoutinesSecrets.addInstructions")}
               bordered={false}
               contentClassName="min-h-(--sz-120px) text-sm leading-7"
               mentions={mentionOptions}
@@ -297,7 +297,7 @@ export function OverviewSection({
             ref={descriptionEditorRef}
             value={editDraft.description}
             onChange={(description) => setEditDraft((current) => ({ ...current, description }))}
-            placeholder="Add instructions..."
+            placeholder={t("fullRoutinesSecrets.addInstructions")}
             bordered={false}
             contentClassName="min-h-(--sz-120px) text-sm leading-7"
             mentions={mentionOptions}
@@ -325,37 +325,35 @@ export function OverviewSection({
       <div className="grid gap-3 sm:grid-cols-3">
         <SummaryCard
           icon={Clock3}
-          label="Triggers"
-          value={activeTriggers === 0 ? "None" : `${activeTriggers} active`}
-          hint={nextFire ? `Next fire ${nextFire}` : "No schedule"}
+          label={t("fullRoutinesSecrets.triggers")}
+          value={activeTriggers === 0 ? t("fullRoutinesSecrets.noneValue") : t("fullRoutinesSecrets.activeTriggersValue", { count: activeTriggers })}
+          hint={nextFire ? t("fullRoutinesSecrets.nextFire", { "nextFire": nextFire }) : t("fullRoutinesSecrets.noSchedule")}
           to={() => navigateToSection("triggers")}
-          ariaLabel={`${activeTriggers} triggers. Open triggers.`}
+          ariaLabel={i18n.t("fullRoutinesSecrets.openTriggerSummary", { count: activeTriggers })}
         />
         <SummaryCard
           icon={KeyRound}
-          label="Secrets"
-          value={boundSecrets === 0 ? "None" : `${boundSecrets} bound`}
-          hint="Manage bound secrets"
+          label={t("fullRoutinesSecrets.secrets")}
+          value={boundSecrets === 0 ? t("fullRoutinesSecrets.noneValue") : t("fullRoutinesSecrets.boundSecretsValue", { count: boundSecrets })}
+          hint={t("fullRoutinesSecrets.manageBoundSecrets")}
           to={() => navigateToSection("secrets")}
-          ariaLabel={`${boundSecrets} secrets bound. Open secrets.`}
+          ariaLabel={i18n.t("fullRoutinesSecrets.openSecretsSummary", { count: boundSecrets })}
         />
         <SummaryCard
           icon={Play}
-          label="Last run"
-          value={lastRun ? lastRun.status.replaceAll("_", " ") : "No runs"}
-          hint={lastRun ? timeAgo(lastRun.triggeredAt) : "Trigger a run"}
+          label={t("fullRoutinesSecrets.lastRun")}
+          value={lastRun ? routineRunStatusLabel(lastRun.status) : t("fullRoutinesSecrets.noRunsValue")}
+          hint={lastRun ? timeAgo(lastRun.triggeredAt) : t("fullRoutinesSecrets.triggerARun")}
           to={() => navigateToSection("runs")}
-          ariaLabel={lastRun ? `Last run ${lastRun.status}. Open runs.` : "No runs. Open runs."}
+          ariaLabel={lastRun ? i18n.t("fullRoutinesSecrets.openLastRun", { status: routineRunStatusLabel(lastRun.status) }) : i18n.t("fullRoutinesSecrets.noRunsOpenRuns")}
         />
       </div>
 
       {/* Recent activity */}
       <div className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Recent activity
-        </p>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("fullRoutinesSecrets.recentActivity")}</p>
         {recentActivity.length === 0 ? (
-          <p className="text-xs text-muted-foreground">No activity yet.</p>
+          <p className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.noActivityYet")}</p>
         ) : (
           <div className="divide-y divide-border/60">
             {recentActivity.map((event) => (
@@ -375,8 +373,7 @@ export function OverviewSection({
               type="button"
               onClick={() => navigateToSection("activity")}
               className="flex items-center gap-1 pt-2 text-xs text-muted-foreground hover:text-foreground"
-            >
-              View all activity <ArrowRight className="h-3 w-3" />
+            >{t("fullRoutinesSecrets.viewAllActivity")}{" "}<ArrowRight className="h-3 w-3" />
             </button>
           </div>
         )}
@@ -400,6 +397,7 @@ function SummaryCard({
   to: () => void;
   ariaLabel: string;
 }) {
+  const { t } = useTranslation();
   return (
     <button type="button" onClick={to} aria-label={ariaLabel} className="text-left">
       <Card className="gap-2 p-4 transition-colors hover:border-border hover:bg-accent/30">
@@ -418,13 +416,14 @@ function SummaryCard({
 }
 
 export function TriggersSection() {
+  const { t } = useTranslation();
   const ctx = useRoutineDetail();
   const { routine, newTrigger, setNewTrigger, createTrigger, updateTrigger, deleteTrigger, rotateTrigger, secretMessage, copySecretValue, setSecretMessage } = ctx;
   const [addOpen, setAddOpen] = useState(false);
   const [newScheduleEditorValid, setNewScheduleEditorValid] = useState(true);
   const newScheduleValidation = useMemo(
     () => newTrigger.kind === "schedule" ? getScheduleCronValidation(newTrigger.cronExpression) : null,
-    [newTrigger.cronExpression, newTrigger.kind],
+    [newTrigger.cronExpression, newTrigger.kind, t],
   );
   const addDisabled =
     createTrigger.isPending ||
@@ -440,8 +439,8 @@ export function TriggersSection() {
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">
           {routine.triggers.length === 0
-            ? "No triggers yet"
-            : `${routine.triggers.length} trigger${routine.triggers.length === 1 ? "" : "s"}`}
+            ? t("fullRoutinesSecrets.noTriggersYet")
+            : t("fullRoutinesSecrets.triggerCount", { count: routine.triggers.length })}
         </p>
         <Button
           size="sm"
@@ -451,14 +450,10 @@ export function TriggersSection() {
         >
           {addOpen ? (
             <>
-              <X className="mr-1.5 h-3.5 w-3.5" />
-              Cancel
-            </>
+              <X className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.cancel")}</>
           ) : (
             <>
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
-              New trigger
-            </>
+              <Plus className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.newTrigger")}</>
           )}
         </Button>
       </div>
@@ -466,10 +461,10 @@ export function TriggersSection() {
       {/* Add trigger form — expand-on-click drawer */}
       {addOpen ? (
       <div className="space-y-3 rounded-lg border border-border p-4">
-        <p className="text-sm font-medium">Add trigger</p>
+        <p className="text-sm font-medium">{t("fullRoutinesSecrets.addTrigger")}</p>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">Kind</Label>
+            <Label className="text-xs">{t("fullRoutinesSecrets.kind")}</Label>
             <Select
               value={newTrigger.kind}
               onValueChange={(kind) => setNewTrigger((current) => ({ ...current, kind }))}
@@ -488,7 +483,7 @@ export function TriggersSection() {
           </div>
           {newTrigger.kind === "schedule" && (
             <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">Schedule</Label>
+              <Label className="text-xs">{t("fullRoutinesSecrets.schedule")}</Label>
               <ScheduleEditor
                 value={newTrigger.cronExpression}
                 onChange={(cronExpression) =>
@@ -501,7 +496,7 @@ export function TriggersSection() {
           {newTrigger.kind === "webhook" && (
             <>
               <div className="space-y-1.5">
-                <Label className="text-xs">Signing mode</Label>
+                <Label className="text-xs">{t("fullRoutinesSecrets.signingMode")}</Label>
                 <Select
                   value={newTrigger.signingMode}
                   onValueChange={(signingMode) =>
@@ -525,7 +520,7 @@ export function TriggersSection() {
               </div>
               {!SIGNING_MODES_WITHOUT_REPLAY_WINDOW.has(newTrigger.signingMode) && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Replay window (seconds)</Label>
+                  <Label className="text-xs">{t("fullRoutinesSecrets.replayWindowSeconds")}</Label>
                   <Input
                     value={newTrigger.replayWindowSec}
                     onChange={(event) =>
@@ -538,9 +533,7 @@ export function TriggersSection() {
           )}
         </div>
         <div className="flex items-center justify-end gap-2">
-          <Button size="sm" variant="ghost" onClick={() => setAddOpen(false)}>
-            Cancel
-          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setAddOpen(false)}>{t("fullRoutinesSecrets.cancel")}</Button>
           <Button
             size="sm"
             onClick={() =>
@@ -553,7 +546,7 @@ export function TriggersSection() {
             }
             disabled={addDisabled}
           >
-            {createTrigger.isPending ? "Adding..." : "Add trigger"}
+            {createTrigger.isPending ? t("fullRoutinesSecrets.adding") : t("fullRoutinesSecrets.addTrigger")}
           </Button>
         </div>
       </div>
@@ -563,29 +556,25 @@ export function TriggersSection() {
         <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4 text-sm">
           <div>
             <p className="font-medium">{secretMessage.title}</p>
-            <p className="text-xs text-muted-foreground">
-              Save this now. Paperclip will not show the secret value again.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.saveThisNowPaperclipWillNotShowTheSecret")}</p>
           </div>
           <div className="space-y-3">
             {secretMessage.entries.map((entry, index) => (
               <div key={`${entry.webhookUrl}-${index}`} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Input aria-label="New webhook URL" value={entry.webhookUrl} readOnly className="flex-1" />
-                  <Button variant="outline" size="sm" onClick={() => copySecretValue("Webhook URL", entry.webhookUrl)}>
+                  <Input aria-label={t("fullRoutinesSecrets.newWebhookURL")} value={entry.webhookUrl} readOnly className="flex-1" />
+                  <Button variant="outline" size="sm" onClick={() => copySecretValue(i18n.t("fullRoutinesSecrets.webhookURL"), entry.webhookUrl)}>
                     URL
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Input aria-label="New webhook secret" value={entry.webhookSecret} readOnly className="flex-1" />
-                  <Button variant="outline" size="sm" onClick={() => copySecretValue("Webhook secret", entry.webhookSecret)}>
-                    Secret
-                  </Button>
+                  <Input aria-label={t("fullRoutinesSecrets.newWebhookSecret")} value={entry.webhookSecret} readOnly className="flex-1" />
+                  <Button variant="outline" size="sm" onClick={() => copySecretValue(i18n.t("fullRoutinesSecrets.webhookSecret"), entry.webhookSecret)}>{t("fullRoutinesSecrets.secret")}</Button>
                 </div>
               </div>
             ))}
           </div>
-          <Button variant="outline" size="sm" onClick={() => setSecretMessage(null)}>Done</Button>
+          <Button variant="outline" size="sm" onClick={() => setSecretMessage(null)}>{t("fullRoutinesSecrets.done")}</Button>
         </div>
       ) : null}
 
@@ -593,8 +582,8 @@ export function TriggersSection() {
       {routine.triggers.length === 0 ? (
         <EmptyState
           icon={Clock3}
-          message="No triggers yet."
-          action="Add a trigger"
+          message={t("fullRoutinesSecrets.noTriggersYet300")}
+          action={i18n.t("fullRoutinesSecrets.addATrigger")}
           onAction={() => setAddOpen(true)}
         />
       ) : (
@@ -615,6 +604,7 @@ export function TriggersSection() {
 }
 
 export function VariablesSection() {
+  const { t } = useTranslation();
   const ctx = useRoutineDetail();
   const { editDraft, setEditDraft, navigateToSection } = ctx;
   const hasVariables = editDraft.variables.length > 0;
@@ -622,15 +612,9 @@ export function VariablesSection() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 rounded-md border border-border bg-muted/20 px-4 py-3 text-xs">
-        <span className="flex-1 text-muted-foreground">
-          Variables are auto-detected from <code className="font-mono">{"{{placeholders}}"}</code> in
-          the title &amp; instructions. The variable name is read-only — rename by editing the
-          placeholder.
-        </span>
+        <span className="flex-1 text-muted-foreground"><Trans i18nKey="fullRoutinesSecrets.variablesAreAutoDetectedFromInTheTitleInstructions" values={{ "example1": "{{placeholders}}" }} components={{ c1: <code className="font-mono" /> }} /></span>
         <Button variant="secondary" size="sm" onClick={() => navigateToSection("overview")}>
-          <Edit3 className="mr-1.5 h-3.5 w-3.5" />
-          Edit instructions
-        </Button>
+          <Edit3 className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.editInstructions")}</Button>
       </div>
 
       {hasVariables ? (
@@ -643,8 +627,8 @@ export function VariablesSection() {
       ) : (
         <EmptyState
           icon={Braces}
-          message="No variables yet. Add a {{placeholder}} in the title or instructions to create one."
-          action="Edit instructions"
+          message={t("fullRoutinesSecrets.noVariablesYetAddAInTheTitleOr", { "example1": "{{placeholder}}" })}
+          action={i18n.t("fullRoutinesSecrets.editInstructions")}
           onAction={() => navigateToSection("overview")}
         />
       )}
@@ -653,6 +637,7 @@ export function VariablesSection() {
 }
 
 export function SecretsSection() {
+  const { t } = useTranslation();
   const ctx = useRoutineDetail();
   const { editDraft, setEditDraft, availableSecrets, createSecret } = ctx;
 
@@ -668,15 +653,12 @@ export function SecretsSection() {
           return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         })
         .slice(0, 8),
-    [availableSecrets],
+    [availableSecrets, t],
   );
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border border-border bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
-        Routine secrets apply to every task this routine creates. They override matching keys in
-        project and agent env. <span className="font-mono">PAPERCLIP_*</span> names are reserved.
-      </div>
+      <div className="rounded-md border border-border bg-muted/20 px-4 py-3 text-xs text-muted-foreground"><Trans i18nKey="fullRoutinesSecrets.routineSecretsApplyToEveryTaskThisRoutineCreates" components={{ c1: <span className="font-mono" /> }} /></div>
 
 
       <EnvironmentVariablesEditor
@@ -691,6 +673,7 @@ export function SecretsSection() {
 }
 
 export function DeliverySection() {
+  const { t } = useTranslation();
   const ctx = useRoutineDetail();
   const { editDraft, setEditDraft, routine } = ctx;
 
@@ -704,11 +687,9 @@ export function DeliverySection() {
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">
-          Concurrency
-        </p>
+        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.concurrency")}</p>
         <RadioCardGroup
-          ariaLabel="Concurrency policy"
+          ariaLabel={i18n.t("fullRoutinesSecrets.concurrencyPolicy")}
           value={editDraft.concurrencyPolicy}
           onValueChange={(concurrencyPolicy) =>
             setEditDraft((current) => ({ ...current, concurrencyPolicy }))
@@ -717,9 +698,7 @@ export function DeliverySection() {
         />
       </div>
       <div className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">
-          Catch-up
-        </p>
+        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.catchUp")}</p>
         <RadioCardGroup
           ariaLabel="Catch-up policy"
           value={editDraft.catchUpPolicy}
@@ -730,11 +709,9 @@ export function DeliverySection() {
         />
       </div>
       <div className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">
-          Advanced run policy
-        </p>
+        <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.advancedRunPolicy")}</p>
         <RadioCardGroup
-          ariaLabel="Advanced run policy"
+          ariaLabel={i18n.t("fullRoutinesSecrets.advancedRunPolicy")}
           value={editDraft.activityGatePolicy}
           onValueChange={(activityGatePolicy) =>
             setEditDraft((current) => ({ ...current, activityGatePolicy }))
@@ -743,15 +720,12 @@ export function DeliverySection() {
           disabled={!hasScheduleTrigger}
         />
         {!hasScheduleTrigger ? (
-          <p className="text-xs text-muted-foreground">
-            Add a schedule trigger to gate runs on activity. Webhook, manual, and API fires always
-            run.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.addAScheduleTriggerToGateRunsOnActivity")}</p>
         ) : gateEnabled ? (
           <div className="space-y-2 rounded-lg border border-border p-3">
-            <Label className="text-xs font-medium">Activity scope</Label>
+            <Label className="text-xs font-medium">{t("fullRoutinesSecrets.activityScope")}</Label>
             <RadioCardGroup
-              ariaLabel="Activity gate scope"
+              ariaLabel={i18n.t("fullRoutinesSecrets.activityGateScope")}
               value={editDraft.activityGateScope}
               onValueChange={(activityGateScope) =>
                 setEditDraft((current) => ({ ...current, activityGateScope }))
@@ -788,6 +762,7 @@ function NextFiresPreview({
   triggers: RoutineDetailType["triggers"];
   concurrencyPolicy: string;
 }) {
+  const { t } = useTranslation();
   const preview = useMemo(() => {
     const schedule = triggers
       .filter((trigger) => trigger.kind === "schedule" && trigger.enabled && trigger.cronExpression)
@@ -804,13 +779,11 @@ function NextFiresPreview({
       timeZone: schedule.trigger.timezone ?? "UTC",
       entries: previewFirePolicies(schedule.fires, concurrencyPolicy),
     };
-  }, [triggers, concurrencyPolicy]);
+  }, [triggers, concurrencyPolicy, t]);
 
   return (
     <div className="space-y-3">
-      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">
-        Next 5 fires
-      </p>
+      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.nextFires")}</p>
       {preview ? (
         <>
           <div className="space-y-1.5 rounded-lg border border-border p-3 font-mono text-xs">
@@ -828,16 +801,10 @@ function NextFiresPreview({
               </div>
             ))}
           </div>
-          <p className="text-(length:--text-micro) text-muted-foreground/60">
-            Preview assumes the previous run is still in flight when the next fires. Times shown in{" "}
-            {preview.timeZone}.
-          </p>
+          <p className="text-(length:--text-micro) text-muted-foreground/60"><Trans i18nKey="fullRoutinesSecrets.previewAssumesThePreviousRunIsStillInFlight" values={{ "value1": preview.timeZone }} /></p>
         </>
       ) : (
-        <p className="rounded-lg border border-dashed border-border p-3 text-xs text-muted-foreground">
-          No enabled schedule trigger to preview. Add a schedule in Triggers to see how this policy
-          treats upcoming fires.
-        </p>
+        <p className="rounded-lg border border-dashed border-border p-3 text-xs text-muted-foreground">{t("fullRoutinesSecrets.noEnabledScheduleTriggerToPreviewAddASchedule")}</p>
       )}
     </div>
   );

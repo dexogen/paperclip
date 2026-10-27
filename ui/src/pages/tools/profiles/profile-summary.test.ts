@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { i18n } from "@/i18n";
+import { afterEach, describe, expect, it } from "vitest";
 import type { ToolProfileSummary } from "@paperclipai/shared";
 import { allowsLabel, assignedLabel, STATUS_LABEL } from "./profile-summary";
 
@@ -55,5 +56,23 @@ describe("STATUS_LABEL", () => {
   it("uses prosumer words", () => {
     expect(STATUS_LABEL.draft).toBe("Draft");
     expect(STATUS_LABEL.disabled).toBe("Off");
+  });
+});
+
+
+describe("localized profile summaries", () => {
+  afterEach(async () => { await i18n.changeLanguage("en"); });
+
+  it("updates whole plural summaries without changing numeric source values", async () => {
+    const value = summary({ allowedToolCount: 21, allowedApplicationCount: 5, appliesToAgentCount: 2 });
+    const original = structuredClone(value);
+    await i18n.changeLanguage("ru");
+    expect(allowsLabel(value)).toBe("21 инструмент · 5 приложений");
+    expect(assignedLabel(value).text).toBe("2 агента");
+    expect(STATUS_LABEL.draft).toBe("Черновик");
+    await i18n.changeLanguage("en");
+    expect(allowsLabel(value)).toBe("21 tools · 5 apps");
+    expect(assignedLabel(value).text).toBe("2 agents");
+    expect(value).toEqual(original);
   });
 });

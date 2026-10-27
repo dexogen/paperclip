@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -41,6 +42,7 @@ const COPYABLE = "relative z-10 cursor-text select-text";
 const MONO_LINE = "font-mono text-(length:--text-micro) leading-4.5 text-(--hy-ink-2)";
 
 function Byline({ artifact }: { artifact: LabArtifact }) {
+  useTranslation();
   return (
     <div data-byline className="flex min-w-0 flex-auto items-center gap-2">
       <Character name={artifact.author} />
@@ -55,6 +57,7 @@ function Byline({ artifact }: { artifact: LabArtifact }) {
 }
 
 export function PanelCard({ artifact }: { artifact: LabArtifact }) {
+  useTranslation();
   const [failed, setFailed] = useState(false);
   const lead = panelLeadKind(artifact, failed);
   const primary = panelAction(artifact);
@@ -113,7 +116,7 @@ export function PanelCard({ artifact }: { artifact: LabArtifact }) {
             />
           ))}
           {/* The button says "Open" (screen 10); its accessible name keeps the product's words — "Read document: …". */}
-          <ButtonAction action={{ ...primary, label: "Open" }} stretch="after:rounded-lg" className={secondary.length > 0 ? "ml-1" : undefined} />
+          <ButtonAction action={{ ...primary, label: t("fullDiagnostics.open_cf9b77") }} stretch="after:rounded-lg" className={secondary.length > 0 ? "ml-1" : undefined} />
         </div>
       </footer>
     </li>

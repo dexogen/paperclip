@@ -68,8 +68,22 @@ it.each([true, false])("formats the project-owned secret error late and preserve
       </TooltipProvider>
     </QueryClientProvider>,
   ));
+  // The test exercises error ownership and locale changes after the form opens.
+  // Settle its background query notifications before interacting with Radix's
+  // focus-managed popover, so a query render cannot race the first click.
+  await act(async () => {
+    await vi.waitFor(() => expect(client.isFetching()).toBe(0));
+  });
   await act(async () => container.querySelector<HTMLButtonElement>('button[title^="This value looks sensitive"]')!.click());
-  await act(async () => [...document.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.trim() === "Store & bind")!.click());
+  // The row deliberately defers opening this popover to a later macrotask.
+  // Wait for the form, not just the click's React updates, before submitting.
+  const storeAndBind = await vi.waitFor(async () => {
+    await act(async () => {});
+    const button = [...document.querySelectorAll<HTMLButtonElement>("button")].find(node => node.textContent?.trim() === "Store & bind");
+    expect(button).toBeDefined();
+    return button!;
+  });
+  await act(async () => storeAndBind.click());
   expect(document.body.textContent).toContain(rawError);
   if (missing) expect(secrets.create).not.toHaveBeenCalled();
   else expect(secrets.create).toHaveBeenCalledExactlyOnceWith("company:raw", { name: "stripe_api_key", value: "value<&>" });

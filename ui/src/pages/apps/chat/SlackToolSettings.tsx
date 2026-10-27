@@ -1,3 +1,5 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useId, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -15,41 +17,29 @@ export function SlackCapabilitiesView({
   capabilities?: SlackToolCapabilities;
   error?: string;
 }) {
+  useFullAppsTranslation();
   return (
     <section className="space-y-3">
-      <p className="text-sm text-muted-foreground">
-        Read, search, and act in Slack. Some actions require approval.
-      </p>
+      <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.read_search_and_act_in_slack_some_actions_require_ap_b6aa05")}</p>
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
       {!capabilities && !error && (
-        <p role="status" className="text-sm text-muted-foreground">
-          Checking Slack permissions…
-        </p>
+        <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.checking_slack_permissions_d85521")}</p>
       )}
       {capabilities && (
         <>
           {capabilities.missingScopes.length > 0 && (
             <div className="rounded-lg border border-border bg-muted p-3 space-y-2">
-              <p className="text-sm font-medium">
-                Add permissions to unlock more tools
-              </p>
-              <p className="text-sm">
-                Your existing connection still works. In{" "}
-                <a
+              <p className="text-sm font-medium">{fullAppsT("fullApps.add_permissions_to_unlock_more_tools_a716eb")}</p>
+              <p className="text-sm"><FullAppsTrans i18nKey="fullApps.your_existing_connection_still_works_in_choose_your__93fdf8" components={{ part1: <>{" "}</>, part2: <a
                   className="underline underline-offset-4"
                   href="https://api.slack.com/apps"
                   target="_blank"
                   rel="noreferrer"
-                >
-                  Slack app settings
-                </a>
-                , choose your app, open OAuth &amp; Permissions, add these Bot
-                Token Scopes, then reinstall the app to your workspace.
-              </p>
+                >{fullAppsT("fullApps.slack_app_settings_d811ef")}</a> }} /></p>
               <p className="text-xs font-mono break-words">
                 {capabilities.missingScopes.join(", ")}
               </p>
@@ -75,11 +65,12 @@ export function SlackSearchView({
     clientSecret: string;
   }) => Promise<void>;
 }) {
+  useFullAppsTranslation();
   const id = useId();
   const [clientId, setClientId] = useState(status.clientId ?? "");
   const [clientSecret, setClientSecret] = useState("");
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AppDisplayText | null>(null);
   const perform = async (action: () => Promise<void>) => {
     setPending(true);
     setError(null);
@@ -87,7 +78,7 @@ export function SlackSearchView({
       await action();
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Unable to update Slack search",
+        e instanceof Error ? appErrorDisplay(e) : ownAppDisplayText("fullApps.unable_to_update_slack_search_2986f9"),
       );
     } finally {
       setPending(false);
@@ -95,12 +86,8 @@ export function SlackSearchView({
   };
   return (
     <section className="space-y-3">
-      <h3 className="text-sm font-semibold">Your Slack search access</h3>
-      <p className="text-sm text-muted-foreground">
-        Optional personal authorization enables private search on supported
-        runtimes. It cannot read channels the bot hasn’t joined or let the bot
-        write as you. Basic channel reading works without it.
-      </p>
+      <h3 className="text-sm font-semibold">{fullAppsT("fullApps.your_slack_search_access_c49a01")}</h3>
+      <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.optional_personal_authorization_enables_private_sear_5d5b66")}</p>
       {!status.nativeSearchAvailable && (
         <p role="status" className="text-sm text-muted-foreground">
           {status.limitation}
@@ -108,36 +95,27 @@ export function SlackSearchView({
       )}
       {status.connected ? (
         <div className="flex items-center justify-between gap-3">
-          <span className="text-sm">Slack search connected</span>
+          <span className="text-sm">{fullAppsT("fullApps.slack_search_connected_7ce799")}</span>
           <Button
             variant="outline"
             size="sm"
             disabled={pending}
             onClick={() => void perform(onDisconnect)}
-          >
-            Disconnect search
-          </Button>
+          >{fullAppsT("fullApps.disconnect_search_1ae291")}</Button>
         </div>
       ) : (
         <Button
           variant="outline"
           disabled={pending || !status.configured}
           onClick={() => void perform(onConnect)}
-        >
-          Connect Slack search
-        </Button>
+        >{fullAppsT("fullApps.connect_slack_search_e8b57c")}</Button>
       )}
       {!status.configured && (
-        <p className="text-sm text-muted-foreground">
-          A connection manager needs to configure your Slack app’s OAuth
-          credentials first.
-        </p>
+        <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.a_connection_manager_needs_to_configure_your_slack_a_c83c40")}</p>
       )}
       {status.canConfigure && (
         <details className="text-sm">
-          <summary className="cursor-pointer text-muted-foreground">
-            OAuth app configuration for connection managers
-          </summary>
+          <summary className="cursor-pointer text-muted-foreground">{fullAppsT("fullApps.oauth_app_configuration_for_connection_managers_ee4c0f")}</summary>
           <form
             className="mt-3 space-y-3"
             onSubmit={(event) => {
@@ -148,18 +126,12 @@ export function SlackSearchView({
               });
             }}
           >
-            <p className="text-sm">
-              In Slack app settings, add this redirect URL under OAuth &amp;
-              Permissions. Add user scopes <code>search:read.public</code>,{" "}
-              <code>search:read.private</code> and{" "}
-              <code>search:read.files</code>. Find Client ID and Client Secret
-              under Basic Information.
-            </p>
+            <p className="text-sm"><FullAppsTrans i18nKey="fullApps.in_slack_app_settings_add_this_redirect_url_under_oa_859f81" components={{ part1: <code>search:read.public</code>, part2: <>{" "}</>, part3: <code>search:read.private</code>, part4: <>{" "}</>, part5: <code>search:read.files</code> }} /></p>
             <p className="text-xs font-mono break-all">
-              {status.redirectUri ?? "Configure a public HTTPS URL first."}
+              {status.redirectUri ?? fullAppsT("fullApps.configure_a_public_https_url_first_a5716c")}
             </p>
             <div className="space-y-2">
-              <label htmlFor={`${id}-client`}>Client ID</label>
+              <label htmlFor={`${id}-client`}>{fullAppsT("fullApps.client_id_8726db")}</label>
               <Input
                 id={`${id}-client`}
                 value={clientId}
@@ -167,7 +139,7 @@ export function SlackSearchView({
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor={`${id}-secret`}>Client Secret</label>
+              <label htmlFor={`${id}-secret`}>{fullAppsT("fullApps.client_secret_ae21cf")}</label>
               <Input
                 id={`${id}-secret`}
                 type="password"
@@ -181,16 +153,14 @@ export function SlackSearchView({
                 type="submit"
                 size="sm"
                 disabled={pending || !clientId || !clientSecret}
-              >
-                Save OAuth configuration
-              </Button>
+              >{fullAppsT("fullApps.save_oauth_configuration_37b148")}</Button>
             </div>
           </form>
         </details>
       )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
-          {error}
+          {renderAppDisplayText(error)}
         </p>
       )}
     </section>
@@ -203,6 +173,7 @@ export function SlackToolsSettings({
   companyId: string;
   endpointId: string;
 }) {
+  useFullAppsTranslation();
   const query = useQuery({
     queryKey: ["slack-capabilities", companyId, endpointId],
     queryFn: () => slackToolsApi.capabilities(companyId, endpointId),
@@ -225,6 +196,7 @@ export function SlackSearchAccess({
   companyId: string;
   endpointId: string;
 }) {
+  useFullAppsTranslation();
   const query = useQuery({
     queryKey: ["slack-search", companyId, endpointId],
     queryFn: () => slackToolsApi.search(companyId, endpointId),
@@ -237,9 +209,7 @@ export function SlackSearchAccess({
     );
   if (!query.data)
     return (
-      <p role="status" className="text-sm text-muted-foreground">
-        Loading search access…
-      </p>
+      <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_search_access_20c6a0")}</p>
     );
   return (
     <SlackSearchView

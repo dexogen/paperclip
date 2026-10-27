@@ -1,3 +1,6 @@
+import { pageValueLabel } from "./full-pages-labels";
+import { i18n } from "@/i18n";
+import { t, useTranslation } from "@/i18n";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, UserRound, UserRoundPen } from "lucide-react";
@@ -49,6 +52,7 @@ function completionRate(stats: UserProfileWindowStats) {
 }
 
 function HeroStat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  useTranslation();
   return (
     <div className="min-w-0">
       <div className="text-2xl font-semibold tabular-nums sm:text-3xl">{value}</div>
@@ -59,29 +63,30 @@ function HeroStat({ label, value, hint }: { label: string; value: string; hint?:
 }
 
 function WindowColumn({ stats }: { stats: UserProfileWindowStats }) {
+  useTranslation();
   const tokens = totalTokens(stats);
   return (
     <div className="flex min-w-0 flex-col gap-4 border-l border-border pl-5 first:border-l-0 first:pl-0">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">{stats.label}</h2>
-        <span className="text-(length:--text-micro) text-muted-foreground tabular-nums">{completionRate(stats)} done</span>
+        <span className="text-(length:--text-micro) text-muted-foreground tabular-nums">{completionRate(stats)}{" "}{t("fullPages.done_e5fd9c")}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-x-5 gap-y-3">
-        <Metric value={formatNumber(stats.touchedIssues)} label="Touched" />
-        <Metric value={formatNumber(stats.completedIssues)} label="Completed" />
-        <Metric value={formatNumber(stats.commentCount)} label="Comments" />
-        <Metric value={formatNumber(stats.activityCount)} label="Actions" />
+        <Metric value={formatNumber(stats.touchedIssues)} label={t("fullPages.touched")} />
+        <Metric value={formatNumber(stats.completedIssues)} label={t("fullPages.completed")} />
+        <Metric value={formatNumber(stats.commentCount)} label={t("searchUi.scope.comments")} />
+        <Metric value={formatNumber(stats.activityCount)} label={t("searchUi.palette.actions")} />
       </div>
 
       <div className="grid grid-cols-2 gap-x-5 gap-y-1.5 pt-3 text-xs tabular-nums text-muted-foreground">
-        <span>Tokens</span>
+        <span>{t("fullPages.tokens")}</span>
         <span className="text-right text-foreground">{formatTokens(tokens)}</span>
-        <span>Spend</span>
+        <span>{t("fullPages.spend")}</span>
         <span className="text-right text-foreground">{formatCents(stats.costCents)}</span>
-        <span>Created</span>
+        <span>{t("fullPages.created")}</span>
         <span className="text-right text-foreground">{formatNumber(stats.createdIssues)}</span>
-        <span>Open</span>
+        <span>{t("fullPages.open")}</span>
         <span className="text-right text-foreground">{formatNumber(stats.assignedOpenIssues)}</span>
       </div>
     </div>
@@ -89,6 +94,7 @@ function WindowColumn({ stats }: { stats: UserProfileWindowStats }) {
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
+  useTranslation();
   return (
     <div className="min-w-0">
       <div className="truncate text-xl font-semibold tabular-nums">{value}</div>
@@ -98,6 +104,7 @@ function Metric({ value, label }: { value: string; label: string }) {
 }
 
 function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
+  useTranslation();
   const totals = points.map((point) => totalTokens(point));
   const maxTokens = Math.max(1, ...totals);
   const maxCompleted = Math.max(1, ...points.map((point) => point.completedIssues));
@@ -106,10 +113,10 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
   return (
     <section>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-3">
-        <h2 className="text-sm font-semibold">Last 14 days</h2>
+        <h2 className="text-sm font-semibold">{t("dashboardUi.last14Days")}</h2>
         <div className="flex items-baseline gap-4 text-xs text-muted-foreground">
           <span className="tabular-nums text-foreground">{formatTokens(totalTokensSum)}</span>
-          <span>tokens total</span>
+          <span>{t("fullPages.tokensTotal")}</span>
         </div>
       </div>
       <div className="mt-6 grid grid-cols-(--gtc-57) items-end gap-1.5 sm:gap-2">
@@ -124,7 +131,7 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
               <div
                 className="w-full bg-foreground/80 transition-opacity group-hover:bg-foreground"
                 style={{ height: `${heightPct}%`, minHeight: tokens === 0 ? 1 : undefined }}
-                title={`${formatShortDate(point.date)}: ${formatTokens(tokens)} tokens, ${point.completedIssues} completed`}
+                title={t("fullPages.tokensCompleted", { value1: formatShortDate(point.date), value2: formatTokens(tokens), value3: point.completedIssues })}
               />
               {completedPct > 0 ? (
                 <div
@@ -145,11 +152,9 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-4 text-(length:--text-nano) uppercase tracking-wide text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 bg-foreground/80" /> tokens / day
-        </span>
+          <span className="h-2 w-2 bg-foreground/80" />{" "}{t("fullPages.tokensDay")}</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-(--sz-3px) w-4 rounded-full bg-emerald-500/80" /> completions
-        </span>
+          <span className="h-(--sz-3px) w-4 rounded-full bg-emerald-500/80" />{" "}{t("fullPages.completions")}</span>
       </div>
     </section>
   );
@@ -174,6 +179,7 @@ function UsageList({
   empty: string;
   rows: UsageRow[];
 }) {
+  useTranslation();
   return (
     <section>
       <div className="flex items-baseline justify-between gap-3 border-b border-border pb-3">
@@ -203,6 +209,7 @@ function UsageList({
 }
 
 export function UserProfile() {
+  useTranslation();
   const { userSlug = "" } = useParams<{ userSlug: string }>();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -227,8 +234,8 @@ export function UserProfile() {
     !hidesInstancePage(hiddenSettings, "instance.profile");
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Users" }, { label: data?.user.name ?? userSlug }]);
-  }, [data?.user.name, setBreadcrumbs, userSlug]);
+    setBreadcrumbs([{ label: t("fullPages.users") }, { label: data?.user.name ?? userSlug }]);
+  }, [data?.user.name, setBreadcrumbs, userSlug, i18n.language]);
 
   const allTime = data?.stats.find((entry) => entry.key === "all");
   const last7 = data?.stats.find((entry) => entry.key === "last7");
@@ -238,14 +245,14 @@ export function UserProfile() {
     () =>
       (data?.topAgents ?? []).map((row) => ({
         key: row.agentId ?? "unknown",
-        label: row.agentName ?? (row.agentId ? row.agentId.slice(0, 8) : "Paperclip services"),
-        sublabel: "Task-linked usage",
+        label: row.agentName ?? (row.agentId ? row.agentId.slice(0, 8) : t("fullPages.paperclipServices")),
+        sublabel: t("fullPages.taskLinkedUsage"),
         costCents: row.costCents,
         inputTokens: row.inputTokens,
         cachedInputTokens: row.cachedInputTokens,
         outputTokens: row.outputTokens,
       })),
-    [data?.topAgents],
+    [data?.topAgents, i18n.language],
   );
 
   const providerUsageRows = useMemo<UsageRow[]>(
@@ -253,17 +260,17 @@ export function UserProfile() {
       (data?.topProviders ?? []).map((row) => ({
         key: `${row.provider}:${row.biller}:${row.model}`,
         label: `${providerDisplayName(row.provider)} / ${row.model}`,
-        sublabel: `Billed through ${providerDisplayName(row.biller)}`,
+        sublabel: t("fullPages.billedThrough", { value1: providerDisplayName(row.biller) }),
         costCents: row.costCents,
         inputTokens: row.inputTokens,
         cachedInputTokens: row.cachedInputTokens,
         outputTokens: row.outputTokens,
       })),
-    [data?.topProviders],
+    [data?.topProviders, i18n.language],
   );
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={UserRound} message="Select an organization to view user profiles." />;
+    return <EmptyState icon={UserRound} message={t("fullPages.selectAnOrganizationToViewUserProfiles")} />;
   }
 
   if (isLoading) {
@@ -271,14 +278,14 @@ export function UserProfile() {
   }
 
   if (error || !data) {
-    return <EmptyState icon={AlertCircle} message="User profile not found for this organization." />;
+    return <EmptyState icon={AlertCircle} message={t("fullPages.userProfileNotFoundForThisOrganization")} />;
   }
 
   const allTimeTokens = allTime ? totalTokens(allTime) : 0;
   const metaParts = [
-    data.user.membershipRole ?? "member",
-    data.user.membershipStatus,
-    `joined ${formatDate(data.user.joinedAt)}`,
+    pageValueLabel(data.user.membershipRole ?? "member"),
+    pageValueLabel(data.user.membershipStatus),
+    t("fullPages.joinedDate", { date: formatDate(data.user.joinedAt) }),
   ];
 
   return (
@@ -303,18 +310,16 @@ export function UserProfile() {
           {canEditProfile ? (
             <Button asChild variant="outline" size="sm">
               <Link to={PROFILE_SETTINGS_PATH}>
-                <UserRoundPen />
-                Edit profile
-              </Link>
+                <UserRoundPen />{t("fullPages.editProfile")}</Link>
             </Button>
           ) : null}
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <HeroStat label="All-time tokens" value={formatTokens(allTimeTokens)} hint={formatCents(allTime?.costCents ?? 0) + " spent"} />
-          <HeroStat label="Completed" value={formatNumber(allTime?.completedIssues ?? 0)} hint={allTime ? `${completionRate(allTime)} rate` : undefined} />
-          <HeroStat label="Open assigned" value={formatNumber(allTime?.assignedOpenIssues ?? 0)} hint={`${formatNumber(allTime?.createdIssues ?? 0)} created`} />
-          <HeroStat label="7-day actions" value={formatNumber(last7?.activityCount ?? 0)} hint={`${formatNumber(last7?.commentCount ?? 0)} comments`} />
+          <HeroStat label={t("fullPages.allTimeTokens")} value={formatTokens(allTimeTokens)} hint={formatCents(allTime?.costCents ?? 0) + t("fullPages.spent")} />
+          <HeroStat label={t("fullPages.completed")} value={formatNumber(allTime?.completedIssues ?? 0)} hint={allTime ? t("fullPages.rate", { value1: completionRate(allTime) }) : undefined} />
+          <HeroStat label={t("fullPages.openAssigned")} value={formatNumber(allTime?.assignedOpenIssues ?? 0)} hint={t("fullPages.created_1b6665", { value1: formatNumber(allTime?.createdIssues ?? 0) })} />
+          <HeroStat label={t("fullPages.7DayActions")} value={formatNumber(last7?.activityCount ?? 0)} hint={t("fullPages.comments", { value1: formatNumber(last7?.commentCount ?? 0) })} />
         </div>
       </section>
 
@@ -327,11 +332,11 @@ export function UserProfile() {
       <div className="grid gap-10 pt-2 xl:grid-cols-2">
         <section>
           <div className="flex items-baseline justify-between gap-3 border-b border-border pb-3">
-            <h2 className="text-sm font-semibold">Recent tasks</h2>
+            <h2 className="text-sm font-semibold">{t("fullPages.recentTasks_21bcad")}</h2>
             <span className="text-xs text-muted-foreground tabular-nums">{data.recentIssues.length}</span>
           </div>
           {data.recentIssues.length === 0 ? (
-            <div className="pt-4 text-sm text-muted-foreground">No touched tasks yet.</div>
+            <div className="pt-4 text-sm text-muted-foreground">{t("fullPages.noTouchedTasksYet")}</div>
           ) : (
             <ul className="divide-y divide-border">
               {data.recentIssues.map((issue) => (
@@ -355,11 +360,11 @@ export function UserProfile() {
 
         <section>
           <div className="flex items-baseline justify-between gap-3 border-b border-border pb-3">
-            <h2 className="text-sm font-semibold">Recent activity</h2>
+            <h2 className="text-sm font-semibold">{t("fullPages.recentActivity")}</h2>
             <span className="text-xs text-muted-foreground tabular-nums">{data.recentActivity.length}</span>
           </div>
           {data.recentActivity.length === 0 ? (
-            <div className="pt-4 text-sm text-muted-foreground">No direct user actions recorded yet.</div>
+            <div className="pt-4 text-sm text-muted-foreground">{t("fullPages.noDirectUserActionsRecordedYet")}</div>
           ) : (
             <ul className="divide-y divide-border">
               {data.recentActivity.map((event) => (
@@ -379,8 +384,8 @@ export function UserProfile() {
       </div>
 
       <div className="grid gap-10 xl:grid-cols-2">
-        <UsageList title="Agent attribution" empty="No issue-linked token usage yet." rows={agentUsageRows} />
-        <UsageList title="Provider mix" empty="No provider usage attributed yet." rows={providerUsageRows} />
+        <UsageList title={t("fullPages.agentAttribution")} empty={t("fullPages.noIssueLinkedTokenUsageYet")} rows={agentUsageRows} />
+        <UsageList title={t("fullPages.providerMix")} empty={t("fullPages.noProviderUsageAttributedYet")} rows={providerUsageRows} />
       </div>
     </div>
   );

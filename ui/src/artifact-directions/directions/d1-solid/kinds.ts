@@ -1,3 +1,5 @@
+import { t, i18n } from "@/i18n";
+import { artifactQuantity } from "../../localized-copy";
 import { Archive, CodeXml, File, FilePenLine, FileText, Film, Globe, Image, NotebookText, Presentation, Table2, type LucideIcon } from "lucide-react";
 import { fileKindForName } from "@/components/task-chat/task-chat-attachments";
 import type { LabArtifact, LabKind } from "../../kit";
@@ -25,15 +27,15 @@ interface KindSpec {
 
 export const KINDS: Record<LabKind, KindSpec> = {
   document: { glyph: FilePenLine, block: "MD", meta: "Markdown" },
-  image: { glyph: Image, block: "IMG", meta: "Image" },
-  video: { glyph: Film, block: "VID", meta: "Video" },
+  image: { glyph: Image, block: "IMG", get meta() { return t("fullDiagnostics.kindImage"); } },
+  video: { glyph: Film, block: "VID", get meta() { return t("fullDiagnostics.kindVideo"); } },
   pdf: { glyph: FileText, block: "PDF", meta: "PDF" },
-  slides: { glyph: Presentation, block: "PPT", meta: "Slides" },
-  sheet: { glyph: Table2, block: "XLS", meta: "Sheet" },
-  archive: { glyph: Archive, block: "ZIP", meta: "Archive" },
-  code: { glyph: CodeXml, block: "CODE", meta: "Code" },
-  file: { glyph: File, block: "FILE", meta: "File" },
-  link: { glyph: Globe, block: "URL", meta: "Link" },
+  slides: { glyph: Presentation, block: "PPT", get meta() { return t("fullDiagnostics.kindSlides"); } },
+  sheet: { glyph: Table2, block: "XLS", get meta() { return t("fullDiagnostics.kindSheet"); } },
+  archive: { glyph: Archive, block: "ZIP", get meta() { return t("fullDiagnostics.kindArchive"); } },
+  code: { glyph: CodeXml, block: "CODE", get meta() { return t("fullDiagnostics.kindCode"); } },
+  file: { glyph: File, block: "FILE", get meta() { return t("fullDiagnostics.kindFile"); } },
+  link: { glyph: Globe, block: "URL", get meta() { return t("fullDiagnostics.kindLink"); } },
 };
 
 /** A task document ("Document · rev N"), as opposed to a Markdown file an agent attached. */
@@ -49,21 +51,21 @@ export const kindGlyph = (a: LabArtifact): LucideIcon => (isTaskDocument(a) ? No
  */
 export function blockLabel(a: LabArtifact): string {
   if (a.kind === "link") return KINDS.link.block;
-  if (isTaskDocument(a)) return `REV ${a.revision}`;
+  if (isTaskDocument(a)) return t("fullDiagnostics.revisionBlock", { revision: a.revision });
   const ext = a.ext?.replace(/[^a-z0-9]/gi, "");
   return ext ? ext.slice(0, 4).toUpperCase() : KINDS[a.kind].block;
 }
 
 /** The first word of the meta line, in production wording where production has one. */
 export function metaLabel(a: LabArtifact): string {
-  if (isTaskDocument(a)) return "Document";
+  if (isTaskDocument(a)) return t("fullDiagnostics.kindDocument");
   if (a.kind === "link") return KINDS.link.meta;
   if (a.kind === "image" || a.kind === "video") return KINDS[a.kind].meta;
-  const shipped = a.filename ? fileKindForName(a.filename).label : "File";
-  return shipped === "File" ? KINDS[a.kind].meta : shipped;
+  const shipped = a.filename ? fileKindForName(a.filename, i18n.t).label : t("fullDiagnostics.kindFile");
+  return shipped === t("taskChatUi.attachment.file") ? KINDS[a.kind].meta : shipped;
 }
 
-export const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
+export const plural = artifactQuantity;
 
 /** The key a document or file is addressed by in the lab's inert hashes. */
 export const slug = (a: LabArtifact) => (a.filename ?? a.id).replace(/\.md$/, "");
@@ -92,7 +94,7 @@ export function extent(a: LabArtifact): string | null {
  * when it is short of room, never reorder it.
  */
 export function metaParts(a: LabArtifact): string[] {
-  return [metaLabel(a), a.sizeLabel, a.revision != null ? `rev ${a.revision}` : null, extent(a)].filter((part): part is string => Boolean(part));
+  return [metaLabel(a), a.sizeLabel, a.revision != null ? t("fullDiagnostics.revision", { revision: a.revision }) : null, extent(a)].filter((part): part is string => Boolean(part));
 }
 
 /** What the product can open in the side panel instead of downloading (`isTextAttachment`). */

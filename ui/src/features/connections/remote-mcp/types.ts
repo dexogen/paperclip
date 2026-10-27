@@ -1,3 +1,4 @@
+import type { AppDisplayText } from "@/pages/apps/app-display-text";
 import type { ToolCatalogEntry } from "@paperclipai/shared";
 
 export type ToolPermission = "allowed" | "ask_first" | "off";
@@ -23,7 +24,7 @@ export interface RemoteMcpSetupState {
   agentIds: string[];
   permissions: Record<string, ToolPermission>;
   tools: RemoteMcpTool[];
-  notice: string | null;
+  notice: AppDisplayText | null;
   refreshing: boolean;
 }
 

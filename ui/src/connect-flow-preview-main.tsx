@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { MotionConfig, motion } from "motion/react";
@@ -59,6 +60,7 @@ import "./index.css";
  * `OnboardingWizard.tsx`.
  */
 function OpenAiBlossom({ className }: { className?: string }) {
+  useFullSharedTranslation();
   return (
     <svg viewBox="0 0 716 716" className={className} fill="none" aria-hidden>
       <path
@@ -121,6 +123,7 @@ function ConnectFlowPreview({
   initialSourceId: string | null;
   initialPhase: Phase;
 }) {
+  useFullSharedTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(initialSourceId);
   const [useApiKeys, setUseApiKeys] = useState(false);
   const [phase, setPhase] = useState<Phase>(initialPhase);
@@ -130,7 +133,7 @@ function ConnectFlowPreview({
 
   const mode: CredentialMode = useApiKeys ? "api" : "subscription";
   const providerName = selectedId === "codex_local" ? "OpenAI" : "Claude";
-  const signInLabel = `Sign in to ${providerName}`;
+  const signInLabel = fullSharedT("fullShared.sign_in_to_d85581", { value1: providerName });
   /*
     Claude takes a code back from the customer; OpenAI hands one over. That is
     the only difference between the two cards — the sentence and the last row —
@@ -277,18 +280,18 @@ function ConnectFlowPreview({
     phase === "unwindCard"
       ? { label: signInLabel, icon: "none" as const, disabled: true }
       : done
-      ? { label: "Start over", icon: "arrow" as const, disabled: false }
+      ? { label: fullSharedT("fullShared.start_over_5eed7e"), icon: "arrow" as const, disabled: false }
       : phase === "ready" && apiMode
         ? // A key is typed here rather than fetched elsewhere, so the button is
           // the submit and stays dead until there is something to submit.
-          { label: "Connect", icon: "arrow" as const, disabled: !apiKey.trim() }
+          { label: fullSharedT("fullShared.connect_1a2303"), icon: "arrow" as const, disabled: !apiKey.trim() }
         : phase === "ready"
         ? { label: signInLabel, icon: "none" as const, disabled: false }
         : phase === "waiting"
-          ? { label: "Waiting for code", icon: "spinner" as const, disabled: true }
+          ? { label: fullSharedT("onboarding.progress.waitingCode"), icon: "spinner" as const, disabled: true }
           : phase === "connecting"
-            ? { label: "Connecting", icon: "spinner" as const, disabled: true }
-            : { label: "Next", icon: "arrow" as const, disabled: true };
+            ? { label: fullSharedT("onboarding.progress.connectingLabel"), icon: "spinner" as const, disabled: true }
+            : { label: fullSharedT("fullShared.next_1ff57a"), icon: "arrow" as const, disabled: true };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -308,7 +311,7 @@ function ConnectFlowPreview({
         <div className="pt-6">
           <OnboardingHeading
             center
-            title={done ? "Connected" : "Connect a model"}
+            title={done ? fullSharedT("environmentsUi.terminal.connected") : fullSharedT("onboarding.steps.model")}
             lede={
               done
                 ? "The step advances straight to Review — there is no success screen."
@@ -321,7 +324,7 @@ function ConnectFlowPreview({
           <>
             <div className="space-y-2 pt-12">
               <ModelSourceTiles
-                label="Model source"
+                label={fullSharedT("onboarding.model.source")}
                 sources={MODEL_SOURCES}
                 mode={mode}
                 selectedId={selectedId}
@@ -420,8 +423,8 @@ function ConnectFlowPreview({
                     {/* The one place the three paths differ. */}
                     {apiMode ? (
                       <OnboardingCardField
-                        label="API key"
-                        placeholder="Enter API key here"
+                        label={fullSharedT("fullShared.api_key_16f0ee")}
+                        placeholder={fullSharedT("onboarding.credentials.placeholder")}
                         masked
                         value={apiKey}
                         onChange={setApiKey}

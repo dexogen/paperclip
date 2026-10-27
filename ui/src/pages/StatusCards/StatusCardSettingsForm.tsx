@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import type { StatusCardRefreshPolicy } from "@paperclipai/shared";
 import { ChevronDown } from "lucide-react";
 
@@ -34,11 +35,11 @@ const DEBOUNCE_OPTIONS = [30, 60, 120, 300];
 type TriggerKey = keyof StatusCardRefreshPolicy["triggers"];
 
 const TRIGGER_ROWS: { key: TriggerKey; label: string; noisy?: boolean }[] = [
-  { key: "statusTransitions", label: "Became blocked / needs review / done / cancelled" },
-  { key: "membershipChanges", label: "New issue matches the query · issue leaves the query" },
-  { key: "humanComments", label: "Human comments" },
-  { key: "assigneeChanges", label: "Assignee changes" },
-  { key: "anyUpdate", label: "Any update at all (noisy — includes in-progress churn)", noisy: true },
+  { key: "statusTransitions", get label() { return t("fullPages.becameBlockedNeedsReviewDoneCancelled"); } },
+  { key: "membershipChanges", get label() { return t("fullPages.newIssueMatchesTheQueryIssueLeaves"); } },
+  { key: "humanComments", get label() { return t("fullPages.humanComments"); } },
+  { key: "assigneeChanges", get label() { return t("fullPages.assigneeChanges"); } },
+  { key: "anyUpdate", get label() { return t("fullPages.anyUpdateAtAllNoisyIncludesIn"); }, noisy: true },
 ];
 
 function RadioRow({
@@ -54,6 +55,7 @@ function RadioRow({
   onSelect: () => void;
   children?: React.ReactNode;
 }) {
+  useTranslation();
   return (
     <div
       className={cn(
@@ -85,6 +87,7 @@ export function StatusCardSettingsForm({
   value: StatusCardSettingsValue;
   onChange: (next: StatusCardSettingsValue) => void;
 }) {
+  useTranslation();
   const { refreshPolicy: policy } = value;
   // Change triggers, active-hours, and the daily token cap only govern
   // *automatic* updates. In Manual mode none of them apply, so the whole
@@ -119,37 +122,34 @@ export function StatusCardSettingsForm({
   return (
     <div className="space-y-6">
       <section className="space-y-2">
-        <h3 className="text-sm font-semibold">Auto-update policy</h3>
+        <h3 className="text-sm font-semibold">{t("fullPages.autoUpdatePolicy")}</h3>
         <div className="space-y-2">
           <RadioRow
             selected={policy.mode === "manual"}
-            title="Manual only — updates when I press refresh"
+            title={t("fullPages.manualOnlyUpdatesWhenIPressRefresh")}
             badge={
-              <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-(length:--text-nano) font-medium uppercase tracking-wide text-muted-foreground">
-                Default
-              </span>
+              <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-(length:--text-nano) font-medium uppercase tracking-wide text-muted-foreground">{t("taskPanels.browser.default")}</span>
             }
             onSelect={() => setMode("manual")}
           />
           <RadioRow
             selected={policy.mode === "interval"}
-            title="On a schedule, only if something changed"
+            title={t("fullPages.onAScheduleOnlyIfSomethingChanged")}
             onSelect={() => setMode("interval")}
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Check every</span>
+              <span>{t("fullPages.checkEvery")}</span>
               <Select
                 value={String(policy.intervalMinutes ?? 15)}
                 onValueChange={(next) => setPolicy({ intervalMinutes: Number(next) })}
               >
-                <SelectTrigger size="sm" className="w-28" aria-label="Check interval">
+                <SelectTrigger size="sm" className="w-28" aria-label={t("fullPages.checkInterval")}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {INTERVAL_OPTIONS.map((minutes) => (
                     <SelectItem key={minutes} value={String(minutes)}>
-                      {minutes} min
-                    </SelectItem>
+                      {minutes}{" "}{t("fullPages.min")}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -157,27 +157,27 @@ export function StatusCardSettingsForm({
           </RadioRow>
           <RadioRow
             selected={policy.mode === "reactive"}
-            title="As soon as something changes (debounced)"
+            title={t("fullPages.asSoonAsSomethingChangesDebounced")}
             onSelect={() => setMode("reactive")}
           >
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <span>Wait</span>
+              <span>{t("fullPages.wait")}</span>
               <Select
                 value={String(policy.debounceSeconds ?? 60)}
                 onValueChange={(next) => setPolicy({ debounceSeconds: Number(next) })}
               >
-                <SelectTrigger size="sm" className="w-24" aria-label="Debounce">
+                <SelectTrigger size="sm" className="w-24" aria-label={t("fullPages.debounce")}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {DEBOUNCE_OPTIONS.map((seconds) => (
                     <SelectItem key={seconds} value={String(seconds)}>
-                      {seconds}s
+                      {t("fullPages.secondsShort", { value: seconds })}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <span className="text-xs">after the last change · max</span>
+              <span className="text-xs">{t("fullPages.afterTheLastChangeMax")}</span>
               <Input
                 type="number"
                 min={1}
@@ -185,9 +185,9 @@ export function StatusCardSettingsForm({
                 value={policy.maxUpdatesPerHour ?? 6}
                 onChange={(event) => setPolicy({ maxUpdatesPerHour: Math.max(1, Number(event.target.value) || 1) })}
                 className="h-8 w-16 text-sm"
-                aria-label="Max updates per hour"
+                aria-label={t("fullPages.maxUpdatesPerHour")}
               />
-              <span className="text-xs">updates/hour</span>
+              <span className="text-xs">{t("fullPages.updatesHour")}</span>
             </div>
           </RadioRow>
         </div>
@@ -200,13 +200,11 @@ export function StatusCardSettingsForm({
       */}
       {autoUpdating ? (
         <Collapsible className="rounded-md border border-border">
-          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 px-3 py-2.5 text-sm font-semibold">
-            Advanced
-            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 px-3 py-2.5 text-sm font-semibold">{t("fullPages.advanced")}<ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-6 border-t border-border px-3 py-3">
             <section className="space-y-2">
-              <h3 className="text-sm font-semibold">Count as a change</h3>
+              <h3 className="text-sm font-semibold">{t("fullPages.countAsAChange")}</h3>
               <div className="space-y-2">
                 {TRIGGER_ROWS.map((row) => (
                   <label key={row.key} className="flex items-start gap-2.5 text-sm">
@@ -223,10 +221,10 @@ export function StatusCardSettingsForm({
             </section>
 
             <section className="space-y-3">
-              <h3 className="text-sm font-semibold">Guardrails</h3>
+              <h3 className="text-sm font-semibold">{t("fullPages.guardrails")}</h3>
               <label className="flex items-start gap-2.5 text-sm">
-                <Checkbox checked={Boolean(activeHours)} onCheckedChange={(checked) => setActiveHoursEnabled(Boolean(checked))} className="mt-0.5" aria-label="Limit to active hours" />
-                <span>Only auto-update during active hours</span>
+                <Checkbox checked={Boolean(activeHours)} onCheckedChange={(checked) => setActiveHoursEnabled(Boolean(checked))} className="mt-0.5" aria-label={t("fullPages.limitToActiveHours")} />
+                <span>{t("fullPages.onlyAutoUpdateDuringActiveHours")}</span>
               </label>
               {activeHours ? (
                 <div className="flex flex-wrap items-center gap-2 pl-6 text-sm">
@@ -235,7 +233,7 @@ export function StatusCardSettingsForm({
                     value={activeHours.start}
                     onChange={(event) => setPolicy({ activeHours: { ...activeHours, start: event.target.value } })}
                     className="h-8 w-32"
-                    aria-label="Active hours start"
+                    aria-label={t("fullPages.activeHoursStart")}
                   />
                   <span className="text-muted-foreground">–</span>
                   <Input
@@ -243,19 +241,19 @@ export function StatusCardSettingsForm({
                     value={activeHours.end}
                     onChange={(event) => setPolicy({ activeHours: { ...activeHours, end: event.target.value } })}
                     className="h-8 w-32"
-                    aria-label="Active hours end"
+                    aria-label={t("fullPages.activeHoursEnd")}
                   />
                   <Input
                     value={activeHours.timezone}
                     onChange={(event) => setPolicy({ activeHours: { ...activeHours, timezone: event.target.value } })}
                     className="h-8 w-40"
-                    placeholder="Timezone"
-                    aria-label="Active hours timezone"
+                    placeholder={t("fullPages.timezone")}
+                    aria-label={t("fullPages.activeHoursTimezone")}
                   />
                 </div>
               ) : null}
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="w-32 shrink-0">Daily token cap</span>
+                <span className="w-32 shrink-0">{t("fullPages.dailyTokenCap")}</span>
                 <Input
                   type="number"
                   min={0}
@@ -266,8 +264,8 @@ export function StatusCardSettingsForm({
                     setPolicy({ dailyTokenCap: event.target.value === "" || parsed <= 0 ? undefined : parsed });
                   }}
                   className="h-8 w-36"
-                  placeholder="no cap"
-                  aria-label="Daily token cap"
+                  placeholder={t("fullPages.noCap")}
+                  aria-label={t("fullPages.dailyTokenCap")}
                 />
               </div>
             </section>
@@ -276,7 +274,7 @@ export function StatusCardSettingsForm({
       ) : null}
 
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-semibold">Estimated cost</span>
+        <span className="font-semibold">{t("fullPages.estimatedCost")}</span>
         <span className="text-muted-foreground">=</span>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -287,7 +285,7 @@ export function StatusCardSettingsForm({
           <TooltipContent className="max-w-(--sz-18rem) text-left">
             <p>{costEstimate.primary}</p>
             {costEstimate.note ? <p className="mt-1 opacity-80">{costEstimate.note}</p> : null}
-            <p className="mt-1 opacity-80">Rough estimate from typical update sizes; actual cost is tracked per update.</p>
+            <p className="mt-1 opacity-80">{t("fullPages.roughEstimateFromTypicalUpdateSizesActual")}</p>
           </TooltipContent>
         </Tooltip>
       </div>

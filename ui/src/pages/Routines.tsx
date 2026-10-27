@@ -1,3 +1,5 @@
+import { routinePolicyLabel, routineRunStatusLabel } from "@/lib/routine-display-labels";
+import { i18n, useTranslation } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -71,13 +73,13 @@ import {
 const concurrencyPolicies = ["coalesce_if_active", "always_enqueue", "skip_if_active"];
 const catchUpPolicies = ["skip_missed", "enqueue_missed_with_cap"];
 const concurrencyPolicyDescriptions: Record<string, string> = {
-  coalesce_if_active: "If a run is already active, keep just one follow-up run queued.",
-  always_enqueue: "Queue every trigger occurrence, even if the routine is already running.",
-  skip_if_active: "Drop new trigger occurrences while a run is still active.",
+  get coalesce_if_active() { return i18n.t("fullRoutinesSecrets.oneFollowUpQueued"); },
+  get always_enqueue() { return i18n.t("fullRoutinesSecrets.queueEveryTriggerOccurrenceEvenIfTheRoutineIsAlready"); },
+  get skip_if_active() { return i18n.t("fullRoutinesSecrets.dropNewTriggerOccurrencesWhileARunIsStillActive"); },
 };
 const catchUpPolicyDescriptions: Record<string, string> = {
-  skip_missed: "Ignore windows that were missed while the scheduler or routine was paused.",
-  enqueue_missed_with_cap: "Catch up missed schedule windows after recovery; sub-hourly schedules are combined into one catch-up run, slower schedules replay each missed window up to a cap.",
+  get skip_missed() { return i18n.t("fullRoutinesSecrets.ignoreWindowsThatWereMissedWhileTheSchedulerOrRoutine"); },
+  get enqueue_missed_with_cap() { return i18n.t("fullRoutinesSecrets.catchUpMissedScheduleWindowsAfterRecoverySubHourly"); },
 };
 
 function autoResizeTextarea(element: HTMLTextAreaElement | null) {
@@ -183,8 +185,8 @@ export function buildRoutineGroups(
         const positionCompare = leftPosition - rightPosition;
         if (positionCompare !== 0) return positionCompare;
 
-        const labelCompare = (leftFolder?.name ?? "Unknown folder").localeCompare(
-          rightFolder?.name ?? "Unknown folder",
+        const labelCompare = (leftFolder?.name ?? i18n.t("fullRoutinesSecrets.unknownFolder")).localeCompare(
+          rightFolder?.name ?? i18n.t("fullRoutinesSecrets.unknownFolder"),
           undefined,
           { sensitivity: "base" },
         );
@@ -192,7 +194,7 @@ export function buildRoutineGroups(
       })
       .map((key) => ({
         key,
-        label: key === "__unfiled" ? "Unfiled" : (folderById.get(key)?.name ?? "Unknown folder"),
+        label: key === "__unfiled" ? i18n.t("fullRoutinesSecrets.unfiled") : (folderById.get(key)?.name ?? i18n.t("fullRoutinesSecrets.unknownFolder")),
         items: groups[key]!,
       }));
   }
@@ -201,13 +203,13 @@ export function buildRoutineGroups(
     const groups = groupBy(routines, (routine) => routine.projectId ?? "__no_project");
     return Object.keys(groups)
       .sort((left, right) => {
-        const leftLabel = left === "__no_project" ? "No project" : (projectById.get(left)?.name ?? "Unknown project");
-        const rightLabel = right === "__no_project" ? "No project" : (projectById.get(right)?.name ?? "Unknown project");
+        const leftLabel = left === "__no_project" ? i18n.t("fullRoutinesSecrets.noProject") : (projectById.get(left)?.name ?? i18n.t("fullRoutinesSecrets.unknownProject"));
+        const rightLabel = right === "__no_project" ? i18n.t("fullRoutinesSecrets.noProject") : (projectById.get(right)?.name ?? i18n.t("fullRoutinesSecrets.unknownProject"));
         return leftLabel.localeCompare(rightLabel);
       })
       .map((key) => ({
         key,
-        label: key === "__no_project" ? "No project" : (projectById.get(key)?.name ?? "Unknown project"),
+        label: key === "__no_project" ? i18n.t("fullRoutinesSecrets.noProject") : (projectById.get(key)?.name ?? i18n.t("fullRoutinesSecrets.unknownProject")),
         items: groups[key]!,
       }));
   }
@@ -215,13 +217,13 @@ export function buildRoutineGroups(
   const groups = groupBy(routines, (routine) => routine.assigneeAgentId ?? "__unassigned");
   return Object.keys(groups)
     .sort((left, right) => {
-      const leftLabel = left === "__unassigned" ? "Unassigned" : (agentById.get(left)?.name ?? "Unknown agent");
-      const rightLabel = right === "__unassigned" ? "Unassigned" : (agentById.get(right)?.name ?? "Unknown agent");
+      const leftLabel = left === "__unassigned" ? i18n.t("fullRoutinesSecrets.unassigned") : (agentById.get(left)?.name ?? i18n.t("fullRoutinesSecrets.unknownAgent"));
+      const rightLabel = right === "__unassigned" ? i18n.t("fullRoutinesSecrets.unassigned") : (agentById.get(right)?.name ?? i18n.t("fullRoutinesSecrets.unknownAgent"));
       return leftLabel.localeCompare(rightLabel);
     })
     .map((key) => ({
       key,
-      label: key === "__unassigned" ? "Unassigned" : (agentById.get(key)?.name ?? "Unknown agent"),
+      label: key === "__unassigned" ? i18n.t("fullRoutinesSecrets.unassigned") : (agentById.get(key)?.name ?? i18n.t("fullRoutinesSecrets.unknownAgent")),
       items: groups[key]!,
     }));
 }
@@ -243,7 +245,7 @@ export function buildRoutineSections(
     .filter((group) => group.items.length > 0)
     .map((group) => (
       builtInRoutines.length > 0 && groupByValue === "none" && group.key === "__all"
-        ? { ...group, label: "Custom routines" }
+        ? { ...group, label: i18n.t("fullRoutinesSecrets.customRoutines") }
         : group
     ));
 
@@ -253,7 +255,7 @@ export function buildRoutineSections(
     ...customGroups,
     {
       key: builtInRoutineGroupKey,
-      label: "Built-in routines",
+      label: i18n.t("fullRoutinesSecrets.builtInRoutines"),
       items: builtInRoutines,
     },
   ];
@@ -293,6 +295,7 @@ function RoutineSectionHeader({
   count: number;
   isOpen: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2 px-2 py-1.5">
       <CollapsibleTrigger className="flex items-center gap-1.5">
@@ -309,6 +312,7 @@ function RoutineSectionHeader({
 }
 
 export function Routines() {
+  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
@@ -363,8 +367,8 @@ export function Routines() {
   const folderSelection = normalizeFolderSelection(searchParams.get("folder"));
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Routines" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("fullRoutinesSecrets.routines") }]);
+  }, [setBreadcrumbs, t]);
 
   useEffect(() => {
     setRoutineViewState(getRoutineViewState(routineViewStateKey));
@@ -426,7 +430,7 @@ export function Routines() {
       projects: (projects ?? []).filter((project) => !project.archivedAt),
       members: companyMembers?.users,
     });
-  }, [agents, companyMembers?.users, projects]);
+  }, [agents, companyMembers?.users, projects, t]);
 
   const createRoutine = useMutation({
     mutationFn: () =>
@@ -447,10 +451,10 @@ export function Routines() {
       setAdvancedOpen(false);
       await queryClient.invalidateQueries({ queryKey: queryKeys.routines.list(selectedCompanyId!) });
       pushToast({
-        title: "Routine created",
+        title: t("fullRoutinesSecrets.routineCreated"),
         body: routine.assigneeAgentId
-          ? "Add the first trigger to turn it into a live workflow."
-          : "Draft saved. Add a default agent before enabling automation.",
+          ? i18n.t("fullRoutinesSecrets.addTheFirstTriggerToTurnItIntoALive")
+          : i18n.t("fullRoutinesSecrets.draftSavedAddADefaultAgentBeforeEnablingAutomation"),
         tone: "success",
       });
       navigate(routineDetailHref(routine.id, "triggers"));
@@ -476,8 +480,8 @@ export function Routines() {
           ]);
         } catch (moveError) {
           pushToast({
-            title: "Folder created, move failed",
-            body: moveError instanceof Error ? moveError.message : "Paperclip could not move the selected routines.",
+            title: t("fullRoutinesSecrets.folderCreatedMoveFailed"),
+            body: moveError instanceof Error ? moveError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheSelectedRoutines"),
             tone: "error",
           });
           return;
@@ -485,12 +489,12 @@ export function Routines() {
       } else {
         setFolderSelection(folder.id);
       }
-      pushToast({ title: "Folder created", body: folder.name, tone: "success" });
+      pushToast({ title: t("fullRoutinesSecrets.folderCreated"), body: folder.name, tone: "success" });
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Failed to save folder",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not save the folder.",
+        title: t("fullRoutinesSecrets.failedToSaveFolder"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotSaveTheFolder"),
         tone: "error",
       });
     },
@@ -505,8 +509,8 @@ export function Routines() {
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Folder save failed",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not update the folder.",
+        title: t("fullRoutinesSecrets.folderSaveFailed"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheFolder"),
         tone: "error",
       });
     },
@@ -520,12 +524,12 @@ export function Routines() {
         queryClient.invalidateQueries({ queryKey: queryKeys.routines.list(selectedCompanyId!) }),
         queryClient.invalidateQueries({ queryKey: queryKeys.folders.list(selectedCompanyId!, "routine") }),
       ]);
-      pushToast({ title: "Folder deleted", body: "Items moved to Unfiled.", tone: "success" });
+      pushToast({ title: t("fullRoutinesSecrets.folderDeleted"), body: i18n.t("fullRoutinesSecrets.itemsMovedToUnfiled"), tone: "success" });
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Folder delete failed",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not delete the folder.",
+        title: t("fullRoutinesSecrets.folderDeleteFailed"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotDeleteTheFolder"),
         tone: "error",
       });
     },
@@ -541,8 +545,8 @@ export function Routines() {
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Move failed",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not move the routine.",
+        title: t("fullRoutinesSecrets.moveFailed"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheRoutine"),
         tone: "error",
       });
     },
@@ -563,8 +567,8 @@ export function Routines() {
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Failed to update routine",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not update the routine.",
+        title: t("fullRoutinesSecrets.failedToUpdateRoutine"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheRoutine"),
         tone: "error",
       });
     },
@@ -598,15 +602,15 @@ export function Routines() {
     },
     onError: (mutationError) => {
       pushToast({
-        title: "Routine run failed",
-        body: mutationError instanceof Error ? mutationError.message : "Paperclip could not start the routine run.",
+        title: t("fullRoutinesSecrets.routineRunFailed"),
+        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotStartTheRoutineRun"),
         tone: "error",
       });
     },
   });
 
-  const recentAssigneeIds = useMemo(() => getRecentAssigneeIds(), [composerOpen]);
-  const recentProjectIds = useMemo(() => getRecentProjectIds(), [composerOpen]);
+  const recentAssigneeIds = useMemo(() => getRecentAssigneeIds(), [composerOpen, t]);
+  const recentProjectIds = useMemo(() => getRecentProjectIds(), [composerOpen, t]);
   const assigneeOptions = useMemo<InlineEntityOption[]>(
     () =>
       sortAgentsByRecency(
@@ -617,7 +621,7 @@ export function Routines() {
         label: agent.name,
         searchText: `${agent.name} ${agent.role} ${agent.title ?? ""}`,
       })),
-    [agents, recentAssigneeIds],
+    [agents, recentAssigneeIds, t],
   );
   const projectOptions = useMemo<InlineEntityOption[]>(
     () =>
@@ -626,31 +630,31 @@ export function Routines() {
         label: project.name,
         searchText: project.description ?? "",
       })),
-    [projects],
+    [projects, t],
   );
   const agentById = useMemo(
     () => new Map((agents ?? []).map((agent) => [agent.id, agent])),
-    [agents],
+    [agents, t],
   );
   const projectById = useMemo(
     () => new Map((projects ?? []).map((project) => [project.id, project])),
-    [projects],
+    [projects, t],
   );
   const folderById = useMemo(
     () => new Map((routineFolders?.folders ?? []).map((folder) => [folder.id, folder])),
-    [routineFolders],
+    [routineFolders, t],
   );
   const visibleRoutines = useMemo(
     () => (routines ?? []).filter((routine) => routine.status !== "archived"),
-    [routines],
+    [routines, t],
   );
   const liveIssueIds = useMemo(
     () => collectLiveIssueIds(liveRuns, routineExecutionIssues),
-    [liveRuns, routineExecutionIssues],
+    [liveRuns, routineExecutionIssues, t],
   );
   const recentRunsIssueLinkState = useMemo(
-    () => createIssueDetailLocationState("Recent Runs", "/routines?tab=runs", "issues"),
-    [],
+    () => createIssueDetailLocationState(i18n.t("fullRoutinesSecrets.recentRuns495"), "/routines?tab=runs", "issues"),
+    [t],
   );
   const updateIssue = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) => issuesApi.update(id, data),
@@ -672,7 +676,7 @@ export function Routines() {
     if (folderSelection === "all") return visibleRoutines;
     if (folderSelection === "unfiled") return visibleRoutines.filter((routine) => !routine.folderId);
     return visibleRoutines.filter((routine) => routine.folderId === folderSelection);
-  }, [folderSelection, routineViewState.groupBy, visibleRoutines]);
+  }, [folderSelection, routineViewState.groupBy, visibleRoutines, t]);
   // Rail counts reflect the page's visible scope (archived hidden), not raw DB
   // counts (ux-spec §5.3).
   const railFolderResult = useMemo(() => {
@@ -692,7 +696,7 @@ export function Routines() {
         itemCount: counts.get(folder.id) ?? 0,
       })),
     };
-  }, [routineFolders, visibleRoutines]);
+  }, [routineFolders, visibleRoutines, t]);
   const sortedRoutines = useMemo(
     () => {
       const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
@@ -702,11 +706,11 @@ export function Routines() {
       });
       return sortRoutines(matches, routineViewState.sortField, routineViewState.sortDir);
     },
-    [folderFilteredRoutines, query, routineViewState.sortDir, routineViewState.sortField],
+    [folderFilteredRoutines, query, routineViewState.sortDir, routineViewState.sortField, t],
   );
   const routineSections = useMemo(
     () => buildRoutineSections(sortedRoutines, routineViewState.groupBy, projectById, agentById, folderById),
-    [agentById, folderById, projectById, routineViewState.groupBy, sortedRoutines],
+    [agentById, folderById, projectById, routineViewState.groupBy, sortedRoutines, t],
   );
   const currentAssignee = draft.assigneeAgentId ? agentById.get(draft.assigneeAgentId) ?? null : null;
   const currentProject = draft.projectId ? projectById.get(draft.projectId) ?? null : null;
@@ -757,11 +761,11 @@ export function Routines() {
         queryClient.invalidateQueries({ queryKey: queryKeys.routines.list(selectedCompanyId!) }),
         queryClient.invalidateQueries({ queryKey: queryKeys.folders.list(selectedCompanyId!, "routine") }),
       ]);
-      pushToast({ title: "Routines moved", body: `${ids.length} routine${ids.length === 1 ? "" : "s"} filed.`, tone: "success" });
+      pushToast({ title: t("fullRoutinesSecrets.routinesMoved"), body: t("fullRoutinesSecrets.routinesFiled", { count: ids.length }), tone: "success" });
     } catch (moveError) {
       pushToast({
-        title: "Failed to move routines",
-        body: moveError instanceof Error ? moveError.message : "Paperclip could not move the selected routines.",
+        title: t("fullRoutinesSecrets.failedToMoveRoutines"),
+        body: moveError instanceof Error ? moveError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheSelectedRoutines"),
         tone: "error",
       });
     }
@@ -774,8 +778,8 @@ export function Routines() {
   function handleToggleEnabled(routine: RoutineListItem, enabled: boolean) {
     if (!enabled && !routine.assigneeAgentId) {
       pushToast({
-        title: "Default agent required",
-        body: "Set a default agent before enabling routine automation.",
+        title: t("fullRoutinesSecrets.defaultAgentRequired"),
+        body: i18n.t("fullRoutinesSecrets.setADefaultAgentBeforeEnablingRoutineAutomation"),
         tone: "warn",
       });
       return;
@@ -794,7 +798,7 @@ export function Routines() {
   }
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Repeat} message="Select an organization to view routines." />;
+    return <EmptyState icon={Repeat} message={t("fullRoutinesSecrets.selectAnOrganizationToViewRoutines")} />;
   }
 
   if (streamlinedUiEnabled && legacyRunsRequested) {
@@ -810,15 +814,11 @@ export function Routines() {
       <div className="space-y-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">Routines</h1>
-            <p className="text-sm text-muted-foreground">
-              Recurring work definitions that materialize into auditable execution tasks.
-            </p>
+            <h1 className="text-2xl font-semibold tracking-tight">{t("fullRoutinesSecrets.routines")}</h1>
+            <p className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.recurringWorkDefinitionsThatMaterializeIntoAuditableExecutionTasks")}</p>
           </div>
           <Button onClick={openCreateRoutine}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create routine
-          </Button>
+            <Plus className="mr-2 h-4 w-4" />{t("fullRoutinesSecrets.createRoutine")}</Button>
         </div>
         <Tabs value={activeTab} onValueChange={handleLegacyTabChange}>
           <PageTabBar
@@ -826,8 +826,8 @@ export function Routines() {
             value={activeTab}
             onValueChange={handleLegacyTabChange}
             items={[
-              { value: "routines", label: "Routines" },
-              { value: "runs", label: "Recent Runs" },
+              { value: "routines", label: t("fullRoutinesSecrets.routines") },
+              { value: "runs", label: t("fullRoutinesSecrets.recentRuns495") },
             ]}
           />
         </Tabs>
@@ -866,8 +866,8 @@ export function Routines() {
             value={activeTab}
             onValueChange={handleLegacyTabChange}
             items={[
-              { value: "routines", label: "Routines" },
-              { value: "runs", label: "Recent Runs" },
+              { value: "routines", label: t("fullRoutinesSecrets.routines") },
+              { value: "runs", label: t("fullRoutinesSecrets.recentRuns495") },
             ]}
           />
         </Tabs>
@@ -879,7 +879,7 @@ export function Routines() {
             <FolderChip
               result={railFolderResult}
               selection={folderSelection}
-              allLabel="All routines"
+              allLabel={i18n.t("fullRoutinesSecrets.allRoutines")}
               onClick={() => setMobileFoldersOpen(true)}
             />
           </div>
@@ -900,10 +900,8 @@ export function Routines() {
         >
           <div className="shrink-0 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-3">
             <div>
-              <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">New routine</p>
-              <p className="text-sm text-muted-foreground">
-                Define the recurring work first. Default project and agent are optional for draft routines.
-              </p>
+              <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.newRoutine")}</p>
+              <p className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.defineTheRecurringWorkFirstDefaultProjectAndAgent")}</p>
             </div>
             <Button
               variant="ghost"
@@ -913,9 +911,7 @@ export function Routines() {
                 setAdvancedOpen(false);
               }}
               disabled={createRoutine.isPending}
-            >
-              Cancel
-            </Button>
+            >{t("fullRoutinesSecrets.cancel")}</Button>
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
@@ -923,7 +919,7 @@ export function Routines() {
               <textarea
                 ref={titleInputRef}
                 className="w-full resize-none overflow-hidden bg-transparent text-xl font-semibold outline-none placeholder:text-muted-foreground/50"
-                placeholder="Routine title"
+                placeholder={t("fullRoutinesSecrets.routineTitle")}
                 rows={1}
                 value={draft.title}
                 onChange={(event) => {
@@ -956,16 +952,16 @@ export function Routines() {
             <div className="px-5 pb-3">
               <div className="overflow-x-auto overscroll-x-contain">
                 <div className="inline-flex min-w-full flex-wrap items-center gap-2 text-sm text-muted-foreground sm:min-w-max sm:flex-nowrap">
-                  <span>For</span>
+                  <span>{t("fullRoutinesSecrets.for")}</span>
                   <InlineEntitySelector
                     ref={assigneeSelectorRef}
                     value={draft.assigneeAgentId}
                     options={assigneeOptions}
                     recentOptionIds={recentAssigneeIds}
-                    placeholder="Responsible"
-                    noneLabel="No responsible"
-                    searchPlaceholder="Search responsible..."
-                    emptyMessage="No responsible found."
+                    placeholder={t("fullRoutinesSecrets.responsible")}
+                    noneLabel={i18n.t("fullRoutinesSecrets.noResponsible")}
+                    searchPlaceholder={i18n.t("fullRoutinesSecrets.searchResponsible")}
+                    emptyMessage={t("fullRoutinesSecrets.noResponsibleFound")}
                     onChange={(assigneeAgentId) => {
                       if (assigneeAgentId) trackRecentAssignee(assigneeAgentId);
                       setDraft((current) => ({ ...current, assigneeAgentId }));
@@ -988,7 +984,7 @@ export function Routines() {
                           <span className="truncate">{option.label}</span>
                         )
                       ) : (
-                        <span className="text-muted-foreground">Responsible</span>
+                        <span className="text-muted-foreground">{t("fullRoutinesSecrets.responsible")}</span>
                       )
                     }
                     renderOption={(option) => {
@@ -1002,16 +998,16 @@ export function Routines() {
                       );
                     }}
                   />
-                  <span>in</span>
+                  <span>{t("fullRoutinesSecrets.in")}</span>
                   <InlineEntitySelector
                     ref={projectSelectorRef}
                     value={draft.projectId}
                     options={projectOptions}
                     recentOptionIds={recentProjectIds}
-                    placeholder="Project"
-                    noneLabel="No project"
-                    searchPlaceholder="Search projects..."
-                    emptyMessage="No projects found."
+                    placeholder={t("fullRoutinesSecrets.project")}
+                    noneLabel={i18n.t("fullRoutinesSecrets.noProject")}
+                    searchPlaceholder={i18n.t("fullRoutinesSecrets.searchProjects")}
+                    emptyMessage={t("fullRoutinesSecrets.noProjectsFound")}
                     onChange={(projectId) => {
                       if (projectId) trackRecentProject(projectId);
                       setDraft((current) => ({ ...current, projectId }));
@@ -1027,7 +1023,7 @@ export function Routines() {
                           <span className="truncate">{option.label}</span>
                         </>
                       ) : (
-                        <span className="text-muted-foreground">Project</span>
+                        <span className="text-muted-foreground">{t("fullRoutinesSecrets.project")}</span>
                       )
                     }
                     renderOption={(option) => {
@@ -1044,7 +1040,7 @@ export function Routines() {
                       );
                     }}
                   />
-                  <span>filed in</span>
+                  <span>{t("fullRoutinesSecrets.filedIn")}</span>
                   <Select
                     value={draft.folderId ?? "__unfiled"}
                     onValueChange={(value) => setDraft((current) => ({
@@ -1056,7 +1052,7 @@ export function Routines() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="__unfiled">Unfiled</SelectItem>
+                      <SelectItem value="__unfiled">{t("fullRoutinesSecrets.unfiled")}</SelectItem>
                       {(routineFolders?.folders ?? []).map((folder) => (
                         <SelectItem key={folder.id} value={folder.id}>
                           {folder.name}
@@ -1073,7 +1069,7 @@ export function Routines() {
                 ref={descriptionEditorRef}
                 value={draft.description}
                 onChange={(description) => setDraft((current) => ({ ...current, description }))}
-                placeholder="Add instructions..."
+                placeholder={t("fullRoutinesSecrets.addInstructions")}
                 bordered={false}
                 contentClassName="min-h-(--sz-160px) text-sm text-muted-foreground"
                 mentions={mentionOptions}
@@ -1089,15 +1085,15 @@ export function Routines() {
               <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
                 <CollapsibleTrigger className="flex w-full items-center justify-between text-left">
                   <div>
-                    <p className="text-sm font-medium">Advanced delivery settings</p>
-                    <p className="text-sm text-muted-foreground">Keep policy controls secondary to the work definition.</p>
+                    <p className="text-sm font-medium">{t("fullRoutinesSecrets.advancedDeliverySettings")}</p>
+                    <p className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.keepPolicyControlsSecondaryToTheWorkDefinition")}</p>
                   </div>
                   {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-3">
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">Concurrency</p>
+                      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.concurrency")}</p>
                       <Select
                         value={draft.concurrencyPolicy}
                         onValueChange={(concurrencyPolicy) => setDraft((current) => ({ ...current, concurrencyPolicy }))}
@@ -1107,14 +1103,14 @@ export function Routines() {
                         </SelectTrigger>
                         <SelectContent>
                           {concurrencyPolicies.map((value) => (
-                            <SelectItem key={value} value={value}>{value.replaceAll("_", " ")}</SelectItem>
+                            <SelectItem key={value} value={value}>{routinePolicyLabel(value)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground">{concurrencyPolicyDescriptions[draft.concurrencyPolicy]}</p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">Catch-up</p>
+                      <p className="text-xs font-medium uppercase tracking-(--tracking-caps) text-muted-foreground">{t("fullRoutinesSecrets.catchUp")}</p>
                       <Select
                         value={draft.catchUpPolicy}
                         onValueChange={(catchUpPolicy) => setDraft((current) => ({ ...current, catchUpPolicy }))}
@@ -1124,7 +1120,7 @@ export function Routines() {
                         </SelectTrigger>
                         <SelectContent>
                           {catchUpPolicies.map((value) => (
-                            <SelectItem key={value} value={value}>{value.replaceAll("_", " ")}</SelectItem>
+                            <SelectItem key={value} value={value}>{routinePolicyLabel(value)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -1137,9 +1133,7 @@ export function Routines() {
           </div>
 
           <div className="shrink-0 flex flex-col gap-3 border-t border-border/60 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm text-muted-foreground">
-              After creation, Paperclip takes you straight to trigger setup. Draft routines stay paused until you add a default agent.
-            </div>
+            <div className="text-sm text-muted-foreground">{t("fullRoutinesSecrets.afterCreationPaperclipTakesYouStraightToTriggerSetup")}</div>
             <div className="flex flex-col gap-2 sm:items-end">
               <Button
                 onClick={() => createRoutine.mutate()}
@@ -1149,11 +1143,11 @@ export function Routines() {
                 }
               >
                 <Plus className="mr-2 h-4 w-4" />
-                {createRoutine.isPending ? "Creating..." : "Create routine"}
+                {createRoutine.isPending ? t("fullRoutinesSecrets.creating") : t("fullRoutinesSecrets.createRoutine")}
               </Button>
               {createRoutine.isError ? (
                 <p className="text-sm text-destructive">
-                  {createRoutine.error instanceof Error ? createRoutine.error.message : "Failed to create routine"}
+                  {createRoutine.error instanceof Error ? createRoutine.error.message : t("fullRoutinesSecrets.failedToCreateRoutine")}
                 </p>
               ) : null}
             </div>
@@ -1164,7 +1158,7 @@ export function Routines() {
       {error ? (
         <Card>
           <CardContent className="pt-6 text-sm text-destructive">
-            {error instanceof Error ? error.message : "Failed to load routines"}
+            {error instanceof Error ? error.message : t("fullRoutinesSecrets.failedToLoadRoutines")}
           </CardContent>
         </Card>
       ) : null}
@@ -1174,7 +1168,7 @@ export function Routines() {
             <FolderRail
               result={railFolderResult}
               selection={folderSelection}
-              allLabel="All routines"
+              allLabel={i18n.t("fullRoutinesSecrets.allRoutines")}
               itemLabelPlural="routines"
               loading={foldersLoading}
               onSelect={setFolderSelection}
@@ -1190,11 +1184,11 @@ export function Routines() {
           <div className="min-w-0 flex-1">
           {routineViewState.groupBy === "folder" && hasRoutineFolders ? (
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              {folderSelection === "all" ? <FolderIconHeader label="All routines" count={sortedRoutines.length} /> : (
+              {folderSelection === "all" ? <FolderIconHeader label={t("fullRoutinesSecrets.allRoutines")} count={sortedRoutines.length} /> : (
                 <div className="flex min-w-0 items-center gap-2 text-sm">
                   <FolderSwatch color={activeFolder?.color} />
-                  <span className="truncate font-medium">{folderSelection === "unfiled" ? "Unfiled" : activeFolder?.name ?? "Folder"}</span>
-                  <span className="text-muted-foreground">{sortedRoutines.length} routine{sortedRoutines.length === 1 ? "" : "s"}</span>
+                  <span className="truncate font-medium">{folderSelection === "unfiled" ? t("fullRoutinesSecrets.unfiled") : activeFolder?.name ?? t("fullRoutinesSecrets.folder")}</span>
+                  <span className="text-muted-foreground">{t("fullRoutinesSecrets.routineCount", { count: sortedRoutines.length })}</span>
                 </div>
               )}
             </div>
@@ -1223,21 +1217,19 @@ export function Routines() {
             <div className="py-12">
               <EmptyState
                 icon={Repeat}
-                message="No active routines. Use Create routine to define the first recurring workflow."
+                message={t("fullRoutinesSecrets.noActiveRoutinesUseCreateRoutineToDefineThe")}
               />
             </div>
           ) : sortedRoutines.length === 0 ? (
             <div className="py-12">
               <EmptyState
                 icon={Repeat}
-                message={query.trim() ? "No routines match your search." : folderSelection === "all" ? "No routines match this view." : "This folder is empty."}
+                message={query.trim() ? t("fullRoutinesSecrets.noRoutinesMatchYourSearch") : folderSelection === "all" ? t("fullRoutinesSecrets.noRoutinesMatchThisView") : t("fullRoutinesSecrets.thisFolderIsEmpty")}
               />
               {folderSelection !== "all" ? (
                 <div className="mt-3 flex justify-center">
                   <Button size="sm" onClick={openCreateRoutine}>
-                    <Plus className="mr-2 h-3.5 w-3.5" />
-                    New routine in this folder
-                  </Button>
+                    <Plus className="mr-2 h-3.5 w-3.5" />{t("fullRoutinesSecrets.newRoutineInThisFolder")}</Button>
                 </div>
               ) : null}
             </div>
@@ -1296,13 +1288,13 @@ export function Routines() {
                                 const previousFolderId = routine.folderId ?? null;
                                 moveRoutineToFolder.mutate({ itemId: routine.id, folderId });
                                 pushToast({
-                                  title: "Routine moved",
+                                  title: t("fullRoutinesSecrets.routineMoved"),
                                   body: folderId
-                                    ? `Moved "${routine.title}" to ${routineFolders?.folders.find((folder) => folder.id === folderId)?.name ?? "folder"}.`
-                                    : `Moved "${routine.title}" to Unfiled.`,
+                                    ? i18n.t("fullRoutinesSecrets.routineMovedToFolder", { title: routine.title, folder: routineFolders?.folders.find((folder) => folder.id === folderId)?.name ?? t("fullRoutinesSecrets.folder") })
+                                    : i18n.t("fullRoutinesSecrets.routineMovedUnfiled", { title: routine.title }),
                                   tone: "success",
                                   action: {
-                                    label: "Undo",
+                                    label: t("fullRoutinesSecrets.undo"),
                                     onClick: () => moveRoutineToFolder.mutate({ itemId: routine.id, folderId: previousFolderId }),
                                   },
                                 });
@@ -1349,8 +1341,8 @@ export function Routines() {
         onOpenChange={setMobileFoldersOpen}
         result={railFolderResult}
         selection={folderSelection}
-        allLabel="All routines"
-        itemLabelPlural="Routines"
+        allLabel={i18n.t("fullRoutinesSecrets.allRoutines")}
+        itemLabelPlural={i18n.t("fullRoutinesSecrets.routines")}
         onSelect={setFolderSelection}
         onCreate={() => openCreateFolder()}
       />
@@ -1378,11 +1370,12 @@ export function Routines() {
 }
 
 function FolderIconHeader({ label, count }: { label: string; count: number }) {
+  const { t } = useTranslation();
   return (
     <div className="flex min-w-0 items-center gap-2 text-sm">
       <Repeat className="h-3.5 w-3.5 text-muted-foreground" />
       <span className="truncate font-medium">{label}</span>
-      <span className="text-muted-foreground">{count} routine{count === 1 ? "" : "s"}</span>
+      <span className="text-muted-foreground">{t("fullRoutinesSecrets.routineCount", { count: count })}</span>
     </div>
   );
 }

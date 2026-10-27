@@ -1,3 +1,6 @@
+import { Trans as FullSharedTailTrans } from "@/i18n";
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import type { ActivityEvent } from "@paperclipai/shared";
 import {
@@ -30,6 +33,7 @@ export function IssueFieldChangeReceipt({
   resolveUserLabel?: (userId: string) => string | null | undefined;
   className?: string;
 }) {
+  useFullSharedTranslation();
   const rows = readIssueChangeReceipt(event.details, { resolveAgentLabel, resolveUserLabel });
   const reason = issueAuthorizationReasonLabel(
     typeof event.details?.authorizationReason === "string"
@@ -65,9 +69,7 @@ export function IssueFieldChangeReceipt({
                 {/* Long text is stored as a preview, so the receipt says so
                     rather than implying the whole value is shown. */}
                 {row.truncated ? (
-                  <span className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
-                    preview
-                  </span>
+                  <span className="text-(length:--text-nano) uppercase tracking-(--tracking-eyebrow) text-muted-foreground">{fullSharedT("fullShared.preview_5975cf")}</span>
                 ) : null}
               </dd>
             </div>
@@ -84,12 +86,8 @@ export function IssueFieldChangeReceipt({
             aria-hidden="true"
           />
           {responsibleUserName ? (
-            <>
-              for <span className="text-foreground">{responsibleUserName}</span>
-              {" · "}
-            </>
-          ) : null}
-          authorized by {reason}
+            <FullSharedTailTrans i18nKey="fullSharedTail.authorizedFor" values={{ name: responsibleUserName, reason }} components={{ user: <span className="text-foreground" /> }} />
+          ) : fullSharedTailT("fullSharedTail.authorizedReason", { reason })}
         </p>
       ) : null}
     </div>

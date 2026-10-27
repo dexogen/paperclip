@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { Clock, Pencil, ShieldCheck } from "lucide-react";
 import type { ToolRiskLevel } from "@paperclipai/shared";
@@ -48,6 +50,7 @@ export function BindingsTable({
   labelWidth?: number;
   className?: string;
 }) {
+  useFullSharedTranslation();
   return (
     <dl className={cn("divide-y divide-border rounded-md border border-border text-sm", className)}>
       {rows.map((row) => (
@@ -133,10 +136,10 @@ function initials(name: string): string {
 function bindingRows(binding: ActionCardBinding, isStale: boolean): BindingRow[] {
   const catalogValue = isStale && binding.previousCatalogSha256 ? (
     <span className="inline-flex flex-wrap items-center gap-1.5">
-      <span className="text-muted-foreground line-through decoration-amber-500" title="Previous catalog hash">
+      <span className="text-muted-foreground line-through decoration-amber-500" title={fullSharedT("fullShared.previous_catalog_hash_ba0cd6")}>
         {shortSha(binding.previousCatalogSha256)}
       </span>
-      <span className="text-amber-600 dark:text-amber-400" title="Current catalog hash">
+      <span className="text-amber-600 dark:text-amber-400" title={fullSharedT("fullShared.current_catalog_hash_540922")}>
         {shortSha(binding.catalogSha256)}
       </span>
     </span>
@@ -146,23 +149,23 @@ function bindingRows(binding: ActionCardBinding, isStale: boolean): BindingRow[]
 
   return [
     {
-      label: "Application",
+      label: fullSharedT("fullShared.application_e7ad52"),
       value: (
         <span>
           {binding.application}
-          <span className="ml-1.5 text-xs text-muted-foreground">manifest v{binding.manifestVersion}</span>
+          <span className="ml-1.5 text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.manifest_v_f59073" components={{ part1: <>{binding.manifestVersion}</> }} /></span>
         </span>
       ),
     },
-    { label: "Connection", value: binding.connection, mono: true },
-    { label: "Catalog", value: catalogValue, mono: !isStale },
+    { label: fullSharedT("providerSetup.select.connection"), value: binding.connection, mono: true },
+    { label: fullSharedT("agentSkillsUi.source.catalog"), value: catalogValue, mono: !isStale },
     {
-      label: "Payload",
+      label: fullSharedT("fullShared.payload_997333"),
       value: (
         <span className="inline-flex items-center gap-1.5">
           <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <span>{shortSha(binding.payloadSha256)}</span>
-          <span className="font-sans text-(length:--text-micro) uppercase tracking-normal text-muted-foreground">signed</span>
+          <span className="font-sans text-(length:--text-micro) uppercase tracking-normal text-muted-foreground">{fullSharedT("fullShared.signed_4a3cdf")}</span>
         </span>
       ),
       mono: true,
@@ -190,6 +193,7 @@ export function ActionCard({
   onEditResign,
   className,
 }: ActionCardProps) {
+  useFullSharedTranslation();
   const isStale = variant === "stale";
   const json = typeof input === "string" ? input : JSON.stringify(input, null, 2);
 
@@ -201,21 +205,15 @@ export function ActionCard({
       onClick={onApprove}
       disabled={isStale}
       className={mobile ? "w-full" : undefined}
-      title={isStale ? "Re-issue the request before approving — the catalog hash changed." : undefined}
-    >
-      Approve
-    </Button>
+      title={isStale ? fullSharedT("fullShared.re_issue_the_request_before_approving_the_catalog_ha_09773d") : undefined}
+    >{fullSharedT("decisionForms.common.approve")}</Button>
   );
   const denyButton = (
-    <Button size="sm" variant="outline" onClick={onDeny} className={mobile ? "w-full" : undefined}>
-      Deny
-    </Button>
+    <Button size="sm" variant="outline" onClick={onDeny} className={mobile ? "w-full" : undefined}>{fullSharedT("taskChatUi.protocol.deny")}</Button>
   );
   const editButton = (
     <Button size="sm" variant="outline" onClick={onEditResign} className={mobile ? "w-full" : undefined}>
-      <Pencil className="mr-1 h-3.5 w-3.5" />
-      Edit &amp; re-sign
-    </Button>
+      <Pencil className="mr-1 h-3.5 w-3.5" />{fullSharedT("fullShared.edit_re_sign_6da7ae")}</Button>
   );
 
   return (
@@ -235,9 +233,7 @@ export function ActionCard({
             <AvatarFallback>{initials(agentName)}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="text-sm text-foreground">
-              <span className="font-medium">{agentName}</span> requested approval to call
-            </p>
+            <p className="text-sm text-foreground"><FullSharedTrans i18nKey="fullShared.requested_approval_to_call_d7c12a" components={{ part1: <span className="font-medium">{agentName}</span> }} /></p>
             <p className="mt-0.5 font-mono text-xs text-muted-foreground break-all">{toolName}</p>
           </div>
           <div className="shrink-0">
@@ -256,8 +252,8 @@ export function ActionCard({
         {isStale ? (
           <EnforcementBanner
             tone="warning"
-            title="Catalog changed since this request was signed."
-            body="The application's tool catalog hash no longer matches the one this approval was issued against. Approval is disabled — the agent must edit & re-sign to request again."
+            title={fullSharedT("fullShared.catalog_changed_since_this_request_was_signed_5c0185")}
+            body={fullSharedTailT("fullSharedTail.staleApproval")}
           />
         ) : null}
 
@@ -266,7 +262,7 @@ export function ActionCard({
 
         {/* JSON input */}
         <div className="space-y-1">
-          <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">Input</p>
+          <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">{fullSharedT("fullShared.input_36ecb4")}</p>
           <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-3 font-mono text-xs leading-relaxed text-foreground">
             {json}
           </pre>
@@ -274,14 +270,13 @@ export function ActionCard({
 
         {/* Why I'm asking */}
         <div className="space-y-1">
-          <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">Why I&apos;m asking</p>
+          <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">{fullSharedT("fullShared.why_i_m_asking_9484d1")}</p>
           <p className="text-sm text-muted-foreground">
             {reason}
             {policyNumber != null ? (
               <>
                 {" "}
-                <span className="font-medium text-foreground">Policy #{policyNumber}</span> requires approval here.
-              </>
+                <span className="font-medium text-foreground"><FullSharedTrans i18nKey="fullShared.policy_b1306c" components={{ part1: <>{policyNumber}</> }} /></span> {fullSharedT("fullShared.requires_approval_here_c7e376")}</>
             ) : null}
           </p>
         </div>
@@ -296,7 +291,7 @@ export function ActionCard({
       >
         <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Clock className="h-3.5 w-3.5 shrink-0" />
-          {expiresInLabel ?? "no expiry set"}
+          {expiresInLabel ?? fullSharedT("fullShared.no_expiry_set_fcbeab")}
         </span>
         {mobile ? (
           <div className="flex flex-col gap-2">
@@ -318,5 +313,6 @@ export function ActionCard({
 
 /** Mobile (390×844) presentation of {@link ActionCard}. */
 export function ActionCardMobile(props: Omit<ActionCardProps, "mobile">) {
+  useFullSharedTranslation();
   return <ActionCard {...props} mobile />;
 }

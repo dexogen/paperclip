@@ -1,11 +1,8 @@
 name: Fork verification
 
 on:
-  pull_request:
-    branches: [russian]
-    types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [russian]
+    branches: [russian, codex/upstream-sync]
   workflow_dispatch:
     inputs:
       expected_sha:
@@ -16,7 +13,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: fork-verification-${{ github.event.pull_request.number || github.ref }}
+  group: fork-verification-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -25,13 +22,54 @@ env:
   VITE_DEFAULT_LOCALE: en
 
 jobs:
+  dependency-lock:
+    if: github.repository == 'dexogen/paperclip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      source_sha: ${{ steps.lock.outputs.source_sha }}
+      artifact_name: ${{ steps.lock.outputs.artifact_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify exact source identity
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha || github.sha }}
+        run: |
+          [[ "$EXPECTED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$GITHUB_SHA" = "$EXPECTED_SHA"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 9.15.4
+      - name: Resolve the dependency lock once
+        run: pnpm install --resolution-only --ignore-scripts --no-frozen-lockfile
+      - name: Bind the resolved lock to this source and verification run
+        id: lock
+        run: node scripts/upstream-sync/dependency-lock.mjs publish "$RUNNER_TEMP/dependency-lock" "$GITHUB_SHA" "$GITHUB_RUN_ID"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.lock.outputs.artifact_name }}
+          path: ${{ runner.temp }}/dependency-lock/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 90
+
   localization:
+    needs: [dependency-lock]
     if: github.repository == 'dexogen/paperclip'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: ${{ needs.dependency-lock.outputs.source_sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Verify dispatched source identity
@@ -48,6 +86,15 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 9.15.4
+      - name: Download the shared dependency lock
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ needs.dependency-lock.outputs.artifact_name }}
+          path: ${{ runner.temp }}/dependency-lock
+      - name: Verify and apply the shared dependency lock
+        env:
+          LOCK_SOURCE_SHA: ${{ needs.dependency-lock.outputs.source_sha }}
+        run: node scripts/upstream-sync/dependency-lock.mjs apply "$RUNNER_TEMP/dependency-lock" "$LOCK_SOURCE_SHA" "$GITHUB_RUN_ID"
       - run: pnpm install --frozen-lockfile --ignore-scripts --filter . --filter @paperclipai/ui
       - name: Verify workflow ownership
         run: node scripts/upstream-sync/check-workflows.mjs
@@ -71,6 +118,7 @@ jobs:
           if test -f localization-report.md; then cat localization-report.md >> "$GITHUB_STEP_SUMMARY"; fi
 
   code:
+    needs: [dependency-lock]
     if: github.repository == 'dexogen/paperclip'
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -79,6 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: ${{ needs.dependency-lock.outputs.source_sha }}
           persist-credentials: false
       - name: Verify dispatched source identity
         if: github.event_name == 'workflow_dispatch'
@@ -94,6 +143,15 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 9.15.4
+      - name: Download the shared dependency lock
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ needs.dependency-lock.outputs.artifact_name }}
+          path: ${{ runner.temp }}/dependency-lock
+      - name: Verify and apply the shared dependency lock
+        env:
+          LOCK_SOURCE_SHA: ${{ needs.dependency-lock.outputs.source_sha }}
+        run: node scripts/upstream-sync/dependency-lock.mjs apply "$RUNNER_TEMP/dependency-lock" "$LOCK_SOURCE_SHA" "$GITHUB_RUN_ID"
       - name: Install exact dependency lock
         run: pnpm install --frozen-lockfile
       - name: Select the Runner Rust toolchain
@@ -122,6 +180,7 @@ jobs:
         run: pnpm test:localization:browser
 
   tests:
+    needs: [dependency-lock]
     name: Server tests (${{ matrix.mode }} ${{ matrix.shard_index }})
     if: github.repository == 'dexogen/paperclip'
     runs-on: ubuntu-latest
@@ -130,7 +189,7 @@ jobs:
       VITEST_MAX_WORKERS: ${{ matrix.mode == 'serialized' && '1' || '2' }}
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 6
       matrix:
         include:
           - mode: general
@@ -154,6 +213,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: ${{ needs.dependency-lock.outputs.source_sha }}
           persist-credentials: false
       - name: Verify dispatched source identity
         if: github.event_name == 'workflow_dispatch'
@@ -169,6 +229,15 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 9.15.4
+      - name: Download the shared dependency lock
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ needs.dependency-lock.outputs.artifact_name }}
+          path: ${{ runner.temp }}/dependency-lock
+      - name: Verify and apply the shared dependency lock
+        env:
+          LOCK_SOURCE_SHA: ${{ needs.dependency-lock.outputs.source_sha }}
+        run: node scripts/upstream-sync/dependency-lock.mjs apply "$RUNNER_TEMP/dependency-lock" "$LOCK_SOURCE_SHA" "$GITHUB_RUN_ID"
       - name: Install exact dependency lock
         run: pnpm install --frozen-lockfile
       - name: Select the Runner Rust toolchain
@@ -203,16 +272,18 @@ jobs:
   verify:
     name: Fork integration verified
     if: github.repository == 'dexogen/paperclip' && always()
-    needs: [localization, code, tests]
+    needs: [dependency-lock, localization, code, tests]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require all verification lanes
         env:
+          DEPENDENCY_LOCK_RESULT: ${{ needs.dependency-lock.result }}
           LOCALIZATION_RESULT: ${{ needs.localization.result }}
           CODE_RESULT: ${{ needs.code.result }}
           TEST_RESULT: ${{ needs.tests.result }}
         run: |
+          test "$DEPENDENCY_LOCK_RESULT" = success
           test "$LOCALIZATION_RESULT" = success
           test "$CODE_RESULT" = success
           test "$TEST_RESULT" = success

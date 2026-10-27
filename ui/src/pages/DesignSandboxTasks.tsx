@@ -1,3 +1,5 @@
+import { i18n } from "@/i18n";
+import { t, useTranslation } from "@/i18n";
 import { useEffect } from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ListChecks, SearchX } from "lucide-react";
@@ -26,12 +28,13 @@ const pageSize = 200;
 /** Real API adapter for the Design proposals / Pages / Tasks composition.
  * All visual and collection behavior comes from the reviewed shared subjects. */
 export function DesignSandboxTasks() {
+  useTranslation();
   const { selectedCompanyId: companyId } = useCompany();
   const { userId } = useAccountIdentity();
   const { openNewIssue } = useDialogActions();
   const { setBreadcrumbs } = useBreadcrumbs();
   const client = useQueryClient();
-  useEffect(() => { setBreadcrumbs([{ label: "Tasks" }]); }, [setBreadcrumbs]);
+  useEffect(() => { setBreadcrumbs([{ label: t("tasks.title") }]); }, [setBreadcrumbs, i18n.language]);
 
   const tasks = useInfiniteQuery({
     queryKey: [...queryKeys.issues.list(companyId!), "design-sandbox", userId],
@@ -72,8 +75,8 @@ export function DesignSandboxTasks() {
   const items: TaskListItem[] = [...new Map((tasks.data?.pages.flat() ?? []).map(issue => [issue.id, issue])).values()].map(issue => ({
     issue: { ...issue, project: issue.project ?? projectById.get(issue.projectId ?? "") },
     unread: unread.data?.has(issue.id) ?? false,
-    createdBy: issue.createdByAgentId ? agentNames.get(issue.createdByAgentId) ?? "Unknown agent" : users.get(issue.createdByUserId ?? "") ?? (issue.createdByUserId === "local-board" ? "Board" : "Unknown user"),
-    assignee: issue.assigneeAgentId ? agentNames.get(issue.assigneeAgentId) ?? "Unknown agent" : users.get(issue.assigneeUserId ?? "") ?? (issue.assigneeUserId === "local-board" ? "Board" : null),
+    createdBy: issue.createdByAgentId ? agentNames.get(issue.createdByAgentId) ?? t("surfacesGap.runs.unknownAgent") : users.get(issue.createdByUserId ?? "") ?? (issue.createdByUserId === "local-board" ? "Board" : t("costCardsUi.users.unknown")),
+    assignee: issue.assigneeAgentId ? agentNames.get(issue.assigneeAgentId) ?? t("surfacesGap.runs.unknownAgent") : users.get(issue.assigneeUserId ?? "") ?? (issue.assigneeUserId === "local-board" ? "Board" : null),
   }));
   const collection = useTaskListCollection({ items, companyId, userId,
     viewStorageKey: taskListViewStorageKey("design-integration-sandbox", userId ?? "local-board"),
@@ -84,21 +87,21 @@ export function DesignSandboxTasks() {
   });
   const error = tasks.error ?? agents.error ?? projects.error ?? directory.error ?? labels.error ?? unread.error ?? update.error;
   const empty = collection.companyItems.length === 0
-    ? <EmptyState icon={ListChecks} message="No tasks in this organization" action="New Task" onAction={() => openNewIssue()} />
-    : <EmptyState icon={SearchX} message="No tasks match this view" action="Clear filters" hideActionIcon onAction={collection.clear} />;
+    ? <EmptyState icon={ListChecks} message={t("fullPages.noTasksInThisOrganization")} action={t("tasks.new")} onAction={() => openNewIssue()} />
+    : <EmptyState icon={SearchX} message={t("fullPages.noTasksMatchThisView")} action={t("skillsGap.clearFilters")} hideActionIcon onAction={collection.clear} />;
 
-  if (!companyId) return <EmptyState icon={ListChecks} message="Select an organization to view tasks." />;
+  if (!companyId) return <EmptyState icon={ListChecks} message={t("tasks.selectOrganization")} />;
   return <TruncatedTextMarqueeProvider><div className="task-row-design-preview flex flex-col gap-8" data-testid="design-sandbox-tasks">
     <TaskListToolbar view={collection.view} onViewChange={collection.setView} query={collection.query} onQueryChange={collection.setQuery}
       layout={collection.layout} onLayoutChange={collection.setLayout} allExpanded={collection.allExpanded} onToggleExpanded={collection.toggleExpanded}
       onNewTask={() => openNewIssue()} filters={{ state: collection.filters, onChange: collection.updateFilters, activeFilterCount: collection.activeFilterCount,
         agents: agents.data ?? [], projects: projects.data ?? [], labels: labels.data ?? [], currentUserId: userId, creators: collection.creators }} />
-    {error ? <div role="alert" className="flex items-center gap-2 text-sm text-destructive"><span>{error instanceof Error ? error.message : "Could not load tasks"}</span><Button variant="outline" size="sm" onClick={() => { update.reset(); void client.invalidateQueries({ queryKey: queryKeys.issues.list(companyId) }); void agents.refetch(); void projects.refetch(); void directory.refetch(); void labels.refetch(); }}>Retry</Button></div> : null}
-    {tasks.isPending ? <p role="status" className="text-sm text-muted-foreground">Loading tasks…</p> : <>
-      {collection.narrowed ? <p role="status" className="design-task-results">{collection.matchingItems.length} matching tasks{collection.layout === "list" && collection.visibleItems.length > collection.matchingItems.length ? " · Parent tasks included for context" : ""}</p> : null}
+    {error ? <div role="alert" className="flex items-center gap-2 text-sm text-destructive"><span>{error instanceof Error ? error.message : t("fullPages.couldNotLoadTasks")}</span><Button variant="outline" size="sm" onClick={() => { update.reset(); void client.invalidateQueries({ queryKey: queryKeys.issues.list(companyId) }); void agents.refetch(); void projects.refetch(); void directory.refetch(); void labels.refetch(); }}>{t("newIssue.retry")}</Button></div> : null}
+    {tasks.isPending ? <p role="status" className="text-sm text-muted-foreground">{t("taskProperties.taskPanel.loading")}</p> : <>
+      {collection.narrowed ? <p role="status" className="design-task-results">{t("fullPages.matchingTasksCount", { count: collection.matchingItems.length })}{collection.layout === "list" && collection.visibleItems.length > collection.matchingItems.length ? t("fullPages.parentTasksIncludedForContext") : ""}</p> : null}
       <div hidden={collection.layout !== "list"} className="design-task-list-panel"><TaskList key={companyId} items={collection.visibleItems} allItems={collection.companyItems} collapsedIds={collection.collapsedIds} onCollapsedIdsChange={collection.setCollapsedIds} emptyState={empty} /></div>
       {collection.layout === "board" ? collection.matchingItems.length ? <KanbanBoard showOverflowFades issues={collection.matchingItems.map(item => item.issue)} agents={agents.data} onUpdateIssue={(id, data) => update.mutate({ id, data })} /> : empty : null}
-      {tasks.hasNextPage ? <div className="flex items-center gap-3 text-sm text-muted-foreground"><span>Search, views and filters cover the {items.length} loaded tasks.</span><Button variant="outline" size="sm" disabled={tasks.isFetchingNextPage} onClick={() => void tasks.fetchNextPage()}>{tasks.isFetchingNextPage ? "Loading…" : "Load more tasks"}</Button></div> : null}
+      {tasks.hasNextPage ? <div className="flex items-center gap-3 text-sm text-muted-foreground"><span>{t("fullPages.loadedTasksScope", { count: items.length })}</span><Button variant="outline" size="sm" disabled={tasks.isFetchingNextPage} onClick={() => void tasks.fetchNextPage()}>{tasks.isFetchingNextPage ? t("taskPanels.loading") : t("fullPages.loadMoreTasks")}</Button></div> : null}
     </>}
   </div></TruncatedTextMarqueeProvider>;
 }

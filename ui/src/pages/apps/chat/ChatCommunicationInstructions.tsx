@@ -1,3 +1,5 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,10 +8,11 @@ export function ChatCommunicationInstructions({ value, onSave }: {
   value: string;
   onSave: (instructions: string) => Promise<void>;
 }) {
+  useFullAppsTranslation();
   const id = useId();
   const [draft, setDraft] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AppDisplayText | null>(null);
   const [saved, setSaved] = useState(false);
   const text = draft ?? value;
   const dirty = text.trim() !== value;
@@ -25,16 +28,14 @@ export function ChatCommunicationInstructions({ value, onSave }: {
         setDraft(null);
         setSaved(true);
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "Couldn’t save instructions. Try again.");
+        setError(cause instanceof Error ? appErrorDisplay(cause) : ownAppDisplayText("agentConnectionUi.instructions.saveError"));
       } finally {
         setPending(false);
       }
     }}>
       <div className="space-y-1">
-        <label id={`${id}-label`} htmlFor={id} className="text-sm font-semibold">Additional communication instructions</label>
-        <p id={`${id}-help`} className="text-sm text-muted-foreground">
-          Applies to new conversations.
-        </p>
+        <label id={`${id}-label`} htmlFor={id} className="text-sm font-semibold">{fullAppsT("fullApps.additional_communication_instructions_8bff49")}</label>
+        <p id={`${id}-help`} className="text-sm text-muted-foreground">{fullAppsT("fullApps.applies_to_new_conversations_939ff8")}</p>
       </div>
       <Textarea
         id={id}
@@ -43,16 +44,16 @@ export function ChatCommunicationInstructions({ value, onSave }: {
         disabled={pending}
         maxLength={4000}
         rows={4}
-        placeholder="For example: Keep replies brief and explain technical terms."
+        placeholder={fullAppsT("fullApps.for_example_keep_replies_brief_and_explain_technical_e192ab")}
         onChange={(event) => { setDraft(event.target.value); setSaved(false); setError(null); }}
       />
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {error && <p role="alert" className="text-sm text-destructive">{renderAppDisplayText(error)}</p>}
       <div className="flex items-center justify-between gap-3">
         <div>
-          {dirty ? <Button type="button" variant="ghost" disabled={pending} onClick={() => { setDraft(null); setError(null); setSaved(false); }}>Cancel</Button>
-            : saved ? <span role="status" className="text-sm text-muted-foreground">Saved. Applies to new tasks.</span> : null}
+          {dirty ? <Button type="button" variant="ghost" disabled={pending} onClick={() => { setDraft(null); setError(null); setSaved(false); }}>{fullAppsT("fullApps.cancel_19766e")}</Button>
+            : saved ? <span role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.saved_applies_to_new_tasks_9550c3")}</span> : null}
         </div>
-        <Button type="submit" disabled={!dirty || pending}>{pending ? "Saving…" : "Save instructions"}</Button>
+        <Button type="submit" disabled={!dirty || pending}>{pending ? fullAppsT("fullApps.saving_23e392") : fullAppsT("agentConnectionUi.instructions.save")}</Button>
       </div>
     </form>
   );

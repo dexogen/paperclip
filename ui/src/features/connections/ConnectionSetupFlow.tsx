@@ -1,3 +1,6 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, renderAppError } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
 import { Trans, i18n, t, t as currentT, useTranslation } from "@/i18n";
 import { StepHeader } from "./ConnectionSetupHeader";
@@ -195,7 +198,7 @@ class ConnectionSetupError extends Error {
 }
 
 function setupFailure(cause: unknown, fallback: ConnectionSetupErrorCode): string | ConnectionSetupError | OAuthHandoffError {
-  return cause instanceof ConnectionSetupError || cause instanceof OAuthHandoffError ? cause : cause instanceof Error ? cause.message : new ConnectionSetupError(fallback);
+  return cause instanceof ConnectionSetupError || cause instanceof OAuthHandoffError ? cause : cause instanceof Error ? renderAppError(cause) : new ConnectionSetupError(fallback);
 }
 
 function setupFailureText(failure: string | ConnectionSetupError | OAuthHandoffError | null, t: TFunction): string | null {
@@ -818,7 +821,7 @@ function StandardConnectionSetupFlow({
   const [instructionDraft, setInstructionDraft] = useState<{ slug: string; value: ConnectionAgentInstructions } | null>(null);
   const [configValues, setConfigValues] = useState<Record<string, string | boolean>>({});
   const [googleSheetsLinks, setGoogleSheetsLinks] = useState("");
-  const [googleSheetsError, setGoogleSheetsError] = useState<string | null>(null);
+  const [googleSheetsError, setGoogleSheetsError] = useState<AppDisplayText | null>(null);
   const [connectResult, setConnectResult] = useState<ConnectToolAppResult | null>(null);
   const [enabled, setEnabled] = useState<Record<string, boolean>>({});
   const [access, setAccess] = useState<"all" | "specific">("all");
@@ -1106,7 +1109,7 @@ function StandardConnectionSetupFlow({
       { label: vercelConnectMode ? "Vercel Connect" : byoOnly ? t("githubSetupUi.breadcrumbs.custom") : t("githubSetupUi.breadcrumbs.app") },
     ]);
     return () => setBreadcrumbs([]);
-  }, [byoOnly, host, setBreadcrumbs, vercelConnectMode, t]);
+  }, [byoOnly, host, setBreadcrumbs, vercelConnectMode, t, fullAppsI18n.resolvedLanguage]);
 
   const galleryQuery = useQuery({
     queryKey: queryKeys.apps.gallery(selectedCompanyId ?? "__none__"),
@@ -1626,7 +1629,7 @@ function StandardConnectionSetupFlow({
       // for a pasted address "check your key" is usually the wrong advice.
       if (!entry && linkUrl) {
         const code = typeof details?.code === "string" ? details.code : null;
-        const guidance = genericConnectGuidance(code, error instanceof Error ? error.message : null);
+        const guidance = genericConnectGuidance(code, error instanceof Error ? renderAppError(error) : null);
         setLinkGuidance(guidance);
         setGenericOAuthPending(false);
         if (guidance.focus === "credentials") {
@@ -1639,7 +1642,7 @@ function StandardConnectionSetupFlow({
       }
       pushToast({
         title: currentT("githubSetupUi.connectFailed"),
-        body: error instanceof Error ? error.message : currentT("githubSetupUi.keyInvalid"),
+        body: error instanceof Error ? renderAppError(error) : currentT("githubSetupUi.keyInvalid"),
         tone: "error",
       });
     },
@@ -1977,7 +1980,7 @@ function StandardConnectionSetupFlow({
       setAppStep("key");
       pushToast({
         title: currentT("githubSetupUi.finishFailed"),
-        body: error instanceof Error ? error.message : currentT("githubSetupUi.tryAgain"),
+        body: error instanceof Error ? renderAppError(error) : currentT("githubSetupUi.tryAgain"),
         tone: "error",
       });
     },
@@ -2666,7 +2669,7 @@ function StandardConnectionSetupFlow({
         <KeyStep
           settingsValid={additionalSettingsValid && instructionsValid}
           entry={entry}
-          error={connectMutation.isError ? (connectMutation.error instanceof Error ? connectMutation.error.message : t("githubSetupUi.keyInvalid")) : null}
+          error={connectMutation.isError ? (connectMutation.error instanceof Error ? renderAppError(connectMutation.error) : t("githubSetupUi.keyInvalid")) : null}
           values={credentials}
           onChange={setCredentials}
           oauthClientId={curatedOAuthClientId}
@@ -2704,7 +2707,7 @@ function StandardConnectionSetupFlow({
           configValues={configValues}
           onConfigChange={setConfigValues}
           googleSheetsLinks={googleSheetsLinks}
-          googleSheetsError={googleSheetsError}
+          googleSheetsError={renderAppDisplayText(googleSheetsError)}
           onGoogleSheetsLinksChange={(next) => {
             setGoogleSheetsLinks(next);
             setGoogleSheetsError(null);
@@ -2718,11 +2721,11 @@ function StandardConnectionSetupFlow({
             if (isGoogleSheetsRobotMethod(entry, connectionMethodKey)) {
               const parsed = parseGoogleSheetIds(googleSheetsLinks);
               if (parsed.invalidCount > 0) {
-                setGoogleSheetsError("That doesn't look like a Google Sheets link.");
+                setGoogleSheetsError(ownAppDisplayText("fullApps.that_doesn_t_look_like_a_google_sheets_link_42b2bd"));
                 return;
               }
               if (parsed.ids.length === 0) {
-                setGoogleSheetsError("Paste at least one Google Sheets link.");
+                setGoogleSheetsError(ownAppDisplayText("fullApps.paste_at_least_one_google_sheets_link_8b00cd"));
                 return;
               }
             }
@@ -3020,6 +3023,7 @@ function ZapierConnectStep({
   onBack: () => void;
   onConnect: () => void;
 }) {
+  useFullAppsTranslation();
   const normalizedLink = normalizeAppLink(link);
   const zapierHostname = normalizedLink ? new URL(normalizedLink).hostname : "";
   const isZapierLink = zapierHostname === "zapier.com" || zapierHostname.endsWith(".zapier.com");
@@ -3027,7 +3031,7 @@ function ZapierConnectStep({
   return (
     <div className="mx-auto max-w-xl">
       <div>
-        <label className="text-sm font-medium text-foreground">Zapier MCP URL</label>
+        <label className="text-sm font-medium text-foreground">{fullAppsT("fullApps.zapier_mcp_url_fc88a5")}</label>
         <Input
           type="password"
           autoComplete="off"
@@ -3042,19 +3046,17 @@ function ZapierConnectStep({
           autoFocus
         />
         {link.trim() && !isZapierLink && (
-          <p className="mt-2 text-xs text-destructive">Paste a valid Zapier URL to continue.</p>
+          <p className="mt-2 text-xs text-destructive">{fullAppsT("fullApps.paste_a_valid_zapier_url_to_continue_2ebd72")}</p>
         )}
       </div>
 
       {defaults}
 
       <div className="mt-6 flex items-center justify-between">
-        <Button variant="ghost" onClick={onBack} disabled={submitting}>
-          Back
-        </Button>
+        <Button variant="ghost" onClick={onBack} disabled={submitting}>{fullAppsT("onboarding.actions.back")}</Button>
         <Button onClick={onConnect} disabled={submitting || !isZapierLink}>
           {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {submitting ? "Checking…" : "Check link"}
+          {submitting ? fullAppsT("taskProperties.fields.checking") : fullAppsT("fullApps.check_link_d388c7")}
         </Button>
       </div>
     </div>
@@ -3091,13 +3093,14 @@ function GalleryStep({
   onPick: (entry: AppDefinition) => void;
   onUseLink: (link: string) => void;
 }) {
+  useFullAppsTranslation();
   const [search, setSearch] = useState("");
   const [linkInput, setLinkInput] = useState(initialLink);
   const linkInputEdited = useRef(false);
   useEffect(() => {
     if (!linkInputEdited.current) setLinkInput(initialLink);
   }, [initialLink]);
-  const [linkError, setLinkError] = useState<string | null>(null);
+  const [linkError, setLinkError] = useState<AppDisplayText | null>(null);
   const linkSectionRef = useRef<HTMLDivElement>(null);
   const linkInputRef = useRef<HTMLInputElement>(null);
   const linkInputSelectedRef = useRef(false);
@@ -3122,7 +3125,7 @@ function GalleryStep({
   const continueWithLink = () => {
     const next = normalizeAppLink(linkInput);
     if (!next) {
-      setLinkError("Paste a full http or https link.");
+      setLinkError(ownAppDisplayText("fullApps.paste_a_full_http_or_https_link_d53b41"));
       return;
     }
     setLinkError(null);
@@ -3145,23 +3148,19 @@ function GalleryStep({
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold tracking-tight">Connect through Vercel</h2>
-              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                Create and manage the provider connector in Vercel. Paperclip stores its reference and applies agent access, policy, approval, and audit controls here.
-              </p>
+              <h2 className="text-lg font-bold tracking-tight">{fullAppsT("fullApps.connect_through_vercel_70d945")}</h2>
+              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{fullAppsT("fullApps.create_and_manage_the_provider_connector_in_vercel_p_18a622")}</p>
             </div>
             {vercelConnectAvailability ? (
               <Button asChild variant="outline" size="sm" className="shrink-0">
-                <a href={vercelConnectAvailability.manageUrl} target="_blank" rel="noreferrer">
-                  Open Vercel Connect
-                  <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
+                <a href={vercelConnectAvailability.manageUrl} target="_blank" rel="noreferrer">{fullAppsT("fullApps.open_vercel_connect_781aa3")}<ArrowUpRight className="ml-2 h-3.5 w-3.5" />
                 </a>
               </Button>
             ) : null}
           </div>
           {vercelConnectAvailability?.available === false ? (
             <InlineBanner tone="danger" compact className="mt-4">
-              {vercelConnectAvailability.reason ?? "Vercel Connect is unavailable on this instance."}
+              {vercelConnectAvailability.reason ?? fullAppsT("fullApps.vercel_connect_is_unavailable_on_this_instance_e4932f")}
             </InlineBanner>
           ) : null}
         </div>
@@ -3174,7 +3173,7 @@ function GalleryStep({
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search apps…"
+              placeholder={fullAppsT("fullApps.search_apps_f8fe15")}
               className="h-11 pl-9"
             />
           </div>
@@ -3212,12 +3211,12 @@ function GalleryStep({
                   <div className="mt-3 text-xs font-semibold text-foreground">
                     {unavailable ? (
                       <span className="text-muted-foreground">
-                        {app.availability?.reason ?? vercelConnectAvailability?.reason ?? "Unavailable on this instance."}
+                        {app.availability?.reason ?? vercelConnectAvailability?.reason ?? fullAppsT("fullApps.unavailable_on_this_instance_4276fc")}
                       </span>
                     ) : oauthBlocked ? (
-                      <span className="text-muted-foreground">Unavailable</span>
+                      <span className="text-muted-foreground">{fullAppsT("taskProperties.locked.unavailable")}</span>
                     ) : (
-                      <span>Connect →</span>
+                      <span>{fullAppsT("fullApps.connect_b75abf")}</span>
                     )}
                   </div>
                 </button>
@@ -3226,7 +3225,7 @@ function GalleryStep({
           </div>
 
           {filtered.length === 0 && (
-            <div className="py-10 text-center text-sm text-muted-foreground">No apps match “{search}”.</div>
+            <div className="py-10 text-center text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.no_apps_match_80cf97" components={{ part1: <>{search}</> }} /></div>
           )}
         </>
       )}
@@ -3241,26 +3240,23 @@ function GalleryStep({
         <div>
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Link2 className="h-4 w-4 text-muted-foreground" />
-            {zapierSource ? "Connect Zapier" : byo ? "Connect your own MCP server" : "Connect with a link"}
+            {zapierSource ? fullAppsT("fullApps.connect_zapier_f3322b") : byo ? fullAppsT("githubSetupUi.header.custom") : fullAppsT("fullApps.connect_with_a_link_cb018c")}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             {zapierSource
-              ? "Paste the complete MCP URL Zapier gives you, including its token."
+              ? fullAppsT("fullApps.paste_the_complete_mcp_url_zapier_gives_you_includin_17df3d")
               : byo
-              ? "Paste your MCP server’s URL and every discovered tool will be available immediately."
-              : "Paste a setup link from an app that is not listed here."}
+              ? fullAppsT("fullApps.paste_your_mcp_server_s_url_and_every_discovered_too_ff8a76")
+              : fullAppsT("fullApps.paste_a_setup_link_from_an_app_that_is_not_listed_he_71f9fa")}
           </p>
           {!zapierSource && (
-            <p className="mt-1 text-xs text-muted-foreground">
-              Any remote tool URL works here — including a local MCP server like{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">http://127.0.0.1:8848/mcp</code>.
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.any_remote_tool_url_works_here_including_a_local_mcp_fd6fd3" components={{ part1: <>{" "}</>, part2: <code className="rounded bg-muted px-1 py-0.5 text-xs">http://127.0.0.1:8848/mcp</code> }} /></p>
           )}
           {matchedEntry && (
             <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2">
               <div className="flex min-w-0 items-center gap-2 text-sm">
                 <AppLogo name={matchedEntry.name} logoUrl={matchedEntry.branding.logoUrl} darkLogoUrl={matchedEntry.branding.darkLogoUrl} size={24} />
-                <span className="truncate">This looks like {matchedEntry.name}.</span>
+                <span className="truncate"><FullAppsTrans i18nKey="fullApps.this_looks_like_8c6fd1" components={{ part1: <>{matchedEntry.name}</> }} /></span>
               </div>
               <Button
                 type="button"
@@ -3277,10 +3273,10 @@ function GalleryStep({
                 }}
               >
                 {matchedEntry.availability?.available === false
-                  ? "Not available"
+                  ? fullAppsT("fullApps.not_available_67a926")
                   : matchedEntry.slug === "zapier"
-                    ? "Continue"
-                    : `Use ${matchedEntry.name}`}
+                    ? fullAppsT("onboarding.actions.continue")
+                    : fullAppsT("fullApps.use_a302a9", { value1: matchedEntry.name })}
               </Button>
             </div>
           )}
@@ -3292,7 +3288,7 @@ function GalleryStep({
               type={zapierSource || matchedEntry?.slug === "zapier" ? "password" : "url"}
               autoComplete="off"
               spellCheck={false}
-              aria-label="MCP server URL"
+              aria-label={fullAppsT("fullApps.mcp_server_url_4f5aff")}
               value={linkInput}
               onChange={(e) => {
                 linkInputEdited.current = true;
@@ -3305,11 +3301,9 @@ function GalleryStep({
               placeholder={zapierSource ? "https://mcp.zapier.com/api/v1/connect?token=…" : "https://example.com/actions"}
               className="h-10"
             />
-            <Button type="button" variant="outline" onClick={continueWithLink}>
-              Continue
-            </Button>
+            <Button type="button" variant="outline" onClick={continueWithLink}>{fullAppsT("onboarding.actions.continue")}</Button>
           </div>
-          {linkError && <div className="text-xs text-destructive">{linkError}</div>}
+          {linkError && <div className="text-xs text-destructive">{renderAppDisplayText(linkError)}</div>}
         </div>
       </div> : null}
 
@@ -3389,6 +3383,7 @@ function LinkConnectStep({
   onBack: () => void;
   onConnect: () => void;
 }) {
+  useFullAppsTranslation();
   const host = endpointHost(link);
   const headerError = authMode === "custom_headers" ? customHeaderError(headers) : null;
   const draft: GenericConnectDraft = {
@@ -3423,11 +3418,9 @@ function LinkConnectStep({
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2">
           <div className="flex min-w-0 items-center gap-2 text-sm">
             <AppLogo name={matchedEntry.name} logoUrl={matchedEntry.branding.logoUrl} darkLogoUrl={matchedEntry.branding.darkLogoUrl} size={24} />
-            <span className="truncate">Paperclip has a guided setup for {matchedEntry.name}.</span>
+            <span className="truncate"><FullAppsTrans i18nKey="fullApps.paperclip_has_a_guided_setup_for_327f97" components={{ part1: <>{matchedEntry.name}</> }} /></span>
           </div>
-          <Button type="button" size="sm" variant="outline" onClick={onUseMatchedEntry}>
-            Use {matchedEntry.name}
-          </Button>
+          <Button type="button" size="sm" variant="outline" onClick={onUseMatchedEntry}><FullAppsTrans i18nKey="fullApps.use_7b43c5" components={{ part1: <>{matchedEntry.name}</> }} /></Button>
         </div>
       ) : null}
 
@@ -3443,7 +3436,7 @@ function LinkConnectStep({
         {showKeyField ? (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-key">App key</label>
+              <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-key">{fullAppsT("fullApps.app_key_e9ba76")}</label>
               <Input
                 id="generic-mcp-key"
                 type="password"
@@ -3453,22 +3446,16 @@ function LinkConnectStep({
                 placeholder="••••••••••••••••"
                 className="mt-2 h-11 font-mono"
               />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Grant this key read and write access to the resources your agents need. Paperclip cannot increase its permissions.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{fullAppsT("fullApps.grant_this_key_read_and_write_access_to_the_resource_b6a571")}</p>
             </div>
           </div>
         ) : null}
 
         <Collapsible open={advancedOpen} onOpenChange={onAdvancedOpenChange}>
-          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-accent/40">
-            Advanced authentication
-            <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", advancedOpen && "rotate-180")} />
+          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-accent/40">{fullAppsT("fullApps.advanced_authentication_6083f7")}<ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", advancedOpen && "rotate-180")} />
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-5 pt-4">
-            <p className="text-xs text-muted-foreground">
-              Only needed when the server's docs are specific about how to authenticate.
-            </p>
+            <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.only_needed_when_the_server_s_docs_are_specific_abou_4586cf")}</p>
             <div className="flex flex-wrap gap-2">
               {GENERIC_AUTH_MODE_OPTIONS.map((option) => (
                 <SegmentedOption
@@ -3490,8 +3477,8 @@ function LinkConnectStep({
                     <Input
                       value={row.name}
                       onChange={(e) => updateHeader(row.id, { name: e.target.value })}
-                      placeholder="Header name"
-                      aria-label="Header name"
+                      placeholder={fullAppsT("companySettings.observability.headerName")}
+                      aria-label={fullAppsT("companySettings.observability.headerName")}
                       className="h-10 font-mono"
                     />
                     <Input
@@ -3499,8 +3486,8 @@ function LinkConnectStep({
                       autoComplete="off"
                       value={row.value}
                       onChange={(e) => updateHeader(row.id, { value: e.target.value })}
-                      placeholder="Value"
-                      aria-label={row.name.trim() ? `Value for ${row.name.trim()}` : "Header value"}
+                      placeholder={fullAppsT("formsUi.secret.value")}
+                      aria-label={row.name.trim() ? fullAppsT("fullApps.value_for_3c97e1", { value1: row.name.trim() }) : fullAppsT("companySettings.observability.headerValue")}
                       className="h-10 font-mono"
                     />
                     <Button
@@ -3510,9 +3497,7 @@ function LinkConnectStep({
                       className="h-10 shrink-0"
                       onClick={() => onHeadersChange(headers.filter((candidate) => candidate.id !== row.id))}
                       disabled={headers.length === 1}
-                    >
-                      Remove
-                    </Button>
+                    >{fullAppsT("profile.remove")}</Button>
                   </div>
                 ))}
                 <Button
@@ -3520,43 +3505,34 @@ function LinkConnectStep({
                   variant="outline"
                   size="sm"
                   onClick={() => onHeadersChange([...headers, newCustomHeaderRow()])}
-                >
-                  Add another header
-                </Button>
+                >{fullAppsT("fullApps.add_another_header_cd719e")}</Button>
                 {headerError ? <p className="text-xs text-destructive">{headerError}</p> : null}
               </div>
             ) : null}
 
             {authMode === "oauth" ? (
               <div className="space-y-4">
-                <p className="text-xs text-muted-foreground">
-                  Paperclip sets sign-in up on its own whenever the server allows it. Only fill these in when the
-                  server's docs tell you to register Paperclip yourself first.
-                </p>
+                <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.paperclip_sets_sign_in_up_on_its_own_whenever_the_se_5cd383")}</p>
                 <div>
-                  <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-id">
-                    Client ID
-                  </label>
+                  <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-id">{fullAppsT("fullApps.client_id_8726db")}</label>
                   <Input
                     id="generic-mcp-client-id"
                     value={oauthClientId}
                     onChange={(e) => onOAuthClientIdChange(e.target.value)}
                     autoComplete="off"
-                    placeholder="Optional"
+                    placeholder={fullAppsT("fullApps.optional_59be71")}
                     className="mt-2 h-11 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-secret">
-                    Client secret
-                  </label>
+                  <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-secret">{fullAppsT("fullApps.client_secret_4aded5")}</label>
                   <Input
                     id="generic-mcp-client-secret"
                     type="password"
                     autoComplete="off"
                     value={oauthClientSecret}
                     onChange={(e) => onOAuthClientSecretChange(e.target.value)}
-                    placeholder="Optional"
+                    placeholder={fullAppsT("fullApps.optional_59be71")}
                     className="mt-2 h-11 font-mono"
                   />
                 </div>
@@ -3569,12 +3545,10 @@ function LinkConnectStep({
       {defaults}
 
       <div className="mt-8 flex items-center justify-between">
-        <Button variant="ghost" onClick={onBack} disabled={submitting}>
-          Back
-        </Button>
+        <Button variant="ghost" onClick={onBack} disabled={submitting}>{fullAppsT("onboarding.actions.back")}</Button>
         <Button onClick={onConnect} disabled={submitting || !canSubmit || Boolean(headerError)}>
           {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {submitting ? "Checking…" : "Check link"}
+          {submitting ? fullAppsT("taskProperties.fields.checking") : fullAppsT("fullApps.check_link_d388c7")}
         </Button>
       </div>
     </div>
@@ -3590,28 +3564,28 @@ function LinkConnectStep({
 const GENERIC_AUTH_MODE_OPTIONS: Array<{ mode: GenericMcpAuthMode; label: string; hint: string }> = [
   {
     mode: "auto",
-    label: "Let Paperclip check",
-    hint: "Paperclip asks the server what it needs and walks you through it. Start here.",
+    get label() { return fullAppsT("fullApps.let_paperclip_check_2a4615"); },
+    get hint() { return fullAppsT("fullApps.paperclip_asks_the_server_what_it_needs_and_walks_yo_65bc65"); },
   },
   {
     mode: "none",
-    label: "No sign-in needed",
-    hint: "The server is open to anyone with the address.",
+    get label() { return fullAppsT("fullApps.no_sign_in_needed_572ca3"); },
+    get hint() { return fullAppsT("fullApps.the_server_is_open_to_anyone_with_the_address_10eeaf"); },
   },
   {
     mode: "bearer",
-    label: "Key or token",
-    hint: "Paperclip sends your key as an Authorization header.",
+    get label() { return fullAppsT("fullApps.key_or_token_9c4795"); },
+    get hint() { return fullAppsT("fullApps.paperclip_sends_your_key_as_an_authorization_header_dc08ce"); },
   },
   {
     mode: "custom_headers",
-    label: "Custom headers",
-    hint: "For servers that name their own headers. Values are stored as Paperclip secrets and can\u2019t be read back.",
+    get label() { return fullAppsT("fullApps.custom_headers_34cb67"); },
+    get hint() { return fullAppsT("fullApps.for_servers_that_name_their_own_headers_values_are_s_634c98"); },
   },
   {
     mode: "oauth",
-    label: "Browser sign-in",
-    hint: "You\u2019ll sign in at the provider. Add a client ID and secret only if the provider requires you to register Paperclip first.",
+    get label() { return fullAppsT("fullApps.browser_sign_in_5db278"); },
+    get hint() { return fullAppsT("fullApps.you_ll_sign_in_at_the_provider_add_a_client_id_and_s_3ba640"); },
   },
 ];
 
@@ -3624,6 +3598,7 @@ function SegmentedOption({
   selected: boolean;
   onClick: () => void;
 }) {
+  useFullAppsTranslation();
   return (
     <button
       type="button"
@@ -3910,7 +3885,7 @@ function KeyStep({
 
           {robotEmail ? (
             <div>
-              <label className="text-sm font-medium text-foreground">Share each sheet with this email</label>
+              <label className="text-sm font-medium text-foreground">{fullAppsT("fullApps.share_each_sheet_with_this_email_0fc7de")}</label>
               <div className="mt-2 flex min-w-0 flex-col gap-2 sm:flex-row">
                 <div
                   title={robotEmail}
@@ -3918,20 +3893,16 @@ function KeyStep({
                 >
                   {robotEmail}
                 </div>
-                <CopyValueButton value={robotEmail} ariaLabel="Copy sharing email" />
+                <CopyValueButton value={robotEmail} ariaLabel={fullAppsT("fullApps.copy_sharing_email_7c5c2c")} />
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                In Google Sheets, click Share and add this email as an Editor. Then paste the sheet links below.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{fullAppsT("fullApps.in_google_sheets_click_share_and_add_this_email_as_a_2bf800")}</p>
             </div>
           ) : (
-            <div className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
-              Google Sheets is not available on this instance yet.
-            </div>
+            <div className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">{fullAppsT("fullApps.google_sheets_is_not_available_on_this_instance_yet_89db0f")}</div>
           )}
 
           <div>
-            <label className="text-sm font-medium text-foreground">Paste links to the sheets you shared</label>
+            <label className="text-sm font-medium text-foreground">{fullAppsT("fullApps.paste_links_to_the_sheets_you_shared_602d52")}</label>
             <Textarea
               value={googleSheetsLinks}
               onChange={(e) => onGoogleSheetsLinksChange(e.target.value)}
@@ -3940,8 +3911,8 @@ function KeyStep({
             />
             <div className="mt-2 text-xs text-muted-foreground">
               {parsed.ids.length > 0
-                ? `${parsed.ids.length} ${parsed.ids.length === 1 ? "sheet" : "sheets"} ready to connect.`
-                : "Paste one link per line. Both .../edit and .../edit#gid=... links work."}
+                ? fullAppsT("fullApps.sheetsReady", { count: parsed.ids.length })
+                : fullAppsT("fullApps.paste_one_link_per_line_both_edit_and_edit_gid_links_869883")}
             </div>
             {googleSheetsError && <div className="mt-2 text-xs text-destructive">{googleSheetsError}</div>}
           </div>
@@ -3983,7 +3954,7 @@ function KeyStep({
 
       <div className="space-y-6">
         {managedAsana ? (
-          <p className="text-sm text-muted-foreground">Sign in with Asana to choose your workspace and connect it to Paperclip.</p>
+          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.sign_in_with_asana_to_choose_your_workspace_and_conn_ce90e7")}</p>
         ) : null}
         {method?.capabilityProfile && (
           <p className="text-sm text-muted-foreground">
@@ -3993,35 +3964,27 @@ function KeyStep({
         {usingVercel && vercelReview && vercelConnectAvailability ? (
           <div className="space-y-4 rounded-lg border border-border p-4">
             <div>
-              <div className="text-sm font-medium text-foreground">Create or attach the connector in Vercel</div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Paperclip does not copy Vercel’s setup forms. Finish connector setup there, then paste its UID below.
-              </p>
+              <div className="text-sm font-medium text-foreground">{fullAppsT("fullApps.create_or_attach_the_connector_in_vercel_edd8ec")}</div>
+              <p className="mt-1 text-xs text-muted-foreground">{fullAppsT("fullApps.paperclip_does_not_copy_vercel_s_setup_forms_finish__71d155")}</p>
               <a
                 href={vercelConnectAvailability.manageUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-foreground underline underline-offset-2"
-              >
-                Open Vercel Connect
-                <ArrowUpRight className="h-3 w-3" />
+              >{fullAppsT("fullApps.open_vercel_connect_781aa3")}<ArrowUpRight className="h-3 w-3" />
               </a>
             </div>
             <div>
-              <label className="text-sm font-medium text-foreground" htmlFor="vercel-connect-connector">
-                Connector UID or ID
-              </label>
+              <label className="text-sm font-medium text-foreground" htmlFor="vercel-connect-connector">{fullAppsT("fullApps.connector_uid_or_id_d6b526")}</label>
               <Input
                 id="vercel-connect-connector"
                 value={vercelConnector}
                 onChange={(event) => onVercelConnectorChange(event.target.value)}
                 autoComplete="off"
-                placeholder="service/my-connector or scl_…"
+                placeholder={fullAppsT("fullApps.copy_e3dbcb3bdf79")}
                 className="mt-2 h-11 font-mono"
               />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Paperclip validates the connector and stores only its reference and redacted verification metadata.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{fullAppsT("fullApps.paperclip_validates_the_connector_and_stores_only_it_dcb1d3")}</p>
             </div>
           </div>
         ) : null}
@@ -4115,6 +4078,7 @@ function KeyStep({
  * has to say whether the clipboard actually took it.
  */
 function CopyValueButton({ value, ariaLabel }: { value: string; ariaLabel: string }) {
+  useFullAppsTranslation();
   const { copied, failed, copy } = useCopyAction();
   return (
     <Button
@@ -4125,7 +4089,7 @@ function CopyValueButton({ value, ariaLabel }: { value: string; ariaLabel: strin
       onClick={() => void copy(value)}
     >
       {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-      {copied ? "Copied" : failed ? "Copy failed" : "Copy"}
+      {copied ? fullAppsT("taskPanels.preview.copied") : failed ? fullAppsT("taskPanels.viewer.copy.failed") : fullAppsT("taskDetailCommon.markdown.copy")}
     </Button>
   );
 }
@@ -4149,11 +4113,12 @@ function OAuthClientFields({
   onClientSecretChange: (next: string) => void;
   required: boolean;
 }) {
+  useFullAppsTranslation();
   return (
     <div className="space-y-4 rounded-lg border border-border p-4">
       <div>
         <div className="text-sm font-medium text-foreground">
-          {required ? method.oauthClientSecretRequired ? "Your OAuth app" : `${entry.name} needs its own OAuth app` : "Use your own OAuth app"}
+          {required ? method.oauthClientSecretRequired ? fullAppsT("githubSetupUi.key.oauthApp") : fullAppsT("fullApps.needs_its_own_oauth_app_0287a1", { value1: entry.name }) : fullAppsT("fullApps.use_your_own_oauth_app_38784b")}
         </div>
         {/*
           When these fields are required it is a provider limitation, not a step
@@ -4162,8 +4127,8 @@ function OAuthClientFields({
         */}
         <p className="mt-1 text-xs text-muted-foreground">
           {method.oauthClientSecretRequired ? method.guidanceMd : required
-            ? `${entry.name} does not let Paperclip register itself automatically, so this connector needs an OAuth app you create. Add the callback URL below in ${entry.name}, then paste the client details back here.`
-            : `Register Paperclip's callback URI in ${entry.name}, then enter the customer-owned client details.`}
+            ? fullAppsT("fullApps.does_not_let_paperclip_register_itself_automatically_225eaf", { value1: entry.name, value2: entry.name })
+            : fullAppsT("fullApps.register_paperclip_s_callback_uri_in_then_enter_the__dc7359", { value1: entry.name })}
         </p>
         {method.consoleLinks?.register ? (
           <a
@@ -4171,15 +4136,14 @@ function OAuthClientFields({
             target="_blank"
             rel="noreferrer"
             className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-foreground underline underline-offset-2"
-          >
-            Open {entry.name} app settings
+          >{fullAppsT("fullApps.openAppSettings", { name: entry.name })}
             <ArrowUpRight className="h-3 w-3" />
           </a>
         ) : null}
       </div>
       {callbackUrl ? (
         <div>
-          <label className="text-sm font-medium text-foreground">Paperclip callback URL</label>
+          <label className="text-sm font-medium text-foreground">{fullAppsT("fullApps.paperclip_callback_url_a3488d")}</label>
           <div className="mt-2 flex min-w-0 flex-col gap-2 sm:flex-row">
             <div
               title={callbackUrl}
@@ -4187,37 +4151,31 @@ function OAuthClientFields({
             >
               {callbackUrl}
             </div>
-            <CopyValueButton value={callbackUrl} ariaLabel="Copy callback URL" />
+            <CopyValueButton value={callbackUrl} ariaLabel={fullAppsT("fullApps.copy_callback_url_9d985e")} />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Add this exact URL to {entry.name} before continuing. It must match the authorization request.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.add_this_exact_url_to_before_continuing_it_must_matc_063b77" components={{ part1: <>{entry.name}</> }} /></p>
         </div>
       ) : null}
       <div>
-        <label className="text-sm font-medium text-foreground" htmlFor="curated-oauth-client-id">
-          Client ID
-        </label>
+        <label className="text-sm font-medium text-foreground" htmlFor="curated-oauth-client-id">{fullAppsT("fullApps.client_id_8726db")}</label>
         <Input
           id="curated-oauth-client-id"
           value={clientId}
           onChange={(event) => onClientIdChange(event.target.value)}
           autoComplete="off"
-          placeholder={required ? "Required" : "Optional"}
+          placeholder={required ? fullAppsT("decisionForms.interaction.required") : fullAppsT("fullApps.optional_59be71")}
           className="mt-2 h-11 font-mono"
         />
       </div>
       <div>
-        <label className="text-sm font-medium text-foreground" htmlFor="curated-oauth-client-secret">
-          Client secret
-        </label>
+        <label className="text-sm font-medium text-foreground" htmlFor="curated-oauth-client-secret">{fullAppsT("fullApps.client_secret_4aded5")}</label>
         <Input
           id="curated-oauth-client-secret"
           type="password"
           value={clientSecret}
           onChange={(event) => onClientSecretChange(event.target.value)}
           autoComplete="off"
-          placeholder={method.oauthClientSecretRequired ? "Required" : "Optional for public clients"}
+          placeholder={method.oauthClientSecretRequired ? fullAppsT("decisionForms.interaction.required") : fullAppsT("fullApps.optional_for_public_clients_444473")}
           className="mt-2 h-11 font-mono"
         />
       </div>
@@ -4234,6 +4192,7 @@ function MethodConfigField({
   value: string | boolean | undefined;
   onChange: (value: string | boolean) => void;
 }) {
+  useFullAppsTranslation();
   if (field.type === "checkbox") {
     return (
       <div className="flex items-start justify-between gap-4 rounded-lg border border-border p-4">
@@ -4261,7 +4220,7 @@ function MethodConfigField({
           onChange={(event) => onChange(event.target.value)}
           className="mt-2 h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
         >
-          <option value="" disabled>Select an option</option>
+          <option value="" disabled>{fullAppsT("formsUi.schema.select")}</option>
           {(field.options ?? []).map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
         </select>
       ) : (
@@ -4274,7 +4233,7 @@ function MethodConfigField({
           className="mt-2 h-11"
         />
       )}
-      {field.required && (typeof value !== "string" || !value.trim()) && <p className="mt-2 text-xs text-muted-foreground">{field.label} is required.</p>}
+      {field.required && (typeof value !== "string" || !value.trim()) && <p className="mt-2 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.is_required_5319d8" components={{ part1: <>{field.label}</> }} /></p>}
       {field.helperMd && <p className="mt-2 text-xs text-muted-foreground">{field.helperMd}</p>}
     </div>
   );
@@ -4288,6 +4247,7 @@ function MethodConfigField({
  * get. Hick's Law: two choices, not a matrix. Both use full-row radio targets.
  */
 export function AccessStep({ companyId, ...props }: Omit<Parameters<typeof AccessStepContent>[0], "agents" | "agentsLoading"> & { companyId: string }) {
+  useFullAppsTranslation();
   const agentsQuery = useQuery({
     queryKey: queryKeys.agents.list(companyId),
     queryFn: () => agentsApi.list(companyId),
@@ -4697,6 +4657,7 @@ export function ConnectionAccessDefaults({
 }
 
 function BotGroupIcon() {
+  useFullAppsTranslation();
   return (
     <span className="relative block h-4 w-5" aria-hidden="true">
       <Bot className="absolute left-0 top-0 h-3.5 w-3.5" />
@@ -4734,6 +4695,7 @@ export function accessSummaryLines(input: {
 }
 
 function Radio({ selected }: { selected: boolean }) {
+  useFullAppsTranslation();
   return (
     <span
       className={cn(

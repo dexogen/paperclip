@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { Issue } from "@paperclipai/shared";
 import { TASK_VIEW_PARAM, normalizeTaskViewKey, taskView } from "./task-views";
 
@@ -154,8 +155,8 @@ function inferIssueDetailSource(
 }
 
 function breadcrumbForSource(source: IssueDetailSource): IssueDetailBreadcrumb {
-  if (source === "inbox") return { label: "Inbox", href: "/inbox" };
-  return { label: "Tasks", href: "/issues" };
+  if (source === "inbox") return { label: fullSharedT("sidebar.inbox"), href: "/inbox" };
+  return { label: fullSharedT("sidebar.tasks"), href: "/issues" };
 }
 
 export function createIssueDetailLocationState(

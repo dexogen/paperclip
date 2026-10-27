@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { KeyRound, Save } from "lucide-react";
 import type { CompanySecret, RoutineEnvConfig } from "@paperclipai/shared";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ export function StageSecretsPanel({
   saving,
   dirty,
 }: StageSecretsPanelProps) {
+  useFullSharedTranslation();
   // No backing automation/assignee → nothing can receive secrets at runtime.
   // Point the user at Automation instead of creating a hidden routine just
   // because the Secrets tab was opened.
@@ -54,7 +56,7 @@ export function StageSecretsPanel({
     return (
       <EmptyState
         icon={KeyRound}
-        message="Secrets are available only to step automation. Pick an agent to run this step, then add the secrets it needs."
+        message={fullSharedT("fullShared.secrets_are_available_only_to_step_automation_pick_a_e45aba")}
         action="Set up automation"
         onAction={onSetupAutomation}
       />
@@ -71,16 +73,11 @@ export function StageSecretsPanel({
         ) : (
           <KeyRound className="h-3.5 w-3.5 mt-0.5 shrink-0" />
         )}
-        <p>
-          These env vars are injected when{" "}
-          <span className="font-medium text-foreground">{displayName}</span> runs this step. They override
-          matching project and agent env on collisions. <span className="font-mono">PAPERCLIP_*</span> names
-          are reserved.
-        </p>
+        <p><FullSharedTrans i18nKey="fullShared.these_env_vars_are_injected_when_runs_this_step_they_d92bf3" components={{ part1: <>{" "}</>, part2: <span className="font-medium text-foreground">{displayName}</span>, part3: <span className="font-mono">PAPERCLIP_*</span> }} /></p>
       </div>
 
       {secretsLoading ? (
-        <p className="text-sm text-muted-foreground">Loading secrets…</p>
+        <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_secrets_3775fb")}</p>
       ) : (
         <EnvironmentVariablesEditor
           value={value}
@@ -93,9 +90,9 @@ export function StageSecretsPanel({
       <div className="flex items-center gap-3">
         <Button type="button" onClick={onSave} disabled={!dirty || saving}>
           <Save className="h-4 w-4 mr-1.5" />
-          {saving ? "Saving…" : "Save secrets"}
+          {saving ? fullSharedT("fullShared.saving_23e392") : fullSharedT("fullShared.save_secrets_a84c95")}
         </Button>
-        {dirty && !saving ? <span className="text-xs text-muted-foreground">Unsaved changes</span> : null}
+        {dirty && !saving ? <span className="text-xs text-muted-foreground">{fullSharedT("formsUi.editor.unsaved")}</span> : null}
       </div>
     </div>
   );

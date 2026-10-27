@@ -1,3 +1,4 @@
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { HelpCircle } from "lucide-react";
 import { AgentSetupPrompt } from "@/components/AgentSetupPrompt";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import { MCP_CONFIG_HELP_INSTRUCTIONS, MCP_CONFIG_HELP_PROMPT } from "@paperclip
  * anything the operator has typed.
  */
 export function McpConfigHelpDialog() {
+  useFullAppsTranslation();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,18 +31,15 @@ export function McpConfigHelpDialog() {
           variant="ghost"
           size="icon"
           className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground"
-          aria-label="Get help creating an MCP config"
+          aria-label={fullAppsT("fullApps.get_help_creating_an_mcp_config_2b39ab")}
         >
           <HelpCircle className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-(--sz-85vh) overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Ask an agent for an MCP config</DialogTitle>
-          <DialogDescription>
-            Don't know the URL or headers a tool needs? Hand this request to an agent and paste back what it
-            gives you.
-          </DialogDescription>
+          <DialogTitle>{fullAppsT("fullApps.ask_an_agent_for_an_mcp_config_fd679c")}</DialogTitle>
+          <DialogDescription>{fullAppsT("fullApps.don_t_know_the_url_or_headers_a_tool_needs_hand_this_ea0f20")}</DialogDescription>
         </DialogHeader>
 
         <ol className="list-decimal space-y-1.5 pl-5 text-sm text-muted-foreground">
@@ -50,9 +49,7 @@ export function McpConfigHelpDialog() {
         </ol>
 
         <div className="space-y-2">
-          <label htmlFor="mcp-config-help-prompt" className="text-sm font-medium text-foreground">
-            Prompt to send
-          </label>
+          <label htmlFor="mcp-config-help-prompt" className="text-sm font-medium text-foreground">{fullAppsT("fullApps.prompt_to_send_928a8e")}</label>
           <Textarea
             id="mcp-config-help-prompt"
             readOnly
@@ -67,9 +64,9 @@ export function McpConfigHelpDialog() {
         <div>
           <AgentSetupPrompt
             prompt={MCP_CONFIG_HELP_PROMPT}
-            label="Get a config with an agent"
-            title="MCP configuration"
-            description="Paste this into your agent to create an MCP config, then paste its JSON reply back into Paperclip."
+            label={fullAppsT("fullApps.get_a_config_with_an_agent_6e59e0")}
+            title={fullAppsT("fullApps.mcp_configuration_ed6c3c")}
+            description={fullAppsT("fullApps.paste_this_into_your_agent_to_create_an_mcp_config_t_18774b")}
           />
         </div>
       </DialogContent>

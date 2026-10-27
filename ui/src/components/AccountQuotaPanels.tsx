@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ProviderQuotaResult } from "@paperclipai/shared";
 import { formatDateTime } from "../lib/utils";
 import { QuotaBar } from "./QuotaBar";
@@ -10,6 +11,7 @@ export function AccountQuotaPanels({
   accounts: ProviderQuotaResult[];
   failed?: boolean;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-4">
       {accounts.map((account) => (
@@ -18,12 +20,12 @@ export function AccountQuotaPanels({
           key={account.accountKey ?? account.provider}
         >
           <p className="text-sm font-medium">
-            {account.accountLabel ?? "Subscription account"}
+            {account.accountLabel ?? fullSharedT("fullShared.subscription_account_b9e6c3")}
           </p>
           {(failed || !account.ok) && (
             <p className="text-sm text-muted-foreground">
               {account.errorFamily === "credentials_unavailable"
-                ? "Connect or reconnect a subscription in AI connections to view its quota."
+                ? fullSharedT("fullShared.connect_or_reconnect_a_subscription_in_ai_connection_820f92")
                 : quotaUnavailableMessage(account.windows.length > 0)}
             </p>
           )}
@@ -31,9 +33,9 @@ export function AccountQuotaPanels({
             <div key={`${window.label}:${index}`} className="space-y-1 text-sm">
               <div className="flex justify-between gap-3">
                 <span>{window.label}</span>
-                <span className="font-mono text-muted-foreground">{window.valueLabel ?? "Usage not reported"}</span>
+                <span className="font-mono text-muted-foreground">{window.valueLabel ?? fullSharedT("fullShared.usage_not_reported_714f55")}</span>
               </div>
-              {window.resetsAt && <p className="text-xs font-mono text-muted-foreground">Resets {formatDateTime(window.resetsAt)}</p>}
+              {window.resetsAt && <p className="text-xs font-mono text-muted-foreground"><FullSharedTrans i18nKey="fullShared.resets_c1160f" components={{ part1: <>{formatDateTime(window.resetsAt)}</> }} /></p>}
             </div>
           ) : (
             <QuotaBar
@@ -55,9 +57,7 @@ export function AccountQuotaPanels({
             />
           ))}
           {account.capturedAt && (
-            <p className="text-xs font-mono text-muted-foreground">
-              Last checked {formatDateTime(account.capturedAt)}
-            </p>
+            <p className="text-xs font-mono text-muted-foreground"><FullSharedTrans i18nKey="fullShared.last_checked_ee5fba" components={{ part1: <>{formatDateTime(account.capturedAt)}</> }} /></p>
           )}
         </section>
       ))}

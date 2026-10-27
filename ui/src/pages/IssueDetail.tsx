@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { localizeOnboardingTaskTitle, OnboardingTaskProvider, type OnboardingTaskContext } from "@/lib/onboarding-first-task-localization";
 import { useTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
@@ -11,6 +12,7 @@ import { WorkspaceRetryControl } from "../components/WorkspaceRetryButton";
 import { isLockedIssueStub, LockedIssueChip } from "@/components/LockedIssueChip";
 import { canManageIssuePrivacy } from "../lib/issuePrivacy";
 import { TextAttachmentContext } from "../context/TextAttachmentContext";
+import { useTaskPluginPanels, taskPluginPanelId } from "@/hooks/useTaskPluginPanels";
 import { useTaskBrowsers, useBrowserArrivals } from "@/hooks/useTaskBrowsers";
 import { WorkspaceExportRecovery } from "../components/WorkspaceExportRecovery";
 import { DispositionRecoveryProvider } from "../components/DispositionRecoveryNotice";
@@ -879,6 +881,7 @@ function IssueSectionSkeleton({
   titleWidth?: string;
   rows?: number;
 }) {
+  useFullSharedTranslation();
   return (
     <div className="space-y-3 rounded-lg border border-border p-3">
       <Skeleton className={cn("h-4", titleWidth)} />
@@ -904,6 +907,7 @@ function ChatBubbleSkeleton({
   side: "agent" | "human";
   className?: string;
 }) {
+  useFullSharedTranslation();
   const isHuman = side === "human";
   return (
     <div
@@ -935,6 +939,7 @@ function ChatBubbleSkeleton({
  * foot of the loading state matches the real chat shell.
  */
 function IssueChatComposerSkeleton({ className }: { className?: string }) {
+  useFullSharedTranslation();
   return (
     <div
       className={cn("rounded-xl border border-input bg-card p-2", className)}
@@ -960,6 +965,7 @@ function IssueChatComposerSkeleton({ className }: { className?: string }) {
  * rather than the pre-chat bordered card it replaced.
  */
 function IssueChatSkeleton() {
+  useFullSharedTranslation();
   return (
     <div className="flex flex-col gap-3" data-testid="issue-chat-skeleton">
       <ChatBubbleSkeleton side="agent" className="h-16 w-3/4" />
@@ -1212,6 +1218,11 @@ function InboxMobileToolbar({
       </div>
     </div>
   );
+}
+
+interface RecentIssueRunWindow {
+  runs: RunForIssue[];
+  hasEarlierRuns: boolean;
 }
 
 type IssueDetailChatTabProps = {
@@ -1634,37 +1645,48 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
   const hasLiveRuns = liveRunCount > 0 || !!resolvedActiveRun;
   const linkedRunsKey = historyExpanded
     ? queryKeys.issues.runs(issueQueryRef)
-    : [...queryKeys.issues.runs(issueQueryRef), "recent"];
+    : [...queryKeys.issues.runs(issueQueryRef), "recent-window"];
   const {
-    data: linkedRuns,
+    data: linkedRunHistory,
     isPending: linkedRunsPending,
     isError: linkedRunsError,
     refetch: refetchLinkedRuns,
-  } = useQuery({
+  } = useQuery<RunForIssue[] | RecentIssueRunWindow>({
     queryKey: linkedRunsKey,
     queryFn: async () => {
       if (historyExpanded) return activityApi.runsForIssue(issueQueryRef);
       let recent = await activityApi.recentRunsForIssue(issueQueryRef);
-      let previous = queryClient.getQueryData<RunForIssue[]>(linkedRunsKey) ?? [];
+      const previousWindow = queryClient.getQueryData<RecentIssueRunWindow>(linkedRunsKey);
+      let previous = previousWindow?.runs ?? [];
+      let reconciledFullHistory = false;
       if (previous.some((run) =>
         (run.status === "running" || run.status === "queued") && !recent.some((next) => next.runId === run.runId),
       )) {
         // After a reconnect, several turns may have completed beyond the small
         // window. Reconcile watched runs once against authoritative summaries.
         recent = await activityApi.runsForIssue(issueQueryRef);
+        reconciledFullHistory = true;
         const existingRunIds = new Set(recent.map((run) => run.runId));
         previous = previous.filter((run) => existingRunIds.has(run.runId));
       }
       // The second row refreshes a just-finished predecessor. Start with only
       // the latest run, then keep every run observed while this task is open.
       const visible = new Set([...previous.map((run) => run.runId), ...recent.slice(0, 1).map((run) => run.runId)]);
-      return [...new Map([...previous, ...recent].filter((run) => visible.has(run.runId)).map((run) => [run.runId, run])).values()];
+      return {
+        runs: [...new Map([...previous, ...recent].filter((run) => visible.has(run.runId)).map((run) => [run.runId, run])).values()],
+        // A first run is already visible. The disclosure needs evidence of an
+        // omitted run, and must retain that evidence as later turns arrive.
+        hasEarlierRuns: recent.some((run) => !visible.has(run.runId))
+          || (!reconciledFullHistory && recent.length >= 2 && previousWindow?.hasEarlierRuns === true),
+      };
     },
     enabled: !!issueId,
     refetchInterval:
       hasLiveRuns || issueStatus === "in_progress" ? 1000 : false,
-    placeholderData: historyExpanded ? queryClient.getQueryData<RunForIssue[]>([...queryKeys.issues.runs(issueQueryRef), "recent"]) : undefined,
+    placeholderData: historyExpanded ? queryClient.getQueryData<RecentIssueRunWindow>([...queryKeys.issues.runs(issueQueryRef), "recent-window"])?.runs : undefined,
   });
+  const linkedRuns = Array.isArray(linkedRunHistory) ? linkedRunHistory : linkedRunHistory?.runs;
+  const hasEarlierRuns = !Array.isArray(linkedRunHistory) && linkedRunHistory?.hasEarlierRuns === true;
   const resolvedActivity = useMemo(
     () => [...new Map([...(activity ?? []), ...(inputFacts.data ?? [])].map((event) => [event.id, event])).values()],
     [activity, inputFacts.data],
@@ -2221,8 +2243,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
       pendingComments,
       fallbackProtocol,
     });
-  }, [
-    authoritativeQueuedCommentQueue,
+  }, [authoritativeQueuedCommentQueue,
     commentsWithRunMeta,
     consumedQueuedCommentIds,
     discardedQueuedCommentIds,
@@ -2253,8 +2274,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
           },
         ];
       }),
-    [
-      commentsWithRunMeta,
+    [commentsWithRunMeta,
       consumedQueuedCommentIds,
       discardedQueuedCommentIds,
       localInterruptPlacements,
@@ -2448,8 +2468,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
         await refreshQueueAfterConflict(error);
       }
     },
-    [
-      effectiveQueuedCommentQueue,
+    [effectiveQueuedCommentQueue,
       commentsWithRunMeta,
       onInterruptQueued,
       refreshQueueAfterConflict,
@@ -2575,7 +2594,8 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
           <ThreadComponent
             {...(!classicTaskInterfaceEnabled ? {
               compactHistory: !historyExpanded,
-              historyControl: !historyExpanded && (hasEarlierMessages || (linkedRuns?.length ?? 0) > 0) ? (
+              onExpandHistory,
+              historyControl: !historyExpanded && (hasEarlierMessages || hasEarlierRuns) ? (
                 <Button type="button" variant="ghost" size="sm" onClick={onExpandHistory}>
                   {t("taskDetail.copy.moreMessages")}
                 </Button>
@@ -3071,7 +3091,7 @@ function IssueDetailActivityTab({
                       agentMap,
                       userProfileMap,
                       currentUserId,
-                    })}
+                    }, t)}
                   </span>
                   <span className="ml-auto shrink-0">
                     {relativeTime(evt.createdAt)}
@@ -3153,7 +3173,8 @@ function IssueDetailActivityTab({
   );
 }
 
-export function IssueDetail({ tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"] }) { return <TaskDetailSurface tasksTab={tasksTab} />; }
+export function IssueDetail({ tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"] }) {
+  useFullSharedTranslation(); return <TaskDetailSurface tasksTab={tasksTab} />; }
 
 /** One controller and surface for both task URLs and agent conversations. */
 export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskSidePanelProps["tasksTab"]; conversation?: {
@@ -3440,8 +3461,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         olderPageLoading: commentsLoadingOlder,
         autoLoadLimit: ISSUE_COMMENT_AUTOLOAD_LIMIT,
       }),
-    [
-      comments.length,
+    [comments.length,
       commentsLoading,
       commentsLoadingOlder,
       historyExpanded,
@@ -3880,8 +3900,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         />
       ),
     };
-  }, [
-    tasksTab,
+  }, [tasksTab,
     issue?.ancestors,
     issue?.createdFrom,
     resolvedIssueDetailState,
@@ -3952,6 +3971,19 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
     openTaskSidePanel();
     if (isMobile) setMobilePropsOpen(true);
   }, [issue?.id, openTaskSidePanel, isMobile]);
+  const pluginPanels = useTaskPluginPanels(issue, taskChatShellEnabled);
+  const revealedPluginPanels = useRef(new Set<string>());
+  const openedPluginPanelKeys = useRef(new Set<string>());
+  const dismissedPluginPanelKeys = useRef(new Set<string>());
+  useEffect(() => {
+    for (const panel of pluginPanels) {
+      const key = JSON.stringify([currentUserId, issue?.id, panel.runId, taskPluginPanelId(panel)]);
+      if (revealedPluginPanels.current.has(key)) continue;
+      revealedPluginPanels.current.add(key);
+      openTaskSidePanel();
+      if (isMobile) setMobilePropsOpen(true);
+    }
+  }, [pluginPanels, currentUserId, issue?.id, openTaskSidePanel, isMobile]);
   const browserQuery = useTaskBrowsers(issue?.id);
   const { openBrowserId, openBrowser: setOpenBrowserId, acknowledgeBrowserOpened: handleBrowserOpened } =
     useBrowserArrivals(currentUserId ?? "anonymous", issue?.id, browserQuery.data);
@@ -3994,8 +4026,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       return;
     }
     setPanelVisible(false);
-  }, [
-    openTaskSidePanel,
+  }, [openTaskSidePanel,
     panelVisible,
     setPanelVisible,
     suppressPanelUntilPlan,
@@ -4012,8 +4043,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       !siblingIssuesError
         ? buildIssueSiblingNavigation(issue, rawSiblingIssues, childIssues)
         : null,
-    [
-      childIssues,
+    [childIssues,
       childIssuesLoading,
       issue,
       rawSiblingIssues,
@@ -4793,8 +4823,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
           onUpdateIssue={handleChildIssueUpdate}
         />
       ) : null,
-    [
-      taskChatShellEnabled,
+    [taskChatShellEnabled,
       streamlinedTaskDetailEnabled,
       issue,
       showRichSubIssuesSection,
@@ -6067,7 +6096,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
   );
 
   useLayoutEffect(() => {
-    if (!panelIssue || suppressPanelUntilPlan || (conversation && !conversation.issue)) {
+    if (!panelIssue || suppressPanelUntilPlan || (conversation && !conversation.issue) || (taskChatShellEnabled && isMobile)) {
       closePanel();
       return;
     }
@@ -6106,6 +6135,9 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       openPanel(
         <IssueGalleryContext.Provider value={openIssueGallery}>
           <TaskSidePanel
+            pluginPanels={pluginPanels}
+            openedPluginPanelKeys={openedPluginPanelKeys.current}
+            dismissedPluginPanelKeys={dismissedPluginPanelKeys.current}
             openBrowserId={openBrowserId}
             onBrowserOpened={handleBrowserOpened}
             key={panelIssue.id}
@@ -6131,6 +6163,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
     }
     return () => closePanel();
   }, [
+    pluginPanels,
     openBrowserId,
     handleBrowserOpened,
     closePanel,
@@ -6341,8 +6374,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       }));
       return true;
     },
-    [
-      taskInterfaceSettingsLoaded,
+    [taskInterfaceSettingsLoaded,
       isMobile,
       issue?.id,
       issueId,
@@ -6929,7 +6961,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
       request: import("../components/IssueRecoveryActionCard").RecoveryReissueRequest,
     ) => {
       if (!issue) throw new Error(t("taskDetail.copy.taskNotLoaded"));
-      const sourceLabel = issue.identifier ?? "the stalled task";
+      const sourceLabel = issue.identifier ?? fullSharedT("fullShared.the_stalled_task_701f1d");
       const descriptionLines = [
         `Re-issued from ${sourceLabel} on an isolated git worktree after a workspace branch divergence.`,
         "",
@@ -6943,7 +6975,7 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
         issue.description ?? "",
       ];
       return issuesApi.create(issue.companyId, {
-        title: `Re-issue (isolated): ${issue.title ?? sourceLabel}`,
+        title: fullSharedT("fullShared.re_issue_isolated_329af4", { value1: issue.title ?? sourceLabel }),
         description: descriptionLines.join("\n"),
         priority: issue.priority,
         projectId: issue.projectId ?? null,
@@ -7675,6 +7707,16 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-52 p-1" align="end">
+                {taskChatShellEnabled && !historyExpanded ? (
+                  <button
+                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-xs hover:bg-accent/50"
+                    onClick={() => {
+                      expandHistory();
+                      setMoreOpen(false);
+                    }}
+                  >
+                    <ActivityIcon className="h-3 w-3" />{fullSharedT("fullShared.show_task_activity_ba901d")}</button>
+                ) : null}
                 {streamlinedTaskDetailEnabled ? (
                   <>
                     <button
@@ -8673,6 +8715,9 @@ export function TaskDetailSurface({ conversation, tasksTab }: { tasksTab?: TaskS
                     <SheetTitle>{t("taskDetail.copy.sidePanel")}</SheetTitle>
                   </SheetHeader>
                   <TaskSidePanel
+                    pluginPanels={pluginPanels}
+                    openedPluginPanelKeys={openedPluginPanelKeys.current}
+                    dismissedPluginPanelKeys={dismissedPluginPanelKeys.current}
                     openBrowserId={openBrowserId}
                     onBrowserOpened={handleBrowserOpened}
                     key={`${issue.id}:mobile`}
@@ -8817,6 +8862,7 @@ function IssueFileViewer({
   onPromptOpenChange: (next: boolean) => void;
   useSidePanel?: boolean;
 }) {
+  useFullSharedTranslation();
   const viewer = useRequiredFileViewer();
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LabGroup } from "../../kit";
@@ -42,6 +43,7 @@ const RISE_1 = "motion-safe:group-hover/pile:-translate-y-1.5 motion-safe:group-
 const RISE_2 = "motion-safe:group-hover/pile:-translate-y-3 motion-safe:group-has-[[data-primary]:focus-visible]/pile:-translate-y-3";
 
 function Pile({ group, depth }: { group: LabGroup; depth: 0 | 1 | 2 }) {
+  useFullSharedTranslation();
   if (depth === 0) return null;
   return (
     <>
@@ -63,6 +65,7 @@ function Pile({ group, depth }: { group: LabGroup; depth: 0 | 1 | 2 }) {
 
 /** The corner bite of the mosaic: how many artifacts it leaves out, in mono. */
 function MoreTab({ count }: { count: number }) {
+  useFullSharedTranslation();
   return (
     <span aria-hidden className={cn(META_TEXT, CORNER_NOTCH, "px-2 pt-1 pb-0.5 font-medium text-foreground")}>
       +{count}
@@ -71,6 +74,7 @@ function MoreTab({ count }: { count: number }) {
 }
 
 function Mosaic({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const [lead, ...rest] = stackPreviews(group);
   if (!lead) return null;
   if (rest.length === 0) return <GalleryPreview artifact={lead} state={false} />;
@@ -91,6 +95,7 @@ function Mosaic({ group }: { group: LabGroup }) {
 }
 
 export function StackTile({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const depth = pileDepth(group.count);
   const count = plural(group.count, "artifact");
   return (
@@ -109,13 +114,13 @@ export function StackTile({ group }: { group: LabGroup }) {
             {/* Always two lines — what is in it, then when — so the feet of a row line up; a long count wraps inside its own line. */}
             <p className={cn(META_TEXT, "flex min-w-0 flex-1 flex-col text-(--solid-meta)")}>
               <Counts lead={count} of={group.artifacts} />
-              <span className="truncate">Updated {group.updatedLabel}</span>
+              <span className="truncate"><FullSharedTrans i18nKey="fullShared.updated_44d29d" components={{ part1: <>{group.updatedLabel}</> }} /></span>
             </p>
             <a
               data-primary
               href={`#stack-${group.taskIdentifier}`}
-              aria-label={`Open stack ${group.taskIdentifier}: ${group.title}, ${count}`}
-              title={`Open stack ${group.taskIdentifier}: ${group.title}\n${count} · Updated ${group.updatedLabel}`}
+              aria-label={fullSharedT("fullShared.open_stack_e9fe49", { value1: group.taskIdentifier, value2: group.title, value3: count })}
+              title={fullSharedT("fullShared.open_stack_updated_d90c95", { value1: group.taskIdentifier, value2: group.title, value3: count, value4: group.updatedLabel })}
               // The cover reaches up over the pile, so the whole object is one target.
               className={cn(BUTTON, BUTTON_PRIMARY, COVER, "w-7 cursor-pointer px-0 after:-top-7 after:cursor-pointer")}
             >

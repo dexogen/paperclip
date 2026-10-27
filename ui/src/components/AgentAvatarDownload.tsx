@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export function AgentAvatarDownload({
   name: string;
   iconOnly?: boolean;
 }) {
+  useFullSharedTranslation();
   const [downloading, setDownloading] = useState(false);
   const [failed, setFailed] = useState(false);
   const download = async () => {
@@ -51,8 +53,8 @@ export function AgentAvatarDownload({
         asChild
       >
         <a
-          aria-label="Download avatar"
-          title="Download avatar"
+          aria-label={fullSharedT("fullShared.download_avatar_e7dc2a")}
+          title={fullSharedT("fullShared.download_avatar_e7dc2a")}
           href={avatarUrl}
           download={agentAvatarFilename(name)}
           aria-disabled={downloading}
@@ -66,13 +68,11 @@ export function AgentAvatarDownload({
           ) : (
             <Download className="size-4" />
           )}
-          {!iconOnly && "Download avatar"}
+          {!iconOnly && fullSharedT("fullShared.download_avatar_e7dc2a")}
         </a>
       </Button>
       {failed && (
-        <p role="alert" className="text-sm text-destructive">
-          Couldn’t download the avatar. Try downloading it again.
-        </p>
+        <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.couldn_t_download_the_avatar_try_downloading_it_agai_f77ab7")}</p>
       )}
     </div>
   );

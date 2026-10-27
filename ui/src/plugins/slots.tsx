@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 /**
  * @fileoverview Plugin UI slot system — dynamic loading, error isolation,
  * and rendering of plugin-contributed UI extensions.
@@ -108,6 +109,7 @@ export type RegisteredPluginComponent =
 
 type SlotFilters = {
   slotTypes: PluginUiSlotType[];
+  taskSidePanel?: boolean;
   entityType?: PluginUiSlotEntityType | null;
   companyId?: string | null;
   enabled?: boolean;
@@ -662,6 +664,7 @@ export function usePluginSlots(filters: SlotFilters): UsePluginSlotsResult {
     for (const contribution of data ?? []) {
       for (const slot of contribution.slots) {
         if (!allowedTypes.has(slot.type)) continue;
+        if (filters.taskSidePanel && !slot.taskSidePanel) continue;
         if (requiresEntityType(slot.type)) {
           if (!filters.entityType) continue;
           if (!slot.entityTypes?.includes(filters.entityType)) continue;
@@ -684,7 +687,7 @@ export function usePluginSlots(filters: SlotFilters): UsePluginSlotsResult {
       return a.displayName.localeCompare(b.displayName);
     });
     return rows;
-  }, [data, filters.entityType, slotTypesKey]);
+  }, [data, filters.entityType, filters.taskSidePanel, slotTypesKey]);
 
   // A replacement surface must not disappear while an unrelated plugin loads.
   const contributions = useMemo(() => {
@@ -734,9 +737,7 @@ class PluginSlotErrorBoundary extends Component<PluginSlotErrorBoundaryProps, Pl
     if (this.state.hasError) {
       if (this.props.fallback !== undefined) return this.props.fallback;
       return (
-        <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", this.props.className)}>
-          {this.props.slot.pluginDisplayName}: failed to render
-        </div>
+        <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", this.props.className)}><FullSharedTrans i18nKey="fullShared.failed_to_render_fe810d" components={{ part1: <>{this.props.slot.pluginDisplayName}</> }} /></div>
       );
     }
     return this.props.children;
@@ -754,6 +755,7 @@ function PluginWebComponentMount({
   context: PluginSlotContext;
   className?: string;
 }) {
+  useFullSharedTranslation();
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -818,6 +820,7 @@ function PluginBridgeScope({
   context: PluginSlotContext;
   children: ReactNode;
 }) {
+  useFullSharedTranslation();
   const { data: session } = useQuery({
     queryKey: queryKeys.auth.session,
     queryFn: () => authApi.getSession(),
@@ -841,6 +844,7 @@ export function PluginSlotMount({
   componentProps,
   fallback,
 }: PluginSlotMountProps) {
+  useFullSharedTranslation();
   usePluginRegistrySubscription();
   const [, forceRerender] = useState(0);
   const component = resolveRegisteredComponent(slot);
@@ -923,6 +927,7 @@ export function PluginSlotOutlet({
   missingBehavior = "hidden",
   errorBehavior = "inline",
 }: PluginSlotOutletProps) {
+  useFullSharedTranslation();
   const { slots, errorMessage } = usePluginSlots({
     slotTypes,
     entityType,
@@ -931,9 +936,7 @@ export function PluginSlotOutlet({
 
   if (errorMessage && errorBehavior === "inline") {
     return (
-      <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}>
-        Plugin extensions unavailable: {errorMessage}
-      </div>
+      <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}><FullSharedTrans i18nKey="fullShared.plugin_extensions_unavailable_6f84c2" components={{ part1: <>{errorMessage}</> }} /></div>
     );
   }
 

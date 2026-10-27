@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { Link } from "@/lib/router";
 import { Bot, User, Cog, ChevronDown, ListFilter } from "lucide-react";
@@ -42,6 +43,7 @@ function actorLabel(event: CaseEvent): string {
 }
 
 function ActorIcon({ event }: { event: CaseEvent }) {
+  useFullSharedTranslation();
   const Icon = event.actorType === "agent" ? Bot : event.actorType === "user" ? User : Cog;
   return <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />;
 }
@@ -52,6 +54,7 @@ function issueRelationLabel(event: CaseEvent): string {
 
 /** One event with actor + run→issue attribution (P4 §1). */
 export function CaseEventRow({ event, compact = false }: { event: CaseEvent; compact?: boolean }) {
+  useFullSharedTranslation();
   const detail =
     event.kind === "status_changed" && event.payload
       ? `${(event.payload.previousStatus as string) ?? "?"} → ${(event.payload.status as string) ?? "?"}`
@@ -91,6 +94,7 @@ export function CaseEventRow({ event, compact = false }: { event: CaseEvent; com
 
 /** The full activity feed with kind filters (detail-page Activity tab). */
 export function CaseActivityFeed({ events }: { events: CaseEvent[] }) {
+  useFullSharedTranslation();
   const [active, setActive] = useState<Set<CaseEventKind>>(new Set());
 
   // Only offer filters for kinds actually present, in first-seen order.
@@ -115,21 +119,19 @@ export function CaseActivityFeed({ events }: { events: CaseEvent[] }) {
   }
 
   const filterLabel = active.size === 0
-    ? "All activity"
+    ? fullSharedT("surfacesGap.audit.allActivity")
     : active.size === 1
       ? EVENT_LABEL[[...active][0]!] ?? [...active][0]!
-      : `${active.size} filters`;
+      : fullSharedT("fullShared.filters_36d584", { value1: active.size });
 
   if (events.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">No activity yet.</p>;
+    return <p className="py-6 text-center text-sm text-muted-foreground">{fullSharedT("fullShared.no_activity_yet_a288d2")}</p>;
   }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs text-muted-foreground">
-          {filtered.length} of {events.length} events
-        </p>
+        <p className="text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.of_events_4db929" components={{ part1: <>{filtered.length}</>, part2: <>{events.length}</> }} /></p>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="h-8 gap-1.5">
@@ -139,10 +141,8 @@ export function CaseActivityFeed({ events }: { events: CaseEvent[] }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Activity filter</DropdownMenuLabel>
-            <DropdownMenuItem onSelect={() => setActive(new Set())}>
-              All activity
-            </DropdownMenuItem>
+            <DropdownMenuLabel>{fullSharedT("fullShared.activity_filter_047275")}</DropdownMenuLabel>
+            <DropdownMenuItem onSelect={() => setActive(new Set())}>{fullSharedT("surfacesGap.audit.allActivity")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             {presentKinds.map((kind) => (
               <DropdownMenuCheckboxItem
@@ -157,7 +157,7 @@ export function CaseActivityFeed({ events }: { events: CaseEvent[] }) {
         </DropdownMenu>
       </div>
       {filtered.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">No events match this filter.</p>
+        <p className="py-6 text-center text-sm text-muted-foreground">{fullSharedT("fullShared.no_events_match_this_filter_f5044d")}</p>
       ) : (
         <div className="divide-y divide-border">
           {filtered.map((event) => (

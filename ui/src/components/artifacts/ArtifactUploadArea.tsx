@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { SidePanelFrame } from "@/components/side-panel/SidePanelFrame";
 import { ArtifactDropzone } from "./ArtifactDropzone";
@@ -14,8 +15,9 @@ export function ArtifactUploadArea({ children, header, empty = false, entries = 
   onRetry?: (id: string) => void;
   onDismiss?: (id: string) => void;
 }) {
+  useFullSharedTranslation();
   return <ArtifactDropzone onUpload={onUpload}>
-    <SidePanelFrame presentation="sheet" label="Task artifacts" header={header} trailingControls={<ArtifactUploadButton onUpload={onUpload} />}>
+    <SidePanelFrame presentation="sheet" label={fullSharedT("fullShared.task_artifacts_e186be")} header={header} trailingControls={<ArtifactUploadButton onUpload={onUpload} />}>
       <ArtifactUploadContent empty={empty} entries={entries} onRetry={onRetry} onDismiss={onDismiss}>{children}</ArtifactUploadContent>
     </SidePanelFrame>
   </ArtifactDropzone>;

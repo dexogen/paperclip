@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 export type MatchSourceChipKind = "title" | "identifier" | "comment" | "document";
@@ -14,10 +16,10 @@ const chipStyles: Record<MatchSourceChipKind, string> = {
 };
 
 const chipLabels: Record<MatchSourceChipKind, string> = {
-  title: "Title",
-  identifier: "Identifier",
-  comment: "Comment",
-  document: "Doc",
+  get title() { return fullSharedT("fullShared.title_7e8cd2"); },
+  get identifier() { return fullSharedTailT("fullSharedTail.display_aba08e15aff8"); },
+  get comment() { return fullSharedTailT("fullSharedTail.display_066fa381df1b"); },
+  get document() { return fullSharedTailT("fullSharedTail.display_2cb11b9533ea"); },
 };
 
 export interface MatchSourceChipProps {
@@ -30,6 +32,7 @@ export interface MatchSourceChipProps {
 // design-allow(pill-pattern): --chip-match-* domain token family (DESIGN.md domain tier); a
 // deliberately separate chip system, not a Badge.
 export function MatchSourceChip({ kind, count, label, className }: MatchSourceChipProps) {
+  useFullSharedTranslation();
   const text = label ?? chipLabels[kind];
   const showCount = typeof count === "number" && count > 1;
   return (

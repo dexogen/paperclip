@@ -1,3 +1,5 @@
+import { renderAppError } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { type FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ToolMcpGatewayContextScopeType, ToolProfileWithDetails } from "@paperclipai/shared";
@@ -34,6 +36,7 @@ export function NewGatewayDialog({
   onOpenChange: (open: boolean) => void;
   onCreated?: (gatewayId: string) => void;
 }) {
+  useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const [name, setName] = useState("");
@@ -63,7 +66,7 @@ export function NewGatewayDialog({
         contextScopeType: "company" satisfies ToolMcpGatewayContextScopeType,
       }),
     onSuccess: async (gateway) => {
-      pushToast({ title: "Gateway created", body: gateway.name, tone: "success" });
+      pushToast({ title: fullAppsT("fullApps.gateway_created_bf088b"), body: gateway.name, tone: "success" });
       await queryClient.invalidateQueries({ queryKey: gatewaysQueryKey(companyId) });
       setName("");
       setDescription("");
@@ -72,8 +75,8 @@ export function NewGatewayDialog({
     },
     onError: (error) => {
       pushToast({
-        title: "Gateway was not created",
-        body: error instanceof Error ? error.message : String(error),
+        title: fullAppsT("fullApps.gateway_was_not_created_449e74"),
+        body: error instanceof Error ? renderAppError(error) : String(error),
         tone: "error",
       });
     },
@@ -92,25 +95,22 @@ export function NewGatewayDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>New gateway</DialogTitle>
-          <DialogDescription>
-            One safe MCP endpoint that exposes only the apps in its access profile. Hand it to a client
-            like Cursor or Claude Desktop.
-          </DialogDescription>
+          <DialogTitle>{fullAppsT("fullApps.new_gateway_9dff4b")}</DialogTitle>
+          <DialogDescription>{fullAppsT("fullApps.one_safe_mcp_endpoint_that_exposes_only_the_apps_in__ae7344")}</DialogDescription>
         </DialogHeader>
         <form className="space-y-4" onSubmit={submit}>
           <label className="block space-y-1.5">
-            <span className="text-xs font-medium text-muted-foreground">Name</span>
+            <span className="text-xs font-medium text-muted-foreground">{fullAppsT("fullApps.name_dcd1d5")}</span>
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="CTO agents"
+              placeholder={fullAppsT("fullApps.cto_agents_244581")}
               required
               autoFocus
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-xs font-medium text-muted-foreground">Access profile</span>
+            <span className="text-xs font-medium text-muted-foreground">{fullAppsT("fullApps.access_profile_0ffe9d")}</span>
             <select
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={profileId}
@@ -119,7 +119,7 @@ export function NewGatewayDialog({
               disabled={noProfiles}
             >
               <option value="" disabled>
-                {profilesLoading ? "Loading profiles…" : "Choose a profile"}
+                {profilesLoading ? fullAppsT("fullApps.loading_profiles_16b0bb") : fullAppsT("fullApps.choose_a_profile_416c34")}
               </option>
               {activeProfiles.map((profile) => (
                 <option key={profile.id} value={profile.id}>
@@ -127,33 +127,27 @@ export function NewGatewayDialog({
                 </option>
               ))}
             </select>
-            <span className="text-xs text-muted-foreground">
-              The profile decides which tools this gateway allows. You can change it later.
-            </span>
+            <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.the_profile_decides_which_tools_this_gateway_allows__846e00")}</span>
           </label>
           <label className="block space-y-1.5">
-            <span className="text-xs font-medium text-muted-foreground">Description (optional)</span>
+            <span className="text-xs font-medium text-muted-foreground">{fullAppsT("fullApps.description_optional_f6cbe2")}</span>
             <textarea
               className="min-h-16 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Who this endpoint is for and when it should be rotated."
+              placeholder={fullAppsT("fullApps.who_this_endpoint_is_for_and_when_it_should_be_rotat_1f1384")}
             />
           </label>
           {noProfiles ? (
-            <p className="text-xs text-destructive">
-              Create an access profile under Advanced before adding a gateway.
-            </p>
+            <p className="text-xs text-destructive">{fullAppsT("fullApps.create_an_access_profile_under_advanced_before_addin_fc0145")}</p>
           ) : null}
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>{fullAppsT("fullApps.cancel_19766e")}</Button>
             <Button
               type="submit"
               disabled={createMutation.isPending || noProfiles || !name.trim() || !profileId}
             >
-              {createMutation.isPending ? "Creating…" : "Create gateway"}
+              {createMutation.isPending ? fullAppsT("taskProperties.fields.creating") : fullAppsT("fullApps.create_gateway_f1d4a6")}
             </Button>
           </DialogFooter>
         </form>

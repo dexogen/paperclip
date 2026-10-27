@@ -225,7 +225,7 @@ export function Artifacts() {
     } else {
       setBreadcrumbs([{ label: t("surfacesGap.artifacts.title") }]);
     }
-  }, [setBreadcrumbs, viewingSelectedStack, selectedGroup, i18n.resolvedLanguage]);
+  }, [setBreadcrumbs, viewingSelectedStack, selectedGroup, i18n.resolvedLanguage, i18n.language]);
 
   if (!selectedCompanyId) {
     return <EmptyState icon={Package} message={t("surfacesGap.artifacts.selectCompany")} />;

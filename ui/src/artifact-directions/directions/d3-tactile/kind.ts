@@ -1,3 +1,6 @@
+import { t, i18n } from "@/i18n";
+import { artifactUnit } from "../../localized-copy";
+import { t as fullSharedT } from "@/i18n";
 import { fileKindForName } from "@/components/task-chat/task-chat-attachments";
 import type { LabArtifact } from "../../kit";
 
@@ -54,19 +57,19 @@ export function pathOf(url: string | undefined): string {
 
 /** "Document", "Image", "PDF", "Markdown", "Slides", "Sheet", "ZIP", "HTML", "File", "Link". */
 export function kindLabel(a: LabArtifact): string {
-  if (isTaskDocument(a)) return "Document";
+  if (isTaskDocument(a)) return t("fullDiagnostics.kindDocument");
   switch (a.kind) {
     case "image":
-      return "Image";
+      return t("fullDiagnostics.kindImage");
     case "video":
-      return "Video";
+      return t("fullDiagnostics.kindVideo");
     case "link":
-      return "Link";
+      return t("fullDiagnostics.kindLink");
     case "slides":
       // The product's mapper has no entry for .pptx and says "File"; the object is a slide, so the word is too.
-      return "Slides";
+      return t("fullDiagnostics.kindSlides");
     default:
-      return fileKindForName(a.filename ?? "").label;
+      return fileKindForName(a.filename ?? "", i18n.t).label;
   }
 }
 
@@ -96,7 +99,7 @@ export function tabTone(a: LabArtifact): TabTone {
 export function metaParts(a: LabArtifact): MetaPart[] {
   const parts: MetaPart[] = [{ text: kindLabel(a) }];
   if (isTaskDocument(a)) {
-    parts.push({ lead: "rev", text: String(a.revision), mono: true });
+    parts.push({ lead: fullSharedT("fullDiagnostics.revisionUnit"), text: String(a.revision), mono: true });
     return parts;
   }
   if (a.kind === "link") {
@@ -105,7 +108,7 @@ export function metaParts(a: LabArtifact): MetaPart[] {
   }
   if (a.sizeLabel) parts.push({ text: a.sizeLabel, mono: true });
   if (a.kind === "video" && a.durationLabel) parts.push({ text: a.durationLabel, mono: true });
-  if (a.pageCount && a.pageCount > 1) parts.push({ text: String(a.pageCount), mono: true, unit: a.kind === "slides" ? "slides" : "pages" });
+  if (a.pageCount && a.pageCount > 1) parts.push({ text: String(a.pageCount), mono: true, unit: artifactUnit(a.pageCount, a.kind === "slides" ? "slide" : "page") });
   return parts;
 }
 
@@ -120,36 +123,36 @@ export const taskHref = anchor;
  */
 export function galleryActions(a: LabArtifact): ArtifactAction[] {
   if (isTaskDocument(a)) return [];
-  if (a.kind === "link") return [{ label: "Open link in new tab", icon: "external", href: anchor(a) }];
+  if (a.kind === "link") return [{ label: fullSharedT("fullShared.open_link_in_new_tab_a536d8"), icon: "external", href: anchor(a) }];
   return [
-    { label: "Open file in new tab", icon: "external", href: anchor(a) },
-    { label: "Download file", icon: "download", href: anchor(a) },
+    { label: fullSharedT("surfacesGap.artifacts.openFile"), icon: "external", href: anchor(a) },
+    { label: fullSharedT("taskPanels.preview.download"), icon: "download", href: anchor(a) },
   ];
 }
 
 /** THREAD — the one thing to do with it (RichWorkProductCard.tsx:148-191). */
 export function primaryAction(a: LabArtifact): ArtifactAction {
-  if (isTaskDocument(a)) return { label: "Open document", icon: "open", href: anchor(a) };
-  if (a.kind === "image" || a.kind === "video") return { label: "Open gallery", icon: "gallery" };
-  if (a.kind === "link") return { label: "Open preview", icon: "external", href: anchor(a) };
-  if (isTextLike(a)) return { label: "Open in tab", icon: "open", href: anchor(a) };
-  return { label: "Download", icon: "download", href: anchor(a) };
+  if (isTaskDocument(a)) return { label: fullSharedT("taskChatUi.resource.openDocument"), icon: "open", href: anchor(a) };
+  if (a.kind === "image" || a.kind === "video") return { label: fullSharedT("taskChatUi.resource.gallery"), icon: "gallery" };
+  if (a.kind === "link") return { label: fullSharedT("taskChatUi.resource.openPreview"), icon: "external", href: anchor(a) };
+  if (isTextLike(a)) return { label: fullSharedT("taskPanels.file.openTab"), icon: "open", href: anchor(a) };
+  return { label: fullSharedT("fullShared.download_d6eafe"), icon: "download", href: anchor(a) };
 }
 
 /** THREAD — text-like files open in the side panel and keep Download as its own target. */
 export function secondaryAction(a: LabArtifact): ArtifactAction | null {
-  return isTextLike(a) ? { label: "Download", icon: "download", href: anchor(a) } : null;
+  return isTextLike(a) ? { label: fullSharedT("fullShared.download_d6eafe"), icon: "download", href: anchor(a) } : null;
 }
 
 /** PANEL — the wording of the pane's buttons (RichArtifactCards.tsx). */
 export function panelActions(a: LabArtifact): ArtifactAction[] {
-  if (a.kind === "document") return [{ label: "Read document", icon: "open", href: anchor(a) }];
-  if (a.kind === "image") return [{ label: "View image", icon: "gallery" }];
-  if (a.kind === "video") return [{ label: "Open video", icon: "gallery" }];
-  if (a.kind === "link") return [{ label: "Open link", icon: "external", href: anchor(a) }];
+  if (a.kind === "document") return [{ label: fullSharedT("taskPanels.card.readDocument"), icon: "open", href: anchor(a) }];
+  if (a.kind === "image") return [{ label: fullSharedT("taskPanels.card.viewImage"), icon: "gallery" }];
+  if (a.kind === "video") return [{ label: fullSharedT("taskPanels.card.openVideo"), icon: "gallery" }];
+  if (a.kind === "link") return [{ label: fullSharedT("taskPanels.card.openLink"), icon: "external", href: anchor(a) }];
   return [
-    { label: "Open file", icon: "external", href: anchor(a) },
-    { label: "Download file", icon: "download", href: anchor(a) },
+    { label: fullSharedT("taskPanels.card.openFile"), icon: "external", href: anchor(a) },
+    { label: fullSharedT("taskPanels.preview.download"), icon: "download", href: anchor(a) },
   ];
 }
 
@@ -159,9 +162,9 @@ export function panelActions(a: LabArtifact): ArtifactAction[] {
  */
 export function panelIconActions(a: LabArtifact): ArtifactAction[] {
   if (isTaskDocument(a) || !isTextLike(a)) return [];
-  const inTab: ArtifactAction = { label: "Open in tab", icon: "open", href: anchor(a) };
+  const inTab: ArtifactAction = { label: fullSharedT("taskPanels.file.openTab"), icon: "open", href: anchor(a) };
   if (a.kind !== "document") return [inTab];
-  return [inTab, { label: "Open raw", icon: "external", href: anchor(a) }, { label: "Download", icon: "download", href: anchor(a) }];
+  return [inTab, { label: fullSharedT("taskPanels.file.openRaw"), icon: "external", href: anchor(a) }, { label: fullSharedT("fullShared.download_d6eafe"), icon: "download", href: anchor(a) }];
 }
 
 /**

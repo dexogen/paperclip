@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import { LAB_KINDS, type LabArtifact, type LabKind, type LabRun } from "../../kit";
 import { isTaskDocument } from "./kinds";
 
@@ -45,7 +47,7 @@ export function buildSections(artifacts: LabArtifact[], filter: PanelFilter = "a
     const latest = items.reduce((newest, a) => (a.updatedAt > newest.updatedAt ? a : newest), items[0]);
     return {
       id,
-      title: run ? run.agent : items.every(isTaskDocument) ? "Task documents" : "Documents and links",
+      title: run ? run.agent : items.every(isTaskDocument) ? fullSharedT("taskPanels.document.section") : t("fullDiagnostics.documentsAndLinks"),
       run,
       artifacts: items,
       reviewCount: items.filter(needsReview).length,

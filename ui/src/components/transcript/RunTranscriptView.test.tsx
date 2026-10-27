@@ -453,6 +453,36 @@ describe("RunTranscriptView locale preservation", () => {
     expect(html).toContain("Completed");
   });
 
+  it("preserves result markdown, canonical blocks and mounted content across EN/RU/EN", async () => {
+    const entries: TranscriptEntry[] = [
+      { kind: "init", ts: "init-time", model: "model_<raw>", sessionId: "session_<raw>" },
+      { kind: "workspace_change", ts: "workspace-time", changeSetId: "change-opaque", revision: 1, source: "runner_verified", complete: true, files: [], totals: { files: 2, additions: 0, deletions: 0 }, patchArtifactRef: null },
+      { kind: "result", ts: "result-time", text: "## Provider summary\n\n[Literal provider link](https://example.invalid/result)", inputTokens: 1000, outputTokens: 2000, cachedTokens: 0, costUsd: 0, subtype: "success", isError: false, errors: [] },
+    ];
+    const original = JSON.stringify(entries);
+    const canonical = keyTranscriptBlocks(normalizeTranscript(entries, false));
+    const raw = renderToStaticMarkup(<RunTranscriptView entries={entries} mode="raw" />);
+    root = createRoot(container);
+    await act(async () => root!.render(<ThemeProvider><RunTranscriptView entries={entries} /></ThemeProvider>));
+    const heading = container.querySelector("h2")!;
+    const link = container.querySelector<HTMLAnchorElement>('a[href="https://example.invalid/result"]')!;
+    expect(heading?.textContent).toBe("Provider summary");
+    expect(link?.textContent).toBe("Literal provider link");
+    link.focus();
+    for (const locale of ["ru", "en"]) {
+      await act(async () => { await i18n.changeLanguage(locale); });
+      expect(keyTranscriptBlocks(normalizeTranscript(entries, false))).toEqual(canonical);
+      expect(renderToStaticMarkup(<RunTranscriptView entries={entries} mode="raw" />)).toBe(raw);
+      expect(container.querySelector("h2")).toBe(heading);
+      expect(container.querySelector('a[href="https://example.invalid/result"]')).toBe(link);
+      expect(document.activeElement).toBe(link);
+      expect(container.textContent).toContain(locale === "ru" ? "Изменены 2 файла" : "2 changed files");
+      expect(container.textContent).toContain("model_<raw>");
+      expect(container.textContent).toContain("session_<raw>");
+      expect(JSON.stringify(entries)).toBe(original);
+    }
+  });
+
   it("preserves raw event content and keys across locale switches", async () => {
     const entries: TranscriptEntry[] = [
       { kind: "init", ts: "2026-10-26T01:00:00Z", model: "model_<raw>", sessionId: "session_opaque" },

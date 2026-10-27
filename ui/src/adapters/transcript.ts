@@ -1,3 +1,5 @@
+import { isTrimmedOutputMarkerChunk } from "@/lib/run-log-chunks";
+import { t as fullSharedT } from "@/i18n";
 import { redactHomePathUserSegments, redactTranscriptEntryPaths } from "@paperclipai/adapter-utils";
 import type { TranscriptEntry, StdoutLineParser, TranscriptParserSource } from "./types";
 
@@ -60,13 +62,13 @@ function createTranscriptParseErrorEntry(
   error: unknown,
   redactionOptions: RedactionOptions,
 ): TranscriptEntry {
-  const errorText = formatTranscriptParserError(error) || "unknown parser error";
+  const errorText = formatTranscriptParserError(error) || fullSharedT("fullShared.unknown_parser_error_6c19d9");
   const preview = truncateTranscriptLine(line);
   return {
     kind: "result",
     ts,
     text: redactHomePathUserSegments(
-      `Chat transcript error: ${errorText}. Falling back for line: ${preview}`,
+      fullSharedT("fullShared.chat_transcript_error_falling_back_for_line_86d5a5", { value1: errorText, value2: preview }),
       redactionOptions,
     ),
     inputTokens: 0,
@@ -115,7 +117,9 @@ export function buildTranscript(
       continue;
     }
     if (chunk.stream === "system") {
-      entries.push({ kind: "system", ts: chunk.ts, text: redactHomePathUserSegments(chunk.chunk, redactionOptions) });
+      entries.push({ kind: "system", ts: chunk.ts, text: isTrimmedOutputMarkerChunk(chunk)
+        ? fullSharedT("fullShared.earlier_output_trimmed_to_stay_within_the_live_trans_482cf7")
+        : redactHomePathUserSegments(chunk.chunk, redactionOptions) });
       continue;
     }
 

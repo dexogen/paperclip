@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 /**
  * Plugin UI bridge runtime — concrete implementations of the bridge hooks.
  *
@@ -174,6 +175,7 @@ export const PluginBridgeContext =
   createContext<PluginBridgeContextValue | null>(null);
 
 function usePluginBridgeContext(): PluginBridgeContextValue {
+  useFullSharedTranslation();
   const ctx = useContext(PluginBridgeContext);
   if (!ctx) {
     throw new Error(
@@ -358,6 +360,7 @@ export function usePluginData<T = unknown>(
   key: string,
   params?: Record<string, unknown>,
 ): PluginDataResult<T> {
+  useFullSharedTranslation();
   const { pluginId, hostContext } = usePluginBridgeContext();
   const companyId = hostContext.companyId;
   const renderEnvironmentSnapshot = serializeRenderEnvironment(hostContext.renderEnvironment);
@@ -447,6 +450,7 @@ export type PluginActionFn = (params?: Record<string, unknown>) => Promise<unkno
  * On failure, the function throws a `PluginBridgeError`.
  */
 export function usePluginAction(key: string): PluginActionFn {
+  useFullSharedTranslation();
   const bridgeContext = usePluginBridgeContext();
   const contextRef = useRef(bridgeContext);
   contextRef.current = bridgeContext;
@@ -593,6 +597,7 @@ export function usePluginStream<T = unknown>(
   channel: string,
   options?: { companyId?: string },
 ): PluginStreamResult<T> {
+  useFullSharedTranslation();
   const { pluginId, hostContext } = usePluginBridgeContext();
   const effectiveCompanyId = options?.companyId ?? hostContext.companyId ?? undefined;
   const [events, setEvents] = useState<T[]>([]);
@@ -656,7 +661,7 @@ export function usePluginStream<T = unknown>(
     source.onerror = () => {
       setConnecting(false);
       setConnected(false);
-      setError(new Error(`Failed to connect to plugin stream "${channel}"`));
+      setError(new Error(fullSharedT("fullShared.failed_to_connect_to_plugin_stream_7a3ab7", { value1: channel })));
       source.close();
       if (sourceRef.current === source) {
         sourceRef.current = null;

@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AgentChats } from "./pages/AgentChats";
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import type { ToolConnectionCredentialSource } from "@paperclipai/shared";
@@ -53,14 +54,16 @@ const AssistantConnectionsPage = lazy(() => import("./pages/McpConnect").then((m
 const ProductionLayout = lazy(() => import("./components/Layout.production").then((module) => ({ default: module.Layout })));
 
 const TaskChatLab = lazy(() => import("./pages/TaskChatLab").then((module) => ({ default: module.TaskChatLab })));
-const Issues = lazy(() => import("./pages/Issues").then((module) => ({ default: module.Issues })));
+const loadIssues = () => import("./pages/Issues").then((module) => ({ default: module.Issues }));
+const Issues = lazy(loadIssues);
 let issueDetailLoad: Promise<{ default: typeof import("./pages/IssueDetail").IssueDetail }> | undefined;
 const loadIssueDetail = () =>
   (issueDetailLoad ??= import("./pages/IssueDetail").then((module) => ({ default: module.IssueDetail })));
 const IssueDetail = lazy(loadIssueDetail);
 const AgentChat = lazy(() => import("./pages/AgentChat").then((module) => ({ default: module.AgentChat })));
 const IssueChatLongThreadPerf = lazy(() => import("./pages/IssueChatLongThreadPerf").then((module) => ({ default: module.IssueChatLongThreadPerf })));
-const Inbox = lazy(() => import("./pages/Inbox").then((module) => ({ default: module.Inbox })));
+const loadInbox = () => import("./pages/Inbox").then((module) => ({ default: module.Inbox }));
+const Inbox = lazy(loadInbox);
 const BootstrapSetupUxLab = lazy(() => import("./pages/BootstrapSetupUxLab").then((module) => ({ default: module.BootstrapSetupUxLab })));
 const ResponsibleUserDenialUxLab = lazy(() => import("./pages/ResponsibleUserDenialUxLab").then((module) => ({ default: module.ResponsibleUserDenialUxLab })));
 const CrossIssueCollaborationUxLab = lazy(() => import("./pages/CrossIssueCollaborationUxLab").then((module) => ({ default: module.CrossIssueCollaborationUxLab })));
@@ -138,6 +141,7 @@ const ProductionCompanyActivity = lazy(() => import("./pages/audit/CompanyActivi
 const ProductionOrgChart = lazy(() => import("./pages/OrgChart.production").then((module) => ({ default: module.OrgChart })));
 
 function ProductionSurface({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   return <Suspense fallback={<PaperclipLoading />}>{children}</Suspense>;
 }
 
@@ -448,6 +452,7 @@ function AppsConnectEntryRoute({
 }: {
   credentialSource?: ToolConnectionCredentialSource;
 } = {}) {
+  useFullSharedTranslation();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const { enabled: chatConnectorsEnabled, githubEnabled: githubReviewBotsEnabled } = useChatConnectorsEnabled();
@@ -457,6 +462,7 @@ function AppsConnectEntryRoute({
 }
 
 function InboxRootRedirect() {
+  useFullSharedTranslation();
   const { enabled: streamlinedUiEnabled } = useStreamlinedUiEnabled();
   const { enabled: combinedInboxTasksEnabled } = useCombinedInboxTasksEnabled();
   return streamlinedUiEnabled && combinedInboxTasksEnabled
@@ -466,6 +472,7 @@ function InboxRootRedirect() {
 
 /** Sends a retired Inbox/Tasks URL to its view on the merged Tasks surface. */
 function TaskViewRedirect({ view }: { view: TaskViewKey }) {
+  useFullSharedTranslation();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   params.set(TASK_VIEW_PARAM, view);
@@ -473,6 +480,7 @@ function TaskViewRedirect({ view }: { view: TaskViewKey }) {
 }
 
 function LegacySkillStudioRedirect() {
+  useFullSharedTranslation();
   const location = useLocation();
   const { companies, selectedCompany, loading } = useCompany();
   const { companyPrefix, skillId } = useParams<{ companyPrefix?: string; skillId?: string }>();
@@ -500,6 +508,7 @@ function LegacySkillStudioRedirect() {
 }
 
 function LegacySettingsRedirect() {
+  useFullSharedTranslation();
   const location = useLocation();
   const { companies, selectedCompany, loading } = useCompany();
   const { companyPrefix } = useParams<{ companyPrefix?: string }>();
@@ -545,6 +554,7 @@ function LegacySettingsRedirect() {
 }
 
 function LegacyToolsSettingsRedirect() {
+  useFullSharedTranslation();
   const { tab } = useParams<{ tab?: string }>();
   return <Navigate to={legacyToolsRedirectTarget(tab)} replace />;
 }
@@ -552,6 +562,7 @@ function LegacyToolsSettingsRedirect() {
 // The developer "Tools" surface moved under the Apps "Advanced setup" door
 // (PAP-10862). `/tools` and `/tools/:tab` redirect to their new home.
 function LegacyToolsRedirect() {
+  useFullSharedTranslation();
   const { tab } = useParams<{ tab?: string }>();
   return <Navigate to={legacyToolsRedirectTarget(tab)} replace />;
 }
@@ -585,15 +596,15 @@ export function OnboardingRoutePage() {
   }
 
   const title = matchedCompany
-    ? `Add another agent to ${matchedCompany.name}`
+    ? fullSharedT("fullShared.add_another_agent_to_ec79b3", { value1: matchedCompany.name })
     : companies.length > 0
-      ? "Create another organization"
-      : "Create your first organization";
+      ? fullSharedT("fullShared.create_another_organization_0defc5")
+      : fullSharedT("app.noCompanies.title");
   const description = matchedCompany
-    ? "Run onboarding again to add an agent and a starter task for this organization."
+    ? fullSharedT("fullShared.run_onboarding_again_to_add_an_agent_and_a_starter_t_8b9169")
     : companies.length > 0
-      ? "Run onboarding again to create another organization and seed its first agent."
-      : "Get started by creating an organization and your first agent.";
+      ? fullSharedT("fullShared.run_onboarding_again_to_create_another_organization__1a96e8")
+      : fullSharedT("fullShared.get_started_by_creating_an_organization_and_your_fir_e4bcc5");
 
   return (
     <div className="mx-auto max-w-xl py-10">
@@ -628,7 +639,7 @@ export function OnboardingRoutePage() {
                     : openOnboarding()
               }
             >
-              {matchedCompany ? "Add Agent" : "Start Onboarding"}
+              {matchedCompany ? fullSharedT("fullShared.add_agent_9d4bc8") : fullSharedT("fullShared.start_onboarding_2ffae6")}
             </Button>
           )}
         </div>
@@ -638,6 +649,7 @@ export function OnboardingRoutePage() {
 }
 
 function CompanyRootRedirect() {
+  useFullSharedTranslation();
   const { companies, selectedCompany, loading } = useCompany();
   const location = useLocation();
 
@@ -662,6 +674,7 @@ function CompanyRootRedirect() {
 }
 
 function StatusCardsLegacyRedirect() {
+  useFullSharedTranslation();
   const { cardId } = useParams<{ cardId?: string }>();
   const prefix = useActiveCompanyPrefix();
   const base = prefix ? `/${prefix}` : "";
@@ -675,6 +688,7 @@ function AuditCompatibilityRedirect({
   to: string;
   forceAgentMode?: boolean;
 }) {
+  useFullSharedTranslation();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   if (forceAgentMode) searchParams.set("mode", "agents");
@@ -683,6 +697,7 @@ function AuditCompatibilityRedirect({
 }
 
 function UnprefixedBoardRedirect() {
+  useFullSharedTranslation();
   const location = useLocation();
   const { companies, selectedCompany, loading } = useCompany();
 
@@ -753,13 +768,15 @@ function NoCompaniesStartPage() {
 }
 
 export function App() {
+  useFullSharedTranslation();
   const { pathname } = useLocation();
   const { enabled: streamlinedUiEnabled, loaded: streamlinedUiLoaded } = useStreamlinedUiEnabled();
   const { enabled: combinedInboxTasksEnabled } = useCombinedInboxTasksEnabled();
   useEffect(() => {
-    if (/^\/[^/]+\/(issues|tasks|inbox)(?:\/|$)/.test(pathname)) {
-      void loadIssueDetail().catch(() => undefined);
-    }
+    // Download the requested collection while access/company checks run. Detail
+    // code is already prefetched by row intent; don't compete with the cold list.
+    if (/^\/[^/]+\/inbox(?:\/|$)/.test(pathname)) void loadInbox().catch(() => undefined);
+    else if (/^\/[^/]+\/(issues|tasks)\/?$/.test(pathname)) void loadIssues().catch(() => undefined);
   }, [pathname]);
 
   return (

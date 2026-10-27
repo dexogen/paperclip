@@ -143,82 +143,82 @@ function activityRowVerb(action: string, t: TFunction): string {
   }
 }
 
-const ISSUE_ACTIVITY_LABELS: Record<string, string> = {
-  "issue.created": "created the issue",
-  "issue.updated": "updated the issue",
-  "issue.checked_out": "checked out the issue",
-  "issue.released": "released the issue",
-  "issue.comment_added": "added a comment",
-  "issue.comment_cancelled": "cancelled a queued comment",
-  "issue.queued_comment_edited": "edited a queued comment",
-  "issue.queued_comments_reordered": "reordered queued comments",
-  "issue.queued_comment_discarded": "discarded a queued comment",
-  "issue.comment_deleted": "deleted a comment",
-  "issue.feedback_vote_saved": "saved feedback on an AI output",
-  "issue.attachment_added": "added an attachment",
-  "issue.attachment_removed": "removed an attachment",
-  "issue.document_created": "created a document",
-  "issue.document_updated": "updated a document",
-  "issue.document_locked": "locked a document",
-  "issue.document_unlocked": "unlocked a document",
-  "issue.document_deleted": "deleted a document",
-  "issue.monitor_scheduled": "scheduled a monitor",
-  "issue.monitor_triggered": "triggered a monitor",
-  "issue.monitor_cleared": "cleared a monitor",
-  "issue.monitor_skipped": "skipped a monitor",
-  "issue.monitor_exhausted": "exhausted a monitor",
-  "issue.monitor_recovery_wake_queued": "queued a monitor recovery wake",
-  "issue.monitor_recovery_issue_created": "created a monitor recovery issue",
-  "issue.monitor_escalated_to_board": "escalated a monitor to the board",
-  "issue.deleted": "deleted the issue",
-  "issue.successful_run_handoff_required": "Run finished without a clear next step",
-  "issue.successful_run_handoff_resolved": "Next step chosen",
-  "issue.successful_run_handoff_escalated": "Run finished without a next step - recovery escalated",
-  "issue.cross_issue_influence_cap_rejected": "hit the per-run cross-task write cap",
-  "issue.cross_issue_influence_observed": "made a cross-task write",
-  "issue.attribution_spoof_rejected": "tried to choose its own responsible user",
-  "issue.recovery_action_opened": "Opened a source-scoped recovery action",
-  "issue.workspace_recovered": "Saved work recovered.",
-  "issue.workspace_recovery_requested": "Requested workspace recovery",
-  "issue.recovery_action_resolved": "Resolved the recovery action",
-  "issue.recovery_action_escalated": "Escalated the recovery action",
-  "issue.accepted_plan_decomposition_updated": "updated the accepted-plan decomposition",
-  "agent.created": "created an agent",
-  "agent.updated": "updated the agent",
-  "agent.paused": "paused the agent",
-  "agent.resumed": "resumed the agent",
-  "agent.error_cleared": "cleared the agent error",
-  "agent.terminated": "terminated the agent",
-  "heartbeat.invoked": "invoked a heartbeat",
-  "heartbeat.cancelled": "cancelled a heartbeat",
-  "heartbeat.output_stale_source_resolved": "System folded a stale run",
-  "heartbeat.output_stale_recovery_recursion_refused": "Refused recovery-on-recovery escalation",
-  "approval.created": "requested approval",
-  "approval.approved": "approved",
-  "approval.rejected": "rejected",
-  "issue.thread_interaction_created": "asked for a decision",
-  "issue.thread_interaction_accepted": "accepted the request",
-  "issue.thread_interaction_rejected": "rejected the request",
-  "issue.thread_interaction_answered": "answered the request",
-  "issue.thread_interaction_withdrawn": "withdrew the request",
-  "issue.thread_interaction_cancelled": "cancelled the request",
-  "issue.thread_interaction_skipped": "skipped the request",
-  "issue.thread_interaction_dismissed": "deferred the request",
-  "issue.thread_interaction_expired": "expired the request",
-  "issue.thread_interaction_item_verdicts_submitted": "submitted verdicts on the request",
-  "issue.stalled_review_decided": "recorded a review verdict",
-};
+function getISSUE_ACTIVITY_LABELS(t: TFunction): Record<string, string> { return {
+  get "issue.created"() { return t("fullShared.created_the_issue_9d8ff2"); },
+  get "issue.updated"() { return t("fullShared.updated_the_issue_ad4620"); },
+  get "issue.checked_out"() { return t("fullShared.checked_out_the_issue_6716c0"); },
+  get "issue.released"() { return t("fullShared.released_the_issue_fea7c6"); },
+  get "issue.comment_added"() { return t("fullShared.added_a_comment_112609"); },
+  get "issue.comment_cancelled"() { return t("fullShared.cancelled_a_queued_comment_1b529d"); },
+  get "issue.queued_comment_edited"() { return t("fullShared.edited_a_queued_comment_949cb9"); },
+  get "issue.queued_comments_reordered"() { return t("fullShared.reordered_queued_comments_e19f9c"); },
+  get "issue.queued_comment_discarded"() { return t("fullShared.discarded_a_queued_comment_4ddb19"); },
+  get "issue.comment_deleted"() { return t("fullShared.deleted_a_comment_8f41df"); },
+  get "issue.feedback_vote_saved"() { return t("fullShared.saved_feedback_on_an_ai_output_8f8379"); },
+  get "issue.attachment_added"() { return t("fullShared.added_an_attachment_e285eb"); },
+  get "issue.attachment_removed"() { return t("fullShared.removed_an_attachment_ce4784"); },
+  get "issue.document_created"() { return t("fullShared.created_a_document_a60489"); },
+  get "issue.document_updated"() { return t("fullShared.updated_a_document_dc27a3"); },
+  get "issue.document_locked"() { return t("fullShared.locked_a_document_a4b384"); },
+  get "issue.document_unlocked"() { return t("fullShared.unlocked_a_document_8d59fb"); },
+  get "issue.document_deleted"() { return t("fullShared.deleted_a_document_9bbec1"); },
+  get "issue.monitor_scheduled"() { return t("fullShared.scheduled_a_monitor_c813fd"); },
+  get "issue.monitor_triggered"() { return t("fullShared.triggered_a_monitor_96c68e"); },
+  get "issue.monitor_cleared"() { return t("fullShared.cleared_a_monitor_c8004e"); },
+  get "issue.monitor_skipped"() { return t("fullShared.skipped_a_monitor_901fd8"); },
+  get "issue.monitor_exhausted"() { return t("fullShared.exhausted_a_monitor_c87795"); },
+  get "issue.monitor_recovery_wake_queued"() { return t("fullShared.queued_a_monitor_recovery_wake_d5ffed"); },
+  get "issue.monitor_recovery_issue_created"() { return t("fullShared.created_a_monitor_recovery_issue_3ce71d"); },
+  get "issue.monitor_escalated_to_board"() { return t("fullShared.escalated_a_monitor_to_the_board_d9d7a2"); },
+  get "issue.deleted"() { return t("fullShared.deleted_the_issue_95d007"); },
+  get "issue.successful_run_handoff_required"() { return t("fullShared.run_finished_without_a_clear_next_step_10aac1"); },
+  get "issue.successful_run_handoff_resolved"() { return t("fullShared.next_step_chosen_ac2c77"); },
+  get "issue.successful_run_handoff_escalated"() { return t("fullShared.run_finished_without_a_next_step_recovery_escalated_e64846"); },
+  get "issue.cross_issue_influence_cap_rejected"() { return t("fullShared.hit_the_per_run_cross_task_write_cap_65c620"); },
+  get "issue.cross_issue_influence_observed"() { return t("fullShared.made_a_cross_task_write_b66ede"); },
+  get "issue.attribution_spoof_rejected"() { return t("fullShared.tried_to_choose_its_own_responsible_user_d9bfdb"); },
+  get "issue.recovery_action_opened"() { return t("fullShared.opened_a_source_scoped_recovery_action_f8b3a8"); },
+  get "issue.workspace_recovered"() { return t("fullShared.saved_work_recovered_e49ab0"); },
+  get "issue.workspace_recovery_requested"() { return t("fullShared.requested_workspace_recovery_e45136"); },
+  get "issue.recovery_action_resolved"() { return t("fullShared.resolved_the_recovery_action_2a5db4"); },
+  get "issue.recovery_action_escalated"() { return t("fullShared.escalated_the_recovery_action_ca139a"); },
+  get "issue.accepted_plan_decomposition_updated"() { return t("fullShared.updated_the_accepted_plan_decomposition_d3bed0"); },
+  get "agent.created"() { return t("fullShared.created_an_agent_a0c575"); },
+  get "agent.updated"() { return t("fullShared.updated_the_agent_87de82"); },
+  get "agent.paused"() { return t("fullShared.paused_the_agent_61e9f8"); },
+  get "agent.resumed"() { return t("fullShared.resumed_the_agent_312c5e"); },
+  get "agent.error_cleared"() { return t("fullShared.cleared_the_agent_error_052902"); },
+  get "agent.terminated"() { return t("fullShared.terminated_the_agent_7f5b16"); },
+  get "heartbeat.invoked"() { return t("fullShared.invoked_a_heartbeat_5ae5db"); },
+  get "heartbeat.cancelled"() { return t("fullShared.cancelled_a_heartbeat_042ad8"); },
+  get "heartbeat.output_stale_source_resolved"() { return t("fullShared.system_folded_a_stale_run_e621cf"); },
+  get "heartbeat.output_stale_recovery_recursion_refused"() { return t("fullShared.refused_recovery_on_recovery_escalation_344e92"); },
+  get "approval.created"() { return t("activityUi.verbs.approval.created"); },
+  get "approval.approved"() { return t("fullShared.approved_2687f8"); },
+  get "approval.rejected"() { return t("fullShared.rejected_20cd93"); },
+  get "issue.thread_interaction_created"() { return t("fullShared.asked_for_a_decision_9355a1"); },
+  get "issue.thread_interaction_accepted"() { return t("fullShared.accepted_the_request_f94438"); },
+  get "issue.thread_interaction_rejected"() { return t("fullShared.rejected_the_request_661788"); },
+  get "issue.thread_interaction_answered"() { return t("fullShared.answered_the_request_5864dc"); },
+  get "issue.thread_interaction_withdrawn"() { return t("fullShared.withdrew_the_request_6f73bd"); },
+  get "issue.thread_interaction_cancelled"() { return t("fullShared.cancelled_the_request_d29944"); },
+  get "issue.thread_interaction_skipped"() { return t("fullShared.skipped_the_request_9718a7"); },
+  get "issue.thread_interaction_dismissed"() { return t("fullShared.deferred_the_request_67d618"); },
+  get "issue.thread_interaction_expired"() { return t("fullShared.expired_the_request_8f8235"); },
+  get "issue.thread_interaction_item_verdicts_submitted"() { return t("fullShared.submitted_verdicts_on_the_request_5f3145"); },
+  get "issue.stalled_review_decided"() { return t("fullShared.recorded_a_review_verdict_622b5a"); },
+}; }
 
 /**
  * `issue.stalled_review_decided` carries the verb the actor chose, so the line
  * names the verdict ("approved the review") rather than the generic action.
  * Mirrors `StalledReviewDecisionAction` in shared.
  */
-const STALLED_REVIEW_DECISION_LABELS: Record<string, string> = {
-  approve: "approved the review",
-  request_changes: "requested changes on the review",
-  send_back: "sent the review back to work",
-};
+function getSTALLED_REVIEW_DECISION_LABELS(t: TFunction): Record<string, string> { return {
+  get approve() { return t("fullShared.approved_the_review_e2e13c"); },
+  get request_changes() { return t("fullShared.requested_changes_on_the_review_277975"); },
+  get send_back() { return t("fullShared.sent_the_review_back_to_work_be0191"); },
+}; }
 
 /**
  * `issue.thread_interaction_accepted` / `_rejected` fire for *every* interaction
@@ -227,29 +227,29 @@ const STALLED_REVIEW_DECISION_LABELS: Record<string, string> = {
  * keep the neutral "accepted the request" wording from the tables above, which
  * is also the fallback for an event that carries no kind.
  */
-const INTERACTION_ACCEPTED_LABELS: Record<string, string> = {
-  request_confirmation: "approved the request",
-  request_checkbox_confirmation: "approved the request",
-  suggest_tasks: "accepted the task suggestions",
-  ask_user_questions: "accepted the answers",
-};
+function getINTERACTION_ACCEPTED_LABELS(t: TFunction): Record<string, string> { return {
+  get request_confirmation() { return t("fullShared.approved_the_request_88a99c"); },
+  get request_checkbox_confirmation() { return t("fullShared.approved_the_request_88a99c"); },
+  get suggest_tasks() { return t("fullShared.accepted_the_task_suggestions_ff5e01"); },
+  get ask_user_questions() { return t("fullShared.accepted_the_answers_84f6be"); },
+}; }
 
-const INTERACTION_REJECTED_LABELS: Record<string, string> = {
-  request_confirmation: "rejected the request",
-  request_checkbox_confirmation: "rejected the request",
-  suggest_tasks: "declined the task suggestions",
-  ask_user_questions: "declined the questions",
-};
+function getINTERACTION_REJECTED_LABELS(t: TFunction): Record<string, string> { return {
+  get request_confirmation() { return t("fullShared.rejected_the_request_661788"); },
+  get request_checkbox_confirmation() { return t("fullShared.rejected_the_request_661788"); },
+  get suggest_tasks() { return t("fullShared.declined_the_task_suggestions_706c5e"); },
+  get ask_user_questions() { return t("fullShared.declined_the_questions_07ea82"); },
+}; }
 
 /**
  * Kind-aware wording for an interaction outcome, or `null` when the tables
  * above already say it well enough.
  */
-function formatInteractionOutcomeLabel(action: string, details: ActivityDetails): string | null {
+function formatInteractionOutcomeLabel(action: string, details: ActivityDetails, t: TFunction): string | null {
   const table = action === "issue.thread_interaction_accepted"
-    ? INTERACTION_ACCEPTED_LABELS
+    ? getINTERACTION_ACCEPTED_LABELS(t)
     : action === "issue.thread_interaction_rejected"
-      ? INTERACTION_REJECTED_LABELS
+      ? getINTERACTION_REJECTED_LABELS(t)
       : null;
   if (!table) return null;
   const kind = typeof details?.interactionKind === "string" ? details.interactionKind : null;
@@ -311,14 +311,20 @@ function formatIssueReferenceLabel(reference: ActivityIssueReference, t?: TFunct
   return t ? t("activityUi.reference.task") : "task";
 }
 
-function formatChangedEntityLabel(
-  singular: string,
-  plural: string,
-  labels: string[],
-): string {
-  if (labels.length <= 0) return plural;
-  if (labels.length === 1) return `${singular} ${labels[0]}`;
-  return `${labels.length} ${plural}`;
+function formatLegacyRelationChange(kind: "blocker" | "reviewer" | "approver", operation: "add" | "remove" | "update", labels: string[], t: TFunction): string {
+  if (kind === "blocker") {
+    if (operation === "update") return t("fullActivity.blockerUpdated");
+    if (operation === "add") return labels.length === 1 ? t("fullActivity.blockeraddNamed", { name: labels[0] }) : t("fullActivity.blockeraddCount", { count: labels.length });
+    return labels.length === 1 ? t("fullActivity.blockerremoveNamed", { name: labels[0] }) : t("fullActivity.blockerremoveCount", { count: labels.length });
+  }
+  if (kind === "reviewer") {
+    if (operation === "update") return t("fullActivity.reviewerUpdated");
+    if (operation === "add") return labels.length === 1 ? t("fullActivity.revieweraddNamed", { name: labels[0] }) : t("fullActivity.revieweraddCount", { count: labels.length });
+    return labels.length === 1 ? t("fullActivity.reviewerremoveNamed", { name: labels[0] }) : t("fullActivity.reviewerremoveCount", { count: labels.length });
+  }
+  if (operation === "update") return t("fullActivity.approverUpdated");
+  if (operation === "add") return labels.length === 1 ? t("fullActivity.approveraddNamed", { name: labels[0] }) : t("fullActivity.approveraddCount", { count: labels.length });
+  return labels.length === 1 ? t("fullActivity.approverremoveNamed", { name: labels[0] }) : t("fullActivity.approverremoveCount", { count: labels.length });
 }
 
 function readNumber(value: unknown): number | null {
@@ -331,7 +337,7 @@ function readStringArrayLength(value: unknown): number {
   return value.filter((entry) => typeof entry === "string" && entry.length > 0).length;
 }
 
-function formatAcceptedPlanDecompositionDetail(details: ActivityDetails): string | null {
+function formatAcceptedPlanDecompositionDetail(details: ActivityDetails, t: TFunction): string | null {
   if (!details) return null;
   const status = typeof details.status === "string" ? details.status : null;
   const requested = readNumber(details.requestedChildCount);
@@ -339,13 +345,13 @@ function formatAcceptedPlanDecompositionDetail(details: ActivityDetails): string
   const newlyCreated = readStringArrayLength(details.newlyCreatedChildIssueIds);
   const reused = Math.max(0, totalChildren - newlyCreated);
   const parts: string[] = [];
-  if (newlyCreated > 0) parts.push(`created ${newlyCreated} new`);
-  if (reused > 0) parts.push(`reused ${reused} existing`);
-  if (parts.length === 0 && requested !== null) parts.push(`${requested} requested`);
+  if (newlyCreated > 0) parts.push(t("fullActivity.decompositionCreated", { count: newlyCreated }));
+  if (reused > 0) parts.push(t("fullActivity.decompositionReused", { count: reused }));
+  if (parts.length === 0 && requested !== null) parts.push(t("fullActivity.decompositionRequested", { count: requested }));
   const summary = parts.length > 0 ? parts.join(", ") : null;
-  if (status === "completed" && summary) return `decomposition completed (${summary})`;
-  if (status === "completed") return "decomposition completed";
-  if (status === "in_flight" && summary) return `decomposition in flight (${summary})`;
+  if (status === "completed" && summary) return t("fullActivity.decompositionCompletedSummary", { summary });
+  if (status === "completed") return t("fullActivity.decompositionCompleted");
+  if (status === "in_flight" && summary) return t("fullActivity.decompositionInFlight", { summary });
   return summary;
 }
 
@@ -388,52 +394,52 @@ function formatIssueUpdatedVerb(details: ActivityDetails, t: TFunction): string 
   return null;
 }
 
-function formatAssigneeName(details: ActivityDetails, options: ActivityFormatOptions): string | null {
+function formatAssigneeName(details: ActivityDetails, options: ActivityFormatOptions, t: TFunction): string | null {
   if (!details) return null;
   const agentId = details.assigneeAgentId;
   const userId = details.assigneeUserId;
   if (typeof agentId === "string" && agentId) {
-    return options.agentMap?.get(agentId)?.name ?? "agent";
+    return options.agentMap?.get(agentId)?.name ?? t("activityUi.actor.agent");
   }
   if (typeof userId === "string" && userId) {
-    return formatUserLabel(userId, options);
+    return formatUserLabel(userId, options, t);
   }
   return null;
 }
 
-function formatIssueUpdatedAction(details: ActivityDetails, options: ActivityFormatOptions = {}): string | null {
+function formatIssueUpdatedAction(details: ActivityDetails, options: ActivityFormatOptions, t: TFunction): string | null {
   if (!details) return null;
   const previous = asRecord(details._previous) ?? {};
   const parts: string[] = [];
 
   if (details.status !== undefined) {
     const from = previous.status;
-    const to = humanizeValue(details.status === "in_review" && details.externalConversationState === "waiting" ? "idle" : details.status);
+    const to = activityValue(details.status === "in_review" && details.externalConversationState === "waiting" ? "idle" : details.status, t);
     parts.push(
       from
-        ? `changed the status from ${humanizeValue(from)} to ${to}`
-        : `changed the status to ${to}`,
+        ? t("fullActivity.statusFromTo", { from: activityValue(from, t), to })
+        : t("fullActivity.statusTo", { to }),
     );
   }
   if (details.priority !== undefined) {
     const from = previous.priority;
     parts.push(
       from
-        ? `changed the priority from ${humanizeValue(from)} to ${humanizeValue(details.priority)}`
-        : `changed the priority to ${humanizeValue(details.priority)}`,
+        ? t("fullActivity.priorityFromTo", { from: activityValue(from, t), to: activityValue(details.priority, t) })
+        : t("fullActivity.priorityTo", { to: activityValue(details.priority, t) }),
     );
   }
   if (details.assigneeAgentId !== undefined || details.assigneeUserId !== undefined) {
-    const assigneeName = formatAssigneeName(details, options);
-    parts.push(assigneeName ? `made ${assigneeName} responsible for the task` : "cleared the responsible");
+    const assigneeName = formatAssigneeName(details, options, t);
+    parts.push(assigneeName ? t("fullActivity.assigned", { name: assigneeName }) : t("fullActivity.clearedResponsible"));
   }
   if (details.reviewPolicy !== undefined) {
     // `null` is the default ("anyone can approve"), so it must not read as
     // "changed the review policy to none" (PAP-16506).
-    parts.push(`changed who can approve to ${formatReviewPolicyValue(details.reviewPolicy)}`);
+    parts.push(t("fullActivity.reviewPolicyChanged", { policy: formatReviewPolicyValue(details.reviewPolicy, t) }));
   }
-  if (details.title !== undefined) parts.push("updated the title");
-  if (details.description !== undefined) parts.push("updated the description");
+  if (details.title !== undefined) parts.push(t("fullActivity.titleUpdated"));
+  if (details.description !== undefined) parts.push(t("fullActivity.descriptionUpdated"));
 
   return parts.length > 0 ? parts.join(", ") : null;
 }
@@ -450,31 +456,27 @@ function formatStructuredIssueChange(input: {
   if (!details) return null;
 
   if (input.action === "issue.blockers_updated") {
-    const added = readIssueReferences(details, "addedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, input.t));
-    const removed = readIssueReferences(details, "removedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, input.t));
+    const added = readIssueReferences(details, "addedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, t));
+    const removed = readIssueReferences(details, "removedBlockedByIssues").map(reference => formatIssueReferenceLabel(reference, t));
     if (added.length > 0 && removed.length === 0) {
-      const changed = formatChangedEntityLabel("blocker", "blockers", added);
-      return input.forIssueDetail ? `added ${changed}` : added.length === 1
+      return input.forIssueDetail ? formatLegacyRelationChange("blocker", "add", added, t) : added.length === 1
         ? t("activityUi.blockers.addNamed", { name: added[0] })
         : t("activityUi.blockers.addCount", { count: added.length });
     }
     if (removed.length > 0 && added.length === 0) {
-      const changed = formatChangedEntityLabel("blocker", "blockers", removed);
-      return input.forIssueDetail ? `removed ${changed}` : removed.length === 1
+      return input.forIssueDetail ? formatLegacyRelationChange("blocker", "remove", removed, t) : removed.length === 1
         ? t("activityUi.blockers.removeNamed", { name: removed[0] })
         : t("activityUi.blockers.removeCount", { count: removed.length });
     }
-    return input.forIssueDetail ? "updated blockers" : t("activityUi.blockers.updated");
+    return input.forIssueDetail ? formatLegacyRelationChange("blocker", "update", [], t) : t("activityUi.blockers.updated");
   }
 
   if (input.action === "issue.reviewers_updated" || input.action === "issue.approvers_updated") {
-    const added = readParticipants(details, "addedParticipants").map((participant) => formatParticipantLabel(participant, input.options, input.t));
-    const removed = readParticipants(details, "removedParticipants").map((participant) => formatParticipantLabel(participant, input.options, input.t));
+    const added = readParticipants(details, "addedParticipants").map((participant) => formatParticipantLabel(participant, input.options, t));
+    const removed = readParticipants(details, "removedParticipants").map((participant) => formatParticipantLabel(participant, input.options, t));
     const singular = input.action === "issue.reviewers_updated" ? "reviewer" : "approver";
-    const plural = input.action === "issue.reviewers_updated" ? "reviewers" : "approvers";
     if (added.length > 0 && removed.length === 0) {
-      const changed = formatChangedEntityLabel(singular, plural, added);
-      if (input.forIssueDetail) return `added ${changed}`;
+      if (input.forIssueDetail) return formatLegacyRelationChange(singular, "add", added, t);
       if (input.action === "issue.reviewers_updated") return added.length === 1
         ? t("activityUi.reviewers.addNamed", { name: added[0] })
         : t("activityUi.reviewers.addCount", { count: added.length });
@@ -483,8 +485,7 @@ function formatStructuredIssueChange(input: {
         : t("activityUi.approvers.addCount", { count: added.length });
     }
     if (removed.length > 0 && added.length === 0) {
-      const changed = formatChangedEntityLabel(singular, plural, removed);
-      if (input.forIssueDetail) return `removed ${changed}`;
+      if (input.forIssueDetail) return formatLegacyRelationChange(singular, "remove", removed, t);
       if (input.action === "issue.reviewers_updated") return removed.length === 1
         ? t("activityUi.reviewers.removeNamed", { name: removed[0] })
         : t("activityUi.reviewers.removeCount", { count: removed.length });
@@ -492,7 +493,7 @@ function formatStructuredIssueChange(input: {
         ? t("activityUi.approvers.removeNamed", { name: removed[0] })
         : t("activityUi.approvers.removeCount", { count: removed.length });
     }
-    return input.forIssueDetail ? `updated ${plural}` : input.action === "issue.reviewers_updated"
+    return input.forIssueDetail ? formatLegacyRelationChange(singular, "update", [], t) : input.action === "issue.reviewers_updated"
       ? t("activityUi.reviewers.updated") : t("activityUi.approvers.updated");
   }
 
@@ -569,9 +570,12 @@ export function formatIssueActivityAction(
   action: string,
   details?: Record<string, unknown> | null,
   options: ActivityFormatOptions = {},
+  t: TFunction = i18n.getFixedT("en"),
 ): string {
+  const ISSUE_ACTIVITY_LABELS = getISSUE_ACTIVITY_LABELS(t);
+  const STALLED_REVIEW_DECISION_LABELS = getSTALLED_REVIEW_DECISION_LABELS(t);
   if (action === "issue.updated") {
-    const issueUpdatedAction = formatIssueUpdatedAction(details, options);
+    const issueUpdatedAction = formatIssueUpdatedAction(details, options, t);
     if (issueUpdatedAction) return issueUpdatedAction;
   }
 
@@ -580,11 +584,12 @@ export function formatIssueActivityAction(
     details,
     options,
     forIssueDetail: true,
+    t,
   });
   if (structuredChange) return structuredChange;
 
   if (action === "issue.accepted_plan_decomposition_updated") {
-    const detail = formatAcceptedPlanDecompositionDetail(details);
+    const detail = formatAcceptedPlanDecompositionDetail(details, t);
     if (detail) return detail;
   }
 
@@ -594,7 +599,7 @@ export function formatIssueActivityAction(
     if (label) return label;
   }
 
-  const outcomeLabel = formatInteractionOutcomeLabel(action, details);
+  const outcomeLabel = formatInteractionOutcomeLabel(action, details, t);
   if (outcomeLabel) return outcomeLabel;
 
   if (action.startsWith("issue.monitor_") && details) {
@@ -602,7 +607,7 @@ export function formatIssueActivityAction(
       ? details.serviceName.trim()
       : null;
     const base = ISSUE_ACTIVITY_LABELS[action] ?? action.replace(/[._]/g, " ");
-    return serviceName ? `${base} for ${serviceName}` : base;
+    return serviceName ? t("fullActivity.monitorService", { action: base, service: serviceName }) : base;
   }
 
   if (
@@ -615,7 +620,7 @@ export function formatIssueActivityAction(
     ) &&
     details
   ) {
-    const key = typeof details.key === "string" ? details.key : "document";
+    const key = typeof details.key === "string" ? details.key : t("fullActivity.document");
     const title = typeof details.title === "string" && details.title ? ` (${details.title})` : "";
     return `${ISSUE_ACTIVITY_LABELS[action] ?? action} ${key}${title}`;
   }

@@ -1,3 +1,6 @@
+import { roleLabel as localizedRoleLabel } from "@/i18n/ui-labels";
+import { i18n } from "@/i18n";
+import { t, useTranslation } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "@/lib/router";
@@ -174,6 +177,7 @@ const defaultDotColor = "var(--hex-a3a3a3)";
 // ── Main component ──────────────────────────────────────────────────────
 
 export function OrgChart() {
+  useTranslation();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const navigate = useNavigate();
@@ -204,8 +208,8 @@ export function OrgChart() {
   }, [agents]);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Org Chart" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("fullPages.orgChart") }]);
+  }, [setBreadcrumbs, i18n.language]);
 
   // Layout computation
   const layout = useMemo(() => layoutForest(orgTree ?? []), [orgTree]);
@@ -439,7 +443,7 @@ export function OrgChart() {
   }, [pan, zoom]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Network} message="Select a company to view the org chart." />;
+    return <EmptyState icon={Network} message={t("fullPages.selectACompanyToViewTheOrg")} />;
   }
 
   if (isLoading) {
@@ -447,7 +451,7 @@ export function OrgChart() {
   }
 
   if (orgTree && orgTree.length === 0) {
-    return <EmptyState icon={Network} message="No organizational hierarchy defined." />;
+    return <EmptyState icon={Network} message={t("agents.noHierarchy")} />;
   }
 
   return (
@@ -456,17 +460,13 @@ export function OrgChart() {
         {showImport && (
           <Link to="/company/import">
             <Button variant="outline" size="sm">
-              <Upload className="mr-1.5 h-3.5 w-3.5" />
-              Import company
-            </Button>
+              <Upload className="mr-1.5 h-3.5 w-3.5" />{t("fullPages.importCompany")}</Button>
           </Link>
         )}
         {showExport && (
           <Link to="/company/export">
             <Button variant="outline" size="sm">
-              <Download className="mr-1.5 h-3.5 w-3.5" />
-              Export company
-            </Button>
+              <Download className="mr-1.5 h-3.5 w-3.5" />{t("fullPages.exportCompany")}</Button>
           </Link>
         )}
       </div>
@@ -502,8 +502,8 @@ export function OrgChart() {
                 });
               }
             }}
-            title="Zoom in"
-            aria-label="Zoom in"
+            title={t("surfacesGap.timeline.zoomIn")}
+            aria-label={t("surfacesGap.timeline.zoomIn")}
           >
             <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
           </button>
@@ -518,16 +518,16 @@ export function OrgChart() {
                 });
               }
             }}
-            title="Zoom out"
-            aria-label="Zoom out"
+            title={t("surfacesGap.timeline.zoomOut")}
+            aria-label={t("surfacesGap.timeline.zoomOut")}
           >
             <Minus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
           </button>
           <button
             className="flex size-9 items-center justify-center rounded border border-border bg-background text-(length:--text-nano) transition-colors hover:bg-accent sm:size-7"
             onClick={fitToScreen}
-            title="Fit to screen"
-            aria-label="Fit chart to screen"
+            title={t("fullPages.fitToScreen")}
+            aria-label={t("fullPages.fitChartToScreen")}
           >
             <Maximize2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
           </button>
@@ -637,5 +637,5 @@ export function OrgChart() {
 const roleLabels: Record<string, string> = AGENT_ROLE_LABELS;
 
 function roleLabel(role: string): string {
-  return roleLabels[role] ?? role;
+  return localizedRoleLabel(role);
 }

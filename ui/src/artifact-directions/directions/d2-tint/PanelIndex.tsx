@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact, LabKind } from "../../kit";
@@ -26,6 +28,7 @@ const REST = "bg-(--tint-slab) text-(--tint-ink-2) hover:bg-(--tint-slab-raised)
 const PRESSED = "bg-foreground text-background active:bg-foreground/85";
 
 function Chip({ pressed, onPress, name, kind, className, children }: { pressed?: boolean; onPress: () => void; name: string; kind?: LabKind; className?: string; children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     // The accessible name starts with the words on the button, so speech input can find it.
     <button type="button" aria-pressed={pressed} aria-label={name} data-kind={kind} data-chip onClick={onPress} className={cn(CHIP, pressed ? PRESSED : REST, className)}>
@@ -54,6 +57,7 @@ function frontKinds(kinds: KindTally[], filter: PanelFilter, open: boolean): Kin
 const Count = ({ value }: { value: number }) => <span className="font-mono text-(length:--text-micro) leading-none">{value}</span>;
 
 export function PanelIndex({ artifacts, filter, onFilter }: { artifacts: LabArtifact[]; filter: PanelFilter; onFilter: (filter: PanelFilter) => void }) {
+  useFullSharedTranslation();
   const [open, setOpen] = useState(false);
   const review = countReview(artifacts);
   const kinds = tallyKinds(artifacts);
@@ -62,14 +66,12 @@ export function PanelIndex({ artifacts, filter, onFilter }: { artifacts: LabArti
   const shown = frontKinds(kinds, filter, open);
   const behind = kinds.length - shown.length;
   return (
-    <div role="group" aria-label="Filter artifacts" data-index className="flex flex-wrap items-center gap-1">
-      <Chip pressed={filter === "all"} onPress={() => onFilter("all")} name={`All ${artifacts.length} artifacts`}>
-        All <Count value={artifacts.length} />
+    <div role="group" aria-label={t("fullDiagnostics.filterArtifacts")} data-index className="flex flex-wrap items-center gap-1">
+      <Chip pressed={filter === "all"} onPress={() => onFilter("all")} name={`All ${artifacts.length} artifacts`}>{fullSharedT("agents.filterAll")}<Count value={artifacts.length} />
       </Chip>
       {review > 0 ? (
         <Chip pressed={filter === "review"} onPress={() => toggle("review")} name={`Review ${review} waiting`}>
-          <StateDot review="needs_review" />
-          Review <Count value={review} />
+          <StateDot review="needs_review" />{fullSharedT("fullShared.review_aff076")}<Count value={review} />
         </Chip>
       ) : null}
       {shown.map(({ kind, count }) => {
@@ -90,8 +92,7 @@ export function PanelIndex({ artifacts, filter, onFilter }: { artifacts: LabArti
             </Chip>
           ) : null}
           <Chip onPress={() => setOpen(true)} name={`+${kinds.length} kinds`} className="hidden @max-xs/panel:inline-flex">
-            +{kinds.length} kinds
-          </Chip>
+            +{kinds.length}{" "}{t("fullDiagnostics.kinds")}</Chip>
         </>
       )}
     </div>

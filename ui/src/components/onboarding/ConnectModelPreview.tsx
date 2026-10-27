@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AgentCharacter } from "../AgentCharacter";
 import { useState } from "react";
 import { MotionConfig } from "motion/react";
@@ -80,6 +81,7 @@ export function ConnectModelPreview({
   initialUseApiKeys?: boolean;
   control?: CredentialControl;
 }) {
+  useFullSharedTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(initialSourceId);
   const [useApiKeys, setUseApiKeys] = useState(initialUseApiKeys);
   const mode: CredentialMode = useApiKeys ? "api" : "subscription";
@@ -106,14 +108,14 @@ export function ConnectModelPreview({
         <div className="pt-6">
           <OnboardingHeading
             center
-            title="Connect a model"
+            title={fullSharedT("onboarding.steps.model")}
             lede="Paperclip works with your existing subscription or API keys."
           />
         </div>
 
         <div className="space-y-2 pt-12">
           <ModelSourceTiles
-            label="Model source"
+            label={fullSharedT("onboarding.model.source")}
             sources={MODEL_SOURCES}
             mode={mode}
             selectedId={selectedId}
@@ -132,9 +134,7 @@ export function ConnectModelPreview({
                 checked={useApiKeys}
                 onCheckedChange={(checked) => setUseApiKeys(checked === true)}
               />
-              <span className="text-sm font-medium text-foreground">
-                Use API keys instead
-              </span>
+              <span className="text-sm font-medium text-foreground">{fullSharedT("fullShared.use_api_keys_instead_13feba")}</span>
             </label>
           )}
         </div>

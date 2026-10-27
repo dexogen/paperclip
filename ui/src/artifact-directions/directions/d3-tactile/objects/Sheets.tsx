@@ -1,3 +1,4 @@
+import { t, useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../../kit";
 import { excerptBlocks, isTaskDocument, tabLabel, tabTone } from "../kind";
@@ -25,6 +26,7 @@ const GREEK_C = ["w-full", "w-11/12", "w-2/3"] as const;
  * has no file, so it carries its revision as a rubber stamp instead.
  */
 export function DocumentSheet({ artifact, size }: { artifact: LabArtifact; size: ObjectSize }) {
+  useTranslation();
   const tab = tabLabel(artifact);
   const pdf = artifact.kind === "pdf";
   const blank = artifact.kind === "file";
@@ -78,7 +80,7 @@ export function DocumentSheet({ artifact, size }: { artifact: LabArtifact; size:
             </span>
           </span>
         )}
-        {isTaskDocument(artifact) ? <Stamp>rev {artifact.revision}</Stamp> : null}
+        {isTaskDocument(artifact) ? <Stamp>{t("fullRoutinesSecrets.rev80")}{" "}{artifact.revision}</Stamp> : null}
       </Paper>
       {tab ? <ExtTab label={tab} tone={tabTone(artifact)} /> : null}
     </Scaled>
@@ -97,6 +99,7 @@ function codeTint(line: string): string {
  * in mono. Dark in both themes: it is the one sheet that is not paper-white.
  */
 export function CodeSheet({ artifact, size }: { artifact: LabArtifact; size: ObjectSize }) {
+  useTranslation();
   const tab = tabLabel(artifact);
   const lines = (artifact.excerpt ?? "").split("\n").slice(0, 28);
   return (

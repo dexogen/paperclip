@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { schemaFieldSection } from "./config-sections";
 import { useState, useEffect, useRef, useCallback } from "react";
 
@@ -24,6 +25,7 @@ function SelectField({
   options: Array<{ value: string; label: string }>;
   onChange: (value: string) => void;
 }) {
+  useFullSharedTranslation();
   const [open, setOpen] = useState(false);
   const selectedOpt = options.find((o) => o.value === value);
   return (
@@ -31,7 +33,7 @@ function SelectField({
       <PopoverTrigger asChild>
         <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm hover:bg-accent/50 transition-colors w-full justify-between">
           <span className={!value ? "text-muted-foreground" : ""}>
-            {selectedOpt?.label ?? value ?? "Select..."}
+            {selectedOpt?.label ?? value ?? fullSharedT("fullShared.select_1339bd")}
           </span>
           <ChevronDown className="h-3 w-3 text-muted-foreground" />
         </button>
@@ -73,6 +75,7 @@ function ComboboxField({
   onChange: (val: string) => void;
   placeholder?: string;
 }) {
+  useFullSharedTranslation();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -139,7 +142,7 @@ function ComboboxField({
           type="text"
           className="flex-1 rounded-l-md border border-r-0 border-border px-2.5 py-1.5 bg-transparent outline-none text-sm font-mono placeholder:text-muted-foreground/40 focus:z-10"
           value={displayValue}
-          placeholder={placeholder ?? "Type or select..."}
+          placeholder={placeholder ?? fullSharedT("fullShared.type_or_select_ff5f5f")}
           onChange={(e) => {
             setFilter(e.target.value);
             if (!open) setOpen(true);
@@ -189,9 +192,7 @@ function ComboboxField({
               </div>
             ))}
             {filter && filtered.length === 0 && (
-              <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                Use &quot;{filter}&quot; as custom value (press Enter)
-              </div>
+              <div className="px-2 py-1.5 text-sm text-muted-foreground"><FullSharedTrans i18nKey="fullShared.use_as_custom_value_press_enter_d84c94" components={{ part1: <>{filter}</> }} /></div>
             )}
           </PopoverContent>
         </Popover>
@@ -248,6 +249,7 @@ export function invalidateConfigSchemaCache(adapterType: string): void {
 // ---------------------------------------------------------------------------
 
 export function useConfigSchema(adapterType: string): AdapterConfigSchema | null {
+  useFullSharedTranslation();
   const [loaded, setLoaded] = useState<{ adapterType: string; schema: AdapterConfigSchema | null }>(
     () => ({ adapterType, schema: schemaCache.get(adapterType) ?? null }),
   );
@@ -331,6 +333,7 @@ export function SchemaConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  useFullSharedTranslation();
   const schema = useConfigSchema(adapterType);
 
   const defaultsApplied = useRef({ adapterType, applied: false });

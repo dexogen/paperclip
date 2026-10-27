@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { LabGroup } from "../../kit";
 import { countLabel, daysOf, reviewCountOf } from "./gallery-model";
 import { GalleryItem } from "./GalleryItem";
@@ -21,6 +23,7 @@ import { StateFlag } from "./StateFlag";
  */
 
 function Summary({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const review = reviewCountOf(group.artifacts);
   return (
     <header className="flex items-end gap-5">
@@ -41,10 +44,8 @@ function Summary({ group }: { group: LabGroup }) {
           <span className="font-medium text-foreground">
             <span className="font-mono text-(length:--tac-mono-scale)">{group.count}</span> {countLabel(group.count)}
           </span>
-          <span>
-            Updated <span className="font-mono text-(length:--tac-mono-scale)">{group.updatedLabel}</span>
-          </span>
-          {review > 0 ? <span className="sr-only">{review} to review</span> : null}
+          <span><FullSharedTrans i18nKey="fullShared.updated_44d29d" components={{ part1: <span className="font-mono text-(length:--tac-mono-scale)">{group.updatedLabel}</span> }} /></span>
+          {review > 0 ? <span className="sr-only">{review}{" "}{t("fullDiagnostics.toReview")}</span> : null}
         </p>
         <KindTally artifacts={group.artifacts} className="flex flex-wrap items-baseline gap-y-0.5 text-xs leading-4 text-(--tac-meta)" />
       </div>
@@ -53,14 +54,15 @@ function Summary({ group }: { group: LabGroup }) {
 }
 
 export function GalleryStack({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const days = daysOf(group.artifacts);
-  if (group.artifacts.length === 0) return <p className="py-16 text-center text-sm font-medium text-foreground">No artifacts in this stack match the current filters.</p>;
+  if (group.artifacts.length === 0) return <p className="py-16 text-center text-sm font-medium text-foreground">{fullSharedT("surfacesGap.artifacts.noStackMatch")}</p>;
   return (
     <div className="flex flex-col gap-7 pt-1">
       <Summary group={group} />
       {days.map((day) => (
         // `day` is the container a day's objects measure themselves against (tokens-gallery.css).
-        <section key={day.day} aria-label={`${day.label}, ${day.items.length} ${countLabel(day.items.length)}`} className="@container/day relative flex flex-col gap-3.5 pl-(--tac-ruler-gutter)">
+        <section key={day.day} aria-label={t("fullDiagnostics.message", { value1: day.label, value2: day.items.length, value3: countLabel(day.items.length) })} className="@container/day relative flex flex-col gap-3.5 pl-(--tac-ruler-gutter)">
           {/* The ruler: a long tick at the day, short ones down its rows. */}
           <span aria-hidden className="absolute bottom-0 left-0 top-2.5 block w-(--tac-ruler-w) bg-(image:--tac-ruler)" />
           <span aria-hidden className="absolute left-0 top-2.5 block h-px w-(--tac-ruler-major) bg-(--tac-rule-strong)" />

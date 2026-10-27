@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { IssueRelatedWorkItem, IssueRelatedWorkSummary } from "@paperclipai/shared";
 import { IssueReferencePill } from "./IssueReferencePill";
 import { ExternalObjectPill } from "./ExternalObjectPill";
@@ -39,6 +41,7 @@ function Section({
   items: IssueRelatedWorkItem[];
   emptyLabel: string;
 }) {
+  useFullSharedTranslation();
   return (
     <section className="space-y-3 rounded-lg border border-border p-3">
       <div className="space-y-1">
@@ -98,6 +101,7 @@ function ExternalObjectsSection({
   isError: boolean;
   onRetry?: () => void;
 }) {
+  useFullSharedTranslation();
   // Severity-first sort with most-recently-changed as the secondary sort.
   const sorted = [...groups].sort((a, b) => {
     const aTone = externalObjectToneSeverity(a.pill.statusCategory ? a.group.object?.statusTone ?? null : null);
@@ -111,31 +115,24 @@ function ExternalObjectsSection({
   return (
     <section className="space-y-3 rounded-lg border border-border p-3">
       <div className="space-y-1">
-        <h3 className="text-sm font-semibold">External objects</h3>
-        <p className="text-xs text-muted-foreground">
-          Remote work referenced from this issue — pull requests, deployments, tickets in other systems, and more.
-        </p>
+        <h3 className="text-sm font-semibold">{fullSharedT("taskProperties.external.objects")}</h3>
+        <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.remote_work_referenced_from_this_issue_pull_requests_3c65ef")}</p>
       </div>
 
       {isError ? (
-        <p className="text-xs text-muted-foreground">
-          Couldn't load external objects.{" "}
-          {onRetry ? (
+        <p className="text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.couldn_t_load_external_objects_c87b79" components={{ part1: <>{" "}</>, part2: <>{onRetry ? (
             <button
               type="button"
               onClick={onRetry}
               className="text-primary underline-offset-2 hover:underline"
             >
-              Retry
+              {fullSharedTailT("fullSharedTail.retry")}
             </button>
-          ) : null}
-        </p>
+          ) : null}</> }} /></p>
       ) : isLoading ? (
-        <p className="text-xs text-muted-foreground">Loading external objects…</p>
+        <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.loading_external_objects_d80d5f")}</p>
       ) : sorted.length === 0 ? (
-        <p className="text-xs text-muted-foreground">
-          This issue does not reference any external objects yet.
-        </p>
+        <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.this_issue_does_not_reference_any_external_objects_y_e44c5d")}</p>
       ) : (
         <ul className="-mx-1 flex flex-col">
           {sorted.map(({ pill, mentionCount, sourceLabels, group }) => {
@@ -185,14 +182,15 @@ export function IssueRelatedWorkPanel({
   externalObjectsError?: boolean;
   onRetryExternalObjects?: () => void;
 }) {
+  useFullSharedTranslation();
   const outbound = relatedWork?.outbound ?? [];
   const inbound = relatedWork?.inbound ?? [];
 
   return (
     <div className="space-y-3">
       <Section
-        title="References"
-        description="Other tasks this task currently points at in its title, description, comments, or documents."
+        title={fullSharedT("taskProperties.fields.references")}
+        description={fullSharedT("fullShared.other_tasks_this_task_currently_points_at_in_its_tit_2fd8c1")}
         items={outbound}
         emptyLabel="This task does not reference any other tasks yet."
       />
@@ -205,8 +203,8 @@ export function IssueRelatedWorkPanel({
         />
       ) : null}
       <Section
-        title="Referenced by"
-        description="Other tasks that currently point at this task."
+        title={fullSharedT("fullShared.referenced_by_b65181")}
+        description={fullSharedT("fullShared.other_tasks_that_currently_point_at_this_task_b7a48c")}
         items={inbound}
         emptyLabel="No other tasks reference this task yet."
       />

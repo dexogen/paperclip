@@ -1,14 +1,15 @@
+import { t as fullSharedT } from "@/i18n";
 /** Ordered columns and token references shared by the proposed header and rows. */
 export const taskListColumns = [
-  { id: "task", label: "Task", width: "var(--task-list-column-task)" },
-  { id: "taskId", label: "Task ID", width: "var(--task-list-column-task-id)" },
-  { id: "createdBy", label: "Created by", width: "var(--task-list-column-created-by)" },
-  { id: "assignee", label: "Assignee", width: "var(--task-list-column-assignee)" },
-  { id: "project", label: "Project", width: "var(--task-list-column-project)" },
-  { id: "parentTask", label: "Parent Task", width: "var(--task-list-column-parent)" },
-  { id: "tags", label: "Tags", width: "var(--task-list-column-tags)" },
+  { id: "task", get label() { return fullSharedT("taskDetailCommon.editor.task"); }, width: "var(--task-list-column-task)" },
+  { id: "taskId", get label() { return fullSharedT("fullShared.task_id_3e0cce"); }, width: "var(--task-list-column-task-id)" },
+  { id: "createdBy", get label() { return fullSharedT("agentDetailUi.overview.creator"); }, width: "var(--task-list-column-created-by)" },
+  { id: "assignee", get label() { return fullSharedT("fullShared.assignee_5e20d2"); }, width: "var(--task-list-column-assignee)" },
+  { id: "project", get label() { return fullSharedT("newIssue.project"); }, width: "var(--task-list-column-project)" },
+  { id: "parentTask", get label() { return fullSharedT("taskViews.parentTask"); }, width: "var(--task-list-column-parent)" },
+  { id: "tags", get label() { return fullSharedT("fullShared.tags_133127"); }, width: "var(--task-list-column-tags)" },
   { id: "worktree", label: "Worktree", width: "var(--task-list-column-worktree)" },
-  { id: "lastUpdated", label: "Last updated", width: "var(--task-list-column-updated)" },
+  { id: "lastUpdated", get label() { return fullSharedT("taskViews.column_updated"); }, width: "var(--task-list-column-updated)" },
 ] as const;
 
 export type TaskListColumnId = (typeof taskListColumns)[number]["id"];

@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import type { LabArtifact, LabGroup, LabKind, LabRun } from "./kit";
 import * as docs from "./fixture-documents";
 import sheetFirstDraft from "./assets/contact-sheet-first-draft.svg";
@@ -52,11 +53,11 @@ type Ext = keyof typeof MIME;
 
 // Same wording the product's cards produce (`formatDateTime`, `formatDate`).
 const dateTimeLabel = (iso: string) =>
-  new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  new Date(iso).toLocaleString(i18n.language, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 const dateLabel = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  new Date(iso).toLocaleDateString(i18n.language, { month: "short", day: "numeric", year: "numeric" });
 const dayLabel = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  new Date(iso).toLocaleDateString(i18n.language, { weekday: "long", month: "long", day: "numeric" });
 
 function sizeLabel(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -79,7 +80,7 @@ const run = (id: string, agent: string, startedAt: string): LabRun => ({
   id,
   agent,
   startedAt,
-  startedLabel: dateTimeLabel(startedAt),
+  get startedLabel() { return dateTimeLabel(startedAt); },
 });
 
 interface Seed extends Partial<Omit<LabArtifact, "updatedAt" | "kind" | "title" | "id">> {
@@ -101,8 +102,8 @@ function artifact(id: string, kind: LabKind, title: string, seed: Seed): LabArti
     sizeLabel: rest.byteSize != null ? sizeLabel(rest.byteSize) : undefined,
     excerpt: rest.excerpt ?? (rest.body ? plain(rest.body) : undefined),
     updatedAt: at,
-    updatedLabel: dateTimeLabel(at),
-    dayLabel: dayLabel(at),
+    get updatedLabel() { return dateTimeLabel(at); },
+    get dayLabel() { return dayLabel(at); },
     taskIdentifier: task,
     taskTitle: TASKS[task],
   };

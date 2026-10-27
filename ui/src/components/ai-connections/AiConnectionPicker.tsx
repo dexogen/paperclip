@@ -1,3 +1,5 @@
+import { t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { AppLogo } from "@/pages/apps/AppLogo";
 import { ConnectionChoiceList } from "@/features/connections/ConnectionChoiceList";
 import { Button } from "@/components/ui/button";
@@ -44,6 +46,8 @@ export function AiConnectionPicker({
   onReconnect,
   onRetry,
 }: AiConnectionPickerProps) {
+  useFullSharedTailTranslation();
+  useFullSharedTranslation();
   const compatible = connections.filter((connection) =>
     matchesAiRequirement(connection, requirement),
   );
@@ -71,7 +75,7 @@ export function AiConnectionPicker({
       grantId: connection.grantId,
     });
   return (
-    <section className="flex flex-col gap-4" aria-label="AI connection">
+    <section className="flex flex-col gap-4" aria-label={fullSharedT("providerSetup.accounts.aiConnection")}>
       <div className="flex items-center gap-3">
         <AppLogo
           name={AI_PROVIDERS[requirement.provider].name}
@@ -81,7 +85,7 @@ export function AiConnectionPicker({
           size={32}
         />
         <div className="flex min-w-0 flex-col gap-1">
-        <h3 className="text-sm font-semibold">AI connection</h3>
+        <h3 className="text-sm font-semibold">{fullSharedT("providerSetup.accounts.aiConnection")}</h3>
         <p className="text-xs text-muted-foreground">
           {AI_PROVIDERS[requirement.provider].name}
           {value && value.mode !== "responsible_user" && ` · ${aiMethodLabel(value.provider, value.method)}`}
@@ -89,7 +93,7 @@ export function AiConnectionPicker({
         </div>
       </div>
       {loading ? (
-        <div role="status" aria-label="Loading AI connections">
+        <div role="status" aria-label={fullSharedT("fullShared.loading_ai_connections_b38add")}>
           <Skeleton className="h-24 w-full" />
         </div>
       ) : error ? (
@@ -98,9 +102,7 @@ export function AiConnectionPicker({
             {error}
           </p>
           {onRetry && (
-            <Button type="button" variant="outline" onClick={onRetry}>
-              Retry connections
-            </Button>
+            <Button type="button" variant="outline" onClick={onRetry}>{fullSharedT("providerSetup.select.retry")}</Button>
           )}
         </div>
       ) : (
@@ -109,14 +111,14 @@ export function AiConnectionPicker({
             disabled={readOnly}
             selectedId={value?.mode === "responsible_user" ? "responsible_user" : value?.connectionId}
             choices={[
-              { id: "responsible_user", name: "Responsible user’s connection", description: <>
-                <span className="block">For you: {personalDefault?.name ?? "Not connected"}</span>
-                <span className="block">Other users’ tasks use their own {AI_PROVIDERS[requirement.provider].name} connection.</span>
+              { id: "responsible_user", name: fullSharedTailT("fullSharedTail.responsibleConnection"), description: <>
+                <span className="block"><FullSharedTrans i18nKey="fullShared.for_you_1701c9" components={{ part1: <>{personalDefault?.name ?? fullSharedTailT("fullSharedTail.not_connected_0303e1")}</> }} /></span>
+                <span className="block"><FullSharedTrans i18nKey="fullShared.other_users_tasks_use_their_own_connection_91152e" components={{ part1: <>{AI_PROVIDERS[requirement.provider].name}</> }} /></span>
               </> },
               ...compatible.filter((connection) => connection.ownership === "shared").map((connection) => ({
                 id: connection.id, name: connection.name,
                 disabled: Boolean(aiConnectionProblem(connection)),
-                description: <>Company shared · {aiMethodLabel(connection.provider, connection.method)}{connection.accountLabel ? ` · ${connection.accountLabel}` : ""}{aiConnectionProblem(connection) ? ` · ${aiConnectionProblem(connection)}` : ""}</>,
+                description: <>{fullSharedTailT("fullSharedTail.sharedConnectionMethod", { method: aiMethodLabel(connection.provider, connection.method) })}{connection.accountLabel ? ` · ${connection.accountLabel}` : ""}{aiConnectionProblem(connection) ? ` · ${aiConnectionProblem(connection)}` : ""}</>,
               })),
             ]}
             onSelect={(id) => {
@@ -131,14 +133,12 @@ export function AiConnectionPicker({
           )}
           {!readOnly && (
             <div className="flex justify-end gap-2">
-              {onReconnect && <Button type="button" variant="outline" onClick={onReconnect}>Reconnect account</Button>}
+              {onReconnect && <Button type="button" variant="outline" onClick={onReconnect}>{fullSharedT("fullShared.reconnect_account_8e44ff")}</Button>}
               <Button
                 type="button"
                 variant="outline"
                 onClick={onConnect}
-              >
-                Connect another account
-              </Button>
+              >{fullSharedT("fullShared.connect_another_account_261b28")}</Button>
             </div>
           )}
         </>

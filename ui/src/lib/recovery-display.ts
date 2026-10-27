@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
 import type { IssueRecoveryAction, IssueRecoveryActionKind } from "@paperclipai/shared";
@@ -25,23 +26,23 @@ export const RECOVERY_CHIP_DEFAULT_TONE: Record<
     className:
       "border-amber-500/60 bg-amber-500/15 text-amber-700 dark:text-amber-300",
     icon: TriangleAlert,
-    label: "Recovery needed",
+    get label() { return fullSharedT("taskDisplay.recovery.needed"); },
   },
   in_progress: {
     className:
       "border-sky-500/60 bg-sky-500/15 text-sky-700 dark:text-sky-300",
     icon: RefreshCw,
-    label: "Recovery in progress",
+    get label() { return fullSharedT("fullShared.recovery_in_progress_93d357"); },
   },
   observe_only: {
     className: "border-border bg-muted text-muted-foreground",
     icon: Eye,
-    label: "Observing active run",
+    get label() { return fullSharedT("taskDisplay.recovery.observing"); },
   },
   escalated: {
     className: "border-red-500/60 bg-red-500/15 text-red-700 dark:text-red-300",
     icon: OctagonAlert,
-    label: "Recovery escalated",
+    get label() { return fullSharedT("taskDisplay.recovery.escalated"); },
   },
 };
 

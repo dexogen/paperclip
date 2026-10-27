@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { resolveAgentAppearance } from "@paperclipai/shared";
 import { getPageVisibility, usePageVisibility } from "../lib/page-visibility";
 import {
@@ -140,6 +142,7 @@ export function useTaskRunLiveUpdates(scope: {
   issueQueryRef: string;
   assigneeAgentId: string | null | undefined;
 }): boolean {
+  useFullSharedTranslation();
   const connected = useHasCompanyLiveConnection(scope.companyId);
   const queryClient = useQueryClient();
   const location = useLocation();
@@ -1031,10 +1034,10 @@ function buildActivityToast(
   if (action === "issue.created") {
     return {
       actor: toastActor,
-      title: `${actor} created ${issue.ref}`,
+      title: fullSharedT("fullShared.created_f109bc", { value1: actor, value2: issue.ref }),
       body: issue.title ? truncate(issue.title, 96) : undefined,
       tone: "success",
-      action: { label: `View ${issue.ref}`, href: issue.href },
+      action: { label: fullSharedT("fullShared.view_9f68c4", { value1: issue.ref }), href: issue.href },
       dedupeKey: `activity:${action}:${entityId}`,
     };
   }
@@ -1054,10 +1057,10 @@ function buildActivityToast(
         : issue.label;
     return {
       actor: toastActor,
-      title: `${actor} updated ${issue.ref}`,
+      title: fullSharedT("fullShared.updated_bb7514", { value1: actor, value2: issue.ref }),
       body: truncate(body, 100),
       tone: "info",
-      action: { label: `View ${issue.ref}`, href: issue.href },
+      action: { label: fullSharedT("fullShared.view_9f68c4", { value1: issue.ref }), href: issue.href },
       dedupeKey: `activity:${action}:${entityId}`,
     };
   }
@@ -1069,14 +1072,14 @@ function buildActivityToast(
   const reopenedFrom = readString(details?.reopenedFrom);
   const reopenedLabel = reopened
     ? reopenedFrom
-      ? `reopened from ${reopenedFrom.replace(/_/g, " ")}`
-      : "reopened"
+      ? fullSharedT("fullShared.reopened_from_b88386", { value1: reopenedFrom.replace(/_/g, " ") })
+      : fullSharedT("fullShared.reopened_d050ae")
     : null;
   const title = reopened
-    ? `${actor} reopened and commented on ${issue.ref}`
+    ? fullSharedT("fullShared.reopened_and_commented_on_8e10a7", { value1: actor, value2: issue.ref })
     : updated
-      ? `${actor} commented and updated ${issue.ref}`
-      : `${actor} commented on ${issue.ref}`;
+      ? fullSharedT("fullShared.commented_and_updated_f2552b", { value1: actor, value2: issue.ref })
+      : fullSharedT("fullShared.commented_on_d6f2ba", { value1: actor, value2: issue.ref });
   const body = bodySnippet
     ? reopenedLabel
       ? `${reopenedLabel} - ${bodySnippet.replace(/^#+\s*/m, "").replace(/\n/g, " ")}`
@@ -1091,7 +1094,7 @@ function buildActivityToast(
     title,
     body: body ? truncate(body, 96) : undefined,
     tone: "info",
-    action: { label: `View ${issue.ref}`, href: issue.href },
+    action: { label: fullSharedT("fullShared.view_9f68c4", { value1: issue.ref }), href: issue.href },
     dedupeKey: `activity:${action}:${entityId}:${commentId ?? "na"}`,
   };
 }
@@ -1109,13 +1112,13 @@ function buildJoinRequestToast(
     return null;
 
   const requestType = readString(details?.requestType);
-  const label = requestType === "agent" ? "Agent" : "Someone";
+  const label = requestType === "agent" ? fullSharedT("taskProperties.fields.agent") : fullSharedT("surfacesGap.toolsAudit.someone");
 
   return {
-    title: `${label} wants to join`,
-    body: "A new join request is waiting for approval.",
+    title: fullSharedT("fullShared.wants_to_join_080e4d", { value1: label }),
+    body: fullSharedTailT("fullSharedTail.newJoinRequest"),
     tone: "info",
-    action: { label: "View inbox", href: "/inbox/mine" },
+    action: { label: fullSharedT("fullShared.view_inbox_1c8264"), href: "/inbox/mine" },
     dedupeKey: `join-request:${entityId}`,
   };
 }
@@ -1132,7 +1135,7 @@ function buildAgentStatusToast(
 
   const tone = status === "error" ? "error" : "info";
   const name = nameOf(agentId) ?? `Agent ${shortId(agentId)}`;
-  const title = status === "running" ? `${name} started` : `${name} errored`;
+  const title = status === "running" ? fullSharedT("fullShared.started_a682a8", { value1: name }) : fullSharedT("fullShared.errored_ce74aa", { value1: name });
 
   const agents = queryClient.getQueryData<Agent[]>(
     queryKeys.agents.list(companyId),
@@ -1144,7 +1147,7 @@ function buildAgentStatusToast(
     title,
     body,
     tone,
-    action: { label: "View agent", href: `/agents/${agentId}` },
+    action: { label: fullSharedT("fullShared.view_agent_7ce783"), href: `/agents/${agentId}` },
     dedupeKey: `agent-status:${agentId}:${status}`,
   };
 }
@@ -1175,11 +1178,11 @@ function buildRunStatusToast(
     contextSource?.startsWith("chat:")
   ) {
     return {
-      title: `${name} couldn't start this chat`,
-      body: "This external chat identity isn't linked, and isolated guest workspaces are disabled. Link the identity in Connectors or enable isolated workspaces, then start a new task.",
+      title: fullSharedT("fullShared.couldn_t_start_this_chat_65264e", { value1: name }),
+      body: fullSharedTailT("fullSharedTail.externalIdentityNotLinked"),
       tone: "warn",
       ttlMs: 10_000,
-      action: { label: "Open chat connections", href: "/apps" },
+      action: { label: fullSharedT("fullShared.open_chat_connections_9f7e51"), href: "/apps" },
       dedupeKey: `run-status:${runId}:${status}`,
     };
   }
@@ -1191,13 +1194,13 @@ function buildRunStatusToast(
         : "error";
   const statusLabel =
     status === "succeeded"
-      ? "succeeded"
+      ? fullSharedT("fullShared.succeeded_5dceae")
       : status === "failed"
-        ? "failed"
+        ? fullSharedT("fullShared.failed_5d28a9")
         : status === "timed_out"
-          ? "timed out"
-          : "cancelled";
-  const title = `${name} run ${statusLabel}`;
+          ? fullSharedT("fullShared.timed_out_3dcd80")
+          : fullSharedT("fullShared.cancelled_8b4704");
+  const title = fullSharedT("fullShared.run_deb01b", { value1: name, value2: statusLabel });
 
   let body: string | undefined;
   if (error) {
@@ -1211,7 +1214,7 @@ function buildRunStatusToast(
     body,
     tone,
     ttlMs: status === "succeeded" ? 5000 : 7000,
-    action: { label: "View run", href: `/agents/${agentId}/runs/${runId}` },
+    action: { label: fullSharedT("fullShared.view_run_aaf7fc"), href: `/agents/${agentId}/runs/${runId}` },
     dedupeKey: `run-status:${runId}:${status}`,
   };
 }
@@ -2019,6 +2022,7 @@ function canUseLiveSession(sessionStatus: string, hasSession: boolean, deploymen
 }
 
 export function LiveUpdatesProvider({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   const { visible } = usePageVisibility();
   const wasHidden = useRef(!visible);
   const hasOpenedSocket = useRef(false);

@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AGENT_ADAPTER_TYPES } from "@paperclipai/shared";
@@ -468,7 +469,7 @@ export function InviteLandingPage() {
     if (invite.inviteType === "bootstrap_ceo") return t("authGap.acceptInvite");
     if (showsAgentForm) return t("authGap.submitRequest");
     return sessionQuery.data ? t("authGap.acceptInvite") : t("authGap.continue");
-  }, [invite, isCurrentMember, sessionQuery.data, showsAgentForm, t]);
+  }, [invite, isCurrentMember, sessionQuery.data, showsAgentForm, t, i18n.language]);
 
   if (!token) {
     return <div className="mx-auto max-w-xl py-10 text-sm text-destructive">{t("authGap.invalidToken")}</div>;

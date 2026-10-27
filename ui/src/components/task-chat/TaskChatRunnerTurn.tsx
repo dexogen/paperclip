@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { useTranslation } from "@/i18n";
 import { useRef } from "react";
@@ -247,9 +248,7 @@ export function TaskChatRunnerTurn({
           className="px-1 py-1 text-xs text-muted-foreground"
           role="status"
           data-testid="task-chat-activity-unavailable"
-        >
-          Live runner activity is temporarily unavailable. Retrying…
-        </div>
+        >{fullSharedT("fullShared.live_runner_activity_is_temporarily_unavailable_retr_2e9697")}</div>
       ) : null}
       {timelineRows.length > 0 ? (
         <div

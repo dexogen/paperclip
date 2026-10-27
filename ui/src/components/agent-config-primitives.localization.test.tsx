@@ -21,10 +21,14 @@ async function mount(node: React.ReactNode) {
 
 describe("agent configuration locale boundaries", () => {
   it("keeps legacy help fixed English and translates template guidance without expanding its examples", async () => {
+    const englishHelp = { ...help };
     await setLocale("ru");
+    expect(help).toEqual(englishHelp);
+    expect(help.title).toBe("Job title shown in the org chart.");
     expect(getAgentConfigHelp()).toEqual(help);
     const localized = getAgentConfigHelp(i18n.getFixedT("ru"));
     expect(localized.name).toBe("Отображаемое имя агента.");
+    expect(localized.title).toBe("Должность в организационной структуре.");
     expect(localized.promptTemplate).toContain("{{ agent.name }}");
     expect(localized.workspaceBranchTemplate).toContain("{{issue.identifier}}");
     expect(localized.workspaceBranchTemplate).toContain("{{workspace.repoRef}}");
@@ -32,6 +36,8 @@ describe("agent configuration locale boundaries", () => {
     expect(agentConfigRoleLabel("engineer", i18n.getFixedT("ru"))).toBe("Инженер");
     expect(agentConfigRoleLabel("toString", i18n.getFixedT("ru"))).toBe("toString");
     expect(agentConfigRoleLabel("Engineer", i18n.getFixedT("ru"))).toBe("Engineer");
+    await setLocale("en");
+    expect(help).toEqual(englishHelp);
   });
 
   it("keeps the open manager picker and literal names while selecting the same canonical ID", async () => {

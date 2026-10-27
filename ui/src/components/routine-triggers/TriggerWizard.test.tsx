@@ -3,6 +3,7 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { defaultTriggerDraft, RoutineTriggerWizard, webhookAgentInstructions } from "./TriggerWizard";
+import { i18n } from "@/i18n";
 
 const { setBreadcrumbs } = vi.hoisted(() => ({ setBreadcrumbs: vi.fn() }));
 vi.mock("@/context/BreadcrumbContext", () => ({ useBreadcrumbs: () => ({ setBreadcrumbs }) }));
@@ -10,7 +11,7 @@ vi.mock("@/context/SidebarContext", () => ({ useSidebar: () => ({ isMobile: fals
 let root: Root;
 let container: HTMLDivElement;
 beforeEach(() => { vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); container = document.createElement("div"); document.body.append(container); root = createRoot(container); });
-afterEach(async () => { await act(async () => root.unmount()); container.remove(); });
+afterEach(async () => { await act(async () => root.unmount()); container.remove(); await i18n.changeLanguage("en"); });
 
 it("offers the shared app flow without a Fireflies-specific sender", async () => {
   await act(async () => root.render(<RoutineTriggerWizard initialDraft={{ ...defaultTriggerDraft, kind: "webhook" }} routineTitle="Process meetings" routineId="routine-1" onSaveExit={() => {}} onFinish={() => {}} />));
@@ -43,4 +44,26 @@ it("keeps legacy bearer setup instructions accurate", () => {
   const instructions = webhookAgentInstructions("custom", "Meetings", "https://paperclip.example/webhook", "secret", true, "bearer");
   expect(instructions).toContain("Authorization: Bearer secret");
   expect(instructions).not.toContain("HMAC-SHA256");
+});
+
+it("changes schedule labels without changing the edited weekday, timezone or save payload", async () => {
+  const onSaveExit = vi.fn();
+  await i18n.changeLanguage("ru");
+  await act(async () => root.render(<RoutineTriggerWizard initialDraft={{ ...defaultTriggerDraft, kind: "schedule", step: 1, availableStep: 1, frequency: "weekly", weekday: "Monday", timezone: "Europe/London" }} routineTitle="User's schedule" routineId="routine-1" onSaveExit={onSaveExit} onFinish={() => {}} />));
+  const day = container.querySelector<HTMLSelectElement>("#run-day")!;
+  expect(day.value).toBe("Monday");
+  expect(day.selectedOptions[0].textContent).toBe("понедельник");
+  await act(async () => {
+    day.value = "Thursday";
+    day.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await act(async () => { await i18n.changeLanguage("en"); });
+  expect(day.value).toBe("Thursday");
+  expect(day.selectedOptions[0].textContent).toBe("Thursday");
+  await act(async () => { await i18n.changeLanguage("ru"); });
+  expect(day.value).toBe("Thursday");
+  expect(day.selectedOptions[0].textContent).toBe("четверг");
+  const save = [...container.querySelectorAll("button")].find((button) => button.textContent?.includes("Сохранить и выйти"))!;
+  await act(async () => save.click());
+  expect(onSaveExit).toHaveBeenCalledWith(expect.objectContaining({ kind: "schedule", frequency: "weekly", weekday: "Thursday", timezone: "Europe/London" }));
 });

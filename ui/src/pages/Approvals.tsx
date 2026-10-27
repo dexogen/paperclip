@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "@/lib/router";
@@ -30,7 +31,7 @@ export function Approvals() {
 
   useEffect(() => {
     setBreadcrumbs([{ label: t("approvalsUi.heading") }]);
-  }, [setBreadcrumbs, t]);
+  }, [setBreadcrumbs, t, i18n.language]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.approvals.list(selectedCompanyId!),

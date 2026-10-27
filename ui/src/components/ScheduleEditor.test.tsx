@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 
-import { useState } from "react";
+import { act as reactAct, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import {
   ScheduleEditor,
   buildCron,
@@ -75,9 +76,10 @@ describe("ScheduleEditor", () => {
     document.body.appendChild(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     container.remove();
     document.body.innerHTML = "";
+    await i18n.changeLanguage("en");
   });
 
   function cronInput() {
@@ -128,6 +130,24 @@ describe("ScheduleEditor", () => {
     expect(onChange).toHaveBeenLastCalledWith("0 8-18/2 * * 1-5");
     expect(onValidityChange).toHaveBeenLastCalledWith(true);
 
+    act(() => root.unmount());
+  });
+
+  it("updates validation language while preserving an invalid cron draft and withholding changes", async () => {
+    const onChange = vi.fn();
+    const root = createRoot(container);
+    act(() => root.render(<Harness initial="0 8-18/2 * * 1-5" onChange={onChange} />));
+    act(() => typeCron(cronInput()!, "0 8-18/2 *"));
+    await reactAct(async () => { await i18n.changeLanguage("ru"); });
+    const input = container.querySelector<HTMLInputElement>('input[aria-label="Cron-выражение"]')!;
+    expect(input.value).toBe("0 8-18/2 *");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    expect(container.textContent).not.toContain("Use exactly 5 fields");
+    expect(onChange).not.toHaveBeenCalled();
+    await reactAct(async () => { await i18n.changeLanguage("en"); });
+    expect(cronInput()?.value).toBe("0 8-18/2 *");
+    expect(container.textContent).toContain("Use exactly 5 fields");
+    expect(onChange).not.toHaveBeenCalled();
     act(() => root.unmount());
   });
 });

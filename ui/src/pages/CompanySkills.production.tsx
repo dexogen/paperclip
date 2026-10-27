@@ -273,7 +273,7 @@ function sourceMeta(sourceBadge: CompanySkillSourceBadge, sourceLabel: string | 
         ? { icon: VercelMark, label: sourceLabel ?? "skills.sh", managedLabel: t("skillsGap.skillsShManaged") }
         : { icon: GithubIcon, label: sourceLabel ?? "GitHub", managedLabel: t("skillsGap.githubManaged") };
     case "url":
-      return { icon: Link2, label: sourceLabel ?? "URL", managedLabel: t("skillsGap.urlManaged") };
+      return { icon: Link2, label: sourceLabel ?? t("taskDisplay.external.type.url_link"), managedLabel: t("skillsGap.urlManaged") };
     case "local":
       return { icon: Folder, label: sourceLabel ?? t("skillsGap.folder"), managedLabel: t("skillsGap.folderManaged") };
     case "paperclip":
@@ -1629,11 +1629,11 @@ function NewSkillWizard({
             <span className="text-muted-foreground">{t("skillsGap.name")}</span>
             <span>{draft.name || t("skillsGap.untitled")}</span>
             <span className="text-muted-foreground">{t("skillsGap.slug")}</span>
-            <span className="font-mono">{effectiveSlug || "skill"}</span>
+            <span className="font-mono">{effectiveSlug || t("fullPages.skill")}</span>
             <span className="text-muted-foreground">{t("skillsGap.scope")}</span>
             <span>{draft.sharingScope === "private" ? t("skillsGap.private") : t("skillsGap.company")}</span>
             <span className="text-muted-foreground">{t("skillsGap.categories_6ccb60")}</span>
-            <span>{draft.categories.length ? draft.categories.join(", ") : "none"}</span>
+            <span>{draft.categories.length ? draft.categories.join(", ") : t("fullPages.none")}</span>
           </div>
           <div className="space-y-2">
             <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("skillsGap.sharing")}</label>
@@ -2104,7 +2104,7 @@ export function InstallPreviewDialog({
                 )}
               </div>
               <div className="text-muted-foreground">{t("skillsGap.requires_63c217")}</div>
-              <div className="text-foreground">{skill.requires.length === 0 ? "none" : skill.requires.join(", ")}</div>
+              <div className="text-foreground">{skill.requires.length === 0 ? t("fullPages.none") : skill.requires.join(", ")}</div>
               <div className="text-muted-foreground">{t("skillsGap.roles_47dcc2")}</div>
               <div className="text-foreground">{skill.recommendedForRoles.length === 0 ? t("skillsGap.anyRole") : skill.recommendedForRoles.join(" · ")}</div>
               <div className="text-muted-foreground">{t("skillsGap.provenance")}</div>

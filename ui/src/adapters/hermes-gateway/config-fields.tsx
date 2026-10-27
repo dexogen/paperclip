@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { configFieldsForSection } from "../config-sections";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -72,6 +73,7 @@ function SecretField({
   placeholder?: string;
   stored?: boolean;
 }) {
+  useFullSharedTranslation();
   const [visible, setVisible] = useState(false);
   return (
     <Field label={label}>
@@ -80,7 +82,7 @@ function SecretField({
           type="button"
           onClick={() => setVisible((v) => !v)}
           className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-          aria-label={visible ? `Hide ${label}` : `Show ${label}`}
+          aria-label={visible ? fullSharedT("fullShared.hide_4734b5", { value1: label }) : fullSharedT("fullShared.show_00f1c6", { value1: label })}
         >
           {visible ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
         </button>
@@ -90,7 +92,7 @@ function SecretField({
           immediate
           type={visible ? "text" : "password"}
           className={inputClass + " pl-8"}
-          placeholder={stored ? "Stored secret; enter a new value to replace it" : placeholder}
+          placeholder={stored ? fullSharedT("fullShared.stored_secret_enter_a_new_value_to_replace_it_f4a910") : placeholder}
         />
       </div>
     </Field>
@@ -106,6 +108,7 @@ export function HermesGatewayConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  useFullSharedTranslation();
   const storedApiKey = config.apiKey;
   const hasStoredApiKey = isSecretRef(storedApiKey) || typeof storedApiKey === "string";
   const editApiKeyValue = typeof storedApiKey === "string" ? String(eff("adapterConfig", "apiKey", storedApiKey)) : "";
@@ -143,8 +146,8 @@ export function HermesGatewayConfigFields({
   return configFieldsForSection(section, (
     <>
       <Field
-        label="API base URL"
-        hint="Hermes API server base URL that Paperclip can reach, such as http://127.0.0.1:8642 or a private HTTPS URL. Default dashboard root/chat URLs such as http://127.0.0.1:9119/chat are accepted and map to /api."
+        label={fullSharedT("fullShared.api_base_url_a45474")}
+        hint={fullSharedT("fullShared.hermes_api_server_base_url_that_paperclip_can_reach__dde2c4")}
       >
         <DraftInput
           value={apiBaseUrl}
@@ -156,16 +159,16 @@ export function HermesGatewayConfigFields({
       </Field>
 
       <SecretField
-        label="API key"
+        label={fullSharedT("fullShared.api_key_16f0ee")}
         value={isCreate ? String(readCreateValue(values, "apiKey", "") ?? "") : editApiKeyValue}
         onCommit={(v) => writeValue("apiKey", v || undefined)}
-        placeholder="Hermes API_SERVER_KEY, not PAPERCLIP_API_KEY"
+        placeholder={fullSharedT("fullShared.hermes_api_server_key_not_paperclip_api_key_3d6503")}
         stored={!isCreate && hasStoredApiKey && !editApiKeyValue}
       />
 
       <Field
-        label="Paperclip API URL"
-        hint="Optional Paperclip API URL reachable by the Hermes host. This is not a credential."
+        label={fullSharedT("fullShared.paperclip_api_url_d71687")}
+        hint={fullSharedT("fullShared.optional_paperclip_api_url_reachable_by_the_hermes_h_0c1c61")}
       >
         <DraftInput
           value={paperclipApiUrl}
@@ -177,22 +180,22 @@ export function HermesGatewayConfigFields({
       </Field>
 
       <Field configSection="runPolicy"
-        label="Session key strategy"
-        hint="Controls X-Hermes-Session-Key. Issue scoped prevents cross-task memory bleed by default."
+        label={fullSharedT("fullShared.session_key_strategy_1abcf8")}
+        hint={fullSharedT("fullShared.controls_x_hermes_session_key_issue_scoped_prevents__08f7c6")}
       >
         <select
           value={sessionKeyStrategy}
           onChange={(event) => writeValue("sessionKeyStrategy", event.target.value)}
           className={inputClass}
         >
-          <option value="issue">Issue scoped</option>
-          <option value="agent">Agent scoped</option>
-          <option value="run">Run scoped</option>
-          <option value="none">None</option>
+          <option value="issue">{fullSharedT("fullShared.issue_scoped_837400")}</option>
+          <option value="agent">{fullSharedT("fullShared.agent_scoped_e098d6")}</option>
+          <option value="run">{fullSharedT("fullShared.run_scoped_fdedd5")}</option>
+          <option value="none">{fullSharedT("fullShared.none_dc937b")}</option>
         </select>
       </Field>
 
-      <Field configSection="runPolicy" label="Timeout seconds">
+      <Field configSection="runPolicy" label={fullSharedT("fullShared.timeout_seconds_e7a1bb")}>
         <DraftNumberInput
           value={Number.isFinite(timeoutSec) ? timeoutSec : DEFAULT_TIMEOUT_SEC}
           onCommit={(v) => writeValue("timeoutSec", v)}
@@ -202,8 +205,8 @@ export function HermesGatewayConfigFields({
       </Field>
 
       <Field
-        label="Event reconnect ms"
-        hint="Delay before reconnecting the Hermes SSE events stream after a nonterminal disconnect."
+        label={fullSharedT("fullShared.event_reconnect_ms_4e117b")}
+        hint={fullSharedT("fullShared.delay_before_reconnecting_the_hermes_sse_events_stre_cd42ff")}
       >
         <DraftNumberInput
           value={Number.isFinite(eventReconnectMs) ? eventReconnectMs : DEFAULT_EVENT_RECONNECT_MS}
@@ -214,15 +217,15 @@ export function HermesGatewayConfigFields({
       </Field>
 
       <ToggleField
-        label="Dangerously allow remote HTTP"
-        hint="Unsafe dev-only escape hatch. Remote Hermes gateways should use HTTPS; loopback HTTP remains allowed."
+        label={fullSharedT("fullShared.dangerously_allow_remote_http_876d0d")}
+        hint={fullSharedT("fullShared.unsafe_dev_only_escape_hatch_remote_hermes_gateways__f41b6d")}
         checked={allowInsecureRemoteHttp}
         onChange={(v) => writeValue("dangerouslyAllowInsecureRemoteHttp", v)}
       />
 
       <Field
-        label="Extra headers"
-        hint="Optional JSON object of extra nonsecret headers. Security-critical headers are generated by the adapter."
+        label={fullSharedT("fullShared.extra_headers_e53f03")}
+        hint={fullSharedT("fullShared.optional_json_object_of_extra_nonsecret_headers_secu_501ad6")}
       >
         <textarea
           value={headers}
@@ -241,7 +244,7 @@ export function HermesGatewayConfigFields({
         />
       </Field>
 
-      <Field label="Instructions" hint="Optional stable Hermes instructions sent separately from the wake input.">
+      <Field label={fullSharedT("taskProperties.fields.instructions")} hint={fullSharedT("fullShared.optional_stable_hermes_instructions_sent_separately__7d641b")}>
         <DraftTextarea
           value={instructions}
           onCommit={(v) => writeValue("instructions", v || undefined)}

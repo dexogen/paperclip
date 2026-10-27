@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import type { LabArtifact } from "../../kit";
 import { isTaskDocument } from "./kinds";
 
@@ -36,7 +37,7 @@ export function panelSections(artifacts: LabArtifact[]): PanelSection[] {
     const documentsOnly = items.every(isTaskDocument);
     return {
       id: runId || "loose",
-      title: run ? run.agent : documentsOnly ? "Task documents" : "Other artifacts",
+      title: run ? run.agent : documentsOnly ? fullSharedT("taskPanels.document.section") : fullSharedT("fullShared.other_artifacts_9c3b1a"),
       agent: run?.agent,
       startedLabel: run?.startedLabel,
       startedAt: run?.startedAt,

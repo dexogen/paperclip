@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import {
   Boxes,
@@ -39,28 +41,29 @@ interface NavEntry {
 }
 
 const TOP: NavEntry[] = [
-  { label: "New Task", icon: SquarePen },
-  { label: "Search", icon: Search },
-  { label: "Dashboard", icon: LayoutDashboard },
-  { label: "Inbox", icon: Inbox },
+  { get label() { return fullSharedT("sidebar.newTask"); }, icon: SquarePen },
+  { get label() { return fullSharedT("sidebar.search"); }, icon: Search },
+  { get label() { return fullSharedT("sidebar.dashboard"); }, icon: LayoutDashboard },
+  { get label() { return fullSharedT("sidebar.inbox"); }, icon: Inbox },
 ];
 const WORK: NavEntry[] = [
-  { label: "Tasks", icon: CircleCheck, nav: "tasks" },
-  { label: "Projects", icon: FolderOpen },
-  { label: "Routines", icon: Repeat },
-  { label: "Artifacts", icon: Package, nav: "artifacts" },
-  { label: "Workspaces", icon: GitBranch },
+  { get label() { return fullSharedT("sidebar.tasks"); }, icon: CircleCheck, nav: "tasks" },
+  { get label() { return fullSharedT("sidebar.projects"); }, icon: FolderOpen },
+  { get label() { return fullSharedT("sidebar.routines"); }, icon: Repeat },
+  { get label() { return fullSharedT("sidebar.artifacts"); }, icon: Package, nav: "artifacts" },
+  { get label() { return fullSharedT("sidebar.workspaces"); }, icon: GitBranch },
 ];
 const ORG: NavEntry[] = [
-  { label: "Agents", icon: Users },
-  { label: "Skills", icon: Boxes },
-  { label: "Connectors", icon: Unplug },
-  { label: "Audit", icon: History },
+  { get label() { return fullSharedT("sidebar.agents"); }, icon: Users },
+  { get label() { return fullSharedT("sidebar.skills"); }, icon: Boxes },
+  { get label() { return fullSharedT("sidebar.connectors"); }, icon: Unplug },
+  { get label() { return fullSharedT("sidebar.audit"); }, icon: History },
 ];
 const RECENT = [TASKS["ACM-1"], TASKS["ACM-3"], TASKS["ACM-2"]];
 
 // SidebarNavItem.tsx:129-133
 function NavItem({ label, icon: Icon, active }: { label: string; icon?: LucideIcon; active?: boolean }) {
+  useFullSharedTranslation();
   return (
     <span
       className={cn(
@@ -80,6 +83,7 @@ function NavItem({ label, icon: Icon, active }: { label: string; icon?: LucideIc
 
 // SidebarSection.tsx:77,155-156
 function Section({ label, children }: { label: string; children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     <div>
       <div className="px-3 py-1.5">
@@ -95,9 +99,10 @@ function Section({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function Sidebar({ nav }: { nav: ShellNav }) {
+  useFullSharedTranslation();
   return (
     // SidebarShell.tsx:15 (240px), Sidebar.tsx:128 — no right border; the edge is the surface change.
-    <aside className="flex w-60 shrink-0 flex-col primary-sidebar-surface" aria-label="Primary">
+    <aside className="flex w-60 shrink-0 flex-col primary-sidebar-surface" aria-label={t("fullDiagnostics.primary")}>
       {/* Sidebar.tsx:142 + SidebarCompanyMenu.tsx:268-291 */}
       <div className="flex h-(--sz-60px) shrink-0 items-center gap-1 px-3">
         <span className="flex h-9 min-w-0 flex-1 items-center justify-start gap-2 rounded-md px-4 text-left">
@@ -120,17 +125,17 @@ function Sidebar({ nav }: { nav: ShellNav }) {
             <NavItem key={entry.label} {...entry} />
           ))}
         </div>
-        <Section label="Work">
+        <Section label={fullSharedT("sidebar.work")}>
           {WORK.map((entry) => (
             <NavItem key={entry.label} {...entry} active={entry.nav === nav} />
           ))}
         </Section>
-        <Section label="Org">
+        <Section label={fullSharedT("sidebar.org")}>
           {ORG.map((entry) => (
             <NavItem key={entry.label} {...entry} />
           ))}
         </Section>
-        <Section label="Recent Tasks">
+        <Section label={t("fullDiagnostics.recentTasks")}>
           {RECENT.map((title) => (
             <NavItem key={title} label={title} />
           ))}
@@ -157,17 +162,17 @@ function Sidebar({ nav }: { nav: ShellNav }) {
  * screenshots as a ghost button.
  */
 export function SupportButton() {
+  useFullSharedTranslation();
   return (
     <span className="ml-auto flex shrink-0 items-center gap-1 pl-2">
       <span className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground">
-        <LifeBuoy className="size-4" />
-        Support
-      </span>
+        <LifeBuoy className="size-4" />{t("fullDiagnostics.support")}</span>
     </span>
   );
 }
 
 export function AppShell({ nav, children }: { nav: ShellNav; children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     // Layout.tsx:621-638, with min-height in place of h-dvh (see above).
     <div className="bg-background text-foreground flex min-h-225 flex-col">

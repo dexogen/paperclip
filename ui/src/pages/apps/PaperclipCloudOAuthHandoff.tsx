@@ -1,3 +1,5 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay } from "@/pages/apps/app-display-text";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useCallback, useEffect, useState } from "react";
 import { Link2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,7 @@ export function ManagedOAuthHandoffState({
   onRetry: () => void;
   onCancel: () => void;
 }) {
+  useFullAppsTranslation();
   const failed = phase === "error";
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-6">
@@ -34,19 +37,19 @@ export function ManagedOAuthHandoffState({
         </span>
         <div className="min-w-0">
           <h1 className="text-xl font-bold tracking-tight">
-            {failed ? "Sign-in couldn’t continue" : "Preparing secure sign-in"}
+            {failed ? fullAppsT("fullApps.sign_in_couldn_t_continue_a790c4") : fullAppsT("githubSetupUi.oauth.preparingTitle")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {failed
-              ? error ?? "Paperclip couldn’t prepare the provider sign-in. Try again."
+              ? error ?? fullAppsT("fullApps.paperclip_couldn_t_prepare_the_provider_sign_in_try__4c14d5")
               : phase === "reauthenticating"
-                ? "Your Paperclip sign-in is being refreshed."
-                : "Paperclip is opening the provider securely."}
+                ? fullAppsT("fullApps.your_paperclip_sign_in_is_being_refreshed_549710")
+                : fullAppsT("fullApps.paperclip_is_opening_the_provider_securely_a6a543")}
           </p>
           {failed ? (
             <div className="mt-6 flex items-center gap-2">
-              <Button type="button" onClick={onRetry}>Try again</Button>
-              <Button type="button" variant="ghost" onClick={onCancel}>Return to Paperclip</Button>
+              <Button type="button" onClick={onRetry}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
+              <Button type="button" variant="ghost" onClick={onCancel}>{fullAppsT("fullApps.return_to_paperclip_7cb9e4")}</Button>
             </div>
           ) : null}
         </div>
@@ -57,14 +60,15 @@ export function ManagedOAuthHandoffState({
 
 /** Fixed tenant landing used only after Paperclip Cloud refreshes login. */
 export function PaperclipCloudOAuthHandoffPage() {
+  useFullAppsTranslation();
   const [phase, setPhase] = useState<ManagedOAuthHandoffPhase>("loading");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AppDisplayText | null>(null);
 
   const resume = useCallback(async () => {
     const handoff = readPendingCloudHandoff();
     if (!handoff) {
       setPhase("error");
-      setError("This sign-in expired. Return to Paperclip and start the connection again.");
+      setError(ownAppDisplayText("fullApps.this_sign_in_expired_return_to_paperclip_and_start_t_cc39fa"));
       return;
     }
     setPhase("loading");
@@ -73,14 +77,14 @@ export function PaperclipCloudOAuthHandoffPage() {
       const target = await prepareOAuthNavigation({ authorizationUrl: "", handoff });
       if (target.kind === "reauthentication") {
         setPhase("error");
-        setError("Paperclip couldn’t refresh this sign-in. Try again to continue.");
+        setError(ownAppDisplayText("fullApps.paperclip_couldn_t_refresh_this_sign_in_try_again_to_9cc94d"));
         return;
       }
       clearPendingCloudHandoff();
       navigateTopLevel(target.url);
     } catch (caught) {
       setPhase("error");
-      setError(caught instanceof Error ? caught.message : "Paperclip couldn’t prepare secure sign-in.");
+      setError(caught instanceof Error ? appErrorDisplay(caught) : ownAppDisplayText("fullApps.paperclip_couldn_t_prepare_secure_sign_in_6d9096"));
     }
   }, []);
 
@@ -91,7 +95,7 @@ export function PaperclipCloudOAuthHandoffPage() {
   return (
     <ManagedOAuthHandoffState
       phase={phase}
-      error={error}
+      error={renderAppDisplayText(error)}
       onRetry={() => void resume()}
       onCancel={() => {
         clearPendingCloudHandoff();

@@ -1,3 +1,4 @@
+import { i18n, useTranslation, Trans } from "@/i18n";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CompanySecret, UserSecretDefinition } from "@paperclipai/shared";
@@ -39,6 +40,7 @@ export function SetMyUserSecretDialog({
   onOpenChange: (open: boolean) => void;
   onSaved?: (secret: CompanySecret) => void;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
   const [value, setValue] = useState("");
@@ -57,7 +59,7 @@ export function SetMyUserSecretDialog({
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!definition) throw new Error("No definition selected");
+      if (!definition) throw new Error(i18n.t("fullRoutinesSecrets.noDefinitionSelected"));
       const payload = isExternal
         ? { externalRef: externalRef.trim() }
         : { value: value.trim() };
@@ -75,7 +77,7 @@ export function SetMyUserSecretDialog({
       queryClient.invalidateQueries({ queryKey: queryKeys.secrets.myUserSecrets(companyId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.secrets.userDefinitions(companyId) });
       pushToast({
-        title: existingSecret ? "Value updated" : "Value saved",
+        title: existingSecret ? t("fullRoutinesSecrets.valueUpdated") : t("fullRoutinesSecrets.valueSaved"),
         body: definition?.name,
         tone: "success",
       });
@@ -88,7 +90,7 @@ export function SetMyUserSecretDialog({
           ? err.message
           : err instanceof Error
             ? err.message
-            : "Failed to save value",
+            : t("fullRoutinesSecrets.failedToSaveValue"),
       );
     },
   });
@@ -100,15 +102,12 @@ export function SetMyUserSecretDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {existingSecret ? "Update your value" : "Set your value"}
+            {existingSecret ? t("fullRoutinesSecrets.updateYourValue") : t("fullRoutinesSecrets.setYourValue")}
             <UserSecretChip />
           </DialogTitle>
           <DialogDescription>
             {definition ? (
-              <>
-                This value is yours only. It is used when you are the user responsible for a run that
-                needs <span className="font-mono">{definition.key}</span>.
-              </>
+              <Trans i18nKey="fullRoutinesSecrets.userValuePurpose" values={{ key: definition.key }} components={{ key: <span className="font-mono" /> }} />
             ) : null}
           </DialogDescription>
         </DialogHeader>
@@ -127,32 +126,27 @@ export function SetMyUserSecretDialog({
 
             {isExternal ? (
               <div className="space-y-1">
-                <label className="text-xs font-medium text-foreground">External reference</label>
+                <label className="text-xs font-medium text-foreground">{t("fullRoutinesSecrets.externalReference")}</label>
                 <Input
                   value={externalRef}
                   onChange={(event) => setExternalRef(event.target.value)}
-                  placeholder="provider reference or ARN"
+                  placeholder={t("fullRoutinesSecrets.providerReferenceOrARN")}
                   className="font-mono text-sm"
                   autoFocus
                 />
-                <p className="text-(length:--text-micro) text-muted-foreground">
-                  Points at your own credential in the configured provider. Paperclip stores the
-                  reference, not the value.
-                </p>
+                <p className="text-(length:--text-micro) text-muted-foreground">{t("fullRoutinesSecrets.pointsAtYourOwnCredentialInTheConfiguredProvider")}</p>
               </div>
             ) : (
               <div className="space-y-1">
-                <label className="text-xs font-medium text-foreground">Your value</label>
+                <label className="text-xs font-medium text-foreground">{t("fullRoutinesSecrets.yourValue933")}</label>
                 <Textarea
                   value={value}
                   onChange={(event) => setValue(event.target.value)}
-                  placeholder="Paste your token or credential"
+                  placeholder={t("fullRoutinesSecrets.pasteYourTokenOrCredential")}
                   className="font-mono text-sm min-h-(--sz-80px)"
                   autoFocus
                 />
-                <p className="text-(length:--text-micro) text-muted-foreground">
-                  Stored encrypted. Never shown back to anyone, including admins.
-                </p>
+                <p className="text-(length:--text-micro) text-muted-foreground">{t("fullRoutinesSecrets.storedEncryptedNeverShownBackToAnyoneIncludingAdmins")}</p>
               </div>
             )}
 
@@ -161,11 +155,9 @@ export function SetMyUserSecretDialog({
         ) : null}
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={save.isPending}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={save.isPending}>{t("fullRoutinesSecrets.cancel")}</Button>
           <Button onClick={() => save.mutate()} disabled={!canSave || save.isPending}>
-            {save.isPending ? "Saving…" : existingSecret ? "Update value" : "Save value"}
+            {save.isPending ? t("fullRoutinesSecrets.saving") : existingSecret ? t("fullRoutinesSecrets.updateValue") : t("fullRoutinesSecrets.saveValue")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { secretsApi } from "../api/secrets";
 
 export const PROVIDER_ENV_KEYS: Record<string, string> = {
@@ -20,7 +21,7 @@ export async function storeOrganizationApiKey(
     name: `${envKey} · agent setup`,
     key: `${envKey}.setup.${crypto.randomUUID()}`,
     value: value.trim(),
-    description: "Adapter credential supplied during agent setup.",
+    description: fullSharedT("fullShared.adapter_credential_supplied_during_agent_setup_96f1fe"),
   });
   return {
     binding: {
@@ -43,7 +44,7 @@ export async function storeProviderApiKey(
   const definition = await secretsApi.createUserSecretDefinition(companyId, {
     key,
     name: `${envKey} · agent setup`,
-    description: "Model provider credential for a new agent setup.",
+    description: fullSharedT("fullShared.model_provider_credential_for_a_new_agent_setup_7499a9"),
   });
   const remove = () =>
     secretsApi.removeUserSecretDefinition(companyId, definition.id);

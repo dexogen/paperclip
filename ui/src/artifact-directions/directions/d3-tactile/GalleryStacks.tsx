@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact, LabGroup } from "../../kit";
@@ -35,6 +37,7 @@ const SLOT =
 
 /** The stack's own artifacts, standing in the pocket. Each says how wide it is, so its slot can keep it inside the folder's sides. */
 function FolderContents({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   return (
     <>
       {artifacts.map((artifact, index) => (
@@ -55,22 +58,22 @@ function FolderContents({ artifacts }: { artifacts: LabArtifact[] }) {
 const FOCUS = cn(RING, RING_ON.canvas, "focus-visible:ring-offset-4");
 
 function Count({ group, className }: { group: LabGroup; className?: string }) {
+  useFullSharedTranslation();
   return (
     <span className={className}>
       <span className="whitespace-nowrap">
         <span className="font-mono text-(length:--tac-mono-scale)">{group.count}</span> {countLabel(group.count)}
       </span>
-      <span className="whitespace-nowrap">
-        Updated <span className="font-mono text-(length:--tac-mono-scale)">{group.updatedLabel}</span>
-      </span>
+      <span className="whitespace-nowrap"><FullSharedTrans i18nKey="fullShared.updated_44d29d" components={{ part1: <span className="font-mono text-(length:--tac-mono-scale)">{group.updatedLabel}</span> }} /></span>
     </span>
   );
 }
 
 const stackLabel = (group: LabGroup, review: number) =>
-  `Open stack ${group.taskIdentifier} ${group.title}: ${group.count} ${countLabel(group.count)}, updated ${group.updatedLabel}${review > 0 ? `, ${review} to review` : ""}`;
+  t("fullDiagnostics.openStackUpdated", { value1: group.taskIdentifier, value2: group.title, value3: group.count, value4: countLabel(group.count), value5: group.updatedLabel, value6: review > 0 ? t("fullDiagnostics.reviewCountSuffix", { count: review }) : "" });
 
 function StackFolder({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const peek = peekOf(group);
   const review = reviewCountOf(group.artifacts);
   return (
@@ -104,6 +107,7 @@ const MAT = "absolute inset-x-0 bottom-0 top-(--tac-mat-top) block rounded-xl bg
  * the product.
  */
 function StackLone({ group }: { group: LabGroup }) {
+  useFullSharedTranslation();
   const artifact = group.artifacts[0];
   const review = reviewCountOf(group.artifacts);
   const tall = standsTall(artifact);
@@ -162,7 +166,8 @@ function StackLone({ group }: { group: LabGroup }) {
 }
 
 export function GalleryStacks({ groups }: { groups: LabGroup[] }) {
-  if (groups.length === 0) return <p className="py-16 text-center text-sm font-medium text-foreground">No artifact stacks yet.</p>;
+  useFullSharedTranslation();
+  if (groups.length === 0) return <p className="py-16 text-center text-sm font-medium text-foreground">{fullSharedT("surfacesGap.artifacts.noStacks")}</p>;
   return (
     // The shelf, measured: under 40rem it keeps two columns of compact folders (tokens-gallery.css).
     <div className="@container/shelf">

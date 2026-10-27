@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { heartbeatsApi } from "@/api/heartbeats";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,14 +15,15 @@ export function ManagedAiConnectionRow({
 }: {
   connection: ToolConnection;
 }) {
+  useFullSharedTranslation();
   const metadata = connection.config?.ai as AiConnectionMetadata | undefined;
   if (!metadata) return null;
   return (
     <p className="text-xs text-muted-foreground">
       {metadata.routing ? metadata.routing.kind === "bedrock" ? `Bedrock · ${metadata.routing.region}` : metadata.routing.kind === "openrouter" ? "OpenRouter" : metadata.routing.baseUrl : aiMethodLabel(metadata.provider, metadata.method)} ·{" "}
       {connection.credentialPolicy === "per_user"
-        ? "Personal"
-        : "Company shared"}
+        ? fullSharedT("upstreamGap.connectionPersonal")
+        : fullSharedT("upstreamGap.connectionCompanyShared")}
     </p>
   );
 }
@@ -30,6 +32,7 @@ export function ManagedAiConnectionDetails({
 }: {
   connection: ToolConnection;
 }) {
+  useFullSharedTranslation();
   const client = useQueryClient();
   const navigate = useNavigate();
   const runs = useQuery({
@@ -79,13 +82,13 @@ export function ManagedAiConnectionDetails({
     return (
       <p role="status" className="text-sm text-muted-foreground">
         {accounts.isPending || grants.isPending
-          ? "Loading AI account…"
-          : "This account is not available to you."}
+          ? fullSharedT("fullShared.loading_ai_account_91a8f4")
+          : fullSharedT("fullShared.this_account_is_not_available_to_you_407f13")}
       </p>
     );
   return (
     <div className="space-y-4">
-      {account.routing && <details className="rounded-lg border border-border p-4"><summary className="cursor-pointer text-sm font-medium">Provider settings</summary><dl className="mt-4 grid grid-cols-2 gap-3 text-sm"><dt className="text-muted-foreground">Destination</dt><dd className="break-all">{account.routing.baseUrl ?? (account.routing.kind === "bedrock" ? account.routing.region : "OpenRouter")}</dd><dt className="text-muted-foreground">API format</dt><dd>{account.routing.kind === "openrouter" ? "Selected by harness" : account.routing.protocol}</dd><dt className="text-muted-foreground">Authentication</dt><dd>{account.routing.auth}</dd><dt className="text-muted-foreground">Models</dt><dd>{account.routing.models.map(m => m.label ?? m.id).join(", ") || "Enter a model ID on the agent"}</dd></dl></details>}
+      {account.routing && <details className="rounded-lg border border-border p-4"><summary className="cursor-pointer text-sm font-medium">{fullSharedT("fullShared.provider_settings_d35680")}</summary><dl className="mt-4 grid grid-cols-2 gap-3 text-sm"><dt className="text-muted-foreground">{fullSharedT("companySettings.observability.destination")}</dt><dd className="break-all">{account.routing.baseUrl ?? (account.routing.kind === "bedrock" ? account.routing.region : "OpenRouter")}</dd><dt className="text-muted-foreground">{fullSharedT("providerSetup.setup.apiFormat")}</dt><dd>{account.routing.kind === "openrouter" ? fullSharedT("fullShared.selected_by_harness_9b76df") : account.routing.protocol}</dd><dt className="text-muted-foreground">{fullSharedT("providerSetup.setup.authentication")}</dt><dd>{account.routing.auth}</dd><dt className="text-muted-foreground">{fullSharedT("taskChatUi.settings.models")}</dt><dd>{account.routing.models.map(m => m.label ?? m.id).join(", ") || fullSharedT("fullShared.enter_a_model_id_on_the_agent_8d82fd")}</dd></dl></details>}
       <AiConnectionAccountControls
         account={account}
         grant={grant}
@@ -95,9 +98,7 @@ export function ManagedAiConnectionDetails({
         revocationDetails={
           <div className="space-y-2">
             {runs.error && (
-              <p role="alert">
-                Could not load active runs. Retry before revoking.
-              </p>
+              <p role="alert">{fullSharedT("fullShared.could_not_load_active_runs_retry_before_revoking_240429")}</p>
             )}
             {runs.data?.map((run) => (
               <div
@@ -112,9 +113,7 @@ export function ManagedAiConnectionDetails({
                   size="sm"
                   disabled={stop.isPending}
                   onClick={() => stop.mutate(run.id)}
-                >
-                  Stop run
-                </Button>
+                >{fullSharedT("fullShared.stop_run_b7ec68")}</Button>
               </div>
             ))}
           </div>

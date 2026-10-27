@@ -1,3 +1,5 @@
+import { t, i18n } from "@/i18n";
+import { artifactQuantity } from "../../localized-copy";
 import { fileKindForName } from "@/components/task-chat/task-chat-attachments";
 import type { LabArtifact, LabKind } from "../../kit";
 
@@ -45,21 +47,21 @@ const KIND_NOUN: Partial<Record<LabKind, string>> = {
   document: "Markdown",
   pdf: "PDF",
   // The product has no entry for .pptx and calls it "File"; the kind is known here.
-  slides: "Slides",
-  sheet: "Sheet",
-  archive: "Archive",
-  code: "Code",
+  get slides() { return t("fullDiagnostics.kindSlides"); },
+  get sheet() { return t("fullDiagnostics.kindSheet"); },
+  get archive() { return t("fullDiagnostics.kindArchive"); },
+  get code() { return t("fullDiagnostics.kindCode"); },
 };
 
 /** The first word of the meta line, in the product's wording. */
 export function kindLabel(a: LabArtifact): string {
-  if (isTaskDocument(a)) return "Document";
-  if (a.kind === "image") return "Image";
-  if (a.kind === "video") return "Video";
-  if (a.kind === "link") return "Link preview";
-  if (a.kind === "slides") return "Slides";
-  const byName = a.filename ? fileKindForName(a.filename).label : "File";
-  return byName === "File" ? (KIND_NOUN[a.kind] ?? "File") : byName;
+  if (isTaskDocument(a)) return t("fullDiagnostics.kindDocument");
+  if (a.kind === "image") return t("fullDiagnostics.kindImage");
+  if (a.kind === "video") return t("fullDiagnostics.kindVideo");
+  if (a.kind === "link") return t("fullDiagnostics.kindLinkPreview");
+  if (a.kind === "slides") return t("fullDiagnostics.kindSlides");
+  const byName = a.filename ? fileKindForName(a.filename, i18n.t).label : t("fullDiagnostics.kindFile");
+  return byName === t("taskChatUi.attachment.file") ? (KIND_NOUN[a.kind] ?? t("fullDiagnostics.kindFile")) : byName;
 }
 
 /** A link's address without the scheme: "preview.acmehats.example/storefront". */
@@ -68,7 +70,7 @@ export function linkLabel(url: string | undefined): string | undefined {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+const plural = artifactQuantity;
 
 /** Data rows and columns of a delimited excerpt (the header is not a row). */
 function sheetShape(a: LabArtifact): { rows: number; columns: number } | undefined {
@@ -107,7 +109,7 @@ export function metaParts(a: LabArtifact, { facts = false, omit, address = true 
   } else if (a.sizeLabel) {
     parts.push(a.sizeLabel);
   }
-  if (a.revision != null) parts.push(`rev ${a.revision}`);
+  if (a.revision != null) parts.push(t("fullDiagnostics.revision", { revision: a.revision }));
   const fact = facts || a.kind === "video" ? kindFact(a) : undefined;
   if (fact) parts.push(fact);
   const shape = facts ? sheetShape(a) : undefined;

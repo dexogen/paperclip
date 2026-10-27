@@ -1,3 +1,5 @@
+import { t as fullSharedTailT } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import type { PaperclipQuestion, PaperclipQuestionResponse, PaperclipQuestionSet, TranscriptEntry } from "@paperclipai/adapter-utils";
 import type { UIAdapterModule } from "../types";
 import { parseCodexStdoutLine, buildPaperclipRunnerConfig } from "@paperclipai/adapter-codex-local/ui";
@@ -446,10 +448,10 @@ function runtimeRequestEntry(
     .filter((choice) => choice.key && choice.label)
     .slice(0, 32);
   const actionLabels: Record<string, string> = {
-    accept: "Allow once",
-    accept_for_session: "Allow for session",
-    decline: "Deny",
-    cancel: "Cancel",
+    accept: fullSharedTailT("fullSharedTail.display_d21c907beabe"),
+    accept_for_session: fullSharedTailT("fullSharedTail.display_f2eb4d352a03"),
+    decline: fullSharedTailT("fullSharedTail.display_1a0a8d6746f9"),
+    cancel: fullSharedTailT("fullSharedTail.display_6f762057e058"),
   };
   const actions = (Array.isArray(request.actions) ? request.actions : [])
     .filter((action): action is string => typeof action === "string" && action in actionLabels)
@@ -475,7 +477,7 @@ function runtimeRequestEntry(
     .map(record)
     .map((field, index) => ({
       name: text(field.name, `answer_${index + 1}`).slice(0, 160),
-      label: text(field.label, text(field.name, `Answer ${index + 1}`)).slice(0, 240),
+      label: text(field.label, text(field.name, fullSharedT("fullShared.answer_3d0bab", { value1: index + 1 }))).slice(0, 240),
       placeholder: nullableText(field.placeholder)?.slice(0, 500) ?? null,
     }))
     .filter((field) => field.name && field.label)
@@ -539,7 +541,7 @@ function parseQuestionSet(value: unknown): PaperclipQuestionSet | null {
     const answerMode: PaperclipQuestion["answerMode"] = question.answerMode === "single_select" || question.answerMode === "multi_select" ? question.answerMode : "text";
     const options = (Array.isArray(question.options) ? question.options : []).map(record).slice(0, 128).map((option, optionIndex) => ({
       id: text(option.id, `option-${optionIndex + 1}`).slice(0, 160),
-      label: text(option.label, `Option ${optionIndex + 1}`).slice(0, 1_000),
+      label: text(option.label, fullSharedT("fullShared.option_c55367", { value1: optionIndex + 1 })).slice(0, 1_000),
       ...(nullableText(option.description) ? { description: text(option.description).slice(0, 4_000) } : {}),
     }));
     const customAnswer = record(question.customAnswer);
@@ -603,7 +605,7 @@ function runResultEntry(payload: JsonRecord, ts: string): Extract<TranscriptEntr
       artifactRef: nullableText(item.artifactRef) ?? undefined,
     })),
     remainingWork: (Array.isArray(completion.remainingWork) ? completion.remainingWork : []).map(record).slice(0, 64).map((item) => ({
-      description: text(item.description, "Remaining work"),
+      description: text(item.description, fullSharedT("fullShared.remaining_work_1d8b7f")),
       blocksCompletion: item.blocksCompletion === true,
     })),
     blocker: Object.keys(blocker).length > 0 ? {
@@ -724,13 +726,13 @@ function parsePrpEvent(
   }
   if (eventType === "workspace.file.referenced") {
     const entry = workspaceFileReferenceEntry(payload, ts);
-    return entry ? [entry] : [{ kind: "system", ts, text: "Runner: Ignored an unsafe workspace file reference" }];
+    return entry ? [entry] : [{ kind: "system", ts, text: fullSharedT("fullShared.runner_ignored_an_unsafe_workspace_file_reference_c61363") }];
   }
   if (eventType.startsWith("runtime_request.")) {
     const request = record(payload.request ?? payload);
     const input = record(request.input);
     if (typeof input.description === "string" && input.description.length > 100_000) {
-      return [{ kind: "system", ts, text: "Runner: Cannot display this input request because its complete context exceeds 100,000 characters. No decision can be submitted from this request." }];
+      return [{ kind: "system", ts, text: fullSharedT("fullShared.runner_cannot_display_this_input_request_because_its_4a7198") }];
     }
     const entry = runtimeRequestEntry(eventType, payload, event, ts, state);
     return entry ? [entry] : [];
@@ -747,11 +749,11 @@ function parsePrpEvent(
     const context = record(payload.context);
     const model = text(context.model, text(record(payload.model).name, "Paperclip runner"));
     const sessionId = text(payload.providerSessionId, text(payload.driverSessionId, text(event.normalizedSessionId)));
-    return [{ kind: "system", ts, text: `Paperclip session ${eventType === "session.resumed" ? "resumed" : "started"} · ${model}${sessionId ? ` · ${sessionId}` : ""}` }];
+    return [{ kind: "system", ts, text: fullSharedT("fullShared.paperclip_session_970d2a", { value1: eventType === "session.resumed" ? "resumed" : "started", value2: model, value3: sessionId ? ` · ${sessionId}` : "" }) }];
   }
-  if (eventType === "turn.started") return [{ kind: "system", ts, text: "Turn started" }];
-  if (eventType === "turn.completed") return [{ kind: "system", ts, text: "Turn completed" }];
-  if (eventType === "turn.failed") return [{ kind: "stderr", ts, text: text(record(payload.error).message, "Turn failed") }];
+  if (eventType === "turn.started") return [{ kind: "system", ts, text: fullSharedT("runUi.marker.turnStarted") }];
+  if (eventType === "turn.completed") return [{ kind: "system", ts, text: fullSharedT("runUi.marker.turnCompleted") }];
+  if (eventType === "turn.failed") return [{ kind: "stderr", ts, text: text(record(payload.error).message, fullSharedT("fullShared.turn_failed_4144ba")) }];
   if (eventType === "item.started" || eventType === "item.completed") {
     if (payload.kind === "usage") return [usageEntry(payload, ts)];
     return parseItemEvent(event, payload, eventType === "item.started" ? "started" : "completed", ts, state);
@@ -759,7 +761,7 @@ function parsePrpEvent(
   if (eventType === "item.failed") {
     const item = record(payload.item);
     const error = record(payload.error);
-    return [{ kind: "stderr", ts, text: text(error.message, text(item.error, "Runner item failed")) }];
+    return [{ kind: "stderr", ts, text: text(error.message, text(item.error, fullSharedT("fullShared.runner_item_failed_be6b5b"))) }];
   }
   if (eventType === "item.delta") return parseDeltaEvent(event, payload, ts, state);
   if (eventType === "usage.reported") return [usageEntry(payload, ts)];
@@ -776,7 +778,7 @@ function parsePrpEvent(
   }
   if (eventType === "run.terminal") return [runTerminalEntry(payload, ts)];
   if (eventType === "harness.diagnostic" || eventType === "runner.diagnostic" || eventType === "session.failed" || eventType === "mcp_app.failed") {
-    return [{ kind: "system", ts, text: `Runner: ${text(payload.message, text(payload.code, eventType))}` }];
+    return [{ kind: "system", ts, text: fullSharedT("fullShared.runner_09bbf9", { value1: text(payload.message, text(payload.code, eventType)) }) }];
   }
   return [];
 }
@@ -819,7 +821,7 @@ export function parsePaperclipRunnerStdoutLine(line: string, ts: string): Transc
 
 export const paperclipRunnerUIAdapter: UIAdapterModule = {
   type: "paperclip_runner",
-  label: "Paperclip Runner",
+  get label() { return fullSharedT("runtimeSelect.paperclip"); },
   parseStdoutLine: parsePaperclipRunnerStdoutLine,
   createStdoutParser: () => {
     let state = createParserState();

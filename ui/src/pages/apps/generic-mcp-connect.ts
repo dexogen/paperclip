@@ -1,3 +1,4 @@
+import { t as fullAppsT } from "@/i18n";
 import { checkMcpRemoteHeaderName, checkMcpRemoteHeaderValue, mcpRemoteHeaderRejectionMessage } from "@paperclipai/shared";
 import type { GenericMcpAuthMode } from "@paperclipai/shared";
 
@@ -101,68 +102,68 @@ export function genericConnectGuidance(
   code: string | null | undefined,
   message: string | null | undefined,
 ): GenericConnectGuidance {
-  const fallback = message?.trim() || "Paperclip couldn't connect to that address. Check it and try again.";
+  const fallback = message?.trim() || fullAppsT("fullApps.paperclip_couldn_t_connect_to_that_address_check_it__63711c");
   switch (code) {
     case "mcp_remote_url_missing":
     case "mcp_remote_url_invalid":
       return {
-        title: "That doesn't look like a server address",
-        body: "Paste the full address, starting with https:// — for example https://mcp.example.com/mcp.",
+        title: fullAppsT("fullApps.that_doesn_t_look_like_a_server_address_bfc61b"),
+        body: fullAppsT("fullApps.paste_the_full_address_starting_with_https_for_examp_26bf9d"),
         focus: "url",
       };
     case "remote_http_private_endpoint":
       return {
-        title: "That address is inside a private network",
-        body: "This Paperclip is reachable from the internet, so it won't call addresses on your local network. Use the server's public address instead.",
+        title: fullAppsT("fullApps.that_address_is_inside_a_private_network_cf6af6"),
+        body: fullAppsT("fullApps.this_paperclip_is_reachable_from_the_internet_so_it__3b80a5"),
         focus: "url",
       };
     case "remote_http_dns_failed":
       return {
-        title: "We couldn't find that host",
-        body: "The address didn't resolve. Check the spelling, or confirm the server is published on the internet.",
+        title: fullAppsT("fullApps.we_couldn_t_find_that_host_878cfb"),
+        body: fullAppsT("fullApps.the_address_didn_t_resolve_check_the_spelling_or_con_a4e01e"),
         focus: "url",
       };
     case "mcp_header_rejected":
       return {
-        title: "Paperclip can't send that header",
+        title: fullAppsT("fullApps.paperclip_can_t_send_that_header_a44875"),
         body: fallback,
         focus: "credentials",
       };
     case "tool_access_name_conflict":
       return {
-        title: "Paperclip couldn’t name this connection",
-        body: "Try connecting again.",
+        title: fullAppsT("fullApps.paperclip_couldn_t_name_this_connection_ab5a81"),
+        body: fullAppsT("fullApps.try_connecting_again_ed9eda"),
         focus: "none",
       };
     case "oauth_challenge":
       return {
-        title: "This server wants a credential",
-        body: "It asked us to authenticate but didn't offer a sign-in Paperclip can complete on its own. Add the key or headers its docs list under Advanced authentication.",
+        title: fullAppsT("fullApps.this_server_wants_a_credential_644181"),
+        body: fullAppsT("fullApps.it_asked_us_to_authenticate_but_didn_t_offer_a_sign__2c6657"),
         focus: "credentials",
       };
     case "oauth_manual_client_required":
     case "oauth_manual_client_rebinding_required":
       return {
-        title: "This server needs sign-in details you create yourself",
-        body: "Register Paperclip in the provider's settings, then add the client ID and secret it gives you under Advanced authentication.",
+        title: fullAppsT("fullApps.this_server_needs_sign_in_details_you_create_yoursel_7c6f63"),
+        body: fullAppsT("fullApps.register_paperclip_in_the_provider_s_settings_then_a_61e15b"),
         focus: "credentials",
       };
     case "oauth_redirect_origin_unsupported":
     case "oauth_redirect_uri_invalid":
       return {
-        title: "This Paperclip needs a public HTTPS address first",
-        body: "Sign-in sends the operator back to Paperclip, so this instance has to be reachable over HTTPS. Ask your Paperclip admin to configure it.",
+        title: fullAppsT("fullApps.this_paperclip_needs_a_public_https_address_first_64aee3"),
+        body: fullAppsT("fullApps.sign_in_sends_the_operator_back_to_paperclip_so_this_5dd4ea"),
         focus: "deployment",
       };
     case "runtime_error":
       return {
-        title: "We couldn't reach that server",
-        body: "Nothing answered at that address. Confirm the server is running and the address is right, then try again.",
+        title: fullAppsT("fullApps.we_couldn_t_reach_that_server_a05e60"),
+        body: fullAppsT("fullApps.nothing_answered_at_that_address_confirm_the_server__d351f0"),
         focus: "url",
       };
     default:
       return {
-        title: "Paperclip couldn't connect",
+        title: fullAppsT("fullApps.paperclip_couldn_t_connect_58620c"),
         body: fallback,
         focus: "none",
       };
@@ -183,9 +184,9 @@ export function customHeaderError(rows: CustomHeaderRow[]): string | null {
     if (!nameCheck.ok) return mcpRemoteHeaderRejectionMessage(name, nameCheck.reason!);
     const valueCheck = checkMcpRemoteHeaderValue(row.value);
     if (!valueCheck.ok) return mcpRemoteHeaderRejectionMessage(name, valueCheck.reason!);
-    if (!row.value.trim()) return `Add a value for "${name}", or remove the row.`;
+    if (!row.value.trim()) return fullAppsT("fullApps.message_c40c60414189", { value1: name });
     const lower = name.toLowerCase();
-    if (seen.has(lower)) return `"${name}" is listed twice.`;
+    if (seen.has(lower)) return fullAppsT("fullApps.message_756d1b7cf9af", { value1: name });
     seen.add(lower);
   }
   return null;

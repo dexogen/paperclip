@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT } from "@/i18n";
 import type { LabArtifact, LabRun } from "../../kit";
 import { isTaskDocument } from "./kind";
 
@@ -38,7 +40,7 @@ export function sectionsOf(artifacts: LabArtifact[]): PanelSection[] {
     return {
       id,
       run,
-      label: run ? run.agent : items.every(isTaskDocument) ? "Task documents" : "Documents and links",
+      label: run ? run.agent : items.every(isTaskDocument) ? fullSharedT("taskPanels.document.section") : t("fullDiagnostics.documentsAndLinks"),
       items: sorted,
       reviewCount: items.filter((a) => a.review === "needs_review").length,
       // The product dates the unowned group by its newest row.

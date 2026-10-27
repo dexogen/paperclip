@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
 import type { Agent } from "@paperclipai/shared";
@@ -15,6 +17,7 @@ import { settledPreviewReply } from "./settled-preview-reply";
 export function ConversationPlayback({ header, agentName, agent, onShowSavedThread }: {
   header: ReactNode; agentName: string; agent?: Agent; onShowSavedThread?: () => void;
 }) {
+  useFullSharedTranslation();
   const [elapsed, setElapsed] = useState(0);
   const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -59,11 +62,11 @@ export function ConversationPlayback({ header, agentName, agent, onShowSavedThre
     <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border bg-background py-2 text-xs">
       <Button size="sm" variant="outline" disabled={!stepMs} onClick={() => !started || ended ? restart() : setPlaying(value => !value)}>
         {ended ? <RotateCcw /> : playing ? <Pause /> : <Play />}
-        {ended ? "Replay conversation" : playing ? "Pause" : started ? "Resume conversation" : "Play conversation"}
+        {ended ? t("fullDiagnostics.replayConversation") : playing ? fullSharedT("agentDetailUi.actions.pause") : started ? t("fullDiagnostics.resumeConversation") : t("fullDiagnostics.playConversation")}
       </Button>
-      {started && !ended ? <Button size="sm" variant="ghost" onClick={restart}><RotateCcw />Replay</Button> : null}
-      {onShowSavedThread ? <Button size="sm" variant="ghost" onClick={onShowSavedThread}>Show saved thread</Button> : null}
-      <span className="text-muted-foreground" role="status">{started ? ended ? "Conversation complete" : `${playing ? "" : "Paused · "}${CONVERSATION_PLAYBACK_STAGES[stage]?.label}` : "Watch a typical conversation · synthetic preview"}</span>
+      {started && !ended ? <Button size="sm" variant="ghost" onClick={restart}><RotateCcw />{t("fullDiagnostics.replay")}</Button> : null}
+      {onShowSavedThread ? <Button size="sm" variant="ghost" onClick={onShowSavedThread}>{t("fullDiagnostics.showSavedThread")}</Button> : null}
+      <span className="text-muted-foreground" role="status">{started ? ended ? t("fullDiagnostics.conversationComplete") : t("fullDiagnostics.message_af7c84", { value1: playing ? "" : t("fullDiagnostics.pausedPrefix"), value2: CONVERSATION_PLAYBACK_STAGES[stage]?.label }) : t("fullDiagnostics.watchATypicalConversationSyntheticPreview")}</span>
     </div>
     <TaskChatThreadView key={generation} header={header} items={started ? [human] : []} contentKey={`${elapsed}:${generation}`} tail={started ? <div className="flex flex-col gap-8">
       <ConversationPlaybackTurn settled={followUp} snapshot={firstSnapshot} items={firstItems} response={firstResponse} settledItems={firstSettled} />

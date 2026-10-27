@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCopyAction } from "@/lib/use-copy-action";
@@ -44,6 +45,7 @@ function saveSession(key: string, value: unknown) {
  * one file, one dev guard, trivial to strip out later.
  */
 export function TweakPanel() {
+  useFullSharedTranslation();
   const [pos, setPos] = useState<{ x: number; y: number }>(() =>
     loadSession(POS_KEY, { x: 24, y: 24 }),
   );
@@ -139,14 +141,14 @@ export function TweakPanel() {
         onPointerUp={onHeaderPointerUp}
       >
         <GripHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
-        <span>Motion tweak panel</span>
+        <span>{fullSharedT("fullShared.motion_tweak_panel_1f577a")}</span>
         <div className="ml-auto flex items-center gap-1">
-          <button type="button" title="Reset all" onClick={resetAll} className="rounded p-0.5 hover:bg-accent">
+          <button type="button" title={fullSharedT("fullShared.reset_all_645982")} onClick={resetAll} className="rounded p-0.5 hover:bg-accent">
             <RotateCcw className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
-            title={minimized ? "Expand" : "Minimize"}
+            title={minimized ? fullSharedT("fullShared.expand_07548c") : fullSharedT("fullShared.minimize_d72e31")}
             onClick={() => setMinimized((m) => !m)}
             className="rounded p-0.5 hover:bg-accent"
           >
@@ -166,7 +168,7 @@ export function TweakPanel() {
                     <div className="flex items-center justify-between text-(length:--text-micro)">
                       <span className="truncate font-mono text-muted-foreground">{t.name.replace("--motion-", "")}</span>
                       <span className="ml-2 shrink-0 tabular-nums">
-                        {t.kind === "time" ? `${Math.round(parseCssTimeMs(values[t.name] ?? "0"))}ms` : ""}
+                        {t.kind === "time" ? fullSharedT("fullShared.ms_8fea39", { value1: Math.round(parseCssTimeMs(values[t.name] ?? "0")) }) : ""}
                       </span>
                     </div>
                     {t.kind === "time" ? (
@@ -209,9 +211,7 @@ export function TweakPanel() {
               onClick={buildExport}
               className="flex flex-1 items-center justify-center gap-1 rounded border border-border px-2 py-1 text-xs hover:bg-accent"
             >
-              <Copy className="h-3.5 w-3.5" />
-              Copy as @theme
-            </button>
+              <Copy className="h-3.5 w-3.5" />{fullSharedT("fullShared.copy_as_theme_f312e3")}</button>
           </div>
 
           {exportText ? (
@@ -229,10 +229,10 @@ export function TweakPanel() {
               {/* Focusing the box copies it silently; say so, or the click looks inert. */}
               <p className="mt-1 text-(length:--text-nano) text-muted-foreground" aria-live="polite">
                 {exportCopy.copied
-                  ? "Copied to clipboard"
+                  ? fullSharedT("taskDetail.copy.copied")
                   : exportCopy.failed
-                    ? "Copy failed — select the text and copy it manually"
-                    : "Click the box to copy"}
+                    ? fullSharedT("fullShared.copy_failed_select_the_text_and_copy_it_manually_60587f")
+                    : fullSharedT("fullShared.click_the_box_to_copy_70ffae")}
               </p>
             </>
           ) : null}

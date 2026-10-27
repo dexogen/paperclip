@@ -1,3 +1,6 @@
+import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, AppDisplayError, appErrorDisplay, renderAppError } from "@/pages/apps/app-display-text";
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Loader2 } from "lucide-react";
@@ -37,7 +40,7 @@ export function gitHubAppManifestAction(
       url.pathname,
     )
   )
-    throw new Error("GitHub returned an invalid registration address");
+    throw new AppDisplayError("fullApps.github_returned_an_invalid_registration_address_ccfe60");
   return url.toString();
 }
 function GitHubAppManifestForm({
@@ -49,6 +52,7 @@ function GitHubAppManifestForm({
   autoSubmit: boolean;
   onSubmit: () => void;
 }) {
+  useFullAppsTranslation();
   const form = useRef<HTMLFormElement>(null);
   const requested = useRef(false);
   useEffect(() => {
@@ -67,12 +71,13 @@ function GitHubAppManifestForm({
     >
       <input type="hidden" name="manifest" value={JSON.stringify(registration.manifest)} />
       <SetupWizardFooter onSaveExit={onSaveExit} disabled={disabled}>
-        <Button type="submit" disabled={disabled}>Continue to GitHub</Button>
+        <Button type="submit" disabled={disabled}>{fullAppsT("githubSetupUi.key.continueGithub")}</Button>
       </SetupWizardFooter>
     </form>
   );
 }
 export function GitHubChatSetup() {
+  useFullAppsTranslation();
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const { selectedCompanyId } = useCompany();
@@ -90,7 +95,7 @@ export function GitHubChatSetup() {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [submitManifest, setSubmitManifest] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<AppDisplayText | null>("");
   const [existing, setExisting] = useState(params.get("reconnect") === "1");
   const [appNotCreated, setAppNotCreated] = useState(false);
   const [legacyAccount, setLegacyAccount] = useState("");
@@ -183,11 +188,11 @@ export function GitHubChatSetup() {
   }, [connected, bot, selectedAgent, state, queryClient, navigate]);
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Connectors", href: "/apps" },
-      { label: "GitHub Code Review Bot" },
+      { label: fullAppsT("sidebar.connectors"), href: "/apps" },
+      { label: fullAppsT("fullApps.github_code_review_bot_12a656") },
     ]);
     return () => setBreadcrumbs([]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, fullAppsI18n.resolvedLanguage]);
   useEffect(() => {
     if (bot) {
       setAgentId(bot.assignedAgentId);
@@ -211,8 +216,8 @@ export function GitHubChatSetup() {
     } catch (error) {
       setError(
         error instanceof Error
-          ? error.message
-          : "Could not connect GitHub. Try again.",
+          ? appErrorDisplay(error)
+          : ownAppDisplayText("fullApps.could_not_connect_github_try_again_86544d"),
       );
     } finally {
       setBusy(false);
@@ -266,17 +271,13 @@ export function GitHubChatSetup() {
   if (resume && !bot)
     return (
       <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6">
-        <h1 className="text-2xl font-semibold">Resume GitHub setup</h1>
+        <h1 className="text-2xl font-semibold">{fullAppsT("fullApps.resume_github_setup_25b22b")}</h1>
         {current.error ? (
-          <p role="alert" className="text-sm text-destructive">
-            Could not load this connection. Try again to resume your draft.
-          </p>
+          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_this_connection_try_again_to_resume_y_adedd2")}</p>
         ) : (
-          <p role="status" className="text-sm text-muted-foreground">
-            Loading your draft…
-          </p>
+          <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_your_draft_4f0755")}</p>
         )}
-        {footer(current.error ? "Try again" : undefined, async () => {
+        {footer(current.error ? fullAppsT("fullApps.copy_d8b8392e2c54") : undefined, async () => {
           await current.refetch();
         })}
       </div>
@@ -286,7 +287,7 @@ export function GitHubChatSetup() {
     <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6">
       {!identityOnly && (
         <SetupWizardNavigation
-          labels={reconnect ? ["Reconnect GitHub"] : ["Choose agent", "Connect GitHub"]}
+          labels={reconnect ? [fullAppsT("fullApps.copy_aa7b6cd19325")] : [fullAppsT("fullApps.choose_agent_f7c0bf"), fullAppsT("fullApps.copy_4027e5b24418")]}
           step={reconnect ? 0 : bot ? 1 : 0}
           availableStep={reconnect ? 0 : bot ? 1 : 0}
           onSelect={() => {}}
@@ -296,20 +297,20 @@ export function GitHubChatSetup() {
       )}
       <h1 className="text-2xl font-semibold">
         {!bot
-          ? "Choose agent"
+          ? fullAppsT("fullApps.choose_agent_f7c0bf")
           : identityOnly || state?.state === "identity"
-              ? "Connect your account"
-              : reconnect && existing ? "Reconnect GitHub" : "Connect GitHub"}
+              ? fullAppsT("fullApps.connect_your_account_24fa20")
+              : reconnect && existing ? fullAppsT("fullApps.reconnect_github_aa7b6c") : fullAppsT("projectConfigUi.repos.connect")}
       </h1>
       {(error || (!identityOnly && !existing && progress.error) || accounts.error) && (
         <p role="alert" className="text-sm text-destructive">
-          {error ||
+          {renderAppDisplayText(error) ||
             (accounts.error instanceof Error
-              ? accounts.error.message
+              ? renderAppError(accounts.error)
               : undefined) ||
             (progress.error instanceof Error
-              ? progress.error.message
-              : "Could not check GitHub setup. Try again.")}
+              ? renderAppError(progress.error)
+              : fullAppsT("fullApps.could_not_check_github_setup_try_again_dfb5c6"))}
         </p>
       )}
       {!bot ? (
@@ -351,7 +352,7 @@ export function GitHubChatSetup() {
             />
           )}
           {footer(
-            "Continue",
+            fullAppsT("fullApps.caption_31fbef1625"),
             async () => {
               const created = await chatEndpointsApi.create(
                 selectedCompanyId!,
@@ -368,9 +369,7 @@ export function GitHubChatSetup() {
         </>
       ) : !identityOnly && !existing && progress.isPending ? (
         <>
-          <p role="status" className="text-sm text-muted-foreground">
-            Checking your GitHub connection…
-          </p>
+          <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.checking_your_github_connection_71a8f2")}</p>
           {footer()}
         </>
       ) : existing ? (
@@ -399,19 +398,13 @@ export function GitHubChatSetup() {
         <>
           {identityOnly && identityLinked ? (
             <>
-              <p role="status" className="text-sm">
-                GitHub account <strong>{legacyIdentity?.login}</strong>{" "}
-                connected. You can now mention this bot on GitHub.
-              </p>
+              <p role="status" className="text-sm"><FullAppsTrans i18nKey="fullApps.github_account_connected_you_can_now_mention_this_bo_d680c8" components={{ part1: <strong>{legacyIdentity?.login}</strong>, part2: <>{" "}</> }} /></p>
               {footer()}
             </>
           ) : state?.identity ? (
             <>
-              <p className="text-sm">
-                Connect GitHub account <strong>{state.identity.login}</strong>{" "}
-                to your Paperclip account.
-              </p>
-              {footer("Confirm my account", async () => {
+              <p className="text-sm"><FullAppsTrans i18nKey="fullApps.connect_github_account_to_your_paperclip_account_ce47fe" components={{ part1: <strong>{state.identity.login}</strong>, part2: <>{" "}</> }} /></p>
+              {footer(fullAppsT("fullApps.confirm_my_account_10c7f6"), async () => {
                 await githubChatApi.confirmIdentity(
                   bot.id,
                   state.identity!.githubUserId,
@@ -421,15 +414,10 @@ export function GitHubChatSetup() {
             </>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground">
-                Link your GitHub account so your mentions use your Paperclip
-                permissions.
-              </p>
+              <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.link_your_github_account_so_your_mentions_use_your_p_c07473")}</p>
               {(accounts.data?.length ?? 0) > 0 && (
                 <>
-                  <Label htmlFor="github-personal-account">
-                    Existing GitHub connection
-                  </Label>
+                  <Label htmlFor="github-personal-account">{fullAppsT("fullApps.existing_github_connection_d2e0e5")}</Label>
                   <select
                     id="github-personal-account"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -440,7 +428,7 @@ export function GitHubChatSetup() {
                       setIdentityLinked(false);
                     }}
                   >
-                    <option value="">Choose an account</option>
+                    <option value="">{fullAppsT("costCardsUi.subscription.chooseAccount")}</option>
                     {accounts.data
                       ?.filter(
                         (account) =>
@@ -456,9 +444,7 @@ export function GitHubChatSetup() {
                       ))}
                   </select>
                   {legacyIdentity && (
-                    <p className="text-sm">
-                      GitHub account: <strong>{legacyIdentity.login}</strong>
-                    </p>
+                    <p className="text-sm"><FullAppsTrans i18nKey="fullApps.github_account_50ec17" components={{ part1: <strong>{legacyIdentity.login}</strong> }} /></p>
                   )}
                 </>
               )}
@@ -466,16 +452,14 @@ export function GitHubChatSetup() {
                 <Link
                   className="text-sm underline"
                   to="/apps/connect?source=github"
-                >
-                  Add a personal GitHub connection, then return to this draft
-                </Link>
+                >{fullAppsT("fullApps.add_a_personal_github_connection_then_return_to_this_6e7851")}</Link>
               )}
               {footer(
                 legacyAccount
                   ? legacyIdentity
-                    ? "Confirm my account"
-                    : "Check my account"
-                  : "Connect my GitHub account",
+                    ? fullAppsT("fullApps.confirm_my_account_10c7f6")
+                    : fullAppsT("fullApps.check_my_account_cf2734")
+                  : fullAppsT("fullApps.connect_my_github_account_0ed85a"),
                 async () => {
                   if (legacyAccount) {
                     const observed = await githubChatApi.identity(
@@ -500,34 +484,27 @@ export function GitHubChatSetup() {
         </>
       ) : state?.state === "install" ? (
         <>
-          <p role="status" className="text-sm text-muted-foreground">
-            Waiting for GitHub installation or administrator approval…
-          </p>
+          <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.waiting_for_github_installation_or_administrator_app_50fe30")}</p>
           {state.installationUrl && (
             <a
               className="inline-flex items-center gap-1 text-sm underline"
               href={state.installationUrl}
-            >
-              Continue installation on GitHub
-              <ExternalLink className="size-3" />
+            >{fullAppsT("fullApps.continue_installation_on_github_629e11")}<ExternalLink className="size-3" />
             </a>
           )}
           {footer()}
         </>
       ) : state?.state === "enrollment" ? (
         <>
-          <p className="text-sm">
-            Paperclip Cloud receives GitHub events and securely delivers them to
-            this instance.
-          </p>
-          {footer("Connect Paperclip Cloud", async () => {
+          <p className="text-sm">{fullAppsT("fullApps.paperclip_cloud_receives_github_events_and_securely__5ab500")}</p>
+          {footer(fullAppsT("fullApps.connect_paperclip_cloud_7dd29f"), async () => {
             const result = await toolsApi.startCloudConnectorEnrollment(
               selectedCompanyId!,
               undefined,
               `/apps/chat/connect${window.location.search}`,
             );
             if (!result.verificationUrl)
-              throw new Error("Cloud enrollment could not be started");
+              throw new AppDisplayError("fullApps.cloud_enrollment_could_not_be_started_854e5b");
             window.location.assign(result.verificationUrl);
           })}
         </>
@@ -536,31 +513,29 @@ export function GitHubChatSetup() {
           <p role="status" className="text-sm">
             {state.message}
           </p>
-          <Button variant="ghost" onClick={() => setExisting(true)}>
-            Use existing App credentials
-          </Button>
+          <Button variant="ghost" onClick={() => setExisting(true)}>{fullAppsT("fullApps.use_existing_app_credentials_ff7b0b")}</Button>
           {state.restartableRegistrationId && (
             <div className="flex items-center gap-2">
               <Checkbox id="github-app-not-created" checked={appNotCreated} disabled={busy}
                 onCheckedChange={(checked) => setAppNotCreated(checked === true)} />
-              <Label htmlFor="github-app-not-created">I haven't created this App on GitHub.</Label>
+              <Label htmlFor="github-app-not-created">{fullAppsT("fullApps.i_haven_t_created_this_app_on_github_3df1cd")}</Label>
             </div>
           )}
           {state.restartableRegistrationId
-            ? footer("Continue to GitHub", async () => {
+            ? footer(fullAppsT("fullApps.continue_to_github_401c9d"), async () => {
                 const result = await githubChatApi.restartRegistration(bot.id, state.restartableRegistrationId!);
                 setAppNotCreated(false);
                 queryClient.setQueryData(["github-wizard", bot.id], result);
                 if (result.registration) setSubmitManifest(true);
               }, !appNotCreated)
-            : footer("Try again", refresh)}
+            : footer(fullAppsT("fullApps.copy_d8b8392e2c54"), refresh)}
         </>
       ) : state?.state === "verify" ? (
         <>
           <p role="status" className="text-sm text-muted-foreground">
             {deliveryVerifiedWhileChecking
-              ? "GitHub delivery verified. Checking App and repository access…"
-              : state.message ?? "Checking GitHub access…"}
+              ? fullAppsT("fullApps.github_delivery_verified_checking_app_and_repository_264cf3")
+              : state.message ?? fullAppsT("fullApps.checking_github_access_ce4a91")}
           </p>
           {state.verification?.checks
             .filter(
@@ -576,15 +551,13 @@ export function GitHubChatSetup() {
           <Link
             className="text-sm underline"
             to={`/apps/chat/${bot.id}/settings`}
-          >
-            Connection settings
-          </Link>
-          {footer("Try again", refresh)}
+          >{fullAppsT("fullApps.connection_settings_b4ddb3")}</Link>
+          {footer(fullAppsT("fullApps.copy_d8b8392e2c54"), refresh)}
         </>
       ) : (
         <>
           <div className="space-y-2">
-            <Label htmlFor="github-owner-type">GitHub account</Label>
+            <Label htmlFor="github-owner-type">{fullAppsT("fullApps.github_account_d686f8")}</Label>
             <select
               id="github-owner-type"
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -598,32 +571,30 @@ export function GitHubChatSetup() {
                 else if (choice === "organization") setOwnerLogin("");
               }}
             >
-              <option value="personal">My account</option>
+              <option value="personal">{fullAppsT("fullApps.my_account_b53181")}</option>
               {knownOrganizations.map((login) => (
                 <option key={login.toLowerCase()} value={`organization:${login}`}>{login}</option>
               ))}
-              <option value="organization">Another organization</option>
+              <option value="organization">{fullAppsT("fullApps.another_organization_70f80d")}</option>
             </select>
             {(repositories.isError || connectedBots.isError) && (
-              <p role="alert" className="text-sm text-destructive">
-                Could not load some connected GitHub accounts. Choose Another organization to enter a name.
-              </p>
+              <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_some_connected_github_accounts_choose_c33f4a")}</p>
             )}
           </div>
           {accountChoice === "organization" && (
             <div className="space-y-2">
-              <Label htmlFor="github-owner-login">Organization</Label>
+              <Label htmlFor="github-owner-login">{fullAppsT("sidebar.organization")}</Label>
               <Input
                 id="github-owner-login"
                 disabled={busy || !!state?.registration}
                 value={ownerLogin}
                 onChange={(event) => setOwnerLogin(event.target.value)}
-                placeholder="GitHub organization name"
+                placeholder={fullAppsT("fullApps.github_organization_name_60a453")}
               />
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="github-app-name">App name</Label>
+            <Label htmlFor="github-app-name">{fullAppsT("fullApps.app_name_e6ad39")}</Label>
             <Input
               id="github-app-name"
               disabled={busy || !!state?.registration}
@@ -640,14 +611,12 @@ export function GitHubChatSetup() {
           <button
             className="text-sm text-muted-foreground underline"
             onClick={() => setExisting(true)}
-          >
-            I already have an App
-          </button>
+          >{fullAppsT("fullApps.i_already_have_an_app_0f0c97")}</button>
           {state?.registration ? (
             <GitHubAppManifestForm registration={state.registration} onSaveExit={exit}
               disabled={busy} autoSubmit={submitManifest} onSubmit={() => setSubmitManifest(false)} />
           ) : footer(
-            "Continue to GitHub",
+            fullAppsT("fullApps.continue_to_github_401c9d"),
             async () => {
               const result = await githubChatApi.registration(bot.id, appInput());
               queryClient.setQueryData(["github-wizard", bot.id], result);

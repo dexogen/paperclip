@@ -1,3 +1,5 @@
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import type { McpConnection, ToolConnection } from "@paperclipai/shared";
 import { humanizeConnectionDisplayName } from "@paperclipai/shared";
 import { Identity } from "@/components/Identity";
@@ -11,7 +13,7 @@ export function connectionOwnerProfile(
 ): ConnectionOwnerProfile | null {
   if (!connection.createdByUserId) return null;
   return profiles.get(connection.createdByUserId) ?? {
-    label: connection.createdByUserId === "local-board" ? "Board" : "Board member",
+    label: connection.createdByUserId === "local-board" ? fullAppsT("profile.board") : fullAppsT("fullApps.board_member_a2595a"),
     image: null,
   };
 }
@@ -49,18 +51,19 @@ export function connectionDisplayNameForOwner(
   if (connectionName.trim().toLocaleLowerCase() !== applicationName.trim().toLocaleLowerCase()) {
     return connectionName;
   }
-  return `${possessive(ownerGivenName(owner.label))} ${applicationName}`;
+  return fullAppsT("fullApps.ownerApp", { owner: fullAppsI18n.resolvedLanguage === "ru" ? ownerGivenName(owner.label) : possessive(ownerGivenName(owner.label)), app: applicationName });
 }
 
 /** Use the same owner naming as outbound connections, without changing OAuth client identity. */
 export function assistantConnectionDisplayName(connection: McpConnection): string {
   const clientName = connection.clientName.trim();
-  const owner = connection.user ? `${possessive(ownerGivenName(connection.user.name))} ` : "";
-  return `${owner}${clientName} connection`;
+  const owner = connection.user ? (fullAppsI18n.resolvedLanguage === "ru" ? ` · ${ownerGivenName(connection.user.name)}` : `${possessive(ownerGivenName(connection.user.name))} `) : "";
+  return fullAppsT("fullApps.message_ad64b643b281", { value1: owner, value2: clientName });
 }
 
 export function ConnectionOwnerIdentity({ owner }: { owner: ConnectionOwnerProfile | null }) {
-  if (!owner) return <span className="text-xs text-muted-foreground">Unknown</span>;
+  useFullAppsTranslation();
+  if (!owner) return <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.unknown_b764cd")}</span>;
   return (
     <Identity
       name={owner.label}

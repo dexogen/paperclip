@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { scanSource, compareFindings, shouldScan } from "./source-audit.mjs";
+import { scanSource, compareFindings, shouldScan, hash } from "./source-audit.mjs";
 import { analyzeCatalog } from "./catalog.mjs";
 import { createReport, renderMarkdown } from "./report.mjs";
 import { run as baseline } from "./baseline.mjs";
@@ -47,6 +47,23 @@ test("audits render sinks and retains both production UI variants", () => {
 test("audits configuration labels, shared display maps, toasts and templates", () => {
   const result = scanSource("ui/src/helpers.ts", 'const choices = [{ value: "internal", label: "Choose agent" }]; const AGENT_ROLE_LABELS = { ceo: "Chief executive" }; toast.error(`Could not save ${name}`); console.error("Debug only");');
   assert.deepEqual(result.literals.map((item) => item.text), ["Choose agent", "Chief executive", "Could not save {{name}}"]);
+});
+
+test("keeps display results while ignoring enum comparisons, lookup keys and type literals", () => {
+  const result = scanSource(path, ui(`<>
+    {status === "running" ? "Working" : "Idle"}
+    {kind === "agent" && "Agent activity"}
+    {name || "Unnamed"}
+    {labels["internal.key"]}
+    <span title={role !== "system" ? "User" : "System"} />
+    <span aria-label={("Accessible name" as "Accessible name")} />
+    {"Prefix " + name}
+  </>`));
+  assert.deepEqual(result.literals.map(({ text }) => text), [
+    "Working", "Idle", "Agent activity", "Unnamed", "User", "System", "Accessible name", "Prefix",
+  ]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(scanSource(path, `const choices = { "label": "Display label", title: code === "secret_id" ? "Secret" : "Value" };`).literals.map(({ text }) => text), ["Display label", "Secret", "Value"]);
 });
 
 test("line movement preserves identity; changed and additional occurrences are new", () => {
@@ -451,4 +468,53 @@ test("audits lowercase display variables and every conditional branch", () => {
   ]);
   assert.ok(result.literals.every(({ kind }) => kind === "display-variable"));
   assert.deepEqual(result.errors, []);
+});
+
+test("audits named copy maps and disabled-action labels without treating their keys as copy", () => {
+  const result = scanSource(path, `
+    const stateNames = { active: "In progress", ended: "Completed" };
+    const FAILURE_COPY = { unavailable: "Service unavailable" };
+    const adapter = { disabledLabel: "Choose another provider" };
+    const ids = { mode: "in_progress" };
+    const classes = { active: "text-green-500" };
+    function Action(){ return <button aria-label="Retry" disabledLabel="Not configured" />; }
+  `);
+  assert.deepEqual(result.literals.map(({ text }) => text), [
+    "In progress", "Completed", "Service unavailable", "Choose another provider", "Retry", "Not configured",
+  ]);
+  assert.deepEqual(result.errors, []);
+});
+
+test("audits copy arrays, toast bodies and inline table headers", () => {
+  const result = scanSource(path, `
+    const labels = ["Working", "Waiting"];
+    const WAIT_MESSAGES = ["Waiting for a response"];
+    const feedback = { body: "Your draft is saved" };
+    const DAY_LABELS = { get "7d"() { return translated(); } };
+    function Table(){ return <tr>{["Action", "Status"].map((label) => <th>{label}</th>)}</tr>; }
+  `);
+  assert.deepEqual(result.literals.map(({ text }) => text), [
+    "Working", "Waiting", "Waiting for a response", "Your draft is saved", "Action", "Status",
+  ]);
+  assert.deepEqual(result.errors, []);
+});
+
+
+test("audits search and loading copy in composed controls", () => {
+  const audit = scanSource(path, ui('<Select searchPlaceholder="Search workspaces" loadingMessage="Loading workspaces" noneLabel="No workspace" mobileTitle="Choose a workspace" triggerAriaLabel="Workspace" />'));
+  assert.deepEqual(audit.literals.map(({text}) => text), ["Search workspaces", "Loading workspaces", "No workspace", "Choose a workspace", "Workspace"]);
+});
+
+test("catalog indexes preserve review fingerprints and isolate plural translations", () => {
+  const parameters = { provided: ["count"], hasCount: true, dynamic: [] };
+  const reference = { file: path, line: 1, owner: "View", key: "items", parameters };
+  const source = { items_one: "{{count}} item", items_other: "{{count}} items", item: "Item" };
+  const target = { items_one: "{{count}} элемент", items_few: "{{count}} элемента", items_many: "{{count}} элементов", items_other: "{{count}} элемента", item: "Элемент" };
+  const result = analyzeCatalog({ source, target, locale: "ru", references: [reference, reference] });
+  const message = result.messages.find(({key}) => key === "items");
+  assert.deepEqual(result.invalid, []);
+  assert.equal(message.sourceHash, hash({ messages: { items_one: source.items_one, items_other: source.items_other }, plural: true, contexts: [path + "#View"], parameterContracts: [JSON.stringify({ file: path, owner: "View", key: "items", parameters })] }));
+  assert.deepEqual(Object.keys(message.translation), ["items_few", "items_many", "items_one", "items_other"]);
+  const records = Object.fromEntries(result.messages.map(({key, sourceHash, translationHash}) => [key, { sourceHash, translationHash }]));
+  assert.ok(analyzeCatalog({ source, target, locale: "ru", references: [reference], reviewed: records }).messages.every(({status}) => status === "reviewed"));
 });

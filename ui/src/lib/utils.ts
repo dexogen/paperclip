@@ -104,8 +104,8 @@ export function relativeTime(date: Date | string): string {
   return formatDate(date);
 }
 
-export function formatTokens(n: number): string {
-  if (i18n.resolvedLanguage === "ru") {
+export function formatTokens(n: number, locale = i18n.resolvedLanguage): string {
+  if (locale === "ru") {
     return new Intl.NumberFormat("ru-RU", n >= 1_000 ? { notation: "compact", minimumFractionDigits: 1, maximumFractionDigits: 1 } : {}).format(n);
   }
   if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;

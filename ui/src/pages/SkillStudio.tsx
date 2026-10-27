@@ -209,7 +209,7 @@ function useMutationErrorToast() {
         error instanceof Error && error.message ? error.message : t("skillsGap.pleaseTryAgain");
       toast?.pushToast({ tone: "error", title, body });
     },
-    [toast],
+    [toast, i18n.language],
   );
 }
 
@@ -1152,7 +1152,7 @@ function StudioHeader({
         title: t("skillsGap.copyFailed"),
         body: error instanceof Error ? error.message : t("skillsGap.couldNotCopyTheLink"),
       }));
-  }, [toast]);
+  }, [toast, i18n.language]);
 
   return (
     <header className="flex items-center gap-3 border-b border-border px-3 py-2">
@@ -1339,7 +1339,7 @@ function SkillPane({
       return;
     }
     setSelectedFile(path);
-  }, [dirty, selectedFile]);
+  }, [dirty, selectedFile, i18n.language]);
 
   const saveMutation = useMutation({
     mutationFn: () => companySkillsApi.updateFile(companyId, skillId, selectedFile, draft),
@@ -1961,7 +1961,7 @@ function InputPane({
       typeof window === "undefined"
       || window.confirm(t("skillsGap.discardUnsavedChangesToThisInput"))
     );
-  }, [dirty]);
+  }, [dirty, i18n.language]);
 
   const selectSavedInput = useCallback((id: string) => {
     if (!adHocMode && id === selectedInputId) return;
@@ -2358,7 +2358,7 @@ function RunsPane({
     templatesQuery.isSuccess,
     toast,
     updateTemplateSelection,
-  ]);
+  , i18n.language]);
 
   const filterInputId = filterInput?.id ?? null;
   const runsQuery = useQuery({
@@ -2832,7 +2832,7 @@ function RunTemplateDialog({
     setName(state.mode === "edit" ? source?.name ?? "" : source ? t("skillsGap.templateCopyName", { name: source.name }) : "");
     setDescription(source?.description ?? "");
     setBody(source?.body ?? "");
-  }, [source, state]);
+  }, [source, state, i18n.language]);
 
   const title = state?.mode === "edit"
     ? t("skillsGap.editRunTemplate")

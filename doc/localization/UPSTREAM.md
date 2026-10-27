@@ -11,9 +11,11 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
   dispatch from `russian`. GitHub schedules may run late. It fetches immutable source
   SHAs, audits the upstream source delta, and prepares one draft PR on
   `codex/upstream-sync`. No automatic merge or deployment occurs.
-- **Fork verification** runs on every PR into `russian`, every `russian` push, and an
-  explicit dispatch bound to an expected full SHA. There are no workflow-level path
-  filters. Require its **Fork integration verified** check on the maintained branch.
+- **Fork verification** runs on pushes to `russian` and `codex/upstream-sync`, plus
+  an explicit dispatch bound to an expected full SHA. It checks the branch commit,
+  not a synthetic PR merge commit. There are no workflow-level path filters.
+  Require its **Fork integration verified** check from an eligible push run on the
+  maintained branch; manual dispatch is diagnostic evidence, not a replacement.
 - **Russian edition image** publishes `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>`
   only after the latest successful `russian` push verification of that exact SHA.
   Its verifier executes from the accepted default-branch revision, never an unchecked
@@ -62,13 +64,25 @@ code or test failure.
    Review the first real integration and verify a published image before relying on
    recurring operation.
 
-Without an App, synchronization uses `GITHUB_TOKEN`. It explicitly dispatches
-verification on the pushed sync branch with the expected SHA; verification fails if
-GitHub checked out a different revision. This avoids claiming that a bot push will
-trigger CI by itself. PR creation must still be enabled, and changing workflow files
-may require the App's Workflows permission. A permission failure stops the workflow
-with its cause; no success is inferred. A frozen PR is redispatched only if no prior
-dispatch exists for its current head, recovering an interrupted initial dispatch.
+Without an App, synchronization uses `GITHUB_TOKEN`. Its push does not trigger
+another workflow, so explicit dispatch supplies diagnostic verification bound to
+the expected SHA. GitHub does not count workflow-job checks from `workflow_dispatch`
+toward required branch-ruleset checks. Merge still requires an eligible push run
+from an App or repository owner; do not weaken branch protection or treat a manual
+success as merge approval. See GitHub's [required-check event rules](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks#checks-from-some-workflow-jobs-are-not-evaluated).
+
+When the App token is present, sync waits for the automatic push run and never
+issues a competing fallback dispatch, even before that run appears in the API.
+With `GITHUB_TOKEN`, an existing push or dispatch for the same repository, workflow,
+branch and SHA prevents another dispatch. A failed run remains failed; retry the
+eligible push run after diagnosis. If an owner reviews a token-created candidate
+and has no source changes, a reviewed empty commit pushed with the owner's identity
+can start the required push verification. A successful diagnostic dispatch alone
+is insufficient.
+
+PR creation must still be enabled, and changing workflow files may require the
+App's Workflows permission. A permission failure stops synchronization with its
+cause; no success is inferred.
 
 GitHub can automatically disable public schedules after 60 days without repository
 activity. Re-enable the workflow and run it manually after inactivity. Check these
@@ -80,10 +94,16 @@ when changing authentication or scheduling.
 
 All new update PRs target `russian`. The `codex/upstream-sync` branch is temporary;
 it exists only while an update is being reviewed. Historical stacked PRs remain
-review evidence, not permanent maintenance branches. If an existing PR is retargeted
-to `russian`, dispatch **Fork verification** on its exact head SHA: a base edit alone
-does not trigger the configured PR events. Accept the upstream tracking state only
-when the reviewed integration lands on `russian`.
+review evidence, not permanent maintenance branches. PR creation, retargeting and
+base-branch changes do not start verification. Before merge, integrate the current
+`russian` base into the candidate with a merge commit and require the eligible push
+check on its resulting exact head SHA. Other temporary branch names need an explicit
+workflow change before they can receive automatic verification. Accept the upstream
+tracking state only when the reviewed integration lands on `russian`.
+
+Push and dispatch share one concurrency group per branch. The workflow does not
+create a competing synthetic-merge check. Existing failed or cancelled runs remain
+failure evidence; changing triggers does not turn those runs into successful checks.
 
 The report contains both the original upstream delta and the candidate-tree audit.
 The former remains available when merging conflicts. The trusted scanner comes from
@@ -122,13 +142,29 @@ source/catalog changes and editorial acceptance, not just `report.ok`.
 
 ## Verification and recovery
 
-The code lane installs the frozen dependency lock, selects the Runner toolchain from
+The sync job installs trusted audit tooling with `--no-frozen-lockfile --ignore-scripts`
+and filters for the root and UI packages. This permits upstream manifest changes
+whose committed lock is stale. Resolution stays in the isolated Actions control
+checkout, without lifecycle scripts. The candidate is created in a separate worktree
+from the committed fork SHA; the generated control lock is neither copied into it
+nor committed to the update PR. Candidate verification and image publication still
+use the single source-bound dependency-lock artifact described below.
+
+The dependency-lock job resolves manifest changes once, without lifecycle scripts,
+using the same resolution command as upstream CI. It rejects changes outside the
+unstaged `pnpm-lock.yaml`. Its artifact contains the lock and a manifest bound to
+the source commit, Git tree, verification run and SHA-256 digest. Every lane verifies
+and applies this artifact before a frozen install; lanes do not resolve independently.
+The artifact name stays stable for retries. Rerunning failed jobs reuses it, while
+rerunning the complete workflow replaces it from the dependency-lock job.
+
+The code lane installs that frozen dependency lock, selects the Runner toolchain from
 `packages/paperclip-runner/rust-toolchain.toml`, and runs `pnpm build`,
 `pnpm -r typecheck`, the three `general-workspaces-a/b/c` test groups,
 `pnpm check:token-gates`, and `pnpm test:localization:browser` with Chromium.
 The server test matrix runs four `general-server` shards and two `serialized` shards,
-with at most three matrix jobs at a time. Every job has a 90-minute limit and all
-shards finish even if one fails. Vitest workers are capped at two for workspace and
+with at most six matrix jobs at a time, each on an independent hosted runner.
+Every job has a 90-minute limit and all shards finish even if one fails. Vitest workers are capped at two for workspace and
 general server jobs and one for serialized jobs to bound runner memory use.
 These groups together cover the same suite inventory
 as `pnpm test:run`; the matrix does not remove chat or native Runner suites. Its
@@ -138,7 +174,7 @@ Runner binaries before test discovery, so missing binaries do not silently skip 
 local native recovery cases. Existing opt-in live/container cases keep their own gates.
 Each test job installs the frozen lock; the existing grouped test scripts prepare
 workspace links and shared/plugin SDK builds. The required summary waits for every
-matrix result, code checks, and localization checks.
+matrix result, code checks, localization checks and the dependency-lock job.
 
 The single serial server path exceeds 90 minutes in the checked-in historical timing
 weights. Four general shards have about 26 minutes of serial weight each; the two
@@ -146,9 +182,13 @@ serialized shards have about 17 minutes each, before setup and host differences.
 These are sizing estimates, not proof of hosted execution time.
 
 The localization browser journeys exercise the shipped UI with API fixtures; they
-do not replace full-stack auth tests. Genuine upstream
-lockfile changes are allowed. An inconsistent lock stops verification; repair it in
-an explicit dependency-maintenance change rather than suppressing the failure.
+do not replace full-stack auth tests. The checked-in lock remains owned by upstream
+automation. Resolution failures still stop verification. Image publication downloads
+the lock from the accepted verification run and passes its digest to Docker's
+verified-lock mode, which checks the digest and performs only a frozen install.
+The image provenance includes the lock digest. A source deployment must likewise
+retain and use the verified artifact; its generated lock is a documented build
+input, not a manual repository lockfile commit.
 The localization lane exercises the scanner and sync tests and checks the reviewed
 catalog and new literals. Ordinary verification builds use English for existing
 browser/test contracts; locale tests select Russian explicitly. Production image

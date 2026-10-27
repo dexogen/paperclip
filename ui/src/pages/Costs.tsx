@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { FastResponseHistory } from "../components/fast-responses/FastResponseHistory";
 import { DecisionHistory } from "../components/decision-models/DecisionHistory";
@@ -210,7 +211,7 @@ export function Costs({
 
   useEffect(() => {
     if (!embedded) setBreadcrumbs([{ label: t("costsUi.title") }]);
-  }, [embedded, setBreadcrumbs, t]);
+  }, [embedded, setBreadcrumbs, t, i18n.language]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -557,7 +558,7 @@ export function Costs({
         label: <ProviderTabLabel provider={provider} rows={byProvider.get(provider) ?? []} />,
       })),
     ];
-  }, [byProvider, t]);
+  }, [byProvider, t, i18n.language]);
 
   const billerTabItems = useMemo(() => {
     const billerKeys = Array.from(byBiller.keys());
@@ -589,7 +590,7 @@ export function Costs({
         label: <BillerTabLabel biller={biller} rows={byBiller.get(biller) ?? []} />,
       })),
     ];
-  }, [byBiller, t]);
+  }, [byBiller, t, i18n.language]);
 
   const topFinanceEvents = (financeData?.events ?? []) as FinanceEvent[];
   const budgetPolicies = budgetData?.policies ?? [];

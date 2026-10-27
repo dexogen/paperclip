@@ -1,3 +1,5 @@
+import { routineTriggerKindLabel, routineSigningModeLabel } from "@/lib/routine-display-labels";
+import { i18n, useTranslation } from "@/i18n";
 import { useEffect, useState } from "react";
 import { Clock3, RefreshCw, Save, Trash2, Webhook, Zap } from "lucide-react";
 import type { RoutineTrigger } from "@paperclipai/shared";
@@ -44,6 +46,7 @@ export function RoutineTriggerCard({
   onDelete: (id: string) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState({
     label: trigger.label ?? "",
     cronExpression: trigger.cronExpression ?? "",
@@ -65,12 +68,12 @@ export function RoutineTriggerCard({
   const humanCron = trigger.kind === "schedule" ? describeCron(draft.cronExpression) : null;
   const lastResultFailed = /fail|error/i.test(trigger.lastResult ?? "");
   const lastResultLabel = trigger.lastResult?.startsWith("Created execution issue ")
-    ? "Task created"
+    ? t("fullRoutinesSecrets.taskCreated")
     : trigger.lastResult;
 
   return (
     <form
-      aria-label={`Trigger: ${trigger.label ?? trigger.kind}`}
+      aria-label={t("fullRoutinesSecrets.trigger", { "value1": trigger.label ?? routineTriggerKindLabel(trigger.kind) })}
       className="space-y-4 rounded-lg border border-border p-4"
       onSubmit={(event) => event.preventDefault()}
     >
@@ -78,7 +81,7 @@ export function RoutineTriggerCard({
         <div className="min-w-0 space-y-1">
           <div className="flex items-center gap-2 text-sm font-medium">
             <KindIcon className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{trigger.label ?? trigger.kind}</span>
+            <span className="truncate">{trigger.label ?? routineTriggerKindLabel(trigger.kind)}</span>
           </div>
           {humanCron ? (
             <p id={`cron-readable-${trigger.id}`} className="text-xs text-muted-foreground">
@@ -94,9 +97,9 @@ export function RoutineTriggerCard({
           ) : null}
           <span className="text-xs text-muted-foreground">
             {trigger.kind === "schedule" && trigger.nextRunAt
-              ? `Next: ${new Date(trigger.nextRunAt).toLocaleString()}`
+              ? t("fullRoutinesSecrets.next", { "value1": new Date(trigger.nextRunAt).toLocaleString(i18n.resolvedLanguage) })
               : trigger.kind === "webhook"
-                ? "Webhook"
+                ? t("fullRoutinesSecrets.webhook")
                 : "API"}
           </span>
         </div>
@@ -104,17 +107,15 @@ export function RoutineTriggerCard({
 
       {trigger.kind === "webhook" && trigger.webhookUrl && (
         <div className="space-y-1.5">
-          <Label htmlFor={`webhook-url-${trigger.id}`} className="text-xs">Webhook URL</Label>
+          <Label htmlFor={`webhook-url-${trigger.id}`} className="text-xs">{t("fullRoutinesSecrets.webhookURL")}</Label>
           <Input id={`webhook-url-${trigger.id}`} value={trigger.webhookUrl} readOnly onFocus={(event) => event.target.select()} />
-          <p className="text-xs text-muted-foreground">
-            Send a POST request with Content-Type: application/json. Keep this URL private when signing is disabled.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("fullRoutinesSecrets.sendAPOSTRequestWithContentTypeApplicationJson")}</p>
         </div>
       )}
 
       <div className="grid gap-3 md:grid-cols-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">Label</Label>
+          <Label className="text-xs">{t("fullRoutinesSecrets.label")}</Label>
           <Input
             value={draft.label}
             disabled={disabled}
@@ -123,7 +124,7 @@ export function RoutineTriggerCard({
         </div>
         {trigger.kind === "schedule" && (
           <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-xs">Schedule</Label>
+            <Label className="text-xs">{t("fullRoutinesSecrets.schedule")}</Label>
             <ScheduleEditor
               value={draft.cronExpression}
               onChange={(cronExpression) =>
@@ -135,7 +136,7 @@ export function RoutineTriggerCard({
         {trigger.kind === "webhook" && (
           <>
             <div className="space-y-1.5">
-              <Label className="text-xs">Signing mode</Label>
+              <Label className="text-xs">{t("fullRoutinesSecrets.signingMode")}</Label>
               <Select
                 value={draft.signingMode}
                 onValueChange={(signingMode) =>
@@ -157,7 +158,7 @@ export function RoutineTriggerCard({
             </div>
             {!SIGNING_MODES_WITHOUT_REPLAY_WINDOW.has(draft.signingMode) && (
               <div className="space-y-1.5">
-                <Label className="text-xs">Replay window (seconds)</Label>
+                <Label className="text-xs">{t("fullRoutinesSecrets.replayWindowSeconds")}</Label>
                 <Input
                   value={draft.replayWindowSec}
                   disabled={disabled}
@@ -179,14 +180,10 @@ export function RoutineTriggerCard({
             className="mr-auto text-muted-foreground hover:text-destructive"
             onClick={() => onDelete(trigger.id)}
           >
-            <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-            Delete
-          </Button>
+            <Trash2 className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.delete")}</Button>
           {trigger.kind === "webhook" && (
             <Button variant="outline" size="sm" onClick={() => onRotate(trigger.id)}>
-              <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-              Rotate secret
-            </Button>
+              <RefreshCw className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.rotateSecret")}</Button>
           )}
           <Button
             variant="outline"
@@ -195,9 +192,7 @@ export function RoutineTriggerCard({
               onSave(trigger.id, buildRoutineTriggerPatch(trigger, draft, getLocalTimezone()))
             }
           >
-            <Save className="mr-1.5 h-3.5 w-3.5" />
-            Save trigger
-          </Button>
+            <Save className="mr-1.5 h-3.5 w-3.5" />{t("fullRoutinesSecrets.saveTrigger")}</Button>
         </div>
       )}
     </form>

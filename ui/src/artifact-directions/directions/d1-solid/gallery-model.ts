@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { ArrowRight, Download, ExternalLink } from "lucide-react";
 import type { LabArtifact, LabGroup } from "../../kit";
 import type { SolidAction } from "./actions";
@@ -47,7 +48,7 @@ export const pileDepth = (count: number): 0 | 1 | 2 => (count <= 1 ? 0 : count <
 export function kindTally(artifacts: LabArtifact[]): string[] {
   const counts = new Map<string, number>();
   for (const artifact of artifacts) {
-    const label = isTaskDocument(artifact) ? "DOCS" : blockLabel(artifact);
+    const label = isTaskDocument(artifact) ? fullSharedT("fullShared.docs_03ef6c") : blockLabel(artifact);
     counts.set(label, (counts.get(label) ?? 0) + 1);
   }
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([label, count]) => `${label} ${count}`);
@@ -89,19 +90,19 @@ export interface GalleryActions {
 export function galleryActions(a: LabArtifact): GalleryActions {
   const primary: SolidAction = {
     id: "document",
-    label: `Open in ${a.taskIdentifier}`,
+    label: fullSharedT("fullShared.open_in_ff4bbf", { value1: a.taskIdentifier }),
     icon: ArrowRight,
     href: isTaskDocument(a) ? `#document-${slug(a)}` : `#work-product-${a.id}`,
   };
   if (isTaskDocument(a)) return { primary, secondary: [] };
   if (a.kind === "link") {
-    return { primary, secondary: [{ id: "preview", label: "Open link in new tab", icon: ExternalLink, href: a.url ?? "#", external: true }] };
+    return { primary, secondary: [{ id: "preview", label: fullSharedT("fullShared.open_link_in_new_tab_a536d8"), icon: ExternalLink, href: a.url ?? "#", external: true }] };
   }
   return {
     primary,
     secondary: [
-      { id: "preview", label: "Open file in new tab", icon: ExternalLink, href: `#file-${a.id}`, external: true },
-      { id: "download", label: "Download file", icon: Download, href: `#download-${a.id}` },
+      { id: "preview", label: fullSharedT("surfacesGap.artifacts.openFile"), icon: ExternalLink, href: `#file-${a.id}`, external: true },
+      { id: "download", label: fullSharedT("taskPanels.preview.download"), icon: Download, href: `#download-${a.id}` },
     ],
   };
 }

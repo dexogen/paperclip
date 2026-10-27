@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,6 +28,7 @@ type Filter = "all" | "review";
 const FLAG = { "--tac-flag": REVIEW_VAR.needs_review, clipPath: "var(--tac-clip-flag)" } as CSSProperties;
 
 function FilterButton({ pressed, onPress, count, children }: { pressed: boolean; onPress: () => void; count: number; children: ReactNode }) {
+  useFullSharedTranslation();
   return (
     <Button
       type="button"
@@ -44,15 +47,17 @@ function FilterButton({ pressed, onPress, count, children }: { pressed: boolean;
 const BLANK: LabArtifact = { id: "empty", kind: "file", title: "", author: "", updatedAt: "", updatedLabel: "", dayLabel: "", taskIdentifier: "", taskTitle: "" };
 
 function Empty() {
+  useFullSharedTranslation();
   return (
     <div className="flex items-center gap-4 px-1 py-6">
       <ArtifactObject artifact={BLANK} size="sm" flag="none" repose={2} />
-      <p className="text-sm text-(--tac-meta)">No artifacts yet. Work products, documents, and agent-produced files will appear here.</p>
+      <p className="text-sm text-(--tac-meta)">{fullSharedT("taskPanels.artifacts.empty")}</p>
     </div>
   );
 }
 
 export function PanelBody({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const sections = useMemo(() => sectionsOf(artifacts), [artifacts]);
   const toReview = sections.reduce((sum, section) => sum + section.reviewCount, 0);
@@ -62,18 +67,14 @@ export function PanelBody({ artifacts }: { artifacts: LabArtifact[] }) {
   return (
     <div data-tac-desk className="-m-4 flex flex-col gap-7 bg-(--tac-desk) bg-(image:--tac-ground-grain) p-4 pb-6 shadow-(--tac-desk-rim)">
       {toReview > 0 ? (
-        <div role="group" aria-label="Show" className="-mb-2 flex items-center gap-1">
-          <FilterButton pressed={filter === "all"} onPress={() => setFilter("all")} count={artifacts.length}>
-            All
-          </FilterButton>
+        <div role="group" aria-label={fullSharedT("agentDetailUi.keys.show")} className="-mb-2 flex items-center gap-1">
+          <FilterButton pressed={filter === "all"} onPress={() => setFilter("all")} count={artifacts.length}>{fullSharedT("agents.filterAll")}</FilterButton>
           <FilterButton pressed={filter === "review"} onPress={() => setFilter("review")} count={toReview}>
-            <span aria-hidden className="block h-2.5 w-3.5 bg-(--tac-flag)" style={FLAG} />
-            To review
-          </FilterButton>
+            <span aria-hidden className="block h-2.5 w-3.5 bg-(--tac-flag)" style={FLAG} />{t("fullDiagnostics.toReview_066f77")}</FilterButton>
         </div>
       ) : null}
       {shown.map((section) => (
-        <section key={section.id} aria-label={section.run ? `${section.label}, run started ${section.run.startedLabel}` : section.label} className="@container/desk flex flex-col">
+        <section key={section.id} aria-label={section.run ? t("fullDiagnostics.runStarted", { value1: section.label, value2: section.run.startedLabel }) : section.label} className="@container/desk flex flex-col">
           <PanelDivider section={section} />
           <ul className="flex flex-col">
             {section.items.map((artifact) => (

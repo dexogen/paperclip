@@ -1,3 +1,5 @@
+import { i18n as fullAppsI18n } from "@/i18n";
+import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { ToolConnection } from "@paperclipai/shared";
@@ -23,6 +25,7 @@ import { ReviewPanel } from "./app-detail/ReviewPanel";
 import { appApplicationTabHref, appTabHref, appTabLabel, isAppTabKey, type AppTabKey } from "./app-tabs";
 
 export function AppNotConnected() {
+  useFullAppsTranslation();
   const { applicationId = "", tab } = useParams<{ applicationId: string; tab?: string }>();
   const navigate = useNavigate();
   const { selectedCompanyId } = useCompany();
@@ -75,16 +78,16 @@ export function AppNotConnected() {
     enabled: !!previousConnection && !!activeTab,
   });
 
-  const appName = application?.name ?? "App";
+  const appName = application?.name ?? fullAppsT("fullApps.caption_0d04bfeb7d");
   useEffect(() => {
     if (!activeTab) return;
     setBreadcrumbs([
-      { label: "Connectors", href: "/apps" },
+      { label: fullAppsT("sidebar.connectors"), href: "/apps" },
       { label: appName, href: appApplicationTabHref(applicationId, "permissions") },
       { label: appTabLabel(activeTab) },
     ]);
     return () => setBreadcrumbs([]);
-  }, [setBreadcrumbs, appName, applicationId, activeTab]);
+  }, [setBreadcrumbs, appName, applicationId, activeTab, fullAppsI18n.resolvedLanguage]);
 
   if (tab === "activity") {
     return <Navigate to="/activity?action=tool_" replace />;
@@ -93,7 +96,7 @@ export function AppNotConnected() {
     return <Navigate to={appApplicationTabHref(applicationId, "permissions")} replace />;
   }
   if (!selectedCompanyId) {
-    return <div className="p-6 text-sm text-muted-foreground">Select an organization to manage apps.</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{fullAppsT("fullApps.select_an_organization_to_manage_apps_c62bf6")}</div>;
   }
   if (!applicationId || !activeTab) {
     return <Navigate to={applicationId ? appApplicationTabHref(applicationId, "permissions") : "/apps"} replace />;
@@ -109,8 +112,8 @@ export function AppNotConnected() {
   if (!application) {
     return (
       <div className="max-w-3xl space-y-3 p-6 text-sm text-muted-foreground">
-        <p>This app doesn’t exist anymore.</p>
-        <Button variant="outline" size="sm" onClick={() => navigate("/apps")}>Back to connectors</Button>
+        <p>{fullAppsT("fullApps.this_app_doesn_t_exist_anymore_f86e29")}</p>
+        <Button variant="outline" size="sm" onClick={() => navigate("/apps")}>{fullAppsT("fullApps.back_to_connectors_4bb96f")}</Button>
       </div>
     );
   }
@@ -148,13 +151,13 @@ export function AppNotConnected() {
       )
       : grantsQuery.data?.capabilities.canConfigure === true);
   const reconnectUnavailableMessage = grantsQuery.isLoading
-    ? "Checking who can reconnect this identity…"
+    ? fullAppsT("fullApps.checking_who_can_reconnect_this_identity_6e1a0d")
     : grantsQuery.isError
-      ? "We couldn't verify who can reconnect this identity. Reload the page to try again."
+      ? fullAppsT("fullApps.we_couldn_t_verify_who_can_reconnect_this_identity_r_3dca45")
       : previousConnection?.credentialPolicy === "per_user"
         && retainedPersonalUserId !== grantsQuery.data?.currentUserId
-        ? "The person this connection belongs to must reconnect it."
-        : "You don't have permission to reconnect this identity.";
+        ? fullAppsT("fullApps.the_person_this_connection_belongs_to_must_reconnect_f6a7ad")
+        : fullAppsT("fullApps.you_don_t_have_permission_to_reconnect_this_identity_b611d4");
   const connectHref = newConnectionHref({
     applicationId,
     appName: application.name,
@@ -185,8 +188,8 @@ export function AppNotConnected() {
           <ReviewPanel connectionId={previousConnection.id} />
         ) : (
           <EmptyTab
-            title="Nothing is waiting for your OK right now."
-            body="Review requests will appear here after this app is connected."
+            title={fullAppsT("fullApps.nothing_is_waiting_for_your_ok_right_now_635a90")}
+            body={fullAppsT("fullApps.review_requests_will_appear_here_after_this_app_is_c_3d605b")}
           />
         )
       )}
@@ -210,6 +213,7 @@ function ApplicationHeader({
   darkLogoUrl: string | undefined;
   connectedCount: number;
 }) {
+  useFullAppsTranslation();
   return (
     <header className="flex flex-wrap items-center gap-4">
       <AppLogo name={applicationName} logoUrl={logoUrl} darkLogoUrl={darkLogoUrl} size={48} />
@@ -217,7 +221,7 @@ function ApplicationHeader({
         <div className="flex items-center gap-2">
           <h1 className="truncate text-2xl font-bold tracking-tight">{applicationName}</h1>
           <span className="inline-flex items-center rounded-full border border-border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground">
-            {connectedCount > 0 ? `${connectedCount} connected` : "Not connected"}
+            {connectedCount > 0 ? fullAppsT("fullApps.connected_166733", { value1: connectedCount }) : fullAppsT("providerSetup.accounts.notConnected")}
           </span>
         </div>
         {description && (
@@ -241,47 +245,46 @@ function ConnectionCallout({
   reconnectUnavailableMessage: string;
   onConnect: () => void;
 }) {
+  useFullAppsTranslation();
   return (
     <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border px-4 py-3">
       <div>
         <h2 className="text-sm font-semibold text-foreground">
-          {previousConnection ? "Needs attention" : "Not connected"}
+          {previousConnection ? fullAppsT("inboxUi.blocked.variant.needs_attention") : fullAppsT("providerSetup.accounts.notConnected")}
         </h2>
         <p className="mt-0.5 text-sm text-muted-foreground">
           {previousConnection
             ? previousConnection.authKind === "oauth"
-              ? `Sign in to ${applicationName} again to restore access.`
-              : `Add a working ${applicationName} key to restore access.`
-            : `Connect ${applicationName} so agents can use it.`}
+              ? fullAppsT("fullApps.sign_in_to_again_to_restore_access_392935", { value1: applicationName })
+              : fullAppsT("fullApps.add_a_working_key_to_restore_access_9bb271", { value1: applicationName })
+            : fullAppsT("fullApps.connect_so_agents_can_use_it_8beebf", { value1: applicationName })}
         </p>
         {previousConnection && !canReconnect ? (
           <p className="mt-1 text-sm text-muted-foreground">{reconnectUnavailableMessage}</p>
         ) : null}
       </div>
       {!previousConnection || canReconnect ? (
-        <Button onClick={onConnect}>{previousConnection ? "Reconnect" : "Connect"}</Button>
+        <Button onClick={onConnect}>{previousConnection ? fullAppsT("fullApps.reconnect_bf8a9e") : fullAppsT("fullApps.connect_1a2303")}</Button>
       ) : null}
     </section>
   );
 }
 
 function PermissionsTab({ previousConnection }: { previousConnection: ToolConnection | null }) {
+  useFullAppsTranslation();
   return (
     <section>
-      <h2 className="text-sm font-bold text-foreground">Permissions paused</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Reconnect this app to edit who can use it and which actions need a human first.
-      </p>
+      <h2 className="text-sm font-bold text-foreground">{fullAppsT("fullApps.permissions_paused_931046")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.reconnect_this_app_to_edit_who_can_use_it_and_which__3ffd90")}</p>
       {previousConnection && (
-        <p className="mt-3 text-xs text-muted-foreground">
-          Previous setup is retained for reconnect, but access controls stay read-only until the app is online.
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">{fullAppsT("fullApps.previous_setup_is_retained_for_reconnect_but_access__9d8b65")}</p>
       )}
     </section>
   );
 }
 
 function EmptyTab({ title, body }: { title: string; body: string }) {
+  useFullAppsTranslation();
   return (
     <section>
       <h2 className="text-sm font-bold text-foreground">{title}</h2>

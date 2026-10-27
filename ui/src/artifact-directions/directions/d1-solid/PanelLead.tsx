@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useRef, useState } from "react";
 import type { LabArtifact } from "../../kit";
 import { KindTag, PlatePicture } from "./KindBlock";
@@ -16,6 +17,7 @@ import { KindTag, PlatePicture } from "./KindBlock";
 const LEAD = "relative aspect-(--solid-lead-ratio) w-full overflow-hidden rounded-md bg-(--solid-sheet)";
 
 function VideoLead({ artifact }: { artifact: LabArtifact }) {
+  useFullSharedTranslation();
   const video = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
   return (
@@ -33,8 +35,8 @@ function VideoLead({ artifact }: { artifact: LabArtifact }) {
       {started ? null : (
         <button
           type="button"
-          aria-label={`Play video: ${artifact.title}`}
-          title="Play video"
+          aria-label={fullSharedT("fullShared.play_video_3cbb68", { value1: artifact.title })}
+          title={fullSharedT("fullShared.play_video_43e3c3")}
           onClick={() => {
             setStarted(true);
             void video.current?.play();
@@ -49,6 +51,7 @@ function VideoLead({ artifact }: { artifact: LabArtifact }) {
 }
 
 export function PanelLead({ artifact, onPictureError }: { artifact: LabArtifact; onPictureError: () => void }) {
+  useFullSharedTranslation();
   if (artifact.kind === "video" && artifact.videoUrl) return <VideoLead artifact={artifact} />;
   return (
     <div aria-hidden data-solid="panel-lead" data-lead="picture" className={LEAD}>

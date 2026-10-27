@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useCaseHref } from "@/lib/router";
 import { casesApi, type CaseLinkRole } from "@/api/cases";
@@ -19,6 +20,7 @@ const ROLE_LABEL: Record<CaseLinkRole, string> = {
  * dropped into the issue properties panel unconditionally.
  */
 export function IssueCasesPanel({ issueId }: { issueId: string }) {
+  useFullSharedTranslation();
   const caseHref = useCaseHref();
   const { data: experimentalSettings } = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
@@ -37,7 +39,7 @@ export function IssueCasesPanel({ issueId }: { issueId: string }) {
 
   return (
     <section className="space-y-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Cases</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{fullSharedT("sidebar.cases")}</h3>
       <div className="space-y-1">
         {links.map((link) => (
           <Link
@@ -47,7 +49,7 @@ export function IssueCasesPanel({ issueId }: { issueId: string }) {
           >
             <span className="font-mono text-xs text-muted-foreground shrink-0">{link.case.identifier}</span>
             <span className="min-w-0 flex-1 truncate" title={link.case.title}>{link.case.title}</span>
-            <Badge variant="secondary" className="shrink-0">{link.case.workIssueId === issueId ? "workflow" : ROLE_LABEL[link.role]}</Badge>
+            <Badge variant="secondary" className="shrink-0">{link.case.workIssueId === issueId ? fullSharedT("fullShared.workflow_da7f73") : ROLE_LABEL[link.role]}</Badge>
             {link.case.workIssueId === issueId && link.case.phase ? (
               <span className="truncate text-xs text-muted-foreground">{link.case.phase}</span>
             ) : null}

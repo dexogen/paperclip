@@ -50,7 +50,7 @@ export function AuditHub({ section }: { section: AuditSection }) {
       { label: t("surfacesGap.audit.audit"), href: section === "activity" ? undefined : "/activity" },
       ...(section === "activity" || !current ? [] : [{ label: sectionLabels[current.value] }]),
     ]);
-  }, [section, setBreadcrumbs, i18n.resolvedLanguage]);
+  }, [section, setBreadcrumbs, i18n.resolvedLanguage, i18n.language]);
 
   const handleModeChange = useCallback(
     (next: AuditFeedMode) => {

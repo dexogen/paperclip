@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 import { StatusIcon } from "@/components/StatusIcon";
@@ -19,6 +20,7 @@ import { AgentIdentity, ComposerShell, Mention, MessageFooter, Prose, ProseLink,
 
 /** BreadcrumbBar.tsx:128-189 with `taskDetailLayout`; crumbs from IssueDetail.tsx:5530-5540. */
 function TaskTopBar({ panelOpen }: { panelOpen: boolean }) {
+  useFullSharedTranslation();
   const Toggle = panelOpen ? PanelRightClose : PanelRightOpen;
   return (
     <div className="relative h-(--sz-60px) shrink-0 flex items-center border-b border-border px-4 md:px-6">
@@ -26,7 +28,7 @@ function TaskTopBar({ panelOpen }: { panelOpen: boolean }) {
         <Breadcrumb className="min-w-0 overflow-hidden">
           <BreadcrumbList className="flex-nowrap">
             <BreadcrumbItem className="shrink-0">
-              <span className="min-w-0 truncate font-semibold uppercase tracking-wider text-muted-foreground">Tasks</span>
+              <span className="min-w-0 truncate font-semibold uppercase tracking-wider text-muted-foreground">{fullSharedT("sidebar.tasks")}</span>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem className="min-w-0">
@@ -53,15 +55,18 @@ function TaskTopBar({ panelOpen }: { panelOpen: boolean }) {
 const GAP = { item: "mt-6", turn: "mt-3" } as const;
 
 function Item({ gap, children }: { gap?: keyof typeof GAP; children: ReactNode }) {
+  useFullSharedTranslation();
   return <div className={gap ? GAP[gap] : undefined}>{children}</div>;
 }
 
 /** TaskChatBubble.tsx:217-263: identity, body, attachments and footer, 4px apart. */
 function Bubble({ children }: { children: ReactNode }) {
+  useFullSharedTranslation();
   return <div className="flex w-full flex-col gap-1 items-start">{children}</div>;
 }
 
 function Row({ kit, artifact }: { kit: DirectionKit; artifact: LabArtifact }) {
+  useFullSharedTranslation();
   return (
     <Slot kit={kit}>
       <kit.ThreadWorkProduct artifact={artifact} />
@@ -70,6 +75,7 @@ function Row({ kit, artifact }: { kit: DirectionKit; artifact: LabArtifact }) {
 }
 
 export function ThreadFrame({ kit, panelOpen }: { kit: DirectionKit; panelOpen: boolean }) {
+  useFullSharedTranslation();
   const [critique, guide, pptx, pdf, image, source] = THREAD_WORK_PRODUCTS;
   const attachments = (
     <Slot kit={kit} className="flex w-full flex-col gap-1">
@@ -100,7 +106,7 @@ export function ThreadFrame({ kit, panelOpen }: { kit: DirectionKit; panelOpen: 
                     Uploaded and registered <ProseLink to="work-product-ic-pptx">editable PowerPoint</ProseLink>,{" "}
                     <ProseLink to="work-product-ic-pdf">matching PDF</ProseLink>,{" "}
                     <ProseLink to="work-product-ic-image">slide overview</ProseLink>,{" "}
-                    <ProseLink to="work-product-ic-guide">guide</ProseLink> and{" "}
+                    <ProseLink to="work-product-ic-guide">guide</ProseLink>{fullSharedT("skillsGap.and")}{" "}
                     <ProseLink to="work-product-ic-zip">editing source</ProseLink>. Prior revisions preserved.
                   </li>
                   <li>

@@ -1,3 +1,5 @@
+import { i18n } from "@/i18n";
+import { t, useTranslation } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -52,6 +54,7 @@ export function StatusCardDetailDrawer({
   onOpenChange: (open: boolean) => void;
   initialTab?: string;
 }) {
+  useTranslation();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("summary");
   const [settings, setSettings] = useState<StatusCardSettingsValue>(defaultSettingsValue());
@@ -104,9 +107,9 @@ export function StatusCardDetailDrawer({
   const generatingIssue = useMemo<SummarySlotIssueRef | null>(
     () =>
       card && lifecycle === "updating" && card.generatingIssueId
-        ? { id: card.generatingIssueId, identifier: null, title: card.title ?? "Status update", status: "in_progress" }
+        ? { id: card.generatingIssueId, identifier: null, title: card.title ?? t("fullPages.statusUpdate"), status: "in_progress" }
         : null,
-    [card, lifecycle],
+    [card, lifecycle, i18n.language],
   );
   const draftStream = useSummaryDraftStream(companyId, generatingIssue);
 
@@ -126,9 +129,9 @@ export function StatusCardDetailDrawer({
     },
     onSuccess: async () => {
       await invalidateCard();
-      setActionNote("Refresh queued — the Summarizer is updating this card.");
+      setActionNote(t("fullPages.refreshQueuedTheSummarizerIsUpdatingThis"));
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : "Could not refresh the card."),
+    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotRefreshTheCard")),
   });
 
   const recompileMutation = useMutation({
@@ -139,9 +142,9 @@ export function StatusCardDetailDrawer({
     },
     onSuccess: async () => {
       await invalidateCard();
-      setActionNote("Run queued — the Summarizer is updating this card.");
+      setActionNote(t("fullPages.runQueuedTheSummarizerIsUpdatingThis"));
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : "Could not run the card."),
+    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotRunTheCard")),
   });
 
   const saveSettingsMutation = useMutation({
@@ -168,7 +171,7 @@ export function StatusCardDetailDrawer({
         queryClient.invalidateQueries({ queryKey: queryKeys.statusCards.detail(card.id) }),
       ]);
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : "Could not save settings."),
+    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotSaveSettings")),
   });
 
   if (!card) return null;
@@ -210,7 +213,7 @@ export function StatusCardDetailDrawer({
         <SheetHeader className="border-b border-border p-4">
           <div className="flex items-center gap-2 pr-8">
             <span className={cn("inline-block h-2.5 w-2.5 shrink-0 rounded-full", presentation.dotClassName)} aria-hidden="true" />
-            <SheetTitle className="min-w-0 flex-1 truncate text-lg">{card.title ?? "Untitled card"}</SheetTitle>
+            <SheetTitle className="min-w-0 flex-1 truncate text-lg">{card.title ?? t("fullPages.untitledCard")}</SheetTitle>
             <Badge variant="outline">{presentation.label}</Badge>
             {lifecycle === "compiling" ? (
               <Button
@@ -226,7 +229,7 @@ export function StatusCardDetailDrawer({
                 ) : (
                   <Wand2 className="h-3.5 w-3.5" />
                 )}
-                {setupRunning ? "Setting up…" : recompileMutation.isPending ? "Running…" : "Run now"}
+                {setupRunning ? t("fullPages.settingUp") : recompileMutation.isPending ? t("decisionForms.interaction.running") : t("agentDetailUi.actions.run")}
               </Button>
             ) : (
               <Button
@@ -236,31 +239,31 @@ export function StatusCardDetailDrawer({
                 disabled={refreshMutation.isPending || lifecycle === "updating"}
               >
                 <RefreshCw className={cn("h-3.5 w-3.5", refreshMutation.isPending && "animate-spin")} />
-                {refreshMutation.isPending ? "Refreshing…" : "Refresh"}
+                {refreshMutation.isPending ? t("skillsGap.refreshing") : t("skillsGap.refresh")}
               </Button>
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            {card.lastGeneratedAt ? `Updated ${relativeTime(card.lastGeneratedAt)}` : "No summary yet"} ·{" "}
+            {card.lastGeneratedAt ? t("fullPages.updated_5bc006", { value1: relativeTime(card.lastGeneratedAt) }) : t("fullPages.noSummaryYet")} ·{" "}
             {describeRefreshPolicy(card.refreshPolicy)}
           </p>
         </SheetHeader>
 
         <Tabs value={tab} onValueChange={setTab} className="flex min-h-0 flex-1 flex-col gap-0">
           <TabsList variant="line" className="w-full justify-start gap-4 border-b border-border px-4">
-            <TabsTrigger value="summary">Summary</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-            <TabsTrigger value="watched">Watched issues</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="summary">{t("approvalsUi.summary")}</TabsTrigger>
+            <TabsTrigger value="settings">{t("sidebar.settings")}</TabsTrigger>
+            <TabsTrigger value="watched">{t("fullPages.watchedIssues")}</TabsTrigger>
+            <TabsTrigger value="history">{t("agentDetailUi.history.title")}</TabsTrigger>
           </TabsList>
 
           {actionError ? (
             <div className="px-4 pt-3">
-              <InlineBanner tone="warning" title="Heads up">{actionError}</InlineBanner>
+              <InlineBanner tone="warning" title={t("fullPages.headsUp")}>{actionError}</InlineBanner>
             </div>
           ) : actionNote ? (
             <div className="px-4 pt-3">
-              <InlineBanner tone="info" title="Working on it">{actionNote}</InlineBanner>
+              <InlineBanner tone="info" title={t("fullPages.workingOnIt")}>{actionNote}</InlineBanner>
             </div>
           ) : null}
 
@@ -276,14 +279,12 @@ export function StatusCardDetailDrawer({
                       value={selectedRevisionId ?? "__latest__"}
                       onValueChange={(value) => setSelectedRevisionId(value === "__latest__" ? null : value)}
                     >
-                      <SelectTrigger size="sm" className="w-auto gap-1.5" aria-label="Select summary revision">
+                      <SelectTrigger size="sm" className="w-auto gap-1.5" aria-label={t("fullPages.selectSummaryRevision")}>
                         <History className="h-3.5 w-3.5" aria-hidden="true" />
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent align="end" position="popper">
-                        <SelectItem value="__latest__" className="text-xs">
-                          Revision {latestRevisionNumber} · latest
-                        </SelectItem>
+                        <SelectItem value="__latest__" className="text-xs">{t("runUi.provider.detail.revision")}{" "}{latestRevisionNumber}{" "}{t("fullPages.latest")}</SelectItem>
                         <SelectSeparator />
                         {summaryRevisions.slice(0, 30).map((update) => (
                           <SelectItem
@@ -291,14 +292,13 @@ export function StatusCardDetailDrawer({
                             value={update.id}
                             className="text-xs"
                             title={formatDateTime(update.startedAt)}
-                          >
-                            Rev {revisionNumberOf(update)} · {updateKindLabel(update.kind)} · {relativeTime(update.startedAt)}
+                          >{t("fullPages.rev")}{" "}{revisionNumberOf(update)} · {updateKindLabel(update.kind)} · {relativeTime(update.startedAt)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   ) : latestRevisionNumber > 0 ? (
-                    <span className="text-xs text-muted-foreground">Revision {latestRevisionNumber} · latest</span>
+                    <span className="text-xs text-muted-foreground">{t("runUi.provider.detail.revision")}{" "}{latestRevisionNumber}{" "}{t("fullPages.latest")}</span>
                   ) : null}
                 </div>
               ) : null}
@@ -307,8 +307,7 @@ export function StatusCardDetailDrawer({
                 <MarkdownBody className="text-sm leading-7">{draftStream.draft}</MarkdownBody>
               ) : selectedRevision ? (
                 <div className="space-y-2 rounded-md border border-border bg-muted/30 p-3">
-                  <p className="text-xs text-muted-foreground" title={formatDateTime(selectedRevision.startedAt)}>
-                    Revision {revisionNumberOf(selectedRevision)} · {updateKindLabel(selectedRevision.kind)} ·{" "}
+                  <p className="text-xs text-muted-foreground" title={formatDateTime(selectedRevision.startedAt)}>{t("runUi.provider.detail.revision")}{" "}{revisionNumberOf(selectedRevision)} · {updateKindLabel(selectedRevision.kind)} ·{" "}
                     {relativeTime(selectedRevision.startedAt)}
                   </p>
                   {selectedRevisionBody ? (
@@ -316,15 +315,10 @@ export function StatusCardDetailDrawer({
                   ) : selectedRevision.changeSummary ? (
                     <>
                       <MarkdownBody className="text-sm leading-7">{selectedRevision.changeSummary}</MarkdownBody>
-                      <p className="text-xs text-muted-foreground/70">
-                        The full summary text for this revision is unavailable — showing its change summary. The
-                        integrated changes below are the live ledger for this revision.
-                      </p>
+                      <p className="text-xs text-muted-foreground/70">{t("fullPages.theFullSummaryTextForThisRevision")}</p>
                     </>
                   ) : (
-                    <p className="text-sm text-muted-foreground">
-                      No change summary was recorded for this revision.
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t("fullPages.noChangeSummaryWasRecordedForThis")}</p>
                   )}
                 </div>
               ) : hasSummary ? (
@@ -338,30 +332,26 @@ export function StatusCardDetailDrawer({
                       <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
                     )}
                     {setupRunning
-                      ? "Setting up — the first summary is generated automatically once this finishes."
-                      : "Setup didn’t finish. Run it now to try again."}
+                      ? t("fullPages.settingUpTheFirstSummaryIsGenerated")
+                      : t("fullPages.setupDidnTFinishRunItNow")}
                   </p>
                   {setupRunning && card.generatingIssueId ? (
                     <Link
                       to={`/issues/${card.generatingIssueId}`}
                       className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground underline-offset-2 hover:underline"
                     >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      View setup task
-                    </Link>
+                      <ExternalLink className="h-3.5 w-3.5" />{t("fullPages.viewSetupTask")}</Link>
                   ) : null}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  No summary yet — the first one is generated automatically once this card finishes setting up.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("fullPages.noSummaryYetTheFirstOneIs")}</p>
               )}
 
               {displayedChanges.length > 0 ? (
                 <section className="space-y-2">
                   <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {selectedRevision ? "Integrated in this revision" : "Integrated in this update"} (
-                    {displayedChanges.length} {displayedChanges.length === 1 ? "change" : "changes"})
+                    {selectedRevision ? t("fullPages.integratedInThisRevision") : t("fullPages.integratedInThisUpdate")} (
+                    {t("fullPages.changeCount", { count: displayedChanges.length })})
                   </h3>
                   <div className="space-y-1.5">
                     {displayedChanges.map((change) => (
@@ -377,17 +367,14 @@ export function StatusCardDetailDrawer({
                   every recorded update (each update is one summary revision). */}
               {updatesQuery.isLoading ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Loading history…
-                </div>
+                  <Loader2 className="h-4 w-4 animate-spin" />{" "}{t("fullPages.loadingHistory")}</div>
               ) : updates.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No updates recorded yet.</p>
+                <p className="text-sm text-muted-foreground">{t("fullPages.noUpdatesRecordedYet")}</p>
               ) : (
                 <>
-                  <div className="text-xs text-muted-foreground">
-                    Today: {todayRollup.updateCount}{" "}
-                    {todayRollup.updateCount === 1 ? "update" : "updates"} ·{" "}
+                  <div className="text-xs text-muted-foreground">{t("fullPages.todayUpdates", { count: todayRollup.updateCount })} ·{" "}
                     {formatTokens(todayRollup.totalTokens)} · {formatCents(todayRollup.totalCostCents)}
-                    {card.refreshPolicy.dailyTokenCap ? ` · daily cap ${formatTokens(card.refreshPolicy.dailyTokenCap)}` : ""}
+                    {card.refreshPolicy.dailyTokenCap ? t("fullPages.dailyCap", { value1: formatTokens(card.refreshPolicy.dailyTokenCap) }) : ""}
                   </div>
                   <div className="divide-y divide-border">
                     {updates.map((update) => (
@@ -406,7 +393,7 @@ export function StatusCardDetailDrawer({
                         <p className="mt-1 text-xs text-muted-foreground">
                           {formatTokenSplit(update.inputTokens, update.outputTokens)} · {formatCents(update.costCents)}
                           {update.model ? ` · ${update.model}` : ""}
-                          {update.changes.length > 0 ? ` · ${update.changes.length} changes` : ""}
+                          {update.changes.length > 0 ? t("fullPages.changes_ede356", { value1: update.changes.length }) : ""}
                         </p>
                         {update.error ? <p className="mt-1 text-xs text-destructive">{update.error}</p> : null}
                       </div>
@@ -418,16 +405,13 @@ export function StatusCardDetailDrawer({
 
             <TabsContent value="watched" className="mt-0 space-y-3">
               {card.queries.length === 0 && (card.mentionedIssueIds?.length ?? 0) === 0 ? (
-                <div className="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground">
-                  This card is still setting up — the issues it watches appear here once it's ready.
-                </div>
+                <div className="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground">{t("fullPages.thisCardIsStillSettingUpThe")}</div>
               ) : dryRunQuery.isLoading ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Matching issues…
-                </div>
+                  <Loader2 className="h-4 w-4 animate-spin" />{" "}{t("fullPages.matchingIssues")}</div>
               ) : dryRunQuery.isError ? (
-                <InlineBanner tone="danger" title="Could not load matched issues">
-                  {dryRunQuery.error instanceof Error ? dryRunQuery.error.message : "Try again."}
+                <InlineBanner tone="danger" title={t("fullPages.couldNotLoadMatchedIssues")}>
+                  {dryRunQuery.error instanceof Error ? dryRunQuery.error.message : t("projectConfigUi.membership.retry")}
                 </InlineBanner>
               ) : (
                 <MatchedIssueList
@@ -439,33 +423,30 @@ export function StatusCardDetailDrawer({
 
             <TabsContent value="settings" className="mt-0 space-y-6">
               <section className="space-y-2">
-                <h3 className="text-sm font-semibold">Card name</h3>
+                <h3 className="text-sm font-semibold">{t("fullPages.cardName")}</h3>
                 <Input
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  placeholder="Auto-named from the query"
+                  placeholder={t("fullPages.autoNamedFromTheQuery")}
                   className="text-sm"
-                  aria-label="Card name"
+                  aria-label={t("fullPages.cardName")}
                 />
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-sm font-semibold">What this card watches & reports</h3>
+                <h3 className="text-sm font-semibold">{t("fullPages.whatThisCardWatchesReports")}</h3>
                 <Textarea
                   value={interest}
                   onChange={(event) => setInterest(event.target.value)}
                   rows={3}
                   className="text-sm"
-                  aria-label="What this card watches & reports"
+                  aria-label={t("fullPages.whatThisCardWatchesReports")}
                 />
-                <p className="text-xs text-muted-foreground">
-                  This one message drives the whole card: the agent compiles the watch query from it
-                  and follows it as the instructions for every update. Editing it rebuilds the card.
-                </p>
+                <p className="text-xs text-muted-foreground">{t("fullPages.thisOneMessageDrivesTheWholeCard")}</p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-sm font-semibold">Agent</h3>
+                <h3 className="text-sm font-semibold">{t("approvalsUi.agent")}</h3>
                 <SummarizerAgentSelect
                   companyId={card.companyId}
                   value={summarizerAgentId}
@@ -480,9 +461,7 @@ export function StatusCardDetailDrawer({
 
               <div className="flex justify-end border-t border-border pt-4">
                 <Button onClick={() => saveSettingsMutation.mutate()} disabled={saveSettingsMutation.isPending}>
-                  {saveSettingsMutation.isPending ? <Loader2 className="animate-spin" /> : null}
-                  Save
-                </Button>
+                  {saveSettingsMutation.isPending ? <Loader2 className="animate-spin" /> : null}{t("skillsGap.save")}</Button>
               </div>
             </TabsContent>
           </div>
@@ -499,24 +478,23 @@ export function StatusCardDetailDrawer({
  * inspectable without leaving Settings.
  */
 function QueryDebugSection({ card }: { card: StatusCardView }) {
+  useTranslation();
   const queryJson = JSON.stringify({ queries: card.queries, limit: 50 }, null, 2);
   return (
     <Collapsible className="rounded-md border border-border">
       <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 px-3 py-2.5 text-sm font-semibold">
-        <span className="flex items-center gap-2">
-          Query debug
-          <Badge variant="secondary">v{card.queryVersion}</Badge>
+        <span className="flex items-center gap-2">{t("fullPages.queryDebug")}<Badge variant="secondary">v{card.queryVersion}</Badge>
         </span>
         <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 border-t border-border px-3 py-3">
         <pre className="max-h-64 overflow-auto rounded-md bg-muted p-3 font-mono text-xs text-foreground">
-          {card.queries.length > 0 ? queryJson : "// query not compiled yet"}
+          {card.queries.length > 0 ? queryJson : t("fullPages.queryNotCompiledYet")}
         </pre>
         <p className="text-xs text-muted-foreground">
           {card.queryCompiledAt
-            ? `Compiled by Summarizer ${relativeTime(card.queryCompiledAt)} · version ${card.queryVersion}. Edit “What this card watches” above to rebuild it.`
-            : "Not compiled yet. The query builds automatically once the card finishes setting up."}
+            ? t("fullPages.compiledBySummarizerVersionEditWhatThis", { value1: relativeTime(card.queryCompiledAt), value2: card.queryVersion })
+            : t("fullPages.notCompiledYetTheQueryBuildsAutomatically")}
         </p>
       </CollapsibleContent>
     </Collapsible>
@@ -530,6 +508,7 @@ function QueryDebugSection({ card }: { card: StatusCardView }) {
  * join the watched set too and render as their own group below the matches.
  */
 function MatchedIssueList({ queries, mentioned }: { queries: StatusCardDryRun["queries"]; mentioned: CompanySearchIssueSummary[] }) {
+  useTranslation();
   const seen = new Set<string>();
   const matched: CompanySearchIssueSummary[] = [];
   for (const { result } of queries) {
@@ -542,9 +521,7 @@ function MatchedIssueList({ queries, mentioned }: { queries: StatusCardDryRun["q
   const mentionedOnly = mentioned.filter((issue) => !seen.has(issue.id));
   if (matched.length === 0 && mentionedOnly.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground">
-        The compiled query matches no issues right now.
-      </div>
+      <div className="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground">{t("fullPages.theCompiledQueryMatchesNoIssuesRight")}</div>
     );
   }
   return (
@@ -558,7 +535,7 @@ function MatchedIssueList({ queries, mentioned }: { queries: StatusCardDryRun["q
       ) : null}
       {mentionedOnly.length > 0 ? (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">Mentioned in the latest update</p>
+          <p className="text-xs font-medium text-muted-foreground">{t("fullPages.mentionedInTheLatestUpdate")}</p>
           {mentionedOnly.map((issue) => (
             <WatchedIssueRow key={issue.id} issue={issue} />
           ))}
@@ -569,6 +546,7 @@ function MatchedIssueList({ queries, mentioned }: { queries: StatusCardDryRun["q
 }
 
 function WatchedIssueRow({ issue }: { issue: CompanySearchIssueSummary }) {
+  useTranslation();
   return (
     <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs">
       <Link
@@ -590,6 +568,7 @@ function WatchedIssueRow({ issue }: { issue: CompanySearchIssueSummary }) {
  * design-system consistency) and every row deep-links to the issue.
  */
 function ChangeRow({ change }: { change: StatusCardUpdate["changes"][number] }) {
+  useTranslation();
   const isTransition = Boolean(change.from && change.to);
   return (
     <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs">
@@ -613,7 +592,11 @@ function ChangeRow({ change }: { change: StatusCardUpdate["changes"][number] }) 
 }
 
 function describeChangeKind(changeKind: string): string {
-  if (changeKind === "entered_query" || changeKind === "new") return "new issue matched the query";
-  if (changeKind === "left_query") return "left the query";
+  if (changeKind === "entered_query" || changeKind === "new") return t("fullPages.changeNew");
+  if (changeKind === "left_query" || changeKind === "removed") return t("fullPages.changeLeft");
+  if (changeKind === "assignee") return t("fullPages.changeAssignee");
+  if (changeKind === "human_comment") return t("fullPages.changeComment");
+  if (changeKind === "status") return t("fullPages.changeStatus");
+  if (changeKind === "updated") return t("fullPages.changeUpdated");
   return changeKind.replace(/_/g, " ");
 }

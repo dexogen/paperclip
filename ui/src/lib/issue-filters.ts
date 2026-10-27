@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { isAgentCreatedIssue, type ExternalObjectSummary, type Issue } from "@paperclipai/shared";
 
 export type IssueFilterWorkspaceLookup = {
@@ -63,13 +64,13 @@ export const externalObjectFilterOrder = [
 ];
 
 const EXTERNAL_OBJECT_FILTER_LABELS: Record<string, string> = {
-  failed: "Any failed",
-  waiting: "Any waiting",
-  running: "Any running",
-  auth_required: "Auth required",
-  unreachable: "Unreachable",
-  stale: "Stale",
-  none: "No external objects",
+  get failed() { return fullSharedT("issueFilters.external.failed"); },
+  get waiting() { return fullSharedT("issueFilters.external.waiting"); },
+  get running() { return fullSharedT("issueFilters.external.running"); },
+  get auth_required() { return fullSharedT("issueFilters.external.auth_required"); },
+  get unreachable() { return fullSharedT("fullShared.unreachable_abaa46"); },
+  get stale() { return fullSharedT("fullShared.stale_40c9e5"); },
+  get none() { return fullSharedT("issueFilters.external.none"); },
 };
 
 export function externalObjectFilterLabel(value: string): string {
@@ -80,10 +81,10 @@ export const issueStatusOrder = ["in_progress", "todo", "backlog", "in_review", 
 export const issuePriorityOrder = ["critical", "high", "medium", "low"];
 
 export const issueQuickFilterPresets = [
-  { label: "All", statuses: [] as string[] },
-  { label: "Active", statuses: ["todo", "in_progress", "in_review", "blocked"] },
-  { label: "Backlog", statuses: ["backlog"] },
-  { label: "Done", statuses: ["done", "cancelled"] },
+  { get label() { return fullSharedT("agents.filterAll"); }, statuses: [] as string[] },
+  { get label() { return fullSharedT("fullShared.active_923406"); }, statuses: ["todo", "in_progress", "in_review", "blocked"] },
+  { get label() { return fullSharedT("taskViews.backlog"); }, statuses: ["backlog"] },
+  { get label() { return fullSharedT("fullShared.done_11a676"); }, statuses: ["done", "cancelled"] },
 ];
 
 export function issueFilterLabel(value: string): string {

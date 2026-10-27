@@ -1,3 +1,4 @@
+import { i18n, useTranslation } from "@/i18n";
 import type { SecretAccessEvent } from "@paperclipai/shared";
 
 /**
@@ -32,11 +33,11 @@ export function deliveryModeForConfigPath(configPath: string | null | undefined)
 export function deliveryModeLabel(mode: SecretDeliveryMode): string {
   switch (mode) {
     case "env":
-      return "Env var";
+      return i18n.t("fullRoutinesSecrets.envVar");
     case "api":
-      return "API access";
+      return i18n.t("fullRoutinesSecrets.apiAccess");
     default:
-      return "Config";
+      return i18n.t("fullRoutinesSecrets.config");
   }
 }
 
@@ -44,11 +45,11 @@ export function deliveryModeLabel(mode: SecretDeliveryMode): string {
 export function deliveryModeDescription(mode: SecretDeliveryMode): string {
   switch (mode) {
     case "env":
-      return "Injected as an environment variable at run start.";
+      return i18n.t("fullRoutinesSecrets.injectedAsAnEnvironmentVariableAtRunStart");
     case "api":
-      return "Fetched on demand via the run-bound agent API. Never written to the environment.";
+      return i18n.t("fullRoutinesSecrets.fetchedOnDemandViaTheRunBoundAgentAPI");
     default:
-      return "Provided through adapter configuration.";
+      return i18n.t("fullRoutinesSecrets.providedThroughAdapterConfiguration");
   }
 }
 
@@ -71,13 +72,23 @@ export function aliasFromConfigPath(configPath: string | null | undefined): stri
  */
 export function consumerTypeLabel(consumerType: SecretAccessEvent["consumerType"]): string {
   switch (consumerType) {
+    case "agent": return i18n.t("fullRoutinesSecrets.consumerTypeAgent");
+    case "project": return i18n.t("fullRoutinesSecrets.consumerTypeProject");
+    case "environment": return i18n.t("fullRoutinesSecrets.consumerTypeEnvironment");
+    case "routine": return i18n.t("fullRoutinesSecrets.consumerTypeRoutine");
+    case "plugin": return i18n.t("fullRoutinesSecrets.consumerTypePlugin");
+    case "issue": return i18n.t("fullRoutinesSecrets.consumerTypeIssue");
+    case "run": return i18n.t("fullRoutinesSecrets.consumerTypeRun");
+    case "system": return i18n.t("fullRoutinesSecrets.consumerTypeSystem");
     case "agent_api":
-      return "Agent API";
+      return i18n.t("fullRoutinesSecrets.agentAPI");
     case "plugin_worker":
-      return "Plugin worker";
+      return i18n.t("fullRoutinesSecrets.pluginWorker");
     case "tool_connection":
-      return "Tool connection";
-    default:
-      return consumerType.charAt(0).toUpperCase() + consumerType.slice(1);
+      return i18n.t("fullRoutinesSecrets.toolConnection");
+    default: {
+      const unknownType = String(consumerType);
+      return unknownType.charAt(0).toUpperCase() + unknownType.slice(1);
+    }
   }
 }

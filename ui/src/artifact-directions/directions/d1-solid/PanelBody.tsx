@@ -1,3 +1,4 @@
+import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { LabArtifact } from "../../kit";
@@ -31,6 +32,7 @@ import { panelSections, shortStamp, type PanelSection } from "./panel-model";
  */
 
 function Section({ section, children }: { section: PanelSection; children: ReactNode }) {
+  useFullSharedTranslation();
   const headingId = `solid-panel-section-${section.id}`;
   return (
     <section data-solid="panel-section" aria-labelledby={headingId} className="flex flex-col gap-2">
@@ -53,8 +55,9 @@ function Section({ section, children }: { section: PanelSection; children: React
 }
 
 export function PanelBody({ artifacts }: { artifacts: LabArtifact[] }) {
+  useFullSharedTranslation();
   if (artifacts.length === 0) {
-    return <p className="px-1 py-6 text-sm text-muted-foreground">No artifacts yet. Work products, documents, and agent-produced files will appear here.</p>;
+    return <p className="px-1 py-6 text-sm text-muted-foreground">{fullSharedT("taskPanels.artifacts.empty")}</p>;
   }
   return (
     <div data-solid="panel-body" className="flex flex-col gap-5">

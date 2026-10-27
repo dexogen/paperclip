@@ -1,3 +1,4 @@
+import { t as fullSharedT, i18n as fullSharedI18n } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n, useTranslation } from "@/i18n";
 import { localizeOnboardingGreeting, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
@@ -144,6 +145,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { TaskChatPresentationProvider } from "@/components/task-chat/presentation-mode";
 
 const EMPTY_BROWSERS: TaskBrowser[] = [];
+const COMPACT_RUN_LOG_READ_LIMIT_BYTES = 32_000;
 
 function toMs(value: Date | string | null | undefined): number {
   if (!value) return 0;
@@ -430,6 +432,7 @@ export type TaskChatThreadProps = ComponentProps<typeof IssueChatThread> & {
   creationActivity?: ActivityEvent[];
   compactHistory?: boolean;
   historyControl?: ReactNode;
+  onExpandHistory?: () => void;
   initialHistoryPending?: boolean;
   initialHistoryError?: boolean;
   onRetryInitialHistory?: () => void;
@@ -784,8 +787,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             blockerAttention.terminalBlocker,
           )
         : null,
-    [
-      blockedBy,
+    [blockedBy,
       blockerAttention?.state,
       blockerAttention?.terminalBlocker,
       issueStatus,
@@ -803,8 +805,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             blockerAttention?.terminalBlocker,
           )
         : null,
-    [
-      blockedBy,
+    [blockedBy,
       blockerAttention?.directBlockerIssueId,
       blockerAttention?.terminalBlocker,
       blockerAttention?.terminalBlockerIssueId,
@@ -896,8 +897,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
         issueAssigneeAgentId,
         verificationCaveatsByRunId,
       }),
-    [
-      projectedComments,
+    [projectedComments,
       onboardingTask,
       t,
       agentMap,
@@ -981,9 +981,10 @@ export function TaskChatThread(props: TaskChatThreadProps) {
     transcriptByRun: logTranscriptByRun,
     isInitialHydrating: logsAreInitiallyHydrating,
     hydratedRunIds: hydratedLogRunIds,
+    truncatedRunIds,
     errorsByRun: logErrorsByRun,
     retry: retryLogs,
-  } = useLiveRunTranscripts({ runs: logRuns, companyId, ...(props.compactHistory ? { logReadLimitBytes: 32_000 } : {}) });
+  } = useLiveRunTranscripts({ runs: logRuns, companyId, ...(props.compactHistory ? { logReadLimitBytes: COMPACT_RUN_LOG_READ_LIMIT_BYTES } : {}) });
   const fallbackByRunRef = useRef(
     new Map<string, NonNullable<ReturnType<typeof logTranscriptByRun.get>>>(),
   );
@@ -1016,8 +1017,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
         fallbackByRunRef.current.delete(id);
     }
     return next;
-  }, [
-    logTranscriptByRun,
+  }, [logTranscriptByRun,
     nativeRuns,
     nativeTranscriptByRun,
     nativeTranscriptErrorsByRun,
@@ -1379,7 +1379,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
           kind: "protocol",
           surface: "resource",
           resourceKind: "attachment",
-          title: attachment.originalFilename ?? "Agent attachment",
+          title: attachment.originalFilename ?? fullSharedT("taskChatUi.resource.agentAttachment"),
           subtitle: `${attachment.contentType} · ${formatResourceBytes(attachment.byteSize)}`,
           display: {
             ...(attachment.originalFilename == null ? { title: { code: "resource.agentAttachment" as const } } : {}),
@@ -1426,7 +1426,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
           id,
           kind: "browser",
           browser,
-          label: browsers.length > 1 ? `Browser ${index + 1}` : "Browser",
+          label: browsers.length > 1 ? fullSharedT("fullShared.browser_9f143c", { value1: index + 1 }) : fullSharedT("taskPanels.tabs.browser"),
           display: { label: { code: "browser.label", ...(browsers.length > 1 ? { number: index + 1 } : {}) } },
           timestamp: browser.createdAt,
         },
@@ -1435,7 +1435,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
     return entries.sort(
       (a, b) => a.ms - b.ms || a.order - b.order || a.id.localeCompare(b.id),
     );
-  }, [
+  }, [fullSharedI18n.language,
     createdProjectItems,
     createdSkillItems,
     browsers,
@@ -1606,7 +1606,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             id,
             item: {
               id, kind: "marker", variant: "interrupted", tone: "neutral",
-              label: "Waiting to resume",
+              label: fullSharedT("runUi.marker.waitingToResume"),
               display: { label: { code: "marker.waitingToResume" }, detail: { code: "detail.executionWait" } }, retryKind: null,
               detail: "The previous execution needs to be checked before work can continue. See the task’s execution hold for the next action. Individual checks remain in the run history.",
             },
@@ -1696,20 +1696,20 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             : "native_runner_process_exited");
         const label =
           code === "native_provider_runtime_missing" && source.status === "failed"
-            ? "Runtime missing"
+            ? fullSharedT("fullShared.runtime_missing_7649ce")
             : code === "native_provider_model_rejected" && source.status === "failed"
-            ? "Model unavailable"
+            ? fullSharedT("runUi.marker.modelUnavailable")
             : code === "native_provider_approval_required" && source.status === "failed"
-            ? "Approval required"
+            ? fullSharedT("inboxUi.run.approvalRequired")
             : code === "native_provider_usage_limit" && source.status === "failed"
-            ? "Usage limit reached"
+            ? fullSharedT("runUi.marker.usageLimitReached")
             : source.status === "cancelled"
-              ? "Run cancelled"
+              ? fullSharedT("taskChatUi.classicDisplay.cancelled")
               : source.status === "interrupted"
-                ? "Run interrupted"
+                ? fullSharedT("runUi.marker.runInterrupted")
                 : source.status === "timed_out"
-                  ? "Run timed out"
-                  : "Run failed";
+                  ? fullSharedT("taskChatUi.classicDisplay.timedOut")
+                  : fullSharedT("fullShared.run_failed_97fddf");
         const responseBoundary = sourceHasNativeResponse
           ? " after returning a final response"
           : "";
@@ -1844,7 +1844,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             id,
             kind: "marker",
             variant: "interrupted",
-            label: branchUnavailable ? "Starting branch unavailable" : restoreFailed ? "Workspace restore failed" : aiRequest?.status === "pending" ? "AI connection needed" : source.status === "cancelled" ? (meta?.startedAt ? "Stopped" : "Couldn't start") : "Run failed",
+            label: branchUnavailable ? fullSharedT("runUi.marker.startingBranchUnavailable") : restoreFailed ? fullSharedT("runUi.marker.workspaceRestoreFailed") : aiRequest?.status === "pending" ? fullSharedT("runUi.marker.aiConnectionNeeded") : source.status === "cancelled" ? (meta?.startedAt ? fullSharedT("fullShared.stopped_1a4f63") : fullSharedT("runUi.marker.couldNotStart")) : fullSharedT("fullShared.run_failed_97fddf"),
             display,
             retryKind: display.label?.code === "marker.runFailed" ? "run_failure" : null,
             runId: source.status === "cancelled" ? undefined : source.id,
@@ -1929,7 +1929,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
               id,
               kind: "marker",
               variant: "turn_boundary",
-              label: source.status === "cancelled" ? "Stopped" : "Run completed",
+              label: source.status === "cancelled" ? fullSharedT("fullShared.stopped_1a4f63") : fullSharedT("runUi.marker.runCompleted"),
               display: { label: { code: source.status === "cancelled" ? "marker.stopped" : "marker.runCompleted" }, detail: { code: source.status === "cancelled" ? "detail.cancelledBeforeResponse" : "detail.noResponse" } }, retryKind: null,
               detail: source.status === "cancelled" ? "This turn was cancelled before it returned a response." : "The runner returned no user-facing response.",
             },
@@ -1963,7 +1963,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
             id,
             kind: "marker",
             variant: "turn_boundary",
-            label: "Run completed",
+            label: fullSharedT("runUi.marker.runCompleted"),
             display: { label: { code: "marker.runCompleted" }, detail: { code: "detail.noResponse" } }, retryKind: null,
             detail: "The runner returned no user-facing response.",
           },
@@ -2247,7 +2247,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
       settledRunIds,
       settledReplyRunIds,
     };
-  }, [
+  }, [fullSharedI18n.language,
     orderedEntries,
     props.interruption,
     statusRelevance,
@@ -2482,8 +2482,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
     },
     // tailEntries is a fresh array each render; tailContentKey tracks its content.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      tailRunId,
+    [tailRunId,
       tailContentKey,
       tailStreaming,
       tailAgentName,
@@ -2576,8 +2575,8 @@ export function TaskChatThread(props: TaskChatThreadProps) {
         label:
           pendingRuntimeRequest.questionSet?.title ??
           (pendingRuntimeRequest.requestType === "permission"
-            ? "Runtime permission"
-            : "Runtime input"),
+            ? fullSharedT("taskChatUi.protocol.runtimePermission")
+            : fullSharedT("taskChatUi.protocol.runtimeInput")),
       });
     }
     const durable = (interactions ?? [])
@@ -2605,7 +2604,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
       });
     }
     return result;
-  }, [interactions, pendingRuntimeRequest]);
+  }, [fullSharedI18n.language, interactions, pendingRuntimeRequest]);
   const { dismissedQuestionIds: dismissedInputIds, dismissQuestion: dismissInput } = useDismissedTaskQuestions(issueId, currentUserId);
   const isInputDismissed = useCallback((input: PendingComposerInput) =>
     input.kind === "durable"
@@ -2792,8 +2791,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
         />
       );
     },
-    [
-      onVote,
+    [onVote,
       feedbackVoteByTargetId,
       feedbackDataSharingPreference,
       feedbackTermsUrl,
@@ -2859,8 +2857,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
         externalReferences={externalReferences}
       />
     ),
-    [
-      agentMap,
+    [agentMap,
       currentUserId,
       userLabelMap,
       onAcceptInteraction,
@@ -2879,9 +2876,15 @@ export function TaskChatThread(props: TaskChatThreadProps) {
     ],
   );
 
+  const historyControl = props.historyControl ?? (
+    props.compactHistory && props.onExpandHistory
+    && logRuns.some((run) => truncatedRunIds?.has(run.id))
+      ? <Button type="button" variant="ghost" size="sm" onClick={props.onExpandHistory}>{fullSharedT("fullShared.more_run_output_0404cb")}</Button>
+      : null
+  );
   const renderBrief = useCallback(
-    () => issueBrief ? <><TaskChatDescriptionBubble brief={issueBrief} />{props.historyControl}</> : null,
-    [issueBrief, props.historyControl],
+    () => issueBrief ? <><TaskChatDescriptionBubble brief={issueBrief} />{historyControl}</> : null,
+    [issueBrief, historyControl],
   );
 
   const assignedAgentForNotice = useMemo(() => {
@@ -3183,7 +3186,7 @@ export function TaskChatThread(props: TaskChatThreadProps) {
                       <TaskChatThreadView
                         items={items}
                         attachments={attachments}
-                        header={<>{threadHeaderWithBlockers}{!issueBrief ? props.historyControl : null}</>}
+                        header={<>{threadHeaderWithBlockers}{!issueBrief ? historyControl : null}</>}
                         renderInteraction={renderInteraction}
                         renderBrief={renderBrief}
                         renderMessageActions={renderMessageActions}

@@ -1,3 +1,4 @@
+import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS } from "@/lib/copilot-task-model-catalog";
 import { ExternalAgentInviteDialog } from "./ExternalAgentInviteDialog";
@@ -200,12 +201,13 @@ function Setup({
   const savedAgent = useQuery({
     queryKey: queryKeys.agents.detail(recordId ?? "new"),
     queryFn: () => agentsApi.get(recordId!, companyId),
-    enabled: Boolean(recordId) && !currentCreated && !creating.current,
+    enabled: Boolean(recordId) && !creating.current,
+    refetchInterval: query => query.state.data?.pauseReason === "setup"
+      && ["preparing", "pausing"].includes(query.state.data.lifecycleState ?? "") && !query.state.data.lifecycleError ? 1000 : false,
     retry: false,
   });
   const created =
-    currentCreated ??
-    (savedAgent.data?.companyId === companyId ? savedAgent.data : null);
+    (savedAgent.data?.companyId === companyId ? savedAgent.data : null) ?? currentCreated;
   const completed = Boolean(created && created.pauseReason !== "setup");
   useEffect(() => {
     if (brandType !== "pi_local" || created?.adapterType !== "paperclip_runner"
@@ -223,8 +225,13 @@ function Setup({
   const [result, setResult] = useState<AdapterEnvironmentTestResult | null>(
     null,
   );
-  const [error, setError] = useState<Error | null>(null);
-  const errorText = error ? formatAgentSetupError(error, t) : null;
+  const [error, setError] = useState<Error | { kind: "retryComputerPreparation" } | null>(null);
+  const errorText = error instanceof Error ? formatAgentSetupError(error, t)
+    : error ? t("latestUpstream.retryComputerPreparationFailed") : null;
+  const [environmentSaving, setEnvironmentSaving] = useState(false);
+  const [environmentSaveError, setEnvironmentSaveError] = useState<Error | { kind: "saveEnvironment" } | null>(null);
+  const environmentSaveErrorText = environmentSaveError instanceof Error ? formatAgentSetupError(environmentSaveError, t)
+    : environmentSaveError ? t("latestUpstream.saveEnvironmentFailed") : null;
   const generation = useRef(0);
   const qualificationTransition = useRef<{ run: number; companyId: string; environmentId: string | null; runner: AgentRunner } | null>(null);
   const savingRef = useRef(false);
@@ -417,14 +424,17 @@ function Setup({
     (!(managedOnly || forced.forced) || environmentId),
   );
   const needsCurrentSetup = ["codex_local", "claude_local", "opencode_local", "pi_local"].includes(adapterType);
-  const ready = Boolean(created) && connectionSettingsReady && (!needsCurrentSetup || (
+  const preparingComputer = created?.pauseReason === "setup" && ["preparing", "pausing"].includes(created.lifecycleState ?? "");
+  const environmentSelectionSaved = (created?.defaultEnvironmentId ?? null)
+    === (environmentOverride || (forced.forced || managedOnly ? environmentId : null));
+  const ready = Boolean(created) && environmentSelectionSaved && !environmentSaving && !preparingComputer && connectionSettingsReady && (!needsCurrentSetup || (
     envs.isSuccess && !envs.isFetching
     && settings.isSuccess && !settings.isFetching
     && experimental.isSuccess && !experimental.isFetching
     && general.isSuccess && !general.isFetching
     && (runner !== "auto" || (adapters.isSuccess && !adapters.isFetching))
   ));
-  const busy = testState === "running" || saving;
+  const busy = testState === "running" || saving || environmentSaving;
 
   function buildConfig(
     nextConnection = connection,
@@ -569,7 +579,8 @@ function Setup({
         ...(["claude", "grok", "copilot", "pi"].includes(runnerProvider) ? { acpxAgent: runnerProvider } : {}),
       } : {}, defaultEnvironmentId: environmentOverride || (forced.forced || managedOnly ? environmentId : null),
       runtimeConfig: buildNewAgentRuntimeConfig({ heartbeatEnabled: false }),
-    }).then(agent => {
+    }).then(async agent => {
+      await cache.cancelQueries({ queryKey: queryKeys.agents.detail(agent.id) });
       setCreated(agent);
       cache.setQueryData(queryKeys.agents.detail(agent.id), agent);
       void cache.invalidateQueries({ queryKey: queryKeys.agents.list(companyId) });
@@ -607,7 +618,7 @@ function Setup({
     setScreen(binding || !connectionAdapter ? "runtime" : "connect");
   }, [savedAgent.data, companyId, connectionAdapter, brandType]);
 
-  async function saveDraft(nextConnection = connection, exit = false, testedConfig?: Record<string, unknown>) {
+  async function saveDraft(nextConnection = connection, exit = false, testedConfig?: Record<string, unknown>, selectedEnvironment = environmentOverride) {
     if (!created || completed) return;
     const binding = runtimeAiBinding ?? nextConnection?.aiConnection;
     const config = testedConfig ?? buildConfig(nextConnection);
@@ -628,11 +639,12 @@ function Setup({
       submitted = true;
       const agent = await agentsApi.update(created.id, {
         adapterType: requestAdapterType, runner, adapterConfig: config,
-        defaultEnvironmentId: environmentOverride || (forced.forced || managedOnly ? environmentId : null),
+        defaultEnvironmentId: selectedEnvironment || (forced.forced || managedOnly ? environmentId : null),
         runtimeConfig: { ...created.runtimeConfig, ...(binding ? { aiConnection: binding } : {}) },
         ...(nextConnection?.applyStoredClaudeLogin ? { applyStoredClaudeLogin: true } : {}),
       }, companyId);
       rememberCredentials();
+      await cache.cancelQueries({ queryKey: queryKeys.agents.detail(agent.id) });
       setCreated(agent);
       cache.setQueryData(queryKeys.agents.detail(agent.id), agent);
       if (exit) navigate("/agents/all");
@@ -655,6 +667,16 @@ function Setup({
     try { await saveDraft(connection, true); }
     catch (cause) { setError(cause instanceof Error ? cause : new AgentSetupError("save")); }
     finally { savingRef.current = false; setSaving(false); }
+  }
+
+  async function changeEnvironment(selected = environmentOverride) {
+    setEnvironmentOverride(selected);
+    resetTest();
+    setEnvironmentSaving(true);
+    setEnvironmentSaveError(null);
+    try { await saveDraft(connection, false, undefined, selected); }
+    catch (cause) { setEnvironmentSaveError(cause instanceof Error ? cause : { kind: "saveEnvironment" }); }
+    finally { setEnvironmentSaving(false); }
   }
 
   async function runTest(nextConnection = connection): Promise<Record<string, unknown> | null> {
@@ -681,20 +703,21 @@ function Setup({
       const config = preparedConfig(nextConnection, qualified?.runner);
       const tested = await testAgentSetup({
         companyId,
+        agentId: created?.id,
         adapterType: requestAdapterType,
         providerAdapter: brandType,
-        ...(["codex_local", "claude_local", "opencode_local", "pi_local"].includes(adapterType) && runner !== "auto" ? { runner } : {}),
+        ...(["codex_local", "claude_local", "opencode_local", "pi_local"].includes(adapterType) && (qualified || runner !== "auto") ? { runner: qualified?.runner ?? runner } : {}),
         adapterConfig: config,
         testCredentials: pendingCredentials(nextConnection),
         aiConnection: runtimeAiBinding ?? nextConnection?.aiConnection,
         environmentId,
       });
-      if (run !== generation.current) return null;
+    if (run !== generation.current) return null;
       setResult(tested);
       setTestState(blocking(tested) ? "fail" : tested.status);
       return (
         !blocking(tested) &&
-        (!connectionAdapter ||
+        (tested.checks.some(check => check.code === "environment_agent_approval_required") || !connectionAdapter ||
           tested.checks.some((check) =>
             check.code.endsWith("hello_probe_passed") || check.code === "ai_connection_api_key_reverified",
           ))
@@ -754,6 +777,7 @@ function Setup({
       });
       setApiKey("");
       setConnection(null);
+      await cache.cancelQueries({ queryKey: queryKeys.agents.detail(response.agent.id) });
       setCreated(response.agent);
       appearanceDraft.clear();
       setScreen("saved");
@@ -874,7 +898,7 @@ function Setup({
                   ·{" "}
                   {runnerProvider === "codex"
                     ? t("agentSetupUi.setup.nativeRunner")
-                    : "Paperclip Runner"}
+                    : fullSharedT("runtimeSelect.paperclip")}
                 </span>
               )}
             </div>
@@ -885,6 +909,19 @@ function Setup({
             {environmentError}
           </p>
         )}
+        {preparingComputer && <p role="status" className="text-sm text-muted-foreground">{t("latestUpstream.preparingAgentComputer")}</p>}
+        {created?.lifecycleError && <div className="space-y-2">
+          <p role="alert" className="text-sm text-destructive">{created.lifecycleError}</p>
+          <Button disabled={busy} onClick={() => {
+            setEnvironmentSaving(true);
+            void agentsApi.retryLifecycle(created.id, companyId).then(async agent => {
+              await cache.cancelQueries({ queryKey: queryKeys.agents.detail(agent.id) });
+              setCreated(agent);
+              cache.setQueryData(queryKeys.agents.detail(agent.id), agent);
+            }).catch(cause => setError(cause instanceof Error ? cause : { kind: "retryComputerPreparation" }))
+              .finally(() => setEnvironmentSaving(false));
+          }}>{t("latestUpstream.retryPreparation")}</Button>
+        </div>}
         {setupError && (
           <p role="alert" className="text-sm text-destructive">
             {setupError.message}
@@ -990,7 +1027,7 @@ function Setup({
                           ) ??
                           result?.checks.find(
                             (check) =>
-                              check.code.includes("hello_probe") &&
+                              (check.code.includes("hello_probe") || check.code.startsWith("environment_agent_")) &&
                               check.level === "warn",
                           )
                         )?.message
@@ -1375,10 +1412,7 @@ function Setup({
                             value={environmentOverride}
                             disabled={forced.forced}
                             onChange={(event) => {
-                              setEnvironmentOverride(event.target.value);
-                              setConnection(null);
-                              resetTest();
-                              if (connectionAdapter) setScreen("connect");
+                              void changeEnvironment(event.target.value);
                             }}
                           >
                             <option value="">
@@ -1409,6 +1443,8 @@ function Setup({
                         {errorText}
                       </p>
                     )}
+                    {environmentSaveError && <p role="alert" className="text-sm text-destructive">{environmentSaveErrorText}</p>}
+                    {environmentSaveError && !environmentSelectionSaved && <Button disabled={busy} onClick={() => void changeEnvironment()}>{t("latestUpstream.retrySavingEnvironment")}</Button>}
                     <div className="flex justify-between border-t border-border py-5">
                       <div className="flex items-center gap-3">
                         <Button type="button" variant="ghost" disabled={busy} onClick={() => void saveAndExit()}>{t("agentSetupUi.setup.saveExit")}</Button>
