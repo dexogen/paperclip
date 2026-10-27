@@ -1347,7 +1347,7 @@ function Activity({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-4"
-                >{fullAppsT("fullApps.open_slack_app_settings_9d209c")}</a>{fullAppsT("fullApps.to_manage_or_delete_the_slack_app_9069ef")}</>
+                >{fullAppsT("fullApps.open_slack_app_settings_9d209c")}</a> {fullAppsT("fullApps.to_manage_or_delete_the_slack_app_9069ef")}</>
               )}</> }} /></AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

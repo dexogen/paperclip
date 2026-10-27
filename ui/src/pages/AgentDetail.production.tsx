@@ -3481,7 +3481,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   </p>
                 )}
                 {claudeLoginResult?.loginUrl && (
-                  <p className="text-xs">{t("agentDetailUi.run.loginUrl")}<a
+                  <p className="text-xs">{t("agentDetailUi.run.loginUrl")} <a
                       href={claudeLoginResult.loginUrl}
                       className="text-blue-600 underline underline-offset-2 ml-1 break-all dark:text-blue-400"
                       target="_blank"

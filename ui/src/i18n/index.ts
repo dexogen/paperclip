@@ -53,6 +53,6 @@ export async function setLocale(locale: string): Promise<void> {
   }
 }
 
-export { Trans } from "react-i18next";
+export { Trans } from "./trans";
 export const useTranslation = useReactI18nextTranslation;
 export { i18n };

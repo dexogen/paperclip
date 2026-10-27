@@ -150,11 +150,18 @@ afterEach(async () => { await i18n.changeLanguage("en"); });
 it("keeps legacy English labels under a Russian UI and localizes only requested presentation", async () => {
   const permissions = setSingleLowTrustBoundaryTarget(null, "company-1", { type: "project", id: "project-1" });
   const before = JSON.stringify(permissions);
+  const labels = { ...TRUST_PRESET_LABELS };
+  const descriptions = { ...TRUST_PRESET_DESCRIPTIONS };
   await i18n.changeLanguage("ru");
+  expect(TRUST_PRESET_LABELS).toEqual({ standard: "Standard", low_trust_review: "Low-trust review" });
+  expect(TRUST_PRESET_DESCRIPTIONS).toEqual(descriptions);
   expect(getTrustPresetLabels()).toEqual(TRUST_PRESET_LABELS);
   expect(getTrustPresetDescriptions()).toEqual(TRUST_PRESET_DESCRIPTIONS);
   expect(getTrustPresetLabels(i18n.getFixedT("ru"))).toEqual({ standard: "Стандартный", low_trust_review: "Проверка с ограниченным доверием" });
   expect(getTrustPresetDescriptions(i18n.getFixedT("ru")).low_trust_review).toContain("Доступ к API Paperclip сужен");
   expect(summarizeLowTrustBoundaryTarget(getLowTrustBoundary(permissions))).toBe("Project project-");
   expect(JSON.stringify(permissions)).toBe(before);
+  await i18n.changeLanguage("en");
+  expect(TRUST_PRESET_LABELS).toEqual(labels);
+  expect(TRUST_PRESET_DESCRIPTIONS).toEqual(descriptions);
 });

@@ -1333,11 +1333,11 @@
       "reviewedAt": "2026-10-26T08:55:18.636Z"
     },
     "agentConfigUi.help.title": {
-      "sourceHash": "9eeccd59a8f5967ba5fc2465f23bb1a4c3194ad10139de666a382ee11d1d8ae7",
+      "sourceHash": "34c9a0cf5d306093e3649ba24867e959da912e22f1551cc62785f291450777be",
       "translationHash": "18c62c08cde029b00bc8f473c5b5ee9b7ea006205cfedeb7ceff06456c5e7684",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.417Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "agentConfigUi.help.wakeOnDemand": {
       "sourceHash": "be5a35f4242812377ca0fa7ccb17d45c33a53257c1656fe00de0bd5d12788cf9",
@@ -32329,11 +32329,11 @@
       "reviewedAt": "2026-10-26T07:06:16.948Z"
     },
     "runUi.transcriptView.eventResult": {
-      "sourceHash": "34718561066f573219d213a1d023db73bd717cd08d366a4961075a68a8d19861",
+      "sourceHash": "a0df2f6dad3c67ca1c8811c6e0d19f6429dd418ec6b85393993a60c9bcc43c31",
       "translationHash": "552a47ed3ea39857e7920851ed99812f523e1016bed5128cd9625cacf52bfe4a",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.465Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "runUi.transcriptView.executed": {
       "sourceHash": "0b7ada732300cb950cb79c501a6118fdc7fe802afb3b461492f76d50bf55da2d",
@@ -32399,11 +32399,11 @@
       "reviewedAt": "2026-10-26T07:06:16.949Z"
     },
     "runUi.transcriptView.fileReference": {
-      "sourceHash": "d91163570d74ad123a4e07a1c682b2842a0849aa7815ac90afa58fb2cce58818",
+      "sourceHash": "5c7a4cb0510821b72a37cde988a1ec8ea7cf1a36935b411f90ea633f57082a99",
       "translationHash": "9a6be5e9e6eb0aedf0293eb8891d3f3d014c7e8458cbc288cf5b5de5a04cf1f2",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.465Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "runUi.transcriptView.harnessReported": {
       "sourceHash": "7a1a59685434a02d16d48717d2364499c592310303da760cc2e02669232da6bb",
@@ -32413,11 +32413,11 @@
       "reviewedAt": "2026-10-26T07:06:16.949Z"
     },
     "runUi.transcriptView.init": {
-      "sourceHash": "4ca9e114bf2195fdee905deae2ce0fd2f7ed0c84788a1760ae8f2b62a9321d78",
+      "sourceHash": "8f3825568fc81d1d86d9f13042e603a9e82c6ea4049d932ac852bf10ffa0db07",
       "translationHash": "cc5aa548c0f9841396a2005122b4a736a797124fd581d17db469594e56873c79",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.465Z"
+      "reviewedAt": "2026-10-27T00:22:39.484Z"
     },
     "runUi.transcriptView.input": {
       "sourceHash": "8e78a69343b9f67bd57d2dc664fb3acda1d69aba443b02ae28733f739a24ce22",
@@ -32644,18 +32644,18 @@
       "reviewedAt": "2026-10-26T07:06:16.950Z"
     },
     "runUi.transcriptView.workspaceChanges": {
-      "sourceHash": "0444e42bbf4cf8e70a071a1175290fc8699a79d686ee7a2f27d3600d73c912da",
+      "sourceHash": "7f6f49da8dee740c3bc268c33c9145df28ac33630be6d7866b8c0b6ccb802cc8",
       "translationHash": "5a5553ef8403a210088c8efdaae0e6a01ac1ef0e0ba9c250f4be51f8e8a0271a",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.465Z"
+      "reviewedAt": "2026-10-27T00:22:39.484Z"
     },
     "runUi.transcriptView.workspaceDiff": {
-      "sourceHash": "6074ef4db1824f2833c99057dc2b1b44c81302313e144da308e3ea24a965cacf",
+      "sourceHash": "0cc7f5824681d58f342c5b34b386a59d223f2b8756e3f97b40ad2e5f202dd034",
       "translationHash": "6fe8c34a80210d774c8a80283397f9098aa20e6375c295dcde3baecc134d452b",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.466Z"
+      "reviewedAt": "2026-10-27T00:22:39.484Z"
     },
     "runUi.transcriptView.workspaceVerified": {
       "sourceHash": "ad7b119422f69c822716a17163b952d0793b9bb844f976029c40509a7df51a47",
@@ -50508,18 +50508,18 @@
       "reviewedAt": "2026-10-26T10:34:34.319Z"
     },
     "agentAccessUi.trust.lowTrust": {
-      "sourceHash": "903d3953439980e8204686214616d5baaa91cbaec17c610fa96f4c56b8fd4775",
+      "sourceHash": "440479020dde12d3aef28008758c2ebf796fa67cd4d013b061b25bfee81df8ca",
       "translationHash": "853e5c9a95683f7f25e1d651e35a59a0677154cd32376a03e47e59bbc91baaed",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.416Z"
+      "reviewedAt": "2026-10-27T00:22:39.481Z"
     },
     "agentAccessUi.trust.lowTrustDescription": {
-      "sourceHash": "417471822885a585e8795cee574f7b494399d368b12887f81b9c186e7fe9032b",
+      "sourceHash": "0b3ef9306fbd88875f943a6770aca36c9c3e6ba3e7a7e99dfd98e220db17643e",
       "translationHash": "0b044d18e6a1e47527ffceb05ba52ed084b4f29382a9b42871cbf1d8e2271707",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.416Z"
+      "reviewedAt": "2026-10-27T00:22:39.481Z"
     },
     "agentAccessUi.trust.managed": {
       "sourceHash": "9402cab6b65d87190ece8b89046607717a3bdc246d52ec5f30733fca84b3e15f",
@@ -50655,18 +50655,18 @@
       "reviewedAt": "2026-10-26T10:34:34.319Z"
     },
     "agentAccessUi.trust.standard": {
-      "sourceHash": "0a918cfca252f3973d2ff807f17c53bc4a1b611d429f8763b6f3ef4f1e6b0108",
+      "sourceHash": "f5325eefd0fc8ddbbc0f34ec3ceaf8ce81173e6b5d8de76619b794fbce84dd38",
       "translationHash": "6800f667c29e76f6e7fecc19152d96fdb1235511617fa026f8f1700781aa876e",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.416Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "agentAccessUi.trust.standardDescription": {
-      "sourceHash": "d00700b8313fcf6c0e6ed0296e8a00b69abc2d01d3dd99591be58ac9698c1e27",
+      "sourceHash": "31324f2035026fb045ac6e348cbb6df4df847a525fdcf075d0f12fa0c2a9594f",
       "translationHash": "b37d4cea99aa97a742b76cde8c008aae24bb55e89af69e8e4c2c4967d8c79dcd",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.416Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "agentAccessUi.trust.viewPolicy": {
       "sourceHash": "af5ddd71d80d8238c367600bd2f40898d8001f8a2cc4ea444834f28a5ed9c627",
@@ -114439,11 +114439,11 @@
       "reviewedAt": "2026-10-26T23:04:35.061Z"
     },
     "fullShared.changed_6841e0": {
-      "sourceHash": "240c64c657b3675012a15abe21594637ea484a83ddab91e47b9df75699ed9c5a",
-      "translationHash": "5499df6424f63fffce9ec50b0453613e37c6f14e7b1b1b2f60f26a8c0a085bc6",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "sourceHash": "7451a15e5c0e50cad5e58f4110c0429017be6238814f87708ea175b8d44b2560",
+      "translationHash": "cd5f03fb00244ca2e033c5ae99934312a21a6ca4dab13b2840ff78a61ea20d36",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.061Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "fullShared.changed_721802": {
       "sourceHash": "eb00baa76db1f624dc99a88f26cb8277fbf2a5dfcb21c0614754c718b4ec666a",
@@ -114838,11 +114838,11 @@
       "reviewedAt": "2026-10-26T23:04:35.064Z"
     },
     "fullShared.completed_22a970": {
-      "sourceHash": "144e42c5488dee132d7dd2e5a97b103890ab165bae166930048c4f069a2bb244",
+      "sourceHash": "6edb9063fff852c7249ad2d39ac473c2894ba25da1598f80fcd5769e7afd6b3b",
       "translationHash": "bc2993ba24a34fc2c72f480f50237ece0349da90621624e77ff0978899ac814a",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.064Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "fullShared.completed_collapsed_12b8d2": {
       "sourceHash": "ec1e007db830ed6f10d63f7aaf94b210e3dc3d137b3f4173189de57f8c815735",
@@ -117540,11 +117540,11 @@
       "reviewedAt": "2026-10-26T23:04:35.083Z"
     },
     "fullShared.model_550629": {
-      "sourceHash": "a3bccad3b4fbe6123232b809aa813087e06f954dcf71985f998eb4941062943c",
+      "sourceHash": "a29bb3f51e3c3edff1e8a19018dde36060a911c86291c87c9bb1e7fd5c482ba2",
       "translationHash": "7f308b95d2da8976f3815f25f9b484110ffea520300f9f24408fc757e5e1dcb8",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.083Z"
+      "reviewedAt": "2026-10-27T00:22:39.482Z"
     },
     "fullShared.model_checks_did_not_pass_check_the_connection_and_m_afd987": {
       "sourceHash": "3ab92d5d28a182afb810d53a5fe92cd65ddc37beedad2279a814a0b7db3c2768",
@@ -119458,11 +119458,11 @@
       "reviewedAt": "2026-10-26T23:04:35.097Z"
     },
     "fullShared.result_527868": {
-      "sourceHash": "73e250cc0b73a226f95a81821db32bb2d99990800f2c0ef2c119ebebcdde07fb",
+      "sourceHash": "9e152370180c70955415f6afcb41597408202a6493be940b2eaeb3637f50f894",
       "translationHash": "2878e3d58123355145aa5a08bfd382cbb67171251c329a3a553919bd56da833d",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.097Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "fullShared.resume_agent_0bb60c": {
       "sourceHash": "637146c0d975482b5e88ff2b28647f3c98c70f53b7f1e0192ff36e46c3f57f1f",
@@ -119668,11 +119668,11 @@
       "reviewedAt": "2026-10-26T23:04:35.098Z"
     },
     "fullShared.run_failed_97fddf": {
-      "sourceHash": "a59b711584d19d5926c08e4c3cb39d15437ddf559401541642afc49db16530e3",
+      "sourceHash": "ef28f369607492297ded577828172ad283779352f0c19038eef0b56f42b3c9b2",
       "translationHash": "5af0f4f23dc920a1ad79c840373cf1a6ed1f6866f6d475964962f77bf8ab8343",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.098Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "fullShared.run_finished_without_a_clear_next_step_10aac1": {
       "sourceHash": "d8bff4332594a6d3051ff4f1543fa522d92e4bc5479d6873d5994ec39683599b",
@@ -119766,11 +119766,11 @@
       "reviewedAt": "2026-10-26T23:04:35.099Z"
     },
     "fullShared.runtime_e06126": {
-      "sourceHash": "fc581662b7cc4c9ba72ae474e7803f2507c126df7a92b627beb6c347275df278",
+      "sourceHash": "fc1df5a17372d95a37a7a142b8ad39fc6fd1e79f471079f1db019b2fd408461e",
       "translationHash": "61dc7a4840f741b956e4bfaec02af6fe4fc6d813bcb26a7422cd74e255774fcf",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.099Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "fullShared.runtime_missing_7649ce": {
       "sourceHash": "2905b1e05ad26acc79acd77b2c01c4f9cf84216e262efa612ee23e92082874a6",
@@ -120921,11 +120921,11 @@
       "reviewedAt": "2026-10-26T23:04:35.108Z"
     },
     "fullShared.terminal_4e686a": {
-      "sourceHash": "5e72f072af3bebbcd53bc2cc19f5a5524e34707f7259cac9e35f77f0db09acc8",
-      "translationHash": "59a0d6c1bedab743eb02764ebce28346f6e69854793e2daeb5a45aa02b6a90b7",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "sourceHash": "07a3ae7bdacf9bd0544740d02b6bb3b6b64ba89966b5c15d42b88a2b12f0b727",
+      "translationHash": "0782bf5fcdac009c1229ae05198f9b510627f82c4d52d614f4ff3833c07927f0",
+      "reviewer": "Codex contextual review: canonical event and help boundaries, CI repairs",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.108Z"
+      "reviewedAt": "2026-10-27T00:22:39.483Z"
     },
     "fullShared.terminated_56a88f": {
       "sourceHash": "98f9305b78215ae27642ebbbf723fe795703da23fcd151278ce5eeb38029990c",

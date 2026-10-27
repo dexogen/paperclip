@@ -1,4 +1,4 @@
-import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
+import { useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useTranslation, Trans, i18n } from "@/i18n";
 import type { TFunction } from "i18next";
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -24,7 +24,7 @@ import { AGENT_ROLE_LABELS } from "@paperclipai/shared";
 /* ---- Help text for (?) tooltips ---- */
 export const help: Record<string, string> = {
   name: "Display name for this agent.",
-  get title() { return fullSharedT("agentConfigUi.help.title"); },
+  title: i18n.getFixedT("en")("agentConfigUi.help.title"),
   role: "Organizational role. Determines position and capabilities.",
   reportsTo: "The agent this one reports to in the org hierarchy.",
   capabilities: "Describes what this agent can do. Shown in the org chart and used for task routing.",

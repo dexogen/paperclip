@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 
 import { flushSync } from "react-dom";
+import { act as reactAct } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import { Connections } from "./Connections";
 
 const listGalleryMock = vi.hoisted(() => vi.fn());
@@ -379,6 +381,25 @@ describe("Connections table (M1b / PAP-13254 door 2)", () => {
     expect(button?.textContent).toBe("Permissions");
     button?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     expect(mockNavigate).toHaveBeenCalledWith("/apps/c-healthy/permissions");
+
+    const reads = listConnectionsMock.mock.calls.length;
+    try {
+      await reactAct(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Требуют внимания (0)");
+      expect(row?.querySelector("td:nth-child(5)")?.textContent).toBe("Включено: 0");
+      expect(row?.className).not.toContain("amber");
+      expect(listConnectionsMock).toHaveBeenCalledTimes(reads);
+      mockNavigate.mockClear();
+      row?.querySelector("td:last-child button")?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      expect(mockNavigate).toHaveBeenCalledWith("/apps/c-healthy/permissions");
+
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+      expect(container.textContent).toContain("Needs attention (0)");
+      expect(row?.querySelector("td:nth-child(5)")?.textContent).toBe("0 on");
+      expect(listConnectionsMock).toHaveBeenCalledTimes(reads);
+    } finally {
+      await reactAct(async () => { await i18n.changeLanguage("en"); });
+    }
   });
 
   it("deletes a connection only after trash-can confirmation", async () => {

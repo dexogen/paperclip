@@ -87,7 +87,7 @@ export function GitHubAppRecovery({ endpoint, reconnect, onConnect, onExit }: {
     {replace && <div className="space-y-6">
       <div className="space-y-2 text-sm">
         <h2 className="text-base font-semibold">{reconnect ? fullAppsT("fullApps.replace_credentials_for_the_same_app_0cf5ed") : fullAppsT("fullApps.connect_your_existing_github_app_9b919b")}</h2>
-        <p><a href={gitHubAppSettingsUrl(endpoint)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline">{fullAppsT("fullApps.open_github_app_settings_139552")}<ExternalLink className="size-3.5" /></a>{fullAppsT("fullApps.and_choose_566c1f")}<strong>{appName}</strong>.</p>
+        <p><a href={gitHubAppSettingsUrl(endpoint)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline">{fullAppsT("fullApps.open_github_app_settings_139552")}<ExternalLink className="size-3.5" /></a> {fullAppsT("fullApps.and_choose_566c1f")} <strong>{appName}</strong>.</p>
         <p className="text-muted-foreground">{fullAppsT("fullApps.if_it_s_owned_by_an_organization_open_that_organizat_0effc2")}</p>
       </div>
       <div className="space-y-2">

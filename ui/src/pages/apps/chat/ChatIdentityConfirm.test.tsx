@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { flushSync } from "react-dom";
+import { setLocale } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -22,7 +23,8 @@ describe("self-service Slack identity confirmation", () => {
   let root: Root;
   let client: QueryClient;
   const identity = { provider: "slack", externalLabel: "Dotta", companyName: "Acme", botLabel: "CEO", selfService: true, canConfirm: true };
-  beforeEach(() => {
+  beforeEach(async () => {
+    await setLocale("en");
     vi.resetAllMocks();
     mocks.getSession.mockResolvedValue({ user: { id: "user-a", name: "Dotta" } });
     mocks.previewIdentityLink.mockResolvedValue(identity);
@@ -32,22 +34,29 @@ describe("self-service Slack identity confirmation", () => {
     root = createRoot(container);
     client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   });
-  afterEach(() => { flushSync(() => root.unmount()); client.clear(); container.remove(); });
+  afterEach(async () => { flushSync(() => root.unmount()); client.clear(); container.remove(); await setLocale("en"); });
   const render = () => flushSync(() => root.render(<QueryClientProvider client={client}><ChatIdentityConfirm /></QueryClientProvider>));
-  const button = (text: string) => Array.from(container.querySelectorAll("button")).find((node) => node.textContent === text)!;
+  const button = (text: string) => Array.from(container.querySelectorAll("button")).find((node) => node.textContent?.trim() === text)!;
 
   it("sends signed-out users to sign in with the confirmation route preserved", async () => {
     mocks.getSession.mockResolvedValue(null); render();
     await vi.waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith(expect.stringContaining("/auth?next=%2Fchat-identity%2Fconfirm%3Ftoken%3D")));
     expect(mocks.previewIdentityLink).not.toHaveBeenCalled();
   });
-  it("requires an explicit identity confirmation from members", async () => {
-    render(); await vi.waitFor(() => expect(button("Confirm identity")).toBeTruthy());
+  it.each([
+    { locale: "en" as const, confirm: "Confirm identity", linked: "Identity linked", permissions: "current Paperclip permissions", back: "Return to Slack" },
+    { locale: "ru" as const, confirm: "Подтвердить учётную запись", linked: "Учётная запись привязана", permissions: "текущие права Paperclip", back: "Вернуться в Slack" },
+  ])("requires an explicit identity confirmation from members ($locale)", async ({ locale, confirm, linked, permissions, back }) => {
+    await setLocale(locale);
+    render(); await vi.waitFor(() => expect(button(confirm)).toBeTruthy());
+    expect(container.textContent).toContain("Dotta");
+    expect(container.textContent).toContain("Acme");
     expect(mocks.confirmIdentityLink).not.toHaveBeenCalled();
-    button("Confirm identity").click();
-    await vi.waitFor(() => expect(container.textContent).toContain("Identity linked"));
-    expect(container.textContent).toContain("current Paperclip permissions");
-    expect(container.querySelector('a')?.textContent).toBe("Return to Slack");
+    button(confirm).click();
+    await vi.waitFor(() => expect(container.textContent).toContain(linked));
+    expect(container.textContent).toContain(permissions);
+    expect(container.querySelector('a')?.textContent).toBe(back);
+    expect(mocks.confirmIdentityLink).toHaveBeenCalledExactlyOnceWith("synthetic-token-that-is-at-least-32-characters");
   });
   it("keeps other providers out of the Slack return flow", async () => {
     mocks.previewIdentityLink.mockResolvedValue({ ...identity, provider: "github", selfService: false });

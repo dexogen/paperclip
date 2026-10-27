@@ -203,7 +203,7 @@ export function ProfileDetail({
 
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <Badge variant={archived ? "outline" : "default"}>{STATUS_LABEL[profile.status]}</Badge>
-        <span className="text-muted-foreground">{fullAppsT("fullApps.updated_3a5ecc")}<RelativeTime t={fullAppsI18n.t} value={profile.updatedAt} /></span>
+        <span className="text-muted-foreground">{fullAppsT("fullApps.updated_3a5ecc")} <RelativeTime t={fullAppsI18n.t} value={profile.updatedAt} /></span>
         <span className="text-muted-foreground">{allowsLabel(profile.summary)}</span>
       </div>
 

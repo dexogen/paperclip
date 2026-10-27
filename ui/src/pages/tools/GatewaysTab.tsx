@@ -529,10 +529,10 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
                                 <div className="flex shrink-0 items-center gap-2">
                                   <span className="text-xs text-muted-foreground">
                                     {token.revokedAt ? (
-                                      <>{fullAppsT("fullApps.revoked_4bb47f")}<RelativeTime t={fullAppsI18n.t} value={token.revokedAt} />
+                                      <>{fullAppsT("fullApps.revoked_4bb47f")} <RelativeTime t={fullAppsI18n.t} value={token.revokedAt} />
                                       </>
                                     ) : token.expiresAt ? (
-                                      <>{fullAppsT("fullApps.expires_ab8a28")}<RelativeTime t={fullAppsI18n.t} value={token.expiresAt} />
+                                      <>{fullAppsT("fullApps.expires_ab8a28")} <RelativeTime t={fullAppsI18n.t} value={token.expiresAt} />
                                       </>
                                     ) : (
                                       fullAppsT("fullApps.no_expiry_dd848d")

@@ -119,7 +119,7 @@ export function SlackAvatarContent({
                 className="underline underline-offset-4"
               >{fullAppsT("fullApps.open_slack_app_settings_30cfde")}{" "}
                 <ExternalLink className="inline size-3" />
-              </a>{" "}{fullAppsT("fullApps.and_choose_566c1f")}<strong>{appName}</strong>.
+              </a>{" "}{fullAppsT("fullApps.and_choose_566c1f")} <strong>{appName}</strong>.
             </li>
             <li><FullAppsTrans i18nKey="fullApps.choose_then_scroll_to_032211" components={{ part1: <strong>Basic Information</strong>, part2: <>{" "}</>, part3: <strong>Display Information</strong> }} /></li>
             <li><FullAppsTrans i18nKey="fullApps.under_click_the_app_icon_and_upload_115b04" components={{ part1: <strong>App icon &amp; Preview</strong>, part2: <>{" "}</>, part3: <span className="break-all font-mono text-xs">{filename}</span> }} /></li>

@@ -642,7 +642,7 @@ const TimelineList = memo(function TimelineList({
               {run.environment || run.environmentLease ? (
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-(length:--text-micro) text-muted-foreground">
                   {run.environment ? (
-                    <span>{fullSharedT("fullShared.environment_9e4719")}<span className="text-foreground">{run.environment.name}</span>
+                  <span>{fullSharedT("fullShared.environment_9e4719")} <span className="text-foreground">{run.environment.name}</span>
                       {/* The raw "sandbox" driver key stays off run details — the
                           environment's name and the Provider entry below already
                           identify it; other drivers (ssh, local) remain useful. */}

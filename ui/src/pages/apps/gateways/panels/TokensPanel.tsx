@@ -77,7 +77,7 @@ function ExpiryValue({ token }: { token: ToolMcpGatewayToken }) {
   if (expiresAt.getTime() <= Date.now()) {
     return <><span className="font-medium text-foreground">{fullAppsT("fullApps.expired_424a25")}</span> <RelativeTime t={fullAppsI18n.t} value={token.expiresAt} /></>;
   }
-  return <>{fullAppsT("taskChatUi.compactInteraction.expires")}<RelativeTime t={fullAppsI18n.t} value={token.expiresAt} /></>;
+  return <>{fullAppsT("taskChatUi.compactInteraction.expires")} <RelativeTime t={fullAppsI18n.t} value={token.expiresAt} /></>;
 }
 
 export function TokensPanel({

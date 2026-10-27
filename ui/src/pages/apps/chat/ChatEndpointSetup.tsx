@@ -1330,7 +1330,7 @@ function ProviderConnectStep({
       </div>
     );
   const slackRequestUrlInstructions = <ol className="list-decimal space-y-2 pl-5 text-sm">
-      <li><a className="underline underline-offset-4" href={endpoint.setup?.slackRegistration?.appId ? `https://api.slack.com/apps/${encodeURIComponent(endpoint.setup.slackRegistration.appId)}/event-subscriptions` : "https://api.slack.com/apps"} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_app_settings_30cfde")}<ExternalLink className="inline size-3" /></a>{fullAppsT("fullApps.and_choose_566c1f")}<strong>{slackApp.appName}</strong>.</li>
+      <li><a className="underline underline-offset-4" href={endpoint.setup?.slackRegistration?.appId ? `https://api.slack.com/apps/${encodeURIComponent(endpoint.setup.slackRegistration.appId)}/event-subscriptions` : "https://api.slack.com/apps"} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_app_settings_30cfde")}<ExternalLink className="inline size-3" /></a> {fullAppsT("fullApps.and_choose_566c1f")} <strong>{slackApp.appName}</strong>.</li>
       <li><FullAppsTrans i18nKey="fullApps.choose_6b07ad" components={{ part1: <strong>Event Subscriptions</strong> }} /></li>
       <li><FullAppsTrans i18nKey="fullApps.beside_the_prefilled_click_if_it_isn_t_verified_save_df48c9" components={{ part1: <strong>Request URL</strong>, part2: <strong>Retry</strong> }} /></li>
     </ol>;
@@ -1472,7 +1472,7 @@ function ProviderConnectStep({
           <ul id="slack-bot-token-help" className="list-disc space-y-1 pl-5 text-sm">
             <li>
               <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{fullAppsT("fullApps.open_slack_app_settings_30cfde")}<ExternalLink className="inline size-3" />
-              </a>{fullAppsT("fullApps.and_choose_566c1f")}<strong>{slackApp.appName}</strong>.
+              </a> {fullAppsT("fullApps.and_choose_566c1f")} <strong>{slackApp.appName}</strong>.
             </li>
             <li><FullAppsTrans i18nKey="fullApps.choose_bc1cb3" components={{ part1: <strong>OAuth &amp; Permissions</strong> }} /></li>
             <li><FullAppsTrans i18nKey="fullApps.copy_and_paste_your_cb641c" components={{ part1: <strong>Bot OAuth Token</strong> }} /></li>
@@ -1495,7 +1495,7 @@ function ProviderConnectStep({
           <ul id="slack-signing-secret-help" className="list-disc space-y-1 pl-5 text-sm">
             <li>
               <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{fullAppsT("fullApps.open_slack_app_settings_30cfde")}<ExternalLink className="inline size-3" />
-              </a>{fullAppsT("fullApps.and_choose_566c1f")}<strong>{slackApp.appName}</strong>.
+              </a> {fullAppsT("fullApps.and_choose_566c1f")} <strong>{slackApp.appName}</strong>.
             </li>
             <li><FullAppsTrans i18nKey="fullApps.choose_bc1cb3" components={{ part1: <strong>Basic Information</strong> }} /></li>
             <li><FullAppsTrans i18nKey="fullApps.copy_and_paste_your_cb641c" components={{ part1: <strong>Signing Secret</strong> }} /></li>

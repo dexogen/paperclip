@@ -1,4 +1,3 @@
-import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n } from "../i18n";
 
@@ -19,15 +18,9 @@ export type LowTrustBoundaryTarget =
   | { type: "root_issue"; id: string }
   | { type: "issue"; id: string };
 
-export const TRUST_PRESET_LABELS: Record<TrustPreset, string> = {
-  get standard() { return fullSharedT("agentAccessUi.trust.standard"); },
-  get low_trust_review() { return fullSharedT("agentAccessUi.trust.lowTrust"); },
-};
+export const TRUST_PRESET_LABELS: Record<TrustPreset, string> = getTrustPresetLabels();
 
-export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = {
-  get standard() { return fullSharedT("agentAccessUi.trust.standardDescription"); },
-  get low_trust_review() { return fullSharedT("agentAccessUi.trust.lowTrustDescription"); },
-};
+export const TRUST_PRESET_DESCRIPTIONS: Record<TrustPreset, string> = getTrustPresetDescriptions();
 
 export function getTrustPresetLabels(t: TFunction = i18n.getFixedT("en")): Record<TrustPreset, string> {
   return { standard: t("agentAccessUi.trust.standard"), low_trust_review: t("agentAccessUi.trust.lowTrust") };

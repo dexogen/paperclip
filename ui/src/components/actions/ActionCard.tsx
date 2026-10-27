@@ -276,7 +276,7 @@ export function ActionCard({
             {policyNumber != null ? (
               <>
                 {" "}
-                <span className="font-medium text-foreground"><FullSharedTrans i18nKey="fullShared.policy_b1306c" components={{ part1: <>{policyNumber}</> }} /></span>{fullSharedT("fullShared.requires_approval_here_c7e376")}</>
+                <span className="font-medium text-foreground"><FullSharedTrans i18nKey="fullShared.policy_b1306c" components={{ part1: <>{policyNumber}</> }} /></span> {fullSharedT("fullShared.requires_approval_here_c7e376")}</>
             ) : null}
           </p>
         </div>

@@ -1,4 +1,3 @@
-import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { TranscriptEntry } from "../../adapters";
 import type { ToolRunDecision } from "@paperclipai/shared";
@@ -20,7 +19,6 @@ import { i18n, useTranslation } from "../../i18n";
 
 /** Family glyph for a tool block/row; the taxonomy falls back to Wrench. */
 function ToolFamilyIcon({ name, className }: { name: string; className?: string }) {
-  useFullSharedTranslation();
   const Icon = toolTaxonomy(name).icon;
   return <Icon className={className} />;
 }
@@ -567,6 +565,7 @@ function groupToolBlocks(blocks: TranscriptBlock[]): TranscriptBlock[] {
 }
 
 export function normalizeTranscript(entries: TranscriptEntry[], streaming: boolean): TranscriptBlock[] {
+  const t = i18n.getFixedT("en");
   const blocks: TranscriptBlock[] = [];
   const pendingToolBlocks = new Map<string, Extract<TranscriptBlock, { type: "tool" }>>();
   const pendingActivityBlocks = new Map<string, Extract<TranscriptBlock, { type: "activity" }>>();
@@ -620,32 +619,32 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
       blocks.push({
         type: "event",
         ts: entry.ts,
-        label: entry.complete ? fullSharedT("runUi.transcriptView.workspaceDiff") : fullSharedT("runUi.transcriptView.workspaceChanges"),
+        label: entry.complete ? t("runUi.transcriptView.workspaceDiff") : t("runUi.transcriptView.workspaceChanges"),
         presentation: { kind: "workspace_change", complete: entry.complete, files: entry.totals.files, verified: entry.source === "runner_verified" },
         tone: "info",
-        text: fullSharedT("fullShared.changed_6841e0", { value1: entry.totals.files, value2: entry.totals.files === 1 ? "file" : "files" }),
+        text: t("fullShared.changed_6841e0", { value1: entry.totals.files, value2: entry.totals.files === 1 ? "file" : "files" }),
         detail: entry.source === "runner_verified" ? "Verified from workspace" : "Reported by harness",
       });
       continue;
     }
 
     if (entry.kind === "workspace_file_reference") {
-      blocks.push({ type: "event", ts: entry.ts, label: fullSharedT("runUi.transcriptView.fileReference"), presentation: { kind: "workspace_file_reference" }, tone: "info", text: entry.displayName, detail: entry.path });
+      blocks.push({ type: "event", ts: entry.ts, label: t("runUi.transcriptView.fileReference"), presentation: { kind: "workspace_file_reference" }, tone: "info", text: entry.displayName, detail: entry.path });
       continue;
     }
 
     if (entry.kind === "runtime_request") {
-      blocks.push({ type: "event", ts: entry.ts, label: fullSharedT("fullShared.runtime_e06126", { value1: entry.requestType }), presentation: { kind: "runtime_request", requestType: entry.requestType }, tone: entry.status === "pending" ? "warn" : "info", text: entry.prompt, detail: entry.status });
+      blocks.push({ type: "event", ts: entry.ts, label: t("fullShared.runtime_e06126", { value1: entry.requestType }), presentation: { kind: "runtime_request", requestType: entry.requestType }, tone: entry.status === "pending" ? "warn" : "info", text: entry.prompt, detail: entry.status });
       continue;
     }
 
     if (entry.kind === "run_result") {
-      blocks.push({ type: "event", ts: entry.ts, label: fullSharedT("fullShared.result_527868", { value1: entry.disposition }), presentation: { kind: "run_result", disposition: entry.disposition }, tone: entry.disposition === "blocked" ? "warn" : "info", text: entry.summary });
+      blocks.push({ type: "event", ts: entry.ts, label: t("fullShared.result_527868", { value1: entry.disposition }), presentation: { kind: "run_result", disposition: entry.disposition }, tone: entry.disposition === "blocked" ? "warn" : "info", text: entry.summary });
       continue;
     }
 
     if (entry.kind === "run_terminal") {
-      blocks.push({ type: "event", ts: entry.ts, label: fullSharedT("fullShared.terminal_4e686a"), presentation: { kind: "run_terminal" }, tone: entry.runState === "failed" ? "error" : "info", text: `${entry.runState} · ${entry.disposition}`, detail: entry.stopReason });
+      blocks.push({ type: "event", ts: entry.ts, label: t("fullShared.terminal_4e686a"), presentation: { kind: "run_terminal" }, tone: entry.runState === "failed" ? "error" : "info", text: `${entry.runState} · ${entry.disposition}`, detail: entry.stopReason });
       continue;
     }
 
@@ -708,10 +707,10 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
       blocks.push({
         type: "event",
         ts: entry.ts,
-        label: fullSharedT("runUi.transcriptView.init"),
+        label: t("runUi.transcriptView.init"),
         presentation: { kind: "init", model: entry.model, sessionId: entry.sessionId },
         tone: "info",
-        text: fullSharedT("fullShared.model_550629", { value1: entry.model, value2: entry.sessionId ? ` • session ${entry.sessionId}` : "" }),
+        text: t("fullShared.model_550629", { value1: entry.model, value2: entry.sessionId ? ` • session ${entry.sessionId}` : "" }),
       });
       continue;
     }
@@ -720,13 +719,13 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
       blocks.push({
         type: "event",
         ts: entry.ts,
-        label: fullSharedT("runUi.transcriptView.eventResult"),
+        label: t("runUi.transcriptView.eventResult"),
         presentation: { kind: "result", fallback: !entry.text.trim() && !entry.errors[0] },
         tone: entry.isError ? "error" : "info",
-        text: entry.text.trim() || entry.errors[0] || (entry.isError ? fullSharedT("fullShared.run_failed_97fddf") : fullSharedT("fullShared.completed_22a970")),
+        text: entry.text.trim() || entry.errors[0] || (entry.isError ? t("fullShared.run_failed_97fddf") : t("fullShared.completed_22a970")),
         detail:
           !entry.isError && entry.text.trim().length > 0
-            ? `${formatTokens(entry.inputTokens)} / ${formatTokens(entry.outputTokens)} / $${entry.costUsd.toFixed(6)}`
+            ? `${formatTokens(entry.inputTokens, "en")} / ${formatTokens(entry.outputTokens, "en")} / $${entry.costUsd.toFixed(6)}`
             : undefined,
       });
       continue;
@@ -978,7 +977,6 @@ function TranscriptThinkingBlock({
   className?: string;
   externalReferences?: MarkdownExternalReferenceMap;
 }) {
-  useFullSharedTranslation();
   return (
     <MarkdownBody
       className={cn(
@@ -1467,7 +1465,6 @@ function TranscriptActivityRow({
   block: Extract<TranscriptBlock, { type: "activity" }>;
   density: TranscriptDensity;
 }) {
-  useFullSharedTranslation();
   return (
     <div className="flex items-start gap-2">
       {block.status === "completed" ? (
@@ -1823,7 +1820,7 @@ function rawEntryContent(entry: TranscriptEntry): string {
     return formatToolPayload(entry.content);
   }
   if (entry.kind === "result") {
-    return `${entry.text}\n${formatTokens(entry.inputTokens)} / ${formatTokens(entry.outputTokens)} / $${entry.costUsd.toFixed(6)}`;
+    return `${entry.text}\n${formatTokens(entry.inputTokens, "en")} / ${formatTokens(entry.outputTokens, "en")} / $${entry.costUsd.toFixed(6)}`;
   }
   if (entry.kind === "init") {
     return `model=${entry.model}${entry.sessionId ? ` session=${entry.sessionId}` : ""}`;
@@ -1843,7 +1840,6 @@ function RawTranscriptView({
   entries: TranscriptEntry[];
   density: TranscriptDensity;
 }) {
-  useFullSharedTranslation();
   const compact = density === "compact";
   const listRef = useRef<HTMLDivElement | null>(null);
   const shouldVirtualize = entries.length > RAW_VIRTUALIZATION_THRESHOLD;
@@ -1937,7 +1933,7 @@ export function RunTranscriptView({
   const toolDecisionMaps = useMemo(() => buildToolDecisionMaps(toolDecisions), [toolDecisions]);
   const blocks = useMemo(
     () => (mode === "raw" ? [] : normalizeTranscript(entries, streaming)),
-    [fullSharedI18n.language, entries, mode, streaming],
+    [entries, mode, streaming],
   );
   const visibleBlocks = limit ? blocks.slice(-limit) : blocks;
   const keyedBlocks = useMemo(() => keyTranscriptBlocks(visibleBlocks), [visibleBlocks]);

@@ -625,7 +625,7 @@ function AllowList({ rows, catalogLoading }: { rows: AllowListRow[]; catalogLoad
       )}
       {patternCount > 0 ? (
         <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
-          <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-amber-500" />{fullAppsT("fullApps.tools_marked_e45ed6")}<span className="font-medium">{fullAppsT("fullApps.pattern_1fd38d")}</span>{fullAppsT("fullApps.were_pulled_in_by_a_wildcard_application_connection__d60b9f")}</p>
+          <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-amber-500" />{fullAppsT("fullApps.tools_marked_e45ed6")} <span className="font-medium">{fullAppsT("fullApps.pattern_1fd38d")}</span> {fullAppsT("fullApps.were_pulled_in_by_a_wildcard_application_connection__d60b9f")}</p>
       ) : null}
     </div>
   );
@@ -1260,7 +1260,7 @@ function ProfileDetail({
             {profile.description ? (
               <p className="mt-1 text-sm text-muted-foreground">{profile.description}</p>
             ) : null}
-            <p className="mt-1 text-xs text-muted-foreground">{fullAppsT("fullApps.updated_27eb5e")}<RelativeTime t={fullAppsI18n.t} value={profile.updatedAt} />
+            <p className="mt-1 text-xs text-muted-foreground">{fullAppsT("fullApps.updated_27eb5e")} <RelativeTime t={fullAppsI18n.t} value={profile.updatedAt} />
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-1.5">
