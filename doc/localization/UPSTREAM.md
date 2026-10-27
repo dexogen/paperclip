@@ -122,6 +122,14 @@ source/catalog changes and editorial acceptance, not just `report.ok`.
 
 ## Verification and recovery
 
+The sync job installs trusted audit tooling with `--no-frozen-lockfile --ignore-scripts`
+and filters for the root and UI packages. This permits upstream manifest changes
+whose committed lock is stale. Resolution stays in the isolated Actions control
+checkout, without lifecycle scripts. The candidate is created in a separate worktree
+from the committed fork SHA; the generated control lock is neither copied into it
+nor committed to the update PR. Candidate verification and image publication still
+use the single source-bound dependency-lock artifact described below.
+
 The dependency-lock job resolves manifest changes once, without lifecycle scripts,
 using the same resolution command as upstream CI. It rejects changes outside the
 unstaged `pnpm-lock.yaml`. Its artifact contains the lock and a manifest bound to
@@ -135,8 +143,8 @@ The code lane installs that frozen dependency lock, selects the Runner toolchain
 `pnpm -r typecheck`, the three `general-workspaces-a/b/c` test groups,
 `pnpm check:token-gates`, and `pnpm test:localization:browser` with Chromium.
 The server test matrix runs four `general-server` shards and two `serialized` shards,
-with at most three matrix jobs at a time. Every job has a 90-minute limit and all
-shards finish even if one fails. Vitest workers are capped at two for workspace and
+with at most six matrix jobs at a time, each on an independent hosted runner.
+Every job has a 90-minute limit and all shards finish even if one fails. Vitest workers are capped at two for workspace and
 general server jobs and one for serialized jobs to bound runner memory use.
 These groups together cover the same suite inventory
 as `pnpm test:run`; the matrix does not remove chat or native Runner suites. Its

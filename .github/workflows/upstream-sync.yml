@@ -33,7 +33,7 @@ jobs:
         with:
           version: 9.15.4
       - name: Install trusted audit tooling without lifecycle scripts
-        run: pnpm install --frozen-lockfile --ignore-scripts --filter . --filter @paperclipai/ui
+        run: pnpm install --no-frozen-lockfile --ignore-scripts --filter . --filter @paperclipai/ui
       - name: Create fork-scoped App token when configured
         id: app
         if: vars.UPSTREAM_SYNC_APP_ID != ''
