@@ -1,3 +1,4 @@
+import { formatCodexProbeField } from "@/lib/owned-diagnostic-display";
 import { useTranslation } from "@/i18n";
 import {
   CircleCheck,
@@ -161,14 +162,14 @@ export function RuntimeTestCard({
                   />
                 )}
                 <div className="min-w-0 space-y-1">
-                  <p className="break-words text-foreground">{check.message}</p>
+                  <p className="break-words text-foreground">{formatCodexProbeField(check, "message", t)}</p>
                   {check.detail && (
                     <p className="break-all text-muted-foreground">
                       {check.detail}
                     </p>
                   )}
                   {check.hint && (
-                    <p className="text-muted-foreground">{check.hint}</p>
+                    <p className="text-muted-foreground">{formatCodexProbeField(check, "hint", t)}</p>
                   )}
                 </div>
               </li>

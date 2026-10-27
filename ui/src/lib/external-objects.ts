@@ -41,6 +41,7 @@ export const externalObjectCategoryIcon: Record<string, LucideIcon> = {
   closed: Circle,
   archived: Archive,
   auth_required: KeyRound,
+  rate_limited: AlertCircle,
   unreachable: CloudOff,
 };
 
@@ -72,6 +73,7 @@ export function externalObjectIconForKey(iconKey: string | null | undefined): Lu
 
 export function externalObjectIconForLiveness(liveness: string): LucideIcon | null {
   if (liveness === "auth_required") return KeyRound;
+  if (liveness === "rate_limited") return AlertCircle;
   if (liveness === "unreachable") return CloudOff;
   return null;
 }
@@ -88,6 +90,7 @@ export function externalObjectCategoryLabel(category: string, t: TFunction = i18
     case "closed": return t("taskDisplay.external.category.closed");
     case "archived": return t("taskDisplay.external.category.archived");
     case "auth_required": return t("taskDisplay.external.category.auth_required");
+    case "rate_limited": return t("taskDisplay.external.liveness.rate_limited");
     case "unreachable": return t("taskDisplay.external.category.unreachable");
     default: return category.replace(/_/g, " ");
   }
@@ -99,6 +102,7 @@ export function externalObjectLivenessLabel(liveness: string, t: TFunction = i18
     case "fresh": return t("taskDisplay.external.liveness.fresh");
     case "stale": return t("taskDisplay.external.liveness.stale");
     case "auth_required": return t("taskDisplay.external.liveness.auth_required");
+    case "rate_limited": return t("taskDisplay.external.liveness.rate_limited");
     case "unreachable": return t("taskDisplay.external.liveness.unreachable");
     default: return liveness.replace(/_/g, " ");
   }
@@ -151,6 +155,7 @@ const CATEGORY_TONE_FALLBACK: Record<string, ExternalObjectStatusTone> = {
   closed: "muted",
   archived: "muted",
   auth_required: "warning",
+  rate_limited: "warning",
   unreachable: "danger",
 };
 

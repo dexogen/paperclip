@@ -189,6 +189,12 @@ export interface ToolConnection {
   healthStatus: ToolConnectionHealthStatus;
   /** Managed GitHub grant state; transient health failures do not require sign-in. */
   requiresReauthorization?: boolean;
+  /** First-party GitHub health copy, bound to the current health observation. */
+  healthMessageDisplay?: {
+    source: "paperclip-github";
+    version: 1;
+    code: "installation_suspended" | "installation_required";
+  };
   healthMessage?: string | null;
   healthCheckedAt: Date | null;
   lastHealthAt?: Date | string | null;

@@ -24,6 +24,9 @@ vi.mock("./native-codex-runner.js", () => ({ resolvePaperclipRunnerBinary: selec
 vi.mock("../../vendor/paperclip-runner/index.js", async original => ({ ...await original<typeof import("../../vendor/paperclip-runner/index.js")>(), probeNativeRunnerEnvironment: nativeProbe }));
 vi.mock("./native-session-executor.js", async original => ({ ...await original<typeof import("./native-session-executor.js")>(), createRemoteNativeArtifactPreparation: nativeArtifacts, createRemoteRunnerProcessLauncher: remoteLauncher }));
 import { testNativeRunnerAuthentication } from "./setup-readiness.js";
+// Load the mocked executor before the first test's deadline. Its real exports are
+// used by the mock; cold source transforms are suite setup, not probe execution.
+await import("./native-session-executor.js");
 const context = {
   companyId: "company", adapterType: "paperclip_runner", config: { externallySandboxed: false, env: { PAPERCLIP_RUNNER_EXTERNAL_SANDBOX: "false" } },
   executionTarget: { kind: "remote" as const, transport: "sandbox" as const, providerKey: "test", remoteCwd: "/workspace", runner: { execute: vi.fn() } },
@@ -431,6 +434,21 @@ describe("Codex selected native account verification", () => {
     expect(JSON.stringify(result)).not.toContain("bound-account");
     expect(nativeProbe).toHaveBeenCalledOnce();
     expect(execute).not.toHaveBeenCalled();
+  });
+  it("names the ChatGPT retirement when the backend rejects a retired model", async () => {
+    nativeProbe.mockRejectedValue(new Error(JSON.stringify({ type: "error", status: 400,
+      error: { type: "invalid_request_error", message: "The 'gpt-5.5' model is not supported when using Codex with a ChatGPT account." } })));
+    const result = await testNativeRunnerAuthentication(context, "codex", "gpt-5.5");
+    expect(result.status).toBe("fail");
+    expect(result.checks[0]).toMatchObject({ code: "codex_hello_probe_failed", level: "error" });
+    expect(result.checks[0].hint).toContain("OpenAI retired gpt-5.5 from Codex with ChatGPT sign-in on 2026-10-14");
+    expect(result.checks[0].codexRetirement).toEqual({ source: "paperclip-codex", version: 1, model: "gpt-5.5", retiredOn: "2026-10-14", replacement: "gpt-6.1-sol (gpt-6-luna on Free and Go plans)" });
+    expect(result.checks[0].hint).toContain("gpt-6.1-sol");
+  });
+  it("keeps the generic hint when the backend rejects a model that is not retired", async () => {
+    nativeProbe.mockRejectedValue(new Error("The 'gpt-6.1-sol' model is not supported when using Codex with a ChatGPT account."));
+    const result = await testNativeRunnerAuthentication(context, "codex", "gpt-6.1-sol");
+    expect(result.checks[0].hint).toBe("Check the selected account, model access, and native runtime prerequisites, then retry. Legacy runner is available explicitly in Advanced.");
   });
   it.each([
     ["authentication required: selected-account", true],

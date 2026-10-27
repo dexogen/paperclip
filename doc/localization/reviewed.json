@@ -79131,11 +79131,11 @@
       "reviewedAt": "2026-10-26T23:04:34.864Z"
     },
     "fullApps.github_access_could_not_be_checked_try_again_688543": {
-      "sourceHash": "6d5d214be08e4b3290e53ca89433dc9955e8f82262abe90af31740e62073d65d",
+      "sourceHash": "f2c306d25618e5204e2b319a44549a6be0a574672b767970a16a4bea4e5b9838",
       "translationHash": "e3422669d6742cdb06e23394fd900f9b7a5d5cdbb043ce7ed44c2612eb5501d4",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual Russian UI review",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.864Z"
+      "reviewedAt": "2026-10-27T09:10:53.931Z"
     },
     "fullApps.github_access_refreshed_477eae": {
       "sourceHash": "a558acf9d7230ff8e23326eafabb3304cf4d75b75f198f32b2ef6103eb83bab9",
@@ -85354,11 +85354,11 @@
       "reviewedAt": "2026-10-26T23:04:34.904Z"
     },
     "fullApps.retry_access_e52222": {
-      "sourceHash": "edec4f1d6a3d93ce1d09789a9f4c779262719024d8f767a5eb937d0c66901944",
+      "sourceHash": "9db5b708f855ec0e2408f0a58e265de4f1635694cd3fc20b72691ad77a1d0a0f",
       "translationHash": "282ce998a6868a5f2b8cafcf4b6e3eeba91c7974b8ef96c54ac5e9f2ec44ceb3",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Codex contextual Russian UI review",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.905Z"
+      "reviewedAt": "2026-10-27T09:10:53.931Z"
     },
     "fullApps.retry_anyway_de4695": {
       "sourceHash": "ef54cacbf3ff6d427bf9c8be445ea24734e78acbedd092692dc5004dcecced51",
@@ -123838,6 +123838,216 @@
       "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
       "method": "agent",
       "reviewedAt": "2026-10-26T23:13:04.433Z"
+    },
+    "agentConfigUi.errors.testSavedComputer": {
+      "sourceHash": "b57064f6d38b7686e60e8701a7f05863c606668e4240857e3a63fc9a0260a0c0",
+      "translationHash": "a6306a27bb44f4d6243eb31924c6503fdbdeb095c56512749bcbdbe113c2ad2f",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.931Z"
+    },
+    "agentConfigUi.errors.testSettingsChanged": {
+      "sourceHash": "cc50df0fc84280c1b7cc068d0e199ec1aa1e968f6a198f165b2f0120080af5b6",
+      "translationHash": "f5618f574534b4ec496b17a65e3c09c9995970b436661900dea457ec352dd870",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.931Z"
+    },
+    "fullApps.githubInstallationSettings": {
+      "sourceHash": "174b194db8995a1b87592563fc8e6206f545103baef04b0be0b10806d16b6f14",
+      "translationHash": "5030ccf361e8d6f4cb4680c762a5f5913dbbb2fb74b579be2a960f88f2381a57",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.931Z"
+    },
+    "ownedDiagnostic.codex.rejected": {
+      "sourceHash": "0e56bfa9995652e017a2105e5f3560d3b5e7a04980c449641867468e456a422d",
+      "translationHash": "4002735f12cfaf16a2183cae3e2f4b9bdd2dd6d6a8caf2eafdb0addb45bac0d9",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.116Z"
+    },
+    "ownedDiagnostic.codex.retired": {
+      "sourceHash": "ba9cb5042399b939e1b088ec4a2c13f20e4e93f95d2e8fc4b0d174ffee4dd952",
+      "translationHash": "08190f08e931086e4eaae84b7cb5806813470b99e99a10545b9fefa813fdac80",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.116Z"
+    },
+    "ownedDiagnostic.codex.solReplacement": {
+      "sourceHash": "78d2dc33e0c158fb409a2dd2695fc1cdb1296f8f40c57c2e343a0ecc52889a44",
+      "translationHash": "143f79dcb4c2baad2aacc2c7f0de5daab1f4a3c1c92fb5b66713f3346b54f5fa",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.116Z"
+    },
+    "ownedDiagnostic.github.installation_required": {
+      "sourceHash": "8f5c576a8643235bd0784f2843e86d5fdf9dbc7f66e58c11a33549e88c7cf1fe",
+      "translationHash": "f9dd54fd644102065458fd37a5b92dfe48a799814bc71bb0a0c39bc5cd18347e",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.115Z"
+    },
+    "ownedDiagnostic.github.installation_suspended": {
+      "sourceHash": "5be20bc00b93bba3efacec749ce42fb7a36278ec29cbdcecd3ca60eff885d23a",
+      "translationHash": "87e1d546b46fe57222f55b3fbd7e43f724e4734d73c43ef2bd81819f5265e29e",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.115Z"
+    },
+    "ownedDiagnostic.projectGit.active_run_unavailable": {
+      "sourceHash": "523555573544ad8fef45f45ac6fc7c41631d9d4d330ff24b6a226548d904c97e",
+      "translationHash": "64cc97191940307092fa0f1273a842846979991d381526e8f29b1848d229ecc2",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.114Z"
+    },
+    "ownedDiagnostic.projectGit.authorization_unavailable": {
+      "sourceHash": "17b1c783ae86351c050479f09d6d32c7a0a7fa90495a6580057c339c2600147c",
+      "translationHash": "da581d05ff3e2b272c96402c94258d443218c0aeba3bac5252bb9d8d598bc559",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.114Z"
+    },
+    "ownedDiagnostic.projectGit.consent_required": {
+      "sourceHash": "c9241ddf396e1c8f364ea20cafd3294bb7f4a6dea3a791f28513962784670b8c",
+      "translationHash": "5147b6f835659b736ec030f72b2928acac22df28d63544f2d4b298f4984529aa",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.114Z"
+    },
+    "ownedDiagnostic.projectGit.credential_unavailable": {
+      "sourceHash": "e4997c8299759730a62d77a61523ee8b2d735fca4c14a2ace5ea74262ec98655",
+      "translationHash": "77e6b4cd466084e1929d66611c775cc889b50eb908e5f2063cc97762749c1d3e",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.111Z"
+    },
+    "ownedDiagnostic.projectGit.foreground_identity_incomplete": {
+      "sourceHash": "ad2ec289c8c9f7f2d6cc9211a5f56afa0df0ad7f238b12b80c0e95e90baf3a8c",
+      "translationHash": "c0ae3633cce7bbc4b8775c0ff1e0c4a37a474c3b53a834d421ee5f861fb4eb6f",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.114Z"
+    },
+    "ownedDiagnostic.projectGit.host_operation_required": {
+      "sourceHash": "0b645d77eba82113d0876062d9aca28fbacfc84c9f139a9d667b7def8a727f0c",
+      "translationHash": "6deebeaf97ae73f579fb418634b5ba5e727654fde0380597b868f3d47264b169",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.113Z"
+    },
+    "ownedDiagnostic.projectGit.own_authorization_required": {
+      "sourceHash": "79262bb58bc7b40309499cfcc9e7ed4aed0ed80da7d4577c77eca15588aae8a4",
+      "translationHash": "e6f7566f668f9982d281b3d4009ec9aea7914d4bd1e0ce2369d7e78d08e385ed",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.113Z"
+    },
+    "ownedDiagnostic.projectGit.project_not_found": {
+      "sourceHash": "d0d79309674b09187faa6a0e730d1cacb4264812e561908c69f3a651e861d695",
+      "translationHash": "b92cd0b62c6e4c11735174ce1c3cc9e255d74b7b304b1ecf871cddabaec6ad8a",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.112Z"
+    },
+    "ownedDiagnostic.projectGit.project_untrusted": {
+      "sourceHash": "199b4e69a6d8460e5db30ae947eec0fe75ceafb19d81fd8008d782fe3a106807",
+      "translationHash": "e9bef958997d1b009f2cb18ea40c9177afca97de7456d17f71120ae078728b48",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.115Z"
+    },
+    "ownedDiagnostic.projectGit.reconnect_required": {
+      "sourceHash": "53c07a55fe3a4621aa98ca9cd97c73b25568a1cccfe3ffc81c7657a86181b967",
+      "translationHash": "43be077e0d0734eb36883608f7625e4b8067e080eaf3067f9b48b9b232a61f29",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.115Z"
+    },
+    "ownedDiagnostic.projectGit.repository_not_authorized": {
+      "sourceHash": "4384dd674ec1b3cf71c557385a609e47c890c49cb12986b512efa70aae953f50",
+      "translationHash": "2d8ca81cfb4edc95c357645835edf93448cc920beb18f2b27932c5e11bb1194d",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.115Z"
+    },
+    "ownedDiagnostic.projectGit.repository_required": {
+      "sourceHash": "2d283b1d22c176bbe34a8bff0301dd6b5151c6ef0d71b52f9e81db8bb4e73876",
+      "translationHash": "fca14b8c0e5304c8bb8e4f253f21e9052bbcb758b835a26cef3d855618a2e09f",
+      "reviewer": "Codex contextual Russian diagnostic review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:18:56.113Z"
+    },
+    "projectGitAuthorization.accountLabel": {
+      "sourceHash": "6e17139b31bc662fc7182d57c27befadba1fd18b7901b87884a9968b13c2bbed",
+      "translationHash": "494077139dc341d2c162d0e752df7c06dfd07d6e46d6cc239d8a9b7e266aed4a",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.929Z"
+    },
+    "projectGitAuthorization.accountPlaceholder": {
+      "sourceHash": "6f06bb21f04adc8e0ecaef8f336aded13aeb183d783daf93f397ee51b86d2e72",
+      "translationHash": "3e5112cbd9be7dcd235361a9e12bef09403c436dcf03ae92584e802403abf8ed",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.930Z"
+    },
+    "projectGitAuthorization.authorize": {
+      "sourceHash": "beec6d55928f0f810c3091b80fb60a2c4f9f0d99b01abbef6c29647ecb9250d0",
+      "translationHash": "717015418ba67958498c95222d520460108c0b4c5fe41374eddf05e58f4738ea",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.930Z"
+    },
+    "projectGitAuthorization.authorized": {
+      "sourceHash": "c3b9f9d0d1284200296f23993dfe2a82fd3b46728804e026259745ddbc2f213e",
+      "translationHash": "df940759a3e4d5135ed87a12e8bf42a52fd558f74fb2a52d8fe1701686149f64",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.929Z"
+    },
+    "projectGitAuthorization.connectAccount": {
+      "sourceHash": "096dd540c5386777e81eb554aa8ac0093fcadb4f2a9e620e61d9df8fe2e09a1c",
+      "translationHash": "786f1b75d8977e23688c4c182850a47ea5fdf14af467360de347ffb0eaf69704",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.930Z"
+    },
+    "projectGitAuthorization.description": {
+      "sourceHash": "9bf807d591ed74aa68580aef41555dfe48ec4370d53df42dfd30d255bc5c9533",
+      "translationHash": "98e6c0b4b5766b41124f0332ef5087f19d213ef3ae29587ec15dfd5cdbd7ee69",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.929Z"
+    },
+    "projectGitAuthorization.revoke": {
+      "sourceHash": "bb28d2426d8d34e964e021d69fe55a71afe23b8626e29aec0ff4af33be5ce675",
+      "translationHash": "7c2c684886cb8b0c149b49c8d9d7bb40766fe3508cf7050fe33ff7e540d659c1",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.930Z"
+    },
+    "projectGitAuthorization.title": {
+      "sourceHash": "59e6825bfce541f84dada20e6bcf5e7560ef604c5c4047d0e9d597976778054f",
+      "translationHash": "79d6d3c8603dc0bb721f9c42414815976cf16faac277ebf46f997bedf19597dd",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.928Z"
+    },
+    "projectGitAuthorization.unavailableGrant": {
+      "sourceHash": "30479a8cce27f2b7cc8fc6dcfa59784a0fdd4960d40d83af6cd0072d458829b9",
+      "translationHash": "ca7f81b686bdf9784b87c9764fb58c5fb10a07e92ec8871e7d7a943f87ef29ee",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.929Z"
+    },
+    "taskDisplay.external.liveness.rate_limited": {
+      "sourceHash": "7e4b6c6b34b81ded41d7b700d407e744e0eb43250daef9fdf6d95a7768f05d7a",
+      "translationHash": "9f725d2e7bc5f169e78ffb835482c6dca6192f440b366d50afe813d8a3909423",
+      "reviewer": "Codex contextual Russian UI review",
+      "method": "agent",
+      "reviewedAt": "2026-10-27T09:10:53.927Z"
     }
   }
 }

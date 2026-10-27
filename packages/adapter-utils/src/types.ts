@@ -303,6 +303,14 @@ export interface AdapterModel {
 export type AdapterEnvironmentCheckLevel = "info" | "warn" | "error";
 
 export interface AdapterEnvironmentCheck {
+  /** Optional first-party display metadata; raw provider diagnostics remain unchanged. */
+  codexRetirement?: {
+    source: "paperclip-codex";
+    version: 1;
+    model: string;
+    retiredOn: string;
+    replacement: string;
+  };
   code: string;
   level: AdapterEnvironmentCheckLevel;
   message: string;

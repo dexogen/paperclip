@@ -10,7 +10,9 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
 - **Upstream localization sync** runs daily at 04:23 UTC (07:23 Moscow) and by manual
   dispatch from `russian`. GitHub schedules may run late. It fetches immutable source
   SHAs, audits the upstream source delta, and prepares one draft PR on
-  `codex/upstream-sync`. No automatic merge or deployment occurs.
+  `codex/upstream-sync`. This workflow does not merge or deploy. A separate scheduled
+  maintenance agent completes translation review, verification, merge, and deployment
+  under the repository owner's standing authorization; see [MAINTENANCE.md](MAINTENANCE.md).
 - **Fork verification** runs on pushes to `russian` and `codex/upstream-sync`, plus
   an explicit dispatch bound to an expected full SHA. It checks the branch commit,
   not a synthetic PR merge commit. There are no workflow-level path filters.
@@ -136,9 +138,9 @@ reset that branch.
 
 A missing/stale translation produces a draft PR with a failing localization check.
 Use the localization review procedure to edit and approve messages; sync never
-regenerates the baseline or marks translations reviewed. Current workflow automation
-only prepares updates. Any future auto-merge policy must separately examine upstream
-source/catalog changes and editorial acceptance, not just `report.ok`.
+regenerates the baseline or marks translations reviewed. The scheduled maintenance
+agent must examine upstream source/catalog changes and record editorial acceptance;
+`report.ok` alone never authorizes a merge.
 
 ## Verification and recovery
 

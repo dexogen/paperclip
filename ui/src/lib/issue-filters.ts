@@ -58,6 +58,7 @@ export const externalObjectFilterOrder = [
   "waiting",
   "running",
   "auth_required",
+  "rate_limited",
   "unreachable",
   "stale",
   "none",
@@ -68,6 +69,7 @@ const EXTERNAL_OBJECT_FILTER_LABELS: Record<string, string> = {
   get waiting() { return fullSharedT("issueFilters.external.waiting"); },
   get running() { return fullSharedT("issueFilters.external.running"); },
   get auth_required() { return fullSharedT("issueFilters.external.auth_required"); },
+  get rate_limited() { return fullSharedT("taskDisplay.external.liveness.rate_limited"); },
   get unreachable() { return fullSharedT("fullShared.unreachable_abaa46"); },
   get stale() { return fullSharedT("fullShared.stale_40c9e5"); },
   get none() { return fullSharedT("issueFilters.external.none"); },
@@ -194,6 +196,8 @@ function issueMatchesExternalObjectStatusFilter(
     case "auth_required":
       return (summary?.authRequiredCount ?? 0) > 0
         || summaryRecordCount(summary?.byLiveness, "auth_required") > 0;
+    case "rate_limited":
+      return summaryRecordCount(summary?.byLiveness, "rate_limited") > 0;
     case "unreachable":
       return (summary?.unreachableCount ?? 0) > 0
         || summaryRecordCount(summary?.byLiveness, "unreachable") > 0;

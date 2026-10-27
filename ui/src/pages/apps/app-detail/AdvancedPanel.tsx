@@ -1,4 +1,5 @@
 import { renderAppError } from "@/pages/apps/app-display-text";
+import { formatOwnedDiagnostic } from "@/lib/owned-diagnostic-display";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -161,7 +162,7 @@ export function ReconnectCard({
   canReconnect?: boolean;
   reconnectUnavailableMessage?: string;
 }) {
-  useFullAppsTranslation();
+  const { t } = useFullAppsTranslation();
   const { pushToast } = useToast();
   const reconnectOAuth = useMutation({
     // Reconnect is not a new identity choice. Personal-only connections must
@@ -221,7 +222,7 @@ export function ReconnectCard({
         <p className="mt-0.5 text-sm text-amber-800 dark:text-amber-200">
           {methodUnavailable
             ? fullAppsT("fullApps.add_a_supported_connection_from_connectors_then_remo_103fb6")
-            : connection.healthMessage?.trim() || (oauth
+            : formatOwnedDiagnostic(connection.healthMessage ?? "", connection.healthMessageDisplay, t).trim() || (oauth
             ? fullAppsT("fullApps.authorization_expired_or_was_revoked_sign_in_again_t_52f871")
             : fullAppsT("fullApps.the_key_stopped_working_paste_a_new_one_to_get_it_ba_912825"))}
         </p>
@@ -279,7 +280,7 @@ function ReconnectForm({
   onCancel?: () => void;
   onReconnected: () => void;
 }) {
-  useFullAppsTranslation();
+  const { t } = useFullAppsTranslation();
   const { pushToast } = useToast();
   const methodKey = typeof connection.config?.connectionMethodKey === "string"
     ? connection.config.connectionMethodKey
@@ -324,7 +325,7 @@ function ReconnectForm({
       } else {
         pushToast({
           title: fullAppsT("fullApps.still_not_working_46d820"),
-          body: result.connection.healthMessage?.trim() || fullAppsT("fullApps.that_key_didn_t_check_out_try_another_1fb0c9"),
+          body: formatOwnedDiagnostic(result.connection.healthMessage ?? "", result.connection.healthMessageDisplay, t).trim() || fullAppsT("fullApps.that_key_didn_t_check_out_try_another_1fb0c9"),
           tone: "error",
         });
       }

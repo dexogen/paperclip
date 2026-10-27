@@ -1,3 +1,4 @@
+import { formatCodexProbeField } from "@/lib/owned-diagnostic-display";
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { t as translate, useTranslation, t, i18n } from "../i18n";
@@ -114,6 +115,8 @@ const configErrorMessages = {
   upgradeFailed: "agentConfigUi.errors.upgradeFailed",
   environmentSettings: "agentConfigUi.errors.environmentSettings",
   testFailed: "agentConfigUi.errors.testFailed",
+  testSettingsChanged: "agentConfigUi.errors.testSettingsChanged",
+  testSavedComputer: "agentConfigUi.errors.testSavedComputer",
   refreshModelsFailed: "agentConfigUi.errors.refreshModelsFailed",
   loadModelsFailed: "agentConfigUi.errors.loadModelsFailed",
 } as const;
@@ -960,11 +963,11 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
     acpWarmHandleIdleMs: "agentConfigUi.ignored.acpWarmHandleIdleMs",
   };
   const upgradeWarnings = harnessType === "claude_local" ? normalizeClaudeRunnerOptions(effectiveConfig).warnings : [];
-  const upgradeTargetRef = useRef("");
-  const upgradeTarget = JSON.stringify([!isCreate ? props.agent.id : null, selectedCompanyId, adapterType,
+  const runnerSettingsTargetRef = useRef("");
+  const runnerSettingsTarget = JSON.stringify([!isCreate ? props.agent.id : null, selectedCompanyId, adapterType,
     rawCurrentDefaultEnvironmentId, upgradeEnvironmentId, upgradeEnvironment?.config, effectiveConfig, overlay]);
-  upgradeTargetRef.current = upgradeTarget;
-  useEffect(() => () => { upgradeTargetRef.current = ""; }, []);
+  runnerSettingsTargetRef.current = runnerSettingsTarget;
+  useEffect(() => () => { runnerSettingsTargetRef.current = ""; }, []);
   const showRunnerUpgrade = !isCreate
     && ["codex_local", "claude_local"].includes(props.agent.adapterType)
     && adapterType === props.agent.adapterType
@@ -979,7 +982,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       const nextOverlay = flushedEnv
         ? { ...overlay, adapterConfig: { ...overlay.adapterConfig, env: flushedEnv } }
         : overlay;
-      const pendingTarget = upgradeTargetRef.current;
+      const pendingTarget = runnerSettingsTargetRef.current;
       if (runnerAvailability?.defaultRunner !== "paperclip") {
         if (!canQualifyRunnerUpgrade || !upgradeEnvironmentId || !selectedCompanyId) {
           throw new AgentConfigError("upgradeEnvironment");
@@ -988,7 +991,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
           adapterType: harnessType,
           readAdapters: () => adaptersApi.list({ companyId: selectedCompanyId, environmentId: upgradeEnvironmentId }),
           probeEnvironment: () => agentsApi.qualifyRunner(agentId, upgradeEnvironmentId, selectedCompanyId),
-          isCurrent: () => upgradeTargetRef.current === pendingTarget,
+          isCurrent: () => runnerSettingsTargetRef.current === pendingTarget,
         });
         if (!qualified) throw new AgentConfigError("upgradeChanged");
         queryClient.setQueryData(queryKeys.adapters.availability(selectedCompanyId, rawCurrentDefaultEnvironmentId || null), qualified.adapters);
@@ -1255,6 +1258,18 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       const aiConnection = isCreate ? undefined : aiRuntimeConnectionBindingSchema.safeParse(
         (overlay.runtime.runtimeConfig as Record<string, unknown> | undefined)?.aiConnection ?? props.agent.runtimeConfig.aiConnection,
       ).data;
+      if (!isCreate && props.agent.adapterType === "paperclip_runner" && adapterType === "paperclip_runner"
+        && !isExternalRunner && aiConnection?.mode !== "router" && !isDirty && environmentId && canQualifyRunnerEnvironment(environmentList.find(environment => environment.id === environmentId))) {
+        const target = runnerSettingsTargetRef.current;
+        // Qualify only the saved computer. The strict agent-scoped endpoint
+        // accepts no draft provider config, credentials or replacement target.
+        const qualification = await agentsApi.qualifyRunner(props.agent.id, environmentId, selectedCompanyId);
+        if (runnerSettingsTargetRef.current !== target) throw new AgentConfigError("testSettingsChanged");
+        if (qualification.ok !== true || qualification.details?.platformQualificationRecorded !== true) {
+          if (qualification.summary) throw new Error(qualification.summary);
+          throw new AgentConfigError("testSavedComputer");
+        }
+      }
       if (props.compactTestFeedback) {
         const providerAdapter = adapterType === "paperclip_runner"
           ? adapterConfig.provider === "codex" ? "codex_local"
@@ -3851,9 +3866,9 @@ export function AdapterEnvironmentResult({ result }: { result: AdapterEnvironmen
               {Object.hasOwn(levelLabels, check.level) ? levelLabels[check.level] : check.level}
             </span>
             <span className="mx-1 opacity-60">·</span>
-            <span>{check.message}</span>
+            <span>{formatCodexProbeField(check, "message", t)}</span>
             {check.detail && <span className="block opacity-75 break-all">({check.detail})</span>}
-            {check.hint && <span className="block opacity-90 break-words">{t("agentConfigUi.hint", { hint: check.hint })}</span>}
+            {check.hint && <span className="block opacity-90 break-words">{t("agentConfigUi.hint", { hint: formatCodexProbeField(check, "hint", t) })}</span>}
           </div>
         ))}
       </div>

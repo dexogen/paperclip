@@ -1,3 +1,4 @@
+import { formatCodexProbeField } from "@/lib/owned-diagnostic-display";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { t as translate, useTranslation, Trans } from "../i18n";
 import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS } from "@/lib/copilot-task-model-catalog";
@@ -3586,7 +3587,7 @@ function AdapterEnvironmentResult({
               {check.level}
             </span>
             <span className="mx-1 opacity-60">·</span>
-            <span>{check.message}</span>
+            <span>{formatCodexProbeField(check, "message", t)}</span>
             {check.detail && (
               <span className="block opacity-75 break-all">
                 ({check.detail})
@@ -3594,7 +3595,7 @@ function AdapterEnvironmentResult({
             )}
             {showHints && check.hint && (
               <span className="block opacity-90 break-words">
-                {t("onboarding.test.hint", { hint: check.hint })}
+                {t("onboarding.test.hint", { hint: formatCodexProbeField(check, "hint", t) })}
               </span>
             )}
           </div>

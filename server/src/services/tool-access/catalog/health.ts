@@ -10,7 +10,7 @@ import { isBrowserUseConnection } from "../../browser-use-client.js";
 import { and, asc, eq, isNull, lte, ne, or, sql } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
 import { connectionGrants, toolApplications, toolConnections, toolRuntimeSlots } from "@paperclipai/db";
-import type { ToolConnectionHealthCheckResult, ToolConnectionHealthStatus } from "@paperclipai/shared";
+import type { ToolConnection, ToolConnectionHealthCheckResult, ToolConnectionHealthStatus } from "@paperclipai/shared";
 import { HttpError, unprocessable } from "../../../errors.js";
 
 import type { ToolAccessAudit } from "../audit.js";
@@ -44,6 +44,7 @@ export function createConnectionHealth(db: Db, { now, audit, getConnectionRow, d
     connection: typeof toolConnections.$inferSelect,
     status: ToolConnectionHealthStatus,
     message: string | null,
+    displayMessage?: ToolConnection["healthMessageDisplay"],
   ) {
     const now = new Date();
     const [updated] = await db
@@ -51,6 +52,12 @@ export function createConnectionHealth(db: Db, { now, audit, getConnectionRow, d
       .set({
         healthStatus: status,
         healthMessage: message,
+        // Keep display provenance with this observation. Preserve concurrent config edits.
+        ...(displayMessage || Object.hasOwn(asRecord(connection.config), "paperclipHealthDisplay") ? {
+          config: displayMessage
+            ? sql`jsonb_set(${toolConnections.config}, '{paperclipHealthDisplay}', ${JSON.stringify({ ...displayMessage, message, checkedAt: now.toISOString() })}::jsonb)`
+            : sql`${toolConnections.config} - 'paperclipHealthDisplay'`,
+        } : {}),
         healthCheckedAt: now,
         lastHealthAt: now,
         lastError: status === "ok" ? null : message,
@@ -187,10 +194,16 @@ export function createConnectionHealth(db: Db, { now, audit, getConnectionRow, d
       )
         throw error;
       const failure = sanitizeHttpFailure(error);
+      const ownedDisplay = error instanceof HttpError ? asRecord(asRecord(error.details).displayMessage) : {};
+      const displayMessage: ToolConnection["healthMessageDisplay"] =
+        failure.code === "github_installation_required" && ["source", "version", "code"].every(key => Object.hasOwn(ownedDisplay, key)) && ownedDisplay.source === "paperclip-github" && ownedDisplay.version === 1 &&
+        (ownedDisplay.code === "installation_suspended" || ownedDisplay.code === "installation_required")
+          ? { source: "paperclip-github", version: 1, code: ownedDisplay.code } : undefined;
       const updated = await updateConnectionHealth(
         connection,
         failure.status,
         failure.message,
+        displayMessage,
       );
       const runtimeSlot =
         connection.transport === "local_stdio"
@@ -205,12 +218,23 @@ export function createConnectionHealth(db: Db, { now, audit, getConnectionRow, d
         actor,
         details: { status: failure.status, transport: connection.transport },
       });
+      // Keep GitHub's recovery links so Refresh access can point at the exact
+      // installation page, such as the one with the Unsuspend button.
+      const githubRecovery =
+        failure.code === "github_installation_required" && error instanceof HttpError
+          ? {
+              installationUrl: asRecord(error.details).installationUrl,
+              managementUrl: asRecord(error.details).managementUrl,
+            }
+          : {};
       throw retainMcpConnectionFailure(error, new HttpError(healthFailureHttpStatus(failure), failure.message, {
         code: failure.code,
+        ...(displayMessage ? { displayMessage } : {}),
         connection: toConnection(updated),
         runtimeSlot,
         setupUrl: connectionSetupUrl(connection),
         reconnectUrl: connectionReconnectUrl(connection),
+        ...githubRecovery,
       }));
     }
   }
