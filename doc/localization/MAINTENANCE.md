@@ -80,7 +80,9 @@ dispatch substitutes for the required push check.
    CLI access. Review migrations and backup coverage before activation. Prepare the
    full build while the old service remains available. Use the accepted channel
    version: stable `<upstream-version>+ru.<revision>` or, for an explicitly authorized
-   master update, `master-<short-upstream-SHA>-ru.<short-fork-SHA>` (12-character SHAs).
+   master update, `<base-version>+master.<short-upstream-SHA>.ru.<short-fork-SHA>`
+   (12-character SHAs). Its base is the pinned upstream stable ancestor tag/SHA,
+   never a guessed package version. Master image tags replace `+` with `-`.
    Stable image tags use `<upstream-version>-ru.<revision>`; GitHub release tags
    add a leading `v`. Immutable
    `ru-<full-fork-SHA>` image tags and digests remain available. Set

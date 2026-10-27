@@ -179,7 +179,7 @@ describe("resolveServerVersion", () => {
   });
 
   it("uses the deployment environment version before live git metadata", () => {
-    vi.stubEnv("PAPERCLIP_BUILD_VERSION", "master-0cb3fc7db-ru.e80c7306c");
+    vi.stubEnv("PAPERCLIP_BUILD_VERSION", "2026.1023.0+master.0cb3fc7db591.ru.e80c7306cb1d");
     const gitDescribeCommand = vi.fn(() => "v2026.626.0-58-g518fc71ce\n");
 
     expect(
@@ -188,7 +188,7 @@ describe("resolveServerVersion", () => {
         gitDescribeCommand,
         debugLog: vi.fn(),
       }),
-    ).toBe("master-0cb3fc7db-ru.e80c7306c");
+    ).toBe("2026.1023.0+master.0cb3fc7db591.ru.e80c7306cb1d");
     expect(gitDescribeCommand).not.toHaveBeenCalled();
   });
 

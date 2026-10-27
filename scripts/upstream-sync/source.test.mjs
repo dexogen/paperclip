@@ -5,12 +5,13 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { git } from './git.mjs';
-import { buildIdentity, fetchReleaseCommit, releaseIdentity, resolveSource, selectSource, validateSource, verifyAcceptedSource } from './source.mjs';
+import { buildIdentity, fetchReleaseCommit, nearestStableAncestor, releaseIdentity, resolveSource, selectSource, validateSource, verifyAcceptedSource } from './source.mjs';
 import { buildMetadata } from './build-metadata.mjs';
 import { inspectPublication, publishRelease, reservePublication, validateImageManifest } from './publish-release.mjs';
 import { verifyUnusedImageTags } from './verify-image-tags.mjs';
 
 const a = 'a'.repeat(40), b = 'b'.repeat(40), c = 'c'.repeat(40);
+const master = (upstreamSha, baseSha = upstreamSha) => ({ channel: 'master', upstreamSha, baseTag: 'v2026.1023.0', baseSha });
 const stable = { channel: 'stable', upstreamSha: b, tag: 'v2026.1023.0', releaseId: 42, ruRevision: 1 };
 const released = { id: 42, tag_name: stable.tag, draft: false, prerelease: false, published_at: '2026-10-23T00:00:00Z', target_commitish: 'master' };
 
@@ -28,15 +29,15 @@ function fixture(t) {
 }
 
 test('stable selection waits for an older release, advances descendants, and rejects divergence', () => {
-  const state = { acceptedSource: { channel: 'master', upstreamSha: a } };
+  const state = { acceptedSource: master(a) };
   assert.equal(selectSource({ state, source: stable, ancestor: (_, from) => from === b }).status, 'waiting_for_next_release');
   assert.equal(selectSource({ state, source: stable, ancestor: (_, from) => from === a }).status, 'ready');
   assert.throws(() => selectSource({ state, source: stable, ancestor: () => false }), /history diverged/);
-  assert.throws(() => selectSource({ state, source: { channel: 'master', upstreamSha: b }, ancestor: (_, from) => from === b }), /history diverged/);
+  assert.throws(() => selectSource({ state, source: master(b), ancestor: (_, from) => from === b }), /history diverged/);
 });
 
 test('a real release can promote the same master SHA; existing stable revision is preserved', () => {
-  const state = { acceptedSource: { channel: 'master', upstreamSha: b } };
+  const state = { acceptedSource: master(b) };
   assert.equal(selectSource({ state, source: stable }).status, 'ready');
   const accepted = { ...stable, ruRevision: 3 };
   assert.deepEqual(selectSource({ state: { acceptedSource: accepted }, source: stable }), { status: 'unchanged', source: accepted });
@@ -62,7 +63,7 @@ test('resolver fetches exact lightweight and annotated tags instead of target_co
       calls.push(args);
       return git(cwd, args[0] === 'fetch' ? ['fetch', '--no-tags', f.cwd, args.at(-1)] : args);
     };
-    const result = await resolveSource({ cwd: f.cwd, state: { acceptedSource: { channel: 'master', upstreamSha: f.original } },
+    const result = await resolveSource({ cwd: f.cwd, state: { acceptedSource: master(f.original) },
       channel: 'stable', api: async (path) => {
         assert.equal(path, '/repos/paperclipai/paperclip/releases/latest');
         return { ...released, tag_name: tag, target_commitish: f.original };
@@ -86,16 +87,36 @@ test('publication validates the accepted tag again and fails when it moved', asy
 
 test('version and image names distinguish upstream stable releases from master integrations', () => {
   assert.deepEqual(buildIdentity(stable, c), { version: '2026.1023.0+ru.1', imageTag: '2026.1023.0-ru.1', releaseTag: 'v2026.1023.0-ru.1' });
-  assert.deepEqual(buildIdentity({ channel: 'master', upstreamSha: b }, c), {
-    version: 'master-bbbbbbbbbbbb-ru.cccccccccccc', imageTag: 'master-bbbbbbbbbbbb-ru.cccccccccccc', releaseTag: '',
+  assert.deepEqual(buildIdentity(master(b), c), {
+    version: '2026.1023.0+master.bbbbbbbbbbbb.ru.cccccccccccc', imageTag: '2026.1023.0-master.bbbbbbbbbbbb.ru.cccccccccccc', releaseTag: '',
   });
+});
+
+test('master version base is the nearest stable ancestor from upstream refs, including annotated tags', (t) => {
+  const f = fixture(t);
+  git(f.cwd, ['tag', 'v9999.1.0', f.next]); // A fork-only tag must not affect the version.
+  const listing = `${f.original}\trefs/tags/v2026.1005.0\n${a}\trefs/tags/v2026.1023.0\n` +
+    `${f.next}\trefs/tags/v2026.1023.0^{}\n${f.next}\trefs/tags/v2026.1024.0-rc.1\n`;
+  const runGit = (cwd, args, options) => args[0] === 'ls-remote' ? { stdout: listing, status: 0 } : git(cwd, args, options);
+  assert.deepEqual(nearestStableAncestor(f.cwd, f.next, runGit), { baseTag: 'v2026.1023.0', baseSha: f.next });
+  assert.throws(() => nearestStableAncestor(f.cwd, f.next, (cwd, args, options) => args[0] === 'ls-remote'
+    ? { stdout: `${b}\trefs/tags/v2026.1023.0`, status: 0 } : git(cwd, args, options)), /No stable upstream tag/);
+  assert.throws(() => nearestStableAncestor(f.cwd, f.next, () => ({ stdout: 'true', status: 0 })), /complete upstream history/);
+});
+
+test('master publication rejects a moved base tag even though its accepted source remains in history', async (t) => {
+  const f = fixture(t);
+  git(f.cwd, ['tag', 'v2026.1023.0', f.next]);
+  const state = { acceptedSource: master(f.next, f.original) };
+  const runGit = (cwd, args, options) => git(cwd, args[0] === 'fetch' ? ['fetch', '--no-tags', f.cwd, args.at(-1)] : args, options);
+  await assert.rejects(verifyAcceptedSource({ cwd: f.cwd, state, forkSha: f.next, runGit }), /base no longer matches/);
 });
 
 test('metadata CLI binds HEAD and committed state while permitting a generated lock', (t) => {
   const f = fixture(t);
   const state = { schemaVersion: 2, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
     forkBranch: 'russian', syncBranch: 'codex/upstream-sync', trackingChannel: 'stable', lastAcceptedUpstreamSha: f.next,
-    acceptedSource: { channel: 'master', upstreamSha: f.next } };
+    acceptedSource: master(f.next) };
   mkdirSync(join(f.cwd, 'doc/localization'), { recursive: true });
   writeFileSync(join(f.cwd, 'doc/localization/upstream.json'), JSON.stringify(state));
   git(f.cwd, ['add', '.']); git(f.cwd, ['commit', '-qm', 'Tracking']);
@@ -105,7 +126,8 @@ test('metadata CLI binds HEAD and committed state while permitting a generated l
   const metadata = JSON.parse(execFileSync(process.execPath, [resolve(import.meta.dirname, 'build-metadata.mjs'), sha], { cwd: f.cwd, encoding: 'utf8' }));
   assert.equal(metadata.fullSourceSha, sha); assert.equal(metadata.channel, 'master');
   assert.equal(metadata.upstreamSha, f.next); assert.equal(metadata.upstreamTag, null);
-  assert.equal(metadata.buildVersion, `master-${f.next.slice(0, 12)}-ru.${sha.slice(0, 12)}`);
+  assert.equal(metadata.upstreamBaseTag, 'v2026.1023.0'); assert.equal(metadata.upstreamBaseSha, f.next);
+  assert.equal(metadata.buildVersion, `2026.1023.0+master.${f.next.slice(0, 12)}.ru.${sha.slice(0, 12)}`);
   assert.throws(() => buildMetadata(f.cwd, f.next), /Checkout does not match/);
 });
 

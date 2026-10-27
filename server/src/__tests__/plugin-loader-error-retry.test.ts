@@ -16,9 +16,12 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from "nod
 import os from "node:os";
 import path from "node:path";
 import { distributionBundleDigest, distributionPluginActivationGuard, readDistributionPluginCatalog } from "../services/distribution-plugin-catalog.js";
+import { buildIdentity } from "../../../scripts/upstream-sync/source.mjs";
+import { resolveServerVersion } from "../version.js";
 
 const mockRegistry = vi.hoisted(() => ({
   getById: vi.fn(),
+  install: vi.fn(),
   getByKey: vi.fn(),
   list: vi.fn(),
   listInstalled: vi.fn(),
@@ -203,6 +206,63 @@ describe("pluginLoader.loadAll error retry", () => {
       expect(result.error).toContain("Distribution plugin is absent or not selected");
       expect(mockRegistry.update).not.toHaveBeenCalled();
       expect(startWorker).not.toHaveBeenCalled();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("pluginLoader minimum host version for Russian master builds", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it.each([
+    { minimumHostVersion: "2026.1010.0", compatible: true },
+    { minimumHostVersion: "2026.1023.0", compatible: true },
+    { minimumHostVersion: "2026.1024.0", compatible: false },
+  ])("checks plugin requirement $minimumHostVersion using the generated host version", async ({ minimumHostVersion, compatible }) => {
+    const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), "ru-plugin-host-version-")));
+    try {
+      const plugin = createPluginRecord();
+      const manifest = { ...plugin.manifestJson, categories: ["ui"], capabilities: ["issues.read"], minimumHostVersion };
+      writeFileSync(path.join(root, "package.json"), JSON.stringify({
+        name: plugin.packageName,
+        version: "1.0.0",
+        type: "module",
+        paperclipPlugin: { manifest: "manifest.js" },
+      }));
+      writeFileSync(path.join(root, "manifest.js"), `export default ${JSON.stringify(manifest)};`);
+      const identity = buildIdentity({
+        channel: "master",
+        upstreamSha: "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20",
+        baseTag: "v2026.1023.0",
+        baseSha: "1b4c803816e82b0265c8422e1a804327a7ed8c54",
+      }, "e80c7306cb1d66843592b76a563c3ca2038fdcc5");
+      const runtime = createRuntimeServices();
+      runtime.instanceInfo.hostVersion = resolveServerVersion({
+        buildVersion: identity.version,
+        packageVersion: "0.3.1",
+        gitDescribeCommand: () => "v2026.1023.0-724-g0cb3fc7db591",
+        debugLog: vi.fn(),
+      });
+      const transaction = vi.fn(async (callback: (tx: Db) => Promise<void>) => callback({} as Db));
+      mockRegistry.install.mockResolvedValue(plugin);
+      const loader = pluginLoader({ transaction } as unknown as Db, { localPluginDir: root }, runtime);
+
+      if (compatible) {
+        await expect(loader.installPlugin({ localPath: root })).resolves.toMatchObject({
+          manifest: { id: plugin.pluginKey, minimumHostVersion },
+          source: "local-filesystem",
+        });
+        expect(mockRegistry.install).toHaveBeenCalledOnce();
+      } else {
+        await expect(loader.installPlugin({ localPath: root })).rejects.toThrow(
+          `requires host version ${minimumHostVersion} or newer, but this server is running ${identity.version}`,
+        );
+        expect(transaction).not.toHaveBeenCalled();
+        expect(mockRegistry.install).not.toHaveBeenCalled();
+      }
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

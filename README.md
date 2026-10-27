@@ -5,7 +5,7 @@
 
 > This fork maintains the Russian edition on the [`russian` branch](https://github.com/dexogen/paperclip/tree/russian), translating application-owned UI copy in both UI shells. See the [source coverage and runtime boundaries](doc/localization/COVERAGE.md), [Russian source quickstart](README.ru.md#russian-fork), and [upstream maintenance procedure](doc/localization/UPSTREAM.md). User content and external provider output remain literal; source coverage does not certify every runtime state. The official `paperclipai` npm package does not include this fork’s changes.
 
-> **Build channels.** Scheduled updates follow stable upstream releases. Russian releases retain the upstream version and add a Russian revision, for example `2026.1023.0+ru.1`. Builds from master use `master-<upstream SHA>-ru.<fork SHA>` and require an explicit manual update. See [Russian releases](https://github.com/dexogen/paperclip/releases) and the [channel and version rules](doc/localization/UPSTREAM.md).
+> **Build channels.** Scheduled updates follow stable upstream releases. Russian releases retain the upstream version and add a Russian revision, for example `2026.1023.0+ru.1`. Builds from master retain their stable base version and add `+master.<upstream SHA>.ru.<fork SHA>`; they require an explicit manual update. See [Russian releases](https://github.com/dexogen/paperclip/releases) and the [channel and version rules](doc/localization/UPSTREAM.md).
 
 <p align="center">
   <img src="doc/assets/banner.jpg" alt="Paperclip is the app people use to manage AI agents for work." width="720" />

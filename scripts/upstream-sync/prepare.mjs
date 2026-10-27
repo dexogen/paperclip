@@ -20,7 +20,7 @@ export function readState(cwd, commit) {
 }
 
 export function prepareCandidate({ cwd, directory, baseSha, upstreamSha, state, existingBranchSha,
-  source = { channel: 'master', upstreamSha } }) {
+  source = { channel: 'master', upstreamSha, baseTag: state.acceptedSource.baseTag, baseSha: state.acceptedSource.baseSha } }) {
   assertSha(baseSha, 'fork base');
   assertSha(upstreamSha, 'upstream head');
   if (validateSource(source).upstreamSha !== upstreamSha) throw new Error('Candidate source SHA mismatch');

@@ -134,6 +134,8 @@ jobs:
             channel: source.channel,
             upstreamTag: source.upstreamTag,
             upstreamReleaseId: source.upstreamReleaseId,
+            upstreamBaseTag: source.upstreamBaseTag,
+            upstreamBaseSha: source.upstreamBaseSha,
             ruRevision: source.ruRevision,
             releaseTag: source.releaseTag,
           };

@@ -35,8 +35,16 @@ for example `v2026.1023.0-ru.1`; the image tag omits the leading `v`, for exampl
 `2026.1023.0-ru.1`. The example
 describes the format, not an already published release. Review the Russian revision
 and increment it when additional fork changes use the same stable upstream release.
-Master builds display `master-<short-upstream-SHA>-ru.<short-fork-SHA>` with
-12-character SHAs and never
+Master builds display `<base-version>+master.<short-upstream-SHA>.ru.<short-fork-SHA>`
+with 12-character SHAs, for example `2026.1023.0+master.0cb3fc7db591.ru.0123456789ab`.
+The numeric base is the nearest stable ancestor tag read from the upstream remote,
+pinned as `baseTag` and `baseSha` in `acceptedSource`. Fork-only tags are excluded;
+missing or shallow history fails instead of inventing a version. The source helper
+checks base ancestry, and publication checks the upstream tag still resolves to its
+pinned SHA. The `+master` suffix is SemVer build metadata, so plugin minimum-host
+checks retain the actual base version's compatibility instead of treating this as
+a prerelease below that base. The master image tag replaces `+` with `-` because
+registry tags do not permit `+`. Master builds never
 receive a stable release label. Every build also retains the immutable image
 reference `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>` and its digest.
 

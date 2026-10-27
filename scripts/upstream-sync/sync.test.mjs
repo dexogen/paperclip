@@ -24,7 +24,7 @@ function fixture(t, { conflict = false } = {}) {
   const originalSha = git(cwd, ['rev-parse', 'HEAD']).stdout;
   const state = { schemaVersion: 2, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
     forkBranch: 'russian', syncBranch: 'codex/upstream-sync', trackingChannel: 'stable',
-    lastAcceptedUpstreamSha: originalSha, acceptedSource: { channel: 'master', upstreamSha: originalSha } };
+    lastAcceptedUpstreamSha: originalSha, acceptedSource: { channel: 'master', upstreamSha: originalSha, baseTag: 'v2026.1023.0', baseSha: originalSha } };
   mkdirSync(join(cwd, 'doc/localization'), { recursive: true });
   writeFileSync(join(cwd, STATE_PATH), JSON.stringify(state));
   if (conflict) writeFileSync(join(cwd, 'message.txt'), 'Русский текст\n');
