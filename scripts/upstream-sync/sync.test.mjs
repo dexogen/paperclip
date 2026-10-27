@@ -111,8 +111,25 @@ test('dispatch binds an exact SHA and a frozen candidate is not repeatedly dispa
   const api = async (path, options) => { calls.push({ path, options }); return { workflow_runs: [] }; };
   assert.equal(await ensureVerification('codex/upstream-sync', sha, api), true);
   assert.deepEqual(calls[1].options.body, { ref: 'codex/upstream-sync', inputs: { expected_sha: sha } });
-  const alreadyDispatched = async () => ({ workflow_runs: [{ head_sha: sha, head_branch: 'codex/upstream-sync' }] });
-  assert.equal(await ensureVerification('codex/upstream-sync', sha, alreadyDispatched), false);
+  assert.equal(calls[0].path, `/repos/${FORK}/actions/workflows/localization-check.yml/runs?head_sha=${sha}&per_page=100`);
+  const run = { head_sha: sha, head_branch: 'codex/upstream-sync', head_repository: { full_name: FORK },
+    path: '.github/workflows/localization-check.yml', event: 'workflow_dispatch' };
+  for (const event of ['push', 'workflow_dispatch']) {
+    const existingCalls = [];
+    const existingRun = async (path, options) => { existingCalls.push({ path, options }); return { workflow_runs: [{ ...run, event }] }; };
+    assert.equal(await ensureVerification('codex/upstream-sync', sha, existingRun, false), false);
+    assert.equal(existingCalls.length, 1);
+  }
+  for (const change of [{ event: 'pull_request' }, { head_sha: 'b'.repeat(40) },
+    { head_branch: 'russian' }, { head_repository: { full_name: 'other/repo' } }, { path: 'other.yml' }]) {
+    const unrelatedCalls = [];
+    const unrelatedRun = async (path, options) => { unrelatedCalls.push({ path, options }); return { workflow_runs: [{ ...run, ...change }] }; };
+    assert.equal(await ensureVerification('codex/upstream-sync', sha, unrelatedRun, false), true);
+    assert.deepEqual(unrelatedCalls[1].options.body, { ref: 'codex/upstream-sync', inputs: { expected_sha: sha } });
+  }
+  const beforeAppPush = calls.length;
+  assert.equal(await ensureVerification('codex/upstream-sync', sha, api, true), false);
+  assert.equal(calls.length, beforeAppPush, 'an App push never races an informational dispatch, even before its run is visible');
   await assert.rejects(ensureVerification('master', sha, api), /Unexpected verification branch/);
   await assert.rejects(ensureVerification('russian', sha, api), /Unexpected verification branch/);
 });
@@ -127,6 +144,7 @@ test('image publication requires the latest successful push verification of the 
   assert.throws(() => selectVerifiedRun([{ ...run, head_sha: 'b'.repeat(40) }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([run, { ...run, id: 11, conclusion: 'failure' }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([{ ...run, event: 'pull_request' }], sha), /has not succeeded/);
+  assert.throws(() => selectVerifiedRun([{ ...run, event: 'workflow_dispatch' }], sha), /has not succeeded/);
   assert.throws(() => selectVerifiedRun([{ ...run, head_repository: { full_name: 'other/repo' } }], sha), /has not succeeded/);
 });
 
@@ -167,15 +185,31 @@ test('fork verification and publication target russian while upstream stays on m
   const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
   const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
   const workflow = load(readFileSync(join(root, '.github/workflows/localization-check.yml'), 'utf8'));
-  assert.deepEqual(workflow.on.pull_request.branches, ['russian']);
-  assert.deepEqual(workflow.on.push.branches, ['russian']);
+  assert.deepEqual(Object.keys(workflow.on).sort(), ['push', 'workflow_dispatch']);
+  assert.deepEqual(workflow.on.push.branches, ['russian', 'codex/upstream-sync']);
+  assert.equal(Object.hasOwn(workflow.on, 'pull_request'), false);
+  assert.deepEqual(workflow.on.workflow_dispatch.inputs.expected_sha, {
+    description: 'Exact branch commit to verify; a moved branch fails closed', required: true, type: 'string',
+  });
+  assert.equal(workflow.concurrency.group, 'fork-verification-${{ github.ref }}');
+  assert.equal(workflow.concurrency['cancel-in-progress'], true);
+  const producer = workflow.jobs['dependency-lock'];
+  assert.equal(producer.steps.find((step) => step.uses?.startsWith('actions/checkout@')).with.ref, '${{ github.sha }}');
+  const identity = producer.steps.find((step) => step.name === 'Verify exact source identity');
+  assert.equal(identity.env.EXPECTED_SHA, '${{ inputs.expected_sha || github.sha }}');
+  assert.match(identity.run, /test "\$\(git rev-parse HEAD\)" = "\$EXPECTED_SHA"/);
+  assert.match(identity.run, /test "\$GITHUB_SHA" = "\$EXPECTED_SHA"/);
   assert.equal(Object.hasOwn(workflow.on, 'pull_request_target'), false);
   assert.deepEqual(workflow.permissions, { contents: 'read' });
   const image = load(readFileSync(join(root, '.github/workflows/fork-build.yml'), 'utf8'));
   const sync = load(readFileSync(join(root, '.github/workflows/upstream-sync.yml'), 'utf8'));
   assert.deepEqual(image.on.workflow_run.branches, ['russian']);
+  assert.match(image.jobs.image.if, /github\.event\.workflow_run\.event == 'push'/);
+  assert.match(image.jobs.image.if, /github\.event\.workflow_run\.conclusion == 'success'/);
   assert.match(image.jobs.image.if, /github\.ref == 'refs\/heads\/russian'/);
   assert.match(sync.jobs.prepare.if, /github\.ref == 'refs\/heads\/russian'/);
+  assert.equal(sync.jobs.prepare.steps.find((step) => step.id === 'sync').env.SYNC_PUSH_TRIGGERS_WORKFLOWS,
+    "${{ steps.app.outputs.token != '' }}");
   const state = JSON.parse(readFileSync(join(root, STATE_PATH), 'utf8'));
   assert.equal(state.forkBranch, 'russian');
   assert.equal(state.upstreamBranch, 'master');

@@ -1,11 +1,8 @@
 name: Fork verification
 
 on:
-  pull_request:
-    branches: [russian]
-    types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [russian]
+    branches: [russian, codex/upstream-sync]
   workflow_dispatch:
     inputs:
       expected_sha:
@@ -16,7 +13,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: fork-verification-${{ github.event.pull_request.number || github.ref }}
+  group: fork-verification-${{ github.ref }}
   cancel-in-progress: true
 
 env:

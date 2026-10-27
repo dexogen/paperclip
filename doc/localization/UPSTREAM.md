@@ -11,9 +11,11 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
   dispatch from `russian`. GitHub schedules may run late. It fetches immutable source
   SHAs, audits the upstream source delta, and prepares one draft PR on
   `codex/upstream-sync`. No automatic merge or deployment occurs.
-- **Fork verification** runs on every PR into `russian`, every `russian` push, and an
-  explicit dispatch bound to an expected full SHA. There are no workflow-level path
-  filters. Require its **Fork integration verified** check on the maintained branch.
+- **Fork verification** runs on pushes to `russian` and `codex/upstream-sync`, plus
+  an explicit dispatch bound to an expected full SHA. It checks the branch commit,
+  not a synthetic PR merge commit. There are no workflow-level path filters.
+  Require its **Fork integration verified** check from an eligible push run on the
+  maintained branch; manual dispatch is diagnostic evidence, not a replacement.
 - **Russian edition image** publishes `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>`
   only after the latest successful `russian` push verification of that exact SHA.
   Its verifier executes from the accepted default-branch revision, never an unchecked
@@ -62,13 +64,25 @@ code or test failure.
    Review the first real integration and verify a published image before relying on
    recurring operation.
 
-Without an App, synchronization uses `GITHUB_TOKEN`. It explicitly dispatches
-verification on the pushed sync branch with the expected SHA; verification fails if
-GitHub checked out a different revision. This avoids claiming that a bot push will
-trigger CI by itself. PR creation must still be enabled, and changing workflow files
-may require the App's Workflows permission. A permission failure stops the workflow
-with its cause; no success is inferred. A frozen PR is redispatched only if no prior
-dispatch exists for its current head, recovering an interrupted initial dispatch.
+Without an App, synchronization uses `GITHUB_TOKEN`. Its push does not trigger
+another workflow, so explicit dispatch supplies diagnostic verification bound to
+the expected SHA. GitHub does not count workflow-job checks from `workflow_dispatch`
+toward required branch-ruleset checks. Merge still requires an eligible push run
+from an App or repository owner; do not weaken branch protection or treat a manual
+success as merge approval. See GitHub's [required-check event rules](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks#checks-from-some-workflow-jobs-are-not-evaluated).
+
+When the App token is present, sync waits for the automatic push run and never
+issues a competing fallback dispatch, even before that run appears in the API.
+With `GITHUB_TOKEN`, an existing push or dispatch for the same repository, workflow,
+branch and SHA prevents another dispatch. A failed run remains failed; retry the
+eligible push run after diagnosis. If an owner reviews a token-created candidate
+and has no source changes, a reviewed empty commit pushed with the owner's identity
+can start the required push verification. A successful diagnostic dispatch alone
+is insufficient.
+
+PR creation must still be enabled, and changing workflow files may require the
+App's Workflows permission. A permission failure stops synchronization with its
+cause; no success is inferred.
 
 GitHub can automatically disable public schedules after 60 days without repository
 activity. Re-enable the workflow and run it manually after inactivity. Check these
@@ -80,10 +94,16 @@ when changing authentication or scheduling.
 
 All new update PRs target `russian`. The `codex/upstream-sync` branch is temporary;
 it exists only while an update is being reviewed. Historical stacked PRs remain
-review evidence, not permanent maintenance branches. If an existing PR is retargeted
-to `russian`, dispatch **Fork verification** on its exact head SHA: a base edit alone
-does not trigger the configured PR events. Accept the upstream tracking state only
-when the reviewed integration lands on `russian`.
+review evidence, not permanent maintenance branches. PR creation, retargeting and
+base-branch changes do not start verification. Before merge, integrate the current
+`russian` base into the candidate with a merge commit and require the eligible push
+check on its resulting exact head SHA. Other temporary branch names need an explicit
+workflow change before they can receive automatic verification. Accept the upstream
+tracking state only when the reviewed integration lands on `russian`.
+
+Push and dispatch share one concurrency group per branch. The workflow does not
+create a competing synthetic-merge check. Existing failed or cancelled runs remain
+failure evidence; changing triggers does not turn those runs into successful checks.
 
 The report contains both the original upstream delta and the candidate-tree audit.
 The former remains available when merging conflicts. The trusted scanner comes from

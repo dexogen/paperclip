@@ -51,6 +51,7 @@ jobs:
         id: sync
         env:
           GH_TOKEN: ${{ steps.app.outputs.token || github.token }}
+          SYNC_PUSH_TRIGGERS_WORKFLOWS: ${{ steps.app.outputs.token != '' }}
           SYNC_REPORT_DIR: ${{ runner.temp }}/upstream-reports
         run: node scripts/upstream-sync/run.mjs
       - name: Keep source delta and conflict evidence

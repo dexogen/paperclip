@@ -121,11 +121,15 @@ async function updateReport(prNumber, report) {
     { method: existing ? 'PATCH' : 'POST', body: { body } });
 }
 
-export async function ensureVerification(branch, sha, api = request) {
+export async function ensureVerification(branch, sha, api = request,
+  pushTriggersWorkflows = process.env.SYNC_PUSH_TRIGGERS_WORKFLOWS === 'true') {
   assertSha(sha, 'verification source');
   if (branch !== 'codex/upstream-sync') throw new Error('Unexpected verification branch');
-  const runs = await api(`/repos/${FORK}/actions/workflows/localization-check.yml/runs?event=workflow_dispatch&head_sha=${sha}&per_page=100`);
-  if (runs.workflow_runs.some((run) => run.head_sha === sha && run.head_branch === branch)) return false;
+  if (pushTriggersWorkflows) return false;
+  const runs = await api(`/repos/${FORK}/actions/workflows/localization-check.yml/runs?head_sha=${sha}&per_page=100`);
+  if (runs.workflow_runs.some((run) => run.head_sha === sha && run.head_branch === branch &&
+    run.head_repository?.full_name === FORK && run.path === '.github/workflows/localization-check.yml' &&
+    (run.event === 'push' || run.event === 'workflow_dispatch'))) return false;
   await api(`/repos/${FORK}/actions/workflows/localization-check.yml/dispatches`, {
     method: 'POST', body: { ref: branch, inputs: { expected_sha: sha } },
   });
@@ -199,7 +203,7 @@ export async function runSync() {
     output('status', 'prepared');
     output('candidate_sha', result.candidateSha);
     output('pr_url', pr.html_url);
-    summary(`Prepared [PR #${pr.number}](${pr.html_url}) at \`${result.candidateSha}\`. Full verification was dispatched for that exact SHA. Review translations and use a merge commit; no automatic merge or deployment was performed.`, directory);
+    summary(`Prepared [PR #${pr.number}](${pr.html_url}) at \`${result.candidateSha}\`. Verification is tracked for that exact SHA; merge requires a successful eligible push check. Review translations and use a merge commit; no automatic merge or deployment was performed.`, directory);
     return { ...result, pr: pr.number };
   } finally {
     removeCandidate(controlRoot, candidate);
