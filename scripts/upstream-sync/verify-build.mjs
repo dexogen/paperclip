@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { assertSha, git } from './git.mjs';
 import { request, FORK } from './run.mjs';
 import { readState } from './prepare.mjs';
+import { verifyAcceptedSource } from './source.mjs';
+import { buildMetadata } from './build-metadata.mjs';
+import { inspectPublication } from './publish-release.mjs';
 
 export function selectVerifiedRun(runs, sha) {
   assertSha(sha);
@@ -31,9 +34,17 @@ export async function verifyBuild() {
   if (event.workflow_run && event.workflow_run.id !== run.id) throw new Error('A newer verification run superseded this event');
   if (git(process.cwd(), ['rev-parse', 'HEAD']).stdout !== sha) throw new Error('Checkout does not match verified source');
   const state = readState(process.cwd(), sha);
-  const output = `sha=${sha}\nupstream_sha=${state.lastAcceptedUpstreamSha}\nverification_run=${run.id}\n`;
+  await verifyAcceptedSource({ cwd: process.cwd(), state, forkSha: sha, api: request });
+  const metadata = buildMetadata(process.cwd(), sha);
+  const publication = await inspectPublication(metadata);
+  if (publication.alreadyPublished && process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+    `${metadata.releaseTag} already publishes this exact source. Its image and release were not rebuilt or overwritten.\n`);
+  const output = Object.entries({ sha, upstream_sha: metadata.upstreamSha, verification_run: run.id,
+    channel: metadata.channel, version: metadata.buildVersion, image_tag: metadata.imageTag,
+    release_tag: metadata.releaseTag, upstream_tag: metadata.upstreamTag ?? '', ru_revision: metadata.ruRevision ?? '',
+    already_published: publication.alreadyPublished }).map(([key, value]) => `${key}=${value}\n`).join('');
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, output);
-  return { sha, upstreamSha: state.lastAcceptedUpstreamSha, verificationRun: run.id };
+  return { sha, upstreamSha: state.lastAcceptedUpstreamSha, verificationRun: run.id, metadata, publication };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

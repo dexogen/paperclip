@@ -1,18 +1,93 @@
 # Maintaining the Russian fork
 
-The maintained branch is `dexogen/paperclip:russian`. Source integrations track
-`paperclipai/paperclip:master`; they are integration builds, not official stable
-releases. `upstream.json` records the last accepted upstream commit on the maintained
-branch. The same field in a draft sync PR is prospective until that PR is merged.
+The maintained branch is `dexogen/paperclip:russian`. Scheduled integrations follow
+published, non-prerelease releases of `paperclipai/paperclip`; `master` is a separate
+channel selected only by explicit manual dispatch. Both channels use this one
+permanent fork branch and preserve upstream history.
+
+`upstream.json` records the tracking policy separately from the accepted source's
+channel, exact upstream commit, release tag when applicable, and Russian revision.
+Candidate metadata in a sync PR is prospective until that PR is merged. Choosing
+stable tracking does not relabel an already accepted master build as stable.
+
+## Channels and versions
+
+The release selector resolves the latest published, non-prerelease upstream
+release and fetches its exact tag, peeled to a commit. A release's `target_commitish`
+or the current tip of `master` is not a substitute for that commit. A descendant
+release can be merged normally. A release older than the accepted upstream commit
+is a successful waiting state: no downgrade, PR, or false stable publication. A
+divergent release fails for investigation. If the accepted master commit is exactly
+the release commit, a metadata-only PR promotes it to stable and still requires
+review and verification.
+
+During the transition, the accepted source is master commit
+`0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20`, which is newer than `v2026.1023.0`.
+The stable tracker waits for a release that contains that commit; it must neither
+publish this master tree as `v2026.1023.0` nor deploy the older release. The already
+approved PR #32 deployment is the final exception before this stable policy takes
+effect. Later master updates require explicit owner authorization for merge and
+deployment, in addition to selecting the manual master channel.
+
+Stable builds display `<upstream-version>+ru.<revision>`, for example
+`2026.1023.0+ru.1`. The GitHub release tag uses `v<upstream-version>-ru.<revision>`,
+for example `v2026.1023.0-ru.1`; the image tag omits the leading `v`, for example
+`2026.1023.0-ru.1`. The example
+describes the format, not an already published release. Review the Russian revision
+and increment it when additional fork changes use the same stable upstream release.
+Master builds display `master-<short-upstream-SHA>-ru.<short-fork-SHA>` with
+12-character SHAs and never
+receive a stable release label. Every build also retains the immutable image
+reference `ghcr.io/dexogen/paperclip:ru-<full-fork-SHA>` and its digest.
+
+A stable GitHub release and image tag can be published only for the exact accepted
+`russian` SHA after its eligible push verification succeeds. Existing release tags
+are immutable: a different source needs a new reviewed Russian revision, not a
+tag overwrite. This process does not publish npm packages.
+
+The verified source tag is reserved before pushing its versioned image, so a
+failed build cannot let another source reuse the same version. A failed build
+can be retried for that exact source while it is still current, provided neither
+image tag was pushed. The registry guard stops a partial publication with an
+existing image instead of replacing its digest. Recover its image manifest from
+the publication run artifact and complete the release for that verified source;
+do not rebuild or move its tags. If the source is no longer current, preserve the
+image as recovery evidence and review a new RU revision. A completed release
+is skipped without rebuilding its image. The release body retains the full image
+manifest and digest, including upstream release ID, source tree, dependency lock,
+catalog digest, and CI run. Published tags and release bodies are never patched.
+
+For recovery after image push but before GitHub Release creation, use a checkout
+of the still-current accepted SHA and download `russian-image-<full-fork-SHA>` from
+the interrupted publication run. Inspect its `image-manifest.json` against the
+recorded registry digest and the accepted source/CI run. With `SOURCE_SHA`,
+`GITHUB_REPOSITORY=dexogen/paperclip`, `GITHUB_EVENT_PATH` pointing to a local `{}`
+JSON file, and an authorized `GH_TOKEN`, run
+`node scripts/upstream-sync/publish-release.mjs /path/to/image-manifest.json`.
+This command rechecks current `russian`, its latest successful push CI, the exact
+upstream release tag, manifest identities, and the reserved immutable fork tag;
+it creates only the missing release and never pushes an image. If the artifact is
+missing or evidence disagrees, stop for investigation instead of reconstructing
+provenance or replacing a tag.
+
+The registry check uses authenticated Bearer-token `HEAD` requests for both image
+tags. Only an authenticated `404` means absent; authentication failures, permission
+errors, rate limits and network failures stop publication. See the
+[registry authentication protocol](https://distribution.github.io/distribution/spec/auth/token/),
+[OCI manifest existence rules](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#checking-if-content-exists-in-the-registry),
+and [GitHub Packages workflow authentication](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-in-a-github-actions-workflow).
 
 ## Workflows
 
 - **Upstream localization sync** runs daily at 04:23 UTC (07:23 Moscow) and by manual
-  dispatch from `russian`. GitHub schedules may run late. It fetches immutable source
-  SHAs, audits the upstream source delta, and prepares one draft PR on
+  dispatch from `russian`. Scheduled runs select stable releases; manual dispatch
+  defaults to stable and can explicitly select master. GitHub schedules may run
+  late. It fetches immutable source SHAs, audits the upstream source delta, and prepares one draft PR on
   `codex/upstream-sync`. This workflow does not merge or deploy. A separate scheduled
   maintenance agent completes translation review, verification, merge, and deployment
-  under the repository owner's standing authorization; see [MAINTENANCE.md](MAINTENANCE.md).
+  for stable updates under the repository owner's standing authorization; see
+  [MAINTENANCE.md](MAINTENANCE.md). That scheduler does not automatically merge or
+  deploy master updates.
 - **Fork verification** runs on pushes to `russian` and `codex/upstream-sync`, plus
   an explicit dispatch bound to an expected full SHA. It checks the branch commit,
   not a synthetic PR merge commit. There are no workflow-level path filters.
@@ -22,8 +97,10 @@ branch. The same field in a draft sync PR is prospective until that PR is merged
   only after the latest successful `russian` push verification of that exact SHA.
   Its verifier executes from the accepted default-branch revision, never an unchecked
   manual input. Its artifact records the image digest, upstream revision, catalog hash, and CI run.
-  It builds `linux/amd64` with Docker target `production`. It does not deploy or move
-  a mutable `latest` tag. Select a verified digest when updating an installation.
+  It builds `linux/amd64` with Docker target `production`. For a stable source it
+  also publishes the versioned image tag and GitHub release described above. It
+  does not deploy or move a mutable `latest` tag. Select a verified digest when
+  updating an installation.
 
 Every inherited workflow job has an explicit `paperclipai/paperclip` owner guard.
 The fork workflows have a `dexogen/paperclip` guard. The workflow policy check rejects
@@ -46,7 +123,8 @@ code or test failure.
 
 1. Publish the verified integration history as `russian` and make it the fork's
    default branch. It is the only permanent fork branch. Keep the upstream
-   source branch `paperclipai/paperclip:master` unchanged. The workflow definitions
+   source branch `paperclipai/paperclip:master` unchanged; stable releases are read
+   directly from that upstream repository. The workflow definitions
    must exist on `russian` for schedules and manual dispatch.
 2. Enable GitHub Actions for the fork. Allow Actions to create PRs if using the default
    repository token. Grant the job permissions declared in the workflows. Configure
@@ -114,7 +192,7 @@ credentials. Its config/exceptions come from the trusted policy root. Review cha
 to audit rules, baseline, exceptions, review metadata, workflow files, and dependency
 inputs explicitly; changing metadata does not establish editorial acceptance.
 
-An open sync PR freezes its source revision and branch. The scheduler never resets
+An open sync PR freezes its source channel, release tag, revision, and branch. The scheduler never resets
 or force-pushes it, including after a person edits translations. New upstream commits
 wait for the next batch. Complete translation and code review, run the required
 checks, then merge with **Create a merge commit**. Do not squash or rebase a sync PR:
@@ -191,6 +269,12 @@ verified-lock mode, which checks the digest and performs only a frozen install.
 The image provenance includes the lock digest. A source deployment must likewise
 retain and use the verified artifact; its generated lock is a documented build
 input, not a manual repository lockfile commit.
+Set `PAPERCLIP_BUILD_VERSION` to the accepted channel version in the source/LXC
+service unit environment as well as the build environment. A valid explicit version
+override takes priority over live Git metadata, so an LXC checkout reports the
+reviewed Russian version. A build-version file alone remains a fallback when Git
+metadata is unavailable. Verify the running version after restarting the service.
+
 The localization lane exercises the scanner and sync tests and checks the reviewed
 catalog and new literals. Ordinary verification builds use English for existing
 browser/test contracts; locale tests select Russian explicitly. Production image

@@ -22,8 +22,9 @@ function fixture(t, { conflict = false } = {}) {
   writeFileSync(join(cwd, 'message.txt'), 'Original\n');
   git(cwd, ['add', '.']); git(cwd, ['commit', '-qm', 'Original']);
   const originalSha = git(cwd, ['rev-parse', 'HEAD']).stdout;
-  const state = { schemaVersion: 1, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
-    forkBranch: 'russian', syncBranch: 'codex/upstream-sync', lastAcceptedUpstreamSha: originalSha };
+  const state = { schemaVersion: 2, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
+    forkBranch: 'russian', syncBranch: 'codex/upstream-sync', trackingChannel: 'stable',
+    lastAcceptedUpstreamSha: originalSha, acceptedSource: { channel: 'master', upstreamSha: originalSha } };
   mkdirSync(join(cwd, 'doc/localization'), { recursive: true });
   writeFileSync(join(cwd, STATE_PATH), JSON.stringify(state));
   if (conflict) writeFileSync(join(cwd, 'message.txt'), 'Русский текст\n');
@@ -48,6 +49,17 @@ test('preparation preserves both parents and advances state only in the candidat
   assert.equal(readState(f.directory, result.candidateSha).lastAcceptedUpstreamSha, f.upstreamSha);
   assert.equal(git(f.cwd, ['rev-parse', 'HEAD']).stdout, f.baseSha);
   assert.equal(readFileSync(join(f.directory, 'new.txt'), 'utf8'), 'Upstream change\n');
+});
+
+test('a release on the accepted master commit produces a metadata-only promotion candidate', (t) => {
+  const f = fixture(t);
+  const source = { channel: 'stable', upstreamSha: f.originalSha, tag: 'v2026.1023.0', releaseId: 42, ruRevision: 1 };
+  const result = prepareCandidate({ ...f, upstreamSha: f.originalSha, source });
+  assert.equal(result.status, 'prepared');
+  assert.equal(git(f.directory, ['show', '-s', '--format=%P', 'HEAD']).stdout, f.baseSha);
+  assert.equal(git(f.directory, ['diff', '--name-only', f.baseSha, result.candidateSha]).stdout, STATE_PATH);
+  assert.deepEqual(readState(f.directory, result.candidateSha).acceptedSource, source);
+  assert.equal(readState(f.cwd, f.baseSha).acceptedSource.channel, 'master');
 });
 
 test('tracking configuration rejects the retired fork target without changing upstream', (t) => {
@@ -180,7 +192,7 @@ test('sync PR explains pending checks rather than claiming acceptance', () => {
   assert.match(body, /Merge with a merge commit/);
 });
 
-test('fork verification and publication target russian while upstream stays on master', () => {
+test('fork verification targets russian and publication preserves stable/manual-master channel guards', () => {
   const root = resolve(import.meta.dirname, '../..');
   const uiRequire = createRequire(new URL('../../ui/package.json', import.meta.url));
   const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
@@ -210,9 +222,31 @@ test('fork verification and publication target russian while upstream stays on m
   assert.match(sync.jobs.prepare.if, /github\.ref == 'refs\/heads\/russian'/);
   assert.equal(sync.jobs.prepare.steps.find((step) => step.id === 'sync').env.SYNC_PUSH_TRIGGERS_WORKFLOWS,
     "${{ steps.app.outputs.token != '' }}");
+  assert.deepEqual(sync.on.workflow_dispatch.inputs.channel.options, ['stable', 'master']);
+  assert.equal(sync.on.workflow_dispatch.inputs.channel.default, 'stable');
+  const steps = image.jobs.image.steps;
+  const build = steps.find((step) => step.id === 'image');
+  const reservation = steps.find((step) => step.run === 'node scripts/upstream-sync/publish-release.mjs --reserve');
+  const publication = steps.find((step) => step.run === 'node scripts/upstream-sync/publish-release.mjs image-manifest.json');
+  const registryGuard = steps.find((step) => step.run === 'node scripts/upstream-sync/verify-image-tags.mjs');
+  assert.ok(steps.indexOf(reservation) < steps.indexOf(build));
+  assert.ok(steps.indexOf(registryGuard) < steps.indexOf(build));
+  assert.equal(registryGuard.if, "steps.source.outputs.already_published != 'true'");
+  assert.ok(steps.indexOf(publication) > steps.indexOf(build));
+  const provenanceUpload = steps.find((step) => step.uses?.startsWith('actions/upload-artifact@'));
+  assert.ok(steps.indexOf(provenanceUpload) > steps.indexOf(build));
+  assert.ok(steps.indexOf(provenanceUpload) < steps.indexOf(publication), 'preserve the digest before release API writes');
+  for (const step of [reservation, publication]) assert.equal(step.if,
+    "steps.source.outputs.channel == 'stable' && steps.source.outputs.already_published != 'true'");
+  assert.equal(build.if, "steps.source.outputs.already_published != 'true'");
+  assert.match(build.with.tags, /ru-\$\{\{ steps.source.outputs.sha \}\}/);
+  assert.match(build.with.tags, /\$\{\{ steps.source.outputs.image_tag \}\}/);
+  assert.match(build.with['build-args'], /PAPERCLIP_BUILD_VERSION=\$\{\{ steps.source.outputs.version \}\}/);
   const state = JSON.parse(readFileSync(join(root, STATE_PATH), 'utf8'));
   assert.equal(state.forkBranch, 'russian');
   assert.equal(state.upstreamBranch, 'master');
+  assert.equal(state.trackingChannel, 'stable');
+  assert.equal(state.acceptedSource.upstreamSha, state.lastAcceptedUpstreamSha);
 });
 
 test('fork CI partitions the full test inventory without omissions or duplicate suites', () => {

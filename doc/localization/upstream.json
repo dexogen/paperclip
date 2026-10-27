@@ -1,8 +1,13 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "upstreamRepository": "paperclipai/paperclip",
   "upstreamBranch": "master",
   "forkBranch": "russian",
   "syncBranch": "codex/upstream-sync",
-  "lastAcceptedUpstreamSha": "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20"
+  "trackingChannel": "stable",
+  "lastAcceptedUpstreamSha": "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20",
+  "acceptedSource": {
+    "channel": "master",
+    "upstreamSha": "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20"
+  }
 }

@@ -6,12 +6,13 @@ import { fileURLToPath } from 'node:url';
 import { assertSha, git } from './git.mjs';
 import { prepareCandidate, readState, removeCandidate } from './prepare.mjs';
 import { checkWorkflowOwners } from './check-workflows.mjs';
+import { resolveSource } from './source.mjs';
 
 export const FORK = 'dexogen/paperclip';
 const controlRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const marker = '<!-- paperclip-upstream-sync -->';
 
-export function pullRequestBody({ previousSha, upstreamSha, candidateSha, findings, runUrl }) {
+export function pullRequestBody({ previousSha, upstreamSha, candidateSha, findings, runUrl, source }) {
   const checklist = readFileSync(join(controlRoot, '.github/PULL_REQUEST_TEMPLATE.md'), 'utf8')
     .split('## Checklist')[1]?.trim();
   if (!checklist) throw new Error('The repository PR template must include its checklist');
@@ -40,6 +41,7 @@ Keep the Russian edition current without losing its translations or prior review
 - Merge the pinned upstream commit, preserving its ancestry.
 - Propose the new tracking revision; it becomes accepted only when this PR lands.
 - Keep this batch frozen. Later upstream changes go into the next PR.
+- Source channel: **${source?.channel || 'master'}**${source?.tag ? `, upstream release \`${source.tag}\`, RU revision ${source.ruRevision}` : ' (manual integration; no scheduled merge or deployment)'}.
 
 ## Verification
 
@@ -71,7 +73,7 @@ Sync review:
 `;
 }
 
-export async function request(path, { method = 'GET', body, token = process.env.GH_TOKEN } = {}) {
+export async function request(path, { method = 'GET', body, token = process.env.GH_TOKEN, allowNotFound = false } = {}) {
   if (!token) throw new Error('A GitHub token is required');
   const response = await fetch(`https://api.github.com${path}`, {
     method, headers: {
@@ -80,6 +82,7 @@ export async function request(path, { method = 'GET', body, token = process.env.
     }, body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (response.status === 204) return null;
+  if (response.status === 404 && allowNotFound && method === 'GET') return null;
   const data = await response.json();
   if (!response.ok) throw new Error(`GitHub ${method} ${path}: ${response.status} ${data.message || response.statusText}`);
   return data;
@@ -150,20 +153,24 @@ export async function runSync() {
     throw new Error('russian moved after this workflow started; run synchronization again on the current russian');
   }
   const state = readState(controlRoot, baseSha);
-  git(controlRoot, ['fetch', '--no-tags', `https://github.com/${state.upstreamRepository}.git`,
-    `refs/heads/${state.upstreamBranch}:refs/remotes/fork-sync/upstream`]);
-  const upstreamSha = assertSha(git(controlRoot, ['rev-parse', 'refs/remotes/fork-sync/upstream']).stdout);
   const prs = await request(`/repos/${FORK}/pulls?state=open&head=dexogen:${encodeURIComponent(state.syncBranch)}&base=russian`);
   if (prs.length) {
     await ensureVerification(state.syncBranch, prs[0].head.sha);
     output('status', 'frozen');
-    summary(`An update is already awaiting review: [PR #${prs[0].number}](${prs[0].html_url}). Its branch was not changed. Latest upstream: \`${upstreamSha}\`.`, directory);
+    summary(`An update is already awaiting review: [PR #${prs[0].number}](${prs[0].html_url}). Its source and branch remain frozen; a newer release or different channel waits for the next batch.`, directory);
     return { status: 'frozen', pr: prs[0].number };
   }
-  if (upstreamSha === state.lastAcceptedUpstreamSha) {
-    output('status', 'unchanged');
-    summary(`Upstream is unchanged at \`${upstreamSha}\`. No PR or comment was created.`, directory);
-    return { status: 'unchanged' };
+  const channel = process.env.GITHUB_EVENT_NAME === 'workflow_dispatch'
+    ? process.env.SYNC_CHANNEL || 'stable' : state.trackingChannel;
+  const selected = await resolveSource({ cwd: controlRoot, state, channel, api: request });
+  const source = selected.source;
+  const upstreamSha = source.upstreamSha;
+  if (selected.status !== 'ready') {
+    output('status', selected.status);
+    summary(selected.status === 'waiting_for_next_release'
+      ? `Waiting for the next stable release. Upstream \`${source.tag}\` at \`${upstreamSha}\` predates the accepted source \`${state.lastAcceptedUpstreamSha}\`; no downgrade or PR was created.`
+      : `Upstream ${channel} is unchanged at \`${upstreamSha}\`. No PR or comment was created.`, directory);
+    return { status: selected.status };
   }
   runAudit(controlRoot, join(directory, 'upstream-delta'), ['--base', state.lastAcceptedUpstreamSha, '--head', upstreamSha]);
   const branch = git(controlRoot, ['ls-remote', `https://github.com/${FORK}.git`, `refs/heads/${state.syncBranch}`]).stdout;
@@ -172,7 +179,7 @@ export async function runSync() {
   const temporary = mkdtempSync(join(tmpdir(), 'paperclip-sync-'));
   const candidate = join(temporary, 'candidate');
   try {
-    const result = prepareCandidate({ cwd: controlRoot, directory: candidate, baseSha, upstreamSha, state, existingBranchSha });
+    const result = prepareCandidate({ cwd: controlRoot, directory: candidate, baseSha, upstreamSha, state, source, existingBranchSha });
     writeFileSync(join(directory, 'sync.json'), `${JSON.stringify(result, null, 2)}\n`);
     if (result.status === 'conflict') {
       output('status', 'conflict');
@@ -192,10 +199,10 @@ export async function runSync() {
     }
     git(candidate, ['push', `https://github.com/${FORK}.git`, `HEAD:refs/heads/${state.syncBranch}`], { token: process.env.GH_TOKEN });
     const pr = await request(`/repos/${FORK}/pulls`, { method: 'POST', body: {
-      title: `Merge upstream ${upstreamSha.slice(0, 12)} for Russian localization`,
+      title: `Integrate upstream ${source.tag || `master ${upstreamSha.slice(0, 12)}`} for Russian localization`,
       head: state.syncBranch, base: state.forkBranch, draft: true,
       body: pullRequestBody({ previousSha: state.lastAcceptedUpstreamSha, upstreamSha,
-        candidateSha: result.candidateSha, findings, runUrl }),
+        candidateSha: result.candidateSha, findings, runUrl, source }),
     } });
     const candidateReport = readFileSync(join(directory, 'candidate.md'), 'utf8');
     await updateReport(pr.number, `Candidate: \`${result.candidateSha}\`\n\n${candidateReport}\n\n${policyErrors.map((error) => `- ${error}`).join('\n')}\n\n[Complete upstream delta and reports](${runUrl})`);

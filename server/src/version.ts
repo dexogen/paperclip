@@ -177,6 +177,22 @@ export function resolveServerVersion(
     return packageVersion;
   }
 
+  // Deployment channels can identify a source checkout more precisely than its
+  // nearest Git tag. Only an explicit override takes priority over live Git;
+  // a build-version file remains a fallback for builds without Git metadata.
+  const explicitBuildVersion = parseBuildVersion(
+    opts.buildVersion === undefined
+      ? process.env.PAPERCLIP_BUILD_VERSION
+      : opts.buildVersion,
+  );
+  if (explicitBuildVersion) {
+    debugLog(
+      { reason: "build_version" },
+      "using stamped build version for server version",
+    );
+    return parseGitDescribeVersion(explicitBuildVersion) ?? explicitBuildVersion;
+  }
+
   try {
     const parsedVersion = parseGitDescribeVersion(gitDescribeCommand());
     if (parsedVersion) return parsedVersion;
@@ -193,7 +209,7 @@ export function resolveServerVersion(
     );
   }
 
-  // Prefer a version stamped into the build. A Docker image has no `.git`, so
+  // Fall back to a version stamped into the build. A Docker image has no `.git`, so
   // the git describe above cannot run; CI computes the version on the build
   // runner and bakes it in, carrying the real CalVer instead of the source
   // placeholder. Parsed with the same rules as a live checkout, so both report

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       source_sha:
-        description: Verified current russian SHA to rebuild
+        description: Verified current russian SHA to publish; existing image tags are immutable
         required: true
         type: string
 
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
-      contents: read
+      contents: write
       actions: read
       packages: write
     steps:
@@ -43,6 +43,7 @@ jobs:
           SOURCE_SHA: ${{ github.event.workflow_run.head_sha || inputs.source_sha }}
         run: node scripts/upstream-sync/verify-build.mjs
       - name: Download the lock from the successful verification run
+        if: steps.source.outputs.already_published != 'true'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: dependency-lock-${{ steps.source.outputs.sha }}
@@ -50,20 +51,36 @@ jobs:
           run-id: ${{ steps.source.outputs.verification_run }}
           github-token: ${{ github.token }}
       - name: Verify and apply the tested dependency lock
+        if: steps.source.outputs.already_published != 'true'
         id: lock
         env:
           LOCK_SOURCE_SHA: ${{ steps.source.outputs.sha }}
           VERIFICATION_RUN: ${{ steps.source.outputs.verification_run }}
         run: node scripts/upstream-sync/dependency-lock.mjs apply "$RUNNER_TEMP/dependency-lock" "$LOCK_SOURCE_SHA" "$VERIFICATION_RUN"
+      - name: Reserve the immutable stable source tag before publishing an image
+        if: steps.source.outputs.channel == 'stable' && steps.source.outputs.already_published != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: node scripts/upstream-sync/publish-release.mjs --reserve
       - name: Set up image builder
+        if: steps.source.outputs.already_published != 'true'
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
       - name: Log into the fork registry
+        if: steps.source.outputs.already_published != 'true'
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
+      - name: Refuse to overwrite an existing image, including a partial publication
+        if: steps.source.outputs.already_published != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: node scripts/upstream-sync/verify-image-tags.mjs
       - name: Build the Russian production target
+        if: steps.source.outputs.already_published != 'true'
         id: image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
@@ -71,19 +88,24 @@ jobs:
           target: production
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/dexogen/paperclip:ru-${{ steps.source.outputs.sha }}
+          tags: |
+            ghcr.io/dexogen/paperclip:ru-${{ steps.source.outputs.sha }}
+            ghcr.io/dexogen/paperclip:${{ steps.source.outputs.image_tag }}
           build-args: |
             PAPERCLIP_DEPENDENCY_LOCK_SHA256=${{ steps.lock.outputs.lock_sha256 }}
             PAPERCLIP_BUILD_COMMIT=${{ steps.source.outputs.sha }}
-            PAPERCLIP_BUILD_VERSION=ru-${{ steps.source.outputs.sha }}
+            PAPERCLIP_BUILD_VERSION=${{ steps.source.outputs.version }}
           labels: |
             org.opencontainers.image.source=https://github.com/dexogen/paperclip
             org.opencontainers.image.revision=${{ steps.source.outputs.sha }}
+            org.opencontainers.image.version=${{ steps.source.outputs.version }}
+            io.github.dexogen.paperclip.channel=${{ steps.source.outputs.channel }}
             io.github.dexogen.paperclip.upstream=${{ steps.source.outputs.upstream_sha }}
             io.github.dexogen.paperclip.locale=ru
             io.github.dexogen.paperclip.lock-sha256=${{ steps.lock.outputs.lock_sha256 }}
           provenance: mode=max
       - name: Record immutable image provenance
+        if: steps.source.outputs.already_published != 'true'
         env:
           FORK_SHA: ${{ steps.source.outputs.sha }}
           UPSTREAM_SHA: ${{ steps.source.outputs.upstream_sha }}
@@ -95,6 +117,8 @@ jobs:
           node --input-type=module <<'JS'
           import { createHash } from 'node:crypto';
           import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+          import { buildMetadata } from './scripts/upstream-sync/build-metadata.mjs';
+          const source = buildMetadata(process.cwd(), process.env.FORK_SHA);
           const catalog = readFileSync('ui/src/i18n/locales/ru.json');
           const manifest = {
             image: `ghcr.io/dexogen/paperclip@${process.env.IMAGE_DIGEST}`,
@@ -105,13 +129,26 @@ jobs:
             lockSha256: process.env.LOCK_SHA256,
             translationSha256: createHash('sha256').update(catalog).digest('hex'),
             verificationRun: process.env.VERIFICATION_RUN,
-            channel: 'integration',
+            version: source.buildVersion,
+            versionTag: `ghcr.io/dexogen/paperclip:${source.imageTag}`,
+            channel: source.channel,
+            upstreamTag: source.upstreamTag,
+            upstreamReleaseId: source.upstreamReleaseId,
+            ruRevision: source.ruRevision,
+            releaseTag: source.releaseTag,
           };
           writeFileSync('image-manifest.json', JSON.stringify(manifest, null, 2) + '\n');
           appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Built \`${manifest.image}\` from \`${manifest.forkSha}\`. No deployment was performed.\n`);
           JS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && steps.image.outputs.digest != ''
         with:
           name: russian-image-${{ steps.source.outputs.sha }}
           path: image-manifest.json
           retention-days: 90
+      - name: Publish the verified stable Russian release
+        if: steps.source.outputs.channel == 'stable' && steps.source.outputs.already_published != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: node scripts/upstream-sync/publish-release.mjs image-manifest.json
