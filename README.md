@@ -370,6 +370,12 @@ npx paperclipai@latest onboard --yes
 
 The CLI runs from npm's cache; your instance configuration and data persist locally.
 
+Before running agents on a self-hosted machine, install their CLI tools under the
+Paperclip service user with `bash scripts/install-agent-clis.sh` from this
+repository. It installs or updates all supported local harness CLIs to their
+latest release. See [agent CLI setup](doc/AGENT-CLI-SETUP.md) for prerequisites,
+service PATH, provider authentication, and Bootstrap verification.
+
 See the [installation guide](https://docs.paperclip.ing/reference/cli/installation/) for managed installs, pinned versions, canary and git-ref installs, updates, rollback, service management, and uninstalling.
 
 For an isolated manual test instance that is already initialized with a CEO
