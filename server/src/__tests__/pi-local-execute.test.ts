@@ -47,6 +47,64 @@ process.exit(0);
 }
 
 describe("pi_local execute", () => {
+  it("delivers large Unicode prompts intact over stdin instead of argv", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-pi-stdin-"));
+    const workspace = path.join(root, "workspace");
+    const commandPath = path.join(root, "pi");
+    const capturePath = path.join(root, "captured-input.json");
+    await fs.mkdir(workspace, { recursive: true });
+    await fs.writeFile(commandPath, `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv.includes("--list-models")) {
+  console.log("provider  model");
+  console.log("google    gemini-3-flash-preview");
+  process.exit(0);
+}
+fs.writeFileSync(${JSON.stringify(capturePath)}, JSON.stringify({
+  args: process.argv.slice(2),
+  stdin: fs.readFileSync(0, "utf8"),
+}));
+console.log(JSON.stringify({ type: "agent_end", messages: [] }));
+`, "utf8");
+    await fs.chmod(commandPath, 0o755);
+    const payload = "--not-a-cli-flag\n" + "Длинный контекст 🦉\n".repeat(10_000) + "END_OF_TASK";
+    let renderedPrompt = "";
+    const previousHome = process.env.HOME;
+    process.env.HOME = root;
+
+    try {
+      const result = await execute({
+        runId: "run-pi-large-stdin",
+        agent: { id: "agent-stdin", companyId: "company-stdin", name: "Pi Agent", adapterType: "pi_local", adapterConfig: {} },
+        runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+        config: {
+          command: commandPath,
+          cwd: workspace,
+          model: "google/gemini-3-flash-preview",
+          promptTemplate: "Keep working.",
+          bootstrapPromptTemplate: payload,
+        },
+        context: {},
+        authToken: "run-jwt-token",
+        onLog: async () => {},
+        onMeta: async (meta) => { renderedPrompt = meta.prompt ?? ""; },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(Buffer.byteLength(renderedPrompt, "utf8")).toBeGreaterThan(128 * 1024);
+      expect(renderedPrompt).toContain(payload);
+      const captured = JSON.parse(await fs.readFile(capturePath, "utf8")) as { args: string[]; stdin: string };
+      expect(captured.stdin).toBe(renderedPrompt);
+      expect(captured.args).not.toContain(renderedPrompt);
+      expect(captured.args.every((arg) => !arg.includes("END_OF_TASK"))).toBe(true);
+      expect(captured.args).toContain("-p");
+    } finally {
+      if (previousHome === undefined) delete process.env.HOME;
+      else process.env.HOME = previousHome;
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+
   it("fails the run when Pi exhausts automatic retries despite exiting 0", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-pi-execute-"));
     const workspace = path.join(root, "workspace");
