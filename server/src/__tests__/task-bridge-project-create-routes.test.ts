@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import express from "express";
 import request from "supertest";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   agentApiKeys,
@@ -12,6 +12,7 @@ import {
   createDb,
   issues,
   principalPermissionGrants,
+  projectAccessMembers,
   projects,
 } from "@paperclipai/db";
 import type { TaskBridgeAgentKeyScope } from "@paperclipai/shared";
@@ -183,6 +184,23 @@ describeDatabase("task bridge project creation", () => {
     const f = await seedFixture();
     const client = await createClient(f, { kind: "task_bridge", parentIssueId: f.parent.id });
     await client.create({ parentId: f.parent.id, assigneeAgentId: f.owner.id }).expect(201);
+  });
+
+  it("keeps private project membership checks for explicitly scoped bridge keys", async () => {
+    const f = await seedFixture();
+    const client = await createClient(f, { kind: "task_bridge", projectId: f.privateProject.id });
+    await client.create({ projectId: f.privateProject.id, assigneeAgentId: f.owner.id }).expect(404);
+    await db.insert(projectAccessMembers).values([
+      { companyId: f.companyId, projectId: f.privateProject.id, subjectType: "agent", subjectId: f.owner.id },
+      { companyId: f.companyId, projectId: f.privateProject.id, subjectType: "user", subjectId: f.responsibleUserId },
+    ]);
+    await client.create({ projectId: f.privateProject.id, assigneeAgentId: f.owner.id }).expect(201);
+    await client.readProject(f.privateProject.id).expect(404);
+    await db.delete(projectAccessMembers).where(and(
+      eq(projectAccessMembers.projectId, f.privateProject.id),
+      eq(projectAccessMembers.subjectId, f.responsibleUserId),
+    ));
+    await client.create({ projectId: f.privateProject.id, assigneeAgentId: f.owner.id }).expect(404);
   });
 
   it("preserves ordinary key access to open projects and denial for private projects", async () => {

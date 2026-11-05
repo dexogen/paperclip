@@ -12526,7 +12526,18 @@ export function issueRoutes(
         bridgeScope.projectId === selectedProject.id ||
         bridgeScope.projectIds?.includes(selectedProject.id) === true
       );
-      if (!projectInBridgeScope) {
+      if (projectInBridgeScope) {
+        const [visibleProject] = await db.select({ id: projects.id }).from(projects)
+          .where(and(
+            eq(projects.id, selectedProject.id),
+            eq(projects.companyId, companyId),
+            await projectReadSqlCondition(db, req.actor),
+          )).limit(1);
+        if (!visibleProject) {
+          res.status(404).json({ error: "Project not found" });
+          return;
+        }
+      } else {
         const projectDecision = await access.decide({
           actor: req.actor,
           action: "project:read",
