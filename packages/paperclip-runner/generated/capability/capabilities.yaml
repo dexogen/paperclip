@@ -47,18 +47,18 @@
       "expectedMockState": "runtime_decision_record"
     },
     {
-      "id": "skill:skills/paperclip/SKILL.md:145",
+      "id": "skill:skills/paperclip/SKILL.md:150",
       "kind": "skill_heading",
-      "sourceAnchor": "skills/paperclip/SKILL.md#L145:generated-artifacts-and-work-products",
+      "sourceAnchor": "skills/paperclip/SKILL.md#L150:generated-artifacts-and-work-products",
       "heading": "Generated Artifacts and Work Products",
       "primaryDisposition": "always_agent_tool",
       "semanticOperation": "register_deliverable",
       "expectedMockState": "operation_result"
     },
     {
-      "id": "skill:skills/paperclip/SKILL.md:158",
+      "id": "skill:skills/paperclip/SKILL.md:163",
       "kind": "skill_heading",
-      "sourceAnchor": "skills/paperclip/SKILL.md#L158:load-only-the-relevant-reference",
+      "sourceAnchor": "skills/paperclip/SKILL.md#L163:load-only-the-relevant-reference",
       "heading": "Load only the relevant reference",
       "primaryDisposition": "control_plane_owned",
       "semanticOperation": "runtime_reconciliation",
