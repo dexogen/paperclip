@@ -29,6 +29,12 @@ label this master tree as `v2026.1023.0` nor deploy an older release. Further
 master updates require explicit owner authorization for merge and deployment,
 in addition to selecting the manual master channel.
 
+Upstream `f5e5b05a333ad8ee5d5dbbca2c3c67693a4844aa` supersedes the fork's
+preparer-lease cleanup fix `82d22e84ec4327a18f779f0a2174d377bf6e16c1`.
+Native admission now retires preparation ownership atomically with the native
+coordinator handoff. Keep the upstream Stop, workspace recovery, and resource
+ownership checks; do not restore the old preparer lease after that handoff.
+
 Stable builds display `<upstream-version>+ru.<revision>`, for example
 `2026.1023.0+ru.1`. The GitHub release tag uses `v<upstream-version>-ru.<revision>`,
 for example `v2026.1023.0-ru.1`; the image tag omits the leading `v`, for example
