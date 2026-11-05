@@ -80,6 +80,19 @@ describe("issue subresource commands", () => {
     });
   });
 
+  it("opts out of waking only when explicitly requested", async () => {
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(jsonResponse()));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await run(["issue", "comment", ISSUE_ID, "--body", "Additional evidence.", "--no-wake"]);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+      body: "Additional evidence.",
+      wakeAssignee: false,
+    });
+  });
+
   it("wraps comments, approvals, markers, and recovery action endpoints", async () => {
     const fetchMock = vi
       .fn()

@@ -384,7 +384,7 @@ export function registerIssueCommands(program: Command): void {
           const payload = addIssueCommentSchema.parse({
             body: opts.body,
             attachmentIds: opts.attachmentId,
-            wakeAssignee: opts.wake,
+            ...(opts.wake === false ? { wakeAssignee: false } : {}),
             reopen: opts.reopen,
             resume: opts.resume,
           });
