@@ -986,6 +986,67 @@ describe("agent issue mutation checkout ownership", () => {
     expect(mockIssueService.update).not.toHaveBeenCalled();
   });
 
+  it.each(["in_progress", "in_review", "blocked", "done"])(
+    "records an informational peer comment on %s without resuming or steering work", async (status) => {
+      mockIssueService.getById.mockResolvedValue(makeIssue({ status, assigneeAgentId: ownerAgentId }));
+      const res = await request(createApp(peerActor()))
+        .post(`/api/issues/${issueId}/comments`)
+        .send({ body: "Additional evidence; no new work requested.", wakeAssignee: false });
+      expect(res.status, JSON.stringify(res.body)).toBe(201);
+      expect(mockIssueService.addComment).toHaveBeenCalled();
+      expect(mockIssueService.update).not.toHaveBeenCalled();
+      expect(mockRunnerGoalService.projection).not.toHaveBeenCalled();
+      await new Promise((resolve) => setImmediate(resolve));
+      expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
+      expect(mockLogActivity).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+        action: "issue.comment_added", details: expect.objectContaining({ wakeAssignee: false }),
+      }));
+    },
+  );
+
+  it("does not interpret an informational review comment as approval", async () => {
+    mockIssueService.getById.mockResolvedValue(makeIssue({
+      status: "in_review", assigneeAgentId: peerAgentId,
+      executionState: {
+        status: "pending", currentStageId: "88888888-8888-4888-8888-888888888888",
+        currentStageIndex: 0, currentStageType: "review",
+        currentParticipant: { type: "agent", agentId: peerAgentId },
+        returnAssignee: { type: "agent", agentId: ownerAgentId },
+        completedStageIds: [], lastDecisionId: null, lastDecisionOutcome: null,
+      },
+    }));
+    const res = await request(createApp(peerActor()))
+      .post(`/api/issues/${issueId}/comments`)
+      .send({ body: "Approved", wakeAssignee: false });
+    expect(res.status, JSON.stringify(res.body)).toBe(201);
+    expect(mockIssueService.addComment).toHaveBeenCalled();
+    expect(mockIssueService.update).not.toHaveBeenCalled();
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
+  });
+
+  it.each(["reopen", "resume", "interrupt"])("rejects informational comments with %s intent", async (intent) => {
+    const res = await request(createApp(peerActor()))
+      .post(`/api/issues/${issueId}/comments`)
+      .send({ body: "Continue", wakeAssignee: false, [intent]: true });
+    expect(res.status).toBe(422);
+    expect(mockIssueService.addComment).not.toHaveBeenCalled();
+    expect(mockIssueService.update).not.toHaveBeenCalled();
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
+  });
+
+  it("does not grant comment access through wake suppression", async () => {
+    mockAccessService.decide.mockImplementation(async (input: { action: string }) => ({
+      allowed: input.action === "issue:read", action: input.action,
+      reason: "deny_missing_grant", explanation: "No comment grant.",
+    }));
+    const res = await request(createApp(peerActor()))
+      .post(`/api/issues/${issueId}/comments`)
+      .send({ body: "Evidence", wakeAssignee: false });
+    expect(res.status).toBe(403);
+    expect(mockIssueService.addComment).not.toHaveBeenCalled();
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
+  });
+
   it("keeps visible peer comments agent-class even when authorType tries to smuggle user wake privilege", async () => {
     mockAccessService.decide.mockImplementation(async (input: { action: string }) => ({
       allowed: input.action === "issue:read" || input.action === "issue:comment",

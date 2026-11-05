@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { parseCodexJsonl } from "@paperclipai/adapter-codex-local/server";
 import { createDatabaseResponseCapture, installDatabaseResponseCapture } from "@paperclipai/db/response-capture";
 import type { Db } from "@paperclipai/db";
 import {
@@ -489,6 +490,33 @@ describePostgres("heartbeat run state database wiring", () => {
     expect(await state.resolveNormalizedUsageForSession({ ...input, usageBasis: "per_run" })).toEqual({
       normalizedUsage: rawUsage, previousRawUsage: null, derivedFromSessionTotals: false,
     });
+  });
+
+  it("charges only the new CLI turn when a thread resumes", async () => {
+    const { companyId, agent, state } = await fixture();
+    const sessionId = "11111111-1111-4111-8111-111111111111";
+    const parse = (input: number, cached: number, output: number) => parseCodexJsonl([
+      JSON.stringify({ type: "thread.started", thread_id: sessionId }),
+      JSON.stringify({ type: "turn.completed", usage: { input_tokens: input, cached_input_tokens: cached, output_tokens: output } }),
+    ].join("\n"));
+    const first = parse(805258, 737920, 9169);
+    const [previous] = await db.insert(heartbeatRuns).values({
+      companyId, agentId: agent.id, invocationSource: "assignment", sessionIdAfter: sessionId,
+      usageJson: { rawInputTokens: first.usage.inputTokens, rawCachedInputTokens: first.usage.cachedInputTokens,
+        rawOutputTokens: first.usage.outputTokens, rawInputIncludesCached: false },
+    }).returning();
+    const resumed = parse(1179189, 1104384, 12335);
+    const input = { agentId: agent.id, runId: randomUUID(), sessionId, rawUsage: resumed.usage, usageBasis: resumed.usageBasis };
+    expect(await state.resolveNormalizedUsageForSession(input)).toMatchObject({
+      normalizedUsage: { inputTokens: 7467, cachedInputTokens: 366464, outputTokens: 3166 },
+      derivedFromSessionTotals: true,
+    });
+    // First observation and a different thread must retain their full counters.
+    for (const fresh of [{ ...input, runId: previous.id }, { ...input, sessionId: "new-thread" }]) {
+      expect(await state.resolveNormalizedUsageForSession(fresh)).toMatchObject({
+        normalizedUsage: resumed.usage, derivedFromSessionTotals: false,
+      });
+    }
   });
 
   it("uses the selected session's usage and summary for compaction", async () => {

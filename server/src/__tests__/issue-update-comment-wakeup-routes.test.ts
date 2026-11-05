@@ -291,6 +291,16 @@ describe("issue update comment wakeups", () => {
     mockIssueService.listReviewAttention.mockResolvedValue(new Map());
   });
 
+  it("rejects quiet mode for board comments before writing or waking", async () => {
+    const existing = makeIssue();
+    mockIssueService.getById.mockResolvedValue(existing);
+    const res = await request(await createApp()).post(`/api/issues/${existing.id}/comments`)
+      .send({ body: "Follow up", wakeAssignee: false });
+    expect(res.status).toBe(422);
+    expect(mockIssueService.addComment).not.toHaveBeenCalled();
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
+  });
+
   it.each(["post", "patch"] as const)("rejects %s board messages under an inherited pause before any mutation", async (method) => {
     const existing = makeIssue();
     mockIssueService.getById.mockResolvedValue(existing);

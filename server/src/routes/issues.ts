@@ -18407,6 +18407,12 @@ export function issueRoutes(
         "Issue not found",
       );
       if (!issue) return;
+      const informationalComment = req.body.wakeAssignee === false;
+      if (informationalComment && (
+        req.actor.type !== "agent" || req.body.reopen || req.body.resume || req.body.interrupt
+      )) {
+        throw unprocessable("wakeAssignee: false requires an informational agent comment without reopen, resume, or interrupt");
+      }
       if (issue.conversationAgentId && req.actor.type === "board") {
         if (!(await instanceSettings.getExperimental()).enableAgentChat) throw notFound("Agent Chat is disabled");
         if (!req.actor.userId) throw forbidden("Board user access required");
@@ -18561,6 +18567,7 @@ export function issueRoutes(
           actorId: actor.actorId,
         });
       const effectiveMoveToTodoRequested =
+        !informationalComment &&
         !assigneeSelfCommentOnTerminal &&
         !(isBlocked && (await getExecutionBlocker(db, issue.companyId, issue.id))?.workspaceRepairRequired) &&
         (explicitMoveToTodoRequested ||
@@ -18604,7 +18611,7 @@ export function issueRoutes(
       // reaper then skips the leaked workspace.
       let reopenedWorkspace: Pick<ExecutionWorkspace, "id"> | null = null;
       let reopenedGeneration: number | null = null;
-      if (closedExecutionWorkspace) {
+      if (closedExecutionWorkspace && !informationalComment) {
         const reopenOutcome =
           await reopenClosedIssueExecutionWorkspaceOrRespond(
             req,
@@ -18758,6 +18765,7 @@ export function issueRoutes(
         currentIssue.executionPolicy ?? null,
       );
       const shouldAutoApproveReviewComment =
+        !informationalComment &&
         currentIssue.status === "in_review" &&
         currentExecutionState?.status === "pending" &&
         actorMatchesExecutionParticipant(
@@ -18969,6 +18977,7 @@ export function issueRoutes(
       await issueReferencesSvc.syncComment(comment.id);
       await externalObjectsSvc.syncCommentSafely(comment.id);
       if (
+        !informationalComment &&
         currentIssue.assigneeAgentId &&
         // Slack-linked messages need the normal attributed wake boundary so
         // the accepted requester and return-thread receipt travel with the run.
@@ -19048,6 +19057,7 @@ export function issueRoutes(
           identifier: currentIssue.identifier,
           issueTitle: currentIssue.title,
           authorizationReason: commentAuthorizationReason,
+          ...(informationalComment ? { wakeAssignee: false } : {}),
           ...(isDirectParentReportDecision(commentAccessDecision)
             ? { directParentReportGrant: true }
             : {}),
@@ -19245,6 +19255,7 @@ export function issueRoutes(
         // An explicit resume from the run that still owns this issue is redundant;
         // explicit resume from a completed prior run remains a valid new turn.
         const shouldWakeAssigneeForComment = shouldWakeAssigneeForIssueComment({
+          wakeAssignee: req.body.wakeAssignee,
           selfComment,
           resumeRequested: resumeRequested === true,
           commentCreatedByRunId: comment.createdByRunId,
