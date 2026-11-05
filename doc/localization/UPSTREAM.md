@@ -352,3 +352,18 @@ required checks or treat a separate local test run as a successful hosted run.
 Keep prior image digests for rollback. Reverting an image is insufficient when an
 upstream update changed database compatibility; take and test appropriate backups
 before deployment. Automatic deployment is intentionally outside this workflow.
+
+### Runtime efficiency patches
+
+The resumed-usage fix uses the existing `session_cumulative` adapter contract and
+normalization service. The informational-comment option is additive and defaults
+to the upstream behavior. Neither change adds a database migration. Keep these
+patches separate from upstream merges; remove an individual patch when upstream
+provides equivalent behavior and its regression tests pass.
+
+The runtime skill has a compact entry point and topic references. During an
+upstream sync, reconcile new runtime instructions into the matching reference and
+keep essential authorization, checkout and completion rules in the entry point.
+Update the capability source list and regenerate its catalog after moving
+headings. Preserve the routine entry-point size check. This changes documentation
+loading, not the Runner protocol or the upstream update workflow.

@@ -264,6 +264,19 @@ describe("paperclip skill utils", () => {
     expect(entries[1]?.source).toBe(path.join(root, "skills", "paperclip-create-agent"));
   });
 
+  it("keeps routine instructions bounded and specialized references reachable", async () => {
+    const skillDir = path.resolve("skills/paperclip");
+    const body = await fs.readFile(path.join(skillDir, "SKILL.md"), "utf8");
+    expect(body.length).toBeLessThan(12000);
+    expect(body).toContain("wakeAssignee");
+    expect(body).toContain("Required review and approval");
+    expect(body).toContain("X-Paperclip-Run-Id");
+    expect(body).toContain("never retry it");
+    for (const match of body.matchAll(/\]\((references\/[^)#]+)(?:#[^)]*)?\)/g)) {
+      await expect(fs.access(path.join(skillDir, match[1]))).resolves.toBeUndefined();
+    }
+  });
+
   it("documents artifact uploads in the installed Paperclip skill", async () => {
     const skillBody = await fs.readFile(path.resolve("skills/paperclip/SKILL.md"), "utf8");
     const referenceBody = await fs.readFile(path.resolve("skills/paperclip/references/artifacts.md"), "utf8");
@@ -295,7 +308,7 @@ describe("paperclip skill utils", () => {
   });
 
   it("honors only the current scoped runtime claim without removing legacy disposition", async () => {
-    const body = await fs.readFile(path.resolve("skills/paperclip/SKILL.md"), "utf8");
+    const body = await fs.readFile(path.resolve("skills/paperclip/references/heartbeat-procedure.md"), "utf8");
     const checkout = body.split("**Step 5 — Checkout.**")[1]?.split("**Step 6")[0];
     expect(checkout).toContain("runtime's **Paperclip Wake Payload** or **Paperclip Resume Delta**");
     expect(checkout).toContain("only to that issue in that run");
@@ -308,9 +321,9 @@ describe("paperclip skill utils", () => {
   });
 
   it("keeps the external-chat shortcut behind the server-verified harness boundary", async () => {
-    const skillBody = await fs.readFile(path.resolve("skills/paperclip/SKILL.md"), "utf8");
+    const skillBody = await fs.readFile(path.resolve("skills/paperclip/references/conversation-turns.md"), "utf8");
     const shortcut = skillBody.match(
-      /## Server-Verified External Chat Turns(?<body>[\s\S]*?)\n## The Heartbeat Procedure/,
+      /## Server-Verified External Chat Turns(?<body>[\s\S]*)$/,
     )?.groups?.body;
 
     expect(shortcut).toBeTruthy();
