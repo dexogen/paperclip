@@ -1,4 +1,5 @@
 import { useTranslation } from "@/i18n";
+import { describeError } from "@/api/errors";
 import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { DotPairing } from "@paperclipai/shared";
@@ -17,7 +18,7 @@ export function GrokBotConnection({ companyId, agentId }: { companyId?: string; 
   const cache = useQueryClient();
   const key = ["grok-binding", companyId, agentId];
   const state = useQuery({ queryKey: key, enabled: !!companyId && !!agentId,
-    queryFn: ({ signal }) => grokBotApi.connection(companyId!, agentId!, signal), retry: false, refetchInterval: 5000 });
+    queryFn: ({ signal }) => grokBotApi.connection(companyId!, agentId!, signal), refetchInterval: 5000 });
   const [pairing, setPairing] = useState<DotPairing | null>(null);
   const [replace, setReplace] = useState(false);
   const [botName, setBotName] = useState("");
@@ -58,7 +59,7 @@ export function GrokBotConnection({ companyId, agentId }: { companyId?: string; 
   return <section aria-label={t("grokSetupUi.connection.label")} className="space-y-4 text-sm">
     <p className="text-muted-foreground">{t("grokSetupUi.connection.description")}</p>
     {state.isPending && <p role="status">{t("grokSetupUi.connection.loading")}</p>}
-    {error && <p role="alert" className="text-destructive">{error.message}</p>}
+    {error && <p role="alert" className="text-destructive">{describeError(error).body}</p>}
     {state.data && !state.data.enabled && <p className="text-muted-foreground">{t("grokSetupUi.connection.enable")}</p>}
     {binding?.connected ? <>
       <p>{routine?.verified && !recovering ? t("grokSetupUi.connection.accessVerified") : t("grokSetupUi.connection.accessUnverified")}</p>

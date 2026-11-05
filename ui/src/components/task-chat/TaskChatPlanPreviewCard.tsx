@@ -1,9 +1,13 @@
+import { t as translateUi } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n, useTranslation } from "@/i18n";
 import { formatRunDisplayText } from "./task-chat-display";
 import type { IssueDocument } from "@paperclipai/shared";
-import { Lightbulb, Maximize2 } from "lucide-react";
+import { FileText, Lightbulb, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SidebarDocumentLink } from "@/components/SidebarDocumentLink";
+import { buildDocumentAnnotationHash } from "@/lib/document-annotation-hash";
+import { useCoordinatorPresentation } from "@/components/coordinator/CoordinatorPresentation";
 import { useTaskChatShimmer } from "./TaskChatShimmer";
 import type { TaskChatProviderActivityItem } from "./task-chat-model";
 
@@ -19,7 +23,8 @@ export function planPreviewContent(markdown: string, t: TFunction = i18n.getFixe
     ? lines[headingIndex]!.replace(/^#\s+/, "").trim()
     : t("taskPanels.document.plan");
   const preview = lines
-    .filter((line, index) => index !== headingIndex && !/^(```|~~~|---+$|\*\*\*+$|___+$)/.test(line))
+    // Section headings ("## Steps") are structure, not plan content.
+    .filter((line, index) => index !== headingIndex && !/^#{1,6}\s+/.test(line) && !/^(```|~~~|---+$|\*\*\*+$|___+$)/.test(line))
     .map((line) => line
       .replace(/^#{1,6}\s+/, "")
       .replace(/^[-*+]\s+/, "")
@@ -56,6 +61,11 @@ export interface TaskChatPlanPreviewCardProps {
 }
 
 function livePlanContent(activity: TaskChatProviderActivityItem, t: TFunction) {
+  // A proposed-plan document streams as markdown; a checklist streams as steps.
+  if (activity.output?.trim()) {
+    const fromMarkdown = planPreviewContent(activity.output);
+    if (fromMarkdown.title !== "Plan" || fromMarkdown.preview.length > 0) return fromMarkdown;
+  }
   const title = activity.title.trim() || t("taskPanels.document.plan");
   const preview = activity.steps
     .map((step) => formatRunDisplayText("protocolStepLabel", step.label, step.display?.label, t).trim())
@@ -85,6 +95,7 @@ export function TaskChatPlanPreviewCard({
   className,
 }: TaskChatPlanPreviewCardProps) {
   const { t } = useTranslation();
+  const coordinator = useCoordinatorPresentation();
   const shimmer = useTaskChatShimmer(source.kind === "live" ? source.activity.id : "saved-plan");
   const revision = planRevision(source);
   const content = source.kind === "saved" && source.document
@@ -93,6 +104,24 @@ export function TaskChatPlanPreviewCard({
       ? { title: source.fallbackTitle?.trim() || t("taskPanels.document.plan"), preview: [] as string[] }
       : livePlanContent(source.activity, t);
   const live = source.kind === "live";
+  if (coordinator) {
+    const document = source.kind === "saved" ? source.document : null;
+    const targetHref = href === "#document-plan" && document
+      ? `/issues/${document.issueId}${buildDocumentAnnotationHash({ documentKey: document.key,
+        revisionId: document.latestRevisionId ?? undefined, threadId: null, commentId: null })}`
+      : href;
+    const compactClassName = cn("inline-flex max-w-full items-center gap-2 rounded-lg border border-border bg-muted/25 px-3 py-2.5 text-sm text-muted-foreground",
+      targetHref && "transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", className);
+    const compactBody = <><FileText className="size-4 shrink-0" aria-hidden /><span className="shrink-0">{live ? translateUi("interfaceUpdates.writing_a8bfae3e") : translateUi("interfaceUpdates.open_ed077f3d")}</span>{" "}
+      <span className={cn("min-w-0 truncate text-foreground", targetHref && "underline underline-offset-4", live && shimmer && "shimmer-text shimmer-text-muted")}>{content.title}</span>
+      {targetHref ? <span className="hidden shrink-0 sm:inline">{" "}{translateUi("interfaceUpdates.in_the_sidebar_bdfda3e5")}</span> : null}</>;
+    return targetHref ? <SidebarDocumentLink href={targetHref} testId={testId}
+      ariaLabel={ariaLabel ?? `Open ${content.title}${revision == null ? "" : ` revision ${revision}`} in task sidebar`} className={className}>
+      <span className="shrink-0">{translateUi("interfaceUpdates.open_ed077f3d")}</span>{" "}<span className="min-w-0 truncate text-foreground underline underline-offset-4">{content.title}</span>
+      <span className="hidden shrink-0 sm:inline">{" "}{translateUi("interfaceUpdates.in_the_sidebar_bdfda3e5")}</span>
+    </SidebarDocumentLink>
+      : <section data-testid={testId} aria-label={ariaLabel ?? translateUi("taskChatUi.planPreview.writing")} className={compactClassName}>{compactBody}</section>;
+  }
   const headerDetail = revision == null
     ? null
     : t("taskPanels.documentHeader.revision", { revision });

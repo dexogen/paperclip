@@ -15,7 +15,7 @@ export type RunMarkerDetailMessage =
   | { code: "detail.workspaceRestore"; savedPlan: boolean; noFinalResponse: boolean; affectedPath?: string };
 
 export type RunMarkerDisplay = { label?: RunMarkerLabelMessage; detail?: RunMarkerDetailMessage };
-export type ProviderDetailKey = "action" | "available" | "blocking" | "buffering" | "byteCount" | "category" | "complete" | "decision" | "documentRevision" | "durationMs" | "effectiveModel" | "elapsedDurationMs" | "event" | "exitCode" | "failure" | "fromModel" | "inputClass" | "label" | "mediaType" | "name" | "namespace" | "operation" | "origin" | "outputBytes" | "pattern" | "plannedDurationMs" | "postTokens" | "preTokens" | "progress" | "provider" | "query" | "readOnly" | "reason" | "recoverable" | "reference" | "registered" | "requestedModel" | "revision" | "sameSession" | "scope" | "severity" | "state" | "status" | "summary" | "syncStatus" | "target" | "targetExecutionId" | "title" | "transparentBackground" | "transport" | "url" | "userActionable";
+export type ProviderDetailKey = "source" | "toolName" | "outcome" | "actionKind" | "riskLevel" | "userConsent" | "decidedBy" | "detail" | "reasonCode" | "action" | "available" | "blocking" | "buffering" | "byteCount" | "category" | "complete" | "decision" | "documentRevision" | "durationMs" | "effectiveModel" | "elapsedDurationMs" | "event" | "exitCode" | "failure" | "fromModel" | "inputClass" | "label" | "mediaType" | "name" | "namespace" | "operation" | "origin" | "outputBytes" | "pattern" | "plannedDurationMs" | "postTokens" | "preTokens" | "progress" | "provider" | "query" | "readOnly" | "reason" | "recoverable" | "reference" | "registered" | "requestedModel" | "revision" | "sameSession" | "scope" | "severity" | "state" | "status" | "summary" | "syncStatus" | "target" | "targetExecutionId" | "title" | "transparentBackground" | "transport" | "url" | "userActionable";
 export type RunDisplaySlots = {
   protocolDetailLabel: { code: "providerDetail"; field: ProviderDetailKey };
   protocolDetailValue: { code: "boolean"; value: boolean };
@@ -49,6 +49,16 @@ export function formatRunDisplayText<S extends keyof RunDisplaySlots>(
     case "providerDetail":
       if (slot !== "protocolDetailLabel") return fallback;
       switch (value.field) {
+        case "source": return t("runUi.provider.detail.source", { defaultValue: fallback });
+        case "toolName": return t("runUi.provider.detail.toolName", { defaultValue: fallback });
+        case "outcome": return t("runUi.provider.detail.outcome", { defaultValue: fallback });
+        case "actionKind": return t("runUi.provider.detail.actionKind", { defaultValue: fallback });
+        case "riskLevel": return t("runUi.provider.detail.riskLevel", { defaultValue: fallback });
+        case "userConsent": return t("runUi.provider.detail.userConsent", { defaultValue: fallback });
+        case "decidedBy": return t("runUi.provider.detail.decidedBy", { defaultValue: fallback });
+        case "detail": return t("runUi.provider.detail.detail", { defaultValue: fallback });
+        case "reasonCode": return t("runUi.provider.detail.reasonCode", { defaultValue: fallback });
+
         case "action": return t("runUi.provider.detail.action", { defaultValue: fallback });
         case "available": return t("runUi.provider.detail.available", { defaultValue: fallback });
         case "blocking": return t("runUi.provider.detail.blocking", { defaultValue: fallback });

@@ -1,4 +1,5 @@
 import { useTranslation } from "@/i18n";
+import { describeError } from "@/api/errors";
 import { ShieldCheck, ShieldX, ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
@@ -32,7 +33,7 @@ export function ProjectAccessNotice({ agentName, projectName, ready, canManage, 
       {ready ? canRetry && <Button size="sm" onClick={onRetry}>{t("runUi.projectAccess.retry")}<ArrowRight className="size-4" aria-hidden /></Button>
         : <Button size="sm" variant="outline" onClick={onManage}>{canManage ? t("runUi.projectAccess.manage") : t("runUi.projectAccess.view")}<ArrowRight className="size-4" aria-hidden /></Button>}
     </div>
-    {error && <p role="alert" className="text-sm text-destructive">{error.message}</p>}
+    {error && <p role="alert" className="text-sm text-destructive">{describeError(error).body}</p>}
     {!ready && <details className="pl-8 text-xs text-muted-foreground"><summary className="cursor-pointer">{t("runUi.projectAccess.details")}</summary>
       <dl className="mt-3 grid grid-cols-2 gap-2"><dt>{t("runUi.projectAccess.stoppedDuring")}</dt><dd>{t("runUi.projectAccess.setup")}</dd><dt>{t("runUi.projectAccess.reason")}</dt><dd>{t("runUi.projectAccess.outside")}</dd><dt>{t("runUi.projectAccess.started")}</dt><dd>{t("runUi.projectAccess.no")}</dd></dl>
     </details>}

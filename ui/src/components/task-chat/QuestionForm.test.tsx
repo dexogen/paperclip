@@ -9,8 +9,8 @@ import { QuestionForm } from "./QuestionForm";
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 vi.mock("./TaskChatRichInput", () => ({
-  TaskChatRichInput: ({ value, onChange, placeholder }: { value: string; onChange(value: string): void; placeholder?: string }) =>
-    <textarea aria-label="Answer" placeholder={placeholder} value={value} onChange={event => onChange(event.target.value)} />,
+  TaskChatRichInput: ({ value, onChange, onSubmit, placeholder }: { value: string; onChange(value: string): void; onSubmit(): void; placeholder?: string }) =>
+    <textarea aria-label="Answer" placeholder={placeholder} value={value} onChange={event => onChange(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && event.metaKey) onSubmit(); }} />,
 }));
 vi.mock("@/components/MarkdownBody", () => ({ MarkdownBody: ({ children }: { children: string }) => <div>{children}</div> }));
 
@@ -52,7 +52,9 @@ describe("QuestionForm initial text", () => {
   it("retains an explicitly cleared draft and required validation across reload", async () => {
     await render(); await edit(""); await remount();
     expect(input().value).toBe("");
-    expect(Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Submit answers")!.disabled).toBe(true);
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Submit answers")!.click());
+    expect(container.textContent).toContain("This question is required.");
     expect(submit).not.toHaveBeenCalled();
   });
   it("isolates pending requests with the same field ids and restores each edited draft when switching back", async () => {
@@ -89,8 +91,35 @@ describe("QuestionForm initial text", () => {
     await act(async () => root.unmount()); localStorage.clear(); root = createRoot(container);
     await render({ ...questionSet, questions: [{ ...questionSet.questions[0]!, initialText: "bad", textValidation: { minLength: 5 } }] });
     expect(input().value).toBe("bad");
-    expect(Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Submit answers")!.disabled).toBe(true);
+    expect(container.textContent).not.toContain("Enter at least 5 characters.");
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Submit answers")!.click());
+    expect(container.textContent).toContain("Enter at least 5 characters.");
     expect(submit).not.toHaveBeenCalled();
+  });
+
+  it("only validates a short answer after Next or keyboard submit, and clears it when corrected", async () => {
+    await render({ schema: "paperclip.question_set.v1", questions: [
+      { id: "audience", prompt: "Who is it for?", required: true, answerMode: "text", textValidation: { minLength: 2 } },
+      { id: "outcome", prompt: "What outcome?", required: true, answerMode: "text", textValidation: { minLength: 2 } },
+    ] });
+    await edit("m");
+    expect(container.textContent).not.toContain("Enter at least 2 characters.");
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Next")!.click());
+    expect(container.textContent).toContain("Enter at least 2 characters.");
+    expect(container.textContent).toContain("Who is it for?");
+    await edit("millennials");
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Next")!.click());
+    await edit("x");
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+    await act(async () => input().dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", metaKey: true, bubbles: true })));
+    expect(container.textContent).toContain("Enter at least 2 characters.");
+    expect(submit).not.toHaveBeenCalled();
+    await edit("10 concepts");
+    await act(async () => Array.from(container.querySelectorAll("button")).find(button => button.textContent === "Submit answers")!.click());
+    expect(submit).toHaveBeenCalledExactlyOnceWith({ schema: "paperclip.question_response.v1", answers: {
+      audience: { text: "millennials" }, outcome: { text: "10 concepts" },
+    } });
   });
 });
 
@@ -157,12 +186,14 @@ describe("QuestionForm locale state", () => {
     const set: PaperclipQuestionSet = { schema: "paperclip.question_set.v1", questions: [{ id: "text", prompt: "Literal prompt", answerMode: "text", required: true, textValidation: { maxLength: count } }] };
     await act(async () => { root.render(<QuestionForm id="length" questionSet={set} onSubmit={submit} />); });
     await changeText("x".repeat(count + 1));
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+    await act(async () => { button("Submit answers").click(); });
     const input = container.querySelector("textarea")!;
     expect(container.textContent).toContain(`Enter no more than ${count} characters.`);
     await act(async () => { await i18n.changeLanguage("ru"); });
     expect(container.textContent).toContain(`Введите не более ${count} ${count === 1 || count === 21 ? "символа" : "символов"}.`);
     expect(container.querySelector("textarea")).toBe(input);
-    expect(button("Отправить ответы").disabled).toBe(true);
+    await act(async () => { button("Отправить ответы").click(); });
     expect(submit).not.toHaveBeenCalled();
     await changeText("x".repeat(count));
     await act(async () => { button("Отправить ответы").click(); });
@@ -182,10 +213,11 @@ describe("QuestionForm locale state", () => {
     const set: PaperclipQuestionSet = { schema: "paperclip.question_set.v1", questions: [{ id: "value", prompt: "Provider value", answerMode: "text", required: true, textValidation: validation }] };
     await act(async () => { root.render(<QuestionForm id="validation" questionSet={set} onSubmit={submit} />); });
     await changeText(input);
+    await act(async () => { button("Submit answers").click(); });
     await act(async () => { await i18n.changeLanguage("ru"); });
     expect(container.textContent).toContain(expected);
     expect(container.querySelector("textarea")!.value).toBe(input);
-    expect(button("Отправить ответы").disabled).toBe(true);
+    await act(async () => { button("Отправить ответы").click(); });
     expect(submit).not.toHaveBeenCalled();
   });
 

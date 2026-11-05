@@ -79,3 +79,7 @@ gates and localization browser journeys on the submitted revision.
 Deployment follows a successful CI result. Record the actual deployed commit and
 public bootstrap/auth smoke result in the lab's service/runbook documentation.
 Do not infer deployment from a merge, build, report or registry publication.
+
+Review records may use `source-review` with a functional reviewer name when personal
+attribution is not recorded. The same source, translation, context and parameter
+fingerprints apply; this method does not approve unexamined messages or relax checks.

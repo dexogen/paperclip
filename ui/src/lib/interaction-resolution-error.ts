@@ -14,6 +14,7 @@ import { i18n } from "@/i18n";
  * action is permitted, it only explains the answer the server already gave.
  */
 
+import { describeError, errorCopy, isRawErrorCode, isTransientError } from "@/api/errors";
 import type { InteractionAudienceDescription } from "./interaction-audience";
 
 /**
@@ -73,12 +74,15 @@ function errorStatus(error: unknown): number | null {
   return typeof status === "number" ? status : null;
 }
 
-/** The server's human-readable reason, preserved verbatim apart from punctuation. */
+/**
+ * The server's human-readable reason, preserved verbatim apart from
+ * punctuation. A raw code (`tenant_app_unavailable`) is not a reason.
+ */
 function serverReason(error: unknown): string | null {
   const body = record(record(error)?.body);
   const fromBody = typeof body?.error === "string" ? body.error.trim() : "";
   const fromError = error instanceof Error ? error.message.trim() : "";
-  const reason = fromBody || fromError;
+  const reason = [fromBody, fromError].find((text) => text && !isRawErrorCode(text));
   if (!reason) return null;
   // The API writes reasons as bare clauses ("This interaction is human-only").
   return /[.!?]$/.test(reason) ? reason : `${reason}.`;
@@ -133,8 +137,8 @@ export function describeInteractionResolutionFailure(
       message: [
         reason
           ?? (coded
-            ? t("decisionForms.errors.audienceDenied")
-            : t("decisionForms.errors.permissionDenied")),
+            ? errorCopy("interaction_audience_denied", t).body
+            : errorCopy("interaction_forbidden", t).body),
         responder,
       ]
         .filter(Boolean)
@@ -146,14 +150,20 @@ export function describeInteractionResolutionFailure(
     return {
       kind: "settled",
       code,
-      message: reason ?? t("decisionForms.errors.settled"),
+      message: reason ?? errorCopy("interaction_settled", t).body,
     };
+  }
+
+  // An outage or gateway blip: the server's text is a status line or a raw
+  // code, so use the shared copy (which already invites a retry).
+  if (isTransientError(error)) {
+    return { kind: "transient", code, message: describeError(error, {}, t).body };
   }
 
   return {
     kind: "transient",
     code,
-    message: reason ? t("decisionForms.errors.retryReason", { reason }) : t("decisionForms.errors.submitFailed"),
+    message: reason ? t("interfaceUpdates.value_try_again_ef817282", { value1: (reason) }) : errorCopy("interaction_submit_failed", t).body,
   };
 }
 

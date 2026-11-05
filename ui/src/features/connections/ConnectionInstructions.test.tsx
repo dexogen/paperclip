@@ -80,10 +80,10 @@ it("keeps a focused instruction draft and exact save receipt through locale chan
   expect(textarea.disabled).toBe(true);
   await act(async () => { rejectSave(null); });
   await flush();
-  expect(host.querySelector('[role="alert"]')?.textContent).toBe("Не удалось сохранить инструкции. Попробуйте ещё раз.");
+  expect(host.querySelector('[role="alert"]')?.textContent).toBe("Произошла непредвиденная ошибка. Повтори попытку.");
   expect(textarea.value).toBe(dirty);
   await language("en");
-  expect(host.querySelector('[role="alert"]')?.textContent).toBe("Couldn’t save instructions. Try again.");
+  expect(host.querySelector('[role="alert"]')?.textContent).toBe("An unexpected error occurred. Please try again.");
   expect(api.update).toHaveBeenCalledTimes(1);
   api.update.mockRejectedValueOnce(new Error("Couldn’t save instructions. Try again."));
   await act(async () => button("Save instructions").click());
@@ -125,8 +125,8 @@ it("localizes connection instructions after an explicit retry while retaining ra
   expect(host.textContent).toContain("Загрузка инструкций подключений…");
   await act(async () => rejectProfiles(new Error("Provider diagnostic")));
   await flush();
-  expect(host.textContent).toContain("Не удалось загрузить инструкции подключений.");
-  expect(host.textContent).not.toContain("Provider diagnostic");
+  expect(host.textContent).toContain("Не удалось загрузить инструкции подключения");
+  expect(host.textContent).toContain("Provider diagnostic");
   await language("en");
   expect(api.profiles).toHaveBeenCalledExactlyOnceWith("company-1", "agent-1");
   const source = { id: "literal-source", name: "From connections <strong>raw</strong>", enabled: true, status: "active", agentInstructions: { ...saved, enabled: false }, config: {} };

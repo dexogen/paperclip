@@ -152,18 +152,18 @@ it("translates only the owned failure and never retries an unchanged failed sele
   await wait(300);
   await act(async () => pending.reject(null));
   await wait();
-  expect(container.textContent).toContain("Failed to update skills");
+  expect(container.textContent).toContain("An unexpected error occurred. Please try again.");
   await changeLocale("ru");
-  expect(container.textContent).toContain("Не удалось обновить навыки");
+  expect(container.textContent).toContain("Произошла непредвиденная ошибка. Повтори попытку.");
   expect(toggle("Отключить Extra skill").getAttribute("aria-checked")).toBe("true");
   await changeLocale("en");
   await wait(300);
   expect(sync).toHaveBeenCalledTimes(1);
-  sync.mockRejectedValueOnce(new Error("Failed to update skills"));
+  sync.mockRejectedValueOnce(new Error("An unexpected error occurred. Please try again."));
   await click(toggle(`Disable ${rawName}`));
   await wait(300);
   await changeLocale("ru");
-  expect(container.textContent).toContain("Failed to update skills");
+  expect(container.textContent).toContain("An unexpected error occurred. Please try again.");
   expect(sync).toHaveBeenCalledTimes(2);
 });
 

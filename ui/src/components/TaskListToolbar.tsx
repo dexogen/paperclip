@@ -10,9 +10,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { taskListViews as views, type TaskListView } from "@/lib/task-list-views";
 
 /** Canonical proposed task toolbar; review under Components / Toolbars / Tasks. */
-export function TaskListToolbar({ view, onViewChange, query, onQueryChange, searchRef, layout, onLayoutChange, allExpanded, onToggleExpanded, onNewTask, filters }: {
+export function TaskListToolbar({ view, onViewChange, viewOptions = views, query, onQueryChange, searchRef, layout, onLayoutChange, allExpanded, onToggleExpanded, onNewTask, filters }: {
   view: TaskListView;
   onViewChange: (view: TaskListView) => void;
+  viewOptions?: readonly { value: TaskListView; label: string }[];
   query: string;
   onQueryChange: (query: string) => void;
   searchRef?: Ref<HTMLInputElement>;
@@ -27,11 +28,11 @@ export function TaskListToolbar({ view, onViewChange, query, onQueryChange, sear
   return (
     <div data-canonical-toolbar="tasks" className="design-page-toolbar" role="toolbar" aria-label={fullSharedT("fullShared.task_list_controls_515af1")}>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><Button variant="outline" className="design-toolbar-button design-view-trigger" aria-label={fullSharedT("fullShared.task_view_4fffa6", { value1: views.find(option => option.value === view)!.label })}>{views.find(option => option.value === view)!.label}<ChevronDown aria-hidden /></Button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><Button variant="outline" className="design-toolbar-button design-view-trigger" aria-label={fullSharedT("fullShared.task_view_4fffa6", { value1: viewOptions.find(option => option.value === view)!.label })}>{viewOptions.find(option => option.value === view)!.label}<ChevronDown aria-hidden /></Button></DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="task-list-options" aria-label={fullSharedT("fullShared.task_views_eb704b")}>
           <DropdownMenuLabel asChild><FlyoutHeader className="task-list-options-heading">{fullSharedT("fullShared.views_69c404")}</FlyoutHeader></DropdownMenuLabel>
           <DropdownMenuRadioGroup asChild value={view} onValueChange={value => onViewChange(value as TaskListView)}><FlyoutOptions className="task-list-options-items">
-            {views.map(option => <DropdownMenuRadioItem className="task-list-options-item" key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>)}
+            {viewOptions.map(option => <DropdownMenuRadioItem className="task-list-options-item" key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>)}
           </FlyoutOptions></DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>

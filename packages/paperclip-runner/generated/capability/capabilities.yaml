@@ -740,9 +740,9 @@
       "expectedMockState": "runtime_decision_record"
     },
     {
-      "id": "skill:skills/paperclip/references/conversation-turns.md:18",
+      "id": "skill:skills/paperclip/references/conversation-turns.md:21",
       "kind": "skill_heading",
-      "sourceAnchor": "skills/paperclip/references/conversation-turns.md#L18:server-verified-external-chat-turns",
+      "sourceAnchor": "skills/paperclip/references/conversation-turns.md#L21:server-verified-external-chat-turns",
       "heading": "Server-Verified External Chat Turns",
       "primaryDisposition": "control_plane_owned",
       "semanticOperation": "runtime_reconciliation",

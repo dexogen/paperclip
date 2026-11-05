@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +10,7 @@ import { issuesApi } from "@/api/issues";
 import { projectsApi } from "@/api/projects";
 import { IssueFiltersPopover } from "@/components/IssueFiltersPopover";
 import { StatusIcon } from "@/components/StatusIcon";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -21,6 +24,7 @@ import {
 import { queryKeys } from "@/lib/queryKeys";
 import { Link } from "@/lib/router";
 import { cn, formatDate, relativeTime } from "@/lib/utils";
+import { taskStatusIconProps } from "@/lib/task-status-presentation";
 
 /**
  * The agent-scoped side panels shown beside an agent chat: every task the
@@ -88,8 +92,7 @@ export function AgentTaskCard({ task }: { task: Issue }) {
     >
       <div className="flex min-w-0 items-start gap-2">
         <StatusIcon
-          status={task.status}
-          blockerAttention={task.blockerAttention}
+          {...taskStatusIconProps(task)}
           className="mt-0.5 shrink-0"
         />
         <span className="min-w-0 flex-1 line-clamp-2 text-sm font-medium text-foreground">
@@ -117,6 +120,7 @@ export function AgentTasksPanel({
   /** The conversation issue itself, which is not one of the agent's tasks. */
   excludeIssueId?: string;
 }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<IssueFilterState>(defaultIssueFilterState);
@@ -132,6 +136,7 @@ export function AgentTasksPanel({
       limit: AGENT_TASK_LIMIT,
     }),
   });
+  const tasksView = useQueryView(tasksQuery);
   const projectsQuery = useQuery({
     queryKey: queryKeys.projects.list(companyId),
     queryFn: () => projectsApi.list(companyId),
@@ -211,10 +216,17 @@ export function AgentTasksPanel({
         </Popover>
       </div>
 
-      {tasksQuery.isPending ? (
-        <PanelMessage>{fullSharedT("taskProperties.taskPanel.loading")}</PanelMessage>
-      ) : tasksQuery.isError ? (
-        <PanelMessage tone="error">{fullSharedT("fullShared.could_not_load_this_agent_s_tasks_1ef2b2")}</PanelMessage>
+      {tasksView.kind === "loading" || tasksView.kind === "reconnecting" ? (
+        <PanelMessage>{translateUi("taskProperties.taskPanel.loading")}</PanelMessage>
+      ) : tasksView.kind === "error" ? (
+        <div className="py-4">
+          <QueryErrorState
+            error={tasksQuery.error}
+            action="load this agent's tasks"
+            onRetry={tasksView.retry}
+            retrying={tasksView.isFetching}
+          />
+        </div>
       ) : total === 0 ? (
         <PanelMessage>{fullSharedT("fullShared.this_agent_hasn_t_worked_on_any_tasks_yet_7960d2")}</PanelMessage>
       ) : visible.length === 0 ? (
@@ -292,16 +304,32 @@ async function listAgentArtifacts(companyId: string, agentId: string) {
 }
 
 export function AgentArtifactsPanel({ companyId, agentId }: { companyId: string; agentId: string }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const artifactsQuery = useQuery({
     queryKey: queryKeys.artifacts.byAgent(companyId, agentId),
     queryFn: () => listAgentArtifacts(companyId, agentId),
   });
 
-  if (artifactsQuery.isPending) return <PanelMessage>{fullSharedT("taskPanels.artifacts.loading")}</PanelMessage>;
-  if (artifactsQuery.isError) return <PanelMessage tone="error">{fullSharedT("fullShared.could_not_load_this_agent_s_artifacts_9202bb")}</PanelMessage>;
-  const { artifacts, truncated } = artifactsQuery.data;
-  if (artifacts.length === 0) return <PanelMessage>{fullSharedT("fullShared.this_agent_hasn_t_produced_any_artifacts_yet_fd7148")}</PanelMessage>;
+  const artifactsView = useQueryView(artifactsQuery);
+
+  if (artifactsView.kind === "loading" || artifactsView.kind === "reconnecting") return <PanelMessage>{translateUi("taskPanels.artifacts.loading")}</PanelMessage>;
+  if (artifactsView.kind === "error") {
+    return (
+      <div className="py-4">
+        <QueryErrorState
+          error={artifactsQuery.error}
+          action="load this agent's artifacts"
+          onRetry={artifactsView.retry}
+          retrying={artifactsView.isFetching}
+        />
+      </div>
+    );
+  }
+  const loaded = artifactsQuery.data;
+  if (!loaded) return null;
+  const { artifacts, truncated } = loaded;
+  if (artifacts.length === 0) return <PanelMessage>{translateUi("fullShared.this_agent_hasn_t_produced_any_artifacts_yet_fd7148")}</PanelMessage>;
   return (
     <section className="flex flex-col gap-2" aria-label={fullSharedT("fullShared.agent_artifacts_1e85a3")}>
       {artifacts.map((artifact) => <AgentArtifactCard key={artifact.id} artifact={artifact} />)}

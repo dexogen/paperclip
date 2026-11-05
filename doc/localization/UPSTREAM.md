@@ -22,12 +22,12 @@ the release commit, a metadata-only PR promotes it to stable and still requires
 review and verification.
 
 During the transition, the accepted source is master commit
-`0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20`, which is newer than `v2026.1023.0`.
-The stable tracker waits for a release that contains that commit; it must neither
-publish this master tree as `v2026.1023.0` nor deploy the older release. The already
-approved PR #32 deployment is the final exception before this stable policy takes
-effect. Later master updates require explicit owner authorization for merge and
-deployment, in addition to selecting the manual master channel.
+`fb2e07ebdd17a813965c4e415696e72cc6f9eed2`, which is newer than `v2026.1023.0`.
+The owner explicitly requested this integration and deployment in PR #37.
+The stable tracker waits for a release containing that commit; it must neither
+label this master tree as `v2026.1023.0` nor deploy an older release. Further
+master updates require explicit owner authorization for merge and deployment,
+in addition to selecting the manual master channel.
 
 Stable builds display `<upstream-version>+ru.<revision>`, for example
 `2026.1023.0+ru.1`. The GitHub release tag uses `v<upstream-version>-ru.<revision>`,

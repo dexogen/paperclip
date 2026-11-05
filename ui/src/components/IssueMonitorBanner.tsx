@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, i18n as fullSharedI18n, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
 import { Clock, X } from "lucide-react";
@@ -19,6 +21,8 @@ import { IssuePullRequestLinks } from "@/components/IssuePullRequestLinks";
 import { getIssuePullRequests, pullRequestNeedsReview } from "@/lib/issue-pull-requests";
 import { cn } from "@/lib/utils";
 import {
+  areAutomaticMonitorChecksPaused,
+  canCheckIssueMonitorNow,
   deriveMonitorState,
   formatMonitorAbsolute,
   formatMonitorEta,
@@ -64,6 +68,8 @@ export interface MonitorSurfaceCopy {
   tone: "info" | "warning";
   workspaceWait?: boolean;
   pullRequestReview?: boolean;
+  automaticChecksPaused?: boolean;
+  checkUnavailable?: boolean;
 }
 
 function capitalize(value: string): string {
@@ -80,8 +86,25 @@ export function buildMonitorSurfaceCopy(
   now: MonitorDate,
   scheduledRetryReason?: string | null,
   pendingPullRequestReviews = 0,
+  issueStatus?: string,
 ): MonitorSurfaceCopy | null {
   if (!isWaitingMonitorState(derived.state) || !derived.nextCheckAt) return null;
+
+  if (derived.source === "monitor" && areAutomaticMonitorChecksPaused({ status: issueStatus })) {
+    const canCheckNow = canCheckIssueMonitorNow({ status: issueStatus }, derived.serviceName);
+    const hint = canCheckNow
+      ? "This task is blocked. You can ask the agent to check now."
+      : "Resume this task to continue checking.";
+    return {
+      bannerTitle: "Automatic checks paused",
+      stripTitle: "Automatic checks paused",
+      bannerMeta: [hint],
+      stripMeta: [hint],
+      tone: "info",
+      automaticChecksPaused: true,
+      checkUnavailable: !canCheckNow,
+    };
+  }
 
   if (derived.source === "scheduled-retry" && scheduledRetryReason === "workspace_busy") {
     return {
@@ -163,9 +186,12 @@ function useMonitorSurfaceCopy(issue: Issue, pendingPullRequestReviews: number):
   // `nextCheckAt` is stable for a given issue; derive once to seed the ticking
   // countdown cadence, then re-derive against the live clock so the surfaces
   // roll scheduled → due → overdue on their own.
-  const nextCheckAt = useMemo(() => deriveMonitorState(issue).nextCheckAt, [issue]);
+  const nextCheckAt = useMemo(() => {
+    const derived = deriveMonitorState(issue);
+    return derived.source === "monitor" && areAutomaticMonitorChecksPaused(issue) ? null : derived.nextCheckAt;
+  }, [issue]);
   const now = useMonitorCountdown(nextCheckAt);
-  return useMemo(() => buildMonitorSurfaceCopy(deriveMonitorState(issue, now), now, issue.scheduledRetry?.scheduledRetryReason, pendingPullRequestReviews), [fullSharedI18n.language, issue, now, pendingPullRequestReviews]);
+  return useMemo(() => buildMonitorSurfaceCopy(deriveMonitorState(issue, now), now, issue.scheduledRetry?.scheduledRetryReason, pendingPullRequestReviews, issue.status), [fullSharedI18n.language, issue, now, pendingPullRequestReviews]);
 }
 
 function CheckNowButton({
@@ -266,7 +292,7 @@ export function IssueMonitorBanner({
       icon={Clock}
       title={copy.bannerTitle}
       className={cn("relative my-3", canCancel && "pr-12")}
-      actions={onCheckNow && !copy.workspaceWait ? <CheckNowButton onCheckNow={onCheckNow} checkingNow={checkingNow} reviewRequested={copy.pullRequestReview} /> : null}
+      actions={onCheckNow && !copy.workspaceWait && !copy.checkUnavailable ? <CheckNowButton onCheckNow={onCheckNow} checkingNow={checkingNow} reviewRequested={copy.pullRequestReview} /> : null}
     >
       {canCancel ? <CancelMonitorButton key={issue.id} onCancel={onCancelMonitor} /> : null}
       <div className="flex flex-col gap-2">
@@ -291,6 +317,7 @@ export function IssueMonitorComposerStrip({
   checkError,
   className,
 }: IssueMonitorSurfaceProps & { className?: string }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const reviews = getIssuePullRequests(workProducts).filter(pullRequestNeedsReview);
   const copy = useMonitorSurfaceCopy(issue, reviews.length);
@@ -304,22 +331,24 @@ export function IssueMonitorComposerStrip({
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-2">
-          <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <Clock className={cn("mt-0.5 h-4 w-4 shrink-0", issue.displayStatus === "monitoring" ? "text-(--status-task-icon-monitoring)" : "text-muted-foreground")} aria-hidden="true" />
           <div className="flex min-w-0 flex-col gap-2">
             <div className="text-sm font-medium text-foreground">{copy.stripTitle}</div>
             {copy.pullRequestReview ? <IssuePullRequestLinks products={reviews} /> : null}
             <div className="text-xs text-muted-foreground">{copy.stripMeta.join(" · ")}</div>
           </div>
         </div>
-        {onCheckNow && !copy.workspaceWait ? <CheckNowButton onCheckNow={onCheckNow} checkingNow={checkingNow} reviewRequested={copy.pullRequestReview} /> : null}
+        {onCheckNow && !copy.workspaceWait && !copy.checkUnavailable ? <CheckNowButton onCheckNow={onCheckNow} checkingNow={checkingNow} reviewRequested={copy.pullRequestReview} /> : null}
       </div>
-      <p className="mt-1.5 text-xs text-muted-foreground">
-        {copy.pullRequestReview
-          ? fullSharedT("fullShared.review_on_github_then_check_status_to_have_the_agent_138c83")
-          : copy.workspaceWait
-          ? fullSharedT("fullShared.you_can_keep_sending_instructions_while_the_agent_wa_863825")
-          : fullSharedT("fullShared.sending_a_reply_wakes_the_agent_now_before_the_sched_c39c87")}
-      </p>
+      {!copy.automaticChecksPaused ? (
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          {copy.pullRequestReview
+            ? translateUi("fullShared.review_on_github_then_check_status_to_have_the_agent_138c83")
+            : copy.workspaceWait
+            ? translateUi("fullShared.you_can_keep_sending_instructions_while_the_agent_wa_863825")
+            : translateUi("fullShared.sending_a_reply_wakes_the_agent_now_before_the_sched_c39c87")}
+        </p>
+      ) : null}
       {checkError ? <p role="alert" className="text-sm text-destructive">{checkError}</p> : null}
     </div>
   );

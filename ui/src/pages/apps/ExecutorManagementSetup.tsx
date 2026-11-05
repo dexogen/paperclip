@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ToolConnection } from "@paperclipai/shared";
 import { aggregatorManagementUrl } from "@paperclipai/shared/aggregator-apps";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { useAccountIdentity } from "@/api/companies-query";
 import { queryKeys } from "@/lib/queryKeys";
@@ -29,7 +30,7 @@ export function ExecutorManagementSetup({ connection, onClose }: { connection: T
     <DialogHeader><DialogTitle>{fullAppsT("fullApps.executor_console_f02454")}</DialogTitle><DialogDescription><FullAppsTrans i18nKey="fullApps.choose_where_to_manage_accounts_for_include_your_wor_7b61df" components={{ part1: <>{connection.name}</> }} /></DialogDescription></DialogHeader>
     <form className="space-y-4" onSubmit={event => { event.preventDefault(); save.mutate(); }}>
       <div className="space-y-2"><Label htmlFor="executor-console-url">{fullAppsT("fullApps.console_url_2550c5")}</Label><Input id="executor-console-url" type="url" required value={url} onChange={event => setUrl(event.target.value)} /></div>
-      {save.isError ? <p role="alert" className="text-sm text-destructive">{save.error.message}</p> : null}
+      {save.error ? <p role="alert" className="text-sm text-destructive">{describeError(save.error).body}</p> : null}
       <DialogFooter className="sm:justify-between"><Button type="button" variant="ghost" onClick={onClose} disabled={save.isPending}>{fullAppsT("fullApps.cancel_19766e")}</Button><Button type="submit" disabled={!settled || save.isPending || !url.trim()}>{save.isPending ? fullAppsT("fullApps.saving_23e392") : fullAppsT("inboxPolicy.save")}</Button></DialogFooter>
     </form>
   </DialogContent></Dialog>;

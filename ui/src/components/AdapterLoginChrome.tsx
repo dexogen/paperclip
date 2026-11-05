@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation, t, Trans } from "../i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -48,9 +49,10 @@ export type AdapterLoginChrome = "panel" | "onboarding";
  * otherwise, this is the one to delete.
  */
 export const CONNECT_SOURCE_NAMES: Record<string, string> = {
-  claude_local: "Claude",
+  get claude_local() { return translateUi("interfaceUpdates.claude_0615570f"); },
   codex_local: "OpenAI",
   grok_local: "Grok",
+  get antigravity_runtime() { return translateUi("interfaceUpdates.google_ce770667"); },
 };
 
 /** The provider name for a source, falling back to the type when unlisted. */
@@ -425,7 +427,7 @@ export function ProviderSubscriptionCard({
 }: {
   providerName: string;
   authorizationUrl?: string;
-  mode: "submitted_code" | "displayed_code";
+  mode: "submitted_code" | "displayed_code" | "browser_redirect";
   loading?: boolean;
   children: ReactNode;
 }) {
@@ -435,7 +437,7 @@ export function ProviderSubscriptionCard({
       loading={loading}
       instruction={
         <Trans
-          i18nKey={mode === "submitted_code" ? "providerSetup.login.submitInstructions" : "providerSetup.login.displayInstructions"}
+          i18nKey={mode === "browser_redirect" ? "providerSetup.login.redirectInstructions" : mode === "submitted_code" ? "providerSetup.login.submitInstructions" : "providerSetup.login.displayInstructions"}
           values={{ provider: providerName }}
           components={{ signIn: <a href={authorizationUrl} target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-foreground" /> }}
         />
@@ -465,16 +467,16 @@ export function ProviderApiKeyCard({
 /** Shared instructions for local subscription setup in every authentication host. */
 export function LocalProviderLoginInstructions({ adapterType, login }: {
   adapterType: string;
-  login?: { isolated?: boolean; command?: string; authorizationUrl?: string | null; code?: string | null; submitCode?: (code: string) => Promise<void>; preparing: boolean; status?: "ready" | "sign_in_required" | "expired" | null; error: string | null; retry: () => void };
+  login?: { isolated?: boolean; command?: string; authorizationUrl?: string | null; code?: string | null; accountLabel?: string | null; submitCode?: (code: string) => Promise<void>; preparing: boolean; status?: "ready" | "sign_in_required" | "expired" | null; error: string | null; retry: () => void };
 }) {
   const { t } = useTranslation();
   const [showCommand, setShowCommand] = useState(false);
   const [browserCode, setBrowserCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const provider = adapterType === "claude_local" ? "Claude Code" : adapterType === "grok_local" ? "Grok CLI" : "Codex CLI";
+  const provider = adapterType === "antigravity_runtime" ? "Google Antigravity" : adapterType === "claude_local" ? "Claude Code" : adapterType === "grok_local" ? "Grok CLI" : "Codex CLI";
   const isolated = login?.isolated ?? (adapterType === "codex_local" || adapterType === "grok_local");
   const command = login?.command;
-  const browserLogin = adapterType === "claude_local" || adapterType === "codex_local";
+  const browserLogin = adapterType === "claude_local" || adapterType === "codex_local" || adapterType === "antigravity_runtime";
   async function submitBrowserCode() {
     if (!browserCode.trim() || !login?.submitCode || submitting) return;
     setSubmitting(true);
@@ -491,14 +493,14 @@ export function LocalProviderLoginInstructions({ adapterType, login }: {
   const ready = login?.status === "ready";
   return <div className="min-w-0 max-w-full space-y-3 text-sm text-muted-foreground">
     {ready ? <>
-      <p role="status" className="flex items-center gap-2 text-foreground"><Check className="size-4 shrink-0 text-(--status-task-icon-done)" />{t("providerSetup.login.localReady", { provider })}</p>
-      {!showCommand && <button type="button" className="underline underline-offset-4" onClick={() => browserLogin ? login?.retry() : setShowCommand(true)}>{t("providerSetup.login.differentAccount")}</button>}
-    </> : !browserLogin && <p>{isolated ? t("providerSetup.login.localIsolated", { provider }) : t("providerSetup.login.localAccount", { provider })}</p>}
-    {browserLogin && !ready && !login?.authorizationUrl && !login?.error && <p role="status">{t("providerSetup.login.preparingBrowser")}</p>}
+      <p role="status" className="flex items-center gap-2 text-foreground"><Check className="size-4 shrink-0 text-(--status-task-icon-done)" />{login?.accountLabel ?? provider} {translateUi("interfaceUpdates.is_signed_in_click_connect_to_use_this_account_8561b440")}</p>
+      {!showCommand && <button type="button" className="underline underline-offset-4" onClick={() => browserLogin ? login?.retry() : setShowCommand(true)}>{translateUi("providerSetup.login.differentAccount")}</button>}
+    </> : !browserLogin && <p>{isolated ? translateUi("interfaceUpdates.sign_in_to_value_for_this_connection_on_the_machin_07e9a6bc", { value1: (provider) }) : translateUi("interfaceUpdates.connect_uses_your_local_value_account_on_the_machi_ab87bddd", { value1: (provider) })}</p>}
+    {browserLogin && !ready && !login?.authorizationUrl && !login?.error && <p role="status">{translateUi("providerSetup.login.preparingBrowser")}</p>}
     {browserLogin && !ready && !login?.error && login?.authorizationUrl && <ProviderSubscriptionCard
       providerName={connectSourceName(adapterType)}
       authorizationUrl={login.authorizationUrl}
-      mode={adapterType === "claude_local" ? "submitted_code" : "displayed_code"}
+      mode={adapterType === "antigravity_runtime" ? "browser_redirect" : adapterType === "claude_local" ? "submitted_code" : "displayed_code"}
     >
       {adapterType === "claude_local" ? <div className="flex flex-col gap-2">
         <OnboardingCardField
@@ -508,7 +510,7 @@ export function LocalProviderLoginInstructions({ adapterType, login }: {
           disabled={submitting}
         />
         <Button type="button" disabled={!browserCode.trim() || submitting} onClick={() => void submitBrowserCode()}>{t("providerSetup.login.submitCode")}</Button>
-      </div> : <OnboardingLoginCodeRow code={login.code ?? ""} />}
+      </div> : adapterType === "antigravity_runtime" ? <p>{translateUi("interfaceUpdates.finish_signing_in_in_the_google_browser_window_the_9b948e44")}</p> : <OnboardingLoginCodeRow code={login.code ?? ""} />}
     </ProviderSubscriptionCard>}
     {!browserLogin && (!ready || showCommand) && !login?.error && <>
       <p>{t("providerSetup.login.terminalInstructions")}</p>

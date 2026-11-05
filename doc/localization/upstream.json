@@ -5,10 +5,10 @@
   "forkBranch": "russian",
   "syncBranch": "codex/upstream-sync",
   "trackingChannel": "stable",
-  "lastAcceptedUpstreamSha": "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20",
+  "lastAcceptedUpstreamSha": "fb2e07ebdd17a813965c4e415696e72cc6f9eed2",
   "acceptedSource": {
     "channel": "master",
-    "upstreamSha": "0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20",
+    "upstreamSha": "fb2e07ebdd17a813965c4e415696e72cc6f9eed2",
     "baseTag": "v2026.1023.0",
     "baseSha": "1b4c803816e82b0265c8422e1a804327a7ed8c54"
   }

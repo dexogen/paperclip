@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n } from "@/i18n";
 import { t, useTranslation } from "@/i18n";
 import { useEffect, useState, type ReactNode } from "react";
@@ -12,6 +13,7 @@ import type {
 } from "@paperclipai/shared";
 import { experimentalSettingKey } from "@paperclipai/shared";
 import { instanceSettingsApi } from "@/api/instanceSettings";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { useHiddenSettings } from "@/hooks/useHiddenSettings";
 import { getWorktreeInstanceId, isWorktreeRuntime } from "../lib/worktree-branding";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
@@ -21,6 +23,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "@/lib/router";
+import { CoordinatorWorkspaceSetting } from "@/components/CoordinatorWorkspaceSetting";
+import { describeError } from "@/api/errors";
 
 type WorktreeRunExecutionDisplayState =
   | { kind: "off" }
@@ -97,7 +101,7 @@ function ExperimentalToggleCard({
   const isManaged = managed?.managed === true;
   if (hiddenSettings.has(experimentalSettingKey(settingKey))) return null;
   return (
-    <Card className="block bg-transparent p-5">
+    <Card id={`experimental-${settingKey}`} className="block scroll-mt-4 bg-transparent p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
@@ -139,6 +143,7 @@ export function InstanceExperimentalSettings() {
     queryKey: queryKeys.instance.experimentalSettings,
     queryFn: () => instanceSettingsApi.getExperimental(),
   });
+  const experimentalView = useQueryView(experimentalQuery);
 
   const toggleMutation = useMutation<
     InstanceExperimentalSettingsWithManaged,
@@ -176,21 +181,29 @@ export function InstanceExperimentalSettings() {
       if (context?.previousSettings) {
         queryClient.setQueryData(queryKeys.instance.experimentalSettings, context.previousSettings);
       }
-      setActionError(error instanceof Error ? error.message : t("fullPages.failedToUpdateExperimentalSettings"));
+      setActionError(describeError(error).body);
     },
   });
 
-  if (experimentalQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">{t("fullPages.loadingExperimentalSettings")}</div>;
+  if (experimentalQuery.isLoading || experimentalView.kind === "reconnecting") {
+    return (
+      <div className="max-w-6xl space-y-6">
+        <CoordinatorWorkspaceSetting key="personal-workspace" />
+        <div className="text-sm text-muted-foreground">{t("fullPages.loadingExperimentalSettings")}</div>
+      </div>
+    );
   }
 
-  if (experimentalQuery.error) {
+  if (experimentalView.kind === "error") {
     return (
-      <div className="text-sm text-destructive">
-        {experimentalQuery.error instanceof Error
-          ? experimentalQuery.error.message
-          : t("fullPages.failedToLoadExperimentalSettings")}
-      </div>
+<div className="max-w-6xl space-y-6"><CoordinatorWorkspaceSetting key="personal-workspace" />      <QueryErrorState
+        size="page"
+        error={experimentalQuery.error}
+        action="load experimental settings"
+        onRetry={experimentalView.retry}
+        retrying={experimentalView.isFetching}
+      />
+</div>
     );
   }
 
@@ -263,6 +276,8 @@ export function InstanceExperimentalSettings() {
         <p className="text-sm text-muted-foreground">{t("fullPages.optIntoFeaturesThatAreStillBeing")}</p>
       </div>
 
+      <CoordinatorWorkspaceSetting key="personal-workspace" />
+
       <div
         role="alert"
         className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3"
@@ -301,21 +316,9 @@ export function InstanceExperimentalSettings() {
         />
 
         <ExperimentalToggleCard
-          title={t("fullPages.artifactsV1")}
-          description={t("fullPages.showArtifactsTheWayTheArtifactDirections")}
-          footnote={t("fullPages.presentationOnlyTurningThisOffRestoresThe")}
-          checked={experimentalQuery.data?.enableArtifactsV1 ?? false}
-          onCheckedChange={(checked) => toggleMutation.mutate({ enableArtifactsV1: checked })}
-          disabled={toggleMutation.isPending}
-          settingKey="enableArtifactsV1"
-          managed={managedKeys.enableArtifactsV1}
-          ariaLabel={t("fullPages.toggleArtifactsV1ExperimentalSetting")}
-        />
-
-        <ExperimentalToggleCard
-          title={t("fullPages.assistantConnectionsMcp")}
-          description={t("fullPages.connectCodexClaudeAndOtherAssistantsTo")}
-          footnote={<>{t("fullPages.requiresAnAuthenticatedInstanceWithAConfigured")}{experimentalQuery.data?.enablePublicMcp && <> <Link className="underline" to="/apps/assistant-connection">{t("fullPages.setUpAnAssistantConnection")}</Link></>}</>}
+          title={translateUi("fullPages.assistantConnectionsMcp")}
+          description={translateUi("fullPages.connectCodexClaudeAndOtherAssistantsTo")}
+          footnote={<>{translateUi("fullPages.requiresAnAuthenticatedInstanceWithAConfigured")}{experimentalQuery.data?.enablePublicMcp && <> <Link className="underline" to="/apps/assistant-connection">{translateUi("fullPages.setUpAnAssistantConnection")}</Link></>}</>}
           checked={experimentalQuery.data?.enablePublicMcp === true}
           onCheckedChange={(checked) => toggleMutation.mutate({ enablePublicMcp: checked })}
           disabled={toggleMutation.isPending}
@@ -394,6 +397,18 @@ export function InstanceExperimentalSettings() {
             ariaLabel={t("fullPages.toggleConferenceRoomChatExperimentalSetting")}
           />
         ) : null}
+
+        <ExperimentalToggleCard
+          title={translateUi("interfaceUpdates.command_ctrl_enter_to_submit_d5894ecb")}
+          description={translateUi("interfaceUpdates.restore_the_previous_keyboard_shortcut_for_task_re_053069c1")}
+          footnote="Off by default: Enter submits, and Shift+Enter adds a new line."
+          checked={experimentalQuery.data?.enableLegacyComposerSubmit === true}
+          onCheckedChange={(checked) => toggleMutation.mutate({ enableLegacyComposerSubmit: checked })}
+          disabled={toggleMutation.isPending}
+          settingKey="enableLegacyComposerSubmit"
+          managed={managedKeys.enableLegacyComposerSubmit}
+          ariaLabel="Toggle Command/Ctrl+Enter to submit"
+        />
 
         <ExperimentalToggleCard
           title={t("sidebar.decisions")}
@@ -484,6 +499,18 @@ export function InstanceExperimentalSettings() {
           settingKey="enableGitHubReviewBots"
           managed={managedKeys.enableGitHubReviewBots}
           ariaLabel={t("fullPages.toggleGithubReviewBotsExperimentalSetting")}
+        />
+
+        <ExperimentalToggleCard
+          title={translateUi("interfaceUpdates.google_workspace_connector_paperclip_2feebf47")}
+          description={translateUi("interfaceUpdates.show_the_built_in_google_workspace_connector_for_g_218755ea")}
+          footnote="Off by default. While off, Google apps are offered through Composio and Arcade instead, and the built-in connector cannot be set up or run."
+          checked={experimentalQuery.data?.enableGoogleWorkspaceConnector === true}
+          onCheckedChange={(checked) => toggleMutation.mutate({ enableGoogleWorkspaceConnector: checked })}
+          disabled={toggleMutation.isPending}
+          settingKey="enableGoogleWorkspaceConnector"
+          managed={managedKeys.enableGoogleWorkspaceConnector}
+          ariaLabel="Toggle Paperclip Google Workspace connector experimental setting"
         />
 
         <ExperimentalToggleCard

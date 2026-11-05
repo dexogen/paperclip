@@ -1,8 +1,12 @@
+import { t as translateUi } from "@/i18n";
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, renderAppError } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
 import { Trans, i18n, t, t as currentT, useTranslation } from "@/i18n";
+import { connectionIntentsApi } from "@/api/connection-intents";
+import { readOAuthWindowOutcome } from "@/lib/oauthWindowOutcome";
+import { bindAccount } from "@/lib/account-scope";
 import { StepHeader } from "./ConnectionSetupHeader";
 import { GoogleWorkspaceServicesDialog } from "./GoogleWorkspaceServices";
 import type { GoogleWorkspaceServiceSelection } from "@paperclipai/shared";
@@ -76,7 +80,9 @@ import { agentsApi } from "@/api/agents";
 import { githubConnectionMethodLabel, githubConnectionFieldLabel, githubConnectionFieldHelp } from "@/lib/github-connection-display";
 import { appCopyFor, credentialFieldLabel } from "@/lib/app-gallery-copy";
 import { AgentMultiSelect, type AgentMultiSelectOption } from "@/components/AgentMultiSelect";
+import { describeError } from "@/api/errors";
 import { InlineBanner } from "@/components/InlineBanner";
+import { useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
@@ -86,7 +92,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useCopyAction } from "@/lib/use-copy-action";
 import { resolveAuthorizationTarget } from "@/lib/authorizationUrl";
-import { navigateTopLevel } from "@/lib/browserNavigation";
 import { OAuthHandoffError, prepareOAuthNavigation, savePendingCloudHandoff } from "@/lib/oauthHandoff";
 import { redactUrlSecrets } from "@/lib/redact-url-secrets";
 import { askFirstCatalogEntryIdsFor } from "./connection-defaults";
@@ -676,10 +681,11 @@ export function ConnectionSetupFlow(props: ConnectionSetupFlowProps = {}) {
     ? getAppDefinitionForApplicationKey(application.applicationKey)
     : getConnectableAppDefinition(String(retained?.config?.sourceTemplateKey ?? ""));
   const gatedDefinitions = [persistedDefinition, requestedDefinition].filter(app => app?.experimentalFeatureKey);
+  const existingView = useQueryView(existing);
   const provider = source || existing.data?.config?.sourceTemplateKey;
   const method = searchParams.get("method") || existing.data?.config?.connectionMethodKey;
-  if (lookup && existing.isPending) return <p className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.loading")}</p>;
-  if (lookup && existing.isError) return <div role="alert" className="space-y-3 p-6"><p>{t("githubSetupUi.lookup.loadFailed")}</p><Button variant="outline" onClick={() => void existing.refetch()}>{t("githubSetupUi.retry")}</Button></div>;
+  if (lookup && (existingView.kind === "loading" || existingView.kind === "reconnecting")) return <p className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.loading")}</p>;
+  if (lookup && existingView.kind === "error") return <div role="alert" className="space-y-3 p-6"><p>{t("githubSetupUi.lookup.loadFailed")}</p><Button variant="outline" onClick={() => void existing.refetch()}>{t("githubSetupUi.retry")}</Button></div>;
   if (gatedDefinitions.length) {
     if (!availability.loaded) return <p role="status" className="p-6 text-sm text-muted-foreground">{t("githubSetupUi.lookup.settingsLoading")}</p>;
     if (availability.failed) return <p role="alert" className="p-6 text-destructive text-sm">{t("githubSetupUi.lookup.availabilityFailed")}</p>;
@@ -868,6 +874,27 @@ function StandardConnectionSetupFlow({
   const [dialogOAuthConnectionId, setDialogOAuthConnectionId] = useState<string | null>(null);
   const [authorizationFallbackUrl, setAuthorizationFallbackUrl] = useState<string | null>(null);
   const oauthHandoffAbortRef = useRef<AbortController | null>(null);
+  const oauthLookupScope = JSON.stringify([selectedCompanyId, requestedAppKey, resumeConnectionId, connectionIntentId, credentialSource, host, createNewConnection]);
+  const oauthLookupScopeRef = useRef(oauthLookupScope);
+  oauthLookupScopeRef.current = oauthLookupScope;
+  const pendingOAuthLookupRef = useRef<{ scope: string; account: ReturnType<typeof bindAccount> } | null>(null);
+  const cancelOAuthLookup = useCallback(() => {
+    if (!pendingOAuthLookupRef.current) return false;
+    pendingOAuthLookupRef.current = null;
+    directOAuthRetryingRef.current = false;
+    oauthPopupRef.current?.close();
+    oauthPopupRef.current = null;
+    return true;
+  }, []);
+  useEffect(() => {
+    if (pendingOAuthLookupRef.current && pendingOAuthLookupRef.current.scope !== oauthLookupScope) {
+      cancelOAuthLookup();
+      setOAuthPhase("entry");
+      setOAuthError(null);
+    }
+  }, [cancelOAuthLookup, oauthLookupScope]);
+  useEffect(() => () => { cancelOAuthLookup(); }, [cancelOAuthLookup]);
+
   const [showConnectionChoice, setShowConnectionChoice] = useState(
     existingConnections.length > 0 && Boolean(onUseExisting),
   );
@@ -876,19 +903,16 @@ function StandardConnectionSetupFlow({
   const [unavailableReconnectId, setUnavailableReconnectId] = useState<string | null>(null);
 
   const reserveOAuthPopup = useCallback(() => {
-    if (host !== "dialog" || oauthPopupRef.current?.closed === false) return;
-    oauthPopupRef.current = window.open(
-      "about:blank",
-      "paperclip-connection-oauth",
-      "popup,width=720,height=760,resizable=yes,scrollbars=yes",
-    );
-  }, [host]);
+    if (oauthPopupRef.current?.closed === false) return;
+    try {
+      oauthPopupRef.current = window.open("about:blank", "_blank", "popup,width=720,height=760,resizable=yes,scrollbars=yes");
+      // Task-bound setup can resume in either host and needs its existing
+      // origin-checked callback. Standalone flows verify saved state instead.
+      if (oauthPopupRef.current && !connectionIntentId) oauthPopupRef.current.opener = null;
+    } catch { oauthPopupRef.current = null; }
+  }, [connectionIntentId]);
 
   const openAuthorization = useCallback((url: string) => {
-    if (host !== "dialog") {
-      navigateTopLevel(url);
-      return;
-    }
     setAuthorizationFallbackUrl(url);
     const popup = oauthPopupRef.current;
     if (!popup || popup.closed) {
@@ -911,7 +935,7 @@ function StandardConnectionSetupFlow({
   }, [onPhaseChange]);
 
   useEffect(() => {
-    if (host !== "dialog" || oauthPhase !== "redirecting") return;
+    if (oauthPhase !== "redirecting") return;
     const timer = window.setInterval(() => {
       if (!oauthPopupRef.current?.closed) return;
       setOAuthPhase("error");
@@ -931,7 +955,7 @@ function StandardConnectionSetupFlow({
     try {
       const target = await prepareOAuthNavigation(start, { signal: controller.signal });
       if (target.kind === "reauthentication") {
-        const destination = host === "dialog" ? oauthPopupRef.current : window;
+        const destination = oauthPopupRef.current;
         if (!destination || destination.closed || !start.handoff) {
           throw new ConnectionSetupError("preserveFailed");
         }
@@ -942,8 +966,11 @@ function StandardConnectionSetupFlow({
         setOAuthPhase("redirecting");
       }
       openAuthorization(target.url);
+      if (target.kind === "reauthentication") setAuthorizationFallbackUrl(null);
     } catch (error) {
       if (controller.signal.aborted) return;
+      oauthPopupRef.current?.close();
+      oauthPopupRef.current = null;
       setOAuthPhase("error");
       setOAuthError(setupFailure(error, "startFailed"));
       onPhaseChange?.("needs_retry");
@@ -955,13 +982,27 @@ function StandardConnectionSetupFlow({
   useEffect(() => () => oauthHandoffAbortRef.current?.abort(), []);
 
   useEffect(() => {
-    if (host !== "dialog" || !connectionIntentId) return;
-    const receiveOAuthOutcome = (event: MessageEvent) => {
+    if (!connectionIntentId) return;
+    let disposed = false;
+    const receiveOAuthOutcome = async (event: MessageEvent) => {
       const outcome = readConnectionIntentOAuthOutcome(event, window.location.origin, connectionIntentId);
       if (outcome === "connected") {
         setOAuthPhase("entry");
         setAuthorizationFallbackUrl(null);
-        onComplete?.({ resolvedByCallback: true });
+        if (onComplete) onComplete({ resolvedByCallback: true });
+        else if (host === "page") {
+          const account = bindAccount(queryClient);
+          try {
+            const verified = await connectionIntentsApi.setupOptions(connectionIntentId);
+            if (disposed || !account.isCurrentScope()) return;
+            if (verified.interaction.status !== "accepted") throw new Error("Authorization has not been confirmed yet. Try again.");
+            navigate(`/issues/${verified.interaction.issueId}`);
+          } catch (error) {
+            if (disposed || !account.isCurrentScope()) return;
+            setOAuthPhase("error");
+            setOAuthError(describeError(error).body);
+          }
+        }
         return;
       }
       if (outcome === "declined") {
@@ -975,42 +1016,43 @@ function StandardConnectionSetupFlow({
       setOAuthError(new ConnectionSetupError("incomplete"));
     };
     window.addEventListener("message", receiveOAuthOutcome);
-    return () => window.removeEventListener("message", receiveOAuthOutcome);
-  }, [connectionIntentId, host, onComplete, onOAuthDeclined]);
+    return () => { disposed = true; window.removeEventListener("message", receiveOAuthOutcome); };
+  }, [connectionIntentId, host, onComplete, onOAuthDeclined, navigate, queryClient, selectedCompanyId]);
 
   // Standalone dialog hosts have no task interaction to receive a callback.
   // Wait for this popup to return to our origin, then verify durable state via
   // the API. Provider-window contents never determine the saved connection.
   useEffect(() => {
-    if (host !== "dialog" || connectionIntentId || !dialogOAuthConnectionId) return;
+    if (connectionIntentId || !dialogOAuthConnectionId) return;
     let cancelled = false;
     let checking = false;
     const timer = window.setInterval(async () => {
       if (checking || cancelled) return;
       const popup = oauthPopupRef.current;
-      if (!popup || popup.closed) {
+      // Native fallback links have no Window handle; leave their saved flow available.
+      if (!popup) return;
+      if (popup.closed) {
         setDialogOAuthConnectionId(null);
         setOAuthPhase("error");
         setOAuthError(new ConnectionSetupError("githubPopupClosed"));
         return;
       }
-      let returned: URL;
-      try { returned = new URL(popup.location.href); } catch { return; }
-      if (returned.origin !== window.location.origin || !returned.pathname.includes(dialogOAuthConnectionId)) return;
-      if (returned.searchParams.has("oauth")) {
+      const outcome = readOAuthWindowOutcome(popup, dialogOAuthConnectionId);
+      if (outcome === "waiting") return;
+      if (outcome !== "connected") {
         setDialogOAuthConnectionId(null);
         setOAuthPhase("error");
         setOAuthError(new ConnectionSetupError("finishInWindow"));
         return;
       }
-      if (returned.searchParams.get("success") !== "1") return;
       checking = true;
       try {
         const connection = await toolsApi.getConnection(dialogOAuthConnectionId);
         if (!cancelled && connection.status === "active") {
           setDialogOAuthConnectionId(null);
           popup.close();
-          onComplete?.({ connectionId: connection.id });
+          if (onComplete) onComplete({ connectionId: connection.id });
+          else navigate(`/apps/${connection.id}/permissions`);
         }
       } catch {
         if (!cancelled) {
@@ -1091,6 +1133,7 @@ function StandardConnectionSetupFlow({
   };
 
   const backToGallery = () => {
+    cancelOAuthLookup();
     // Back is a wizard transition, so keep the selected app and entered draft
     // intact. Picking another connector will replace that state explicitly.
     setStep("gallery");
@@ -1120,6 +1163,7 @@ function StandardConnectionSetupFlow({
     } : data, [connectionIntentId, aiConnection?.provider, aiConnection?.method, aiConnection?.mode]),
     enabled: !!selectedCompanyId,
   });
+  const galleryView = useQueryView(galleryQuery);
   const callbackUrlForSetup = oauthCallbackUrlForBrowser(
     window.location.origin,
     galleryQuery.data?.oauthCallbackUrl,
@@ -1180,6 +1224,7 @@ function StandardConnectionSetupFlow({
       && !entryAdvertisesManagedConnector
     ),
   });
+  const connectorEnrollmentView = useQueryView(connectorEnrollmentQuery);
   const [connectorEnrollmentError, setConnectorEnrollmentError] = useState<string | ConnectionSetupError | OAuthHandoffError | null>(null);
   const closeEnrollmentPopup = useCallback(() => {
     oauthPopupRef.current?.close();
@@ -1201,18 +1246,14 @@ function StandardConnectionSetupFlow({
       setConnectorEnrollmentError(target.displayCode ? new OAuthHandoffError(target.message, "invalid_handoff", { kind: "authorization", code: target.displayCode }) : target.message);
       return;
     }
-    if (host === "dialog") {
-      setEnrollmentAuthorizationUrl(target.url);
-      const popup = oauthPopupRef.current;
-      if (popup && !popup.closed) {
-        popup.location.assign(target.url);
-        popup.focus();
-      } else {
-        setConnectorEnrollmentError(new ConnectionSetupError("enrollmentTab"));
-      }
-      return;
+    setEnrollmentAuthorizationUrl(target.url);
+    const popup = oauthPopupRef.current;
+    if (popup && !popup.closed) {
+      popup.location.assign(target.url);
+      popup.focus();
+    } else {
+      setConnectorEnrollmentError(new ConnectionSetupError("enrollmentTab"));
     }
-    navigateTopLevel(target.url);
   }, [host, closeEnrollmentPopup]);
   useEffect(() => {
     if (!enrollmentAuthorizationUrl || connectorEnrollmentQuery.data?.status !== "active") return;
@@ -1261,6 +1302,8 @@ function StandardConnectionSetupFlow({
     enabled: !!selectedCompanyId && (!!directOAuthSource || !!resumeConnectionId || !!reconnectConnectionId),
     refetchOnMount: "always",
   });
+  const applicationsView = useQueryView(applicationsQuery);
+  const connectionsView = useQueryView(connectionsQuery);
   const existingOAuthConnection = useMemo(
     () => forceNewConnection ? null : reusableOAuthConnection(
       directOAuthSource,
@@ -1425,6 +1468,8 @@ function StandardConnectionSetupFlow({
     },
     onSuccess: (start) => void prepareAndOpenOAuth(start),
     onError: (error) => {
+      oauthPopupRef.current?.close();
+      oauthPopupRef.current = null;
       const details = error instanceof ApiError && error.body && typeof error.body === "object"
         ? (error.body as { details?: { code?: unknown } }).details
         : null;
@@ -1445,14 +1490,14 @@ function StandardConnectionSetupFlow({
       setWorkspaceConsent(() => () => {
         onPhaseChange?.("authorizing");
         reserveOAuthPopup();
-        if (host === "dialog" && !connectionIntentId) setDialogOAuthConnectionId(connection.id);
+        if (!connectionIntentId) setDialogOAuthConnectionId(connection.id);
         mutateOAuthStart(connection);
       });
       return;
     }
     onPhaseChange?.("authorizing");
     reserveOAuthPopup();
-    if (host === "dialog" && !connectionIntentId) setDialogOAuthConnectionId(connection.id);
+    if (!connectionIntentId) setDialogOAuthConnectionId(connection.id);
     mutateOAuthStart(connection);
   }, [mutateOAuthStart, onPhaseChange, reserveOAuthPopup, host, connectionIntentId]);
 
@@ -1575,32 +1620,25 @@ function StandardConnectionSetupFlow({
         // operator registers themselves. Keep the draft and ask for it in place
         // rather than sending them back to the start.
         if (result.auth.manualClientRequired) {
+          oauthPopupRef.current?.close();
+          oauthPopupRef.current = null;
           setLinkGuidance(genericConnectGuidance("oauth_manual_client_required", null));
           setLinkAuthMode("oauth");
           setLinkAdvancedOpen(true);
           setGenericOAuthPending(false);
           return;
         }
-        if (host === "dialog" || connectionIntentId) {
-          setOAuthPhase("starting");
-          setGenericOAuthPending(!entry);
-          startOAuth(result.connection);
-          return;
-        }
+        setOAuthPhase("starting");
+        setGenericOAuthPending(!entry);
         const startUrl = result.auth.startUrl?.trim();
-        if (!startUrl) {
-          setOAuthPhase("starting");
-          setGenericOAuthPending(true);
-          startOAuth(result.connection);
-          return;
-        }
-        setGenericOAuthPending(true);
-        void prepareAndOpenOAuth({
-          authorizationUrl: startUrl,
-          handoff: result.auth.handoff,
-        });
+        if (startUrl && !connectionIntentId) {
+          setDialogOAuthConnectionId(result.connectionId);
+          void prepareAndOpenOAuth({ authorizationUrl: startUrl, handoff: result.auth.handoff });
+        } else startOAuth(result.connection);
         return;
       }
+      oauthPopupRef.current?.close();
+      oauthPopupRef.current = null;
       setLinkGuidance(null);
       setConnectResult(result);
       const defaults: Record<string, boolean> = {};
@@ -1610,6 +1648,8 @@ function StandardConnectionSetupFlow({
       finishMutation.mutate({ result, enabled: defaults });
     },
     onError: (error) => {
+      oauthPopupRef.current?.close();
+      oauthPopupRef.current = null;
       const details = error instanceof ApiError && error.body && typeof error.body === "object"
         ? (error.body as { details?: { code?: unknown } }).details
         : null;
@@ -1629,7 +1669,7 @@ function StandardConnectionSetupFlow({
       // for a pasted address "check your key" is usually the wrong advice.
       if (!entry && linkUrl) {
         const code = typeof details?.code === "string" ? details.code : null;
-        const guidance = genericConnectGuidance(code, error instanceof Error ? renderAppError(error) : null);
+        const guidance = genericConnectGuidance(code, describeError(error).body);
         setLinkGuidance(guidance);
         setGenericOAuthPending(false);
         if (guidance.focus === "credentials") {
@@ -1642,7 +1682,7 @@ function StandardConnectionSetupFlow({
       }
       pushToast({
         title: currentT("githubSetupUi.connectFailed"),
-        body: error instanceof Error ? renderAppError(error) : currentT("githubSetupUi.keyInvalid"),
+        body: describeError(error).body,
         tone: "error",
       });
     },
@@ -1661,11 +1701,11 @@ function StandardConnectionSetupFlow({
       });
       return;
     }
-    if (method?.auth === "oauth") {
+    if (method?.auth === "oauth" || (!connectEntry && !zapierSource && (linkAuthMode === "auto" || linkAuthMode === "oauth"))) {
       reserveOAuthPopup();
     }
     mutateConnect(entryOverride);
-  }, [connectionMethodKey, entry, identityConnection, mutateConnect, reserveOAuthPopup]);
+  }, [connectionMethodKey, entry, identityConnection, linkAuthMode, zapierSource, mutateConnect, reserveOAuthPopup]);
 
   useEffect(() => {
     if (!requestedAppKey || galleryQuery.isLoading || !galleryQuery.data) return;
@@ -1814,7 +1854,7 @@ function StandardConnectionSetupFlow({
       !connectionsQuery.isFetchedAfterMount
     )) return;
     if (automaticOAuth && directOAuthRetryingRef.current) return;
-    if (automaticOAuth && (applicationsQuery.isError || connectionsQuery.isError)) {
+    if (automaticOAuth && (applicationsView.kind === "error" || connectionsView.kind === "error")) {
       setOAuthPhase("error");
       setOAuthError(new ConnectionSetupError("lookupFailed"));
       setStep("key");
@@ -1823,10 +1863,10 @@ function StandardConnectionSetupFlow({
   }, [
     aiConnection,
     requestedMethodKey,
-    applicationsQuery.isError,
+    applicationsView.kind,
     applicationsQuery.isFetchedAfterMount,
     applicationsQuery.data,
-    connectionsQuery.isError,
+    connectionsView.kind,
     connectionsQuery.isFetchedAfterMount,
     connectorEnrollmentQuery.data?.configured,
     connectorEnrollmentQuery.isLoading,
@@ -1980,7 +2020,7 @@ function StandardConnectionSetupFlow({
       setAppStep("key");
       pushToast({
         title: currentT("githubSetupUi.finishFailed"),
-        body: error instanceof Error ? renderAppError(error) : currentT("githubSetupUi.tryAgain"),
+        body: describeError(error).body,
         tone: "error",
       });
     },
@@ -1992,7 +2032,7 @@ function StandardConnectionSetupFlow({
 
   if (
     (resumeConnectionId || reconnectConnectionId)
-    && (connectionsQuery.isError || applicationsQuery.isError)
+    && (connectionsView.kind === "error" || applicationsView.kind === "error")
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
@@ -2008,7 +2048,7 @@ function StandardConnectionSetupFlow({
                 connectionsQuery.refetch(),
                 applicationsQuery.refetch(),
               ]);
-              if (!connectionsResult.isError && !applicationsResult.isError) {
+              if (connectionsResult.isSuccess && applicationsResult.isSuccess) {
                 setOAuthError(null);
                 setOAuthPhase("entry");
               }
@@ -2020,6 +2060,20 @@ function StandardConnectionSetupFlow({
             {t("githubSetupUi.backToApps")}
           </Button>
         </div>
+      </div>
+    );
+  }
+
+  // An outage before the retained connection has loaded is not a missing
+  // connection: keep the placeholder until the server is back.
+  if (
+    (resumeConnectionId || reconnectConnectionId)
+    && [connectionsView, applicationsView, galleryView].some((view) => view.kind === "reconnecting")
+  ) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4" aria-label={resumeConnectionId ? translateUi("githubSetupUi.loadingSaved") : translateUi("githubSetupUi.loadingRetained")}>
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-40 w-full rounded-xl" />
       </div>
     );
   }
@@ -2079,7 +2133,7 @@ function StandardConnectionSetupFlow({
     );
   }
 
-  if ((resumeConnectionId || reconnectConnectionId) && galleryQuery.isError) {
+  if ((resumeConnectionId || reconnectConnectionId) && galleryView.kind === "error") {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
         <h2 className="text-lg font-semibold text-foreground">{t("githubSetupUi.loadFailedTitle")}</h2>
@@ -2087,7 +2141,7 @@ function StandardConnectionSetupFlow({
           {t("githubSetupUi.providerLoadFailed")}
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
-          <Button type="button" onClick={() => void galleryQuery.refetch()}>
+          <Button type="button" onClick={galleryView.retry} disabled={galleryView.isFetching}>
             {t("githubSetupUi.retry")}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/apps")}>
@@ -2298,7 +2352,7 @@ function StandardConnectionSetupFlow({
     && !entryAdvertisesManagedConnector
     && (
       connectorEnrollmentQuery.isLoading
-      || connectorEnrollmentQuery.isError
+      || connectorEnrollmentView.kind === "error"
       || connectorEnrollmentQuery.data?.configured !== true
     )
   );
@@ -2341,7 +2395,7 @@ function StandardConnectionSetupFlow({
         settingsValid={additionalSettingsValid && instructionsValid}
         onOpenAuthorization={openAuthorizationTab}
         onRetry={async () => {
-          const firstAttempt = !directOAuthAccessConfirmedRef.current;
+          if (pendingOAuthLookupRef.current) return;
           directOAuthAccessConfirmedRef.current = true;
           setOAuthError(null);
           setOAuthPhase("starting");
@@ -2357,40 +2411,31 @@ function StandardConnectionSetupFlow({
             startOAuth(connection);
             return;
           }
-          if (
-            firstAttempt
-            && !resumeConnectionId
-            && !applicationsQuery.isError
-            && !connectionsQuery.isError
-          ) {
-            connectApp(automaticOAuthEntry);
-            return;
-          }
-
-          // The create request may have reached the server even when its
-          // response did not reach the browser. Re-read both resources before
-          // creating again so Retry resumes that durable draft instead of
-          // duplicating it.
+          // Cached empty lists cannot authorize creation. A fresh lookup also
+          // recovers an earlier create whose response never reached this tab.
+          // Reserve the dialog window while this click still has user activation.
+          if (automaticOAuthEntry?.slug !== "google-workspace" || workspaceSelectionRef.current) reserveOAuthPopup();
+          const lookup = { scope: oauthLookupScope, account: bindAccount(queryClient) };
+          pendingOAuthLookupRef.current = lookup;
+          const isCurrentLookup = () => pendingOAuthLookupRef.current === lookup && oauthLookupScopeRef.current === lookup.scope && lookup.account.isCurrentScope();
           directOAuthRetryingRef.current = true;
           try {
-            const [applicationsResult, connectionsResult] = await Promise.all([
-              applicationsQuery.refetch(),
-              connectionsQuery.refetch(),
+            const [applications, connections] = await Promise.all([
+              toolsApi.listApplications(selectedCompanyId!, { cache: "no-store", fresh: true }),
+              toolsApi.listConnections(selectedCompanyId!, { cache: "no-store", fresh: true }),
             ]);
-            if (applicationsResult.isError || connectionsResult.isError) {
-              setOAuthPhase("error");
-              setOAuthError(new ConnectionSetupError("lookupFailed"));
-              return;
-            }
+            if (!isCurrentLookup()) return;
+            queryClient.setQueryData(queryKeys.tools.applications(selectedCompanyId!), applications);
+            queryClient.setQueryData(queryKeys.tools.connections(selectedCompanyId!), connections);
             const refreshedResumeConnection = resumeConnectionId
-              ? (connectionsResult.data?.connections ?? []).find(
+              ? (connections.connections ?? []).find(
                   (candidate) => candidate.id === resumeConnectionId && candidate.authKind === "oauth",
                 ) ?? null
               : null;
             const refreshedConnection = refreshedResumeConnection ?? reusableOAuthConnection(
               directOAuthSource,
-              applicationsResult.data?.applications ?? [],
-              connectionsResult.data?.connections ?? [],
+              applications.applications ?? [],
+              connections.connections ?? [],
               createNewConnection
                 ? { applicationId: prefill.applicationId, draftOnly: true }
                 : {},
@@ -2409,10 +2454,25 @@ function StandardConnectionSetupFlow({
             if (refreshedConnection) {
               startOAuth(refreshedConnection);
             } else {
-              connectMutation.mutate(automaticOAuthEntry);
+              connectApp(automaticOAuthEntry);
             }
+          } catch {
+            if (!isCurrentLookup()) return;
+            oauthPopupRef.current?.close();
+            oauthPopupRef.current = null;
+            setOAuthPhase("error");
+            setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
           } finally {
-            directOAuthRetryingRef.current = false;
+            if (pendingOAuthLookupRef.current === lookup) {
+              if (!isCurrentLookup()) {
+                cancelOAuthLookup();
+                setOAuthPhase("entry");
+                setOAuthError(null);
+              } else {
+                pendingOAuthLookupRef.current = null;
+                directOAuthRetryingRef.current = false;
+              }
+            }
           }
         }}
         onBack={() => {
@@ -2422,6 +2482,7 @@ function StandardConnectionSetupFlow({
           backToGallery();
         }}
         onCancel={() => {
+          cancelOAuthLookup();
           oauthHandoffAbortRef.current?.abort();
           (onCancel ?? (() => navigate("/apps")))();
         }}
@@ -2467,6 +2528,7 @@ function StandardConnectionSetupFlow({
           setOAuthError(null);
         }}
         onCancel={() => {
+          cancelOAuthLookup();
           oauthHandoffAbortRef.current?.abort();
           (onCancel ?? (() => navigate("/apps")))();
         }}
@@ -2556,7 +2618,7 @@ function StandardConnectionSetupFlow({
 
       {step === "gallery" && (
         <GalleryStep
-          loading={galleryQuery.isLoading}
+          loading={galleryQuery.isLoading || galleryView.kind === "reconnecting"}
           initialLink={linkUrl}
           apps={credentialSourceApps}
           vercelConnect={vercelConnectMode}
@@ -2626,7 +2688,7 @@ function StandardConnectionSetupFlow({
               </Button>
             ) : null}
 
-            {connectorEnrollmentQuery.isError || connectorEnrollmentError ? (
+            {connectorEnrollmentView.kind === "error" || connectorEnrollmentError ? (
               <InlineBanner tone="danger" className="mt-4">
                 {setupFailureText(connectorEnrollmentError, t) ?? t("githubSetupUi.cloud.checkFailed")}
               </InlineBanner>
@@ -2669,7 +2731,7 @@ function StandardConnectionSetupFlow({
         <KeyStep
           settingsValid={additionalSettingsValid && instructionsValid}
           entry={entry}
-          error={connectMutation.isError ? (connectMutation.error instanceof Error ? renderAppError(connectMutation.error) : t("githubSetupUi.keyInvalid")) : null}
+          error={connectMutation.error ? describeError(connectMutation.error).body : null}
           values={credentials}
           onChange={setCredentials}
           oauthClientId={curatedOAuthClientId}
@@ -2807,7 +2869,7 @@ function StandardConnectionSetupFlow({
           onBack={backToGallery}
           onConnect={() => {
             setLinkGuidance(null);
-            connectMutation.mutate(undefined);
+            connectApp();
           }}
         />
       )}
@@ -2819,7 +2881,7 @@ function StandardConnectionSetupFlow({
           submitting={connectMutation.isPending}
           defaults={connectionDefaults}
           onBack={backToGallery}
-          onConnect={() => connectMutation.mutate(undefined)}
+          onConnect={() => connectApp()}
         />
       )}
 
@@ -4252,7 +4314,8 @@ export function AccessStep({ companyId, ...props }: Omit<Parameters<typeof Acces
     queryKey: queryKeys.agents.list(companyId),
     queryFn: () => agentsApi.list(companyId),
   });
-  return <AccessStepContent {...props} agents={(agentsQuery.data ?? []).filter((agent) => agent.status !== "terminated")} agentsLoading={agentsQuery.isLoading} />;
+  const agentsView = useQueryView(agentsQuery);
+  return <AccessStepContent {...props} agents={(agentsQuery.data ?? []).filter((agent) => agent.status !== "terminated")} agentsLoading={agentsQuery.isLoading || agentsView.kind === "reconnecting"} />;
 }
 
 /** Shared Gmail access presentation; callers supply agents so review stories stay offline. */

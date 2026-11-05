@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { isLockedIssueStub } from "@/components/LockedIssueChip";
 import { IssuePullRequestLinks } from "../IssuePullRequestLinks";
@@ -15,6 +16,8 @@ import { copyTextToClipboard } from "@/lib/clipboard";
 import { Link } from "@/lib/router";
 import {
   deriveOriginatingActor,
+  readProviderRateLimits,
+  summarizeProviderRateLimits,
   isArtifactReviewDocumentKey,
   type ExecutionWorkspace,
   type Issue,
@@ -35,7 +38,7 @@ import { projectsApi } from "../../api/projects";
 import { useCompany } from "../../context/CompanyContext";
 import { useSidebar } from "../../context/SidebarContext";
 import { queryKeys } from "../../lib/queryKeys";
-import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS, copilotTaskModelCatalogOptions } from "../../lib/copilot-task-model-catalog";
+import { ACCOUNT_BOUND_MODEL_DISCOVERY_QUERY_OPTIONS, nativeTaskModelCatalogOptions } from "../../lib/native-model-catalog";
 import { buildCompanyUserInlineOptions, buildCompanyUserLabelMap, buildCompanyUserProfileMap, isAgentTaskTarget } from "../../lib/company-members";
 import { ISSUE_OVERRIDE_ADAPTER_TYPES, type IssueModelLane } from "../../lib/issue-assignee-overrides";
 import { useProjectOrder } from "../../hooks/useProjectOrder";
@@ -51,6 +54,8 @@ import { formatAssigneeUserLabel, formatUserLabel } from "../../lib/assignees";
 import { buildExecutionPolicy, stageParticipantValues } from "../../lib/issue-execution-policy";
 import { useExecutionPolicy } from "../../hooks/useExecutionPolicy";
 import {
+  areAutomaticMonitorChecksPaused,
+  canCheckIssueMonitorNow,
   formatMonitorAbsolute,
   formatMonitorAbsoluteFull,
   deriveMonitorState,
@@ -69,7 +74,8 @@ import { SHOW_TASK_PRIORITY_UI } from "../../lib/ui-flags";
 import { Identity } from "../Identity";
 import { ProjectTile } from "../ProjectTile";
 import { IssueReferencePill } from "../IssueReferencePill";
-import { formatDate, formatDateTime, cn, projectUrl } from "../../lib/utils";
+import { formatDate, formatDateTime, cn, projectUrl, agentUrl } from "../../lib/utils";
+import { AgentRateLimitPropertyValue } from "../AgentRateLimitGauge";
 import type { IssueExternalObjectGroup } from "../../hooks/useIssueExternalObjects";
 import { timeAgo } from "../../lib/timeAgo";
 import { invalidateInboxIssueQueries } from "../../lib/inboxArchiveCache";
@@ -134,6 +140,7 @@ import {
   TaskDetailSubtasksPanel,
   type TaskDetailRelationItem,
 } from "../task-detail/TaskDetailRelationsPanel";
+import { taskStatusIconProps } from "@/lib/task-status-presentation";
 
 function splitMiddleTruncation(value: string): { prefix: string; suffix: string } | null {
   const splitAt = Math.max(value.lastIndexOf("/"), value.lastIndexOf("\\"));
@@ -429,6 +436,16 @@ export function IssueProperties({
     queryFn: () => agentsApi.list(companyId!),
     enabled: !!companyId,
   });
+  const assigneeRuntimeAgentId = issue.assigneeAgentId ?? null;
+  const { data: assigneeRuntimeState } = useQuery({
+    queryKey: queryKeys.agents.runtimeState(assigneeRuntimeAgentId ?? ""),
+    queryFn: () => agentsApi.runtimeState(assigneeRuntimeAgentId!, companyId ?? undefined),
+    // Optional detail: a 403 for board users without agent management access
+    // is not retried by the shared policy and simply hides the row.
+    enabled: !!assigneeRuntimeAgentId && !!companyId,
+  });
+  const assigneeRateLimits = readProviderRateLimits(assigneeRuntimeState?.stateJson);
+  const assigneeRateLimitAgent = assigneeRuntimeAgentId ? agents?.find((agent) => agent.id === assigneeRuntimeAgentId) : null;
   const { data: companyMembers } = useQuery({
     queryKey: queryKeys.access.companyUserDirectory(companyId!),
     queryFn: () => accessApi.listUserDirectory(companyId!),
@@ -729,12 +746,12 @@ export function IssueProperties({
   const assignee = issue.assigneeAgentId
     ? agents?.find((a) => a.id === issue.assigneeAgentId)
     : null;
-  const copilotCatalog = copilotTaskModelCatalogOptions(assignee);
+  const nativeCatalog = nativeTaskModelCatalogOptions(assignee);
   const assigneeAdapterType = assignee?.adapterType ?? null;
   const assigneeAdapterOverrides = issue.assigneeAdapterOverrides ?? null;
   const showAssigneeAdapterOptions = assigneeAdapterOverrides !== null;
   const supportsAssigneeOverrides = Boolean(
-    assigneeAdapterType && (ISSUE_OVERRIDE_ADAPTER_TYPES.has(assigneeAdapterType) || copilotCatalog),
+    assigneeAdapterType && (ISSUE_OVERRIDE_ADAPTER_TYPES.has(assigneeAdapterType) || nativeCatalog),
   );
   const assigneeOverrideLane = overrideLane(assigneeAdapterOverrides);
   const assigneeOverrideAdapterConfig = asRecord(assigneeAdapterOverrides?.adapterConfig);
@@ -751,24 +768,26 @@ export function IssueProperties({
   const assigneeOverrideChrome = assigneeAdapterType === "claude_local"
     && assigneeOverrideAdapterConfig.chrome === true;
   const catalogProvider = assigneeAdapterType === "paperclip_runner" ? String(normalizeLegacyRunnerProvider(assigneePrimaryAdapterConfig).provider ?? "codex") : undefined;
-  const catalogEnvironmentId = copilotCatalog ? assignee?.defaultEnvironmentId ?? null : null;
-  const copilotCatalogScope = JSON.stringify(copilotCatalog ?? null);
-  const requestCopilotModels = Boolean(copilotCatalog && assigneeOptionsOpen && showAssigneeAdapterOptions && supportsAssigneeOverrides);
+  const catalogAcpxAgent = catalogProvider === "acpx" ? String(assigneePrimaryAdapterConfig.acpxAgent ?? "claude") : undefined;
+  const catalogEnvironmentId = nativeCatalog ? assignee?.defaultEnvironmentId ?? null : null;
+  const nativeCatalogScope = JSON.stringify(nativeCatalog ?? null);
+  const requestNativeModels = Boolean(nativeCatalog && assigneeOptionsOpen && showAssigneeAdapterOptions && supportsAssigneeOverrides);
   const { data: assigneeAdapterModels, refetch: refreshAssigneeModels } = useQuery({
     queryKey:
       companyId && assigneeAdapterType
-        ? [...queryKeys.agents.adapterModels(companyId, assigneeAdapterType, catalogEnvironmentId, catalogProvider), copilotCatalog ?? null]
+        ? [...queryKeys.agents.adapterModels(companyId, assigneeAdapterType, catalogEnvironmentId, catalogProvider), catalogAcpxAgent ?? null, nativeCatalog ?? null]
         : ["agents", "none", "adapter-models", assigneeAdapterType ?? "none"],
     queryFn: () => agentsApi.adapterModels(companyId!, assigneeAdapterType!, {
       provider: catalogProvider,
-      ...(copilotCatalog ? { environmentId: catalogEnvironmentId, ...copilotCatalog } : {}),
+      ...(catalogAcpxAgent ? { acpxAgent: catalogAcpxAgent } : {}),
+      ...(nativeCatalog ? { environmentId: catalogEnvironmentId, ...nativeCatalog } : {}),
     }),
-    ...(copilotCatalog ? COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS : {}),
-    enabled: Boolean(companyId) && showAssigneeAdapterOptions && supportsAssigneeOverrides && (!copilotCatalog || requestCopilotModels),
+    ...(nativeCatalog ? ACCOUNT_BOUND_MODEL_DISCOVERY_QUERY_OPTIONS : {}),
+    enabled: Boolean(companyId) && showAssigneeAdapterOptions && supportsAssigneeOverrides && (!nativeCatalog || requestNativeModels),
   });
   useEffect(() => {
-    if (requestCopilotModels) void refreshAssigneeModels();
-  }, [requestCopilotModels, copilotCatalogScope, catalogEnvironmentId, companyId, refreshAssigneeModels]);
+    if (requestNativeModels) void refreshAssigneeModels();
+  }, [requestNativeModels, nativeCatalogScope, catalogEnvironmentId, companyId, refreshAssigneeModels]);
   const modelOverrideOptions = useMemo<InlineEntityOption[]>(() => {
     const models = sortAdapterModels(assigneeAdapterModels ?? []);
     const options = models.map((model) => ({
@@ -1319,18 +1338,22 @@ export function IssueProperties({
   const monitorLastTriggeredAt = issue.monitorLastTriggeredAt ?? monitorState?.lastTriggeredAt ?? null;
   const monitorServiceName = executionPolicy?.monitor?.serviceName ?? monitorState?.serviceName ?? null;
   const monitorNotes = executionPolicy?.monitor?.notes ?? monitorState?.notes ?? null;
-  const monitorNow = useMonitorCountdown(monitorNextCheckAt);
+  const monitorPaused = areAutomaticMonitorChecksPaused(issue);
+  const canCheckMonitorNow = canCheckIssueMonitorNow(issue, monitorServiceName);
+  const monitorNow = useMonitorCountdown(monitorPaused ? null : monitorNextCheckAt);
   const monitorRelative = monitorNextCheckAt ? formatMonitorEta(monitorNextCheckAt, monitorNow, t) : null;
   const monitorDisplayState = deriveMonitorState({ monitorNextCheckAt }, monitorNow).state;
   const monitorIsDueNow = monitorDisplayState === "due-now";
   const monitorIsOverdue = monitorDisplayState === "overdue";
   const monitorPrimary = monitorNextCheckAt
-    ? formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
+    ? monitorPaused ? "Automatic checks paused" : formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
     : monitorState?.status === "cleared"
       ? t("taskProperties.monitor.cleared")
       : t("taskProperties.fields.none");
   const monitorSecondary = monitorNextCheckAt
-    ? monitorIsDueNow
+    ? monitorPaused
+      ? canCheckMonitorNow ? "Check now to request a manual check" : "Resume this task to continue checking"
+      : monitorIsDueNow
       ? t("taskProperties.monitor.checkingMomentarily")
       : [formatMonitorAbsolute(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }, monitorNow, t), monitorIsOverdue ? t("taskProperties.monitor.firesNextTick") : monitorAttemptCount > 0 ? t("taskProperties.monitor.attempt", { count: monitorAttemptCount }) : null].filter(Boolean).join(" · ")
     : monitorState?.status === "cleared"
@@ -1373,7 +1396,7 @@ export function IssueProperties({
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.nextCheck")}</div>
               <div className="text-sm">{formatMonitorAbsoluteFull(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined })}</div>
-              <div className="text-xs text-muted-foreground">{monitorRelative}</div>
+              <div className="text-xs text-muted-foreground">{monitorPaused ? translateUi("interfaceUpdates.automatic_checks_paused_03d978cd") : monitorRelative}</div>
             </div>
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.watching")}</div>
@@ -1389,7 +1412,7 @@ export function IssueProperties({
             </div>
           </div>
           <div className="flex gap-2 border-t border-border px-4 py-3">
-            {onCheckMonitorNow ? (
+            {onCheckMonitorNow && canCheckMonitorNow ? (
               <Button type="button" size="sm" variant="outline" disabled={checkingMonitorNow} onClick={() => { setMonitorDetailsOpen(false); onCheckMonitorNow(); }}>
                 {checkingMonitorNow ? t("taskProperties.fields.checking") : t("taskProperties.fields.checkNow")}
               </Button>
@@ -2177,7 +2200,7 @@ export function IssueProperties({
               setParentOpen(false);
             }}
           >
-            <StatusIcon status={candidate.status} className="h-3 w-3" />
+            <StatusIcon {...taskStatusIconProps(candidate)} className="h-3 w-3" />
             <span className="truncate">
               {candidate.identifier ? `${candidate.identifier} ` : ""}
               {candidate.title}
@@ -2264,7 +2287,7 @@ export function IssueProperties({
               )}
               onClick={() => toggleBlockedBy(candidate.id)}
             >
-              <StatusIcon status={candidate.status} className="h-3 w-3" />
+              <StatusIcon {...taskStatusIconProps(candidate)} className="h-3 w-3" />
               <span className="truncate">
                 {candidate.identifier ? `${candidate.identifier} ` : ""}
                 {candidate.title}
@@ -2302,7 +2325,7 @@ export function IssueProperties({
             className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-accent/50"
             onClick={() => setSubtasksOpen(false)}
           >
-            <StatusIcon status={child.status} className="h-3 w-3" />
+            <StatusIcon {...taskStatusIconProps(child)} className="h-3 w-3" />
             <span className="min-w-0 truncate">
               {child.identifier ? `${child.identifier} ` : ""}
               {child.title}
@@ -2339,8 +2362,7 @@ export function IssueProperties({
       >
         <PropertyRow label={t("taskProperties.fields.status")}>
           <StatusIcon
-            status={issue.status}
-            externalConversationState={issue.externalConversationState}
+            {...taskStatusIconProps(issue)}
             glyphContainerClassName="inline-flex size-6 shrink-0 items-center justify-center"
             blockerAttention={issue.blockerAttention}
             onChange={(status) => onUpdate({ status })}
@@ -2391,6 +2413,15 @@ export function IssueProperties({
           >
             {assigneeOptionsContent}
           </PropertyPicker>
+        ) : null}
+
+        {assigneeRateLimits && summarizeProviderRateLimits(assigneeRateLimits, Date.now()) ? (
+          <PropertyRow label={translateUi("interfaceUpdates.usage_limit_2d163051")}>
+            <AgentRateLimitPropertyValue
+              snapshot={assigneeRateLimits}
+              detailsHref={assigneeRateLimitAgent ? agentUrl(assigneeRateLimitAgent) : undefined}
+            />
+          </PropertyRow>
         ) : null}
 
         <PropertyPicker

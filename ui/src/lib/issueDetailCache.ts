@@ -116,16 +116,44 @@ export function seedIssueDetailCache(
   return merged;
 }
 
+/** Retain authenticated core aliases and saved projections without replacing
+ * data already read or refreshed. Core entries never fill full-detail keys. */
+export function seedIssueDetailProjections(
+  queryClient: QueryClient,
+  issue: Issue,
+  issueRef?: string | null,
+) {
+  // Canonical navigation must not discard metadata just fetched through a UUID.
+  // Only the response's own refs are aliases; an arbitrary requested ref is not.
+  for (const ref of getIssueDetailCacheRefs(issue)) {
+    const key = [...queryKeys.issues.detail(ref), "core"];
+    if (queryClient.getQueryData(key) === undefined) {
+      queryClient.setQueryData(key, issue);
+    }
+  }
+  const planKey = [...queryKeys.issues.documents(issue.id), "plan"];
+  if (issue.planDocument !== undefined && queryClient.getQueryData(planKey) === undefined) {
+    queryClient.setQueryData(planKey, issue.planDocument);
+  }
+  if (issue.workProducts !== undefined) {
+    for (const ref of collectIssueRefs(issueRef, issue)) {
+      const key = queryKeys.issues.workProducts(ref);
+      // The stored request can already be pending when core arrives. Its
+      // background refresh should not hold the first saved cards behind a gate.
+      if (queryClient.getQueryData(key) === undefined) {
+        queryClient.setQueryData(key, issue.workProducts);
+      }
+    }
+  }
+}
+
 export async function fetchIssueDetail(
   queryClient: QueryClient,
   issueRef: string,
   options?: { signal?: AbortSignal },
 ): Promise<Issue> {
   const issue = options ? await issuesApi.get(issueRef, options) : await issuesApi.get(issueRef);
-  const planKey = [...queryKeys.issues.documents(issue.id), "plan"];
-  if (issue.planDocument !== undefined && !queryClient.getQueryState(planKey)) {
-    queryClient.setQueryData(planKey, issue.planDocument);
-  }
+  seedIssueDetailProjections(queryClient, issue, issueRef);
   return seedIssueDetailCache(queryClient, issue, { issueRef });
 }
 

@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n, Trans, useTranslation } from "@/i18n";
@@ -7,7 +8,7 @@ import { ArrowLeft, Check, ChevronDown, Plus, RotateCcw, Search, X, Zap } from "
 import { aiRuntimeConnectionBindingSchema, agentHarnessType, type Agent, type IssueAssigneeAdapterOverrides } from "@paperclipai/shared";
 import { agentsApi, type AdapterModel } from "@/api/agents";
 import { queryKeys } from "@/lib/queryKeys";
-import { COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS, copilotTaskModelCatalogOptions } from "@/lib/copilot-task-model-catalog";
+import { ACCOUNT_BOUND_MODEL_DISCOVERY_QUERY_OPTIONS, nativeTaskModelCatalogOptions } from "@/lib/native-model-catalog";
 import { cn } from "@/lib/utils";
 import { useMobileEntityPickerViewportStyle } from "@/hooks/useMobileEntityPickerViewportStyle";
 import { getLastComposerEffort, rememberComposerEffort } from "@/lib/recent-composer-effort";
@@ -31,6 +32,8 @@ interface Props {
   settings: ComposerRunSettings | null;
   onSettingsChange: (settings: ComposerRunSettings | null) => void;
   onAssigneeChange: (value: string) => void;
+  /** Conversations keep their agent identity; only model/effort is editable here. */
+  allowAssigneeChange?: boolean;
   disabled?: boolean;
   mobile?: boolean;
   triggerRef?: Ref<HTMLButtonElement>;
@@ -89,7 +92,7 @@ function AnimatedBody({ children }: { children: ReactNode }) {
 
 export function ComposerRunSettingsPicker({
   companyId, assigneeValue, currentAssigneeValue, options, agents, overrides,
-  settings, onSettingsChange, onAssigneeChange, disabled = false, mobile: mobileProp, triggerRef, modelOptionsOverride, renderAssigneeIdentity,
+  settings, onSettingsChange, onAssigneeChange, allowAssigneeChange = true, disabled = false, mobile: mobileProp, triggerRef, modelOptionsOverride, renderAssigneeIdentity,
   initialOpen = false, initialView = "settings", initialModelSearch = "", initialAssigneeSearch = "",
 }: Props) {
   const { t } = useTranslation();
@@ -111,7 +114,9 @@ export function ComposerRunSettingsPicker({
   const agentId = assigneeValue.startsWith("agent:") ? assigneeValue.slice(6) : "";
   const agent = agents.get(agentId);
   const modelSupported = supportsComposerModel(agent);
-  const view = requestedView === "models" && !modelSupported ? "settings" : requestedView;
+  const view = (requestedView === "models" && !modelSupported) || (requestedView === "agents" && !allowAssigneeChange)
+    ? "settings"
+    : requestedView;
   const provider = composerCatalogProvider(agent);
   const isMuseRunner = agent?.adapterType === "paperclip_runner" && provider === "muse";
   useEffect(() => {
@@ -119,22 +124,23 @@ export function ComposerRunSettingsPicker({
   }, [isMuseRunner, settings, onSettingsChange]);
   const binding = aiRuntimeConnectionBindingSchema.safeParse(agent?.runtimeConfig?.aiConnection).data;
   const poolId = binding?.mode === "router" ? binding.connectionId : undefined;
-  const copilotCatalog = copilotTaskModelCatalogOptions(agent);
-  const copilotCatalogScope = JSON.stringify(copilotCatalog ?? null);
-  const requestCopilotModels = Boolean(copilotCatalog && open && view !== "agents" && !modelOptionsOverride);
+  const nativeCatalog = nativeTaskModelCatalogOptions(agent);
+  const acpxAgent = agent?.adapterType === "paperclip_runner" && provider === "acpx" && typeof agent.adapterConfig.acpxAgent === "string" ? agent.adapterConfig.acpxAgent : undefined;
+  const nativeCatalogScope = JSON.stringify(nativeCatalog ?? null);
+  const requestNativeModels = Boolean(nativeCatalog && open && view !== "agents" && !modelOptionsOverride);
   const { data: fetchedModels = [], isPending: modelsPending, refetch: refreshModels } = useQuery({
     queryKey: agent && modelSupported
-      ? [...queryKeys.agents.adapterModels(companyId, agent.adapterType, agent.defaultEnvironmentId ?? null, provider), poolId ?? null, copilotCatalog ?? null]
+      ? [...queryKeys.agents.adapterModels(companyId, agent.adapterType, agent.defaultEnvironmentId ?? null, provider), poolId ?? null, nativeCatalog ?? null, acpxAgent ?? null]
       : ["agents", "composer-models", "none"],
     queryFn: () => agentsApi.adapterModels(companyId, agent!.adapterType, {
-      environmentId: agent!.defaultEnvironmentId ?? null, provider, poolId, ...copilotCatalog,
+      environmentId: agent!.defaultEnvironmentId ?? null, provider, poolId, acpxAgent, ...nativeCatalog,
     }),
-    ...(copilotCatalog ? COPILOT_MODEL_DISCOVERY_QUERY_OPTIONS : {}),
-    enabled: Boolean(agent && modelSupported && !modelOptionsOverride && (!copilotCatalog || requestCopilotModels)),
+    ...(nativeCatalog ? ACCOUNT_BOUND_MODEL_DISCOVERY_QUERY_OPTIONS : {}),
+    enabled: Boolean(agent && modelSupported && !modelOptionsOverride && (!nativeCatalog || requestNativeModels)),
   });
   useEffect(() => {
-    if (requestCopilotModels) void refreshModels();
-  }, [requestCopilotModels, copilotCatalogScope, companyId, agent?.defaultEnvironmentId, refreshModels]);
+    if (requestNativeModels) void refreshModels();
+  }, [requestNativeModels, nativeCatalogScope, companyId, agent?.defaultEnvironmentId, refreshModels]);
   // The server resolves instance-declared models first and otherwise returns the
   // adapter's curated catalog. Do not replace a declared Codex list locally.
   const models: readonly (AdapterModel & { detail?: string })[] = modelOptionsOverride
@@ -208,34 +214,35 @@ export function ComposerRunSettingsPicker({
   };
   const closeButton = mobile ? <DialogClose asChild><button type="button" aria-label={t("taskChatUi.settings.close")} className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-accent"><X className="size-4" /></button></DialogClose> : null;
   const Trigger = mobile ? DialogTrigger : PopoverTrigger;
+  const modelTrigger = <button ref={allowAssigneeChange ? undefined : triggerRef} type="button" disabled={disabled} aria-label={translateUi("taskChatUi.settings.selectModelEffort")} aria-haspopup="dialog" aria-expanded={open && view !== "agents"} onClick={() => { setView("settings"); if (allowAssigneeChange) setOpen(true); }}
+    className="flex h-8 min-w-0 max-w-full items-center gap-1.5 rounded-full px-2.5 text-muted-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
+    <span data-testid="task-chat-composer-model-label" className="min-w-0 truncate">{open ? translateUi("taskChatUi.settings.selectModel") : modelName || translateUi("taskChatUi.settings.default")}</span>
+    {!open && effort ? <span className="hidden shrink-0 sm:inline">{effortLabel}</span> : null}
+    <ChevronDown className="size-3 shrink-0" aria-hidden />
+  </button>;
+  const AssigneeHeader = allowAssigneeChange ? "button" : "div";
   const triggers = <div data-testid="task-chat-composer-selection" className="flex min-w-0 max-w-full items-center rounded-full bg-muted text-xs font-medium">
-    <Trigger asChild><button ref={triggerRef} type="button" disabled={disabled} aria-label={t("taskChatUi.settings.selectAssignee")} data-testid="task-chat-composer-assignee"
+    {allowAssigneeChange ? <Trigger asChild><button ref={triggerRef} type="button" disabled={disabled} aria-label={t("taskChatUi.settings.selectAssignee")} data-testid="task-chat-composer-assignee"
       onClick={() => { setView("agents"); setHighlightedAssignee(0); }}
       className="flex h-8 min-w-0 max-w-full items-center gap-1.5 rounded-full px-2.5 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
       {renderAssigneeIdentity?.(assigneeValue, agent?.name ?? t("taskChatUi.settings.unassigned"), "trigger")}
       <span data-testid="task-chat-composer-assignee-label" className="min-w-0 truncate">{assigneeOptions.find((item) => item.id === assigneeValue)?.label ?? t("taskChatUi.settings.unassigned")}</span>
       {!modelSupported ? <ChevronDown className="size-3 shrink-0 text-muted-foreground" aria-hidden /> : null}
-    </button></Trigger>
+    </button></Trigger> : null}
     {modelSupported ? <>
-      <span className="text-muted-foreground" aria-hidden>·</span>
-      <button type="button" disabled={disabled} aria-label={t("taskChatUi.settings.selectModelEffort")} aria-haspopup="dialog" aria-expanded={open && view !== "agents"} onClick={() => { setView("settings"); setOpen(true); }}
-        className="flex h-8 min-w-0 max-w-full items-center gap-1.5 rounded-full px-2.5 text-muted-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
-        <span data-testid="task-chat-composer-model-label" className="min-w-0 truncate">{open ? t("taskChatUi.settings.selectModel") : modelName || t("taskChatUi.settings.default")}</span>
-        {!open && effort ? <span className="hidden shrink-0 sm:inline">{effortLabel}</span> : null}
-        <ChevronDown className="size-3 shrink-0" aria-hidden />
-      </button>
+      {allowAssigneeChange ? <><span className="text-muted-foreground" aria-hidden>·</span>{modelTrigger}</> : <Trigger asChild>{modelTrigger}</Trigger>}
     </> : null}
   </div>;
 
   const body = view === "settings" ? <div className="min-h-0 overflow-y-auto overscroll-contain touch-pan-y p-3" data-testid="composer-run-settings-view">
     <div className="flex items-center gap-2">
-      <button type="button" aria-label={t("taskChatUi.settings.chooseAssignee")} onClick={() => setView("agents")}
-        className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-        {renderAssigneeIdentity?.(assigneeValue, agent?.name ?? t("taskChatUi.settings.unassigned"), "option") ?? <span className="grid size-6 shrink-0 place-items-center rounded-md bg-secondary text-xs font-semibold text-secondary-foreground">{agent?.name.slice(0, 1) ?? "?"}</span>}
-        <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{agent?.name ?? options.find((item) => item.id === assigneeValue)?.label ?? t("taskChatUi.settings.unassigned")}</span><span className="block truncate text-xs text-muted-foreground">{harnessLabel(agent, t)}</span></span>
-        <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-      </button>
-      {!choices.length && modelSupported ? <button type="button" aria-label={t("taskChatUi.settings.reset")} title={t("taskChatUi.settings.reset")} disabled={!changed} onClick={reset} className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-accent disabled:opacity-40"><RotateCcw className="size-4" /></button> : null}
+      <AssigneeHeader type={allowAssigneeChange ? "button" : undefined} aria-label={allowAssigneeChange ? translateUi("taskChatUi.settings.chooseAssignee") : undefined} onClick={allowAssigneeChange ? () => setView("agents") : undefined}
+        className={cn("flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 text-left", allowAssigneeChange && "hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring")}>
+        {renderAssigneeIdentity?.(assigneeValue, agent?.name ?? translateUi("taskChatUi.settings.unassigned"), "option") ?? <span className="grid size-6 shrink-0 place-items-center rounded-md bg-secondary text-xs font-semibold text-secondary-foreground">{agent?.name.slice(0, 1) ?? "?"}</span>}
+        <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{agent?.name ?? options.find((item) => item.id === assigneeValue)?.label ?? translateUi("taskChatUi.settings.unassigned")}</span><span className="block truncate text-xs text-muted-foreground">{harnessLabel(agent, t)}</span></span>
+        {allowAssigneeChange ? <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden /> : null}
+      </AssigneeHeader>
+      {!choices.length && modelSupported ? <button type="button" aria-label={translateUi("taskChatUi.settings.reset")} title={translateUi("taskChatUi.settings.reset")} disabled={!changed} onClick={reset} className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-accent disabled:opacity-40"><RotateCcw className="size-4" /></button> : null}
       {closeButton}
     </div>
     {modelSupported ? <>

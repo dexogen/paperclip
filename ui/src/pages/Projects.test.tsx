@@ -279,7 +279,7 @@ describe("Projects", () => {
     expect(mockSetBreadcrumbs).toHaveBeenLastCalledWith([{ label: "Проекты" }]);
     expect(container.querySelector('button[title="Сортировка"]')?.textContent).toContain("Сортировка: Название");
 
-    const create = [...container.querySelectorAll("button")].find(button => button.textContent?.includes("Добавить проект"))!;
+    const create = [...container.querySelectorAll("button")].find(button => button.textContent?.includes("Создать проект"))!;
     await act(() => create.click());
     expect(mockOpenNewProject).toHaveBeenCalledTimes(1);
     await act(() => container.querySelector<HTMLButtonElement>('button[aria-label="Очистить поиск"]')!.click());

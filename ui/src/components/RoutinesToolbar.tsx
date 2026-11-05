@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n, useTranslation } from "@/i18n";
 import { ArrowUpDown, Check, Layers, Plus } from "lucide-react";
 import { Link } from "@/lib/router";
@@ -9,7 +10,7 @@ export type RoutineGroupBy = "folder" | "none" | "project" | "assignee";
 export type RoutineSortField = "updated" | "created" | "title" | "lastRun";
 export type RoutineSortDir = "asc" | "desc";
 
-export function RoutinesToolbar({ query, onQueryChange, sortField, sortDir, groupBy, onSortChange, onGroupChange, onNewFolder, onCreateRoutine, runsHref, selectMode, onToggleSelect }: {
+export function RoutinesToolbar({ query, onQueryChange, sortField, sortDir, groupBy, onSortChange, onGroupChange, onNewFolder, onCreateRoutine, tasksHref, selectMode, onToggleSelect }: {
   query: string;
   onQueryChange: (value: string) => void;
   sortField: RoutineSortField;
@@ -19,7 +20,7 @@ export function RoutinesToolbar({ query, onQueryChange, sortField, sortDir, grou
   onGroupChange: (value: RoutineGroupBy) => void;
   onNewFolder?: () => void;
   onCreateRoutine: () => void;
-  runsHref?: string;
+  tasksHref?: string;
   selectMode?: boolean;
   onToggleSelect?: () => void;
 }) {
@@ -99,10 +100,10 @@ export function RoutinesToolbar({ query, onQueryChange, sortField, sortDir, grou
       </PopoverContent>
     </Popover>
     <div className="design-toolbar-actions">
-      {onToggleSelect && <Button variant="outline" size="sm" onClick={onToggleSelect}>{selectMode ? t("fullRoutinesSecrets.done") : t("fullRoutinesSecrets.select212")}</Button>}
-      {runsHref && <Button variant="outline" size="sm" asChild><Link data-toolbar-control to={runsHref}>{t("fullRoutinesSecrets.viewAllRuns")}</Link></Button>}
-      {onNewFolder && <Button variant="outline" size="sm" onClick={onNewFolder}><Plus className="h-4 w-4" />{t("fullRoutinesSecrets.newFolder")}</Button>}
-      <Button variant="outline" size="sm" data-toolbar-primary onClick={onCreateRoutine}><Plus className="h-4 w-4" />{t("fullRoutinesSecrets.createRoutine")}</Button>
+      {onToggleSelect && <Button variant="outline" size="sm" onClick={onToggleSelect}>{selectMode ? translateUi("fullRoutinesSecrets.done") : translateUi("fullRoutinesSecrets.select212")}</Button>}
+      {tasksHref && <Button variant="outline" size="sm" asChild><Link data-toolbar-control to={tasksHref}>{translateUi("interfaceUpdates.view_all_tasks_44b54ba5")}</Link></Button>}
+      {onNewFolder && <Button variant="outline" size="sm" onClick={onNewFolder}><Plus className="h-4 w-4" />{translateUi("fullRoutinesSecrets.newFolder")}</Button>}
+      <Button variant="outline" size="sm" data-toolbar-primary onClick={onCreateRoutine}><Plus className="h-4 w-4" />{translateUi("fullRoutinesSecrets.createRoutine")}</Button>
     </div>
   </div>;
 }

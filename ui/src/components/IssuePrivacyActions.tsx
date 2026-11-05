@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { issuesApi } from "@/api/issues";
+import { describeError } from "@/api/errors";
 import { useToastActions } from "@/context/ToastContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { cn } from "@/lib/utils";
+import { useQueryView } from "./QueryView";
 import { IssueShareSheet, type ShareSheetImplicitPrincipal } from "./IssueShareSheet";
 
 const MENU_ITEM_CLASS =
@@ -61,13 +63,14 @@ export function IssuePrivacyActions({
     queryFn: () => issuesApi.privacyConstraints(issue.id),
     enabled: canManage && isPrivate,
   });
-  const publicBlockedReason = constraintsQuery.isError
+  const constraintsView = useQueryView(constraintsQuery);
+  const publicBlockedReason = constraintsView.kind === "error"
     ? t("taskProperties.privacy.checkFailed")
-    : !constraintsQuery.data || constraintsQuery.isFetching
+    : constraintsView.kind === "loading" || constraintsView.kind === "reconnecting" || constraintsView.isFetching
       ? t("taskProperties.privacy.checking")
-      : constraintsQuery.data.publicBlockedBy === "parent"
+      : constraintsView.data?.publicBlockedBy === "parent"
         ? t("taskProperties.privacy.privateParent")
-        : constraintsQuery.data.publicBlockedBy === "project"
+        : constraintsView.data?.publicBlockedBy === "project"
           ? t("taskProperties.privacy.privateProject")
           : null;
 
@@ -88,7 +91,7 @@ export function IssuePrivacyActions({
       });
     },
     onError: (error) => {
-      pushToast({ title: t("taskProperties.privacy.changeFailed"), body: (error as Error).message, tone: "error" });
+      pushToast({ title: t("taskProperties.privacy.changeFailed"), body: describeError(error).body, tone: "error" });
     },
   });
 
@@ -135,9 +138,9 @@ export function IssuePrivacyActions({
             </button>,
             publicBlockedReason,
           )}
-          {canManage && constraintsQuery.isError ? (
+          {canManage && constraintsView.kind === "error" ? (
             <button type="button" className={MENU_ITEM_CLASS} onClick={() => {
-              void constraintsQuery.refetch();
+              constraintsView.retry();
             }}>{t("taskProperties.privacy.retryCheck")}</button>
           ) : null}
         </>

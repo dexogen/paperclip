@@ -2,6 +2,8 @@ import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTr
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { emailApi } from "@/api/email";
+import { describeError } from "@/api/errors";
+import { useQueryView } from "@/components/QueryView";
 import { formatDateTime } from "@/lib/utils";
 import { ApiKeyCredentialField } from "./ApiKeyCredentialField";
 import { AGENTMAIL_API_KEYS_URL } from "./AgentMailApiKeyField";
@@ -16,7 +18,8 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
 }) {
   useFullAppsTranslation();
   const saved = useQuery({ queryKey: ["email-credentials", companyId],
-    queryFn: () => emailApi.credentials(companyId), staleTime: 60_000, retry: false });
+    queryFn: () => emailApi.credentials(companyId), staleTime: 60_000 });
+  const savedView = useQueryView(saved);
   useEffect(() => {
     // Null means untouched; an explicit new-key choice must survive refreshes
     // and slow responses. Inbox-only keys cannot create a new email address.
@@ -28,5 +31,6 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
     options={(saved.data ?? []).map(option => ({ id: option.id, disabled: option.scope === "unavailable",
       label: fullAppsT("fullApps.saved_d4024e", { value1: option.label, value2: formatDateTime(option.createdAt) }) }))}
     connectionId={connectionId} onConnectionChange={onConnectionChange} value={value} onChange={onChange}
-    disabled={disabled} loading={saved.isFetching} error={saved.error?.message} />;
+    disabled={disabled} loading={saved.isFetching || savedView.kind === "reconnecting"}
+    error={savedView.kind === "error" ? describeError(saved.error).body : undefined} />;
 }

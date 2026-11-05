@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useState } from "react";
@@ -5,7 +7,7 @@ import { assistantClientNames, mcpAuthorizationHandoffInstructions, mcpInvitatio
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Copy, ExternalLink, Globe, Paperclip, Plug, Terminal } from "lucide-react";
 import { publicMcpApi } from "@/api/publicMcp";
-import { ApiError } from "@/api/client";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { useCompany } from "@/context/CompanyContext";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { Link } from "@/lib/router";
@@ -34,19 +36,27 @@ function AssistantIcon({ assistant }: { assistant: Assistant }) {
 export function useAssistantConnections(poll = false) {
   const { selectedCompanyId } = useCompany();
   const query = useQuery({
-    queryKey: connectionsKey, queryFn: publicMcpApi.connections, retry: false,
+    queryKey: connectionsKey, queryFn: publicMcpApi.connections,
     enabled: Boolean(selectedCompanyId), refetchInterval: poll ? 5000 : false,
   });
-  return { ...query, rows: (query.data ?? []).filter(row => row.companyId === selectedCompanyId && !row.revokedAt && !row.scopes.includes("paperclip:agent")) };
+  const view = useQueryView(query);
+  return {
+    ...query,
+    view,
+    /** Loaded rows are shown through a transient refetch failure (`stale`) as well as `ready`. */
+    loaded: view.kind === "ready" || view.kind === "stale",
+    rows: (query.data ?? []).filter(row => row.companyId === selectedCompanyId && !row.revokedAt && !row.scopes.includes("paperclip:agent")),
+  };
 }
 
 /** Inbound assistant access belongs beside the existing outbound connectors. */
 export function AssistantConnectionCard({ onNavigate }: { onNavigate: (href: string) => void }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const connections = useAssistantConnections();
   const active = connections.rows;
-  const action = !connections.isSuccess ? fullAppsT("fullApps.caption_ed077f3d81") : active.length ? fullAppsT("fullApps.caption_5a23444828") : fullAppsT("fullApps.set_up_4da10f");
-  return <div role="listitem" data-app-slug="assistant-connection" data-connected={connections.isSuccess ? String(active.length > 0) : undefined} className="overflow-hidden rounded-xl border border-border">
+  const action = !connections.loaded ? fullAppsT("fullApps.caption_ed077f3d81") : active.length ? fullAppsT("fullApps.caption_5a23444828") : fullAppsT("fullApps.set_up_4da10f");
+  return <div role="listitem" data-app-slug="assistant-connection" data-connected={connections.loaded ? String(active.length > 0) : undefined} className="overflow-hidden rounded-xl border border-border">
     <div className="flex flex-wrap items-center gap-3 px-4 py-4">
       <Paperclip className="size-9 shrink-0 p-1 text-foreground" aria-hidden="true" />
       <div className="min-w-0 flex-1">
@@ -55,12 +65,11 @@ export function AssistantConnectionCard({ onNavigate }: { onNavigate: (href: str
       </div>
       <Button type="button" size="sm" variant="outline" onClick={() => onNavigate(ASSISTANT_CONNECTION_PATH)} aria-label={fullAppsT("fullApps.assistant_connection_mcp_3175f7", { value1: action })}>{action}</Button>
     </div>
-    {connections.isPending && <p className="border-t border-border px-4 py-3 text-xs text-muted-foreground">{fullAppsT("fullApps.checking_your_connection_status_f74bf6")}</p>}
-    {connections.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3">
-      <p className="text-xs text-destructive">{fullAppsT("fullApps.couldn_t_load_your_connection_status_46fd65")}</p>
-      <Button size="sm" variant="ghost" disabled={connections.isFetching} onClick={() => void connections.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
+    {(connections.isPending || connections.view.kind === "reconnecting") && <p className="border-t border-border px-4 py-3 text-xs text-muted-foreground">{translateUi("fullApps.checking_your_connection_status_f74bf6")}</p>}
+    {connections.view.kind === "error" && <div className="border-t border-border px-4 py-3">
+      <QueryErrorState error={connections.error} action="load your connection status" onRetry={connections.view.retry} retrying={connections.view.isFetching} />
     </div>}
-    {connections.isSuccess && active.length > 0 && <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-3 text-sm">
+    {connections.loaded && active.length > 0 && <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-3 text-sm">
       {active.map(row => <Identity key={row.id} name={assistantConnectionDisplayName(row)} avatarUrl={row.user?.image} initials={deriveInitials(row.user?.name ?? fullAppsT("fullApps.caption_08b0419357"))} size="sm" />)}
     </div>}
   </div>;
@@ -84,19 +93,21 @@ function CopyValue({ value, label }: { value: string; label: string }) {
   </div>;
 }
 
-function setupError(error: Error): string {
-  if (error instanceof ApiError && error.status === 401) return fullAppsT("fullApps.sign_in_to_connect_an_assistant_this_requires_a_pape_bcc9bc");
-  if (error instanceof ApiError && error.status === 404) return fullAppsT("fullApps.assistant_connections_need_an_authenticated_instance_ceff3a");
-  return fullAppsT("fullApps.couldn_t_load_assistant_setup_try_again_in_a_moment_5cb491");
+/** Setup copy that depends on the instance, not on the request: signed out, or no public URL configured. */
+function setupUnavailableCopy(errorKind: "auth" | "not_found"): string {
+  if (errorKind === "auth") return "Sign in to connect an assistant. This requires a Paperclip instance with authenticated user accounts.";
+  return "Assistant connections need an authenticated instance with a public HTTPS URL. Ask your instance administrator to configure the public URL, then try again.";
 }
 
 export function AssistantConnection({ initialAssistant = "codex" }: { initialAssistant?: Assistant } = {}) {
+  useUiTranslation();
   useFullAppsTranslation();
   const { selectedCompany, selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const client = useQueryClient();
   const [assistant, setAssistant] = useState<Assistant>(initialAssistant);
-  const setup = useQuery({ queryKey: ["mcp-setup"], queryFn: publicMcpApi.setup, retry: false, refetchOnWindowFocus: "always", refetchOnMount: "always" });
+  const setup = useQuery({ queryKey: ["mcp-setup"], queryFn: publicMcpApi.setup, refetchOnWindowFocus: "always", refetchOnMount: "always" });
+  const setupView = useQueryView(setup);
   const connections = useAssistantConnections(setup.data?.enabled === true);
   const revoke = useMutation({ mutationFn: publicMcpApi.revoke, onSuccess: (_, id) => {
     client.setQueryData<McpConnection[]>(connectionsKey, rows => rows?.filter(row => row.id !== id));
@@ -117,8 +128,10 @@ export function AssistantConnection({ initialAssistant = "codex" }: { initialAss
         <div className="space-y-1"><p className="font-medium">{selectedCompany.name}</p><p className="text-sm text-muted-foreground">{fullAppsT("fullApps.connect_your_assistant_to_paperclip_review_work_crea_fcaf01")}</p></div>
       </div>
     </header>
-    {setup.isPending && <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_assistant_setup_5f8c7c")}</p>}
-    {setup.error && <div role="alert" className="space-y-3"><p className="text-sm text-destructive">{setupError(setup.error)}</p><Button variant="outline" onClick={() => void setup.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button></div>}
+    {(setup.isPending || setupView.kind === "reconnecting") && <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_assistant_setup_5f8c7c")}</p>}
+    {setupView.kind === "error" && (setupView.errorKind === "auth" || setupView.errorKind === "not_found"
+      ? <div role="alert" className="space-y-3"><p className="text-sm text-destructive">{setupUnavailableCopy(setupView.errorKind)}</p><Button variant="outline" disabled={setupView.isFetching} onClick={setupView.retry}>{fullAppsT("fullApps.try_again_d8b839")}</Button></div>
+      : <QueryErrorState error={setup.error} action="load assistant setup" onRetry={setupView.retry} retrying={setupView.isFetching} />)}
     {setup.data && !setup.data.enabled && <section className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
       <h2 className="text-sm font-semibold">{fullAppsT("fullApps.enable_assistant_connections_a27771")}</h2>
       <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.an_instance_administrator_must_turn_on_assistant_con_b63437")}</p>
@@ -144,10 +157,11 @@ export function AssistantConnection({ initialAssistant = "codex" }: { initialAss
       </details>
     </>}
     <section className="space-y-3" aria-labelledby="connected-assistants">
-      <h2 id="connected-assistants" className="text-sm font-semibold">{fullAppsT("fullApps.your_connected_assistants_5a07aa")}</h2>
-      {connections.isPending && <p className="text-sm text-muted-foreground">{fullAppsT("providerSetup.select.loading")}</p>}
-      {(connections.error || revoke.error) && <p role="alert" className="text-sm text-destructive">{revoke.error ? fullAppsT("fullApps.couldn_t_revoke_this_connection_try_again_e30889") : fullAppsT("fullApps.couldn_t_load_your_connections_try_again_13f964")} <button type="button" className="underline" onClick={() => void connections.refetch()}>{fullAppsT("externalAgentUi.common.refresh")}</button></p>}
-      {connections.isSuccess && connections.rows.length === 0 && <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.no_assistants_connected_to_yet_482b8b" components={{ part1: <>{selectedCompany.name}</> }} /></p>}
+      <h2 id="connected-assistants" className="text-sm font-semibold">{translateUi("fullApps.your_connected_assistants_5a07aa")}</h2>
+      {(connections.isPending || connections.view.kind === "reconnecting") && <p className="text-sm text-muted-foreground">{translateUi("providerSetup.select.loading")}</p>}
+      {revoke.error && <p role="alert" className="text-sm text-destructive">{translateUi("fullApps.couldn_t_revoke_this_connection_try_again_e30889")} <button type="button" className="underline" onClick={() => void connections.refetch()}>{translateUi("externalAgentUi.common.refresh")}</button></p>}
+      {connections.view.kind === "error" && <QueryErrorState error={connections.error} action="load your connections" onRetry={connections.view.retry} retrying={connections.view.isFetching} />}
+      {connections.loaded && connections.rows.length === 0 && <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.no_assistants_connected_to_yet_482b8b" components={{ part1: <>{selectedCompany.name}</> }} /></p>}
       <div className="divide-y divide-border">{connections.rows.map(row => <div key={row.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
         <div className="min-w-0 flex-1 space-y-1"><Identity name={assistantConnectionDisplayName(row)} avatarUrl={row.user?.image} initials={deriveInitials(row.user?.name ?? fullAppsT("fullApps.caption_08b0419357"))} className="font-medium" /><p className="text-xs text-muted-foreground">{fullAppsT("fullApps.connected_as_you_759802", { value1: row.scopes.includes("paperclip:write") ? fullAppsT("fullApps.read_and_write_822da9") : fullAppsT("fullApps.read_only_8ac767"), value2: row.scopes.includes("paperclip:configure") ? fullAppsT("fullApps.configure_agents_projects_and_skills_a6acd3") : "" })}</p></div>
         <Button variant="outline" size="sm" disabled={revoke.isPending} onClick={() => revoke.mutate(row.id)} aria-label={fullAppsT("fullApps.revoke_88bb4d", { value1: assistantConnectionDisplayName(row) })}>{fullAppsT("taskProperties.share.revoke")}</Button>

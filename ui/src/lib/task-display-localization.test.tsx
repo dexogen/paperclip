@@ -68,7 +68,7 @@ describe("localized task display boundaries", () => {
       coveredBlockerCount: count, attentionBlockerCount: 0, stalledBlockerCount: 0,
       sampleBlockerIdentifier: null, sampleStalledBlockerIdentifier: null,
     };
-    expect(getStatusIconLabel("blocked", null, attention, ru)).toBe(`Заблокировано · ожидает ${phrase}`);
+    expect(getStatusIconLabel("blocked", null, attention, undefined, ru)).toBe(`Заблокировано · ожидает ${phrase}`);
     expect(attention.state).toBe("covered");
   });
 
@@ -78,9 +78,9 @@ describe("localized task display boundaries", () => {
       coveredBlockerCount: 1, attentionBlockerCount: 0, stalledBlockerCount: 0,
       sampleBlockerIdentifier: "DEP-1", sampleStalledBlockerIdentifier: null,
     };
-    expect(getStatusIconLabel("blocked", null, attention, ru)).toBe("Заблокировано · зависимость DEP-1 в работе");
-    expect(getStatusIconLabel("blocked", null, { ...attention, sampleBlockerIdentifier: null }, ru)).toBe("Заблокировано · 1 зависимость в работе");
-    expect(getStatusIconLabel("blocked", null, { ...attention, coveredBlockerCount: 5 }, ru)).toBe("Заблокировано · 5 зависимостей в работе");
+    expect(getStatusIconLabel("blocked", null, attention, undefined, ru)).toBe("Заблокировано · зависимость DEP-1 в работе");
+    expect(getStatusIconLabel("blocked", null, { ...attention, sampleBlockerIdentifier: null }, undefined, ru)).toBe("Заблокировано · 1 зависимость в работе");
+    expect(getStatusIconLabel("blocked", null, { ...attention, coveredBlockerCount: 5 }, undefined, ru)).toBe("Заблокировано · 5 зависимостей в работе");
     expect(getStatusIconLabel("blocked", null, attention)).toBe("Blocked · covered by active dependency DEP-1");
   });
 

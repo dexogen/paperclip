@@ -1,7 +1,10 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import {
   ExternalLink,
   GitPullRequest,
@@ -39,6 +42,7 @@ import {
   GitHubToggle,
 } from "./GitHubBotConfiguration";
 import { ChatExecutionDefaults } from "./ChatExecutionDefaults";
+import { describeError } from "@/api/errors";
 
 export function GitHubRepositoryAccess({
   endpointId,
@@ -57,6 +61,7 @@ export function GitHubRepositoryAccess({
   onChange: (id: string, enabled: boolean) => void;
   onToggleAll: (enabled: boolean) => void;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const client = useQueryClient();
   const [search, setSearch] = useState("");
@@ -68,6 +73,7 @@ export function GitHubRepositoryAccess({
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
   });
+  const listView = useQueryView(list);
   const rows = list.data?.pages.flatMap((page) => page.items) ?? [];
   const summary = list.data?.pages[0];
   const disableAll = (summary?.enabledCount ?? 0) > 0;
@@ -75,13 +81,13 @@ export function GitHubRepositoryAccess({
     if (scroller.current) scroller.current.scrollTop = 0;
   }, [search]);
   useEffect(() => {
-    if (!list.hasNextPage || list.isFetching || list.isError || pending || !more.current || typeof IntersectionObserver === "undefined") return;
+    if (!list.hasNextPage || list.isFetching || list.isError || listView.kind === "error" || pending || !more.current || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry?.isIntersecting) void list.fetchNextPage({ cancelRefetch: false });
     }, { root: scroller.current });
     observer.observe(more.current);
     return () => observer.disconnect();
-  }, [list.hasNextPage, list.isFetching, list.isError, list.fetchNextPage, pending]);
+  }, [list.hasNextPage, list.isFetching, list.isError, listView.kind, list.fetchNextPage, pending]);
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between gap-3">
@@ -119,10 +125,13 @@ export function GitHubRepositoryAccess({
           {disableAll ? fullAppsT("fullApps.disable_all_6cb227") : fullAppsT("fullApps.enable_all_06f08e")}
         </Button>
       </div>
-      {summary && <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.repositoriesEnabledSummary", { enabled: summary.enabledCount, total: summary.totalCount })}</p>}
-      {list.isError && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_repositories_8d8aca")}<Button variant="link" size="sm" onClick={() => void list.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
+      {summary && <p className="text-xs text-muted-foreground">
+        {summary.enabledCount} {translateUi("skillsGap.of")} {summary.totalCount} {translateUi("interfaceUpdates.repositories_enabled_toggle_all_applies_across_the_593db6f2")}
       </p>}
-      <div ref={scroller} role="region" aria-label={fullAppsT("projectConfigUi.repos.title")} tabIndex={0}
+      {listView.kind === "error" && (
+        <QueryErrorState error={list.error} action="load repositories" onRetry={listView.retry} retrying={listView.isFetching} />
+      )}
+      <div ref={scroller} role="region" aria-label={translateUi("projectConfigUi.repos.title")} tabIndex={0}
         className="max-h-96 overflow-y-auto overscroll-contain border-y border-border">
         <div className="divide-y divide-border">
         {rows.map((resource) => (
@@ -159,7 +168,7 @@ export function GitHubRepositoryAccess({
           </div>
         ))}
         </div>
-        {list.isPending ? <p role="status" className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.loading_repositories_460ca9")}</p> : rows.length === 0 && !list.isError && (
+        {list.isPending || listView.kind === "reconnecting" ? <p role="status" className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.loading_repositories_460ca9")}</p> : (listView.kind === "ready" || listView.kind === "stale") && rows.length === 0 && (
           <p className="py-4 text-sm text-muted-foreground">
             {search ? fullAppsT("fullApps.no_repositories_match_your_search_454e42") : fullAppsT("fullApps.no_repositories_available_add_repository_access_on_g_376e51")}
           </p>
@@ -188,6 +197,7 @@ export function GitHubBotManagement({
     queryKey: ["github-bot-configuration", endpoint.id],
     queryFn: () => githubChatApi.configuration(endpoint.id),
   });
+  const configurationView = useQueryView(query);
   const [draft, setDraft] = useState<GitHubConfigurationRecord | null>(null);
   const [editorVersion, setEditorVersion] = useState(0);
   const [scoreText, setScoreText] = useState<string | null>(null);
@@ -226,16 +236,14 @@ export function GitHubBotManagement({
       setPending(false);
     }
   };
-  if (query.isError)
+  if (configurationView.kind === "error")
     return (
-      <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_the_bot_configuration_520186")}{" "}
-        <Button
-          variant="link"
-          onClick={() => {
-            void query.refetch();
-          }}
-        >{fullAppsT("fullApps.try_again_d8b839")}</Button>
-      </p>
+      <QueryErrorState
+        error={query.error}
+        action="load the bot configuration"
+        onRetry={configurationView.retry}
+        retrying={configurationView.isFetching}
+      />
     );
   if (!record)
     return (
@@ -569,36 +577,47 @@ export function GitHubReviews({
   endpointId: string;
   reviewId?: string;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const query = useQuery({
     queryKey: ["github-bot-reviews", endpointId, reviewId ?? "list"],
     queryFn: async () => reviewId ? [await githubChatApi.review(endpointId, reviewId)] : githubChatApi.reviews(endpointId),
     refetchInterval: 5000,
   });
-  if (query.isError)
-    return (
-      <p role="alert" className="text-sm text-destructive">
-        {reviewId ? fullAppsT("fullApps.this_review_could_not_be_loaded_or_was_not_found_in__9241ed") : fullAppsT("fullApps.reviews_could_not_be_loaded_58b6d1")}{" "}
-        <Button variant="link" onClick={() => void query.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
+  const view = useQueryView(query);
+  const missingReview = (
+    <div className="space-y-3">
+      <p role="alert" className="text-sm text-muted-foreground">
+        {translateUi("fullApps.this_review_was_not_found_in_this_connection_835786")}
       </p>
+      <Link
+        to={`/apps/chat/${endpointId}/reviews`}
+        className="text-sm underline"
+      >
+        {translateUi("fullApps.all_reviews_ab84bf")}
+      </Link>
+    </div>
+  );
+  if (view.kind === "error") {
+    if (reviewId && view.errorKind === "not_found") return missingReview;
+    return (
+      <QueryErrorState
+        error={query.error}
+        action={reviewId ? "load the review" : "load reviews"}
+        onRetry={view.retry}
+        retrying={view.isFetching}
+      />
     );
-  if (query.isPending)
+  }
+  if (query.isPending || view.kind === "reconnecting")
     return (
       <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_reviews_510c76")}</p>
     );
   if (reviewId) {
-    const review = query.data.find((review) => review.id === reviewId);
+    const review = query.data?.find((review) => review.id === reviewId);
     return review ? (
       <GitHubReviewDetail endpointId={endpointId} review={review} />
-    ) : (
-      <div className="space-y-3">
-        <p role="alert" className="text-sm text-muted-foreground">{fullAppsT("fullApps.this_review_was_not_found_in_this_connection_835786")}</p>
-        <Link
-          to={`/apps/chat/${endpointId}/reviews`}
-          className="text-sm underline"
-        >{fullAppsT("fullApps.all_reviews_ab84bf")}</Link>
-      </div>
-    );
+    ) : missingReview;
   }
-  return <GitHubReviewList endpointId={endpointId} reviews={query.data} />;
+  return <GitHubReviewList endpointId={endpointId} reviews={query.data ?? []} />;
 }

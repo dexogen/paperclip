@@ -1,8 +1,10 @@
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, AppDisplayError, appErrorDisplay, renderAppError } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
+import { useAuthorizationWindow } from "@/hooks/useAuthorizationWindow";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { ExternalLink, Loader2 } from "lucide-react";
 import type { GitHubAppWizardState } from "@paperclipai/shared";
 import { agentsApi } from "@/api/agents";
@@ -25,8 +27,9 @@ import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { useNavigate, useSearchParams, Link } from "@/lib/router";
 import { buildPermissionsForTrustPreset } from "@/lib/trust-policy-ui";
 import { queryKeys } from "@/lib/queryKeys";
-import { GitHubAppRecovery } from "./GitHubConnectionRecovery";
+import { GITHUB_APP_CREDENTIAL_FIELDS, GitHubAppRecovery } from "./GitHubConnectionRecovery";
 import type { GitHubConnectionCompleteLocationState } from "./GitHubConnectionComplete";
+import { describeError } from "@/api/errors";
 
 /** Restrict native manifest submission to GitHub registration endpoints. */
 export function gitHubAppManifestAction(
@@ -85,7 +88,11 @@ export function GitHubChatSetup() {
   const queryClient = useQueryClient();
   const resume = params.get("resume");
   const identityOnly = params.get("stage") === "identity";
-  const reconnect = params.get("reconnect") === "1";
+  const rotateWebhookSecret = params.get("rotateSecret") === "1";
+  const reconnect = params.get("reconnect") === "1" || rotateWebhookSecret;
+  const credentialFields = reconnect && !rotateWebhookSecret && params.get("stage") === "credentials"
+    ? GITHUB_APP_CREDENTIAL_FIELDS.filter(field => !params.has("credentialFields") || params.get("credentialFields")!.split(",").includes(field))
+    : undefined;
   const [agentId, setAgentId] = useState(params.get("agentId") ?? "");
   const [ownerType, setOwnerType] = useState<"personal" | "organization">(
     "personal",
@@ -96,7 +103,7 @@ export function GitHubChatSetup() {
   const [busy, setBusy] = useState(false);
   const [submitManifest, setSubmitManifest] = useState(false);
   const [error, setError] = useState<AppDisplayText | null>("");
-  const [existing, setExisting] = useState(params.get("reconnect") === "1");
+  const [existing, setExisting] = useState(reconnect || params.get("stage") === "credentials");
   const [appNotCreated, setAppNotCreated] = useState(false);
   const [legacyAccount, setLegacyAccount] = useState("");
   const [identityLinked, setIdentityLinked] = useState(false);
@@ -114,6 +121,7 @@ export function GitHubChatSetup() {
     enabled: !!resume,
     refetchInterval: 3000,
   });
+  const currentView = useQueryView(current);
   const bot = current.data;
   const progress = useQuery({
     queryKey: ["github-wizard", resume],
@@ -125,13 +133,14 @@ export function GitHubChatSetup() {
       )
         ? false
         : 5000,
-    retry: false,
   });
+  const progressView = useQueryView(progress);
   const accounts = useQuery({
     queryKey: ["github-personal-connections", resume],
     queryFn: () => githubChatApi.personalConnections(resume!),
     enabled: !!bot && (identityOnly || progress.data?.state === "identity"),
   });
+  const accountsView = useQueryView(accounts);
   const selectedAgent = agents.data?.find(
     (agent) => agent.id === (bot?.assignedAgentId ?? agentId),
   );
@@ -143,12 +152,16 @@ export function GitHubChatSetup() {
     enabled: !!selectedCompanyId && choosingAccount,
     staleTime: 30_000,
   });
+  const repositoriesView = useQueryView(repositories);
   const connectedBots = useQuery({
     queryKey: queryKeys.chatEndpoints.list(selectedCompanyId!),
     queryFn: () => chatEndpointsApi.list(selectedCompanyId!),
     enabled: !!selectedCompanyId && choosingAccount,
     staleTime: 30_000,
   });
+  const connectedBotsView = useQueryView(connectedBots);
+  const setupReadFailure = accountsView.kind === "error" ? accountsView
+    : !identityOnly && progressView.kind === "error" ? progressView : null;
   const organizations = new Map<string, string>();
   for (const repository of repositories.data?.repositories ?? []) {
     if (repository.ownerType !== "organization") continue;
@@ -208,12 +221,14 @@ export function GitHubChatSetup() {
     bot?.setup?.github?.ownerLogin,
     bot?.setup?.github?.appName,
   ]);
+  const authorization = useAuthorizationWindow();
   async function run(action: () => Promise<void>) {
     setBusy(true);
     setError("");
     try {
       await action();
     } catch (error) {
+      authorization.cancel();
       setError(
         error instanceof Error
           ? appErrorDisplay(error)
@@ -272,12 +287,12 @@ export function GitHubChatSetup() {
     return (
       <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6">
         <h1 className="text-2xl font-semibold">{fullAppsT("fullApps.resume_github_setup_25b22b")}</h1>
-        {current.error ? (
+        {currentView.kind === "error" ? (
           <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_this_connection_try_again_to_resume_y_adedd2")}</p>
         ) : (
           <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_your_draft_4f0755")}</p>
         )}
-        {footer(current.error ? fullAppsT("fullApps.copy_d8b8392e2c54") : undefined, async () => {
+        {footer(currentView.kind === "error" ? fullAppsT("fullApps.copy_d8b8392e2c54") : undefined, async () => {
           await current.refetch();
         })}
       </div>
@@ -285,6 +300,7 @@ export function GitHubChatSetup() {
   if (connected) return null;
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6">
+      {authorization.fallback}
       {!identityOnly && (
         <SetupWizardNavigation
           labels={reconnect ? [fullAppsT("fullApps.copy_aa7b6cd19325")] : [fullAppsT("fullApps.choose_agent_f7c0bf"), fullAppsT("fullApps.copy_4027e5b24418")]}
@@ -302,17 +318,19 @@ export function GitHubChatSetup() {
               ? fullAppsT("fullApps.connect_your_account_24fa20")
               : reconnect && existing ? fullAppsT("fullApps.reconnect_github_aa7b6c") : fullAppsT("projectConfigUi.repos.connect")}
       </h1>
-      {(error || (!identityOnly && !existing && progress.error) || accounts.error) && (
+      {error ? (
         <p role="alert" className="text-sm text-destructive">
-          {renderAppDisplayText(error) ||
-            (accounts.error instanceof Error
-              ? renderAppError(accounts.error)
-              : undefined) ||
-            (progress.error instanceof Error
-              ? renderAppError(progress.error)
-              : fullAppsT("fullApps.could_not_check_github_setup_try_again_dfb5c6"))}
+          {renderAppDisplayText(error)}
         </p>
-      )}
+      ) : setupReadFailure ? (
+        <QueryErrorState
+          size="inline"
+          error={setupReadFailure.error}
+          action="check GitHub setup"
+          onRetry={setupReadFailure.retry}
+          retrying={setupReadFailure.isFetching}
+        />
+      ) : null}
       {!bot ? (
         <>
           <AgentSelect
@@ -367,22 +385,28 @@ export function GitHubChatSetup() {
             !agentId || !selectedCompanyId,
           )}
         </>
-      ) : !identityOnly && !existing && progress.isPending ? (
+      ) : !identityOnly && !existing && (progress.isPending || progressView.kind === "reconnecting") ? (
         <>
           <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.checking_your_github_connection_71a8f2")}</p>
           {footer()}
         </>
       ) : existing ? (
         <GitHubAppRecovery
-          key={bot.id}
+          key={`${bot.id}:${rotateWebhookSecret ? params.get("afterRotationId") ?? "unspecified" : credentialFields?.join(",") ?? "credentials"}`}
           endpoint={bot}
           reconnect={reconnect}
+          credentialFields={credentialFields}
+          requireAllCredentialFields={params.get("credentialMode") === "all"}
+          rotateWebhookSecret={rotateWebhookSecret}
+          rotationAlreadyCommitted={params.has("afterRotationId") && !!bot.setup?.credentialRotationId && bot.setup.credentialRotationId !== params.get("afterRotationId")}
           onExit={exit}
           onConnect={async (credentials) => {
             if (reconnect || ["active", "paused", "revoked"].includes(bot.status)) {
               await chatEndpointsApi.setup(bot.id, {
                 action: "reconnect",
-                ...(credentials ? { credentials: { appId: credentials.appId.trim(), privateKey: credentials.privateKey } } : {}),
+                ...(credentials ? { credentials: Object.fromEntries(Object.entries(credentials).filter(([field, value]) =>
+                  value?.trim() && (!credentialFields || credentialFields.some(requested => requested === field) || (field === "appId" && !!credentials.privateKey.trim() && credentialFields.includes("privateKey"))),
+                ).map(([field, value]) => [field, field === "appId" ? value!.trim() : value])) } : {}),
               });
             } else if (credentials) {
               await githubChatApi.connectApp(bot.id, credentials);
@@ -473,8 +497,9 @@ export function GitHubChatSetup() {
                       await refresh();
                     }
                   } else {
+                    authorization.reserve();
                     const result = await githubChatApi.startIdentity(bot.id);
-                    window.location.assign(result.authorizationUrl);
+                    await authorization.open(result.authorizationUrl);
                   }
                 },
                 existingIdentityMethod && !legacyAccount,
@@ -488,7 +513,7 @@ export function GitHubChatSetup() {
           {state.installationUrl && (
             <a
               className="inline-flex items-center gap-1 text-sm underline"
-              href={state.installationUrl}
+              href={state.installationUrl} target="_blank" rel="noopener noreferrer"
             >{fullAppsT("fullApps.continue_installation_on_github_629e11")}<ExternalLink className="size-3" />
             </a>
           )}
@@ -498,6 +523,7 @@ export function GitHubChatSetup() {
         <>
           <p className="text-sm">{fullAppsT("fullApps.paperclip_cloud_receives_github_events_and_securely__5ab500")}</p>
           {footer(fullAppsT("fullApps.connect_paperclip_cloud_7dd29f"), async () => {
+            authorization.reserve();
             const result = await toolsApi.startCloudConnectorEnrollment(
               selectedCompanyId!,
               undefined,
@@ -505,7 +531,7 @@ export function GitHubChatSetup() {
             );
             if (!result.verificationUrl)
               throw new AppDisplayError("fullApps.cloud_enrollment_could_not_be_started_854e5b");
-            window.location.assign(result.verificationUrl);
+            await authorization.open(result.verificationUrl);
           })}
         </>
       ) : state?.state === "recovery" ? (
@@ -577,7 +603,7 @@ export function GitHubChatSetup() {
               ))}
               <option value="organization">{fullAppsT("fullApps.another_organization_70f80d")}</option>
             </select>
-            {(repositories.isError || connectedBots.isError) && (
+            {(repositoriesView.kind === "error" || connectedBotsView.kind === "error") && (
               <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_some_connected_github_accounts_choose_c33f4a")}</p>
             )}
           </div>

@@ -26,6 +26,8 @@ import { getRecentProjectIds, trackRecentProject } from "../lib/recent-projects"
 import { EmptyState } from "../components/EmptyState";
 import { IssuesList } from "../components/IssuesList";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { QueryErrorState, useQueryView } from "../components/QueryView";
+import { describeError } from "../api/errors";
 import { PageTabBar } from "../components/PageTabBar";
 import { InlineEntitySelector, type InlineEntityOption } from "../components/InlineEntitySelector";
 import { MarkdownEditor, type MarkdownEditorRef, type MentionOption } from "../components/MarkdownEditor";
@@ -69,6 +71,7 @@ import {
   selectedFolderFromList,
   type FolderSelection,
 } from "../components/folders/FolderControls";
+import { useUpdateIssueMutation } from "../hooks/useUpdateIssueMutation";
 
 const concurrencyPolicies = ["coalesce_if_active", "always_enqueue", "skip_if_active"];
 const catchUpPolicies = ["skip_missed", "enqueue_missed_with_cap"];
@@ -374,11 +377,13 @@ export function Routines() {
     setRoutineViewState(getRoutineViewState(routineViewStateKey));
   }, [routineViewStateKey]);
 
-  const { data: routines, isLoading, error } = useQuery({
+  const routinesQuery = useQuery({
     queryKey: queryKeys.routines.list(selectedCompanyId!),
     queryFn: () => routinesApi.list(selectedCompanyId!),
     enabled: !!selectedCompanyId,
   });
+  const { data: routines, isLoading } = routinesQuery;
+  const routinesView = useQueryView(routinesQuery);
   const { data: routineFolders, isLoading: foldersLoading } = useQuery({
     queryKey: queryKeys.folders.list(selectedCompanyId!, "routine"),
     queryFn: () => foldersApi.list(selectedCompanyId!, "routine"),
@@ -399,11 +404,13 @@ export function Routines() {
     queryFn: () => accessApi.listUserDirectory(selectedCompanyId!),
     enabled: !!selectedCompanyId,
   });
-  const { data: routineExecutionIssues, isLoading: recentRunsLoading, error: recentRunsError } = useQuery({
+  const recentRunsQuery = useQuery({
     queryKey: [...queryKeys.issues.list(selectedCompanyId!), "routine-executions"],
     queryFn: () => issuesApi.list(selectedCompanyId!, { originKind: "routine_execution" }),
     enabled: !!selectedCompanyId && !streamlinedUiEnabled && activeTab === "runs",
   });
+  const { data: routineExecutionIssues, isLoading: recentRunsLoading } = recentRunsQuery;
+  const recentRunsView = useQueryView(recentRunsQuery);
   const liveRunsQueryKey = queryKeys.liveRuns(selectedCompanyId!);
   const sharedLiveRuns = useSharedPollingQuery({
     companyId: selectedCompanyId,
@@ -481,7 +488,7 @@ export function Routines() {
         } catch (moveError) {
           pushToast({
             title: t("fullRoutinesSecrets.folderCreatedMoveFailed"),
-            body: moveError instanceof Error ? moveError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheSelectedRoutines"),
+            body: describeError(moveError, { action: "move the selected routines" }).body,
             tone: "error",
           });
           return;
@@ -494,7 +501,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToSaveFolder"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotSaveTheFolder"),
+        body: describeError(mutationError, { action: "save the folder" }).body,
         tone: "error",
       });
     },
@@ -510,7 +517,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.folderSaveFailed"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheFolder"),
+        body: describeError(mutationError, { action: "update the folder" }).body,
         tone: "error",
       });
     },
@@ -529,7 +536,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.folderDeleteFailed"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotDeleteTheFolder"),
+        body: describeError(mutationError, { action: "delete the folder" }).body,
         tone: "error",
       });
     },
@@ -546,7 +553,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.moveFailed"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheRoutine"),
+        body: describeError(mutationError, { action: "move the routine" }).body,
         tone: "error",
       });
     },
@@ -568,7 +575,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToUpdateRoutine"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheRoutine"),
+        body: describeError(mutationError, { action: "update the routine" }).body,
         tone: "error",
       });
     },
@@ -603,7 +610,7 @@ export function Routines() {
     onError: (mutationError) => {
       pushToast({
         title: t("fullRoutinesSecrets.routineRunFailed"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotStartTheRoutineRun"),
+        body: describeError(mutationError, { action: "start the routine run" }).body,
         tone: "error",
       });
     },
@@ -656,13 +663,9 @@ export function Routines() {
     () => createIssueDetailLocationState(i18n.t("fullRoutinesSecrets.recentRuns495"), "/routines?tab=runs", "issues"),
     [t],
   );
-  const updateIssue = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) => issuesApi.update(id, data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [...queryKeys.issues.list(selectedCompanyId!), "routine-executions"],
-      });
-    },
+  const updateIssue = useUpdateIssueMutation({
+    companyId: selectedCompanyId,
+    invalidateKeys: selectedCompanyId ? [[...queryKeys.issues.list(selectedCompanyId), "routine-executions"]] : [],
   });
 
   function handleLegacyTabChange(tab: string) {
@@ -765,7 +768,7 @@ export function Routines() {
     } catch (moveError) {
       pushToast({
         title: t("fullRoutinesSecrets.failedToMoveRoutines"),
-        body: moveError instanceof Error ? moveError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotMoveTheSelectedRoutines"),
+        body: describeError(moveError, { action: "move the selected routines" }).body,
         tone: "error",
       });
     }
@@ -805,7 +808,9 @@ export function Routines() {
     return <Navigate to={auditSectionHref("runs", {})} replace />;
   }
 
-  if (isLoading) {
+  // Keep loaded routines on screen through a failed refetch; only a real
+  // failure, or an outage before the first load, replaces the page.
+  if (isLoading || routinesView.kind === "reconnecting") {
     return <PageSkeleton variant="issues-list" />;
   }
 
@@ -833,8 +838,10 @@ export function Routines() {
         </Tabs>
         <IssuesList
           issues={routineExecutionIssues ?? []}
-          isLoading={recentRunsLoading}
-          error={recentRunsError as Error | null}
+          isLoading={recentRunsLoading || recentRunsView.kind === "reconnecting"}
+          error={recentRunsView.kind === "error" ? (recentRunsView.error as Error) : null}
+          onRetry={recentRunsView.retry}
+          retrying={recentRunsView.isFetching}
           agents={agents}
           projects={projects}
           liveIssueIds={liveIssueIds}
@@ -855,7 +862,7 @@ export function Routines() {
         onGroupChange={groupBy => updateRoutineView({ groupBy, collapsedGroups: [] })}
         onNewFolder={routineViewState.groupBy === "folder" && !hasRoutineFolders ? () => openCreateFolder() : undefined}
         onCreateRoutine={openCreateRoutine}
-        runsHref={streamlinedUiEnabled ? auditSectionHref("runs", {}) : undefined}
+        tasksHref="/issues?view=all&originKind=routine_execution&sortField=created&sortDir=desc"
         selectMode={selectMode} onToggleSelect={showFolderRail ? () => setSelectMode(current => !current) : undefined}
       />
 
@@ -1145,9 +1152,9 @@ export function Routines() {
                 <Plus className="mr-2 h-4 w-4" />
                 {createRoutine.isPending ? t("fullRoutinesSecrets.creating") : t("fullRoutinesSecrets.createRoutine")}
               </Button>
-              {createRoutine.isError ? (
-                <p className="text-sm text-destructive">
-                  {createRoutine.error instanceof Error ? createRoutine.error.message : t("fullRoutinesSecrets.failedToCreateRoutine")}
+              {createRoutine.isError ? ( // query-error-ok: mutation result, not a query
+                <p role="alert" className="text-sm text-destructive">
+                  {describeError(createRoutine.error, { action: "create the routine" }).body}
                 </p>
               ) : null}
             </div>
@@ -1155,12 +1162,13 @@ export function Routines() {
         </DialogContent>
       </Dialog>
 
-      {error ? (
-        <Card>
-          <CardContent className="pt-6 text-sm text-destructive">
-            {error instanceof Error ? error.message : t("fullRoutinesSecrets.failedToLoadRoutines")}
-          </CardContent>
-        </Card>
+      {routinesView.kind === "error" ? (
+        <QueryErrorState
+          error={routinesView.error}
+          action="load routines"
+          onRetry={routinesView.retry}
+          retrying={routinesView.isFetching}
+        />
       ) : null}
 
       <div className={cn(showFolderRail && "flex gap-4")}>

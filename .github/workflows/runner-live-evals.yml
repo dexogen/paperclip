@@ -24,8 +24,8 @@ concurrency:
 
 jobs:
   authorize:
-    name: Authorize paid campaign
     if: github.repository == 'paperclipai/paperclip' && (github.event_name != 'schedule' || vars.RUNNER_LIVE_EVALS_NIGHTLY_ENABLED == 'true')
+    name: Authorize paid campaign
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -83,9 +83,9 @@ jobs:
           fi
 
   live_matrix:
+    if: github.repository == 'paperclipai/paperclip' && (github.event_name != 'schedule' || vars.RUNNER_LIVE_EVALS_NIGHTLY_ENABLED == 'true')
     name: Balanced provider/model matrix
     needs: authorize
-    if: github.repository == 'paperclipai/paperclip' && (github.event_name != 'schedule' || vars.RUNNER_LIVE_EVALS_NIGHTLY_ENABLED == 'true')
     # The authorize job selects one of two literal, reviewed runner labels;
     # dispatch inputs and repository variables cannot inject an arbitrary label.
     runs-on: ${{ needs.authorize.outputs.eval_runner }}

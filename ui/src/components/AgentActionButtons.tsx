@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import type { TFunction } from "i18next";
 import { i18n, useTranslation } from "../i18n";
 import { useCallback, useRef, useState, type ReactNode } from "react";
@@ -35,7 +36,8 @@ import { AgentStatusBadge } from "./StatusBadge";
 import { agentsApi } from "../api/agents";
 import { ApiError } from "../api/client";
 import { queryKeys } from "../lib/queryKeys";
-import { agentRouteRef } from "../lib/utils";
+import { agentRouteRef, cn } from "../lib/utils";
+import { pendingAgentSetupChoice } from "../lib/agent-setup-choice";
 import { copyTextToClipboard } from "../lib/clipboard";
 import { useDialogActions } from "../context/DialogContext";
 import { useToastActions } from "../context/ToastContext";
@@ -200,6 +202,8 @@ export function AgentActionButtons({
   onTerminateSuccess,
   pauseConfirm,
   hideTerminate = false,
+  workActionsInMenu = false,
+  menuItems = [],
   children,
   className,
 }: {
@@ -225,6 +229,10 @@ export function AgentActionButtons({
   pauseConfirm?: { title: string; description: ReactNode };
   /** Hide the Terminate action (e.g. built-in agents are undeletable). */
   hideTerminate?: boolean;
+  /** Put Run now, Pause/Resume and Clear error in the overflow menu, leaving Assign task (or Finish setup, while setup is pending) as the one button. */
+  workActionsInMenu?: boolean;
+  /** Extra overflow items shown after the work actions when `workActionsInMenu` is on. */
+  menuItems?: ReadonlyArray<{ label: string; icon: typeof Plus; onSelect: () => void; disabled?: boolean }>;
   /**
    * Optional inline error reporter. When provided it is used instead of a toast
    * for action failures (preserves the detail page's inline error banner). When
@@ -268,7 +276,9 @@ export function AgentActionButtons({
   const resolvedCompanyId = companyId ?? agent.companyId;
   const canonicalAgentRef = agentRouteRef(agent);
   const isPaused = agent.lifecycleState ? agent.lifecycleState === "paused" : agent.status === "paused";
-  const isError = agent.status === "error";
+  const isAgentError = agent.status === "error";
+  const needsSetup = agent.pauseReason === "setup" && agent.status !== "terminated"
+    && !["terminating", "cleaning_up", "terminated", "rejected"].includes(agent.lifecycleState ?? "");
 
   const reportInlineFailure = useCallback((failure: AgentActionFailure | null) => {
     if (onActionFailure) {
@@ -400,6 +410,179 @@ export function AgentActionButtons({
       : null;
   const persistentProviderTrace = runtimeDebug?.providerTrace === "raw";
 
+  const finishSetup = () => {
+    if (!confirmNavigationStart(agentActionStartedDirtyRef)) return;
+    navigate(`/agents/new?${new URLSearchParams({
+      name: agent.name, adapterType: agent.adapterType, setupAgentId: agent.id,
+      runnerProvider: String(agent.adapterConfig.provider === "acpx" ? agent.adapterConfig.acpxAgent : agent.adapterConfig.provider ?? "codex"),
+      ...(agent.adapterType === "paperclip_runner" ? { runner: "paperclip" } : ["codex_local", "claude_local", "opencode_local", "pi_local"].includes(agent.adapterType) ? { runner: "legacy" } : {}),
+      ...pendingAgentSetupChoice(agent),
+    })}`);
+  };
+  const pauseDialog = pauseConfirm ? (
+    <AlertDialog open={pauseConfirmOpen} onOpenChange={setPauseConfirmOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{pauseConfirm.title}</AlertDialogTitle>
+          <AlertDialogDescription asChild>
+            <div>{pauseConfirm.description}</div>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{translateUi("agentDetailUi.actions.cancel")}</AlertDialogCancel>
+          <AlertDialogAction onClick={() => agentAction.mutate("pause")}>
+            {translateUi("agentDetailUi.actions.pauseAnyway")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ) : null;
+
+  if (workActionsInMenu) {
+    const item = "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-50";
+    const icon = "size-4 shrink-0 text-muted-foreground";
+    const select = (action: () => void) => () => {
+      setMoreOpen(false);
+      action();
+    };
+    return (
+      <div className={className ?? "flex shrink-0 items-center gap-2"}>
+        {persistentProviderTrace ? (
+          <span
+            className="hidden items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 py-1 text-xs font-medium text-primary lg:inline-flex"
+            title={translateUi("agentDetailUi.actions.traceHint")}
+          >
+            <Bug className="h-3.5 w-3.5" />
+            {translateUi("agentDetailUi.actions.traceOn")}
+          </span>
+        ) : null}
+        {children}
+        <Popover open={moreOpen} onOpenChange={setMoreOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label={translateUi("interfaceUpdates.open_actions_for_value_f8ff6774", { value1: (agent.name) })}>
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-52 p-1" align="end">
+            {needsSetup ? (
+              <button
+                type="button"
+                className={item}
+                disabled={assignAndRunDisabled}
+                title={workActionsDisabled ? workActionsDisabledReason : undefined}
+                onClick={select(() => openNewIssue({ assigneeAgentId: agent.id }))}
+              >
+                <Plus className={icon} />
+                {assignLabel}
+              </button>
+            ) : showRun ? (
+              <button
+                type="button"
+                className={item}
+                disabled={assignAndRunDisabled}
+                title={workActionsDisabled ? workActionsDisabledReason : undefined}
+                onClick={select(() => {
+                  if (navigateToRunOnInvoke && !confirmNavigationStart(agentActionStartedDirtyRef)) return;
+                  agentAction.mutate("invoke");
+                })}
+              >
+                <Play className={icon} />
+                {runLabel}
+              </button>
+            ) : null}
+            {needsSetup ? null : isAgentError ? (
+              <button
+                type="button"
+                className={cn(item, "text-destructive")}
+                disabled={clearErrorDisabled}
+                aria-label={translateUi("agentDetailUi.actions.clearErrorLabel")}
+                onClick={select(() => agentAction.mutate("clear_error"))}
+              >
+                <CheckCircle2 className={cn(icon, "text-destructive")} />
+                {translateUi("agentDetailUi.actions.clearError")}
+              </button>
+            ) : isPaused ? (
+              <button type="button" className={item} disabled={pauseResumeDisabled} onClick={select(() => agentAction.mutate("resume"))}>
+                <Play className={icon} />
+                {translateUi("agentDetailUi.actions.resume")}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={item}
+                disabled={pauseResumeDisabled}
+                onClick={select(() => (pauseConfirm ? setPauseConfirmOpen(true) : agentAction.mutate("pause")))}
+              >
+                <Pause className={icon} />
+                {translateUi("agentDetailUi.actions.pause")}
+              </button>
+            )}
+            <div role="separator" className="-mx-1 my-1 h-px bg-border" />
+            {menuItems.map(({ label, icon: Icon, onSelect, disabled: itemDisabled }) => (
+              <button key={label} type="button" className={item} disabled={itemDisabled} onClick={select(onSelect)}>
+                <Icon className={icon} />
+                {label}
+              </button>
+            ))}
+            <button type="button" className={item} disabled={duplicateAgent.isPending} onClick={handleDuplicateAgent}>
+              {duplicateAgent.isPending ? <Loader2 className={cn(icon, "animate-spin")} /> : <Copy className={icon} />}
+              {translateUi("interfaceUpdates.duplicate_agent_3a91c2af")}
+            </button>
+            <button
+              type="button"
+              className={item}
+              onClick={select(() => {
+                void copyTextToClipboard(agent.id).catch(() => {
+                  pushToast({ title: translateUi("agentDetailUi.actions.copyFailed"), body: translateUi("agentDetailUi.actions.clipboardUnavailable"), tone: "error" });
+                });
+              })}
+            >
+              <Copy className={icon} />
+              {translateUi("interfaceUpdates.copy_agent_id_adca9433")}
+            </button>
+            <button type="button" className={item} onClick={select(() => resetTaskSession.mutate())}>
+              <RotateCcw className={icon} />
+              {translateUi("interfaceUpdates.reset_sessions_bb04c92b")}
+            </button>
+            {hideTerminate ? null : (
+              <>
+                <div role="separator" className="-mx-1 my-1 h-px bg-border" />
+                <button
+                  type="button"
+                  className={cn(item, "text-destructive")}
+                  onClick={select(() => {
+                    if (onTerminateSuccess && !confirmNavigationStart(agentActionStartedDirtyRef)) return;
+                    agentAction.mutate("terminate");
+                  })}
+                >
+                  <Trash2 className={cn(icon, "text-destructive")} />
+                  {translateUi("agentDetailUi.actions.terminate")}
+                </button>
+              </>
+            )}
+          </PopoverContent>
+        </Popover>
+        {needsSetup ? (
+          <Button size={size} disabled={disabled} onClick={finishSetup}>
+            <Play className="size-4" />
+            {translateUi("agentDetailUi.actions.finishSetup")}
+          </Button>
+        ) : (
+          <Button
+            size={size}
+            onClick={() => openNewIssue({ assigneeAgentId: agent.id })}
+            disabled={assignAndRunDisabled}
+            title={workActionsDisabled ? workActionsDisabledReason : undefined}
+          >
+            <Plus className="size-4" />
+            {assignLabel}
+          </Button>
+        )}
+        {pauseDialog}
+      </div>
+    );
+  }
+
   return (
     <div className={className ?? "flex items-center gap-1 sm:gap-2 shrink-0"}>
       {persistentProviderTrace ? (
@@ -421,7 +604,17 @@ export function AgentActionButtons({
         <Plus className="h-3.5 w-3.5 sm:mr-1" />
         <span className="hidden sm:inline">{assignLabel === undefined ? t("agentDetailUi.actions.assign") : assignLabel}</span>
       </Button>
-      {showRun && <RunButton
+      {needsSetup ? (
+        <Button variant="outline" size={size} disabled={disabled} onClick={() => {
+          if (!confirmNavigationStart(agentActionStartedDirtyRef)) return;
+          navigate(`/agents/new?${new URLSearchParams({
+            name: agent.name, adapterType: agent.adapterType, setupAgentId: agent.id,
+            runnerProvider: String(agent.adapterConfig.provider === "acpx" ? agent.adapterConfig.acpxAgent : agent.adapterConfig.provider ?? "codex"),
+            ...(agent.adapterType === "paperclip_runner" ? { runner: "paperclip" } : ["codex_local", "claude_local", "opencode_local", "pi_local"].includes(agent.adapterType) ? { runner: "legacy" } : {}),
+            ...pendingAgentSetupChoice(agent),
+          })}`);
+        }}>{translateUi("agentDetailUi.actions.finishSetup")}</Button>
+      ) : showRun && <RunButton
         onClick={() => {
           if (navigateToRunOnInvoke && !confirmNavigationStart(agentActionStartedDirtyRef)) return;
           agentAction.mutate("invoke");
@@ -430,18 +623,12 @@ export function AgentActionButtons({
         label={runLabel}
         size={size}
       />}
-      {isError ? (
+      {!needsSetup && (agent.status === "error" ? (
         <ClearErrorButton
           onClick={() => agentAction.mutate("clear_error")}
           disabled={clearErrorDisabled}
           size={size}
         />
-      ) : agent.pauseReason === "setup" && agent.lifecycleState === "paused" ? (
-        <Button variant="outline" size={size} disabled={disabled} onClick={() => navigate(`/agents/new?${new URLSearchParams({
-          name: agent.name, adapterType: agent.adapterType, setupAgentId: agent.id,
-          runnerProvider: String(agent.adapterConfig.provider === "acpx" ? agent.adapterConfig.acpxAgent : agent.adapterConfig.provider ?? "codex"),
-          ...(agent.adapterType === "paperclip_runner" ? { runner: "paperclip" } : ["codex_local", "claude_local", "opencode_local", "pi_local"].includes(agent.adapterType) ? { runner: "legacy" } : {}),
-        })}`)}>{t("agentDetailUi.actions.finishSetup")}</Button>
       ) : (
         <PauseResumeButton
           isPaused={isPaused}
@@ -450,7 +637,7 @@ export function AgentActionButtons({
           disabled={pauseResumeDisabled}
           size={size}
         />
-      )}
+      ))}
       {pauseConfirm && (
         <AlertDialog open={pauseConfirmOpen} onOpenChange={setPauseConfirmOpen}>
           <AlertDialogContent>

@@ -1,7 +1,11 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { isUuidLike } from "@paperclipai/shared";
 import { ApiError } from "@/api/client";
+import { describeError } from "@/api/errors";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { AgentMailCredentialField } from "@/features/connections/AgentMailCredentialField";
 import { AgentMailApiKeyField } from "@/features/connections/AgentMailApiKeyField";
 import { useEmailAddressCheck } from "@/features/connections/useEmailAddressCheck";
@@ -93,6 +97,7 @@ export function EmailEndpointSetup() {
 }
 
 function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -135,18 +140,24 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
   }, [companyId, draftKey, connectionId, step, agentId, requestId, addressMode, inboxId, username, domain, domainSelected, takenAddresses, mode, allowInboxKey, selectedCredentialId]);
   const agents = useQuery({ queryKey: queryKeys.agents.list(companyId),
     queryFn: () => agentsApi.list(companyId), enabled: !!companyId });
+  const agentsView = useQueryView(agents);
   const projects = useQuery({ queryKey: queryKeys.projects.list(companyId),
     queryFn: () => projectsApi.list(companyId), enabled: !!companyId && trustOpen });
+  const projectsView = useQueryView(projects);
   const boundaryIssues = useQuery({ queryKey: ["email-boundary-issues", companyId],
     queryFn: () => issuesApi.list(companyId), enabled: !!companyId && trustOpen });
+  const boundaryIssuesView = useQueryView(boundaryIssues);
   const chosen = agents.data?.find(a => a.id === agentId);
   const lowTrust = getTrustPreset(chosen?.permissions) === "low_trust_review";
   const scoped = lowTrustBoundaryHasScope(getLowTrustBoundary(chosen?.permissions));
   const inspected = useQuery({ queryKey: ["email-credential-inspect", companyId, connectionId],
     queryFn: () => emailApi.inspectSaved(companyId, connectionId),
-    enabled: !!companyId && !!connectionId, retry: false });
+    enabled: !!companyId && !!connectionId });
+  const inspectedView = useQueryView(inspected);
   const inboxes = useQuery({ queryKey: ["email-inboxes", companyId],
     queryFn: () => emailApi.list(companyId), enabled: !!companyId });
+  const inboxesView = useQueryView(inboxes);
+  const inboxesLoaded = inboxesView.kind === "ready" || inboxesView.kind === "stale";
   // A provider failure can leave an inbox allocated under this request. Resume
   // that exact endpoint; its agent and address are already fixed server-side.
   const pendingEndpoint = inboxes.data?.find(i => i.id === requestId && i.status !== "archived");
@@ -155,8 +166,8 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
     queryKey: ["email-resume-account", companyId, pendingEndpoint?.connectionId],
     queryFn: () => toolsApi.getConnection(pendingEndpoint!.connectionId),
     enabled: !!resumeId && requestId === resumeId && !!pendingEndpoint && !connectionId,
-    retry: false,
   });
+  const resumeAccountView = useQueryView(resumeAccount);
   useEffect(() => {
     if (!resumeId || !pendingEndpoint || connectionId || !resumeAccount.isSuccess) return;
     const savedAccount = resumeAccount.data?.config?.credentialConnectionId;
@@ -176,7 +187,7 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
     if (inspected.isSuccess && !domainSelected && !pendingAddress) setDomain(defaultDomain);
   }, [inspected.isSuccess, domainSelected, pendingAddress, defaultDomain]);
   useEffect(() => {
-    if (!scopedKey || !inboxes.isSuccess) return;
+    if (!scopedKey || !inboxesLoaded) return;
     if (pendingAddress || allowInboxKey) {
       setAddressMode("existing");
       setInboxId(inspected.data?.inboxes[0]?.inbox_id ?? "");
@@ -186,7 +197,7 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
       setSelectedCredentialId(null);
       setStep(0);
     }
-  }, [scopedKey, inspected.data, inboxes.isSuccess, pendingAddress, allowInboxKey, step]);
+  }, [scopedKey, inspected.data, inboxesLoaded, pendingAddress, allowInboxKey, step]);
   useEffect(() => {
     if (chosen && !suggestedUsername.current) {
       suggestedUsername.current = true;
@@ -253,6 +264,7 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
   }
   const agentDetail = useQuery({ queryKey: queryKeys.agents.detail(agentId),
     queryFn: () => agentsApi.get(agentId), enabled: !!agentId && trustOpen });
+  const agentDetailView = useQueryView(agentDetail);
   const trust = useMutation({
     mutationFn: () => agentsApi.updatePermissions(agentId, {
       ...permissions,
@@ -300,9 +312,15 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
   const assignedInbox = addressMode === "existing" && inboxes.data?.some(i => i.id !== requestId && i.address === address && i.status !== "archived");
   const addressError = addressTaken ? fullAppsT("fullApps.this_email_address_is_already_in_use_choose_a_differ_d87ab2")
     : assignedInbox ? fullAppsT("fullApps.this_inbox_is_already_assigned_to_an_agent_fe23c3") : null;
-  const error = connect.error ?? (!addressTaken ? setup.error : null) ?? resumeAccount.error ?? inspected.error ?? agents.error;
+  const writeError = connect.error ?? (!addressTaken ? setup.error : null);
+  const readFailure = resumeAccountView.kind === "error" ? resumeAccountView
+    : inspectedView.kind === "error" ? inspectedView
+    : agentsView.kind === "error" ? agentsView : null;
+  const setupError = writeError ? <p role="alert" className="text-sm text-destructive">{describeError(writeError).body}</p>
+    : readFailure ? <QueryErrorState size="inline" error={readFailure.error} action="load email setup" onRetry={readFailure.retry} retrying={readFailure.isFetching} />
+    : null;
   const busy = connect.isPending || setup.isPending;
-  const identityReady = inboxes.isSuccess && (!resumeId || requestId !== resumeId || !!pendingEndpoint) && (!pendingEndpoint || pendingEndpoint.assignedAgentId === agentId);
+  const identityReady = inboxesLoaded && (!resumeId || requestId !== resumeId || !!pendingEndpoint) && (!pendingEndpoint || pendingEndpoint.assignedAgentId === agentId);
   const canContinue = identityReady && !!chosen && !busy && !(lowTrust && !scoped) && (!!pendingAddress || !!selectedCredentialId || !!apiKey.trim());
   const canCreate = identityReady && !!chosen && !busy && !!inspected.data && !(lowTrust && !scoped) && !addressError && !addressCheck.checking
     && (!!pendingAddress || (addressMode === "existing" ? !!inboxId : validUsername));
@@ -330,19 +348,15 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
     <header className="space-y-2">
       <h1 className="text-xl font-bold">{step === 2 ? fullAppsT("fullApps.your_agent_s_email_is_ready_85c345") : fullAppsT("fullApps.give_an_agent_an_email_address_1597b6")}</h1>
     </header>
-    {step < 2 && inboxes.isError && <div role="alert" className="space-y-2 text-sm">
-      <p className="text-destructive"><FullAppsTrans i18nKey="fullApps.could_not_load_email_setup_progress_18e727" components={{ part1: <>{inboxes.error.message}</> }} /></p>
-      <Button type="button" variant="outline" size="sm" disabled={busy || inboxes.isFetching} onClick={() => { void inboxes.refetch(); }}>
-        {inboxes.isFetching ? fullAppsT("taskPanels.loading") : fullAppsT("fullApps.retry_loading_inboxes_b33202")}
-      </Button>
-    </div>}
-    {step < 2 && resumeId === requestId && inboxes.isSuccess && !pendingEndpoint && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.this_email_setup_could_not_be_found_return_to_connec_f16421")}</p>}
-    {step < 2 && <ChatSetupNavigation labels={[fullAppsT("fullApps.caption_11b39c9377"), fullAppsT("fullApps.email_address_f2488f")]} step={step}
+    {step < 2 && inboxesView.kind === "error" && <QueryErrorState error={inboxes.error} action="load email setup progress"
+      onRetry={inboxesView.retry} retrying={inboxesView.isFetching} />}
+    {step < 2 && resumeId === requestId && inboxesLoaded && !pendingEndpoint && <p role="alert" className="text-sm text-destructive">{translateUi("fullApps.this_email_setup_could_not_be_found_return_to_connec_f16421")}</p>}
+    {step < 2 && <ChatSetupNavigation labels={["Agent", "Email address"]} step={step}
       availableStep={step} disabled={busy} onSelect={index => { setup.reset(); setStep(index as 0 | 1); }} />}
     {step === 0 && <form className="space-y-6" onSubmit={event => { event.preventDefault(); if (canContinue) connect.mutate(); }}>
       <div className="space-y-2">
         <Label htmlFor="email-agent">{fullAppsT("taskProperties.fields.agent")}</Label>
-        <AgentSelect id="email-agent" value={agentId} disabled={busy || agents.isPending || !inboxes.isSuccess || !!pendingEndpoint}
+        <AgentSelect id="email-agent" value={agentId} disabled={busy || agents.isPending || !inboxesLoaded || !!pendingEndpoint}
           placeholder={fullAppsT("taskChatUi.settings.chooseAgent")} emptyMessage={fullAppsT("taskProperties.fields.noAgents")} triggerClassName="h-10"
           agents={(agents.data ?? []).filter(a => !["terminated", "pending_approval"].includes(a.status))}
           onChange={id => { setAgentId(id); setUsername((agents.data?.find(a => a.id === id)?.name ?? "").toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(0, 64)); }} />
@@ -358,7 +372,7 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
         <p>{fullAppsT("fullApps.this_agent_needs_a_work_boundary_before_it_can_recei_36e1f0")}</p>
         <Button type="button" variant="outline" size="sm" onClick={openTrust}>{fullAppsT("fullApps.configure_work_boundary_a2eb39")}</Button>
       </div>}
-      {error && <p role="alert" className="text-sm text-destructive">{error.message}</p>}
+      {setupError}
       <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
         <Button type="button" variant="ghost" disabled={busy} onClick={cancel}>{fullAppsT("fullApps.cancel_19766e")}</Button>
         <Button disabled={!canContinue}>{connect.isPending ? fullAppsT("onboarding.progress.connecting") : fullAppsT("onboarding.actions.continue")}<ArrowRight className="size-4" /></Button>
@@ -433,7 +447,7 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
           </div>
         </div>
       </details>
-      {error && <p role="alert" className="text-sm text-destructive">{error.message}</p>}
+      {setupError}
       {inspected.isPending && <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_email_options_edf09d")}</p>}
       <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
         <Button type="button" variant="ghost" disabled={busy} onClick={() => { setup.reset(); setStep(0); }}><ArrowLeft className="size-4" />{fullAppsT("onboarding.actions.back")}</Button>
@@ -468,21 +482,29 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
               label: `${issue.identifier} · ${issue.title}`,
             }))}
             allowSingleIssue={false}
-            candidatesLoading={projects.isPending || boundaryIssues.isPending}
+            candidatesLoading={projects.isPending || boundaryIssues.isPending
+              || projectsView.kind === "reconnecting" || boundaryIssuesView.kind === "reconnecting"}
           />
           <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.low_trust_limits_paperclip_access_it_does_not_sandbo_b8f0a1")}</p>
-          {(trust.error || projects.error || boundaryIssues.error) && (
+          {trust.error ? (
             <p role="alert" className="text-sm text-destructive">
-              {(trust.error ?? projects.error ?? boundaryIssues.error)?.message}
+              {describeError(trust.error).body}
             </p>
-          )}
+          ) : projectsView.kind === "error" || boundaryIssuesView.kind === "error" ? (
+            <QueryErrorState
+              size="inline"
+              error={projectsView.kind === "error" ? projects.error : boundaryIssues.error}
+              action="load work boundary options"
+              onRetry={() => { projectsView.retry(); boundaryIssuesView.retry(); }}
+              retrying={projects.isFetching || boundaryIssues.isFetching}
+            />
+          ) : null}
           <DialogFooter>
             <Button variant="ghost" onClick={() => setTrustOpen(false)}>{fullAppsT("fullApps.cancel_19766e")}</Button>
             <Button
               disabled={
                 trust.isPending ||
-                agentDetail.isPending ||
-                !!agentDetail.error ||
+                (agentDetailView.kind !== "ready" && agentDetailView.kind !== "stale") ||
                 (getTrustPreset(permissions) === "low_trust_review" &&
                   !lowTrustBoundaryHasScope(getLowTrustBoundary(permissions)))
               }
@@ -509,6 +531,7 @@ export function EmailConnectionInboxes({
     queryFn: () => emailApi.list(companyId),
     refetchInterval: 10_000,
   });
+  const view = useQueryView(query);
   const connections = useQuery({
     queryKey: queryKeys.tools.connections(companyId),
     queryFn: () => toolsApi.listConnections(companyId),
@@ -555,10 +578,8 @@ export function EmailConnectionInboxes({
         </div>
       ))}
       {!!inboxes.length && <EmailSafetyNotice />}
-      {query.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {query.error.message}
-        </p>
+      {view.kind === "error" && (
+        <QueryErrorState error={query.error} action="load the inboxes" onRetry={view.retry} retrying={view.isFetching} />
       )}
     </section>
   );
@@ -572,6 +593,7 @@ export function EmailEndpointSettings({
   companyId: string;
   assignedAgentName: string;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const cache = useQueryClient();
   const query = useQuery({
@@ -579,6 +601,7 @@ export function EmailEndpointSettings({
     queryFn: () => emailApi.list(companyId),
     refetchInterval: 10_000,
   });
+  const view = useQueryView(query);
   const inbox = query.data?.find(
     (row: EmailEndpointSummary) => row.id === endpointId,
   );
@@ -614,13 +637,12 @@ export function EmailEndpointSettings({
     },
   });
   if (removed)
-    return <p>{fullAppsT("fullApps.inbox_disconnected_email_history_remains_in_its_task_f8ffe5")}</p>;
-  if (!inbox)
-    return (
-      <p role={query.error ? "alert" : undefined}>
-        {query.error?.message ?? fullAppsT("fullApps.loading_email_inbox_cb63b6")}
-      </p>
-    );
+    return <p>{translateUi("fullApps.inbox_disconnected_email_history_remains_in_its_task_f8ffe5")}</p>;
+  if (!inbox) {
+    if (view.kind === "error")
+      return <QueryErrorState error={query.error} action="load the email inbox" onRetry={view.retry} retrying={view.isFetching} />;
+    return <p role="status">{translateUi("fullApps.loading_email_inbox_cb63b6")}</p>;
+  }
   return (
     <div className="max-w-2xl space-y-8 pb-8">
       <header className="space-y-2">
@@ -683,7 +705,7 @@ export function EmailEndpointSettings({
         </dl>
         {inbox.lastError && <p role="alert" className="text-sm text-destructive">{inbox.lastError}</p>}
         {control.error && control.variables !== "remove" && (
-          <p role="alert" className="text-sm text-destructive">{control.error.message}</p>
+          <p role="alert" className="text-sm text-destructive">{describeError(control.error).body}</p>
         )}
       </section>
 
@@ -701,7 +723,7 @@ export function EmailEndpointSettings({
               <option value="webhook">{fullAppsT("fullApps.webhook_4814f6")}</option>
             </select>
           </div>
-          {reconnect.error && <p role="alert" className="text-sm text-destructive">{reconnect.error.message}</p>}
+          {reconnect.error && <p role="alert" className="text-sm text-destructive">{describeError(reconnect.error).body}</p>}
           {reconnect.isSuccess && <p role="status" className="text-sm">{fullAppsT("fullApps.inbox_reconnected_0ffeb9")}</p>}
           <div className="flex justify-end">
             <Button variant="outline" disabled={!replacementKey || reconnect.isPending} onClick={() => reconnect.mutate()}>
@@ -721,7 +743,7 @@ export function EmailEndpointSettings({
             onClick={() => control.mutate("remove")}>{fullAppsT("fullApps.disconnect_inbox_ad8f62")}</Button>
         </div>
         {control.error && control.variables === "remove" && (
-          <p role="alert" className="text-sm text-destructive">{control.error.message}</p>
+          <p role="alert" className="text-sm text-destructive">{describeError(control.error).body}</p>
         )}
       </section>
     </div>

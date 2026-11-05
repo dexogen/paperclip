@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t, useTranslation, i18n, Trans } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/StatusBadge";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { cn } from "@/lib/utils";
 import { queryKeys } from "@/lib/queryKeys";
 import {
@@ -24,7 +26,7 @@ import {
 } from "@/api/tools";
 import { agentsApi } from "@/api/agents";
 import { AgentSelect } from "@/components/AgentMultiSelect";
-import { ToolsPageHeader, LoadingState, ErrorState, RelativeTime } from "./shared";
+import { ToolsPageHeader, LoadingState, RelativeTime } from "./shared";
 
 const PAGE_SIZE = 50;
 const ALL = "__all";
@@ -381,6 +383,8 @@ export function AuditTab({ companyId }: { companyId: string }) {
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
+  const activityView = useQueryView(activity);
+
   const events = useMemo(
     () => activity.data?.pages.flatMap((page) => page.events) ?? [],
     [activity.data],
@@ -402,7 +406,7 @@ export function AuditTab({ companyId }: { companyId: string }) {
         description={t("surfacesGap.toolsAudit.description")}
       />
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div data-canonical-toolbar="tool-audit" role="toolbar" aria-label={translateUi("interfaceUpdates.tool_audit_filters_ab990853")} className="flex flex-wrap items-center gap-2">
         <Select value={app} onValueChange={setApp}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder={t("surfacesGap.toolsAudit.app")} />
@@ -459,10 +463,15 @@ export function AuditTab({ companyId }: { companyId: string }) {
         ) : null}
       </div>
 
-      {activity.isLoading ? (
+      {activity.isLoading || activityView.kind === "reconnecting" ? (
         <LoadingState label={t("surfacesGap.audit.loading")} />
-      ) : activity.error ? (
-        <ErrorState t={i18n.t} error={activity.error} onRetry={() => activity.refetch()} />
+      ) : activityView.kind === "error" ? (
+        <QueryErrorState
+          error={activity.error}
+          action="load activity"
+          onRetry={activityView.retry}
+          retrying={activityView.isFetching}
+        />
       ) : events.length === 0 ? (
         hasActiveFilters ? (
           <Card>

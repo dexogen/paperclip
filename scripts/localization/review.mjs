@@ -6,8 +6,8 @@ import { parseArgs, isMain, printError } from "./cli.mjs";
 
 export function run(args = process.argv.slice(2)) {
   const options = parseArgs(args, ["--root", "--keys-file", "--reviewer", "--method"]);
-  if (!options["keys-file"] || !options.reviewer?.trim() || !["human", "agent"].includes(options.method)) {
-    throw new Error("Use --keys-file <JSON array of examined message IDs> --reviewer <name> --method human|agent");
+  if (!options["keys-file"] || !options.reviewer?.trim() || !["human", "agent", "source-review"].includes(options.method)) {
+    throw new Error("Use --keys-file <JSON array of examined message IDs> --reviewer <name> --method human|agent|source-review");
   }
   const root = resolve(options.root ?? process.cwd());
   const keys = JSON.parse(readFileSync(resolve(options["keys-file"]), "utf8"));

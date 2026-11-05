@@ -1,5 +1,7 @@
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
+import { useQueryView } from "@/components/QueryView";
+import { describeError } from "@/api/errors";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -47,15 +49,17 @@ export function SpekoIncomingCalls({companyId, endpointId, agentId}: {companyId:
     return () => clearTimeout(timeout);
   }, [decision]);
   useEffect(() => { setDecision(undefined); restoreTaskFocus.current = false; }, [companyId, endpointId]);
-  const query = useQuery({queryKey: ["speko-incoming", companyId, endpointId], queryFn: () => voicePhoneApi.incoming(companyId, endpointId), refetchInterval: 2000, retry: false});
+  const query = useQuery({queryKey: ["speko-incoming", companyId, endpointId], queryFn: () => voicePhoneApi.incoming(companyId, endpointId), refetchInterval: 2000});
+  const queryView = useQueryView(query);
   const needsTaskSelection = Boolean(query.data?.some(call => ["awaiting_approval", "approving"].includes(call.state)));
-  const tasks = useQuery({queryKey: ["speko-approval-tasks", companyId, agentId], queryFn: () => issuesApi.list(companyId, {assigneeAgentId: agentId}), enabled: needsTaskSelection, retry: false});
+  const tasks = useQuery({queryKey: ["speko-approval-tasks", companyId, agentId], queryFn: () => issuesApi.list(companyId, {assigneeAgentId: agentId}), enabled: needsTaskSelection});
+  const tasksView = useQueryView(tasks);
   useEffect(() => {
-    if (restoreTaskFocus.current && !tasks.isFetching && !tasks.isError) {
+    if (restoreTaskFocus.current && !tasks.isFetching && !(tasksView.kind === "error")) {
       restoreTaskFocus.current = false;
       host.current?.querySelector<HTMLSelectElement>('select[aria-label="Conversation task"]')?.focus();
     }
-  }, [tasks.data, tasks.isFetching, tasks.isError]);
+  }, [tasks.data, tasks.isFetching, (tasksView.kind === "error")]);
   const mutation = useMutation({mutationFn: ({id, ...input}: {id: string; approve: boolean; approvalCode: string; issueId?: string}) => voicePhoneApi.decide(companyId, endpointId, id, input), onSuccess: result => { setDecision(result); return query.refetch(); }});
-  return <div ref={host} className="space-y-3">{needsTaskSelection && tasks.isError && <div role="alert" className="space-y-2 text-sm"><p>{fullSharedT("fullShared.task_list_could_not_be_loaded_retry_to_choose_an_exi_0be72f")}</p><Button variant="outline" disabled={tasks.isFetching} onClick={() => { restoreTaskFocus.current = true; void tasks.refetch().then(result => { if (result.isError) restoreTaskFocus.current = false; }); }}>{fullSharedT("fullShared.retry_tasks_3d79ea")}</Button></div>}{query.error && <p role="alert" className="text-sm text-destructive"><FullSharedTrans i18nKey="fullShared.incoming_call_approval_is_unavailable_42341f" components={{ part1: <>{query.error.message}</> }} /></p>}{!query.error && [...(query.data ?? []).filter(call => call.id !== decision?.id), ...(decision ? [decision] : [])].map(call => <SpekoIncomingCallCard key={call.id} call={call} tasks={tasks.data?.filter(task => !["done", "cancelled"].includes(task.status)).map(task => ({id: task.id, label: `${task.identifier ?? fullSharedTailT("fullSharedTail.task")} · ${task.title}`}))} busy={mutation.isPending && mutation.variables?.id === call.id} error={mutation.variables?.id === call.id ? mutation.error?.message : undefined} onDecide={input => mutation.mutate({id: call.id, ...input})} />)}</div>;
+  return <div ref={host} className="space-y-3">{needsTaskSelection && (tasksView.kind === "error") && <div role="alert" className="space-y-2 text-sm"><p>{fullSharedT("fullShared.task_list_could_not_be_loaded_retry_to_choose_an_exi_0be72f")}</p><Button variant="outline" disabled={tasks.isFetching} onClick={() => { restoreTaskFocus.current = true; void tasks.refetch().then(result => { if (result.status === "error") restoreTaskFocus.current = false; }); }}>{fullSharedT("fullShared.retry_tasks_3d79ea")}</Button></div>}{queryView.kind === "error" && <p role="alert" className="text-sm text-destructive"><FullSharedTrans i18nKey="fullShared.incoming_call_approval_is_unavailable_42341f" components={{ part1: <>{describeError(query.error).body}</> }} /></p>}{queryView.kind !== "error" && [...(query.data ?? []).filter(call => call.id !== decision?.id), ...(decision ? [decision] : [])].map(call => <SpekoIncomingCallCard key={call.id} call={call} tasks={tasks.data?.filter(task => !["done", "cancelled"].includes(task.status)).map(task => ({id: task.id, label: `${task.identifier ?? fullSharedTailT("fullSharedTail.task")} · ${task.title}`}))} busy={mutation.isPending && mutation.variables?.id === call.id} error={mutation.variables?.id === call.id ? mutation.error?.message : undefined} onDecide={input => mutation.mutate({id: call.id, ...input})} />)}</div>;
 }

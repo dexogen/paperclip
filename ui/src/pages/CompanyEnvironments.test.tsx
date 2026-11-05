@@ -719,11 +719,11 @@ describe("CompanyEnvironments — test provider button", () => {
     await act(async () => { rejectProbe(cause); });
     await waitForAssertion(() => { expect(container.textContent).toContain(expected); });
     const toast = mockPushToast.mock.calls.at(-1)![0];
-    expect(toast).toMatchObject({ title: "Проверка среды не пройдена", body: expected, tone: "error" });
+    expect(toast).toMatchObject({ title: "Проверка среды не пройдена", body: cause instanceof Error ? expected : "Произошла непредвиденная ошибка. Повтори попытку.", tone: "error" });
     await reactAct(async () => { await i18n.changeLanguage("en"); });
     expect(container.textContent).toContain("Environment probe failed.");
     expect(mockPushToast).toHaveBeenCalledTimes(1);
-    expect(toast.body).toBe(expected);
+    expect(toast.body).toBe(cause instanceof Error ? expected : "Произошла непредвиденная ошибка. Повтори попытку.");
     expect(mockEnvironmentsApi.probe).toHaveBeenCalledExactlyOnceWith("env-1", "company-1");
   });
 
@@ -2069,5 +2069,58 @@ describe("CompanyEnvironments — test provider button", () => {
     });
 
     expect(document.body.querySelector("[data-testid='environment-delete-button']")).toBeNull();
+  });
+
+  it("keeps the loaded environments list visible when a refetch fails transiently", async () => {
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    await act(async () => {
+      root!.render(renderCompanyEnvironments(queryClient));
+    });
+    await waitForAssertion(() => {
+      expect(container.textContent).toContain("Alpha");
+      expect(container.textContent).toContain("Beta");
+    });
+
+    mockEnvironmentsApi.list.mockRejectedValue(
+      new ApiError("Paperclip is restarting.", 503, { error: "tenant_app_unavailable" }),
+    );
+    await act(async () => {
+      await queryClient.invalidateQueries();
+    });
+    await waitForAssertion(() => {
+      expect(mockEnvironmentsApi.list.mock.calls.length).toBeGreaterThan(1);
+    });
+
+    expect(container.textContent).toContain("Alpha");
+    expect(container.textContent).toContain("Beta");
+    expect(container.querySelector('[data-query-view="error"]')).toBeNull();
+    expect(container.textContent).not.toContain("Paperclip is restarting.");
+    expect(container.textContent).not.toContain("tenant_app_unavailable");
+  });
+
+  it("shows readable copy and a Retry button when the environments list fails to load", async () => {
+    root = createRoot(container);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    mockEnvironmentsApi.list.mockRejectedValueOnce(new ApiError("Boom", 500, { error: "Boom" }));
+
+    await act(async () => {
+      root!.render(renderCompanyEnvironments(queryClient));
+    });
+    await waitForAssertion(() => {
+      expect(container.querySelector('[data-query-view="error"]')).not.toBeNull();
+    });
+    expect(container.textContent).toContain("Couldn't load environments");
+    expect(container.textContent).not.toContain("Alpha");
+    const retry = findButton(container, "Retry");
+    expect(retry).toBeTruthy();
+
+    await act(async () => click(retry));
+    await waitForAssertion(() => {
+      expect(container.textContent).toContain("Alpha");
+    });
+    expect(mockEnvironmentsApi.list).toHaveBeenCalledTimes(2);
+    expect(container.querySelector('[data-query-view="error"]')).toBeNull();
   });
 });

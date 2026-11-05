@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n } from "@/i18n";
 import { t, useTranslation } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
@@ -7,6 +8,8 @@ import type { CompanySearchIssueSummary, StatusCardUpdate, SummarySlotIssueRef }
 import { AlertTriangle, ChevronDown, ExternalLink, History, Loader2, RefreshCw, Wand2 } from "lucide-react";
 
 import { statusCardsApi, type StatusCardDryRun } from "@/api/statusCards";
+import { describeError } from "@/api/errors";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { MarkdownBody } from "@/components/MarkdownBody";
 import { useSummaryDraftStream } from "@/components/useSummaryDraftStream";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +43,7 @@ import {
   updateKindLabel,
 } from "./format";
 import type { StatusCardView } from "./types";
+import { taskStatusIconProps } from "@/lib/task-status-presentation";
 
 export function StatusCardDetailDrawer({
   card,
@@ -93,6 +97,7 @@ export function StatusCardDetailDrawer({
     queryFn: () => statusCardsApi.updates(card!.id),
     enabled: Boolean(card && open),
   });
+  const updatesView = useQueryView(updatesQuery);
   const summaryRevisionsQuery = useQuery({
     queryKey: card ? queryKeys.statusCards.summaryRevisions(card.id) : ["status-cards", "detail", "none", "summary-revisions"],
     queryFn: () => statusCardsApi.summaryRevisions(card!.id),
@@ -103,6 +108,7 @@ export function StatusCardDetailDrawer({
     queryFn: () => statusCardsApi.dryRun(card!.id),
     enabled: Boolean(card && open && tab === "watched" && (card.queries.length > 0 || (card.mentionedIssueIds?.length ?? 0) > 0)),
   });
+  const dryRunView = useQueryView(dryRunQuery);
   const lifecycle = card ? deriveStatusCardLifecycle(card) : "fresh";
   const generatingIssue = useMemo<SummarySlotIssueRef | null>(
     () =>
@@ -131,7 +137,7 @@ export function StatusCardDetailDrawer({
       await invalidateCard();
       setActionNote(t("fullPages.refreshQueuedTheSummarizerIsUpdatingThis"));
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotRefreshTheCard")),
+    onError: (err) => setActionError(describeError(err, { action: "refresh the card" }).body),
   });
 
   const recompileMutation = useMutation({
@@ -144,7 +150,7 @@ export function StatusCardDetailDrawer({
       await invalidateCard();
       setActionNote(t("fullPages.runQueuedTheSummarizerIsUpdatingThis"));
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotRunTheCard")),
+    onError: (err) => setActionError(describeError(err, { action: "run the card" }).body),
   });
 
   const saveSettingsMutation = useMutation({
@@ -171,7 +177,7 @@ export function StatusCardDetailDrawer({
         queryClient.invalidateQueries({ queryKey: queryKeys.statusCards.detail(card.id) }),
       ]);
     },
-    onError: (err) => setActionError(err instanceof Error ? err.message : t("fullPages.couldNotSaveSettings")),
+    onError: (err) => setActionError(describeError(err, { action: "save the settings" }).body),
   });
 
   if (!card) return null;
@@ -365,7 +371,7 @@ export function StatusCardDetailDrawer({
             <TabsContent value="history" className="mt-0 space-y-3">
               {/* History and cost live together: the today rollup up top, then
                   every recorded update (each update is one summary revision). */}
-              {updatesQuery.isLoading ? (
+              {updatesQuery.isLoading || updatesView.kind === "reconnecting" ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />{" "}{t("fullPages.loadingHistory")}</div>
               ) : updates.length === 0 ? (
@@ -406,13 +412,17 @@ export function StatusCardDetailDrawer({
             <TabsContent value="watched" className="mt-0 space-y-3">
               {card.queries.length === 0 && (card.mentionedIssueIds?.length ?? 0) === 0 ? (
                 <div className="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground">{t("fullPages.thisCardIsStillSettingUpThe")}</div>
-              ) : dryRunQuery.isLoading ? (
+              ) : dryRunQuery.isLoading || dryRunView.kind === "reconnecting" ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />{" "}{t("fullPages.matchingIssues")}</div>
-              ) : dryRunQuery.isError ? (
-                <InlineBanner tone="danger" title={t("fullPages.couldNotLoadMatchedIssues")}>
-                  {dryRunQuery.error instanceof Error ? dryRunQuery.error.message : t("projectConfigUi.membership.retry")}
-                </InlineBanner>
+                  <Loader2 className="h-4 w-4 animate-spin" /> {translateUi("fullPages.matchingIssues")}
+                </div>
+              ) : dryRunView.kind === "error" ? (
+                <QueryErrorState
+                  error={dryRunView.error}
+                  action="load matched issues"
+                  onRetry={dryRunView.retry}
+                  retrying={dryRunView.isFetching}
+                />
               ) : (
                 <MatchedIssueList
                   queries={dryRunQuery.data?.queries ?? []}
@@ -555,7 +565,7 @@ function WatchedIssueRow({ issue }: { issue: CompanySearchIssueSummary }) {
       >
         {issue.identifier ?? issue.id.slice(0, 8)}
       </Link>
-      <IssueStatusBadge status={issue.status} externalConversationState={issue.externalConversationState} />
+      <IssueStatusBadge {...taskStatusIconProps(issue)} />
       <span className="min-w-0 flex-1 truncate">{issue.title}</span>
       <span className="shrink-0 text-muted-foreground">{relativeTime(issue.updatedAt)}</span>
     </div>

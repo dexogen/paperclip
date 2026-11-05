@@ -1,5 +1,6 @@
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
+import { useAuthorizationWindow } from "@/hooks/useAuthorizationWindow";
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { slackSetupErrorDisplay } from "../chat-setup-error";
@@ -55,7 +56,7 @@ export function OwnSlackAppSetup({ endpoint, stage, disabled, saveDetails, onSav
     onBusy(true);
     setError(null);
     try { await action(); }
-    catch (failure) { setError(sanitizedSetupErrorDisplay(failure, { configurationToken })); }
+    catch (failure) { authorization.cancel(); setError(sanitizedSetupErrorDisplay(failure, { configurationToken })); }
     finally {
       setConfigurationToken("");
       setBusy(false);
@@ -122,13 +123,15 @@ export function OwnSlackAppSetup({ endpoint, stage, disabled, saveDetails, onSav
     }
   }
 
+  const authorization = useAuthorizationWindow();
   async function authorize() {
+    authorization.reserve();
     const result = await chatEndpointsApi.installSlackApp(endpoint.id);
-    // Current-tab navigation avoids popup blockers. The callback resumes this saved draft.
-    window.location.assign(result.authorizationUrl);
+    await authorization.open(result.authorizationUrl);
   }
 
   return <div className="space-y-5">
+    {authorization.fallback}
     {error || registration?.errorCode ? <p role="alert" className="text-sm text-destructive">
       {renderAppDisplayText(error) ?? slackSetupErrorDisplay(registration!.errorCode!)}
     </p> : null}

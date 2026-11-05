@@ -1,9 +1,14 @@
+import { notifyRoutineExecutionStatus } from "./routine-execution-status-notifications.js";
+import { notifyNativeStatusReassessment } from "./native-status-reassessment-notifications.js";
+import { notifyUnsafeWorkspaceExportRecovery } from "./unsafe-workspace-export-notifications.js";
+import { notifyChatResponseAvailability } from "./chat-response-availability.js";
 import { DELIVERY_QUEUES, notifyDeliveryWork } from "./delivery-work-notifications.js";
 import { notifyExecutionRunWork } from "./execution-control-notifications.js";
 import { hasWorkspaceRestoreFailure } from "@paperclipai/shared";
 import { randomUUID } from "node:crypto";
 import { canonicalExecutionUuid } from "./execution-identity.js";
-import { claimedAdapterType, conversationRecoveryActionPredicate, getConversationOwnershipBlocker } from "./conversation-continuation.js";
+import { conversationRecoveryActionPredicate, getConversationOwnershipBlocker } from "./conversation-continuation.js";
+import { isInterruptedNativePreparationCandidate } from "./cancelled-native-startup.js";
 import { persistActivity } from "./activity-log.js";
 import { appendHeartbeatRunEvent } from "./heartbeat-run-events.js";
 import { logger } from "../middleware/logger.js";
@@ -219,7 +224,7 @@ export async function markExecutionReconciliation(
           eq(nativeRunFinalizations.runId, decision.runId),
         ),
       );
-    await tx
+    const [source] = await tx
       .update(issueRecoveryActions)
       .set({
         evidence: {
@@ -239,7 +244,45 @@ export async function markExecutionReconciliation(
           eq(issueRecoveryActions.companyId, action.companyId),
           eq(issueRecoveryActions.id, action.id),
         ),
-      );
+      ).returning({
+        cause: issueRecoveryActions.cause,
+        fingerprint: issueRecoveryActions.fingerprint,
+        kind: issueRecoveryActions.kind,
+        evidence: issueRecoveryActions.evidence,
+      });
+    if (
+      !source || options?.workspaceRepairOnly ||
+      source.cause !== "legacy_execution_requires_reconciliation" ||
+      source.fingerprint !== `legacy-execution:${decision.runId}` ||
+      ["workspaceRestoreFailure", "workspaceRestoreRecovery", "systemRecovery"].some(key => key in source.evidence)
+    ) return;
+    const now = new Date();
+    const siblings = await tx.update(issueRecoveryActions).set({
+      status: "resolved", outcome: "cancelled", resolvedAt: now, updatedAt: now,
+      wakePolicy: null, monitorPolicy: null,
+      resolutionNote: "The same source execution was reconciled through another recovery action.",
+      evidence: sql`(${issueRecoveryActions.evidence} - 'automaticRecovery') || ${JSON.stringify({
+        executionReconciliation: { ...decision, actorId, recordedAt: now.toISOString() },
+        continuationDelivery: "invalidated",
+        coalescedIntoRecoveryActionId: action.id,
+      })}::jsonb`,
+    }).where(and(
+      eq(issueRecoveryActions.companyId, action.companyId),
+      eq(issueRecoveryActions.sourceIssueId, action.sourceIssueId),
+      not(eq(issueRecoveryActions.id, action.id)),
+      eq(issueRecoveryActions.kind, source.kind),
+      eq(issueRecoveryActions.cause, source.cause),
+      eq(issueRecoveryActions.fingerprint, source.fingerprint),
+      sql`${issueRecoveryActions.evidence}->>'runId' = ${decision.runId}`,
+      sql`${issueRecoveryActions.evidence}->'automaticRecovery'->>'replay' = 'blocked'`,
+      sql`not (${issueRecoveryActions.evidence} ?| array['executionReconciliation', 'workspaceRestoreFailure', 'workspaceRestoreRecovery', 'systemRecovery'])`,
+    )).returning({ id: issueRecoveryActions.id });
+    if (siblings.length) await persistActivity(tx as unknown as Db, {
+      companyId: action.companyId, actorType: "user", actorId,
+      action: "issue.recovery_action_resolved", entityType: "issue", entityId: action.sourceIssueId,
+      details: { reason: "same_source_execution_reconciled", recoveryActionId: action.id,
+        coalescedRecoveryActionIds: siblings.map(sibling => sibling.id), runId: decision.runId },
+    });
   });
 }
 
@@ -449,6 +492,7 @@ export async function settleUnrecoverableExecutions(
       .limit(25).for("update", { skipLocked: true });
     for (const candidate of foldable) {
       if (await getConversationOwnershipBlocker(tx as unknown as Db, candidate.companyId, candidate.sourceIssueId)) continue;
+      await notifyUnsafeWorkspaceExportRecovery(tx, { companyId: candidate.companyId, issueId: candidate.sourceIssueId });
       const [action] = await tx.update(issueRecoveryActions).set({
         status: "resolved",
         outcome: "cancelled",
@@ -542,7 +586,7 @@ export async function settleUnrecoverableExecutions(
             companyId: run.companyId, issueId: task.id, runId: run.id,
           }).limit(1).for("update");
           if (!hold) return;
-          await notifyExecutionRunWork(tx);
+          await notifyExecutionRunWork(tx, { companyId: run.companyId });
           const note = "Exact session recovery stopped. The recorded workspace recovery holds this execution without replaying its actions.";
           await tx.update(issueRecoveryActions).set({ status: "cancelled", outcome: "cancelled",
             resolvedAt: now, updatedAt: now, wakePolicy: null, monitorPolicy: null,
@@ -584,9 +628,15 @@ export async function settleUnrecoverableExecutions(
             ? "Workspace repair required. Verify safe staging or repair before continuing. Saved work and approval decisions remain in force."
             : "Automatic recovery stopped. Recorded work is preserved; actions with unverified outcomes will not be repeated."
           : "Recovery closed because the task's owner, execution, or status changed. No work was replayed.";
+        await notifyUnsafeWorkspaceExportRecovery(tx, { companyId: task.companyId, issueId: task.id });
         let nativeFailureBlock = action.evidence.nativeFailureBlock;
         let nativeBootstrapFailureBlock = action.evidence.nativeBootstrapFailureBlock;
         if (current) {
+          await notifyNativeStatusReassessment(tx, { companyId: task.companyId, issueId: task.id });
+          if (task.status !== "blocked") await notifyChatResponseAvailability(tx, { companyId: task.companyId, issueId: task.id });
+          await notifyDeliveryWork(tx, DELIVERY_QUEUES.issueMonitors);
+          await notifyDeliveryWork(tx, DELIVERY_QUEUES.agentTimers);
+          await notifyRoutineExecutionStatus(tx, task.id, task.companyId);
           const [projected] = await tx
             .update(issues)
             .set({
@@ -601,8 +651,7 @@ export async function settleUnrecoverableExecutions(
           if (task.status !== "blocked" && run.runtimeMode === "native") {
             nativeFailureBlock = { runId: run.id, statusVersion: projected!.statusVersion };
           }
-          if (task.status !== "blocked" && run.runtimeMode === "legacy" && !run.runtimeModeResolvedAt &&
-              run.errorCode === "server_shutdown_interrupted" && claimedAdapterType(run) === "paperclip_runner") {
+          if (task.status !== "blocked" && isInterruptedNativePreparationCandidate(run)) {
             nativeBootstrapFailureBlock = { runId: run.id, statusVersion: projected!.statusVersion, previousStatus: task.status };
           }
         }
@@ -645,7 +694,7 @@ export async function settleUnrecoverableExecutions(
             replay: "not_authorized",
           },
         });
-        await notifyExecutionRunWork(tx);
+        await notifyExecutionRunWork(tx, { companyId: run.companyId });
         await tx
           .update(heartbeatRuns)
           .set({ executionStatusDeliveryId: randomUUID() })

@@ -13,7 +13,10 @@ export interface RecentTaskEntry {
   originKind?: Issue["originKind"];
   identifier: string | null;
   status: IssueStatus;
+  displayStatus?: Issue["displayStatus"];
   externalConversationState?: Issue["externalConversationState"];
+  /** Blocked tasks covered by active work render the "in queue" glyph everywhere. */
+  blockerAttention?: Issue["blockerAttention"];
   recordedAt: number;
   // Server version of the title/status snapshot, independent of comment activity.
   // Legacy entries have no version until a detail query refreshes them.
@@ -109,6 +112,10 @@ export function writeRecentTasks(storageKey: string, entries: RecentTaskEntry[])
 
 type TaskSnapshot = Omit<IssueSummary, "externalConversationState"> & Pick<Issue, "externalConversationState" | "originKind">;
 
+function sameBlockerAttention(a: RecentTaskEntry["blockerAttention"], b: RecentTaskEntry["blockerAttention"]) {
+  return JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+}
+
 export function mergeRecentTaskSnapshot(entry: RecentTaskEntry, issue: TaskSnapshot): RecentTaskEntry {
   if (entry.id !== issue.id || entry.companyId !== issue.companyId) return entry;
   const snapshotUpdatedAt = new Date(issue.updatedAt).getTime();
@@ -121,7 +128,8 @@ export function mergeRecentTaskSnapshot(entry: RecentTaskEntry, issue: TaskSnaps
     const externalConversationState = issue.externalConversationState === undefined
       ? entry.externalConversationState : issue.externalConversationState;
     return externalConversationState !== entry.externalConversationState || originKind !== entry.originKind
-      ? { ...entry, status: issue.status, externalConversationState, originKind }
+      || issue.displayStatus !== entry.displayStatus || !sameBlockerAttention(issue.blockerAttention, entry.blockerAttention)
+      ? { ...entry, status: issue.status, externalConversationState, originKind, displayStatus: issue.displayStatus, blockerAttention: issue.blockerAttention }
       : entry;
   }
   return {
@@ -130,14 +138,16 @@ export function mergeRecentTaskSnapshot(entry: RecentTaskEntry, issue: TaskSnaps
     originKind,
     identifier: issue.identifier,
     status: issue.status,
+    displayStatus: issue.displayStatus,
     externalConversationState: issue.externalConversationState,
+    blockerAttention: issue.blockerAttention,
     snapshotUpdatedAt,
     recordedAt: Math.max(entry.recordedAt, snapshotUpdatedAt),
   };
 }
 
 export function recordRecentTask(
-  issue: Pick<Issue, "id" | "companyId" | "title" | "identifier" | "status" | "externalConversationState" | "updatedAt" | "conversationAgentId" | "originKind">,
+  issue: Pick<Issue, "id" | "companyId" | "title" | "identifier" | "status" | "displayStatus" | "externalConversationState" | "blockerAttention" | "updatedAt" | "conversationAgentId" | "originKind">,
   userId: string | null | undefined,
   recordedAt = new Date(issue.updatedAt).getTime(),
 ) {
@@ -156,7 +166,9 @@ export function recordRecentTask(
     originKind: issue.originKind,
     identifier: issue.identifier,
     status: issue.status,
+    displayStatus: issue.displayStatus,
     externalConversationState: issue.externalConversationState,
+    blockerAttention: issue.blockerAttention,
     recordedAt: activityAt,
     ...(Number.isFinite(snapshotUpdatedAt) ? { snapshotUpdatedAt } : {}),
   };
@@ -171,7 +183,9 @@ export function recordRecentTask(
     && existing.originKind === entry.originKind
     && existing.identifier === entry.identifier
     && existing.status === entry.status
+    && existing.displayStatus === entry.displayStatus
     && existing.externalConversationState === entry.externalConversationState
+    && sameBlockerAttention(existing.blockerAttention, entry.blockerAttention)
     && existing.recordedAt === entry.recordedAt
     && existing.snapshotUpdatedAt === entry.snapshotUpdatedAt
   ) return;

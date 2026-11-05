@@ -5,6 +5,7 @@ import type { Agent, Issue, IssueCommentMetadata } from "@paperclipai/shared";
 import { heartbeatsApi } from "../api/heartbeats";
 import { issuesApi } from "../api/issues";
 import type { WorkspaceBaseRefRecoveryNoticeProps } from "./WorkspaceBaseRefRecoveryNotice";
+import { retryTransientOnly } from "../lib/query-client";
 
 export class WorkspaceRecoveryReceiptError extends Error {
   constructor(readonly kind: "retry" | "repair") {
@@ -53,7 +54,7 @@ export function WorkspaceBaseRefRecoveryProvider({ issue, agentMap, unavailableR
   const runId = typeof recordedRunId === "string" ? recordedRunId : null;
   const { data: run } = useQuery({
     queryKey: ["workspace-base-ref-recovery", issue.companyId, issue.id, runId],
-    queryFn: () => heartbeatsApi.get(runId!), enabled: Boolean(runId), staleTime: Infinity, retry: false,
+    queryFn: () => heartbeatsApi.get(runId!), enabled: Boolean(runId), staleTime: Infinity, retry: retryTransientOnly(0),
   });
   const failure = record(record(run?.resultJson).configurationIncomplete);
   const execution = record(record(run?.resultJson).executionRecovery);

@@ -41,9 +41,9 @@ vi.mock("@/plugins/slots", () => ({ usePluginSlots: () => ({ slots: [{ pluginKey
 describe("AgentContextualSidebar", () => {
   it.each([
     { labels: undefined, en: "Secrets & variables", ru: "Секреты и переменные" },
-    { labels: {}, en: "Secrets", ru: "Секреты" },
-    { labels: { runtime: "Custom <runtime>" }, en: "Secrets", ru: "Секреты" },
-  ])("preserves the omitted versus explicit partial labels contract ($en)", async ({ labels, en, ru }) => {
+    { labels: {}, en: "Secrets & variables", ru: "Секреты и переменные" },
+    { labels: { runtime: "Custom <runtime>" }, en: "Secrets & variables", ru: "Секреты и переменные" },
+  ])("keeps navigation defaults with omitted or partial labels ($en)", async ({ labels, en, ru }) => {
     const client = new QueryClient();
     const render = () => renderToStaticMarkup(<QueryClientProvider client={client}><MemoryRouter>
       <AgentContextualSidebar agentRef="agent" agentId="id" agentName="Agent" labels={labels} />
@@ -81,7 +81,7 @@ describe("AgentContextualSidebar", () => {
     } finally { await act(async () => { root.unmount(); await setLocale("en"); }); client.clear(); container.remove(); }
   });
 
-  it.each([false, true])("keeps Channels available for default email regardless of the chat setting (%s)", (enabled) => {
+  it.each([false, true])("lists plugin tabs and keeps Channels and Tools out of the nav (%s)", (enabled) => {
     const client = new QueryClient();
     client.setQueryData(queryKeys.instance.experimentalSettings, { enableChatConnectors: enabled });
     const markup = renderToStaticMarkup(<QueryClientProvider client={client}><MemoryRouter>
@@ -89,11 +89,11 @@ describe("AgentContextualSidebar", () => {
     </MemoryRouter></QueryClientProvider>);
     expect(markup).toContain("Insights");
     expect(markup).toContain("plugin%3Atest.plugin%3Ainsights");
-    expect(markup.includes('href="/agents/agent/channels"')).toBe(true);
-    expect(markup).toContain('href="/agents/agent/tools"');
+    expect(markup).not.toContain('href="/agents/agent/channels"');
+    expect(markup).not.toContain('href="/agents/agent/tools"');
     client.clear();
   });
-  it("renders local definition/runtime/governance links and scoped Audit links", () => {
+  it("renders the Agent and Audit sections with audit pages inside the agent", () => {
     const queryClient = new QueryClient();
     const markup = renderToStaticMarkup(
       <QueryClientProvider client={queryClient}>
@@ -108,10 +108,14 @@ describe("AgentContextualSidebar", () => {
     expect(markup).toContain("border-r border-border bg-background");
     expect(markup).toContain('data-slot="contextual-sidebar-nav"');
     expect(markup).toContain('href="/agents/codexcoder/overview"');
+    expect(markup).toContain('href="/agents/codexcoder/advanced"');
     expect(markup).toContain('href="/agents/codexcoder/permissions"');
-    expect(markup).toContain('href="/agents/codexcoder/api-keys"');
-    expect(markup).toContain('href="/activity?mode=agents&amp;agentId=agent-1"');
-    expect(markup).toContain('href="/activity/runs?agentId=agent-1"');
+    expect(markup).toContain('href="/agents/codexcoder/identity"');
+    expect(markup).not.toContain('href="/agents/codexcoder/api-keys"');
+    expect(markup).toContain('href="/agents/codexcoder/activity"');
+    expect(markup).toContain('href="/agents/codexcoder/runs"');
+    expect(markup).toContain('href="/agents/codexcoder/budgets"');
+    expect(markup).toContain("Secrets &amp; variables");
     expect(markup).toContain("Harness / Runtime");
     expect(markup).toContain("Permissions / Trust");
   });

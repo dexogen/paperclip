@@ -4,7 +4,7 @@ import type { CompanyUserDirectoryEntry } from "../api/access";
 import { humanAgentCreatorUserId, resolveAgentCreatorLabel } from "./agent-creator";
 
 function member(principalId: string, name: string | null, email: string | null = null): CompanyUserDirectoryEntry {
-  return { principalId, status: "active", user: { id: principalId, name, email, image: null } };
+  return { principalId, status: "active", membershipRole: "member", user: { id: principalId, name, email, image: null } };
 }
 
 describe("agent creator label", () => {

@@ -302,6 +302,17 @@ test("review records require selected existing messages and do not approve subse
   assert.throws(() => review(["--root", f.root, "--keys-file", join(f.root, "selected.json"), "--reviewer", "Test editor", "--method", "human"]), /absent message/);
 });
 
+test("source review preserves fingerprint checks without requiring personal attribution", (t) => {
+  const f = fixture(t, ui('<button>{t("action")}</button>'));
+  f.write("selected.json", ["action"]);
+  review(["--root", f.root, "--keys-file", join(f.root, "selected.json"),
+    "--reviewer", "Localization review", "--method", "source-review"]);
+  assert.equal(createReport(f.root).ok, true);
+  f.write(path, ui('<a>{t("action")}</a>'));
+  f.write(config.targetCatalog, { action: "Далее" });
+  assert.equal(createReport(f.root).ok, false);
+});
+
 test("upstream source delta works independently of a merge and reports changed original literals", (t) => {
   const f = fixture(t, ui('<button>Continue</button>'));
   f.git("add", "."); f.git("commit", "--quiet", "-m", "old upstream");

@@ -1,10 +1,12 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, Copy } from "lucide-react";
 import { accessApi } from "@/api/access";
-import { ApiError } from "@/api/client";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { useCompany } from "@/context/CompanyContext";
 import { useToast } from "@/context/ToastContext";
@@ -12,6 +14,7 @@ import { Link } from "@/lib/router";
 import { queryKeys } from "@/lib/queryKeys";
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { Badge } from "@/components/ui/badge";
+import { describeError } from "@/api/errors";
 
 const inviteRoleOptions = [
   {
@@ -49,6 +52,7 @@ function isInviteHistoryRow(value: unknown): value is Awaited<ReturnType<typeof 
 
 /** The Invites tab of the Members page (extracted from the former standalone Invites page). */
 export function InvitesSection() {
+  useUiTranslation();
   useFullSharedTranslation();
   const { selectedCompanyId } = useCompany();
   const { pushToast } = useToast();
@@ -102,6 +106,7 @@ export function InvitesSection() {
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
   });
+  const invitesView = useQueryView(invitesQuery);
   const inviteHistory = useMemo(
     () =>
       invitesQuery.data?.pages.flatMap((page) =>
@@ -131,8 +136,8 @@ export function InvitesSection() {
     },
     onError: (error) => {
       pushToast({
-        title: fullSharedT("fullShared.failed_to_create_invite_23a0de"),
-        body: error instanceof Error ? error.message : fullSharedTailT("fullSharedTail.unknownError"),
+        title: translateUi("fullShared.failed_to_create_invite_23a0de"),
+        body: describeError(error).body,
         tone: "error",
       });
     },
@@ -146,8 +151,8 @@ export function InvitesSection() {
     },
     onError: (error) => {
       pushToast({
-        title: fullSharedT("fullShared.failed_to_revoke_invite_ac674f"),
-        body: error instanceof Error ? error.message : fullSharedTailT("fullSharedTail.unknownError"),
+        title: translateUi("fullShared.failed_to_revoke_invite_ac674f"),
+        body: describeError(error).body,
         tone: "error",
       });
     },
@@ -157,18 +162,23 @@ export function InvitesSection() {
     return <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.select_an_organization_to_manage_invites_462e18")}</div>;
   }
 
-  if (invitesQuery.isLoading) {
+  if (invitesQuery.isLoading || invitesView.kind === "reconnecting") {
     return <div className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_invites_5c525c")}</div>;
   }
 
-  if (invitesQuery.error) {
-    const message =
-      invitesQuery.error instanceof ApiError && invitesQuery.error.status === 403
-        ? fullSharedT("fullShared.you_do_not_have_permission_to_manage_organization_in_e61b97")
-        : invitesQuery.error instanceof Error
-          ? invitesQuery.error.message
-          : fullSharedT("fullShared.failed_to_load_invites_d62fcf");
-    return <div className="text-sm text-destructive">{message}</div>;
+  if (invitesView.kind === "error") {
+    if (invitesView.errorKind === "forbidden") {
+      return <div className="text-sm text-destructive">{translateUi("fullShared.you_do_not_have_permission_to_manage_organization_in_e61b97")}</div>;
+    }
+    return (
+      <QueryErrorState
+        size="page"
+        error={invitesQuery.error}
+        action="load invites"
+        onRetry={invitesView.retry}
+        retrying={invitesView.isFetching}
+      />
+    );
   }
 
   return (

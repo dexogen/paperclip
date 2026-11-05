@@ -1,7 +1,7 @@
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, appErrorDisplay, AppDisplayError } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { CheckCircle2, KeyRound, Loader2, ShieldCheck } from "lucide-react";
@@ -12,13 +12,14 @@ import type {
   ToolAppConnectionActionSummary,
   ToolOAuthStartResult,
 } from "@paperclipai/shared";
+import { QueryErrorState } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { toolsApi } from "@/api/tools";
-import { navigateTopLevel } from "@/lib/browserNavigation";
-import { prepareOAuthNavigation, savePendingCloudHandoff } from "@/lib/oauthHandoff";
+import { useAuthorizationWindow } from "@/hooks/useAuthorizationWindow";
+import { readOAuthWindowOutcome } from "@/lib/oauthWindowOutcome";
 import { useNavigate } from "@/lib/router";
 import {
   OAuthConnectStateScreen,
@@ -26,7 +27,7 @@ import {
 } from "@/features/connections/ConnectionSetupFlow";
 import { endpointHost } from "@/pages/apps/generic-mcp-connect";
 import { McpConfigHelpDialog } from "./McpConfigHelpDialog";
-import { ErrorState } from "./shared";
+import { describeError } from "@/api/errors";
 
 const SAMPLE_CONFIG = `{
   "mcpServers": {
@@ -117,6 +118,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
   const [oauthError, setOAuthError] = useState<AppDisplayText | null>(null);
   const [authorizationHost, setAuthorizationHost] = useState<string | null>(null);
 
+  const authorization = useAuthorizationWindow();
   const importMutation = useMutation({
     mutationFn: (mcpJson: string) => toolsApi.importMcpJson(companyId, { mcpJson }),
     onSuccess: (result) => {
@@ -132,23 +134,54 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
     handoff?: ToolOAuthStartResult["handoff"],
   ) => {
     try {
-      const target = await prepareOAuthNavigation({ authorizationUrl, handoff });
-      if (target.kind === "reauthentication" && handoff) {
-        savePendingCloudHandoff(handoff.session);
-      }
+      const target = await authorization.open({ authorizationUrl, handoff });
       setAuthorizationHost(target.host);
-      setOAuthPhase(target.kind === "authorization" ? "redirecting" : "starting");
-      navigateTopLevel(target.url);
+      setOAuthPhase("redirecting");
     } catch (error) {
       setOAuthPhase("error");
       setOAuthError(error instanceof Error ? appErrorDisplay(error) : ownAppDisplayText("fullApps.paperclip_couldn_t_start_secure_sign_in_try_again_479282"));
     }
   };
 
+  const { windowRef: authorizationWindow, cancel: closeAuthorization } = authorization;
+  const oauthConnectionId = connectResult?.connectionId;
+  useEffect(() => {
+    if (oauthPhase !== "redirecting" || !oauthConnectionId) return;
+    let cancelled = false;
+    let checking = false;
+    const check = async () => {
+      if (cancelled || checking) return;
+      const outcome = readOAuthWindowOutcome(authorizationWindow.current, oauthConnectionId);
+      if (outcome === "waiting") return;
+      if (outcome !== "connected") {
+        closeAuthorization();
+        setOAuthPhase("error");
+        setOAuthError(outcome === "closed" ? "The sign-in window closed. Try again to finish connecting."
+          : outcome === "denied" ? "Sign-in was cancelled. Try again when you’re ready."
+            : "Sign-in failed. Try again to finish connecting.");
+        return;
+      }
+      checking = true;
+      try {
+        const saved = await toolsApi.getConnection(oauthConnectionId);
+        if (!cancelled && saved.status === "active") {
+          cancelled = true;
+          closeAuthorization();
+          navigate(`/apps/${oauthConnectionId}/permissions`);
+        }
+      } catch { /* A later focus or poll can retry verification. */ }
+      finally { checking = false; }
+    };
+    const timer = window.setInterval(() => void check(), 1000);
+    window.addEventListener("focus", check);
+    return () => { cancelled = true; window.clearInterval(timer); window.removeEventListener("focus", check); };
+  }, [oauthPhase, oauthConnectionId, authorizationWindow, closeAuthorization, navigate]);
+
   const oauthStartMutation = useMutation({
     mutationFn: (connectionId: string) => toolsApi.startOAuth(connectionId),
     onSuccess: (start) => void openAuthorizationPage(start.authorizationUrl, start.handoff),
     onError: (error) => {
+      authorization.cancel();
       setOAuthPhase("error");
       setOAuthError(
         error instanceof Error
@@ -175,6 +208,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         setAuthorizationHost(null);
         setOAuthError(null);
         if (result.auth.manualClientRequired) {
+          authorization.cancel();
           setOAuthPhase("error");
           setOAuthError(
             ownAppDisplayText("fullApps.this_server_requires_oauth_client_details_from_its_p_b794cd"),
@@ -190,12 +224,14 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         }
         return;
       }
+      authorization.cancel();
       const defaults: Record<string, boolean> = {};
       for (const action of result.actions.readOnly) defaults[action.catalogEntryId] = true;
       for (const action of result.actions.canMakeChanges) defaults[action.catalogEntryId] = true;
       setEnabled(defaults);
       setActivatedName(null);
     },
+    onError: () => authorization.cancel(),
   });
 
   const finishMutation = useMutation({
@@ -234,7 +270,8 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
       : typeof connectResult.connection.transportConfig?.url === "string"
         ? connectResult.connection.transportConfig.url
         : "";
-    return (
+    return (<>
+      {authorization.fallback}
       <OAuthConnectStateScreen
         identity={{
           name: connectResult.application.name,
@@ -244,6 +281,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         error={renderAppDisplayText(oauthError)}
         authorizationHost={authorizationHost}
         onRetry={() => {
+          authorization.reserve();
           setOAuthError(null);
           setAuthorizationHost(null);
           setOAuthPhase("starting");
@@ -252,7 +290,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         onBack={() => navigate(`/apps/${connectResult.connectionId}/permissions`)}
         onCancel={() => navigate("/apps")}
       />
-    );
+    </>);
   }
 
   return (
@@ -295,7 +333,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         <span className="text-xs text-muted-foreground">{fullAppsT("fullApps.we_ll_read_it_and_show_what_we_found_before_anything_e36240")}</span>
       </div>
 
-      {importMutation.isError ? <ErrorState t={fullAppsI18n.t} error={importMutation.error} /> : null}
+      {importMutation.error ? <QueryErrorState error={importMutation.error} action="check the config" /> : null}
 
       {preview ? (
         drafts.length === 0 ? (
@@ -321,7 +359,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
                   }
                   checking={connectMutation.isPending && connectMutation.variables?.name === draft.name}
                   canCheck={Boolean(url) && missingFields.length === 0}
-                  onCheck={url ? () => connectMutation.mutate(draft) : undefined}
+                  onCheck={url ? () => { authorization.reserve(); connectMutation.mutate(draft); } : undefined}
                 />
               );
             })}
@@ -334,7 +372,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
         )
       ) : null}
 
-      {connectMutation.isError ? <ErrorState t={fullAppsI18n.t} error={connectMutation.error} /> : null}
+      {connectMutation.error ? <QueryErrorState error={connectMutation.error} action="check the app" /> : null}
       {connectResult ? (
         <CatalogReview
           result={connectResult}
@@ -352,7 +390,7 @@ export function PasteConfigTab({ companyId }: { companyId: string }) {
           onFinish={() => finishMutation.mutate()}
         />
       ) : null}
-      {finishMutation.isError ? <ErrorState t={fullAppsI18n.t} error={finishMutation.error} /> : null}
+      {finishMutation.error ? <QueryErrorState error={finishMutation.error} action="finish setup" /> : null}
     </div>
   );
 }

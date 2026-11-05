@@ -1,3 +1,7 @@
+import { bindAcpxCandidateAdmission } from "../drivers/acpx/candidate-admission.js";
+import { toolFileChangesFromAcpContent } from "../tool-file-changes.js";
+import { KIMI_DISTRIBUTION_CLOSURE_SHA256 } from "../drivers/acpx/kimi-closure-pins.js";
+import { ANTIGRAVITY_DISTRIBUTION_PINS } from "../drivers/acpx/generated-profiles.js";
 import { canonicalNativeRuntimeContextDigest } from "../contracts/runtime-context.js";
 import { acpxProfileActivity } from "../drivers/acpx/profile-activity.js";
 import { redactObservabilityDiagnostic } from "../drivers/agent-observability.js";
@@ -5,7 +9,7 @@ import { appendSemanticToolReceipt, readNativeSemanticReceipt, semanticInputSha2
 import { startRunnerToolBridge, type RunnerToolCall } from "../drivers/runner-tool-bridge.js";
 import { validatePrpStructuredRunResult } from "../protocol/replay-contract.js";
 import { resolveCompletionContinuation } from "../drivers/completion-continuation.js";
-import { acpxUsageEstimateNotice, persistedAcpxTurnUsage, persistedCursorUsageNotice } from "../drivers/acpx/usage-accounting.js";
+import { acpxUsageEstimateNotice, persistedAcpxTurnUsage, persistedCursorUsageNotice, qualifiedAcpxUsageBreakdown } from "../drivers/acpx/usage-accounting.js";
 import { stripTypeScriptTypes } from "node:module";
 import { cursorPlanToolIdentity, cursorToolIdentity } from "../drivers/acpx/cursor-plan-tool-identity.js";
 import { createHash, randomUUID } from "node:crypto";
@@ -13,10 +17,28 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createAcpxSidecarHostEnvironment, createSanitizedAcpxSpawnInput } from "../drivers/acpx/environment.js";
+import { createKimiMessageProjection } from "../drivers/acpx/kimi-message-boundary.js";
+import { classifyClaudeStatusBanner } from "../drivers/acpx/claude-status-banners.js";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("live sidecar pending request snapshots", () => {
+  it("preserves explicit turn cost through the sidecar's closed usage projection", () => {
+    const source = readFileSync(new URL("./acpx-runtime-sidecar.ts", import.meta.url), "utf8");
+    const start = source.indexOf("function safeUsage(");
+    const end = source.indexOf("function safeOutput(", start);
+    const project = new Function("record", "qualifiedAcpxUsageBreakdown", "initializedAgent", "safeText", "text",
+      `${stripTypeScriptTypes(source.slice(start, end))}; return safeUsage;`)(
+      (value: unknown) => value && typeof value === "object" ? value : {}, qualifiedAcpxUsageBreakdown, "grok",
+      (value: string) => value, (value: unknown) => typeof value === "string" ? value : "",
+    );
+    expect(project({ amount: 0.336842, currency: "USD", basis: "turn", rawSecret: "excluded" }, null)).toEqual({
+      cost: { amount: 0.336842, currency: "USD", basis: "turn" }, breakdown: null,
+    });
+    expect(project({ amount: 0.7, currency: "USD" }, null)).toEqual({ cost: { amount: 0.7, currency: "USD" }, breakdown: null });
+    expect(project(undefined, null)).toEqual({ cost: null, breakdown: null });
+  });
+
   it("attests current callback identities after the live status barrier without exposing forms", async () => {
     const source = readFileSync(new URL("./acpx-runtime-sidecar.ts", import.meta.url), "utf8");
     const start = source.indexOf('  if (request.command === "session.snapshot") {');
@@ -139,7 +161,7 @@ describe("qualified ACPX runtime sidecar", () => {
   it.each(["projection", "validation", "emission"])("preserves standard usage when optional Cursor notice %s fails", async failure => {
     const source = readFileSync(new URL("./acpx-runtime-sidecar.ts", import.meta.url), "utf8");
     const start = source.indexOf("    try {\n      const usageAfter = await readSidecarHostStatusWithin(activeHost);");
-    const end = source.indexOf("    terminal = boundedSidecarValue(result);", start);
+    const end = source.indexOf("    terminal = openParams ? acpxTerminalResult(", start);
     expect(start).toBeGreaterThan(0); expect(end).toBeGreaterThan(start);
     const emitted: unknown[] = [], diagnostics: unknown[] = [];
     const after = { lastRequestId: "request-1", requestTokenUsage: { "prompt-1": { input_tokens: 12, output_tokens: 3 } } };
@@ -184,9 +206,11 @@ describe("qualified ACPX runtime sidecar", () => {
     const stableIdentity = new Function("createHash", "acpxProfileActivity", "openParams", "initializedAgent", `${stripTypeScriptTypes(source.slice(identityStart, source.indexOf("\nfunction canonicalJson", identityStart)))}; return stableProviderIdentity;`)(createHash, acpxProfileActivity, { agent: "cursor" }, "cursor");
     const boundStart = source.indexOf("function boundRuntimeEventForNormalization(");
     const bound = new Function("boundedOptionalText", "stableProviderIdentity", "safeAcpxLocations", "openParams", "safeOutput",
+      "toolFileChangesFromAcpContent", "sidecarWorkspaceRoots",
       `${stripTypeScriptTypes(source.slice(boundStart, source.indexOf("\nfunction sanitizeRuntimeEvent", boundStart)))}; return boundRuntimeEventForNormalization;`)(
       (value: unknown, fallback: string, max: number) => typeof value === "string" ? value.slice(0, max) : fallback,
       stableIdentity, () => [], null, () => ({ output: null, outputBytes: 0, outputTruncated: false, outputDigest: null }),
+      toolFileChangesFromAcpContent, () => [],
     );
     const start = source.indexOf("  const { signal } = context;", source.indexOf("async function waitForPermission"));
     const end = source.indexOf("\nasync function waitForInput", start);
@@ -561,6 +585,60 @@ describe("qualified ACPX runtime sidecar", () => {
     expect(wire.writes).toEqual([]); expect(wire.sequence()).toBe(0);
   });
 
+  it("preserves validated native assistant boundaries without exposing Kimi provenance metadata", () => {
+    const source = readFileSync(fileURLToPath(new URL("./acpx-runtime-sidecar.ts", import.meta.url)), "utf8");
+    const start = source.indexOf('  if (event.type === "text_delta") {', source.indexOf("function sanitizeRuntimeEvent"));
+    const end = source.indexOf('  if (event.type === "status") {', start);
+    const sanitize = new Function("boundedOptionalText", "stableProviderIdentity", `return event => {${source.slice(start, end)} return null;}`)(
+      (value: string) => value, (value: string) => `stable-${value}`,
+    );
+    const projection = createKimiMessageProjection<{ type: string; text: string; stream: string; messageId: string; meta: Record<string, string> }>();
+    const event = (kind: string, text = "", stream = "output") => ({ type: "text_delta", text, stream,
+      messageId: `kimi-message-${"a".repeat(64)}`,
+      meta: { origin: "kimi-native-assistant", source: "kimi-turn-step-v1", kind, secret: "PRIVATE_PROVENANCE" } });
+    const frames = [sanitize(projection.normalize(event("start"))),
+      sanitize(projection.normalize(event("delta", "Working."))),
+      sanitize(projection.normalize(event("delta", "Private reasoning", "thought"))),
+      sanitize(projection.normalize(event("end:tool_use")))];
+    expect(frames[0]).toMatchObject({ text: "", assistantMessageBoundary: { phase: "start" } });
+    expect(frames[1]).toMatchObject({ type: "text_delta", text: "Working." });
+    expect(frames[2]).toMatchObject({ type: "thinking" });
+    expect(frames[3]).toMatchObject({ text: "", assistantMessageBoundary: { phase: "end", stopReason: "toolUse" } });
+    expect(new Set(frames.map(frame => frame.messageId)).size).toBe(1);
+    expect(JSON.stringify(frames)).not.toContain("PRIVATE_PROVENANCE");
+    expect(JSON.stringify(frames)).not.toContain("kimi-native-assistant");
+    projection.settle();
+  });
+
+  it("turns Claude status banners into paired provider notices before text projection", () => {
+    const source = readFileSync(fileURLToPath(new URL("./acpx-runtime-sidecar.ts", import.meta.url)), "utf8");
+    const sanitizer = source.slice(source.indexOf("function sanitizeRuntimeEvent"), source.indexOf("function claudeStatusBannerNotice"));
+    // The banner check runs before the text_delta projection.
+    expect(sanitizer.indexOf("claudeStatusBannerNotice(event)")).toBeGreaterThan(0);
+    expect(sanitizer.indexOf("claudeStatusBannerNotice(event)")).toBeLessThan(sanitizer.indexOf('if (event.type === "text_delta")'));
+    const start = source.indexOf("function claudeStatusBannerNotice");
+    const end = source.indexOf("\nfunction sanitizeRuntimeStatus", start);
+    expect(start).toBeGreaterThan(0);
+    const fn = stripTypeScriptTypes(source.slice(start, end));
+    const make = (agent: string) => new Function("classifyClaudeStatusBanner",
+      `let initializedAgent = ${JSON.stringify(agent)}; let claudeCompactionCount = 0; ${fn} return claudeStatusBannerNotice;`,
+    )(classifyClaudeStatusBanner) as (event: Record<string, unknown>) => Record<string, unknown> | null;
+    const notice = make("claude");
+    const chunk = (text: string, messageId?: string) => ({ type: "text_delta", stream: "output", text, ...(messageId ? { messageId } : {}) });
+    const started = notice(chunk("Compacting..."));
+    const completed = notice(chunk("\n\nCompacting completed."));
+    const next = notice(chunk("Compacting..."));
+    expect(started).toMatchObject({ type: "provider_notice", category: "context_compaction", noticeKey: "compaction-1",
+      details: [{ name: "Phase", value: "running" }] });
+    expect(completed).toMatchObject({ noticeKey: "compaction-1", details: [{ name: "Phase", value: "completed" }] });
+    expect(next).toMatchObject({ noticeKey: "compaction-2" });
+    expect(notice(chunk("**Warning:** Stop hook blocked continuation"))).toMatchObject({
+      type: "provider_notice", category: "provider_informational", severity: "warning", summary: "Stop hook blocked continuation",
+    });
+    expect(notice(chunk("Compacting...", "msg_01"))).toBeNull();
+    expect(notice({ ...chunk("Compacting..."), stream: "thought" })).toBeNull();
+    expect(make("codex")(chunk("Compacting..."))).toBeNull();
+  });
   it("passes only validated Pi native boundaries and history through the real text sanitizer", () => {
     const source = readFileSync(fileURLToPath(new URL("./acpx-runtime-sidecar.ts", import.meta.url)), "utf8");
     const start = source.indexOf('  if (event.type === "text_delta") {', source.indexOf("function sanitizeRuntimeEvent"));
@@ -700,6 +778,7 @@ describe("qualified ACPX runtime sidecar", () => {
       .replace("  } as BoundedRuntimeToolEvent;", "  };");
     const bound = new Function(
       "boundedOptionalText", "stableProviderIdentity", "safeAcpxLocations", "openParams", "safeOutput",
+      "toolFileChangesFromAcpContent", "sidecarWorkspaceRoots",
       `return (${functionSource});`,
     )(
       (value: unknown, fallback: string, max: number) => typeof value === "string" ? value.slice(0, max) : fallback,
@@ -707,6 +786,8 @@ describe("qualified ACPX runtime sidecar", () => {
       () => [],
       null,
       () => ({ output: null, outputBytes: 0, outputTruncated: false, outputDigest: null }),
+      toolFileChangesFromAcpContent,
+      () => ["/work/repo"],
     ) as (event: Record<string, unknown>) => Record<string, unknown>;
     const bounded = bound({
       type: "tool_call", toolCallId: "provider-tool", title: "search", kind: "other",
@@ -718,6 +799,16 @@ describe("qualified ACPX runtime sidecar", () => {
     expect(canonical.payload).toMatchObject({ inputUpdated: true });
     expect(JSON.stringify(canonical.payload)).not.toContain("must not cross");
     expect(source).toContain("? boundedTool.inputUpdated");
+
+    // ACP diff content crosses as bounded, workspace-relative fileChanges.
+    const edit = bound({
+      type: "tool_call", toolCallId: "edit-tool", title: "Edit", kind: "edit", status: "completed",
+      content: [{ type: "diff", path: "/work/repo/a.js", oldText: "a", newText: "b" }],
+    });
+    expect(edit.paperclipFileChanges).toEqual([
+      expect.objectContaining({ path: "a.js", operation: "modify", additions: 1, deletions: 1 }),
+    ]);
+    expect(edit).not.toHaveProperty("content");
   });
 
   it.each(["paperclip_finish", "paperclip_block"])(
@@ -1221,6 +1312,21 @@ describe("qualified ACPX runtime sidecar", () => {
     },
   );
 
+  it.each([true, false])("admits the current Grok effort/search fields before host checks (search disabled: %s)", async grokDisableWebSearch => {
+    const sidecar = startSidecar(), model = "grok-4.7";
+    sidecar.write(initializeRequest(1, "grok", model));
+    expect(await sidecar.next(frame => frame.id === 1)).toMatchObject({ ok: true,
+      result: { profile: { agent: "grok", commandDigest: resolveQualifiedAcpxProfile("grok", model).commandDigest } } });
+    sidecar.write({ protocolVersion: ACPX_SIDECAR_PROTOCOL_VERSION, id: 2, command: "session.open",
+      params: { runtimeDirectory: "/unused", workingDirectory: "/", normalizedSessionId: "grok-effort-open",
+        agent: "grok", model, permissionMode: "approve-all", grokEffort: "high", grokDisableWebSearch,
+        systemInstructions: "Test instructions", tools: [] } });
+    // The working-directory gate stops this real process before installation,
+    // credentials, or inference. The old pack rejected the new fields instead.
+    expect(await sidecar.next(frame => frame.id === 2)).toMatchObject({ ok: false,
+      error: { code: "ACPX_ADMISSION_BINDING", message: "ACPX working directory must be a non-root directory" } });
+  });
+
   it.each([
     ["pi", { piThinkingLevel: "medium" }, "Pi thinking level"],
     ["codex", { piThinkingLevel: "low" }, "only supported by Pi"],
@@ -1241,17 +1347,80 @@ describe("qualified ACPX runtime sidecar", () => {
   });
 
   it.each([
-    ["cursor", "explicit-cursor-model"],
-    ["copilot", "explicit-copilot-model"],
-  ] as const)("initializes the declared %s profile with its current admission status", async (agent, model) => {
+    ["cursor", "explicit-cursor-model", "qualified"],
+    ["copilot", "explicit-copilot-model", "pending"],
+    ["kimi", "explicit-kimi-model", resolveQualifiedAcpxProfile("kimi", "explicit-kimi-model").qualificationStatus === "pending" ? "pending" : "qualified"],
+  ] as const)("initializes the declared %s profile with its current admission status", async (agent, model, qualification) => {
     const sidecar = startSidecar();
+    const profile = resolveQualifiedAcpxProfile(agent, model);
     sidecar.write(initializeRequest(1, agent, model));
     const frame = await sidecar.next((value) => value.id === 1);
+    expect(ACPX_CAPABILITY_PROFILES[agent].qualification).toBe(qualification);
+    if (agent === "kimi" && profile.qualificationStatus === "pending") {
+      expect(frame).toMatchObject({ id: 1, ok: false,
+        error: { message: expect.stringContaining("qualification is pending"), retryable: false } });
+      return;
+    }
     expect(frame).toMatchObject({ id: 1, ok: true });
     const result = frame.result as Record<string, unknown>;
-    expect(result.profile).toEqual(resolveQualifiedAcpxProfile(agent, model));
+    expect(result.profile).toEqual(profile);
     expect(result.profile).toMatchObject({ reportedModelId: model });
-    expect(ACPX_CAPABILITY_PROFILES[agent].qualification).toBe(agent === "cursor" ? "qualified" : "pending");
+  });
+
+  it.each([
+    ["darwin", "arm64"], ["linux", "x64"],
+  ] as const)("binds Kimi startup to its declared %s/%s host and session before provider launch", async (platform, architecture) => {
+    const sidecar = startSidecar(), model = "explicit-kimi-model";
+    const profile = resolveQualifiedAcpxProfile("kimi", model);
+    const request = initializeRequest(1, "kimi", model);
+    if (profile.qualificationStatus !== "pending") {
+      sidecar.write(request);
+      expect(await sidecar.next(frame => frame.id === 1)).toMatchObject({ ok: true, result: { profile } });
+      return;
+    }
+    const target = `${platform}-${architecture}` as "darwin-arm64" | "linux-x64";
+    const candidateAdmission = bindAcpxCandidateAdmission({ schema: "paperclip.acpx-candidate-admission.v1",
+      companyId: "company-kimi-candidate", agent: "kimi", model, profileDigest: profile.commandDigest,
+      nativeClosureDigest: `sha256:${KIMI_DISTRIBUTION_CLOSURE_SHA256[target]}`,
+      platform, architecture, expiresAt: Date.now() + 60_000,
+    }, { runId: "run-kimi-candidate", normalizedSessionId: "session-kimi-candidate" });
+    sidecar.write({ ...request, params: { ...request.params, candidateAdmission } });
+    const frame = await sidecar.next(value => value.id === 1);
+    if (process.platform !== platform || process.arch !== architecture) {
+      expect(frame).toMatchObject({ ok: false, error: { message: expect.stringContaining("candidate admission"), retryable: false } });
+      return;
+    }
+    expect(frame).toMatchObject({ ok: true, result: { profile } });
+    expect((frame.result as Record<string, unknown>).profile).toMatchObject({ reportedModelId: model });
+    sidecar.write({ protocolVersion: ACPX_SIDECAR_PROTOCOL_VERSION, id: 2, command: "session.open", params: {
+      runtimeDirectory: "/unused", workingDirectory: "/unused", normalizedSessionId: "other-kimi-session", agent: "kimi", model,
+      candidateAdmission, permissionMode: "deny-all", permissionModePinned: true, providerPolicy: { readOnly: true }, systemInstructions: "", tools: [],
+    } });
+    expect(await sidecar.next(value => value.id === 2)).toMatchObject({ ok: false, error: { message: expect.stringContaining("candidate admission") } });
+  });
+
+  it("refuses pending Antigravity bootstrap before any native process opens", async () => {
+    const sidecar = startSidecar();
+    sidecar.write(initializeRequest(1, "antigravity", "caller-exact-model"));
+    expect(await sidecar.next(frame => frame.id === 1)).toMatchObject({ id: 1, ok: false,
+      error: { message: expect.stringContaining("qualification is pending"), retryable: false } });
+  });
+
+  it.skipIf(process.platform !== "darwin" || process.arch !== "arm64")("admits only matching candidate startup and rejects session replay before provider launch", async () => {
+    const sidecar = startSidecar();
+    const model = "gemini-3.8-flash-low";
+    const candidateAdmission = bindAcpxCandidateAdmission({ schema: "paperclip.acpx-candidate-admission.v1", companyId: "company-candidate", agent: "antigravity", model,
+      profileDigest: resolveQualifiedAcpxProfile("antigravity", model).commandDigest,
+      nativeClosureDigest: `sha256:${ANTIGRAVITY_DISTRIBUTION_PINS["darwin-arm64"].closureSha256}`,
+      platform: "darwin", architecture: "arm64", expiresAt: Date.now() + 60_000 }, { runId: "run-candidate", normalizedSessionId: "session-candidate" });
+    const request = initializeRequest(1, "antigravity", model);
+    sidecar.write({ ...request, params: { ...request.params, candidateAdmission } });
+    expect(await sidecar.next(frame => frame.id === 1)).toMatchObject({ ok: true, result: { profile: { agent: "antigravity", qualificationStatus: "pending", reportedModelId: model } } });
+    sidecar.write({ protocolVersion: ACPX_SIDECAR_PROTOCOL_VERSION, id: 2, command: "session.open", params: {
+      runtimeDirectory: "/unused", workingDirectory: "/unused", normalizedSessionId: "other-session", agent: "antigravity", model,
+      candidateAdmission, permissionMode: "deny-all", permissionModePinned: true, providerPolicy: { readOnly: true }, systemInstructions: "", tools: [],
+    } });
+    expect(await sidecar.next(frame => frame.id === 2)).toMatchObject({ ok: false, error: { message: expect.stringContaining("candidate admission") } });
   });
 
   it("fails closed after an unsupported provider bootstrap", async () => {
@@ -1271,7 +1440,7 @@ describe("qualified ACPX runtime sidecar", () => {
       ok: false,
       error: {
         code: "acpx_sidecar_command_failed",
-        message: "ACPX agent must be claude, codex, grok, cursor, copilot, or pi",
+        message: "ACPX agent must be claude, codex, grok, cursor, copilot, kimi, pi, or antigravity",
         retryable: false,
       },
     });
@@ -1297,7 +1466,7 @@ function initializeRequest(
   id: number,
   agent: string,
   model = "gpt-5.6-sol",
-): Record<string, unknown> {
+) {
   return {
     protocolVersion: ACPX_SIDECAR_PROTOCOL_VERSION,
     id,

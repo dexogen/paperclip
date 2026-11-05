@@ -119,7 +119,7 @@ function ExternalObjectsSection({
         <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.remote_work_referenced_from_this_issue_pull_requests_3c65ef")}</p>
       </div>
 
-      {isError ? (
+      {isError ? ( // query-error-ok: set only for a real failure (useIssueExternalObjects keeps data through outages)
         <p className="text-xs text-muted-foreground"><FullSharedTrans i18nKey="fullShared.couldn_t_load_external_objects_c87b79" components={{ part1: <>{" "}</>, part2: <>{onRetry ? (
             <button
               type="button"

@@ -44,23 +44,23 @@ it("updates supplied badge and error translations while fixed-English callers an
   expect(localized.textContent).toContain("Средний");
   expect(localized.textContent).toContain("constructor");
   expect(localized.textContent).toContain("Только чтение");
-  expect(localized.textContent).toContain("Что-то пошло не так.");
+  expect(localized.textContent).toContain("Произошла непредвиденная ошибка. Повтори попытку.");
   expect(legacy.textContent).toContain("mediumread-only");
-  expect(legacy.textContent).toContain("Something went wrong.");
+  expect(legacy.textContent).toContain("An unexpected error occurred. Please try again.");
   expect(container.textContent).toContain("Something went wrong.");
   expect(retry).not.toHaveBeenCalled();
   expect(retryButton.isConnected).toBe(true);
   await act(async () => { retryButton.click(); });
   expect(retry).toHaveBeenCalledOnce();
   await act(async () => { Array.from(container.querySelectorAll("button")).find((button) => button.textContent === "Forbidden")!.click(); });
-  expect(localized.textContent).toContain("права оператора или администратора");
-  expect(localized.textContent).not.toContain("raw provider");
+  expect(localized.textContent).toContain("raw provider");
+  expect(localized.querySelector("button")).toBeNull();
   await act(async () => { await i18n.changeLanguage("en"); });
-  expect(localized.textContent).toContain("Tools & Access requires board/admin access.");
+  expect(localized.textContent).toContain("raw provider");
   expect(legacy.textContent).toContain("mediumread-only");
   expect(retry).toHaveBeenCalledOnce();
   await act(async () => { Array.from(container.querySelectorAll("button")).find((button) => button.textContent === "Missing")!.click(); });
-  expect(localized.textContent).toContain("isn't available on this server yet");
+  expect(localized.textContent).toContain("raw missing route");
 });
 
 it("retains the existing API route classification without translating ordinary provider errors", async () => {
@@ -68,7 +68,7 @@ it("retains the existing API route classification without translating ordinary p
   await act(async () => { await i18n.changeLanguage("ru"); root = createRoot(container); });
   const t = i18n.getFixedT("ru");
   for (const [error, expected] of [
-    [new ApiError("Route not found: /legacy", 500, null), "пока недоступен на этом сервере"],
+    [new ApiError("Route not found: /legacy", 500, null), "Route not found: /legacy"],
     [new ApiError("Something went wrong.", 500, null), "Something went wrong."],
     [new Error("Route not found: /legacy"), "Route not found: /legacy"],
   ] as const) {

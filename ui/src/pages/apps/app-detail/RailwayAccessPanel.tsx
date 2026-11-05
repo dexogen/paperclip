@@ -3,6 +3,7 @@ import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTr
 import { useEffect, useId, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ConfigureRailwaySsh, ConnectionGrantsResponse, RailwaySshSetup, ToolConnection } from "@paperclipai/shared";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { queryKeys } from "@/lib/queryKeys";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,6 @@ export function RailwayAccessPanel({ connection, grants }: { connection: ToolCon
         <p className="text-sm text-muted-foreground"><FullAppsTrans i18nKey="fullApps.removing_the_key_stops_new_paperclip_connections_als_9959b1" components={{ part1: <>{setup.enabled ? fullAppsT("fullApps.container_access_is_enabled_for_this_authorization_780066") : fullAppsT("fullApps.register_the_public_key_and_verify_the_host_key_befo_be1388")}</> }} /></p>
       </>}
     </>}
-    {mutation.isError && <p role="alert" className="text-sm text-destructive">{mutation.error instanceof Error ? renderAppError(mutation.error) : fullAppsT("fullApps.container_access_could_not_be_updated_a8d256")}</p>}
+    {mutation.error ? <p role="alert" className="text-sm text-destructive">{describeError(mutation.error).body}</p> : null}
   </section>;
 }

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/context/ToastContext";
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { gatewaysQueryKey } from "../NewGatewayDialog";
+import { describeError } from "@/api/errors";
 
 /**
  * Advanced tab — raw protocol/transport details, config JSON and the archive
@@ -61,7 +62,7 @@ export function GatewayAdvancedPanel({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_archive_the_gateway_ab9a77"),
-        body: error instanceof Error ? renderAppError(error) : String(error),
+        body: describeError(error).body,
         tone: "error",
       }),
   });

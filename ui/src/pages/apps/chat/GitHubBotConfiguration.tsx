@@ -3,6 +3,7 @@ import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTr
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { useEffect, useId, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import {
   GITHUB_REVIEW_EVENTS,
   type GitHubChatConfiguration,
@@ -49,6 +50,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { describeError } from "@/api/errors";
 
 export const githubSelectClass =
   "w-full rounded-md border border-input bg-background px-3 py-2 text-sm";
@@ -563,6 +565,9 @@ export function GitHubAccessEditor({
     queryKey: ["github-linked-members", endpointId],
     queryFn: () => chatEndpointsApi.listPrincipals(endpointId),
   });
+  const membersView = useQueryView(members);
+  const linksView = useQueryView(links);
+  const linksLoaded = linksView.kind === "ready" || linksView.kind === "stale";
   const [login, setLogin] = useState("");
   const [sponsor, setSponsor] = useState(configuration.responsibleUserId);
   const [candidate, setCandidate] = useState<{
@@ -762,10 +767,10 @@ export function GitHubAccessEditor({
           }
         />
         {peopleRows(memberRows)}
-        {links.isPending && (
+        {(links.isPending || linksView.kind === "reconnecting") && (
           <p role="status" className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.loading_linked_accounts_851574")}</p>
         )}
-        {!links.isPending && !links.isError && memberRows.length === 0 && (
+        {linksLoaded && memberRows.length === 0 && (
           <p className="py-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_members_linked_yet_link_an_account_to_get_started_27d267")}</p>
         )}
         <p className="text-xs text-muted-foreground">
@@ -867,18 +872,16 @@ export function GitHubAccessEditor({
           {renderAppDisplayText(error)}
         </p>
       )}
-      {(members.error || links.error) && (
-        <div className="flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_members_or_linked_accounts_a7ea33")}</p>
-          <Button
-            variant="link"
-            size="sm"
-            onClick={() => {
-              void members.refetch();
-              void links.refetch();
-            }}
-          >{fullAppsT("fullApps.try_again_d8b839")}</Button>
-        </div>
+      {(membersView.kind === "error" || linksView.kind === "error") && (
+        <QueryErrorState
+          error={membersView.kind === "error" ? members.error : links.error}
+          action="load members and linked accounts"
+          onRetry={() => {
+            membersView.retry();
+            linksView.retry();
+          }}
+          retrying={members.isFetching || links.isFetching}
+        />
       )}
       <Dialog
         open={dialog !== null}

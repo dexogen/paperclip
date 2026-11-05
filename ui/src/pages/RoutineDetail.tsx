@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n, useTranslation } from "@/i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams, useSearchParams } from "@/lib/router";
@@ -27,6 +28,8 @@ import { buildMarkdownMentionOptions } from "../lib/company-members";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { EmptyState } from "../components/EmptyState";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { QueryErrorState, useQueryView } from "../components/QueryView";
+import { describeError } from "../api/errors";
 import { type InlineEntityOption } from "../components/InlineEntitySelector";
 import { type MarkdownEditorRef, type MentionOption } from "../components/MarkdownEditor";
 import {
@@ -178,11 +181,13 @@ export function RoutineDetail() {
     [navigate, routineId, streamlinedUiEnabled, t],
   );
 
-  const { data: routine, isLoading, error } = useQuery({
+  const routineQuery = useQuery({
     queryKey: queryKeys.routines.detail(routineId!),
     queryFn: () => routinesApi.get(routineId!),
     enabled: !!routineId,
   });
+  const { data: routine, isLoading } = routineQuery;
+  const routineView = useQueryView(routineQuery);
   const activeIssueId = routine?.activeIssue?.id;
   const { data: liveRuns } = useQuery({
     queryKey: queryKeys.issues.liveRuns(activeIssueId!),
@@ -204,7 +209,7 @@ export function RoutineDetail() {
     }),
     [routine?.triggers, routineRuns, t],
   );
-  const { data: activity, isLoading: activityLoading, error: activityError } = useQuery({
+  const activityQuery = useQuery({
     queryKey: [
       ...queryKeys.routines.activity(selectedCompanyId!, routineId!),
       relatedActivityIds.triggerIds.join(","),
@@ -213,6 +218,8 @@ export function RoutineDetail() {
     queryFn: () => routinesApi.activity(selectedCompanyId!, routineId!, relatedActivityIds),
     enabled: !!selectedCompanyId && !!routineId && !!routine,
   });
+  const { data: activity } = activityQuery;
+  const activityView = useQueryView(activityQuery);
   const { data: agents } = useQuery({
     queryKey: queryKeys.agents.list(selectedCompanyId!),
     queryFn: () => agentsApi.list(selectedCompanyId!),
@@ -356,7 +363,7 @@ export function RoutineDetail() {
       } catch (copyError) {
         pushToast({
           title: t("fullRoutinesSecrets.failedToCopy", { "value1": label.toLowerCase() }),
-          body: copyError instanceof Error ? copyError.message : i18n.t("fullRoutinesSecrets.clipboardAccessWasDenied"),
+          body: describeError(copyError, { action: "copy to the clipboard" }).body,
           tone: "error",
         });
       }
@@ -394,7 +401,7 @@ export function RoutineDetail() {
       }
       pushToast({
         title: t("fullRoutinesSecrets.failedToSaveRoutine"),
-        body: mutationError instanceof Error ? mutationError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotSaveTheRoutine"),
+        body: describeError(mutationError, { action: "save the routine" }).body,
         tone: "error",
       });
     },
@@ -429,7 +436,7 @@ export function RoutineDetail() {
     onError: (runError) => {
       pushToast({
         title: t("fullRoutinesSecrets.routineRunFailed"),
-        body: runError instanceof Error ? runError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotStartTheRoutineRun"),
+        body: describeError(runError, { action: "start the routine run" }).body,
         tone: "error",
       });
     },
@@ -451,7 +458,7 @@ export function RoutineDetail() {
     onError: (statusError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToUpdateRoutine"),
-        body: statusError instanceof Error ? statusError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheRoutine"),
+        body: describeError(statusError, { action: "update the routine" }).body,
         tone: "error",
       });
     },
@@ -490,7 +497,7 @@ export function RoutineDetail() {
     onError: (triggerError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToAddTrigger"),
-        body: triggerError instanceof Error ? triggerError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotCreateTheTrigger"),
+        body: describeError(triggerError, { action: "create the trigger" }).body,
         tone: "error",
       });
     },
@@ -509,7 +516,7 @@ export function RoutineDetail() {
     onError: (triggerError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToUpdateTrigger"),
-        body: triggerError instanceof Error ? triggerError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotUpdateTheTrigger"),
+        body: describeError(triggerError, { action: "update the trigger" }).body,
         tone: "error",
       });
     },
@@ -528,7 +535,7 @@ export function RoutineDetail() {
     onError: (triggerError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToDeleteTrigger"),
-        body: triggerError instanceof Error ? triggerError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotDeleteTheTrigger"),
+        body: describeError(triggerError, { action: "delete the trigger" }).body,
         tone: "error",
       });
     },
@@ -549,7 +556,7 @@ export function RoutineDetail() {
     onError: (triggerError) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToRotateWebhookSecret"),
-        body: triggerError instanceof Error ? triggerError.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotRotateTheWebhookSecret"),
+        body: describeError(triggerError, { action: "rotate the webhook secret" }).body,
         tone: "error",
       });
     },
@@ -671,15 +678,29 @@ export function RoutineDetail() {
     );
   }
 
-  if (isLoading) {
+  // Keep a loaded routine on screen through a failed refetch; only a real
+  // failure, or an outage before the first load, replaces the page.
+  if (isLoading || routineView.kind === "reconnecting") {
     return <PageSkeleton variant="issues-list" />;
   }
 
-  if (error || !routine || !routineDefaults) {
+  if (routineView.kind === "error") {
+    return (
+      <QueryErrorState
+        size="page"
+        error={routineView.error}
+        action="load this routine"
+        onRetry={routineView.retry}
+        retrying={routineView.isFetching}
+      />
+    );
+  }
+
+  if (!routine || !routineDefaults) {
     return (
       <EmptyState
         icon={AlertCircle}
-        message={error instanceof Error ? error.message : t("fullRoutinesSecrets.weCouldnTLoadThisRoutine")}
+        message={translateUi("fullRoutinesSecrets.weCouldnTLoadThisRoutine")}
       />
     );
   }
@@ -910,7 +931,14 @@ export function RoutineDetail() {
             {section === "secrets" && <SecretsSection />}
             {section === "delivery" && <DeliverySection />}
             {section === "runs" && <RunsSection />}
-            {section === "activity" && <ActivitySection isLoading={activityLoading} error={activityError} />}
+            {section === "activity" && (
+              <ActivitySection
+                isLoading={activityView.kind === "loading" || activityView.kind === "reconnecting"}
+                error={activityView.kind === "error" ? activityView.error : null}
+                onRetry={activityView.retry}
+                retrying={activityView.isFetching}
+              />
+            )}
             {section === "history" && <HistorySection />}
 
             {isEditableSection && (section !== "overview" || overviewEditing) ? (

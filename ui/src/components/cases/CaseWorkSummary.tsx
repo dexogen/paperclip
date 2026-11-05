@@ -7,6 +7,7 @@ import type { AvatarAgent } from "@/components/AgentAvatar";
 import { IssueReferencePill } from "@/components/IssueReferencePill";
 import { IssueStatusBadge } from "@/components/StatusBadge";
 import { PropertyRow } from "@/components/issue-properties/primitives";
+import { taskStatusIconProps } from "@/lib/task-status-presentation";
 
 export type CaseAgentMap = ReadonlyMap<string, AvatarAgent & { status?: string }>;
 
@@ -38,7 +39,7 @@ export function CaseWorkSummary({ caseData, pendingHandoff, agents }: {
         <PropertyRow label={fullSharedT("fullShared.workflow_2e2d5c")}><span className="text-sm">{caseData.workflow?.name ?? fullSharedT("surfacesGap.audit.instructions")}</span></PropertyRow>
         {caseData.phase && <PropertyRow label={fullSharedT("fullShared.phase_46342e")}><span className="text-sm">{caseData.phase}</span></PropertyRow>}
         <PropertyRow label={fullSharedT("taskProperties.fields.agent")}>{assignee ? <AgentIdentity agent={assignee} size="xs" /> : <span className="text-sm text-muted-foreground">{fullSharedT("fullShared.unassigned_14d33b")}</span>}</PropertyRow>
-        <PropertyRow label={fullSharedT("runUi.blocker.taskStatus")}><IssueStatusBadge status={task.status} /></PropertyRow>
+        <PropertyRow label={fullSharedT("runUi.blocker.taskStatus")}><IssueStatusBadge {...taskStatusIconProps(task)} /></PropertyRow>
       </div> : <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.the_primary_task_is_unavailable_f9b441")}</p>}
       {pending && pending.state !== "delivered" && pending.state !== "completed" && pending.state !== "cancelled" && <div className="flex items-start gap-2 text-sm">
         <Clock3 aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground" />

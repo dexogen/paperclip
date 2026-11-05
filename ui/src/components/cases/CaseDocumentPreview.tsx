@@ -1,4 +1,5 @@
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
+import { useQueryView } from "@/components/QueryView";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
@@ -25,6 +26,7 @@ export function CaseDocumentPreview({ caseIdentifier, document: documentRef }: {
     queryFn: () => taskRef ? issuesApi.getDocument(taskRef.taskId, taskRef.key) : casesApi.getDocument(caseIdentifier, documentRef.key),
     enabled: open,
   });
+  const currentView = useQueryView(current);
   const document = current.data;
   const title = document?.title ?? documentRef.document.title ?? documentRef.key;
   return <Dialog open={open} onOpenChange={setOpen}>
@@ -43,7 +45,7 @@ export function CaseDocumentPreview({ caseIdentifier, document: documentRef }: {
           {document?.latestRevisionNumber != null ? fullSharedT("fullShared.revision_8d5ed1", { value1: document.latestRevisionNumber }) : ""}
         </DialogDescription>
       </DialogHeader>
-      {current.isLoading ? <p className="text-sm text-muted-foreground">{fullSharedT("taskPanels.document.loading")}</p> : current.isError ? <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.this_document_couldn_t_be_loaded_ff5e5e")}</p> : document ? <div className="space-y-6">
+      {current.isLoading ? <p className="text-sm text-muted-foreground">{fullSharedT("taskPanels.document.loading")}</p> : (currentView.kind === "error") ? <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.this_document_couldn_t_be_loaded_ff5e5e")}</p> : document ? <div className="space-y-6">
         <SourceTrustBadge sourceTrust={document.sourceTrust} artifactLabel="document" />
         {document.body ? <MarkdownBody linkIssueReferences linkCaseReferences>{document.body}</MarkdownBody> : <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.this_document_is_empty_2d00c3")}</p>}
         <details open={historyOpen} onToggle={event => setHistoryOpen(event.currentTarget.open)} className="space-y-3">

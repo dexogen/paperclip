@@ -2,6 +2,8 @@ import { useTranslation } from "@/i18n";
 import { formatAttentionDisplayText } from "../lib/attention-display";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useCoordinatorWorkspaceEnabled } from "../hooks/useCoordinatorWorkspaceEnabled";
+import { CoordinatorNeedsYou } from "../components/coordinator/CoordinatorNeedsYou";
 import { CheckCircle2, Inbox } from "lucide-react";
 import type { Agent, AttentionItem, AttentionSubject } from "@paperclipai/shared";
 import { useNavigate, useSearchParams } from "@/lib/router";
@@ -42,6 +44,7 @@ import {
 } from "../lib/attention";
 import { hasBlockingShortcutDialog, resolveAttentionQueueKeyAction } from "../lib/keyboardShortcuts";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { QueryErrorState, useQueryView } from "../components/QueryView";
 import { AttentionQueueRow } from "../components/AttentionQueueRow";
 import { DecisionsToolbar } from "../components/DecisionsToolbar";
 import { Curtain, AgingItemRow } from "../components/DecisionShelf";
@@ -87,6 +90,12 @@ function findScrollContainer(element: HTMLElement | null): HTMLElement | null {
 }
 
 export function WhatNeedsMe() {
+  const { t } = useTranslation();
+  const { enabled } = useCoordinatorWorkspaceEnabled();
+  return enabled ? <CoordinatorNeedsYou /> : <ClassicWhatNeedsMe />;
+}
+
+function ClassicWhatNeedsMe() {
   const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -149,11 +158,7 @@ export function WhatNeedsMe() {
     setCollapsedGroupKeys(loadCollapsedAttentionGroupKeys(selectedCompanyId));
   }, [selectedCompanyId]);
 
-  const {
-    data: feed,
-    isLoading,
-    error,
-  } = useQuery({
+  const feedQuery = useQuery({
     // Distinct from the sidebar badge's `queryKeys.attention` so dismissed rows
     // (needed for the curtains) never inflate the badge count. Invalidating the
     // `["attention", companyId]` prefix still cascades to this query.
@@ -171,6 +176,8 @@ export function WhatNeedsMe() {
     enabled: !!selectedCompanyId,
     refetchOnWindowFocus: true,
   });
+  const { data: feed, isLoading } = feedQuery;
+  const feedView = useQueryView(feedQuery);
 
   const { data: agents } = useQuery({
     queryKey: queryKeys.agents.list(selectedCompanyId!),
@@ -515,8 +522,21 @@ export function WhatNeedsMe() {
     return <p className="text-sm text-muted-foreground">{t("decisionsUi.common.selectOrganization")}</p>;
   }
 
-  if (isLoading) {
+  // Keep a loaded feed on screen through a failed refetch; only a real
+  // failure, or an outage before the first load, replaces the page.
+  if (isLoading || feedView.kind === "reconnecting") {
     return <PageSkeleton variant="approvals" />;
+  }
+  if (feedView.kind === "error") {
+    return (
+      <QueryErrorState
+        size="page"
+        error={feedView.error}
+        action="load your decisions"
+        onRetry={feedView.retry}
+        retrying={feedView.isFetching}
+      />
+    );
   }
 
   const hasAnything = activeItems.length > 0 || snoozedItems.length > 0 || dismissedItems.length > 0;
@@ -552,8 +572,6 @@ export function WhatNeedsMe() {
           }}
         />
       </div>
-
-      {error && <p className="text-sm text-destructive">{(error as Error).message}</p>}
 
       {!hasAnything ? (
         <ZeroState />

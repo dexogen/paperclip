@@ -36,8 +36,8 @@ permissions:
 
 jobs:
   visual:
-    name: Storybook visual regression
     if: github.repository == 'paperclipai/paperclip' && ((github.event_name == 'workflow_dispatch' && !inputs.deploy_preview) || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'storybook-visual')))
+    name: Storybook visual regression
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
@@ -110,8 +110,8 @@ jobs:
           if-no-files-found: error
 
   preview:
-    name: Deploy selected branch Storybook
     if: github.repository == 'paperclipai/paperclip' && (github.event_name == 'workflow_dispatch' && inputs.deploy_preview)
+    name: Deploy selected branch Storybook
     permissions:
       contents: read
       id-token: write

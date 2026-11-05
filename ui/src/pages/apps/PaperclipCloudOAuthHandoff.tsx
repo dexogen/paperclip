@@ -9,6 +9,7 @@ import {
   prepareOAuthNavigation,
   readPendingCloudHandoff,
 } from "@/lib/oauthHandoff";
+import { describeError } from "@/api/errors";
 
 export type ManagedOAuthHandoffPhase = "loading" | "reauthenticating" | "error";
 

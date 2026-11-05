@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, AppDisplayError, renderAppError, appErrorDisplay } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
@@ -7,6 +9,8 @@ import { buildSlackAppManifest, defaultSlackAppConfiguration } from "@paperclipa
 import { SlackAppDetails, SlackSetupAdvanced } from "./SlackAppDetails";
 import { SlackSetup } from "./slack/SlackSetup";
 import { isProvisionedSlackSetup, slackSetupState } from "./slack/setup-state";
+import { slackConversationUrl } from "./slack/conversation-url";
+import { useAccountIdentity } from "@/api/companies-query";
 import { defaultSlackAppName } from "./slack-app-name";
 import { GitHubChatSetup } from "./GitHubChatSetup";
 import { GitHubAgentTrustWarning } from "@/components/GitHubAgentTrustWarning";
@@ -25,6 +29,7 @@ import {
   type SetStateAction,
 } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryView } from "@/components/QueryView";
 import { AlertTriangle, CheckCircle2, Copy, CircleHelp, ExternalLink, Eye, EyeOff, Hammer, Loader2 } from "lucide-react";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { AgentCharacter } from "@/components/AgentCharacter";
@@ -55,6 +60,7 @@ import {
   createGitHubPrivateKeyReadGuard,
   readGitHubPrivateKeyFile,
 } from "./github-private-key-file";
+import { describeError } from "@/api/errors";
 
 const providerNames: Record<ChatProvider, string> = {
   speko: "Speko",
@@ -168,7 +174,9 @@ export function ChatEndpointSetup() {
 }
 
 function ChatSdkEndpointSetup() {
+  useUiTranslation();
   useFullAppsTranslation();
+  const { userId, settled: identitySettled } = useAccountIdentity();
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -255,6 +263,7 @@ function ChatSdkEndpointSetup() {
     queryFn: () => instanceSettingsApi.getExperimental(),
     enabled: endpoint?.setup?.step === "test",
   });
+  const experimentalSettingsView = useQueryView(experimentalSettingsQuery);
   const activeAgents = useMemo(
     () =>
       (agentsQuery.data ?? []).filter((agent) =>
@@ -291,8 +300,8 @@ function ChatSdkEndpointSetup() {
     queryKey: ["slack-setup-options", selectedCompanyId],
     queryFn: () => chatEndpointsApi.slackSetupOptions(selectedCompanyId!),
     enabled: provider === "slack" && Boolean(selectedCompanyId),
-    retry: false,
-  });
+    });
+  const slackChoicesView = useQueryView(slackChoices);
   const createEndpoint = useMutation({
     mutationFn: ({ ownApp = false }: { ownApp?: boolean; exit?: boolean }) => {
       if (provider === "slack" && !slackChoices.data) throw new AppDisplayError("fullApps.slack_setup_is_still_loading_try_again_7c9ed0");
@@ -316,7 +325,7 @@ function ChatSdkEndpointSetup() {
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_start_setup_afa41a"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -446,7 +455,7 @@ function ChatSdkEndpointSetup() {
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_generate_webhook_secret_4529e9"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -459,13 +468,17 @@ function ChatSdkEndpointSetup() {
     onError: (error) =>
       pushToast({
         title: provider === "slack" ? fullAppsT("fullApps.couldn_t_finish_setup_061cc7") : fullAppsT("fullApps.test_not_complete_34be17"),
-        body:
-          error instanceof Error
-            ? renderAppError(error)
-            : provider === "slack" ? fullAppsT("fullApps.try_finishing_setup_again_2737cd") : fullAppsT("fullApps.send_the_provider_message_then_try_again_9a8973"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
+  const finishSetup = () => {
+    if (provider === "slack" && endpoint?.setup?.step === "complete") {
+      navigate(`/apps/chat/${endpoint.id}/settings`);
+      return;
+    }
+    testConnection.mutate();
+  };
 
   const repairing = isChatEndpointRepairing(
     endpoint,
@@ -488,6 +501,7 @@ function ChatSdkEndpointSetup() {
       !endpoint.setup.webhookVerifiedAt && !setupAction.isPending),
     refetchInterval: 1_500,
   });
+  const slackVerificationView = useQueryView(slackVerificationQuery);
   useEffect(() => {
     const next = slackVerificationQuery.data;
     if (!next || !endpoint || next.id !== endpoint.id || setupAction.isPending ||
@@ -547,14 +561,14 @@ function ChatSdkEndpointSetup() {
               <SlackAppDetails value={slackDetails} readOnly={!slackDetailsEditable || agentStepBusy}
                 onChange={app => setSlackDraft({ agentId, app })}
                 onBlur={() => void persistSlackDetails().catch(() => {})} />
-              {saveSlackDetails.isError && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_save_the_slack_app_details_try_again_before_25eb58")}</p>}
+              {saveSlackDetails.error && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_save_the_slack_app_details_try_again_before_25eb58")}</p>}
               {slackChoices.data?.defaultMethod === "managed" && (!endpoint || endpoint.setup?.slackSetupMethod === "managed") && !endpoint?.setup?.slackRegistration && <Button
                 variant="link" className="h-auto p-0 text-muted-foreground"
                 disabled={agentStepBusy || !slackDetailsValidation.success}
                 onClick={() => useOwnSlackApp.mutate()}
               >{fullAppsT("fullApps.use_your_own_app_bc5364")}</Button>}
             </SlackSetupAdvanced>}
-            {isSlack && !endpoint && !slackChoices.data && (slackChoices.isError
+            {isSlack && !endpoint && !slackChoices.data && ((slackChoicesView.kind === "error")
               ? <div role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_slack_setup_e87f83")}<Button variant="link" disabled={slackChoices.isFetching} onClick={() => void slackChoices.refetch()}>{fullAppsT("newIssue.retry")}</Button></div>
               : <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" />{fullAppsT("fullApps.loading_slack_361da6")}</p>)}
             {provider === "github" && <GitHubAgentTrustWarning agent={selectedAgent} />}
@@ -586,7 +600,7 @@ function ChatSdkEndpointSetup() {
               slackStage={step === 1 ? "app" : step === 3 ? "finish" : "credentials"}
               onSlackCredentialsContinue={() => setViewedStep(3)}
               onSlackVerificationContinue={() => setViewedStep(4)}
-              slackVerificationError={slackVerificationQuery.isError}
+              slackVerificationError={slackVerificationView.kind === "error"}
               onSlackAppCreated={() => {
                 setSlackCredentialsReady(true);
                 setViewedStep(2);
@@ -646,8 +660,9 @@ function ChatSdkEndpointSetup() {
                 <span><FullAppsTrans i18nKey="fullApps.you_can_now_talk_to_in_slack_e0f48b" components={{ part1: <>{selectedAgent?.name ?? endpoint.assignedAgentName}</> }} /></span>
                 <img src="/brands/apps/slack.svg" alt="" aria-hidden="true" className="size-6" />
               </p>
+              <Button asChild variant="link"><a href={slackConversationUrl(endpoint, identitySettled ? userId : null)} target="_blank" rel="noopener noreferrer">{translateUi("fullApps.open_slack_4ddf02")} <ExternalLink className="size-4" /></a></Button>
             </div>
-            <Button disabled={testConnection.isPending} onClick={() => testConnection.mutate()}><FullAppsTrans i18nKey="fullApps.done_892543" components={{ part1: <>{testConnection.isPending && <Loader2 className="size-4 animate-spin" />}</> }} /></Button>
+            <Button disabled={testConnection.isPending} onClick={finishSetup}><FullAppsTrans i18nKey="fullApps.done_892543" components={{ part1: <>{testConnection.isPending && <Loader2 className="size-4 animate-spin" />}</> }} /></Button>
           </div> : <TryStep
             endpointId={endpoint.id}
             provider={provider}
@@ -658,9 +673,9 @@ function ChatSdkEndpointSetup() {
             photonAllocation={endpoint.photonAllocation}
             providerUrl={endpoint.setup?.slackAccount?.dmChannelId && endpoint.providerAccountId ? `https://app.slack.com/client/${encodeURIComponent(endpoint.providerAccountId)}/${encodeURIComponent(endpoint.setup.slackAccount.dmChannelId)}` : endpoint.setup?.providerUrl}
             guestIsolationState={
-              experimentalSettingsQuery.isPending
+              experimentalSettingsQuery.isPending || experimentalSettingsView.kind === "reconnecting"
                 ? "loading"
-                : experimentalSettingsQuery.isError
+                : experimentalSettingsView.kind === "error"
                   ? "unknown"
                   : experimentalSettingsQuery.data?.enableIsolatedWorkspaces ===
                       true
@@ -669,7 +684,7 @@ function ChatSdkEndpointSetup() {
             }
             pending={testConnection.isPending}
             onOpenAccess={() => navigate(`/apps/chat/${endpoint.id}/access`)}
-            onTest={() => testConnection.mutate()}
+            onTest={finishSetup}
             onSaveExit={() => navigate("/apps")}
           />
         )}
@@ -725,7 +740,9 @@ function ProviderConnectStep({
     values?: Record<string, string>,
   ) => void;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
+  const { userId, settled: identitySettled } = useAccountIdentity();
   const { pushToast } = useToast();
   const navigate = useNavigate();
   const slackBotToken = (credentials.botToken ?? "").trim();
@@ -1332,7 +1349,7 @@ function ProviderConnectStep({
   const slackRequestUrlInstructions = <ol className="list-decimal space-y-2 pl-5 text-sm">
       <li><a className="underline underline-offset-4" href={endpoint.setup?.slackRegistration?.appId ? `https://api.slack.com/apps/${encodeURIComponent(endpoint.setup.slackRegistration.appId)}/event-subscriptions` : "https://api.slack.com/apps"} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_app_settings_30cfde")}<ExternalLink className="inline size-3" /></a> {fullAppsT("fullApps.and_choose_566c1f")} <strong>{slackApp.appName}</strong>.</li>
       <li><FullAppsTrans i18nKey="fullApps.choose_6b07ad" components={{ part1: <strong>Event Subscriptions</strong> }} /></li>
-      <li><FullAppsTrans i18nKey="fullApps.beside_the_prefilled_click_if_it_isn_t_verified_save_df48c9" components={{ part1: <strong>Request URL</strong>, part2: <strong>Retry</strong> }} /></li>
+      <li><FullAppsTrans i18nKey="fullApps.beside_the_prefilled_click_if_it_isn_t_verified_save_df48c9" components={{ part1: <strong>Request URL</strong>, part2: <strong>{translateUi("newIssue.retry")}</strong> }} /></li>
     </ol>;
   if (slackStage === "finish")
     return (
@@ -1341,7 +1358,7 @@ function ProviderConnectStep({
           <h1 className="text-xl font-bold">{automaticSlack ? fullAppsT("fullApps.send_a_message_to_your_agent_48d584") : fullAppsT("fullApps.verify_slack_connection_f64c0a")}</h1>
           {!automaticSlack && <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.slack_needs_to_confirm_that_it_can_reach_your_paperc_a2c02d")}</p>}
         </div>
-        {automaticSlack ? <Button asChild variant="outline"><a href={endpoint.setup?.slackAccount?.dmChannelId && endpoint.providerAccountId ? `https://app.slack.com/client/${encodeURIComponent(endpoint.providerAccountId)}/${encodeURIComponent(endpoint.setup.slackAccount.dmChannelId)}` : endpoint.setup?.providerUrl ?? "https://app.slack.com"} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_4ddf02")}<ExternalLink className="size-4" /></a></Button> : slackRequestUrlInstructions}
+        {automaticSlack ? <Button asChild variant="outline"><a href={slackConversationUrl(endpoint, identitySettled ? userId : null)} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_4ddf02")}<ExternalLink className="size-4" /></a></Button> : slackRequestUrlInstructions}
         {endpoint.setup?.webhookVerifiedAt ? (
           <p role="status" className="flex items-center gap-2 text-sm">
             <CheckCircle2 className="size-4 text-(--status-task-done)" />{fullAppsT("fullApps.your_slack_connection_is_working_33e867")}{pending ? automaticSlack ? fullAppsT("fullApps.finishingSetup") : fullAppsT("fullApps.openingMessageTest") : ""}
@@ -1573,6 +1590,9 @@ function TryStep({
     enabled: provider !== "slack",
     refetchInterval: 1_500,
   });
+  const principalsView = useQueryView(principalsQuery);
+  const principalsLoaded = principalsView.kind === "ready" || principalsView.kind === "stale";
+  const principalsFailed = principalsView.kind === "error";
   const [numberCopied, setNumberCopied] = useState(false);
   const [copyError, setCopyError] = useState<AppDisplayText | null>(null);
   const identities = principalsQuery.data ?? [];
@@ -1587,15 +1607,15 @@ function TryStep({
         : provider === "microsoft-teams"
           ? fullAppsT("fullApps.start_a_new_channel_post_and_mention_the_agent_again_e77379")
           : fullAppsT("fullApps.send_a_new_root_mention_to_the_agent_5e9f1b");
-  const identityGuidance = provider === "slack" ? null : provider === "imessage-photon" && principalsQuery.isSuccess && (identities.length === 0 || unlinkedIdentities.length > 0)
+  const identityGuidance = provider === "slack" ? null : provider === "imessage-photon" && principalsLoaded && (identities.length === 0 || unlinkedIdentities.length > 0)
     ? { tone: "info" as const, title: fullAppsT("fullApps.link_your_messages_identity_6f8fce"), body: fullAppsT("fullApps.send_one_message_to_discover_your_phone_number_or_ap_afa9d8") }
-    : principalsQuery.isError
+    : principalsFailed
     ? {
         tone: "warning" as const,
         title: fullAppsT("fullApps.identity_readiness_could_not_be_checked_eadefd"),
         body: fullAppsT("fullApps.message_3d2c413e257c", { value1: freshConversationInstruction }),
       }
-    : !principalsQuery.isSuccess || guestIsolationState === "loading"
+    : !principalsLoaded || guestIsolationState === "loading"
       ? null
       : identities.length === 0
         ? guestIsolationState === "disabled"
@@ -1678,8 +1698,8 @@ function TryStep({
         <h1 className="text-xl font-bold"><FullAppsTrans i18nKey="fullApps.try_in_b593d1" components={{ part1: <>{agentName}</>, part2: <>{providerNames[provider]}</> }} /></h1>
         {provider !== "slack" && <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.complete_this_real_conversation_to_finish_setup_fae6c4")}</p>}
       </div>
-      {provider !== "slack" && (!principalsQuery.isSuccess || guestIsolationState === "loading") &&
-      !principalsQuery.isError ? (
+      {provider !== "slack" && (!principalsLoaded || guestIsolationState === "loading") &&
+      !principalsFailed ? (
         <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.checking_identity_and_guest_readiness_572f06")}</p>
       ) : null}
       {identityGuidance ? (

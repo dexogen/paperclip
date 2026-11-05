@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectPopover } from "../../components/ui/select";
@@ -45,11 +46,12 @@ const defaultAcpxClaudeModel = "claude-opus-5-5";
 const defaultClaudeManagedModel = "claude-sonnet-5";
 const defaultAwsAgentCoreModel = "global.anthropic.claude-sonnet-4-6";
 const runnerHarnessOptions = [
-  { value: "codex", label: "Codex", adapter: "codex_local" },
+  { value: "codex", get label() { return translateUi("interfaceUpdates.codex_616efbe9"); }, adapter: "codex_local" },
   { value: "opencode", label: "OpenCode 1.18.34", adapter: "opencode_local" },
   { value: "claude_managed", label: "Claude Managed", adapter: "claude_local" },
   { value: "aws_agentcore", label: "AWS AgentCore", adapter: "aws_agentcore" },
   { value: "acpx", get label() { return fullSharedT("agentConfigUi.acpAgents"); }, adapter: "acpx_local" },
+  { value: "cursor_cloud", get label() { return translateUi("interfaceUpdates.cursor_cloud_experimental_77e87d36"); }, adapter: "cursor_cloud" },
   { value: "grok", label: "Grok Build", adapter: "grok_local" },
 ];
 
@@ -134,6 +136,7 @@ export function CodexLocalConfigFields({
     ? t(permissionDescriptionKeys[runnerProvider]) : runnerPermissionCapability.description;
 
   const isMuse = runnerProvider === "muse";
+  const isCursorCloud = runnerProvider === "cursor_cloud";
   const isExternal = isMuse || runnerProvider === "openai_dot" || runnerProvider === "grok_bot";
   const configuredRunnerPermissionMode =
     runnerManaged && runnerPermissionCapability.configurable
@@ -272,6 +275,7 @@ export function CodexLocalConfigFields({
               const provider = grok ? "acpx" : isPaperclipRunnerProvider(value)
                 ? value
                 : "codex";
+              const cloudResetKeys = ["codexPermissionMode", "opencodePermissionMode", "acpxPermissionMode", "acpxAgent", "command", "extraArgs", "idleTimeoutMs", "modelReasoningEffort", "reasoningEffort", "effort", "modelParams", "homeMode"];
               const model =
                 provider === "openai_dot"
                   ? ""
@@ -283,15 +287,18 @@ export function CodexLocalConfigFields({
                       ? defaultAwsAgentCoreModel
                       : provider === "acpx"
                         ? grok ? "grok-4.7" : defaultAcpxClaudeModel
+                        : provider === "cursor_cloud" ? ""
                         : DEFAULT_CODEX_LOCAL_MODEL;
               if (isCreate) {
                 set!({
                   model,
+                  ...(provider === "cursor_cloud" ? { thinkingEffort: "" } : {}),
                   adapterSchemaValues: {
                     ...values!.adapterSchemaValues,
                     provider,
                     acpxSessionMode: undefined,
                     piThinkingLevel: undefined,
+                    ...(provider === "cursor_cloud" ? { ...Object.fromEntries(cloudResetKeys.map(key => [key, undefined])), lifecycleMode: "per_turn" } : {}),
                     ...(provider === "acpx" ? { acpxAgent: grok ? "grok" : "claude" } : {}),
                   },
                 });
@@ -306,6 +313,10 @@ export function CodexLocalConfigFields({
                 }
                 if (provider === "acpx") {
                   mark("adapterConfig", "acpxAgent", grok ? "grok" : "claude");
+                }
+                if (provider === "cursor_cloud") {
+                  mark("adapterConfig", "lifecycleMode", "per_turn");
+                  for (const key of cloudResetKeys) mark("adapterConfig", key, undefined);
                 }
               }
             }}
@@ -324,6 +335,27 @@ export function CodexLocalConfigFields({
         </Field>
       )}
       {runnerManaged && runnerProvider === "grok_bot" && <GrokBotConnection companyId={companyId} agentId={agentId} />}
+      {runnerManaged && isCursorCloud && <>
+        <p className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.experimental_cursor_hosts_this_agent_s_execution_e_c209a48e")}</p>
+        {[
+          { key: "repoUrl", label: translateUi("agentSetupUi.setup.repository"), fallback: "", legacy: undefined, placeholder: translateUi("interfaceUpdates.https_github_com_your_org_repo_fdf7fd9c"), hint: translateUi("interfaceUpdates.select_a_repository_or_a_named_cursor_cloud_enviro_c3d5b2e8") },
+          { key: "repoRef", label: translateUi("interfaceUpdates.starting_ref_085275dd"), fallback: config.repoStartingRef ?? "", legacy: "repoStartingRef", placeholder: translateUi("agentSetupUi.setup.repositoryDefault") },
+          { key: "prUrl", label: translateUi("interfaceUpdates.pull_request_url_397d8858"), fallback: config.repoPullRequestUrl ?? "", legacy: "repoPullRequestUrl", placeholder: translateUi("interfaceUpdates.optional_59be7133") },
+          { key: "cloudEnvName", label: translateUi("interfaceUpdates.cursor_cloud_environment_136438ee"), fallback: config.runtimeEnvName ?? "", legacy: "runtimeEnvName", placeholder: translateUi("interfaceUpdates.use_instead_of_a_repository_f3c8a03b") },
+        ].map(field => <Field key={field.key} configSection="adapter" label={field.label} hint={field.hint}>
+          <DraftInput value={String(runnerSchemaValue(field.key, field.fallback))} placeholder={field.placeholder} className={inputClass}
+            onCommit={value => {
+              if (isCreate) set!({ adapterSchemaValues: { ...values!.adapterSchemaValues, [field.key]: value, ...(field.legacy ? { [field.legacy]: undefined } : {}) } });
+              else { if (field.legacy) mark("adapterConfig", field.legacy, undefined); mark("adapterConfig", field.key, value); }
+            }} />
+        </Field>)}
+        {[
+          { key: "workOnCurrentBranch", label: translateUi("interfaceUpdates.work_on_current_branch_9885b4b2") },
+          { key: "autoCreatePR", label: translateUi("interfaceUpdates.auto_create_pull_request_623023a2") },
+          { key: "skipReviewerRequest", label: translateUi("interfaceUpdates.skip_reviewer_request_67afa28a") },
+        ].map(field => <ToggleField key={field.key} label={field.label}
+          checked={runnerSchemaValue(field.key, false) === true} onChange={value => updateRunnerSchemaValue(field.key, value)} />)}
+      </>}
       {runnerManaged && runnerProvider === "openai_dot" && <>
         <Field configSection="adapter" label={t("agentConfigUi.dotConnection")} hint={t("agentConfigUi.dotConnectionHint")}>
           <DotRunnerConnection companyId={companyId} agentId={agentId} bindingId={String(runnerSchemaValue("dotBindingId", ""))} onBinding={id => updateRunnerSchemaValue("dotBindingId", id)} />
@@ -343,7 +375,7 @@ export function CodexLocalConfigFields({
           checked={runnerSchemaValue("allowUnmeteredProvider", false) === true} onChange={value => updateRunnerSchemaValue("allowUnmeteredProvider", value)} />
       </>}
       {runnerManaged && !hideRunnerHarness && runnerProvider === "acpx" && runnerSchemaValue("acpxAgent", "claude") !== "grok" && (
-        <Field configSection="adapter" label={t("agentConfigUi.acpAgent")} hint={t("agentConfigUi.acpAgentHint")}>
+        <Field configSection="adapter" label={translateUi("agentConfigUi.acpAgent")} hint={translateUi("interfaceUpdates.choose_a_qualified_harness_and_enter_its_exact_mod_e0faad94")}>
           <Select
             value={String(isCreate ? values!.adapterSchemaValues?.acpxAgent ?? "claude" : eff("adapterConfig", "acpxAgent", config.acpxAgent ?? "claude"))}
             onValueChange={(value) => {
@@ -579,7 +611,7 @@ export function CodexLocalConfigFields({
           )}
         </Field>
       )}
-      {runnerManaged && !isExternal && (
+      {runnerManaged && !isExternal && !isCursorCloud && (
         <Field configSection="runPolicy"
           label={t("agentConfigUi.runnerLifecycle")}
           hint={t("agentConfigUi.runnerLifecycleHint")}
@@ -600,7 +632,7 @@ export function CodexLocalConfigFields({
           />
         </Field>
       )}
-      {runnerManaged && !isExternal && runnerLifecycleMode === "warm" && (
+      {runnerManaged && !isExternal && !isCursorCloud && runnerLifecycleMode === "warm" && (
         <Field configSection="runPolicy"
           label={t("agentConfigUi.warmTimeout")}
           hint={t("agentConfigUi.warmTimeoutHint")}

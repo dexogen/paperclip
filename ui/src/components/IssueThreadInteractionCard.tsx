@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { localizeOnboardingQuestion, useOnboardingTask } from "@/lib/onboarding-first-task-localization";
 import type { TFunction } from "i18next";
 import { i18n, Trans, useTranslation } from "@/i18n";
@@ -5,9 +6,12 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import type { Agent } from "@paperclipai/shared";
 import { AlertTriangle, ArrowUpRight, Bot, Check, CheckCircle2, ChevronDown, ChevronRight, CircleDashed, Clock, ExternalLink, FileText, GitBranch, ImagePlus, KeyRound, Loader2, MessageSquareQuote, MinusCircle, ShieldAlert, ThumbsUp, TriangleAlert, Wrench, X, XCircle } from "lucide-react";
 import { Link } from "@/lib/router";
+import { appTabHref } from "@/pages/apps/app-tabs";
 import { formatAssigneeUserLabel } from "../lib/assignees";
 import { describeInteractionAudience, type InteractionAudienceDescription } from "../lib/interaction-audience";
 import { interactionResolutionErrorMessage } from "../lib/interaction-resolution-error";
+import { buildDocumentAnnotationHash } from "../lib/document-annotation-hash";
+import { itemVerdictHref } from "@/lib/item-verdict-links";
 import {
   isInteractionPreparingApproval,
   buildSuggestedTaskTree,
@@ -50,6 +54,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AppLogo } from "@/pages/apps/AppLogo";
 import { ConnectionIntentInteractionBody } from "@/features/connections/ConnectionIntentInteractionBody";
 import { QuestionForm } from "./task-chat/QuestionForm";
+import { useCoordinatorWorkspaceEnabled } from "@/hooks/useCoordinatorWorkspaceEnabled";
+import { CoordinatorTaskCommitment } from "./coordinator/CoordinatorTaskCommitment";
+
+import { DecisionCardFooter } from "./DecisionCardFooter";
 
 const OTHER_ANSWER_ID = "__paperclip_other__";
 
@@ -100,6 +108,9 @@ function InteractionActionError({ error }: { error: { cause: unknown } | null })
 
 interface IssueThreadInteractionCardProps {
   interaction: IssueThreadInteraction;
+  /** Reuse the resolver without the task timeline's audit/header chrome. */
+  footerSlot?: ReactNode;
+  presentationVariant?: "default" | "coordinator-decision";
   agentMap?: Map<string, Agent>;
   currentUserId?: string | null;
   userLabelMap?: ReadonlyMap<string, string> | null;
@@ -721,6 +732,7 @@ function TaskTreeNode({
 }
 
 function SuggestTasksCard({
+  footerSlot,
   interaction,
   agentMap,
   currentUserId,
@@ -728,6 +740,7 @@ function SuggestTasksCard({
   onAcceptInteraction,
   onRejectInteraction,
 }: {
+  footerSlot?: ReactNode;
   interaction: SuggestTasksInteraction;
   agentMap?: Map<string, Agent>;
   currentUserId?: string | null;
@@ -913,40 +926,42 @@ function SuggestTasksCard({
               ) : null}
             </div>
 
-            <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
-              <Button
-                size="sm"
-                disabled={!onAcceptInteraction || working !== null || selectedCount === 0}
-                onClick={() => void handleAccept()}
-              >
-                {working === "accept" ? (
-                  <>
-                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    {t("decisionForms.interaction.accepting")}
-                  </>
-                ) : (
-                  selectedCount === totalTasks ? t("decisionForms.interaction.acceptDrafts") : t("decisionForms.interaction.acceptSelectedDrafts")
-                )}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={!onRejectInteraction || working !== null}
-                onClick={() => setRejecting((current) => !current)}
-              >
-                {t("decisionForms.common.reject")}
-              </Button>
-              {selectedCount < totalTasks ? (
+            <DecisionCardFooter leading={footerSlot} className="w-full">
+              <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
                 <Button
                   size="sm"
-                  variant="ghost"
-                  disabled={working !== null}
-                  onClick={() => setSelectedClientKeys(new Set(interaction.payload.tasks.map((task) => task.clientKey)))}
+                  disabled={!onAcceptInteraction || working !== null || selectedCount === 0}
+                  onClick={() => void handleAccept()}
                 >
-                  {t("decisionForms.interaction.resetSelection")}
+                  {working === "accept" ? (
+                    <>
+                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      {translateUi("decisionForms.interaction.accepting")}
+                    </>
+                  ) : (
+                    selectedCount === totalTasks ? translateUi("decisionForms.interaction.acceptDrafts") : translateUi("decisionForms.interaction.acceptSelectedDrafts")
+                  )}
                 </Button>
-              ) : null}
-            </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={!onRejectInteraction || working !== null}
+                  onClick={() => setRejecting((current) => !current)}
+                >
+                  {translateUi("decisionForms.common.reject")}
+                </Button>
+                {selectedCount < totalTasks ? (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={working !== null}
+                    onClick={() => setSelectedClientKeys(new Set(interaction.payload.tasks.map((task) => task.clientKey)))}
+                  >
+                    {translateUi("decisionForms.interaction.resetSelection")}
+                  </Button>
+                ) : null}
+              </div>
+            </DecisionCardFooter>
           </div>
 
           {rejecting ? (
@@ -986,6 +1001,7 @@ function SuggestTasksCard({
 
 function QuestionOptionButton({
   id,
+  compact = false,
   label,
   description,
   selected,
@@ -993,6 +1009,7 @@ function QuestionOptionButton({
   onClick,
 }: {
   id: string;
+  compact?: boolean;
   label: string;
   description?: string | null;
   selected: boolean;
@@ -1005,18 +1022,22 @@ function QuestionOptionButton({
       role={selectionMode === "single" ? "radio" : "checkbox"}
       aria-checked={selected}
       className={cn(
-        "w-full rounded-sm border px-4 py-3 text-left transition-colors outline-none focus-visible:border-ring focus-visible:ring-(length:--rad-3) focus-visible:ring-ring/50",
-        selected
+        compact ? "flex w-full items-start gap-3 rounded-md px-3 py-2 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring" : "w-full rounded-sm border px-4 py-3 text-left transition-colors outline-none focus-visible:border-ring focus-visible:ring-(length:--rad-3) focus-visible:ring-ring/50",
+        compact ? (selected ? "bg-muted text-foreground" : "text-foreground hover:bg-muted/50") : selected
           ? "border-sky-500/80 bg-sky-500/10 text-sky-950 dark:border-sky-400/80 dark:bg-sky-400/15 dark:text-sky-50"
           : "border-border/70 bg-transparent text-foreground hover:border-sky-500/70 hover:bg-sky-500/10 dark:hover:border-sky-400/70 dark:hover:bg-sky-400/10",
       )}
       id={id}
       onClick={onClick}
     >
+      {compact ? <span aria-hidden="true" className={cn("mt-0.5 flex size-4 shrink-0 items-center justify-center border", selectionMode === "single" ? "rounded-full" : "rounded-sm", selected ? "border-foreground" : "border-muted-foreground/50")}>
+        {selected ? <span className={cn("size-2 bg-foreground", selectionMode === "single" ? "rounded-full" : "rounded-xs")} /> : null}
+      </span> : null}
+      <div className={compact ? "min-w-0" : "contents"}>
       <div
         className={cn(
           "text-sm font-medium",
-          selected ? "text-sky-950 dark:text-sky-50" : "text-foreground",
+          selected && !compact ? "text-sky-950 dark:text-sky-50" : "text-foreground",
         )}
       >
         {label}
@@ -1025,7 +1046,7 @@ function QuestionOptionButton({
         <div
           className={cn(
             "mt-1 text-sm leading-6",
-            selected
+            selected && !compact
               ? "text-sky-900/80 dark:text-sky-100/80"
               : "text-muted-foreground",
           )}
@@ -1033,17 +1054,22 @@ function QuestionOptionButton({
           {description}
         </div>
       ) : null}
+      </div>
     </button>
   );
 }
 
 function AskUserQuestionsCard({
+  footerSlot,
   interaction,
+  compact = false,
   onSubmitInteractionAnswers,
   onCancelInteraction,
   externalReferences,
 }: {
+  footerSlot?: ReactNode;
   interaction: AskUserQuestionsInteraction;
+  compact?: boolean;
   onSubmitInteractionAnswers?: (
     interaction: AskUserQuestionsInteraction,
     answers: AskUserQuestionsAnswer[],
@@ -1194,7 +1220,7 @@ function AskUserQuestionsCard({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      {!compact ? <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <Badge variant="outline" className="border-border/70 bg-background/70 px-2.5 py-1 uppercase tracking-(--tracking-eyebrow) text-foreground/70">
           <MessageSquareQuote className="h-3 w-3" />
           {t("decisionForms.interaction.askQuestions")}
@@ -1202,11 +1228,13 @@ function AskUserQuestionsCard({
         <span>
           {t("decisionForms.interaction.questionCount", { count: questions.length })}
         </span>
-      </div>
+      </div> : null}
 
       {interaction.status === "pending" && interaction.payload.questionSet ? (
         <QuestionForm
+          footerSlot={footerSlot}
           id={interaction.id}
+          presentation={compact ? "decision" : "default"}
           questionSet={interaction.payload.questionSet}
           draftKey={`issue-question:${interaction.companyId}:${interaction.id}`}
           disabled={!onSubmitInteractionAnswers}
@@ -1243,16 +1271,17 @@ function AskUserQuestionsCard({
             return (
             <div
               key={question.id}
-              className="rounded-2xl border border-border/70 bg-background/82 p-4 shadow-(--shadow-extract-9)"
+              className={compact ? "space-y-3" : "rounded-2xl border border-border/70 bg-background/82 p-4 shadow-(--shadow-extract-9)"}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
+                  {!compact ? <div className="text-(length:--text-micro) font-semibold uppercase tracking-(--tracking-eyebrow) text-muted-foreground">
                     {t("decisionForms.interaction.questionNumber", { number: index + 1 })}
-                  </div>
+                  </div> : null}
                   <div
                     id={`${interaction.id}-${question.id}-prompt`}
-                    className="mt-1 text-sm font-semibold text-foreground"
+                    data-decision-prompt={compact ? true : undefined}
+                    className={compact ? "text-lg font-medium leading-relaxed text-foreground" : "mt-1 text-sm font-semibold text-foreground"}
                   >
                     {question.prompt}
                   </div>
@@ -1262,11 +1291,13 @@ function AskUserQuestionsCard({
                     </p>
                   ) : null}
                 </div>
-                <TaskField
+                {compact ? <span className="sr-only" id={`${interaction.id}-${question.id}-requirements`}>
+                  {question.selectionMode === "single" ? translateUi("interfaceUpdates.choose_one_answer_336bcb61") : translateUi("interfaceUpdates.choose_one_or_more_answers_44916fc3")} {question.required ? translateUi("interfaceUpdates.required_13dcc0e0") : translateUi("interfaceUpdates.optional_a9aaf97c")}
+                </span> : <TaskField
                   label={question.selectionMode === "single" ? t("decisionForms.interaction.pick") : t("decisionForms.interaction.pickMany")}
                   value={question.required ? t("decisionForms.interaction.required") : t("decisionForms.interaction.optional")}
                   tone="subtle"
-                />
+                />}
               </div>
 
               <div className="mt-3 space-y-3">
@@ -1274,6 +1305,8 @@ function AskUserQuestionsCard({
                   className="grid gap-3"
                   role={question.selectionMode === "single" ? "radiogroup" : "group"}
                   aria-labelledby={`${interaction.id}-${question.id}-prompt`}
+                  aria-describedby={compact ? `${interaction.id}-${question.id}-requirements` : undefined}
+                  aria-required={question.selectionMode === "single" && question.required ? true : undefined}
                 >
                   {question.options.map((option) => {
                     const isFreeText = option.freeText === true;
@@ -1283,6 +1316,7 @@ function AskUserQuestionsCard({
                     return (
                       <div key={option.id} className="space-y-2">
                         <QuestionOptionButton
+                          compact={compact}
                           id={`${interaction.id}-${question.id}-${option.id}`}
                           label={option.label}
                           description={option.description}
@@ -1352,44 +1386,46 @@ function AskUserQuestionsCard({
             );
           })}
 
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/75 p-4">
-            <div className="text-sm text-muted-foreground">
-              {t("decisionForms.interaction.submitWholeForm")}
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {onCancelInteraction ? (
+          <DecisionCardFooter leading={footerSlot}>
+            <div className={compact ? "flex flex-wrap items-center justify-end gap-3" : "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/75 p-4"}>
+              {!compact ? <div className="text-sm text-muted-foreground">
+                {translateUi("decisionForms.interaction.submitWholeForm")}
+              </div> : null}
+              <div className="flex flex-wrap items-center gap-2">
+                {onCancelInteraction ? (
+                  <Button
+                    size="sm"
+                    variant={compact ? "ghost" : "outline"}
+                    disabled={working || cancelling}
+                    onClick={() => void handleCancel()}
+                  >
+                    {cancelling ? (
+                      <>
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                        {translateUi("decisionForms.interaction.cancelling")}
+                      </>
+                    ) : (
+                      translateUi("decisionForms.interaction.cancelQuestion")
+                    )}
+                    </Button>
+                  ) : null}
                 <Button
                   size="sm"
-                  variant="outline"
-                  disabled={working || cancelling}
-                  onClick={() => void handleCancel()}
+                  disabled={!onSubmitInteractionAnswers || !canSubmit || working || cancelling}
+                  onClick={() => void handleSubmit()}
                 >
-                  {cancelling ? (
+                  {working ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      {t("decisionForms.interaction.cancelling")}
+                      {translateUi("decisionForms.interaction.submitting")}
                     </>
                   ) : (
-                    t("decisionForms.interaction.cancelQuestion")
+                    displayPayload.submitLabel ?? t("decisionForms.common.submitAnswers")
                   )}
-                  </Button>
-                ) : null}
-              <Button
-                size="sm"
-                disabled={!onSubmitInteractionAnswers || !canSubmit || working || cancelling}
-                onClick={() => void handleSubmit()}
-              >
-                {working ? (
-                  <>
-                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    {t("decisionForms.interaction.submitting")}
-                  </>
-                ) : (
-                  displayPayload.submitLabel ?? t("decisionForms.common.submitAnswers")
-                )}
-              </Button>
+                </Button>
+              </div>
             </div>
-          </div>
+          </DecisionCardFooter>
 
           <InteractionActionError error={actionError} />
         </div>
@@ -1483,6 +1519,7 @@ function isDisplayableRequestConfirmationTarget(
 
 function requestConfirmationTargetLabel(target: RequestConfirmationTarget, t: TFunction = i18n.getFixedT("en")) {
   if (target.label) return target.label;
+  if (target.type === "issue_attachment") return "Attachment";
   const revision = target.revisionNumber ? ` v${target.revisionNumber}` : "";
   if (target.type === "issue_document" && target.key === "plan") {
     return t("decisionForms.interaction.planRevision", { revision });
@@ -1494,9 +1531,15 @@ function requestConfirmationTargetHref({
   interaction,
   target,
 }: {
-  interaction: Pick<IssueThreadInteraction, "issueId">;
+  interaction: Pick<IssueThreadInteraction, "issueId" | "id">;
   target: RequestConfirmationTarget;
 }) {
+  if (target.type === "issue_document" && target.revisionId) {
+    return `/issues/${target.issueId ?? interaction.issueId}${buildDocumentAnnotationHash({ documentKey: target.key, revisionId: target.revisionId, interactionId: interaction.id, threadId: null, commentId: null })}`;
+  }
+  if (target.type === "issue_attachment") {
+    return `/api/attachments/${encodeURIComponent(target.attachmentId)}/content`;
+  }
   if (target.href) return target.href;
   if (target.type === "issue_document") {
     const issueId = target.issueId ?? interaction.issueId;
@@ -1510,7 +1553,7 @@ function RequestConfirmationTargetChip({
   target,
   tone = "default",
 }: {
-  interaction: Pick<IssueThreadInteraction, "issueId">;
+  interaction: Pick<IssueThreadInteraction, "issueId" | "id">;
   target: RequestConfirmationTarget | null | undefined;
   tone?: "default" | "subtle";
 }) {
@@ -1533,7 +1576,7 @@ function RequestConfirmationTargetChip({
   );
 
   if (!href) return <span className={className}>{content}</span>;
-  if (/^https?:\/\//i.test(href)) {
+  if (target.type === "issue_attachment" || /^https?:\/\//i.test(href)) {
     return (
       <a href={href} target="_blank" rel="noreferrer" className={className}>
         {content}
@@ -1707,6 +1750,15 @@ function ToolActionResolution({
   const detail = state === "failed" ? result?.errorMessage?.trim() || t("decisionForms.interaction.actionIncomplete")
     : state === "declined" ? interaction.result?.reason?.trim()
     : null;
+  if (state === "failed" && result?.errorCode === "github_access_denied") {
+    const connectionId = interaction.payload.toolAction?.connectionId;
+    return <div role="alert" className="space-y-2 rounded-lg bg-destructive/10 p-3 text-sm text-foreground">
+      <p className="flex items-center gap-2 font-medium"><AlertTriangle className="size-4 shrink-0 text-destructive" aria-hidden="true" />{translateUi("interfaceUpdates.github_access_needed_c3c912a1")}</p>
+      <p>{translateUi("interfaceUpdates.this_github_connection_cannot_access_the_requested_d1d43d13")}</p>
+      {connectionId ? <Button asChild size="sm" variant="outline"><Link to={appTabHref(connectionId, "permissions")}>{translateUi("skillsGap.manageGithubAccess")}</Link></Button> : null}
+      {detail ? <details className="text-xs text-muted-foreground"><summary className="cursor-pointer">{translateUi("interfaceUpdates.error_details_5b546022")}</summary><p className="mt-2 break-words">{detail}</p></details> : null}
+    </div>;
+  }
   const status = <>
     <Icon className={cn("h-3.5 w-3.5 shrink-0", state === "running" && "animate-spin", state === "failed" && "text-destructive")} />
     {labels[state]}
@@ -1735,12 +1787,14 @@ function ToolActionResolution({
 }
 
 function RequestToolActionCard({
+  footerSlot,
   interaction,
   state,
   onAcceptInteraction,
   onRejectInteraction,
   externalReferences,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestConfirmationInteraction;
   state: ToolActionCardState;
   onAcceptInteraction?: IssueThreadInteractionCardProps["onAcceptInteraction"];
@@ -1753,6 +1807,12 @@ function RequestToolActionCard({
   const [actionError, setActionError] = useState<{ cause: unknown } | null>(null);
   const isPending = state === "pending";
   const variant = payload.risk === "destructive" ? "destructive" : "cta";
+  // This server projection is already redacted and bounded by the interaction schema.
+  const inspectableArguments = typeof payload.argumentsSummaryJson === "string"
+    && payload.argumentsSummaryJson.length <= 20_000 && payload.argumentsSummaryJson.trim().length > 0
+    && typeof payload.argumentsHash === "string" && payload.argumentsHash.length <= 255
+    && payload.argumentsHash.trim().length > 0;
+
 
   useEffect(() => {
     if (!isPending) setWorking(null);
@@ -1782,8 +1842,20 @@ function RequestToolActionCard({
           {!isPending ? <ToolActionResolution state={state} interaction={interaction} /> : null}
         </div>
       </div>
+      {isPending ? inspectableArguments ? (
+        <details className="mt-3">
+          <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
+            {translateUi("taskChatUi.compactInteraction.auditArguments")}
+          </summary>
+          <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words font-mono text-xs text-foreground">
+            {payload.argumentsSummaryJson}
+          </pre>
+          <p className="mt-1 break-all font-mono text-xs text-muted-foreground">{payload.argumentsHash}</p>
+        </details>
+      ) : <p className="mt-3 text-xs text-muted-foreground">{translateUi("interfaceUpdates.request_arguments_are_unavailable_f24c7770")}</p> : null}
       {isPending ? (
-        <div className="mt-3 flex justify-end gap-2">
+        <DecisionCardFooter leading={footerSlot} className="mt-3">
+          <div className={cn(!footerSlot && "mt-3", "flex flex-wrap items-center justify-end gap-2")}>
           <Button size="sm" variant="ghost" disabled={!onRejectInteraction || working !== null} onClick={() => void decide("reject")}>
             {working === "reject" ? t("decisionForms.interaction.declining") : t("decisionForms.interaction.decline")}
           </Button>
@@ -1806,8 +1878,9 @@ function RequestToolActionCard({
               </DropdownMenu>
             ) : null}
           </div>
-        </div>
-      ) : null}
+          </div>
+        </DecisionCardFooter>
+      ) : <DecisionCardFooter leading={footerSlot} className="mt-3" />}
       <InteractionActionError error={actionError} />
     </div>
   );
@@ -2005,12 +2078,14 @@ function SecretProposalResolution({
 }
 
 function RequestSecretProposalCard({
+  footerSlot,
   interaction,
   state,
   resolvedByLabel,
   onAcceptInteraction,
   onRejectInteraction,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestConfirmationInteraction;
   state: SecretProposalCardState;
   resolvedByLabel: string | null;
@@ -2069,6 +2144,7 @@ function RequestSecretProposalCard({
 
       {isPending ? (
         <ConfirmationActionRow
+          footerSlot={footerSlot}
           resetKey={`${interaction.id}:${interaction.status}`}
           approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.interaction.approveBind")}
           reviseLabel={t("decisionForms.interaction.addReason")}
@@ -2116,6 +2192,7 @@ function RequestSecretProposalCard({
  * carries a note. The revise text stays attached to the card.
  */
 function ConfirmationActionRow({
+  footerSlot,
   resetKey,
   approveLabel,
   reviseLabel,
@@ -2138,6 +2215,7 @@ function ConfirmationActionRow({
   revisePanelChildren,
   stackActionsOnMobile = false,
 }: {
+  footerSlot?: ReactNode;
   /** Changing this (interaction id + status) collapses the revise panel and
    * clears its draft text — the row is reused across interaction updates. */
   resetKey: string;
@@ -2171,6 +2249,7 @@ function ConfirmationActionRow({
 }) {
   const { t } = useTranslation();
   const [revising, setRevising] = useState(false);
+  const { enabled: coordinatorEnabled } = useCoordinatorWorkspaceEnabled();
   const [reason, setReason] = useState("");
   const [attempted, setAttempted] = useState(false);
 
@@ -2192,65 +2271,69 @@ function ConfirmationActionRow({
   return (
     <div className="space-y-3">
       {preparingApproval ? <InteractionPreparationNotice /> : null}
-      <div
-        data-testid="confirmation-actions"
-        data-mobile-layout={stackActionsOnMobile ? "stacked" : "inline"}
-        className={cn(
-          stackActionsOnMobile
-            ? "grid grid-cols-2 items-stretch gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end"
-            : "flex flex-wrap items-center justify-end gap-2",
-          primaryActionOnRight && "flex-row-reverse justify-start",
-        )}
-      >
-        <Button
-          size="sm"
-          variant={revising ? "outline" : approveVariant}
-          className={stackActionsOnMobile ? "col-span-2 w-full sm:col-auto sm:w-auto" : undefined}
-          disabled={!canApprove || working !== null || approveDisabled || preparingApproval}
-          onClick={onApprove}
-        >
-          {working === "accept" ? (
-            <>
-              <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-              {t("decisionForms.common.approving")}
-            </>
-          ) : (
-            approveLabel
+      <DecisionCardFooter leading={footerSlot} className={coordinatorEnabled && revising ? "hidden" : undefined}>
+        <div
+          data-testid="confirmation-actions"
+          hidden={coordinatorEnabled && revising}
+          data-mobile-layout={stackActionsOnMobile ? "stacked" : "inline"}
+          className={cn(
+            stackActionsOnMobile
+              ? "grid grid-cols-2 items-stretch gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end"
+              : "flex flex-wrap items-center justify-end gap-2",
+            primaryActionOnRight && "flex-row-reverse justify-start",
+            coordinatorEnabled && revising && "hidden",
           )}
-        </Button>
-        {allowRevise ? (
+        >
           <Button
             size="sm"
-            variant="outline"
-            className={stackActionsOnMobile ? "w-full sm:w-auto" : undefined}
-            disabled={!canReject || working !== null}
-            onClick={() => {
-              setAttempted(false);
-              setRevising((current) => !current);
-            }}
+            variant={revising ? "outline" : approveVariant}
+            className={stackActionsOnMobile ? "col-span-2 w-full sm:col-auto sm:w-auto" : undefined}
+            disabled={!canApprove || working !== null || approveDisabled || preparingApproval}
+            onClick={onApprove}
           >
-            {reviseLabel ?? t("decisionForms.common.revise")}
-          </Button>
-        ) : null}
-        {!rejectRequiresReason ? (
-          <Button
-            size="sm"
-            variant="ghost"
-            className={stackActionsOnMobile ? "w-full sm:w-auto" : undefined}
-            disabled={!canReject || working !== null}
-            onClick={() => onReject(undefined)}
-          >
-            {working === "reject" && !revising ? (
+            {working === "accept" ? (
               <>
                 <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                {t("decisionForms.common.rejecting")}
+                {translateUi("decisionForms.common.approving")}
               </>
             ) : (
-              rejectLabel
+              approveLabel
             )}
           </Button>
-        ) : null}
-      </div>
+          {allowRevise ? (
+            <Button
+              size="sm"
+              variant="outline"
+              className={stackActionsOnMobile ? "w-full sm:w-auto" : undefined}
+              disabled={!canReject || working !== null}
+              onClick={() => {
+                setAttempted(false);
+                setRevising((current) => !current);
+              }}
+            >
+              {reviseLabel ?? t("decisionForms.common.revise")}
+            </Button>
+          ) : null}
+          {!rejectRequiresReason ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              className={stackActionsOnMobile ? "w-full sm:w-auto" : undefined}
+              disabled={!canReject || working !== null}
+              onClick={() => onReject(undefined)}
+            >
+              {working === "reject" && !revising ? (
+                <>
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                  {translateUi("decisionForms.common.rejecting")}
+                </>
+              ) : (
+                rejectLabel
+              )}
+            </Button>
+          ) : null}
+        </div>
+      </DecisionCardFooter>
 
       {revising ? (
         <div className="space-y-3 rounded-sm border border-border/70 bg-background/75 p-3">
@@ -2265,37 +2348,39 @@ function ConfirmationActionRow({
             )}
           />
           {attempted && reasonMissing ? (
-            <p className="text-xs text-destructive">{t("decisionForms.interaction.revisionNoteRequired")}</p>
+            <p className="text-xs text-destructive">{translateUi("decisionForms.interaction.revisionNoteRequired")}</p>
           ) : null}
           {revisePanelChildren}
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={working !== null}
-              onClick={() => {
-                setRevising(false);
-                setAttempted(false);
-              }}
-            >
-              {t("decisionForms.common.cancel")}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={!canReject || working !== null}
-              onClick={submitRevision}
-            >
-              {working === "reject" ? (
-                <>
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                  {t("decisionForms.common.sending")}
-                </>
-              ) : (
-                t("decisionForms.interaction.sendRevision")
-              )}
-            </Button>
-          </div>
+          <DecisionCardFooter leading={footerSlot}>
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                disabled={working !== null}
+                onClick={() => {
+                  setRevising(false);
+                  setAttempted(false);
+                }}
+              >
+                {translateUi("decisionForms.common.cancel")}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={!canReject || working !== null}
+                onClick={submitRevision}
+              >
+                {working === "reject" ? (
+                  <>
+                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    {translateUi("decisionForms.common.sending")}
+                  </>
+                ) : (
+                  translateUi("decisionForms.interaction.sendRevision")
+                )}
+              </Button>
+            </div>
+          </DecisionCardFooter>
         </div>
       ) : null}
 
@@ -2378,6 +2463,7 @@ function connectionAuthorizationStatusClasses(
  * card never claims success the provider has not granted.
  */
 function RequestConnectionAuthorizationCard({
+  footerSlot,
   interaction,
   state,
   isAddressee,
@@ -2388,6 +2474,7 @@ function RequestConnectionAuthorizationCard({
   resolvedByAgent,
   onRejectInteraction,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestConfirmationInteraction;
   state: ConnectionAuthorizationCardState;
   /** Is the signed-in reader the person the server addressed? */
@@ -2455,33 +2542,35 @@ function RequestConnectionAuthorizationCard({
       {state === "actionable" ? (
         <div className="space-y-3">
           {href ? (
-            <div
-              data-testid="connection-authorization-actions"
-              className="grid grid-cols-1 items-stretch gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end"
-            >
-              <Button asChild size="sm" variant="cta" className="w-full sm:w-auto">
-                <a href={href} target="_blank" rel="noreferrer">
-                  {t("decisionForms.interaction.connectProvider", { provider: providerName })}
-                  <ArrowUpRight className="ml-1.5 h-3.5 w-3.5" />
-                </a>
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="w-full sm:w-auto"
-                disabled={!onRejectInteraction || working}
-                onClick={() => void handleNotNow()}
+            <DecisionCardFooter leading={footerSlot}>
+              <div
+                data-testid="connection-authorization-actions"
+                className="grid grid-cols-1 items-stretch gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end"
               >
-                {working ? (
-                  <>
-                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    {t("decisionForms.common.saving")}
-                  </>
-                ) : (
-                  t("decisionForms.common.notNow")
-                )}
-              </Button>
-            </div>
+                <Button asChild size="sm" variant="cta" className="w-full sm:w-auto">
+                  <a href={href} target="_blank" rel="noreferrer">
+                    {translateUi("interfaceUpdates.connect_1a2303ed")} {providerName}
+                    <ArrowUpRight className="ml-1.5 h-3.5 w-3.5" />
+                  </a>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="w-full sm:w-auto"
+                  disabled={!onRejectInteraction || working}
+                  onClick={() => void handleNotNow()}
+                >
+                  {working ? (
+                    <>
+                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      {translateUi("decisionForms.common.saving")}
+                    </>
+                  ) : (
+                    translateUi("decisionForms.common.notNow")
+                  )}
+                </Button>
+              </div>
+            </DecisionCardFooter>
           ) : (
             // A pending card with no usable target is a server-side gap, not an
             // invitation to reuse an old URL.
@@ -2558,7 +2647,9 @@ function ConnectionAuthorizationStatusLine({
 }
 
 function RequestConfirmationCard({
+  footerSlot,
   interaction,
+  compact = false,
   isPlan = false,
   primaryActionOnRight = false,
   onAcceptInteraction,
@@ -2566,7 +2657,9 @@ function RequestConfirmationCard({
   onUploadImage,
   externalReferences,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestConfirmationInteraction;
+  compact?: boolean;
   isPlan?: boolean;
   primaryActionOnRight?: boolean;
   onAcceptInteraction?: (
@@ -2661,12 +2754,22 @@ function RequestConfirmationCard({
   return (
     <div className="space-y-4">
       {interaction.status === "pending" ? (
-        <div className="space-y-3 rounded-sm border border-border/70 bg-background/75 p-4">
-          <div className="text-sm leading-6 text-foreground">
-            {interaction.payload.prompt}
+        <div className={compact ? "space-y-3" : "space-y-3 rounded-sm border border-border/70 bg-background/75 p-4"}>
+          <div data-decision-prompt={compact ? true : undefined} className={compact ? "text-lg font-medium leading-relaxed text-foreground" : "text-sm leading-6 text-foreground"}>
+            <MarkdownBody className={compact ? "text-lg" : undefined} externalReferences={externalReferences} mediaMode="reference">
+              {interaction.payload.prompt}
+            </MarkdownBody>
           </div>
           {interaction.payload.detailsMarkdown ? (
-            <div className="border-t border-border/60 pt-3 text-sm">
+            compact ? <details className="group/confirmation-details">
+              <summary className="flex cursor-pointer list-none items-center gap-1 rounded-sm text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <ChevronRight aria-hidden className="h-3.5 w-3.5 transition-transform group-open/confirmation-details:rotate-90 motion-reduce:transition-none" />
+                {translateUi("interfaceUpdates.details_45989de4")}
+              </summary>
+              <div className="mt-2 rounded-sm bg-muted/40 px-2.5 py-2 text-sm text-muted-foreground">
+                <MarkdownBody externalReferences={externalReferences}>{interaction.payload.detailsMarkdown}</MarkdownBody>
+              </div>
+            </details> : <div className="border-t border-border/60 pt-3 text-sm">
               <MarkdownBody externalReferences={externalReferences}>{interaction.payload.detailsMarkdown}</MarkdownBody>
             </div>
           ) : null}
@@ -2679,6 +2782,7 @@ function RequestConfirmationCard({
 
       {interaction.status === "pending" ? (
         <ConfirmationActionRow
+          footerSlot={footerSlot}
           resetKey={`${interaction.id}:${interaction.status}`}
           approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.common.approve")}
           rejectLabel={t("decisionForms.common.reject")}
@@ -2891,12 +2995,14 @@ function CheckboxOptionRow({
 }
 
 function RequestCheckboxConfirmationCard({
+  footerSlot,
   interaction,
   primaryActionOnRight = false,
   onAcceptInteraction,
   onRejectInteraction,
   externalReferences,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestCheckboxConfirmationInteraction;
   primaryActionOnRight?: boolean;
   onAcceptInteraction?: (
@@ -3030,7 +3136,9 @@ function RequestCheckboxConfirmationCard({
         {/* Show each piece of state once: a connection-authorization prompt is
             the same sentence as the card title, so repeating it here is noise. */}
         {interaction.payload.prompt === interaction.title ? null : (
-          <div className="text-sm leading-6 text-foreground">{interaction.payload.prompt}</div>
+          <MarkdownBody className="text-sm leading-6 text-foreground" externalReferences={externalReferences} mediaMode="reference">
+            {interaction.payload.prompt}
+          </MarkdownBody>
         )}
         {interaction.payload.detailsMarkdown ? (
           <div className="border-t border-border/60 pt-3 text-sm">
@@ -3095,6 +3203,7 @@ function RequestCheckboxConfirmationCard({
         ) : null}
 
         <ConfirmationActionRow
+          footerSlot={footerSlot}
           resetKey={`${interaction.id}:${interaction.status}`}
           approveLabel={interaction.payload.acceptLabel ?? t("decisionForms.common.approve")}
           rejectLabel={interaction.payload.rejectLabel ?? t("decisionForms.common.reject")}
@@ -3157,11 +3266,11 @@ function VerdictConsequenceChip({ verdict }: { verdict: RequestItemVerdictValue 
   );
 }
 
-function ItemVerdictDeepLink({ item }: { item: RequestItemVerdictsItem }) {
+function ItemVerdictDeepLink({ item, interaction }: { item: RequestItemVerdictsItem; interaction: RequestItemVerdictsInteraction }) {
   const { t } = useTranslation();
-  const href = item.href ? normalizeRequestConfirmationTargetHref(item.href) : null;
+  const href = itemVerdictHref(item, interaction);
   if (!href) return null;
-  const isInternal = href.startsWith("/") || href.startsWith("#");
+  const isInternal = !href.startsWith("/api/") && (href.startsWith("/") || href.startsWith("#"));
   const className =
     "inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
   const label = (
@@ -3242,10 +3351,12 @@ interface VerdictDraft {
 }
 
 function RequestItemVerdictsCard({
+  footerSlot,
   interaction,
   onSubmitInteractionVerdicts,
   externalReferences,
 }: {
+  footerSlot?: ReactNode;
   interaction: RequestItemVerdictsInteraction;
   onSubmitInteractionVerdicts?: (
     interaction: RequestItemVerdictsInteraction,
@@ -3431,7 +3542,7 @@ function RequestItemVerdictsCard({
                 <div className="min-w-0 flex-1 basis-64">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-sm font-medium leading-5 text-foreground">{item.label}</span>
-                    <ItemVerdictDeepLink item={item} />
+                    <ItemVerdictDeepLink item={item} interaction={interaction} />
                   </div>
                   {item.description ? (
                     <p className="mt-0.5 text-sm leading-5 text-muted-foreground">{item.description}</p>
@@ -3517,44 +3628,46 @@ function RequestItemVerdictsCard({
 
       {/* Pinned batch bar (S1/S2) — only while items remain actionable */}
       {!isTerminal && progress.pendingItemIds.length > 0 ? (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-          <div className="text-xs text-muted-foreground">
-            {draftCount > 0
-              ? t("decisionForms.interaction.draftVerdicts", { count: draftCount })
-              : t("decisionForms.interaction.markVerdicts")}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {allowBulkApprove ? (
+        <DecisionCardFooter leading={footerSlot}>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
+            <div className="text-xs text-muted-foreground">
+              {draftCount > 0
+                ? t("decisionForms.interaction.draftVerdicts", { count: draftCount })
+                : t("decisionForms.interaction.markVerdicts")}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {allowBulkApprove ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={working || progress.pendingItemIds.length === 0}
+                  onClick={handleApproveAll}
+                >
+                  <ThumbsUp className="h-4 w-4" aria-hidden />
+                  {translateUi("decisionForms.interaction.approveAll")}
+                </Button>
+              ) : null}
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
-                disabled={working || progress.pendingItemIds.length === 0}
-                onClick={handleApproveAll}
+                variant="default"
+                aria-disabled={!canApply}
+                disabled={!hasDrafts}
+                onClick={() => void handleApply()}
               >
-                <ThumbsUp className="h-4 w-4" aria-hidden />
-                {t("decisionForms.interaction.approveAll")}
+                {working ? (
+                  <>
+                    <Loader2 className="h-4 w-4 motion-safe:animate-spin" aria-hidden />
+                    {translateUi("decisionForms.interaction.applying")}
+                  </>
+                ) : (
+                  applyLabel
+                )}
               </Button>
-            ) : null}
-            <Button
-              type="button"
-              size="sm"
-              variant="default"
-              aria-disabled={!canApply}
-              disabled={!hasDrafts}
-              onClick={() => void handleApply()}
-            >
-              {working ? (
-                <>
-                  <Loader2 className="h-4 w-4 motion-safe:animate-spin" aria-hidden />
-                  {t("decisionForms.interaction.applying")}
-                </>
-              ) : (
-                applyLabel
-              )}
-            </Button>
+            </div>
           </div>
-        </div>
+        </DecisionCardFooter>
       ) : null}
 
       <InteractionActionError error={actionError} />
@@ -3604,6 +3717,8 @@ function VerdictProgressBadge({
 
 export function IssueThreadInteractionCard({
   interaction,
+  presentationVariant = "default",
+  footerSlot,
   agentMap,
   currentUserId,
   userLabelMap,
@@ -3617,6 +3732,8 @@ export function IssueThreadInteractionCard({
   externalReferences,
 }: IssueThreadInteractionCardProps) {
   const { t } = useTranslation();
+  const { enabled: coordinatorEnabled } = useCoordinatorWorkspaceEnabled();
+  const compactDecision = presentationVariant === "coordinator-decision";
   // Single enforcement point (PAP-424, plan from PAP-420; extended by PAP-437):
   // a card that should never be drawn — a degenerate `ask_user_questions`
   // (placeholder junk like the onboarding `Test / A` card, no genuine question)
@@ -3730,10 +3847,22 @@ export function IssueThreadInteractionCard({
     creatorLabel: createdByLabel,
     addresseeLabel,
   }, t);
+  if (coordinatorEnabled && !compactDecision && interaction.kind === "suggest_tasks") {
+    return <InteractionAudienceContext.Provider value={audience}>
+      <CoordinatorTaskCommitment interaction={interaction}>
+        <div className="p-4 space-y-3">
+          {interaction.status === "pending" ? <InteractionAudienceLine audience={audience} /> : null}
+          <SuggestTasksCard interaction={interaction} agentMap={agentMap} currentUserId={currentUserId}
+            userLabelMap={userLabelMap} onAcceptInteraction={onAcceptInteraction} onRejectInteraction={onRejectInteraction} />
+        </div>
+      </CoordinatorTaskCommitment>
+    </InteractionAudienceContext.Provider>;
+  }
   if (interaction.kind === "connection_intent" && interaction.payload.accessRequest) {
     return (
       <div id={`interaction-${interaction.id}`}>
         <ConnectionIntentInteractionBody
+          footerSlot={footerSlot}
           interaction={interaction}
           currentUserId={currentUserId}
           addresseeLabel={addresseeLabel ?? t("decisionForms.common.addressedPerson")}
@@ -3745,6 +3874,7 @@ export function IssueThreadInteractionCard({
     return (
       <InteractionAudienceContext.Provider value={audience}>
         <RequestToolActionCard
+          footerSlot={footerSlot}
           interaction={interaction}
           state={toolActionState}
           onAcceptInteraction={onAcceptInteraction}
@@ -3763,12 +3893,27 @@ export function IssueThreadInteractionCard({
           ? activeStyles.label
           : statusLabel(interaction.status, t);
 
+  // The decision surface already names its source task. The actionable prompt
+  // carries the heading; keep only distinct context, not a second task title.
+  const bodyNamesDecision = interaction.kind === "ask_user_questions"
+    || (interaction.kind === "request_confirmation" && !connectionAuthorization && !isSecretProposal);
+  const bodyContext = interaction.kind === "ask_user_questions"
+    ? [interaction.payload.questionSet?.description, ...interaction.payload.questions.flatMap(question => [question.prompt, question.helpText])]
+    : interaction.kind === "request_confirmation" ? [interaction.payload.prompt, interaction.payload.detailsMarkdown] : [];
+  const summaryIsRepeated = bodyContext.some(text => text?.trim() === interaction.summary?.trim());
+  const addressedElsewhere = Boolean(interaction.addresseeAgentId
+    || (interaction.addresseeUserId && interaction.addresseeUserId !== currentUserId));
+
   return (
     // Every nested subcard resolves the same interaction, so they all explain a
     // denial with the same audience the header states (PAP-17287).
     <InteractionAudienceContext.Provider value={audience}>
-      <div className={cn("rounded-lg border p-5 shadow-none", styles.shell)}>
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <div data-presentation={presentationVariant} className={compactDecision ? "coordinator-decision-content space-y-4" : cn("rounded-lg border p-5 shadow-none", styles.shell)}>
+        {compactDecision ? <>
+          {!bodyNamesDecision && interaction.title ? <h2 className="text-lg font-medium">{interaction.title}</h2> : null}
+          {interaction.summary && !summaryIsRepeated && !connectionAuthorization && interaction.kind !== "connection_intent" ? <p className="text-sm text-muted-foreground">{interaction.summary}</p> : null}
+          {interaction.status === "pending" ? <div className={addressedElsewhere ? undefined : "sr-only"}><InteractionAudienceLine audience={audience} variant="compact" /></div> : null}
+        </> : <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1 basis-64">
             <div className="flex flex-wrap items-center gap-2">
               <span
@@ -3867,11 +4012,12 @@ export function IssueThreadInteractionCard({
               {t("decisionForms.interaction.createdAt", { date: formatDateTime(interaction.createdAt) })}
             </TooltipContent>
           </Tooltip>
-        </div>
+        </div>}
 
-        <div className="mt-5">
+        <div className={compactDecision ? undefined : "mt-5"}>
           {interaction.kind === "suggest_tasks" ? (
             <SuggestTasksCard
+              footerSlot={footerSlot}
               interaction={interaction}
               agentMap={agentMap}
               currentUserId={currentUserId}
@@ -3881,13 +4027,16 @@ export function IssueThreadInteractionCard({
             />
           ) : interaction.kind === "ask_user_questions" ? (
             <AskUserQuestionsCard
+              footerSlot={footerSlot}
               interaction={interaction}
+              compact={compactDecision}
               onSubmitInteractionAnswers={onSubmitInteractionAnswers}
               onCancelInteraction={onCancelInteraction}
               externalReferences={externalReferences}
             />
           ) : interaction.kind === "request_checkbox_confirmation" ? (
             <RequestCheckboxConfirmationCard
+              footerSlot={footerSlot}
               interaction={interaction}
               primaryActionOnRight={primaryActionOnRight}
               onAcceptInteraction={onAcceptInteraction}
@@ -3898,6 +4047,7 @@ export function IssueThreadInteractionCard({
             && interaction.kind === "request_confirmation"
             && connectionAuthorizationState ? (
             <RequestConnectionAuthorizationCard
+              footerSlot={footerSlot}
               interaction={interaction}
               state={connectionAuthorizationState}
               isAddressee={isConnectionAddressee}
@@ -3910,6 +4060,7 @@ export function IssueThreadInteractionCard({
             />
           ) : isSecretProposal && interaction.kind === "request_confirmation" && secretProposalState ? (
             <RequestSecretProposalCard
+              footerSlot={footerSlot}
               interaction={interaction}
               state={secretProposalState}
               resolvedByLabel={resolvedByLabel}
@@ -3918,6 +4069,7 @@ export function IssueThreadInteractionCard({
             />
           ) : interaction.kind === "connection_intent" ? (
             <ConnectionIntentInteractionBody
+              footerSlot={footerSlot}
               interaction={interaction}
               currentUserId={currentUserId}
               addresseeLabel={addresseeLabel ?? t("decisionForms.common.addressedPerson")}
@@ -3925,13 +4077,16 @@ export function IssueThreadInteractionCard({
             />
           ) : interaction.kind === "request_item_verdicts" ? (
             <RequestItemVerdictsCard
+              footerSlot={footerSlot}
               interaction={interaction}
               onSubmitInteractionVerdicts={onSubmitInteractionVerdicts}
               externalReferences={externalReferences}
             />
           ) : (
             <RequestConfirmationCard
+              footerSlot={footerSlot}
               interaction={interaction}
+              compact={compactDecision}
               isPlan={isPlan}
               primaryActionOnRight={primaryActionOnRight}
               onAcceptInteraction={onAcceptInteraction}
@@ -3941,6 +4096,8 @@ export function IssueThreadInteractionCard({
             />
           )}
         </div>
+
+        {footerSlot && ((interaction.status !== "pending" && interaction.kind !== "connection_intent") || (connectionAuthorization && connectionAuthorizationState !== "actionable")) ? <DecisionCardFooter leading={footerSlot} /> : null}
 
         {adminOutcome === "withdrawn" ? (
           <div

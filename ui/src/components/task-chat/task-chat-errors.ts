@@ -1,4 +1,6 @@
 import type { TFunction } from "i18next";
+import { ApiError } from "@/api/client";
+import { describeError, isTransientError } from "@/api/errors";
 import { i18n } from "@/i18n";
 
 export type TaskChatErrorCode = "uploadNoUrl" | "attachmentRemoved" | "uploadFailed" | "fileTypeUnsupported" | "createFailed" | "goalConversation" | "goalAttachments" | "goalUnsupported" | "goalAgentRequired" | "goalActionFailed" | "skipFailed" | "stopFailed" | "goalSelectAgent" | "goalNoGoal" | "goalAddObjective" | "taskUnavailable" | "queueNotEditable" | "questionClosed" | "questionCancelUnavailable" | "savedQuestionRequired" | "runtimeIdentityMissing" | "permissionFormUnsupported" | "skipUnavailable" | "queueReorderUnavailable" | "steeringUnavailable" | "discardUnavailable" | "runtimeRequestFailed";
@@ -44,5 +46,6 @@ export class TaskChatUiError extends Error {
 
 export function formatTaskChatError(cause: unknown, fallback: TaskChatErrorCode, t: TFunction = i18n.getFixedT("en")): string {
   if (cause instanceof TaskChatUiError) return taskChatErrorText(cause.code, t);
+  if (cause instanceof ApiError || isTransientError(cause)) return describeError(cause, {}, t).body;
   return cause instanceof Error ? cause.message : taskChatErrorText(fallback, t);
 }

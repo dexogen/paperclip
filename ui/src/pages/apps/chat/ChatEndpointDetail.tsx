@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { ownAppDisplayText, renderAppDisplayText, type AppDisplayText, renderAppError } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
@@ -10,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { agentAvatarUrl } from "@/lib/agent-avatar-url";
 import { resolveAgentAppearance } from "@paperclipai/shared";
 import { SlackTestMessageButton } from "./SlackTestMessageButton";
+import { slackConversationUrl } from "./slack/conversation-url";
+import { useAccountIdentity } from "@/api/companies-query";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { SlackSetupAdvanced } from "./SlackAppDetails";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -65,12 +69,14 @@ import {
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { AppLogo } from "../AppLogo";
 import { StatusBadge } from "@/components/StatusBadge";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { useToast } from "@/context/ToastContext";
 import { formatDateTime } from "@/lib/utils";
 import { queryKeys } from "@/lib/queryKeys";
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { Link, Navigate, useLocation, useNavigate, useParams } from "@/lib/router";
+import { describeError } from "@/api/errors";
 
 const tabs = ["settings", "access", "reviews", "conversations", "activity"] as const;
 type ChatTab = (typeof tabs)[number];
@@ -236,7 +242,9 @@ export function connectionHealthPresentation(
 }
 
 export function ChatEndpointDetail() {
+  useUiTranslation();
   useFullAppsTranslation();
+  const { userId, settled: identitySettled } = useAccountIdentity();
   const { endpointId = "", tab: routeTab, reviewId } = useParams<{
     endpointId: string;
     tab?: string;
@@ -260,6 +268,7 @@ export function ChatEndpointDetail() {
         : false,
   });
   const endpoint = endpointQuery.data;
+  const endpointView = useQueryView(endpointQuery);
   const avatarAgent = useQuery({
     queryKey: queryKeys.agents.detail(endpoint?.assignedAgentId ?? ""),
     queryFn: () => agentsApi.get(endpoint!.assignedAgentId),
@@ -291,17 +300,20 @@ export function ChatEndpointDetail() {
 
   if (!activeTab)
     return <Navigate replace to={`/apps/chat/${endpointId}/settings`} />;
-  if (endpointQuery.isLoading)
+  if (endpointQuery.isLoading || endpointView.kind === "reconnecting")
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("grokSetupUi.connection.loading")}</div>
     );
-  if (endpointQuery.isError || !endpoint)
+  if (endpointView.kind === "error" || !endpoint)
     return (
-      <div className="space-y-3">
-        <p className="text-sm text-destructive">{fullAppsT("fullApps.this_chat_connection_could_not_be_loaded_89a518")}</p>
-        <Button variant="outline" onClick={() => endpointQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
-      </div>
+      <QueryErrorState
+        size="page"
+        error={endpointQuery.error}
+        action="load the connection"
+        onRetry={endpointView.retry}
+        retrying={endpointView.isFetching}
+      />
     );
   if (endpoint.provider === "agentmail" && activeTab === "settings")
     return <div className="space-y-7"><EmailEndpointSettings key={endpoint.id} endpointId={endpoint.id} companyId={endpoint.companyId} assignedAgentName={endpoint.assignedAgentName} /><EndpointExecutionDefaults endpoint={endpoint} /></div>;
@@ -345,6 +357,7 @@ export function ChatEndpointDetail() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {endpoint.provider === "speko" && <a href="https://platform.speko.ai/agents" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary underline">{fullAppsT("fullApps.open_speko_4f1e19")}<ExternalLink className="size-3.5" aria-hidden="true" /></a>}
+          {endpoint.provider === "slack" && !setupIncomplete && <Button asChild variant="outline"><a href={slackConversationUrl(endpoint, identitySettled ? userId : null)} target="_blank" rel="noopener noreferrer">{translateUi("fullApps.open_slack_4ddf02")} <ExternalLink className="size-4" /></a></Button>}
           {slackUrl && <Button asChild variant="outline"><a href={slackUrl} target="_blank" rel="noopener noreferrer">{fullAppsT("fullApps.open_slack_configuration_a2dfb2")}<ExternalLink className="size-4" /></a></Button>}
           {setupIncomplete ? (
             <Button
@@ -421,6 +434,7 @@ function EndpointExecutionDefaults({ endpoint }: { endpoint: ChatEndpoint }) {
 }
 
 function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const connection = useQuery({
     queryKey: queryKeys.tools.connection(endpoint.connectionId ?? ""),
@@ -431,19 +445,26 @@ function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
     queryKey: queryKeys.agents.list(endpoint.companyId),
     queryFn: () => agentsApi.list(endpoint.companyId),
   });
-  if (!endpoint.connectionId || agents.isError || connection.isError) return (
-    <div className="space-y-3">
-      <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.connection_access_could_not_be_loaded_953390")}</p>
-      <Button variant="outline" onClick={() => { void agents.refetch(); void connection.refetch(); }}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
-    </div>
+  const agentsView = useQueryView(agents);
+  const connectionView = useQueryView(connection);
+  if (!endpoint.connectionId) return <p role="alert" className="text-sm text-destructive">{translateUi("fullApps.connection_access_could_not_be_loaded_953390")}</p>;
+  if (agentsView.kind === "error" || connectionView.kind === "error") return (
+    <QueryErrorState
+      error={agentsView.kind === "error" ? agents.error : connection.error}
+      action="load connection access"
+      onRetry={() => { agentsView.retry(); connectionView.retry(); }}
+      retrying={agents.isFetching || connection.isFetching}
+    />
   );
-  if (agents.isPending || connection.isPending) return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullStaleReview.loadingAccess")}</p>;
-  const sourceId = connection.data.config?.credentialConnectionId;
+  if (agents.isPending || connection.isPending || agentsView.kind === "reconnecting" || connectionView.kind === "reconnecting") {
+    return <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullStaleReview.loadingAccess")}</p>;
+  }
+  const sourceId = connection.data?.config?.credentialConnectionId;
   const credentialId = typeof sourceId === "string" ? sourceId : endpoint.connectionId;
   return <section className="max-w-3xl space-y-4">
     <h2 className="text-lg font-semibold">{fullAppsT("instanceAccess.access")}</h2>
     {credentialId !== endpoint.connectionId && <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.these_settings_apply_to_the_saved_agentmail_account__ccb5f8")}</p>}
-    <EmailConnectionAccess key={credentialId} companyId={endpoint.companyId} connectionId={credentialId} agents={agents.data} />
+    <EmailConnectionAccess key={credentialId} companyId={endpoint.companyId} connectionId={credentialId} agents={agents.data ?? []} />
   </section>;
 }
 
@@ -454,6 +475,7 @@ function Settings({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
@@ -463,6 +485,7 @@ function Settings({
     enabled: endpoint.provider !== "speko",
     ...(endpoint.provider === "slack" ? liveChatQueryOptions : {}),
   });
+  const resourcesView = useQueryView(resourcesQuery);
   const saveResources = useMutation({
     mutationFn: (resource: Pick<ChatEndpointResource, "id" | "enabled">) =>
       chatEndpointsApi.updateResources(endpointId, [resource]),
@@ -474,7 +497,7 @@ function Settings({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_update_destination_f23b38"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -488,7 +511,7 @@ function Settings({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_update_settings_522457"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -517,9 +540,9 @@ function Settings({
         </div>
       )}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold">{endpoint.provider === "slack" ? fullAppsT("fullApps.allowed_channels_e57f04") : fullAppsT("fullApps.destinations_72eb63")}</h3>
-        {resourcesQuery.isError ? <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_channels_b48a52")}<button className="underline" onClick={() => void resourcesQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</button></p> : resourcesQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_destinations_b78eda")}</p>
+        <h3 className="text-sm font-semibold">{endpoint.provider === "slack" ? translateUi("fullApps.allowed_channels_e57f04") : translateUi("fullApps.destinations_72eb63")}</h3>
+        {resourcesView.kind === "error" ? <QueryErrorState size="inline" error={resourcesQuery.error} action={endpoint.provider === "slack" ? "load the channels" : "load the destinations"} onRetry={resourcesView.retry} retrying={resourcesView.isFetching} /> : resourcesQuery.isLoading || resourcesView.kind === "reconnecting" ? (
+          <p className="text-sm text-muted-foreground">{translateUi("fullApps.loading_destinations_b78eda")}</p>
         ) : destinationResources.length === 0 && endpoint.provider !== "slack" ? (
           <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_destinations_yet_42dc9c")}</p>
         ) : (
@@ -662,6 +685,7 @@ function Access({
   allowUnlinked: boolean;
   endpoint: ChatEndpoint;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
@@ -675,6 +699,7 @@ function Access({
     queryFn: () => chatEndpointsApi.listPrincipals(endpointId),
     refetchInterval: 5000,
   });
+  const linksView = useQueryView(linksQuery);
   const updatePolicy = useMutation({
     mutationFn: (value: boolean) =>
       chatEndpointsApi.update(endpointId, { allowUnlinkedPeople: value }),
@@ -683,7 +708,7 @@ function Access({
         queryKeys.chatEndpoints.detail(endpointId),
         next,
       ),
-    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_update_access_147970"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"), tone: "error" }),
+    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_update_access_147970"), body: describeError(error).body, tone: "error" }),
   });
   const createIntent = useMutation({
     mutationFn: (principalId: string) =>
@@ -697,7 +722,7 @@ function Access({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_create_identity_link_619b3f"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -705,7 +730,7 @@ function Access({
     mutationFn: (principalId: string) =>
       chatEndpointsApi.revokeLink(endpointId, principalId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.chatEndpoints.principals(endpointId) }),
-    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_disconnect_account_3bb513"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"), tone: "error" }),
+    onError: (error) => pushToast({ title: fullAppsT("fullApps.couldn_t_disconnect_account_3bb513"), body: describeError(error).body, tone: "error" }),
   });
   const links = linksQuery.data ?? [];
   return (
@@ -770,8 +795,10 @@ function Access({
         </div>
       )}
       <div className="space-y-2">
-        {linksQuery.isPending ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_people_af6fe5")}</p> : linksQuery.isError ? <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_load_people_199d60")}<button className="underline" onClick={() => void linksQuery.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</button></p> : links.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">{fullAppsT("fullApps.no_linked_accounts_yet_invite_someone_to_connect_922a59")}</p>
+        {linksQuery.isPending || linksView.kind === "reconnecting" ? <p role="status" className="text-sm text-muted-foreground">{translateUi("fullApps.loading_people_af6fe5")}</p> : linksView.kind === "error" ? <QueryErrorState size="inline" error={linksQuery.error} action="load people" onRetry={linksView.retry} retrying={linksView.isFetching} /> : links.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+            {translateUi("fullApps.no_linked_accounts_yet_invite_someone_to_connect_922a59")}
+          </p>
         ) : (
           <div role="list" aria-label={fullAppsT("taskProperties.share.people")} className="divide-y divide-border border-y border-border">
             {links.map((link) => (
@@ -832,19 +859,18 @@ function Conversations({
   endpointId: string;
   provider: ChatProvider;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const query = useQuery({
     queryKey: queryKeys.chatEndpoints.conversations(endpointId),
     queryFn: () => chatEndpointsApi.listConversations(endpointId),
     ...liveChatQueryOptions,
   });
+  const view = useQueryView(query);
   return (
     <section className="space-y-4">
-      {query.isPending ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_conversations_1eec1d")}</p> : query.isError ? (
-        <div className="space-y-3">
-          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.conversations_could_not_be_loaded_c96fc9")}</p>
-          <Button variant="outline" onClick={() => void query.refetch()}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
-        </div>
+      {query.isPending || view.kind === "reconnecting" ? <p role="status" className="text-sm text-muted-foreground">{translateUi("fullApps.loading_conversations_1eec1d")}</p> : view.kind === "error" ? (
+        <QueryErrorState error={query.error} action="load the conversations" onRetry={view.retry} retrying={view.isFetching} />
       ) : <ChatConversationList rows={query.data ?? []} provider={provider} />}
     </section>
   );
@@ -857,6 +883,7 @@ function Activity({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -874,6 +901,8 @@ function Activity({
     ...liveChatQueryOptions,
     refetchInterval: cursor ? false : liveChatQueryOptions.refetchInterval,
   });
+  const view = useQueryView(query);
+  const activityLoaded = view.kind === "ready" || view.kind === "stale";
   const calls = useSpekoCallHistory(endpoint.companyId, endpointId, endpoint.provider === "speko" && !cursor);
   const replay = useMutation({
     mutationFn: (item: ChatActivityItem) =>
@@ -892,7 +921,7 @@ function Activity({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_replay_activity_e3eb4a"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -951,7 +980,7 @@ function Activity({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_resolve_activity_fce6f0"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -983,7 +1012,7 @@ function Activity({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_update_connection_a99084"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.try_again_a0c2cc"),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -991,7 +1020,7 @@ function Activity({
   // Calls use their own caller-authorized API and appear once in recent activity.
   // Older connection-event pages retain the existing cursor contract.
   const activityEntries = [
-    ...(!query.isError ? rows.map(item => ({ kind: "connection" as const, id: `connection:${item.id}`, createdAt: item.createdAt, item })) : []),
+    ...(view.kind !== "error" ? rows.map(item => ({ kind: "connection" as const, id: `connection:${item.id}`, createdAt: item.createdAt, item })) : []),
     ...(!cursor && !calls.error ? calls.entries.map(entry => ({ kind: "call" as const, id: `call:${entry.session.id}`, createdAt: entry.session.createdAt, entry })) : []),
     ...(!cursor && !calls.incomingError ? calls.unapprovedCalls.map(call => ({ kind: "unapproved_call" as const, id: `unapproved:${call.id}`, createdAt: call.createdAt, call })) : []),
   ].sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id));
@@ -1159,18 +1188,18 @@ function Activity({
           </p>
         )}
         <div className="divide-y divide-border border-y border-border">
-          {(query.isLoading || calls.loading) && (
+          {(query.isLoading || view.kind === "reconnecting" || calls.loading) && (
             <div className="flex items-center gap-2 py-5 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_activity_a389c3")}</div>
           )}
-          {query.isError && (
-            <div className="flex flex-wrap items-center justify-between gap-3 py-4">
-              <p className="text-sm text-destructive" role="alert">{fullAppsT("fullApps.connection_activity_could_not_be_loaded_65047e")}</p>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => query.refetch()}
-              >{fullAppsT("fullApps.try_again_d8b839")}</Button>
+          {view.kind === "error" && (
+            <div className="py-4">
+              <QueryErrorState
+                error={query.error}
+                action="load the connection activity"
+                onRetry={view.retry}
+                retrying={view.isFetching}
+              />
             </div>
           )}
           {endpoint.provider === "speko" && !cursor && [
@@ -1238,7 +1267,7 @@ function Activity({
               </div>
             );
           })}
-          {!query.isLoading && !query.isError && !calls.loading && !calls.error && !calls.incomingError && activityEntries.length === 0 && (
+          {activityLoaded && !calls.loading && !calls.error && !calls.incomingError && activityEntries.length === 0 && (
             <p className="py-5 text-sm text-muted-foreground">{fullAppsT("fullApps.no_connection_activity_yet_3ba50f")}</p>
           )}
         </div>
@@ -1247,7 +1276,7 @@ function Activity({
         <span className="text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.page_c170ca" components={{ part1: <>{cursors.length}</> }} /></span>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" disabled={cursors.length === 1 || query.isFetching} onClick={() => setCursors((pages) => pages.slice(0, -1))}>{fullAppsT("fullApps.previous_a57b08")}</Button>
-          <Button size="sm" variant="outline" disabled={!query.data?.nextCursor || query.isFetching || query.isError} onClick={() => { if (query.data?.nextCursor) setCursors((pages) => [...pages, query.data.nextCursor!]); }}>{fullAppsT("fullApps.next_1ff57a")}</Button>
+          <Button size="sm" variant="outline" disabled={!query.data?.nextCursor || query.isFetching || view.kind === "error"} onClick={() => { if (query.data?.nextCursor) setCursors((pages) => [...pages, query.data.nextCursor!]); }}>{fullAppsT("fullApps.next_1ff57a")}</Button>
         </div>
       </nav>
       <AlertDialog
