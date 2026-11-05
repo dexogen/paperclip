@@ -47,6 +47,39 @@ process.exit(0);
 }
 
 describe("pi_local execute", () => {
+  it("delivers large task input through stdin without an oversized argument", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-pi-large-input-"));
+    const commandPath = path.join(root, "pi");
+    const capturePath = path.join(root, "input.json");
+    const task = "evidence ".repeat(25000) + "END";
+    await fs.writeFile(commandPath, `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv.includes("--list-models")) {
+  console.log("provider  model\\nopenai    fixture");
+  process.exit(0);
+}
+const input = fs.readFileSync(0, "utf8");
+fs.writeFileSync(${JSON.stringify(capturePath)}, JSON.stringify({ input, args: process.argv.slice(2) }));
+console.log(JSON.stringify({ type: "agent_end", messages: [] }));
+`, { mode: 0o755 });
+    try {
+      await execute({
+        runId: "run-large-input",
+        agent: { id: "agent-1", companyId: "company-1", name: "Worker", adapterType: "pi_local", adapterConfig: {} },
+        runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+        config: { command: commandPath, cwd: root, model: "openai/fixture" },
+        context: { paperclipTaskMarkdownAssignment: task },
+        onLog: async () => {},
+      });
+      const captured = JSON.parse(await fs.readFile(capturePath, "utf8")) as { input: string; args: string[] };
+      expect(captured.input.includes(task)).toBe(true);
+      expect(captured.args.every((arg) => Buffer.byteLength(arg) < 131072)).toBe(true);
+      expect(captured.args).not.toContain(captured.input);
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+
   it("fails the run when Pi exhausts automatic retries despite exiting 0", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-pi-execute-"));
     const workspace = path.join(root, "workspace");
