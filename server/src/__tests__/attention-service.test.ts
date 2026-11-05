@@ -258,11 +258,12 @@ describeEmbeddedPostgres("attention service", () => {
       const issueId = await insertIssue({ companyId, identifier: `DSP-${index + 1}`, title: "Literal <title>", status: "in_progress" });
       const id = randomUUID();
       ids.push(id);
+      const payload = { version: 1 as const, prompt: "Literal prompt", ...fixture.labels,
+        display: { label: { code: "verb.approve" }, title: { code: "title.join.agent" } } };
       await db.insert(issueThreadInteractions).values({
         id, companyId, issueId, kind: "request_confirmation", status: "pending",
         title: index === 0 ? null : "Confirmation requested",
-        payload: { version: 1, prompt: "Literal prompt", ...fixture.labels,
-          display: { label: { code: "verb.approve" }, title: { code: "title.join.agent" } } },
+        payload,
       });
     }
     const feed = await attentionService(db).list(companyId, { userId: "board-user" });
@@ -336,14 +337,15 @@ describeEmbeddedPostgres("attention service", () => {
     for (const hasDocument of [false, true]) {
       const index = Number(hasDocument);
       const issueId = await insertIssue({ companyId, identifier: `DSPN-${index + 1}`, title: "Literal <b>Plan</b> {{title}}", status: "in_progress" });
+      const revisionId = randomUUID();
       if (hasDocument) {
         const documentId = randomUUID();
-        await db.insert(documents).values({ id: documentId, companyId, title: "Plan", format: "markdown", latestBody: "Literal body", latestRevisionId: randomUUID(), latestRevisionNumber: 1 });
+        await db.insert(documents).values({ id: documentId, companyId, title: "Plan", format: "markdown", latestBody: "Literal body", latestRevisionId: revisionId, latestRevisionNumber: 1 });
         await db.insert(issueDocuments).values({ companyId, issueId, documentId, key: "plan" });
       }
       const id = randomUUID();
       interactionIds.push(id);
-      await db.insert(issueThreadInteractions).values({ id, companyId, issueId, kind: "request_confirmation", status: "pending", title: "Custom interaction", payload: { version: 1, prompt: "Prompt", target: { type: "issue_document", key: "plan" } } });
+      await db.insert(issueThreadInteractions).values({ id, companyId, issueId, kind: "request_confirmation", status: "pending", title: "Custom interaction", payload: { version: 1, prompt: "Prompt", target: { type: "issue_document", issueId, key: "plan", revisionId } } });
     }
     const feed = await attentionService(db).list(companyId, { userId: "board-user" });
     for (const [index, id] of interactionIds.entries()) {
@@ -376,7 +378,7 @@ describeEmbeddedPostgres("attention service", () => {
       });
       await db.insert(issueThreadInteractions).values({
         id: randomUUID(), companyId: fixture.companyId, issueId, kind: "request_confirmation", status: "pending",
-        payload: { version: 1, prompt: "Plan", target: { type: "issue_document", key: "plan" } },
+        payload: { version: 1, prompt: "Plan", target: { type: "issue_document", issueId, key: "plan", revisionId: randomUUID() } },
       });
     }
     const actor = { type: "board" as const, source: "session" as const, userId: "non-member", companyIds: [companyId], isInstanceAdmin: false };
