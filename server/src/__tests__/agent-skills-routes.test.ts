@@ -1173,11 +1173,15 @@ describe("agent skill routes", () => {
           adapterType: "claude_local",
         }),
         expect.objectContaining({
-          "AGENTS.md": "You are an agent in a Paperclip company.\n",
+          "AGENTS.md": expect.stringContaining("You are an agent in a Paperclip company.\n"),
         }),
         { entryFile: "AGENTS.md", replaceExisting: false },
       );
     });
+    const content = mockAgentInstructionsService.materializeManagedBundle.mock.calls[0]?.[1]?.["AGENTS.md"];
+    expect(content).toContain("rtk git status");
+    expect(content).toContain("rtk proxy <команда>");
+    expect(content?.match(/<!-- rtk-policy:begin -->/g)).toHaveLength(1);
   });
 
   it("seeds the chief-of-staff persona for the onboarding first agent", async () => {

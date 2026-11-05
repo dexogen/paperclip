@@ -142,6 +142,11 @@ it, finish independent useful work and report the failed write accurately.
 Use `npx paperclipai` for content-bearing CLI arguments, never `pnpm paperclipai`,
 which re-evaluates arguments through a shell. See [runtime context](references/runtime-context.md).
 
+For authorized shell commands, use installed RTK wrappers such as `rtk git diff`
+and `rtk rg`; use `rtk proxy` for exact JSON and unsupported commands. Do not wrap
+an already wrapped command. If RTK is absent on a remote host, request bounded
+output and continue. RTK never grants shell access or relaxes isolation.
+
 ## Generated Artifacts and Work Products
 
 Upload requested deliverable files and register their work products before

@@ -47,8 +47,8 @@ The skill/reference inventory and eval cases are the only normative behavior sou
 | skill:skills/paperclip/SKILL.md:authentication-and-checkout:37 | control_plane_owned | skills/paperclip/SKILL.md:37 |
 | skill:skills/paperclip/SKILL.md:do-the-work-with-one-clear-owner:62 | optional_agent_tool | skills/paperclip/SKILL.md:62 |
 | skill:skills/paperclip/SKILL.md:complete-and-verify-the-write:104 | optional_agent_tool | skills/paperclip/SKILL.md:104 |
-| skill:skills/paperclip/SKILL.md:generated-artifacts-and-work-products:145 | always_agent_tool | skills/paperclip/SKILL.md:145 |
-| skill:skills/paperclip/SKILL.md:load-only-the-relevant-reference:158 | optional_agent_tool | skills/paperclip/SKILL.md:158 |
+| skill:skills/paperclip/SKILL.md:generated-artifacts-and-work-products:150 | always_agent_tool | skills/paperclip/SKILL.md:150 |
+| skill:skills/paperclip/SKILL.md:load-only-the-relevant-reference:163 | optional_agent_tool | skills/paperclip/SKILL.md:163 |
 | skill:skills/paperclip/references/api-reference.md:paperclip-api-reference:1 | optional_agent_tool | skills/paperclip/references/api-reference.md:1 |
 | skill:skills/paperclip/references/api-reference.md:response-schemas:9 | optional_agent_tool | skills/paperclip/references/api-reference.md:9 |
 | skill:skills/paperclip/references/api-reference.md:agent-record-get-api-agents-me-or-get-api-agents-agentid:11 | optional_agent_tool | skills/paperclip/references/api-reference.md:11 |

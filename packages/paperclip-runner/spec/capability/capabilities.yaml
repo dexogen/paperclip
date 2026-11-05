@@ -98,9 +98,9 @@
       ]
     },
     {
-      "id": "skill:skills/paperclip/SKILL.md:generated-artifacts-and-work-products:145",
+      "id": "skill:skills/paperclip/SKILL.md:generated-artifacts-and-work-products:150",
       "sourceKind": "skill_heading",
-      "sourceAnchor": "skills/paperclip/SKILL.md:145",
+      "sourceAnchor": "skills/paperclip/SKILL.md:150",
       "title": "Generated Artifacts and Work Products",
       "expectedSemantics": "Skill guidance headed “Generated Artifacts and Work Products”.",
       "primaryDisposition": "always_agent_tool",
@@ -109,13 +109,13 @@
         "control_plane_invariant"
       ],
       "evidenceIds": [
-        "skill:skills/paperclip/SKILL.md:145"
+        "skill:skills/paperclip/SKILL.md:150"
       ]
     },
     {
-      "id": "skill:skills/paperclip/SKILL.md:load-only-the-relevant-reference:158",
+      "id": "skill:skills/paperclip/SKILL.md:load-only-the-relevant-reference:163",
       "sourceKind": "skill_heading",
-      "sourceAnchor": "skills/paperclip/SKILL.md:158",
+      "sourceAnchor": "skills/paperclip/SKILL.md:163",
       "title": "Load only the relevant reference",
       "expectedSemantics": "Skill guidance headed “Load only the relevant reference”.",
       "primaryDisposition": "optional_agent_tool",
@@ -124,7 +124,7 @@
         "control_plane_invariant"
       ],
       "evidenceIds": [
-        "skill:skills/paperclip/SKILL.md:158"
+        "skill:skills/paperclip/SKILL.md:163"
       ]
     },
     {
