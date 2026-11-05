@@ -932,9 +932,12 @@ describe("paperclipai CLI invocation safety", () => {
 
   it("documents the safe form in the agent-facing skill", () => {
     const skill = read("skills/paperclip/SKILL.md");
-    expect(skill).toContain("CLI safety");
     expect(skill).toContain("npx paperclipai");
-    expect(skill).toContain("Do not use `pnpm paperclipai`");
+    expect(skill).toContain("never `pnpm paperclipai`");
+    expect(skill).toContain("(references/runtime-context.md)");
+    const reference = read("skills/paperclip/references/runtime-context.md");
+    expect(reference).toContain("CLI safety");
+    expect(reference).toContain("Do not use `pnpm paperclipai`");
   });
 
   // ── Backslash line continuation ──────────────────────────────────────────
