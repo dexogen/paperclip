@@ -210,6 +210,15 @@ jobs:
           - mode: serialized
             shard_index: 1
             shard_count: 2
+          - mode: chat
+            shard_index: 0
+            shard_count: 3
+          - mode: chat
+            shard_index: 1
+            shard_count: 3
+          - mode: chat
+            shard_index: 2
+            shard_count: 3
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -264,7 +273,9 @@ jobs:
             # Exercise the large-payload PRP contract with the production build.
             # Other native process fixtures retain their existing debug defaults.
             export PAPERCLIP_PRP_TEST_RUNNER_BINARY="$GITHUB_WORKSPACE/packages/paperclip-runner/runner/target/release/paperclip-runnerd"
-            pnpm test:run:general -- --group general-server --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
+            pnpm test:run:general -- --group general-server-without-chat --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
+          elif [ "$TEST_MODE" = chat ]; then
+            pnpm test:run:general -- --group general-chat --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
           else
             pnpm test:run:serialized -- --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT"
           fi

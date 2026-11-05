@@ -257,13 +257,26 @@ test('fork CI partitions the full test inventory without omissions or duplicate 
   const plan = (args) => JSON.parse(execFileSync(process.execPath,
     [join(root, 'scripts/run-vitest-stable.mjs'), ...args, '--dry-run'],
     { cwd: root, encoding: 'utf8', env: { ...process.env, GITHUB_WORKFLOW: 'Fork verification' } }));
+  const matrix = workflow.jobs.tests.strategy.matrix.include;
+  const chatShards = matrix.filter(item => item.mode === 'chat').flatMap(item =>
+    plan(['--mode', 'general', '--group', 'general-chat', '--shard-index', String(item.shard_index),
+      '--shard-count', String(item.shard_count)]).chatVitestShards);
+  assert.ok(chatShards.length > 0, 'chat integration must have an explicit lane');
+  assert.ok(chatShards.every(shard => shard.count === chatShards.length));
+  assert.deepEqual(chatShards.map(shard => shard.index).sort((a, b) => a - b),
+    Array.from({ length: chatShards.length }, (_, index) => index), 'every chat partition must run once');
+  const runPartitions = workflow.jobs.tests.steps.find(step => step.name === 'Run complete server partition').run;
+  assert.match(runPartitions, /--group general-server-without-chat/);
+  assert.match(runPartitions, /--group general-chat/);
   for (const mode of ['general', 'serialized']) {
     const group = mode === 'general' ? ['--group', 'general-server'] : [];
+    const selectedGroup = mode === 'general' ? ['--group', 'general-server-without-chat'] : [];
     const property = mode === 'general' ? 'selectedGeneralServerSuites' : 'selectedSerializedSuites';
     const all = plan(['--mode', mode, ...group, '--shard-index', '0', '--shard-count', '1'])[property];
-    const selected = workflow.jobs.tests.strategy.matrix.include.filter((item) => item.mode === mode)
-      .flatMap((item) => plan(['--mode', mode, ...group,
+    const selected = matrix.filter((item) => item.mode === mode)
+      .flatMap((item) => plan(['--mode', mode, ...selectedGroup,
         '--shard-index', String(item.shard_index), '--shard-count', String(item.shard_count)])[property]);
+    if (mode === 'general') selected.push('server/src/__tests__/chat-channels.integration.test.ts');
     assert.equal(new Set(selected).size, selected.length, `${mode} suite must run once`);
     assert.deepEqual([...selected].sort(), [...all].sort(), `${mode} coverage must match the full planner`);
     if (mode === 'general') {

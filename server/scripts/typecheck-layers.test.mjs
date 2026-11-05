@@ -750,8 +750,9 @@ describe("typecheckTestProjects", () => {
   });
 
   it("covers every project under tests/, or names why it does not", () => {
-    // This project imports one small server file, so it stays one small program.
-    const singlePrograms = ["tests/runner-acceptance"];
+    // Runner acceptance imports one small server file. The localization browser
+    // harness has its own standalone typecheck in the fork verification workflow.
+    const singlePrograms = ["tests/runner-acceptance", "tests/localization"];
     const testsRoot = path.join(serverRoot, "..", "tests");
     const projects = readdirSync(testsRoot, { withFileTypes: true })
       .filter((entry) => entry.isDirectory() && existsSync(path.join(testsRoot, entry.name, "tsconfig.json")))
