@@ -12521,14 +12521,32 @@ export function issueRoutes(
         res.status(404).json({ error: "Project not found" });
         return;
       }
-      const projectDecision = await access.decide({
-        actor: req.actor,
-        action: "project:read",
-        resource: { type: "project", companyId, projectId: selectedProject.id },
-      });
-      if (!projectDecision.allowed) {
-        res.status(404).json({ error: "Project not found" });
-        return;
+      const bridgeScope = isTaskBridgeKeyActor(req) ? req.actor.keyScope : null;
+      const projectInBridgeScope = bridgeScope?.kind === "task_bridge" && (
+        bridgeScope.projectId === selectedProject.id ||
+        bridgeScope.projectIds?.includes(selectedProject.id) === true
+      );
+      if (projectInBridgeScope) {
+        const [visibleProject] = await db.select({ id: projects.id }).from(projects)
+          .where(and(
+            eq(projects.id, selectedProject.id),
+            eq(projects.companyId, companyId),
+            await projectReadSqlCondition(db, req.actor),
+          )).limit(1);
+        if (!visibleProject) {
+          res.status(404).json({ error: "Project not found" });
+          return;
+        }
+      } else {
+        const projectDecision = await access.decide({
+          actor: req.actor,
+          action: "project:read",
+          resource: { type: "project", companyId, projectId: selectedProject.id },
+        });
+        if (!projectDecision.allowed) {
+          res.status(404).json({ error: "Project not found" });
+          return;
+        }
       }
     }
       const createAssignmentScope = {
