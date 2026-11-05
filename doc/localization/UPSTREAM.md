@@ -96,7 +96,7 @@ and [GitHub Packages workflow authentication](https://docs.github.com/en/package
   for stable updates under the repository owner's standing authorization; see
   [MAINTENANCE.md](MAINTENANCE.md). That scheduler does not automatically merge or
   deploy master updates.
-- **Fork verification** runs on pushes to `russian` and `codex/upstream-sync`, plus
+- **Fork verification** runs on pushes to `russian`, the sync branch, and `fix/**`, plus
   an explicit dispatch bound to an expected full SHA. It checks the branch commit,
   not a synthetic PR merge commit. There are no workflow-level path filters.
   Require its **Fork integration verified** check from an eligible push run on the
@@ -185,7 +185,8 @@ it exists only while an update is being reviewed. Historical stacked PRs remain
 review evidence, not permanent maintenance branches. PR creation, retargeting and
 base-branch changes do not start verification. Before merge, integrate the current
 `russian` base into the candidate with a merge commit and require the eligible push
-check on its resulting exact head SHA. Other temporary branch names need an explicit
+check on its resulting exact head SHA. Neutral `fix/**` branches receive the same
+push verification for focused fixes. Other temporary branch names need an explicit
 workflow change before they can receive automatic verification. Accept the upstream
 tracking state only when the reviewed integration lands on `russian`.
 

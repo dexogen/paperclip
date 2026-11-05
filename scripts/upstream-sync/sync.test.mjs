@@ -198,7 +198,7 @@ test('fork verification targets russian and publication preserves stable/manual-
   const { load } = createRequire(uiRequire.resolve('@mdxeditor/editor'))('js-yaml');
   const workflow = load(readFileSync(join(root, '.github/workflows/localization-check.yml'), 'utf8'));
   assert.deepEqual(Object.keys(workflow.on).sort(), ['push', 'workflow_dispatch']);
-  assert.deepEqual(workflow.on.push.branches, ['russian', 'codex/upstream-sync']);
+  assert.deepEqual(workflow.on.push.branches, ['russian', 'codex/upstream-sync', 'fix/**']);
   assert.equal(Object.hasOwn(workflow.on, 'pull_request'), false);
   assert.deepEqual(workflow.on.workflow_dispatch.inputs.expected_sha, {
     description: 'Exact branch commit to verify; a moved branch fails closed', required: true, type: 'string',
