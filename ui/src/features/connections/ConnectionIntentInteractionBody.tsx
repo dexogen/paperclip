@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { AppDisplayError, renderAppError } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
@@ -15,6 +17,8 @@ import { AgentMailIntentSetup } from "./AgentMailIntentSetup";
 import { connectionIntentsApi } from "@/api/connection-intents";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { agentsApi } from "@/api/agents";
+import { describeError } from "@/api/errors";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { AiConnectionCredentialStep } from "@/components/ai-connections/AiConnectionCredentialStep";
 import { AiProviderSetup } from "@/components/ai-connections/AiProviderSetup";
 import { defaultAiConnectionName } from "@/components/ai-connections/model";
@@ -35,7 +39,10 @@ import {
   type ConnectionSetupFlowProps,
 } from "./ConnectionSetupFlow";
 
+import { DecisionCardFooter } from "@/components/DecisionCardFooter";
+
 export interface ConnectionIntentInteractionBodyProps {
+  footerSlot?: ReactNode;
   interaction: ConnectionIntentInteraction;
   currentUserId?: string | null;
   addresseeLabel: string;
@@ -44,12 +51,14 @@ export interface ConnectionIntentInteractionBodyProps {
 }
 
 export function ConnectionIntentInteractionBody({
+  footerSlot,
   interaction,
   currentUserId,
   addresseeLabel,
   addresseeName,
   renderSetup,
 }: ConnectionIntentInteractionBodyProps) {
+  useUiTranslation();
   useFullAppsTranslation();
   const [open, setOpen] = useState(false);
   const [adoptionConnectionId, setAdoptionConnectionId] = useState<string | null>(null);
@@ -67,6 +76,7 @@ export function ConnectionIntentInteractionBody({
   );
   const isPending = interaction.status === "pending";
   const isAi = interaction.payload.purpose === "ai";
+  const isChatHandoff = Boolean(interaction.payload.savedSetup);
   const provider = isAi ? aiProviderSchema.safeParse(interaction.payload.serviceSlug).data : undefined;
   const serviceName = provider ? AI_CONNECTION_CAPABILITIES[provider].name : interaction.payload.serviceName;
   const isEmail = interaction.payload.purpose === "channel" && interaction.payload.serviceSlug === "agentmail";
@@ -124,6 +134,10 @@ export function ConnectionIntentInteractionBody({
     enabled: isAddressee && isPending,
     refetchInterval: isPending && (open || interaction.payload.phase === "authorizing") ? 2_000 : false,
   });
+  const setupView = useQueryView(setupQuery);
+  // Loaded options stay usable through a transient refetch failure (`stale`);
+  // only a real failure, or nothing loaded yet, shows the setup placeholder.
+  const setupUnavailable = setupQuery.isLoading || setupView.kind === "reconnecting" || setupView.kind === "error";
 
   useEffect(() => {
     const current = setupQuery.data?.interaction;
@@ -297,6 +311,7 @@ export function ConnectionIntentInteractionBody({
             {status.body ? <p className="mt-1 text-sm text-muted-foreground">{status.body}</p> : null}
           </div>
         </div>
+        <DecisionCardFooter leading={footerSlot} className="mt-4" />
       </div>
     );
   }
@@ -319,6 +334,7 @@ export function ConnectionIntentInteractionBody({
             {!accessRequest ? <p className="mt-1 text-sm text-muted-foreground">{fullAppsT("fullApps.only_the_addressed_person_can_choose_an_identity_or__5729ea")}</p> : null}
           </div>
         </div>
+        <DecisionCardFooter leading={footerSlot} className="mt-4" />
       </div>
     );
   }
@@ -343,14 +359,17 @@ export function ConnectionIntentInteractionBody({
             <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? fullAppsT("fullApps.allowed_1bb201") : fullAppsT("fullApps.ask_first_4a9e8c")}</span>
           </li>)}
         </ul>
-        {setupQuery.isError || completeMutation.isError || declineMutation.isError ? <p role="alert" className="text-sm text-destructive">{(completeMutation.error ?? declineMutation.error ?? setupQuery.error)?.message ?? fullAppsT("fullApps.couldn_t_update_this_access_request_180397")}</p> : null}
-        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.connection_manager_required_35fdb9")}</p> : null}
-        <div className="flex items-center justify-between gap-2">
-          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>{fullAppsT("decisionForms.common.notNow")}</Button>
+        {setupView.kind === "error" ? <QueryErrorState size="inline" error={setupQuery.error} action="load this access request" onRetry={setupView.retry} retrying={setupView.isFetching} /> : null}
+        {completeMutation.error || declineMutation.error ? <p role="alert" className="text-sm text-destructive">{describeError(completeMutation.error ?? declineMutation.error).body}</p> : null}
+        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">{translateUi("fullApps.connection_manager_required_35fdb9")}</p> : null}
+        <DecisionCardFooter leading={footerSlot}>
+          <div className={footerSlot ? "flex flex-wrap items-center justify-end gap-2" : "flex items-center justify-between gap-2"}>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>{translateUi("decisionForms.common.notNow")}</Button>
           <Button size="sm" disabled={busy || !setupQuery.data?.canGrantAccess} onClick={() => completeMutation.mutate(accessRequest.connectionId)}>
             {completeMutation.isPending ? fullAppsT("fullApps.granting_access_376bec") : fullAppsT("fullApps.grant_access_869376")}
           </Button>
-        </div>
+          </div>
+        </DecisionCardFooter>
       </div>
     </div>;
   }
@@ -360,22 +379,18 @@ export function ConnectionIntentInteractionBody({
   const readyForAdoption = setupQuery.data?.aiConnectionRequiresAdoption
     ? adoptionConnectionId ?? (selectedReady ? repair.connection.id : null)
     : null;
-  const setupContent = setupQuery.isLoading ? (
+  const setupContent = setupQuery.isLoading || setupView.kind === "reconnecting" ? (
                 <div className="flex min-h-48 items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_connection_options_f7bb47")}</div>
-              ) : setupQuery.isError ? (
-                <div className="py-8 text-center">
-                  <p className="font-medium text-foreground">{fullAppsT("githubSetupUi.loadFailedTitle")}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {setupQuery.error instanceof Error
-                      ? renderAppError(setupQuery.error)
-                      : fullAppsT("projectConfigUi.membership.retry")}
-                  </p>
-                  <Button
-                    className="mt-4"
-                    variant="outline"
-                    onClick={() => setupQuery.refetch()}
-                  >{fullAppsT("fullApps.try_again_d8b839")}</Button>
+                  <Loader2 className="h-4 w-4 animate-spin" /> {translateUi("fullApps.loading_connection_options_f7bb47")}
+                </div>
+              ) : setupView.kind === "error" ? (
+                <div className="py-6">
+                  <QueryErrorState
+                    error={setupQuery.error}
+                    action="load connection setup"
+                    onRetry={setupView.retry}
+                    retrying={setupView.isFetching}
+                  />
                 </div>
               ) : setupProps ? (
                 renderSetup ? renderSetup(setupProps) : <ConnectionSetupFlow {...setupProps} />
@@ -383,7 +398,7 @@ export function ConnectionIntentInteractionBody({
   const aiConnection = setupQuery.data?.aiConnection;
   const needsOwnAiConnection = isAi && (!repair || setupQuery.data?.aiConnectionRequiresAdoption) && aiConnection?.mode === "responsible_user";
   const aiProviderName = aiConnection ? AI_CONNECTION_CAPABILITIES[aiConnection.provider].name : serviceName;
-  const inlineContent = setupQuery.isLoading || setupQuery.isError ? setupContent
+  const inlineContent = setupUnavailable ? setupContent
     : readyForAdoption ? <div className="space-y-3">
         <p className="text-sm"><FullAppsTrans i18nKey="fullApps.use_your_connection_for_this_replaces_the_agent_s_ex_3d9172" components={{ part1: <>{aiProviderName}</>, part2: <>{interaction.payload.requestingAgentName}</> }} /></p>
         <Button disabled={adoptMutation.isPending} onClick={() => adoptMutation.mutate(readyForAdoption)}>
@@ -457,9 +472,10 @@ export function ConnectionIntentInteractionBody({
                 : needsOwnAiConnection
                 ? fullAppsT("fullApps.needs_your_own_ai_connection_connect_here_and_the_ta_805258", { value1: interaction.payload.requestingAgentName })
                 : interaction.payload.purpose === "ai"
-                ? fullAppsT("fullApps.this_task_can_t_run_until_the_agent_has_a_valid_ai_c_fe44fc")
-                : isEmail ? fullAppsT("fullApps.connect_agentmail_to_create_an_email_address_for_thi_a69d55")
-                : fullAppsT("fullApps.connect_your_identity_or_reuse_an_eligible_connectio_ce8bf3")}
+                ? translateUi("fullApps.this_task_can_t_run_until_the_agent_has_a_valid_ai_c_fe44fc")
+                : isChatHandoff ? translateUi("interfaceUpdates.complete_the_human_sign_in_step_in_the_saved_setup_a86f87f3")
+                : isEmail ? translateUi("fullApps.connect_agentmail_to_create_an_email_address_for_thi_a69d55")
+                : translateUi("fullApps.connect_your_identity_or_reuse_an_eligible_connectio_ce8bf3")}
             </p>
           </div>
         </div>
@@ -469,7 +485,10 @@ export function ConnectionIntentInteractionBody({
             <RotateCcw className="h-4 w-4" />{fullAppsT("fullApps.authorization_didn_t_finish_your_previous_choices_ar_acbb9d")}</p>
         ) : null}
 
-        {isEmail ? setupQuery.isLoading || setupQuery.isError ? <>
+        {isChatHandoff ? <div className="mt-4 flex items-center justify-between gap-2">
+          <Button type="button" variant="ghost" disabled={declineMutation.isPending} onClick={() => declineMutation.mutate()}>{translateUi("decisionForms.common.notNow")}</Button>
+          {setupQuery.data?.chatSetup ? <Button asChild><a href={setupQuery.data.chatSetup.path} target="_blank" rel="noopener noreferrer">{translateUi("interfaceUpdates.continue_authentication_08466a0c")}</a></Button> : setupContent}
+        </div> : isEmail ? setupUnavailable ? <>
           {setupContent}
           <Button type="button" variant="ghost" disabled={declineMutation.isPending} onClick={() => declineMutation.mutate()}>{fullAppsT("decisionForms.common.notNow")}</Button>
         </> : <AgentMailIntentSetup
@@ -481,70 +500,73 @@ export function ConnectionIntentInteractionBody({
           onComplete={async connectionId => { await completeMutation.mutateAsync(connectionId); }}
           onDecline={() => declineMutation.mutate()}
           declining={declineMutation.isPending}
-        /> : <div className="mt-4 flex flex-wrap justify-end gap-2">
-          {!isAi && <Button
-            type="button"
-            variant="ghost"
-            disabled={declineMutation.isPending || completeMutation.isPending || authorizing}
-            onClick={() => declineMutation.mutate()}
-          >{fullAppsT("decisionForms.common.notNow")}</Button>}
-          {isAi ? <Button type="button" disabled={completeMutation.isPending || adoptMutation.isPending || selectAiAccountMutation.isPending} onClick={() => open ? closeSetup() : setOpen(true)}>
-            <Plug className="h-4 w-4" />{open ? fullAppsT("fullApps.close_setup_ef0e47") : readyForAdoption ? fullAppsT("fullApps.continue_setup_c5702c") : needsOwnAiConnection ? fullAppsT("fullApps.connect_60c786", { value1: aiProviderName }) : fullAppsT("fullApps.fix_connection_5855b3")}
-          </Button> : <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button type="button">
-                {authorizing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Plug className="h-4 w-4" />
-                )}
-                {authorizing
-                  ? fullAppsT("fullApps.continue_setup_c5702c")
-                  : needsRetry
-                    ? fullAppsT("fullApps.try_again_d8b839")
-                    : setupQuery.data?.existingConnections.length ? fullAppsT("fullApps.connect_use_existing_77cbde") : fullAppsT("fullApps.connect_1a2303")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="max-h-(--sz-85vh) overflow-y-auto sm:max-w-3xl"
-              showCloseButton={false}
-              onCloseAutoFocus={(event) => {
-                event.preventDefault();
-                focusTargetRef.current?.focus();
-              }}
+        /> : <DecisionCardFooter leading={footerSlot} className="mt-4">
+          <div className={footerSlot ? "flex flex-wrap items-center justify-end gap-2" : "mt-4 flex flex-wrap justify-end gap-2"}>
+            {!isAi && <Button
+              type="button"
+              variant="ghost"
+              disabled={declineMutation.isPending || completeMutation.isPending || authorizing}
+              onClick={() => declineMutation.mutate()}
             >
-              <DialogHeader className="sr-only">
-                <DialogTitle><FullAppsTrans i18nKey="fullApps.connect_ef0d09" components={{ part1: <>{interaction.payload.serviceName}</> }} /></DialogTitle>
-                <DialogDescription>{fullAppsT("fullApps.complete_connection_setup_without_leaving_this_task_759ccd")}</DialogDescription>
-              </DialogHeader>
-              {setupContent}
-            </DialogContent>
-          </Dialog>}
-        </div>}
+              {translateUi("decisionForms.common.notNow")}
+            </Button>}
+            {isAi ? <Button type="button" disabled={completeMutation.isPending || adoptMutation.isPending || selectAiAccountMutation.isPending} onClick={() => open ? closeSetup() : setOpen(true)}>
+              <Plug className="h-4 w-4" />{open ? translateUi("fullApps.close_setup_ef0e47") : readyForAdoption ? translateUi("fullApps.continue_setup_c5702c") : needsOwnAiConnection ? translateUi("interfaceUpdates.connect_value_60c78691", { value1: (aiProviderName) }) : translateUi("fullApps.fix_connection_5855b3")}
+            </Button> : <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button type="button">
+                  {authorizing ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Plug className="h-4 w-4" />
+                  )}
+                  {authorizing
+                    ? translateUi("fullApps.continue_setup_c5702c")
+                    : needsRetry
+                      ? translateUi("fullApps.try_again_d8b839")
+                      : setupQuery.data?.existingConnections.length ? translateUi("fullApps.connect_use_existing_77cbde") : translateUi("fullApps.connect_1a2303")}
+                </Button>
+              </DialogTrigger>
+              <DialogContent
+                className="max-h-(--sz-85vh) overflow-y-auto sm:max-w-3xl"
+                showCloseButton={false}
+                onCloseAutoFocus={(event) => {
+                  event.preventDefault();
+                  focusTargetRef.current?.focus();
+                }}
+              >
+                <DialogHeader className="sr-only">
+                  <DialogTitle>
+                    {translateUi("fullApps.connect_1a2303")} {interaction.payload.serviceName}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {translateUi("fullApps.complete_connection_setup_without_leaving_this_task_759ccd")}
+                  </DialogDescription>
+                </DialogHeader>
+                {setupContent}
+              </DialogContent>
+            </Dialog>}
+          </div>
+        </DecisionCardFooter>}
+        {isEmail ? <DecisionCardFooter leading={footerSlot} className="mt-4" /> : null}
         {isAi && open ? <div className="mt-4 border-t border-border pt-4" data-testid="ai-connection-inline-repair">{inlineContent}</div> : null}
 
-        {(!isEmail && completeMutation.isError) ||
-        (selectAiAccountMutation.isError && selectAiAccountMutation.variables?.generation === generation) ||
-        adoptMutation.isError ||
-        declineMutation.isError ||
-        phaseMutation.isError ? (
+        {(!isEmail && completeMutation.error) ||
+        (selectAiAccountMutation.error && selectAiAccountMutation.variables?.generation === generation) ||
+        adoptMutation.error ||
+        declineMutation.error ||
+        phaseMutation.error ? (
           <p className="mt-3 text-sm text-destructive" role="alert">
-            {(completeMutation.error ??
-              selectAiAccountMutation.error ??
-              adoptMutation.error ??
-              declineMutation.error ??
-              phaseMutation.error) instanceof Error
-              ? (
-                  completeMutation.error ??
-                  selectAiAccountMutation.error ??
-                  adoptMutation.error ??
-                  declineMutation.error ??
-                  phaseMutation.error
-                )?.message
-              : fullAppsT("fullApps.couldn_t_update_this_connection_request_1a99d1")}
+            {describeError(
+              completeMutation.error ??
+                selectAiAccountMutation.error ??
+                adoptMutation.error ??
+                declineMutation.error ??
+                phaseMutation.error,
+            ).body}
           </p>
         ) : null}
-        {selectAiAccountMutation.isError && selectAiAccountMutation.variables?.generation === generation && (
+        {selectAiAccountMutation.error && selectAiAccountMutation.variables?.generation === generation && (
           <Button className="mt-3" onClick={() => selectAiAccountMutation.mutate(selectAiAccountMutation.variables!)}>{fullAppsT("fullApps.retry_using_this_connection_3aebb4")}</Button>
         )}
       </div>

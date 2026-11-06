@@ -7,6 +7,7 @@ import { authApi } from "@/api/auth";
 import { healthApi } from "@/api/health";
 import { chatEndpointsApi } from "@/api/chatEndpoints";
 import { Button } from "@/components/ui/button";
+import { useQueryView } from "@/components/QueryView";
 import { copyTextToClipboard } from "@/lib/clipboard";
 import { queryKeys } from "@/lib/queryKeys";
 
@@ -21,13 +22,16 @@ export function SlackIdentityStep({ endpointId, command, testStartedAt, onConnec
   const client = useQueryClient();
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
-  const session = useQuery({ queryKey: queryKeys.auth.session, queryFn: authApi.getSession, retry: false });
+  const session = useQuery({ queryKey: queryKeys.auth.session, queryFn: authApi.getSession });
+  const sessionView = useQueryView(session);
   const health = useQuery({ queryKey: queryKeys.health, queryFn: healthApi.get });
+  const healthView = useQueryView(health);
   const identities = useQuery({
     queryKey: queryKeys.chatEndpoints.principals(endpointId),
     queryFn: () => chatEndpointsApi.listPrincipals(endpointId),
     refetchInterval: 1_500,
   });
+  const identitiesView = useQueryView(identities);
   const local = health.data?.deploymentMode === "local_trusted";
   const userId = local ? "local-board" : session.data?.user.id;
   const userLabel = local ? fullAppsT("fullApps.local_board_fbc35f") : session.data?.user.name || session.data?.user.email;
@@ -60,7 +64,7 @@ export function SlackIdentityStep({ endpointId, command, testStartedAt, onConnec
       {copyError && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_copy_the_command_select_and_copy_it_above_e3ad57")}</p>}
       <p className="text-sm">
         <a href="https://app.slack.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{fullAppsT("fullApps.open_slack_4ddf02")}<ExternalLink className="inline size-3" /></a>{fullAppsT("fullApps.send_the_command_in_your_workspace_then_return_here_60046b")}</p>
-      {identities.isError ? (
+      {identitiesView.kind === "error" ? (
         <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_check_for_your_slack_account_we_ll_keep_try_a06f0b")}</p>
       ) : candidates.length === 0 ? (
         <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" />{fullAppsT("fullApps.waiting_for_your_connect_command_beec86")}</p>
@@ -85,8 +89,8 @@ export function SlackIdentityStep({ endpointId, command, testStartedAt, onConnec
           })}
         </div>
       )}
-      {!userId && !session.isPending && !health.isPending && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.sign_in_to_paperclip_to_link_your_slack_account_refr_2de043")}</p>}
-      {link.isError && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_link_your_account_check_that_you_are_a_memb_cc619f")}</p>}
+      {!userId && !session.isPending && !health.isPending && sessionView.kind !== "reconnecting" && healthView.kind !== "reconnecting" && <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.sign_in_to_paperclip_to_link_your_slack_account_refr_2de043")}</p>}
+      {link.error ? <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.couldn_t_link_your_account_check_that_you_are_a_memb_cc619f")}</p> : null}
       <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" className="text-muted-foreground" onClick={onSaveExit}>{fullAppsT("agentSetupUi.setup.saveExit")}</Button>
         {linkedToMe && <Button onClick={onConnected}>{fullAppsT("fullApps.continue_to_message_test_4e1133")}</Button>}

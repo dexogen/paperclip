@@ -12,6 +12,7 @@ import { shouldHideInteractionCard } from "@/lib/issue-thread-interactions";
 import { TaskChatCompactInteractionCard } from "./TaskChatCompactInteractionCard";
 import { TaskChatPlanPreviewCard } from "./TaskChatPlanPreviewCard";
 import type { TaskChatInteractionItem } from "./task-chat-model";
+import { useCoordinatorWorkspaceEnabled } from "@/hooks/useCoordinatorWorkspaceEnabled";
 
 type InteractionCardProps = Omit<
   ComponentProps<typeof IssueThreadInteractionCard>,
@@ -50,7 +51,13 @@ export function TaskChatInteractionCard({
 }: TaskChatInteractionCardProps) {
   const { t } = useTranslation();
   const onboardingTask = useOnboardingTask();
+  const { enabled: coordinatorEnabled } = useCoordinatorWorkspaceEnabled();
   const interaction = item.interaction;
+  if (coordinatorEnabled && interaction.kind === "suggest_tasks" && !shouldHideInteractionCard(interaction)) {
+    return <div id={`interaction-${interaction.id}`} data-testid="task-chat-interaction" className="w-full">
+      <TaskChatCompactInteractionCard interaction={interaction} presentation={presentation} draftKey={draftKey} {...cardProps} />
+    </div>;
+  }
   if (presentation === "timeline" && showUnansweredQuestion && !shouldHideInteractionCard(interaction) && interaction.kind === "ask_user_questions" && interaction.status === "pending") {
     const displayPayload = localizeOnboardingQuestion(interaction, onboardingTask, t);
     const prompt = displayPayload.questionSet?.questions[0]?.prompt ?? displayPayload.questions[0]?.prompt ?? interaction.title ?? t("taskChatUi.interaction.question");
@@ -152,26 +159,37 @@ export function TaskChatInteractionCard({
     interaction.payload.target.key === "plan";
   const resolvedPlanMatchesDocument =
     isResolvedPlanReview &&
+    interaction.kind === "request_confirmation" && interaction.payload.target?.type === "issue_document" &&
     planDocument != null &&
     (planDocument.latestRevisionId
       ? interaction.payload.target?.revisionId === planDocument.latestRevisionId
       : interaction.payload.target?.revisionNumber ===
         planDocument.latestRevisionNumber);
-  if (isResolvedPlanReview) {
-    if (resolvedPlanMatchesDocument && showPlanPreview && planDocument) {
-      return (
-        <div
-          id={`interaction-${interaction.id}`}
-          data-testid="task-chat-interaction"
-        >
+  if (isResolvedPlanReview && !coordinatorEnabled) {
+    // Keep the decision visible: the approved or sent-back plan stays as a
+    // card while it is current, and the receipt records who decided and why.
+    return (
+      <div
+        id={`interaction-${interaction.id}`}
+        className="w-full space-y-2"
+        data-testid="task-chat-interaction"
+      >
+        {resolvedPlanMatchesDocument && showPlanPreview && planDocument ? (
           <TaskChatPlanPreviewCard
             source={{ kind: "saved", document: planDocument }}
             testId="plan-review-preview"
           />
-        </div>
-      );
-    }
-    return null;
+        ) : null}
+        <TaskChatCompactInteractionCard
+          interaction={interaction}
+          planDocument={planDocument}
+          showPlanPreview={false}
+          presentation="timeline"
+          draftKey={draftKey}
+          {...cardProps}
+        />
+      </div>
+    );
   }
   if (presentation === "timeline" && interaction.status !== "pending") {
     return (

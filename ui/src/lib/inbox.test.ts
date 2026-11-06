@@ -795,6 +795,7 @@ describe("inbox helpers", () => {
           liveOnly: false,
           externalObjectStatuses: [],
           showAgentCreatedTasks: false,
+        routineTasksOnly: false,
         },
       }).map((issue) => issue.id),
     ).toEqual(["remote-match"]);
@@ -816,6 +817,7 @@ describe("inbox helpers", () => {
           liveOnly: false,
           externalObjectStatuses: [],
           showAgentCreatedTasks: false,
+        routineTasksOnly: false,
         },
       }),
     ).toEqual([]);
@@ -837,6 +839,7 @@ describe("inbox helpers", () => {
           liveOnly: false,
           externalObjectStatuses: [],
           showAgentCreatedTasks: false,
+        routineTasksOnly: false,
         },
       }),
     ).toEqual([]);
@@ -885,6 +888,7 @@ describe("inbox helpers", () => {
           liveOnly: false,
           externalObjectStatuses: ["failed"],
           showAgentCreatedTasks: false,
+        routineTasksOnly: false,
         },
         issueFilterContext: {
           externalObjectSummaryByIssueId: summaries,
@@ -981,6 +985,7 @@ describe("inbox helpers", () => {
         liveOnly: true,
         externalObjectStatuses: [],
         showAgentCreatedTasks: true,
+        routineTasksOnly: false,
       },
     });
     saveInboxFilterPreferences("company-2", {
@@ -997,6 +1002,7 @@ describe("inbox helpers", () => {
         liveOnly: false,
         externalObjectStatuses: [],
         showAgentCreatedTasks: false,
+        routineTasksOnly: false,
       },
     });
 
@@ -1014,6 +1020,7 @@ describe("inbox helpers", () => {
         liveOnly: true,
         externalObjectStatuses: [],
         showAgentCreatedTasks: true,
+        routineTasksOnly: false,
       },
     });
     expect(loadInboxFilterPreferences("company-2")).toEqual({
@@ -1030,6 +1037,7 @@ describe("inbox helpers", () => {
         liveOnly: false,
         externalObjectStatuses: [],
         showAgentCreatedTasks: false,
+        routineTasksOnly: false,
       },
     });
   });
@@ -1065,6 +1073,7 @@ describe("inbox helpers", () => {
         liveOnly: false,
         externalObjectStatuses: [],
         showAgentCreatedTasks: false,
+        routineTasksOnly: false,
       },
     });
   });

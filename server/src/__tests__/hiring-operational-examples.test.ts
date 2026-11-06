@@ -29,9 +29,11 @@ describe("published hiring and human-input examples", () => {
     for (const { body } of waits) expect(updateIssueSchema.safeParse(substituteIds(body))).toMatchObject({ success: true });
   });
 
-  it("includes a complete valid text-field recipe in the skill itself", () => {
+  it("links a complete valid text-field recipe from the skill", () => {
     const skill = readFileSync(new URL("../../../skills/paperclip/SKILL.md", import.meta.url), "utf8");
-    const section = skill.split('<a id="asking-for-human-input"></a>')[1]!;
+    expect(skill).toContain("(references/heartbeat-procedure.md#asking-for-human-input)");
+    const procedure = readFileSync(new URL("../../../skills/paperclip/references/heartbeat-procedure.md", import.meta.url), "utf8");
+    const section = procedure.split('<a id="asking-for-human-input"></a>')[1]!;
     const body = JSON.parse(section.match(/```json\n([\s\S]*?)\n```/)![1]);
     const normalized = createIssueThreadInteractionSchema.parse(substituteIds(body));
     expect(body).toMatchObject({ resolverPolicy: "human_only", continuationPolicy: "wake_assignee" });

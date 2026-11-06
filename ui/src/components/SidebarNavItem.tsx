@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { createContext, useContext, type ReactNode } from "react";
 import { NavLink } from "@/lib/router";
@@ -202,6 +203,7 @@ export function SidebarNavItem({
       )}
       {!rail && hasBadge && (
         <Badge variant="ghost"
+          aria-label={badgeLabel ? translateUi("interfaceUpdates.value_value_a9e9f2e4", { value1: (badge), value2: (badgeLabel) }) : undefined}
           className={cn(
             "ml-auto px-1.5 leading-none",
             badgeTone === "danger"

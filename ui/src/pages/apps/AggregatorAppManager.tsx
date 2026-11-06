@@ -9,6 +9,7 @@ import { toolsApi } from "@/api/tools";
 import { useAccountIdentity } from "@/api/companies-query";
 import { queryKeys } from "@/lib/queryKeys";
 import { Link } from "@/lib/router";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -38,6 +39,7 @@ function AccountObservations({ app, connection, onClose }: { app: AggregatorAppC
   const { userId, settled } = useAccountIdentity();
   const key = queryKeys.tools.aggregatorApps(connection.id, userId);
   const query = useQuery({ queryKey: key, enabled: settled, queryFn: () => toolsApi.listAggregatorApps(connection.id), refetchInterval: query => query.state.data?.sync.status === "syncing" ? 1500 : false });
+  const queryView = useQueryView(query);
   const snapshots = (settled ? query.data?.apps : undefined)?.filter(snapshot => snapshot.appSlug === app.slug) ?? [];
   const accounts = snapshots.flatMap(snapshot => snapshot.accounts.map(account => ({ account, snapshot })));
   const refresh = useMutation({ mutationFn: async () => { const result = await toolsApi.refreshAggregatorApps(connection.id, snapshots.map(snapshot => snapshot.toolkit)); queries.setQueryData(key, result); } });
@@ -45,8 +47,9 @@ function AccountObservations({ app, connection, onClose }: { app: AggregatorAppC
   const name = provider ? AGGREGATOR_NAMES[provider] : fullAppsT("fullApps.providerLabel");
   const managementUrl = provider ? aggregatorManagementUrl(provider, accounts[0]?.account.managementUrl ?? (typeof connection.config?.managementUrl === "string" ? connection.config?.managementUrl : null)) : null;
   return <>
-    {query.isError || refresh.isError || query.data?.sync.status === "error" ? <p role="alert" className="text-sm text-destructive"><FullAppsTrans i18nKey="fullApps.couldn_t_check_last_known_accounts_are_shown_c99840" components={{ part1: <>{name}</> }} /></p> : null}
-    {query.isLoading ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_accounts_2494bd")}</p> : accounts.length ? <div className="divide-y divide-border">
+    {queryView.kind === "error" ? <QueryErrorState error={query.error} action={`load ${name} accounts`} onRetry={queryView.retry} retrying={queryView.isFetching} /> : null}
+    {refresh.error || query.data?.sync.status === "error" ? <p role="alert" className="text-sm text-destructive"><FullAppsTrans i18nKey="fullApps.couldn_t_check_last_known_accounts_are_shown_c99840" components={{ part1: <>{name}</> }} /></p> : null}
+    {query.isLoading || queryView.kind === "reconnecting" ? <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_accounts_2494bd")}</p> : accounts.length ? <div className="divide-y divide-border">
       {accounts.map(({ account, snapshot }) => <div key={`${snapshot.toolkit}:${account.id}`} className="py-3">
         <p className="text-sm font-medium">{account.alias || fullAppsT("fullApps.account_44d1d1", { value1: app.name })}</p>
         <p className="text-xs text-muted-foreground">{snapshot.freshness === "stale" || snapshot.errorAt || Date.now() - new Date(snapshot.checkedAt).getTime() > 5 * 60_000 || account.status === "UNVERIFIED" ? fullAppsT("fullApps.not_verified_151339") : account.status === "ACTIVE" ? fullAppsT("environmentsUi.terminal.connected") : account.status === "INITIATED" ? fullAppsT("fullApps.waiting_for_sign_in_749a34") : fullAppsT("fullApps.needs_sign_in_1077f6")}</p>

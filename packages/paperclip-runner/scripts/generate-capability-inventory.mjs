@@ -2,6 +2,8 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import {
   buildInventories,
+  buildSkillInventory,
+  decodeInventory,
   encodeInventory,
   renderContractModule,
   renderDocumentation,
@@ -11,11 +13,12 @@ import {
 
 const packageRoot = resolve(import.meta.dirname, "..");
 const repoRoot = resolve(packageRoot, "../..");
+const localSourcesOnly = process.argv.includes("--local-sources");
 const evalCandidates = [
   resolve(repoRoot, "../paperclip-evals/paperclip-skill-optimization"),
   resolve(repoRoot, "../../../../paperclip-evals/paperclip-skill-optimization"),
 ];
-const evalRoot = process.env.PAPERCLIP_EVALS_ROOT
+const evalRoot = localSourcesOnly ? null : process.env.PAPERCLIP_EVALS_ROOT
   ?? (await (async () => {
     for (const candidate of evalCandidates) {
       if (await access(candidate).then(() => true, () => false)) return candidate;
@@ -30,7 +33,13 @@ const outputPaths = {
   documentation: resolve(packageRoot, "docs/capability-contract.md"),
 };
 
-const inventories = await buildInventories({ repoRoot, evalRoot });
+// A documentation-only refresh retains the independently maintained eval corpus
+// and its MCP folds. Full generation still requires the original corpus.
+const inventories = localSourcesOnly ? {
+  capabilities: await buildSkillInventory(repoRoot),
+  evaluations: decodeInventory(await readFile(outputPaths.evaluations, "utf8")),
+  legacyMcpAliases: decodeInventory(await readFile(outputPaths.legacyMcpAliases, "utf8")),
+} : await buildInventories({ repoRoot, evalRoot });
 const inventorySchema = JSON.parse(await readFile(resolve(packageRoot, "spec/capability/inventory.schema.json"), "utf8"));
 const errors = [
   ...validateInventorySchema(inventories, inventorySchema),

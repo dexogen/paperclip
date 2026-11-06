@@ -76,7 +76,7 @@ describe("parseSearchQuery", () => {
 
   it("parses is:open quick filters", () => {
     expect(parseSearchQuery("is:open", context).filters).toEqual({
-      status: ["backlog", "todo", "in_progress", "in_review", "blocked"],
+      status: ["backlog", "todo", "in_progress", "monitoring", "in_review", "blocked"],
     });
   });
 

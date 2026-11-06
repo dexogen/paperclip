@@ -33,6 +33,7 @@ import {
   runHealth,
   type CellStatus,
 } from "./smoke-lab-matrix";
+import { describeError } from "@/api/errors";
 
 // Public, non-secret fixture credentials for the fake OAuth provider. Kept in
 // sync with SMOKE_LAB_DEMO_EMAIL / SMOKE_LAB_DEMO_PASSWORD in
@@ -115,7 +116,7 @@ export function SmokeLabTab({ companyId }: { companyId: string }) {
       pushToast({ title: fullAppsT("fullApps.smoke_services_started_725d15"), tone: "success" });
       refresh();
     },
-    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_start_services_b3bd9d"), body: e.message, tone: "error" }),
+    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_start_services_b3bd9d"), body: describeError(e).body, tone: "error" }),
   });
 
   const stopMutation = useMutation({
@@ -124,7 +125,7 @@ export function SmokeLabTab({ companyId }: { companyId: string }) {
       pushToast({ title: fullAppsT("fullApps.smoke_services_stopped_22c441"), tone: "info" });
       refresh();
     },
-    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_stop_services_42fc06"), body: e.message, tone: "error" }),
+    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_stop_services_42fc06"), body: describeError(e).body, tone: "error" }),
   });
 
   const installMutation = useMutation({
@@ -136,7 +137,7 @@ export function SmokeLabTab({ companyId }: { companyId: string }) {
       });
       refresh();
     },
-    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_install_fixtures_d2d173"), body: e.message, tone: "error" }),
+    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_install_fixtures_d2d173"), body: describeError(e).body, tone: "error" }),
   });
 
   const resetMutation = useMutation({
@@ -146,7 +147,7 @@ export function SmokeLabTab({ companyId }: { companyId: string }) {
       setSelectedRunId(null);
       refresh();
     },
-    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_reset_7a78fd"), body: e.message, tone: "error" }),
+    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_reset_7a78fd"), body: describeError(e).body, tone: "error" }),
   });
 
   const runSmokeMutation = useMutation({
@@ -160,7 +161,7 @@ export function SmokeLabTab({ companyId }: { companyId: string }) {
       setSelectedRunId(r.run.id);
       refresh();
     },
-    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_start_a_run_8e76bd"), body: e.message, tone: "error" }),
+    onError: (e: Error) => pushToast({ title: fullAppsT("fullApps.couldn_t_start_a_run_8e76bd"), body: describeError(e).body, tone: "error" }),
   });
 
   const anyMutating =

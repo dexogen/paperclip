@@ -21,11 +21,11 @@ describe("managed sandbox environment helpers", () => {
     await i18n.changeLanguage("ru");
     expect(
       environmentDisplayLabel({
-        name: "Paperclip Computer",
+        name: "Paperclip Sandbox",
         driver: "sandbox",
         metadata: { managedByPaperclip: true },
       }),
-    ).toBe("Paperclip Computer");
+    ).toBe("Paperclip Sandbox");
     expect(
       environmentDisplayLabel({ name: "E2B", driver: "sandbox", metadata: null }),
     ).toBe("E2B · sandbox");

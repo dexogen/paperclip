@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import type { TFunction } from "i18next";
 import { Brain, CirclePause, Gauge, Layers3 } from "lucide-react";
 import type { TaskChatActivityPhaseItem } from "./task-chat-model";
@@ -26,7 +27,7 @@ const labels: Record<ToolFamily, string> = {
   other: "Used tools",
 };
 
-type SummaryCode = "terminal" | "grep" | "search" | "read" | "edit" | "web" | "plan" | "question" | "agent" | "safety" | "image" | "wait" | "mcp" | "other" | "research" | "delegation" | "artifact" | "context" | "memory" | "model_identity" | "review" | "hook" | "workspace_change" | "workspace_file" | "resource" | "notice" | "error" | "warning" | "updates" | "checked" | "thinking" | "stopped" | "usage";
+type SummaryCode = "terminal" | "grep" | "search" | "read" | "edit" | "web" | "plan" | "question" | "agent" | "safety" | "image" | "wait" | "mcp" | "other" | "research" | "delegation" | "artifact" | "context" | "memory" | "model_identity" | "review" | "hook" | "workspace_change" | "workspace_file" | "resource" | "notice" | "error" | "warning" | "updates" | "checked" | "thinking" | "stopped" | "usage" | "auto_review" | "check_failed" | "checks_skipped" | "checks" | "models_switched";
 
 function summaryLabel(code: SummaryCode, t: TFunction): string {
   switch (code) {
@@ -62,6 +63,11 @@ function summaryLabel(code: SummaryCode, t: TFunction): string {
     case "checked": return t("runUi.completed.checked");
     case "thinking": return t("runUi.completed.thinking");
     case "stopped": return t("runUi.completed.stopped");
+    case "auto_review": return t("runtimeUpdates.autoReviewedActions");
+    case "check_failed": return t("runtimeUpdates.checkFailed");
+    case "checks_skipped": return t("runtimeUpdates.checksSkipped");
+    case "checks": return t("runtimeUpdates.ranChecks");
+    case "models_switched": return t("runtimeUpdates.switchedModels");
     case "usage": return t("runUi.completed.usage");
   }
 }
@@ -70,12 +76,12 @@ function summaryLabel(code: SummaryCode, t: TFunction): string {
 export function completedActivitySummary(items: Activity[], t?: TFunction) {
   const categories = new Map<
     string,
-    { label: string; icon: ToolIcon; order: number; code?: SummaryCode }
+    { label: string; icon: ToolIcon; order: number; code?: SummaryCode; displayLabel?: string }
   >();
-  const add = (label: string, icon: ToolIcon, order = 0, code?: SummaryCode) => {
+  const add = (label: string, icon: ToolIcon, order = 0, code?: SummaryCode, displayLabel?: string) => {
     const existing = categories.get(label);
     if (!existing || order < existing.order)
-      categories.set(label, { label, icon, order, code });
+      categories.set(label, { label, icon, order, code, displayLabel });
   };
   const tools: Array<{
     family: ToolFamily;
@@ -83,6 +89,7 @@ export function completedActivitySummary(items: Activity[], t?: TFunction) {
     completed: boolean;
     order: number;
   }> = [];
+  const quietGovernance: Array<{ code: SummaryCode; single: string; displaySingle: string; icon: ToolIcon; order: number }> = [];
   const notices: Array<{
     summary: string | undefined;
     severity: "info" | "warning" | "error";
@@ -114,11 +121,30 @@ export function completedActivitySummary(items: Activity[], t?: TFunction) {
       } else {
         const p = protocolActivityPresentation(item);
         if (!p) continue;
+        const localized = t ? protocolActivityPresentation(item, t)! : p;
         if (item.surface === "provider_activity" && item.family === "provider_notice") {
           // Reuse only the normalized notice text already available in the row.
           const summary = item.summary?.trim()
             || item.details.find((entry) => entry.label === "Summary")?.value.trim();
           notices.push({ summary, severity: providerNoticeSeverity(item), icon: p.icon, order });
+          continue;
+        }
+        if (item.surface === "provider_activity" && (item.family === "hook" || item.family === "safety")) {
+          // A hook or reviewer that stopped an action is the headline of the
+          // group; routine passes only describe a group with nothing else.
+          if (p.tone === "blocked" || p.tone === "failed") add(p.completedLabel, p.icon, -1, undefined, localized.completedLabel);
+          else quietGovernance.push({ code: item.family === "hook" ? "hook" : "auto_review", single: p.completedLabel, displaySingle: localized.completedLabel, icon: p.icon, order });
+          continue;
+        }
+        if (item.surface === "provider_activity" && item.family === "verification") {
+          // A failed check stays visible even when the compact label truncates.
+          if (item.status === "failed") add("Check failed", p.icon, -1, "check_failed");
+          else if (item.details.find((entry) => entry.label === "Status")?.value === "not_run") add("Skipped checks", p.icon, order, "checks_skipped");
+          else add("Ran checks", p.icon, order, "checks");
+          continue;
+        }
+        if (item.surface === "provider_activity" && item.eventType === "model.route.changed") {
+          add("Switched models", p.icon, order, "models_switched");
           continue;
         }
         const family =
@@ -138,6 +164,7 @@ export function completedActivitySummary(items: Activity[], t?: TFunction) {
               safety: "Reviewed safety",
               terminal: "Ran commands",
               wait: "Waited",
+              verification: "Ran checks",
               workspace_change: "Worked on files",
               workspace_file: "Referenced files",
               resource: "Added resources",
@@ -177,6 +204,11 @@ export function completedActivitySummary(items: Activity[], t?: TFunction) {
     add(label, tool.icon, tool.order, tool.family === "read" && !succeeded ? "checked" : tool.family === "edit" && !succeeded ? "workspace_change" : tool.family);
   }
   if (!categories.size) {
+    // One quiet hook or review names itself; several share a category label.
+    if (quietGovernance.length === 1) add(quietGovernance[0]!.single, quietGovernance[0]!.icon, quietGovernance[0]!.order, undefined, quietGovernance[0]!.displaySingle);
+    else for (const quiet of quietGovernance) add(summaryLabel(quiet.code, i18n.getFixedT("en")), quiet.icon, quiet.order, quiet.code);
+  }
+  if (!categories.size) {
     if (items.some((item) => item.kind === "thinking"))
       add("Thought through the task", Brain, 0, "thinking");
     else if (items.some((item) => item.kind === "marker"))
@@ -188,7 +220,7 @@ export function completedActivitySummary(items: Activity[], t?: TFunction) {
     parts
       .map((p, i) => (i ? p.charAt(0).toLowerCase() + p.slice(1) : p))
       .join(", ");
-  const displayValues = values.map(value => t && value.code ? summaryLabel(value.code, t) : value.label);
+  const displayValues = values.map(value => value.displayLabel ?? (t && value.code ? summaryLabel(value.code, t) : value.label));
   const fullLabel = join(displayValues);
   return {
     label:

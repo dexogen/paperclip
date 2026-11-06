@@ -25,7 +25,6 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToastActions } from "../../context/ToastContext";
 import { secretsApi } from "../../api/secrets";
-import { ApiError } from "../../api/client";
 import { queryKeys } from "../../lib/queryKeys";
 import {
   aliasFromConfigPath,
@@ -35,6 +34,7 @@ import {
 import { cn } from "../../lib/utils";
 import { copyTextToClipboard } from "../../lib/clipboard";
 import { SecretPathName } from "./SecretPathName";
+import { describeError } from "@/api/errors";
 
 /* -------------------------------------------------------------------------- */
 /* Presentation helpers (shared by the tab + agent-settings surfaces)         */
@@ -191,9 +191,7 @@ export function bindingSecretLabel(proposal: SecretProposalView): {
 }
 
 function readableError(error: unknown): string {
-  if (error instanceof ApiError) return error.message || i18n.t("fullRoutinesSecrets.requestFailedStatus", { status: error.status });
-  if (error instanceof Error) return error.message;
-  return i18n.t("fullRoutinesSecrets.somethingWentWrongTryAgain");
+  return describeError(error).body;
 }
 
 /* -------------------------------------------------------------------------- */

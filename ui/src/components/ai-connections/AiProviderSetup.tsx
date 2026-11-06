@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedTailT } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { useState } from "react";
@@ -13,6 +14,8 @@ import {
 } from "@paperclipai/shared";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { agentsApi } from "@/api/agents";
+import { describeError } from "@/api/errors";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { ConnectionChoiceList } from "@/features/connections/ConnectionChoiceList";
 import { ConnectionAccessDefaults, connectionDefaultSummarySentence } from "@/features/connections/ConnectionSetupFlow";
 import { AppLogo } from "@/pages/apps/AppLogo";
@@ -36,8 +39,8 @@ const providers = [
     id: "anthropic",
     name: "Anthropic",
   },
-  { id: "google", name: "Google" },
-  { id: "xai", name: "xAI" },
+  { id: "google", name: "Google", get description() { return translateUi("interfaceUpdates.antigravity_sign_in_or_gemini_api_key_1605caf1"); } },
+  { id: "xai", name: "xAI", get description() { return translateUi("providerSetup.setup.providers.xai"); } },
   {
     id: "openrouter",
     name: "OpenRouter",
@@ -123,6 +126,7 @@ export function AiProviderSetup({
     queryKey: ["ai-connections", companyId, agentId],
     queryFn: () => aiConnectionsApi.list(companyId, agentId),
   });
+  const accountsView = useQueryView(accounts);
   const canManageConnections = accounts.data?.canManageConnections ?? false;
   const ownership = reconnect?.ownership ?? ownershipChoice ?? (!agentId && canManageConnections ? "shared" : "personal");
   const allAgents = allAgentsChoice ?? (!agentId && canManageConnections);
@@ -130,6 +134,7 @@ export function AiProviderSetup({
     queryKey: ["agents", companyId, "provider-access"],
     queryFn: () => agentsApi.list(companyId),
   });
+  const agentsView = useQueryView(agents);
   const label = providerLabel ?? providers.find((p) => p.id === provider)?.name ?? (provider === "github" ? "GitHub Copilot" : fullSharedTailT("fullSharedTail.provider"));
   const displayLabel = providerLabel ?? (provider === "gateway" ? t("providerSetup.setup.gateway") : provider === "local" ? t("providerSetup.setup.local") : label);
   const advanced = reconnect ? Boolean(reconnect.routing) : ["openrouter", "bedrock", "gateway", "local"].includes(provider ?? "");
@@ -281,8 +286,8 @@ export function AiProviderSetup({
     />
   ) : undefined;
   const cancel = () => reconnect || initialProvider ? onCancel() : setStep("provider");
-  if (!reconnect && accounts.isPending) return <p role="status">{t("providerSetup.setup.loadingPermissions")}</p>;
-  if (!reconnect && accounts.isError) return <p role="alert">{t("providerSetup.setup.permissionsError")} <Button type="button" variant="ghost" onClick={() => void accounts.refetch()}>{t("providerSetup.setup.retry")}</Button></p>;
+  if (!reconnect && (accounts.isPending || accountsView.kind === "reconnecting")) return <p role="status">{translateUi("providerSetup.setup.loadingPermissions")}</p>;
+  if (!reconnect && accountsView.kind === "error") return <QueryErrorState error={accounts.error} action="load connection permissions" onRetry={accountsView.retry} retrying={accountsView.isFetching} />;
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6" onSubmit={(event) => event.stopPropagation()}>
       <div className="space-y-2">
@@ -292,7 +297,7 @@ export function AiProviderSetup({
             : reconnect ? t("providerSetup.setup.reconnectProvider", { provider: displayLabel }) : t("providerSetup.setup.connectProvider", { provider: displayLabel })}
         </h2>
       </div>
-      {agents.isError && <p role="alert" className="text-sm text-destructive">{t("providerSetup.setup.agentsError")} <Button type="button" variant="ghost" onClick={() => void agents.refetch()}>{t("providerSetup.setup.retry")}</Button></p>}
+      {agentsView.kind === "error" && <QueryErrorState size="inline" error={agents.error} action="load agents" onRetry={agentsView.retry} retrying={agentsView.isFetching} />}
       {step === "provider" ? (
         <>
           {advancedOnly ? choices(true) : <>
@@ -443,7 +448,7 @@ export function AiProviderSetup({
             <p role="alert" className="text-sm text-destructive">
               {save.error instanceof Error && save.error.name === "ZodError"
                 ? t("providerSetup.setup.invalidFields")
-                : save.error.message}
+                : describeError(save.error).body}
             </p>
           )}
           {accessDefaults}
@@ -459,7 +464,7 @@ export function AiProviderSetup({
             <Button
               type="submit"
               disabled={
-                save.isPending || accounts.isPending || accounts.isError ||
+                save.isPending || accounts.isPending || accountsView.kind === "reconnecting" || accountsView.kind === "error" ||
                 (!reconnect && ownership === "shared" && !allAgents && agentIds.size === 0) ||
                 (auth !== "none" && !apiKey.trim())
               }

@@ -100,11 +100,11 @@ export function PhotonConnectStep({
       >
         {inspection.isPending ? fullAppsT("fullApps.inspecting_photon_7906bc") : fullAppsT("fullApps.inspect_photon_project_f3ed32")}
       </Button>
-      {inspection.isError && (
+      {inspection.error ? (
         <p role="alert" className="text-sm text-destructive">
           {renderAppDisplayText(sanitizedSetupErrorDisplay(inspection.error, { projectSecret }))}
         </p>
-      )}
+      ) : null}
       {inspection.data && (
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium"><FullAppsTrans i18nKey="fullApps.in_1c37be" components={{ part1: <>{inspection.data.allocation === "shared" ? fullAppsT("fullApps.shared_dms_d71f88") : fullAppsT("fullApps.dedicated_numbers_4c9a8c")}</>, part2: <>{inspection.data.projectName}</> }} /></legend>

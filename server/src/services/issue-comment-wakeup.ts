@@ -1,5 +1,6 @@
 export function shouldWakeAssigneeForIssueComment(input: {
   selfComment: boolean;
+  wakeAssignee?: boolean;
   resumeRequested: boolean;
   commentCreatedByRunId?: string | null;
   issueAtCommentStart: {
@@ -9,6 +10,7 @@ export function shouldWakeAssigneeForIssueComment(input: {
   reopened: boolean;
   currentStatus: string | null | undefined;
 }) {
+  if (input.wakeAssignee === false) return false;
   const sourceRunId = input.commentCreatedByRunId;
   const commentIsFromCurrentIssueRun = Boolean(
     sourceRunId &&

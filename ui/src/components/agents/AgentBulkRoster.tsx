@@ -1,11 +1,18 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation } from "@/i18n";
-import { lazy, Suspense, useState, type ReactNode } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode, type SetStateAction } from "react";
+import { createPortal } from "react-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Filter, Pencil, X } from "lucide-react";
 import type { Agent } from "@paperclipai/shared";
+import { agentsApi } from "@/api/agents";
+import { describeError } from "@/api/errors";
+import { bindAccount } from "@/lib/account-scope";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { getAdapterLabel } from "@/adapters/adapter-display-registry";
 import { agentConnection, agentDefaultModel, bulkAgentDisabledReason, bulkAgentHarness, bulkAgentHarnessLabel, bulkConnectionName } from "@/lib/bulk-agent-settings";
+import { pendingAgentSetupDisplayAdapter } from "@/lib/agent-setup-choice";
+import { AgentStatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -14,27 +21,65 @@ import { cn } from "@/lib/utils";
 const AgentBulkSettingsSheet = lazy(() => import("./AgentBulkSettingsSheet").then(m => ({ default: m.AgentBulkSettingsSheet })));
 
 /** Shared by both roster layouts. Mount with a company key to isolate selection. */
-export function AgentBulkRoster({ companyId, agents, visibleAgents, renderAgent }: {
+export function AgentBulkRoster({ companyId, agents, visibleAgents, renderAgent, renderChat, renderStatus }: {
   companyId: string; agents: Agent[]; visibleAgents: Agent[]; renderAgent: (agent: Agent) => ReactNode;
+  renderChat?: (agent: Agent) => ReactNode;
+  renderStatus?: (agent: Agent) => ReactNode;
 }) {
   const { t } = useTranslation();
+  const client = useQueryClient();
+  const openingRef = useRef(false);
+  const [opening, setOpening] = useState(false);
+  const [openError, setOpenError] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const selectionRevision = useRef(0);
+  const changeSelection = (next: SetStateAction<string[]>) => {
+    selectionRevision.current += 1;
+    setSelected(next);
+  };
   const [filter, setFilter] = useState("all");
   const [editing, setEditing] = useState<Agent[] | null>(null);
   const [notice, setNotice] = useState<{ count: number; harness: string } | null>(null);
-  const accounts = useQuery({ queryKey: ["ai-connections", companyId], queryFn: () => aiConnectionsApi.list(companyId), retry: false });
+  const accounts = useQuery({ queryKey: ["ai-connections", companyId], queryFn: () => aiConnectionsApi.list(companyId) });
   const visible = visibleAgents.filter(a => filter === "all" || bulkAgentHarness(a) === filter);
   const selectable = visible.filter(a => !bulkAgentDisabledReason(a));
-  const selectedAgents = agents.filter(a => selected.includes(a.id) && !bulkAgentDisabledReason(a));
+  const selectedAgents = useMemo(() => agents.filter(a => selected.includes(a.id) && !bulkAgentDisabledReason(a)), [agents, selected]);
+  const [lastSelection, setLastSelection] = useState<Agent[]>([]);
+  useEffect(() => { if (selectedAgents.length) setLastSelection(selectedAgents); }, [selectedAgents]);
+  // Retain the card contents while it drops out, so its width does not collapse mid-animation.
+  const actionAgents = selectedAgents.length ? selectedAgents : lastSelection;
   const harnesses = [...new Set(agents.map(bulkAgentHarness))].sort((a, b) => getAdapterLabel(a).localeCompare(getAdapterLabel(b)));
-  const groups = [...new Set(selectedAgents.map(bulkAgentHarness))];
+  const groups = [...new Set(actionAgents.map(bulkAgentHarness))];
   const all = selectable.length > 0 && selectable.every(a => selected.includes(a.id));
   const some = selectable.some(a => selected.includes(a.id));
-  const hidden = selectedAgents.filter(a => !visible.includes(a)).length;
-  const toggleAll = () => setSelected(all ? selected.filter(id => !selectable.some(a => a.id === id)) : [...new Set([...selected, ...selectable.map(a => a.id)])]);
+  const hidden = actionAgents.filter(a => !visible.includes(a)).length;
+  const toggleAll = () => changeSelection(all ? selected.filter(id => !selectable.some(a => a.id === id)) : [...new Set([...selected, ...selectable.map(a => a.id)])]);
+
+  async function openEditor(harness: string) {
+    if (openingRef.current) return;
+    openingRef.current = true; setOpening(true); setOpenError("");
+    const account = bindAccount(client);
+    const revision = selectionRevision.current;
+    try {
+      await account.whenAccountReady();
+      if (!account.isCurrentAccount() || revision !== selectionRevision.current) return;
+      const complete = await Promise.all(selectedAgents.filter(a => bulkAgentHarness(a) === harness)
+        .map(a => agentsApi.get(a.id, companyId, { cache: "no-store", fresh: true })));
+      if (!account.isCurrentAccount() || revision !== selectionRevision.current) return;
+      // The display cache excludes private runtime fields. Only complete,
+      // freshly authorized agents can become the editor's optimistic base.
+      if (complete.some(a => a.companyId !== companyId || bulkAgentHarness(a) !== harness || bulkAgentDisabledReason(a))) {
+        setOpenError("The selected agents changed. Refresh the roster and select them again.");
+        return;
+      }
+      setEditing(complete);
+    } catch (error) {
+      if (account.isCurrentScope() && revision === selectionRevision.current) setOpenError(describeError(error).body);
+    } finally { openingRef.current = false; setOpening(false); }
+  }
 
   return <div className="space-y-4">
-    <div className="flex flex-wrap items-center justify-between gap-3">
+    <div data-canonical-toolbar="agent-filters" role="toolbar" aria-label={translateUi("agentBulkUi.roster.agentFilters")} className="flex flex-wrap items-center justify-between gap-3">
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="icon" aria-label={t("agentBulkUi.roster.filterAgents")} title={filter === "all" ? t("agentBulkUi.roster.filter") : t("agentBulkUi.roster.filterName", { harness: bulkAgentHarnessLabel(filter, t) })}
@@ -59,34 +104,42 @@ export function AgentBulkRoster({ companyId, agents, visibleAgents, renderAgent 
       </Popover>
       <span className="text-xs text-muted-foreground">{t("agentBulkUi.roster.agents", { count: visible.length })}</span>
     </div>
-    {selectedAgents.length > 0 && <div role="region" aria-label={t("agentBulkUi.roster.bulkActions")} className="sticky top-0 z-10 flex flex-wrap items-center gap-3 rounded-md border bg-muted p-3">
-      <span className="text-sm font-medium">{t("agentBulkUi.roster.selected", { count: selectedAgents.length })}</span>
+    {createPortal(<div role="region" aria-label={translateUi("agentBulkUi.roster.bulkActions")} aria-hidden={selectedAgents.length === 0} inert={selectedAgents.length === 0}
+      data-state={selectedAgents.length > 0 ? "open" : "closed"} className="agent-selection-bar flex flex-wrap items-center gap-3 rounded-lg border bg-background p-3">
+      <span className="text-sm font-medium">{t("agentBulkUi.roster.selected", { count: actionAgents.length })}</span>
       {hidden > 0 && <span className="text-xs text-muted-foreground">{t("agentBulkUi.roster.hidden", { count: hidden })}</span>}
-      {groups.length > 1 && <span className="text-xs text-muted-foreground">{t("agentBulkUi.roster.chooseHarness")}</span>}
-      <div className="flex flex-1 flex-wrap items-center justify-end gap-2">{groups.map(h => <Button key={h} size="sm" variant="outline" onClick={() => setEditing(selectedAgents.filter(a => bulkAgentHarness(a) === h))}>
-        <Pencil className="size-3.5" aria-hidden />{groups.length === 1 ? t("agentBulkUi.roster.edit") : t("agentBulkUi.roster.editHarness", { number: selectedAgents.filter(a => bulkAgentHarness(a) === h).length, harness: bulkAgentHarnessLabel(h, t) })}
-      </Button>)}<Button size="icon-sm" variant="ghost" aria-label={t("agentBulkUi.roster.clearSelection")} onClick={() => setSelected([])}><X className="size-4" /></Button></div>
-    </div>}
+      {groups.length > 1 && <span className="text-xs text-muted-foreground">{translateUi("agentBulkUi.roster.chooseHarness")}</span>}
+      <div className="flex flex-1 flex-wrap items-center justify-end gap-2">{groups.map(h => <Button key={h} size="sm" variant="outline" disabled={opening} onClick={() => void openEditor(h)}>
+        <Pencil className="size-3.5" aria-hidden />{groups.length === 1 ? translateUi("agentBulkUi.roster.edit") : translateUi("interfaceUpdates.edit_value_value_1e085c1f", { value1: (actionAgents.filter(a => bulkAgentHarness(a) === h).length), value2: (getAdapterLabel(h)) })}
+      </Button>)}<Button size="icon-sm" variant="ghost" aria-label={translateUi("agentBulkUi.roster.clearSelection")} onClick={() => changeSelection([])}><X className="size-4" /></Button></div>
+    </div>, document.body)}
+    {opening && <p role="status" className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.loading_current_agent_settings_04d4f295")}</p>}
+    {openError && <p role="alert" className="text-sm text-destructive">{openError}</p>}
     {notice && <p role="status" className="flex items-center gap-2 text-sm"><Check className="size-4" aria-hidden />{t("agentBulkUi.roster.updated", { count: notice.count, harness: bulkAgentHarnessLabel(notice.harness, t) })}</p>}
-    {accounts.error && <p className="text-xs text-destructive">{t("agentBulkUi.roster.loadError")} <Button variant="link" size="sm" onClick={() => void accounts.refetch()}>{t("agentBulkUi.roster.retry")}</Button></p>}
-    <div className="overflow-x-auto"><table aria-label={t("agentBulkUi.roster.roster")} className="w-full text-left text-sm">
+    {accounts.error && <p className="text-xs text-destructive">{translateUi("agentBulkUi.roster.loadError")} <Button variant="link" size="sm" onClick={() => void accounts.refetch()}>{translateUi("agentBulkUi.roster.retry")}</Button></p>}
+    <div className="overflow-x-auto"><table aria-label={translateUi("agentBulkUi.roster.roster")} className="agent-roster w-full text-left text-sm">
       <thead className="text-xs text-muted-foreground [&_th]:px-3 [&_th]:py-3 [&_th]:font-normal"><tr>
         <th className="w-10"><Checkbox aria-label={t("agentBulkUi.roster.selectAll")} checked={all ? true : some ? "indeterminate" : false} disabled={!selectable.length} onCheckedChange={toggleAll} /></th>
-        <th>{t("agentBulkUi.roster.agent")}</th><th>{t("agentBulkUi.roster.harness")}</th><th>{t("agentBulkUi.roster.connection")}</th><th>{t("agentBulkUi.roster.defaultModel")}</th>
+        <th scope="col">{t("agentBulkUi.roster.agent")}</th>{renderChat && <th scope="col"><span className="sr-only">{translateUi("agents.chat")}</span></th>}<th scope="col">{translateUi("sidebar.status")}</th><th scope="col">{t("agentBulkUi.roster.harness")}</th><th scope="col">{t("agentBulkUi.roster.connection")}</th><th scope="col">{t("agentBulkUi.roster.defaultModel")}</th>
       </tr></thead>
-      <tbody>{visible.map(agent => <tr key={agent.id} data-state={selected.includes(agent.id) ? "selected" : undefined} className="border-t border-border data-[state=selected]:bg-accent/30 [&_td]:px-3">
-        <td title={bulkAgentDisabledReason(agent, t)}><Checkbox aria-label={t("agentBulkUi.roster.selectAgent", { name: agent.name })} checked={selectedAgents.some(a => a.id === agent.id)} disabled={!!bulkAgentDisabledReason(agent)} onCheckedChange={value => setSelected(value ? [...new Set([...selected, agent.id])] : selected.filter(id => id !== agent.id))} /></td>
+      <tbody>{visible.map(agent => {
+        const pendingSetup = pendingAgentSetupDisplayAdapter(agent);
+        return <tr key={agent.id} data-state={selected.includes(agent.id) ? "selected" : undefined} className="border-t border-border data-[state=selected]:bg-accent/30 hover:bg-accent/50 focus-within:bg-accent/50 [&_td]:px-3 [&_td]:align-middle">
+        <td title={bulkAgentDisabledReason(agent, t)}><Checkbox aria-label={t("agentBulkUi.roster.selectAgent", { name: agent.name })} checked={selectedAgents.some(a => a.id === agent.id)} disabled={!!bulkAgentDisabledReason(agent)} onCheckedChange={value => changeSelection(value ? [...new Set([...selected, agent.id])] : selected.filter(id => id !== agent.id))} /></td>
         <td className="min-w-64 p-0">{renderAgent(agent)}</td>
-        <td className="whitespace-nowrap text-xs">{bulkAgentHarnessLabel(bulkAgentHarness(agent), t)}</td>
-        <td className="text-xs">{["http", "process"].includes(agent.adapterType) ? t("agentBulkUi.roster.managedExternally") : bulkConnectionName(agentConnection(agent), accounts.data, t)}</td>
-        <td className="font-mono text-xs">{agentDefaultModel(agent) ?? t("agentBulkUi.display.harnessDefault")}</td>
-      </tr>)}</tbody>
+        {renderChat && <td>{renderChat(agent)}</td>}
+        <td>{renderStatus ? renderStatus(agent) : <AgentStatusBadge status={agent.status} />}</td>
+        <td className="whitespace-nowrap text-xs">{bulkAgentHarnessLabel(pendingSetup ?? bulkAgentHarness(agent), t)}</td>
+        <td className="text-xs">{pendingSetup ? translateUi("grokSetupUi.connection.notConfigured") : ["http", "process"].includes(agent.adapterType) ? t("agentBulkUi.roster.managedExternally") : bulkConnectionName(agentConnection(agent), accounts.data, t)}</td>
+        <td className="font-mono text-xs">{pendingSetup ? translateUi("interfaceUpdates.not_available_yet_787406dd") : agentDefaultModel(agent) ?? t("agentBulkUi.display.harnessDefault")}</td>
+      </tr>;
+      })}</tbody>
     </table></div>
     {!visible.length && <p className="py-8 text-center text-sm text-muted-foreground">{t("agentBulkUi.roster.empty")}</p>}
     {editing && <Suspense fallback={<p role="status" className="text-sm text-muted-foreground">{t("agentBulkUi.roster.loadingEditor")}</p>}><AgentBulkSettingsSheet companyId={companyId} agents={editing} totalSelected={selectedAgents.length} onClose={(updatedIds, complete) => {
       setEditing(null);
       if (updatedIds.length) {
-        setSelected(ids => ids.filter(id => !(complete ? editing.map(a => a.id) : updatedIds).includes(id)));
+        changeSelection(ids => ids.filter(id => !(complete ? editing.map(a => a.id) : updatedIds).includes(id)));
         setNotice({ count: updatedIds.length, harness: bulkAgentHarness(editing[0]) });
       }
     }} /></Suspense>}

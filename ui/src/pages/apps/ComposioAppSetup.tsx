@@ -10,6 +10,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/context/ToastContext";
+import { describeError } from "@/api/errors";
 
 /** Provider authorization is performed by the backend; no task or agent run. */
 export function ComposioAppSetup({ name, toolkit, connections, onClose, onBack, onConnectNew }: {

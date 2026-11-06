@@ -63,7 +63,7 @@ export function loadPolicy(root, policyRoot = root) {
   for (const [key, entry] of Object.entries(reviewed.entries)) {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)
       || typeof entry.reviewer !== "string" || !entry.reviewer.trim()
-      || !["human", "agent"].includes(entry.method)
+      || !["human", "agent", "source-review"].includes(entry.method)
       || typeof entry.reviewedAt !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(entry.reviewedAt)
       || !Number.isFinite(Date.parse(entry.reviewedAt))
       || new Date(entry.reviewedAt).toISOString() !== entry.reviewedAt

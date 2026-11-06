@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { SpekoPhoneLineForm } from "@/components/voice/SpekoPhoneLine";
@@ -181,6 +183,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { FilterBar, type FilterValue } from "@/components/FilterBar";
 import { InlineEditor } from "@/components/InlineEditor";
 import { PageSkeleton } from "@/components/PageSkeleton";
+import { TaskChatLoadingShell } from "@/components/task-chat/TaskChatLoadingShell";
 import { Identity } from "@/components/Identity";
 import { AppLogo } from "@/pages/apps/AppLogo";
 import { IssueReferencePill } from "@/components/IssueReferencePill";
@@ -517,6 +520,7 @@ function ComposerActionsExample() {
 }
 
 export function DesignGuide() {
+  useUiTranslation();
   useFullSharedTranslation();
   const [agentmailDemoKey, setAgentmailDemoKey] = useState("");
   const [wizardStep, setWizardStep] = useState(0);
@@ -558,9 +562,9 @@ export function DesignGuide() {
           <SubSection title={t("fullDiagnostics.uiPrimitives")}>
             <div className="flex flex-wrap gap-2">
               {[
-                "avatar", "badge", "breadcrumb", "button", "card", "checkbox", "collapsible",
+                "avatar", "badge", translateUi("fullShared.breadcrumb_d6dc6b"), "button", "card", "checkbox", "collapsible",
                 "command", "dialog", "dropdown-menu", "input", "label", "popover", "resizable-panels",
-                "scroll-area", "select", "separator", "sheet", "skeleton", "tabs", "textarea", "tooltip",
+                "scroll-area", translateUi("fullRoutinesSecrets.routineVariableTypeLabelSelect"), "separator", "sheet", "skeleton", "tabs", translateUi("fullRoutinesSecrets.routineVariableTypeLabelTextarea"), "tooltip",
               ].map((name) => (
                 <Badge key={name} variant="outline" className="font-mono text-(length:--text-nano)">
                   {name}
@@ -573,7 +577,7 @@ export function DesignGuide() {
               {[
                 "StatusBadge", "StatusIcon", "PriorityIcon", "EntityRow", "EmptyState", "MetricCard",
                 "FilterBar", "InlineEditor", "PageSkeleton", "Identity", "CommentThread", "MarkdownEditor",
-                "PropertiesPanel", "Sidebar", "CommandPalette", "EnvironmentVariablesEditor",
+                "PropertiesPanel", translateUi("fullDiagnostics.sidebar"), "CommandPalette", "EnvironmentVariablesEditor",
                 "InlineBanner", "BuiltInAgentGate", "BuiltInLifecycleChip", "CollectionToolbar",
                 "IssueRow", "ContextualSidebarFrame",
               ].map((name) => (
@@ -796,10 +800,10 @@ export function DesignGuide() {
         <SubSection title={t("fullDiagnostics.statusbadgeAllStatuses")}>
           <div className="flex items-center gap-2 flex-wrap">
             {[
-              "active", "running", "paused", "idle", "archived", "planned",
-              "achieved", "completed", "failed", "timed_out", "succeeded", "error",
+              "active", "running", "paused", "idle", "archived", translateUi("statuses.planned"),
+              translateUi("statuses.achieved"), "completed", "failed", "timed_out", "succeeded", "error",
               "pending_approval", "backlog", "todo", "in_progress", "in_review", "blocked",
-              "done", "terminated", "cancelled", "pending", "revision_requested",
+              translateUi("interfaceUpdates.done_a4c3ed04"), "terminated", "cancelled", translateUi("interfaceUpdates.pending_62a2fed3"), "revision_requested",
               "approved", "rejected",
             ].map((s) => (
               <StatusBadge key={s} status={s} />
@@ -809,7 +813,7 @@ export function DesignGuide() {
 
         <SubSection title={t("fullDiagnostics.issuestatusbadgeBrandChipGlyphPap75")}>
           <div className="flex items-center gap-2 flex-wrap">
-            {["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"].map(
+            {["backlog", "todo", "in_progress", "in_review", translateUi("interfaceUpdates.done_a4c3ed04"), "blocked", "cancelled"].map(
               (s) => (
                 <IssueStatusBadge key={s} status={s} />
               )
@@ -817,13 +821,17 @@ export function DesignGuide() {
           </div>
         </SubSection>
 
+        <SubSection title={translateUi("interfaceUpdates.monitoring_task_d98f9bc9")}>
+          <StatusIcon status="in_progress" displayStatus="monitoring" showLabel />
+          <IssueStatusBadge status="in_progress" displayStatus="monitoring" />
+        </SubSection>
         <SubSection title={t("fullDiagnostics.idleSlackConversation")}>
           <StatusIcon status="in_review" externalConversationState="waiting" showLabel />
           <IssueStatusBadge status="in_review" externalConversationState="waiting" />
         </SubSection>
         <SubSection title={t("fullDiagnostics.statusiconInteractive")}>
           <div className="flex items-center gap-3 flex-wrap">
-            {["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"].map(
+            {["backlog", "todo", "in_progress", "in_review", translateUi("interfaceUpdates.done_a4c3ed04"), "cancelled", "blocked"].map(
               (s) => (
                 <div key={s} className="flex items-center gap-1.5">
                   <StatusIcon status={s} />
@@ -872,10 +880,10 @@ export function DesignGuide() {
         <SubSection title={t("fullDiagnostics.runInvocationBadges")}>
           <div className="flex items-center gap-2 flex-wrap">
             {[
-              ["timer", "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"],
-              ["assignment", "bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300"],
+              [translateUi("surfacesGap.runs.source.timer"), "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"],
+              [translateUi("surfacesGap.runs.source.assignment"), "bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300"],
               ["on_demand", "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/50 dark:text-cyan-300"],
-              ["automation", "bg-muted text-muted-foreground"],
+              [translateUi("surfacesGap.runs.source.automation"), "bg-muted text-muted-foreground"],
             ].map(([label, cls]) => (
               <Badge variant="ghost" key={label} className={`px-1.5 text-(length:--text-nano) ${cls}`}>
                 {label}
@@ -1840,6 +1848,16 @@ export function DesignGuide() {
             <PageSkeleton variant="detail" />
           </div>
         </SubSection>
+        <SubSection title={translateUi("interfaceUpdates.task_conversation_loading_94ab8153")}>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="relative h-96 overflow-hidden rounded-md border border-border">
+              <TaskChatLoadingShell mobile={false} streamlined coordinator={false} />
+            </div>
+            <div className="coordinator-workspace relative h-96 overflow-hidden rounded-md border border-border">
+              <TaskChatLoadingShell mobile streamlined coordinator />
+            </div>
+          </div>
+        </SubSection>
       </Section>
 
       {/* ============================================================ */}
@@ -1936,22 +1954,22 @@ export function DesignGuide() {
       <Section title={t("fullDiagnostics.commonIconsLucide")}>
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
           {[
-            ["Inbox", Inbox],
+            [translateUi("inboxUi.title"), Inbox],
             ["ListTodo", ListTodo],
             ["CircleDot", CircleDot],
             ["Hexagon", Hexagon],
             ["Target", Target],
             ["LayoutDashboard", LayoutDashboard],
-            ["Bot", Bot],
+            [translateUi("grokSetupUi.connection.bot"), Bot],
             ["DollarSign", DollarSign],
-            ["History", History],
-            ["Search", Search],
+            [translateUi("agentDetailUi.history.title"), History],
+            [translateUi("sidebar.search"), Search],
             ["Plus", Plus],
             ["Trash2", Trash2],
-            ["Settings", Settings],
+            [translateUi("companySwitcher.settings"), Settings],
             ["User", User],
             ["Mail", Mail],
-            ["Upload", Upload],
+            [translateUi("taskDetail.copy.upload"), Upload],
             ["Zap", Zap],
           ].map(([name, Icon]) => {
             const LucideIcon = Icon as React.FC<{ className?: string }>;
@@ -1976,7 +1994,7 @@ export function DesignGuide() {
             ["[", t("fullDiagnostics.shortcutSidebar")],
             ["]", t("fullDiagnostics.shortcutProperties")],
 
-            ["Cmd+Enter / Ctrl+Enter", t("fullDiagnostics.shortcutComment")],
+            [translateUi("interfaceUpdates.enter_shift_enter_57fa6b6b"), translateUi("interfaceUpdates.submit_task_message_add_a_new_line_command_ctrl_en_52ec5b48")],
           ].map(([key, desc]) => (
             <div key={key} className="flex items-center justify-between px-4 py-2">
               <span className="text-muted-foreground">{desc}</span>
@@ -2030,7 +2048,7 @@ export function DesignGuide() {
               body={t("fullDiagnostics.supervisorRestart")}
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.staticGovernanceCopyWithAToneUsed")}{" "}<code>title</code>/<code>body</code>{" "}{t("fullDiagnostics.andAnOptional")}{" "}
+          <p className="mt-2 text-xs text-muted-foreground">{t("fullDiagnostics.staticGovernanceCopyWithAToneUsed")}{" "}<code>{translateUi("interfaceUpdates.title_aaf23206")}</code>/<code>body</code>{" "}{t("fullDiagnostics.andAnOptional")}{" "}
             <code>icon</code>.
           </p>
         </SubSection>
@@ -2113,8 +2131,8 @@ export function DesignGuide() {
         <SubSection title={t("fullDiagnostics.toolAccessStatusKeysStatusbadge")}>
           <div className="flex flex-wrap items-center gap-2">
             {[
-              "allowed", "denied", "block", "require-approval", "redacted", "rate-limit",
-              "deferred", "hidden", "quarantined", "healthy", "degraded", "runtime-error", "unchecked",
+              "allowed", translateUi("statuses.denied"), "block", "require-approval", "redacted", "rate-limit",
+              translateUi("statuses.deferred"), translateUi("statuses.hidden"), translateUi("fullApps.quarantined_c3ecfc"), "healthy", "degraded", "runtime-error", translateUi("surfacesGap.health.unchecked"),
             ].map((s) => (
               <StatusBadge key={s} status={s} />
             ))}
@@ -2192,6 +2210,9 @@ export function DesignGuide() {
 
       <Section title={t("fullDiagnostics.executionRecovery")}>
         <p className="text-sm text-muted-foreground">{t("fullDiagnostics.recoveryRunsInTheBackgroundTaskLists")}</p>
+        <p className="text-sm text-muted-foreground">
+          {translateUi("interfaceUpdates.when_retained_file_recovery_needs_another_authoriz_261f881a")}
+        </p>
       </Section>
 
       <Section title={t("fullDiagnostics.cloudSignInUnavailable")}>

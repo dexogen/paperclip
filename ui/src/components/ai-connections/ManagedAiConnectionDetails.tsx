@@ -1,14 +1,21 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { heartbeatsApi } from "@/api/heartbeats";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { aiConnectionsApi } from "@/api/ai-connections";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { useNavigate } from "@/lib/router";
 import { AiConnectionAccountControls } from "./AiConnectionAccountControls";
 import { AiConnectionUsagePanel } from "./AiConnectionUsagePanel";
+import { AiConnectionAccountDetails } from "./AiConnectionAccountDetails";
 import type { ToolConnection, AiConnectionMetadata } from "@paperclipai/shared";
 import { aiMethodLabel } from "./model";
+import { queryKeys } from "@/lib/queryKeys";
+import { retryTransientOnly } from "@/lib/query-client";
 
 export function ManagedAiConnectionRow({
   connection,
@@ -32,6 +39,7 @@ export function ManagedAiConnectionDetails({
 }: {
   connection: ToolConnection;
 }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const client = useQueryClient();
   const navigate = useNavigate();
@@ -42,12 +50,17 @@ export function ManagedAiConnectionDetails({
   });
   const accounts = useQuery({
     queryKey: ["ai-connections", connection.companyId],
-    queryFn: () => aiConnectionsApi.list(connection.companyId),
+    queryFn: ({ signal }) => aiConnectionsApi.list(connection.companyId, undefined, { signal }),
+    retry: retryTransientOnly(1),
   });
   const grants = useQuery({
-    queryKey: ["ai-connection-grants", connection.id],
-    queryFn: () => toolsApi.listConnectionGrants(connection.id),
+    queryKey: queryKeys.tools.connectionGrants(connection.id),
+    queryFn: ({ signal }) => toolsApi.listConnectionGrants(connection.id, { signal }),
+    retry: retryTransientOnly(1),
   });
+  const runsView = useQueryView(runs);
+  const accountsView = useQueryView(accounts);
+  const grantsView = useQueryView(grants);
   const refresh = () => client.invalidateQueries();
   const makeDefault = useMutation({
     mutationFn: (id: string) =>
@@ -67,27 +80,38 @@ export function ManagedAiConnectionDetails({
     (a) => a.id === connection.id,
   );
   const grant = grants.data?.grants.find((g) => g.id === account?.grantId);
-  const error =
-    accounts.error ??
-    grants.error ??
-    makeDefault.error ??
-    stop.error;
-  if (error)
-    return (
-      <p role="alert" className="text-sm text-destructive">
-        {error.message}
-      </p>
-    );
+  const loadError = [accountsView, grantsView].find((view) => view.kind === "error")?.error;
+  const error = makeDefault.error ?? stop.error;
+  const loadFailure = loadError ? (
+    <div role="alert" className="space-y-2">
+      <p className="text-sm text-destructive">{describeError(loadError).body}</p>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={accounts.isFetching || grants.isFetching}
+        onClick={() => {
+          if (accounts.error) void accounts.refetch();
+          if (grants.error) void grants.refetch();
+        }}
+      >
+        {translateUi("newIssue.retry")}
+      </Button>
+    </div>
+  ) : null;
+  if ((!account || !grant) && loadFailure) return loadFailure;
   if (!account || !grant)
     return (
       <p role="status" className="text-sm text-muted-foreground">
-        {accounts.isPending || grants.isPending
+        {accounts.isPending || grants.isPending || accountsView.kind === "reconnecting" || grantsView.kind === "reconnecting"
           ? fullSharedT("fullShared.loading_ai_account_91a8f4")
           : fullSharedT("fullShared.this_account_is_not_available_to_you_407f13")}
       </p>
     );
   return (
     <div className="space-y-4">
+      {loadFailure}
+      {error && <p role="alert" className="text-sm text-destructive">{describeError(error).body}</p>}
+      <AiConnectionAccountDetails account={account} grant={grant} />
       {account.routing && <details className="rounded-lg border border-border p-4"><summary className="cursor-pointer text-sm font-medium">{fullSharedT("fullShared.provider_settings_d35680")}</summary><dl className="mt-4 grid grid-cols-2 gap-3 text-sm"><dt className="text-muted-foreground">{fullSharedT("companySettings.observability.destination")}</dt><dd className="break-all">{account.routing.baseUrl ?? (account.routing.kind === "bedrock" ? account.routing.region : "OpenRouter")}</dd><dt className="text-muted-foreground">{fullSharedT("providerSetup.setup.apiFormat")}</dt><dd>{account.routing.kind === "openrouter" ? fullSharedT("fullShared.selected_by_harness_9b76df") : account.routing.protocol}</dd><dt className="text-muted-foreground">{fullSharedT("providerSetup.setup.authentication")}</dt><dd>{account.routing.auth}</dd><dt className="text-muted-foreground">{fullSharedT("taskChatUi.settings.models")}</dt><dd>{account.routing.models.map(m => m.label ?? m.id).join(", ") || fullSharedT("fullShared.enter_a_model_id_on_the_agent_8d82fd")}</dd></dl></details>}
       <AiConnectionAccountControls
         account={account}
@@ -97,8 +121,14 @@ export function ManagedAiConnectionDetails({
         onRevoke={() => revoke.mutateAsync(grant.id).then(() => undefined)}
         revocationDetails={
           <div className="space-y-2">
-            {runs.error && (
-              <p role="alert">{fullSharedT("fullShared.could_not_load_active_runs_retry_before_revoking_240429")}</p>
+            {runsView.kind === "error" && (
+              <QueryErrorState
+                size="inline"
+                error={runs.error}
+                action="load active runs"
+                onRetry={runsView.retry}
+                retrying={runsView.isFetching}
+              />
             )}
             {runs.data?.map((run) => (
               <div

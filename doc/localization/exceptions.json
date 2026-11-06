@@ -6892,6 +6892,14 @@
     {
       "id": "eea1ed9fd6a67baa199d57e6a25ec84026d6e5b9b4fff46e11419ced95ea7ac0",
       "reason": "ui/src/components/AgentConfigForm.tsx: Значение configErrorMessages — статический ключ каталога. configErrorMessage распознаёт AgentConfigError.code и вызывает t(configErrorMessages[code]); ключ не отображается как текст."
+    },
+    {
+      "id": "7f121ef27e25d1b316c12481cfe5270c4a699256bae6d3b83c9348ae940eefc7",
+      "reason": "Provider protocol field name used to identify a target execution; changing it would break matching. Not rendered as UI copy."
+    },
+    {
+      "id": "fa2bac41f72b1b3e1563c07cb7654abd1be57971e2cf35690ec98de5d348bded",
+      "reason": "Compatibility default for currentUserAssigneeOption when no translator is supplied. Explicit translation callers use taskDisplay.assignees.me; the default remains English and this pure module can be imported by server contract tests without initializing browser localization."
     }
   ]
 }

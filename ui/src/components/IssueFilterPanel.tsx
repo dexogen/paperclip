@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useId, useState, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { Bot, Search, User } from "lucide-react";
@@ -10,7 +12,7 @@ import { StatusIcon } from "./StatusIcon";
 import { TruncatedText } from "./TruncatedText";
 import { issueFilterLabel, issueStatusOrder, searchIssueFilterOptions, toggleIssueFilterValue } from "@/lib/issue-filters";
 
-type PanelProps = Pick<ComponentProps<typeof IssueFiltersPopover>, "state" | "onChange" | "activeFilterCount" | "agents" | "projects" | "labels" | "creators" | "currentUserId"> & { onClear: () => void };
+type PanelProps = Pick<ComponentProps<typeof IssueFiltersPopover>, "state" | "onChange" | "activeFilterCount" | "agents" | "projects" | "labels" | "creators" | "currentUserId" | "enableRoutineTasksFilter" | "enableAgentCreatedVisibilityFilter" | "enableLiveRunsFilter"> & { onClear: () => void };
 
 function FilterGroup({ title, searchLabel, query, onQueryChange, children, optionsKey }: { title: string; searchLabel?: string; query?: string; onQueryChange?: (value: string) => void; children: ReactNode; optionsKey: string }) {
   useFullSharedTranslation();
@@ -31,8 +33,9 @@ function FilterRow({ label, checked, onToggle, icon }: { label: string; checked:
   return <label className="task-filter-option" data-marquee-surface><Checkbox aria-label={label} checked={checked} onCheckedChange={onToggle} />{icon ? <span className="task-filter-icon" aria-hidden>{icon}</span> : null}<TruncatedText className="task-filter-option-label">{label}</TruncatedText></label>;
 }
 
-/** Proposed five-group IA; the collection retains ownership of filter state. */
-export function IssueFilterPanel({ state, onChange, activeFilterCount, agents = [], projects = [], labels = [], creators = [], currentUserId, onClear }: PanelProps) {
+/** The collection retains ownership of filter state. */
+export function IssueFilterPanel({ state, onChange, activeFilterCount, agents = [], projects = [], labels = [], creators = [], currentUserId, onClear, enableRoutineTasksFilter, enableAgentCreatedVisibilityFilter, enableLiveRunsFilter = true }: PanelProps) {
+  useUiTranslation();
   useFullSharedTranslation();
   const [queries, setQueries] = useState({ projects: "", creators: "", assignees: "", labels: "" });
   const search = (key: keyof typeof queries) => (value: string) => setQueries(current => ({ ...current, [key]: value }));
@@ -44,9 +47,16 @@ export function IssueFilterPanel({ state, onChange, activeFilterCount, agents = 
   return <>
     <FlyoutHeader className="task-filters-header"><span>{fullSharedT("issueFilters.title")}</span>{activeFilterCount ? <Button variant="ghost" onClick={() => { onClear(); setQueries({ projects: "", creators: "", assignees: "", labels: "" }); }}>{fullSharedT("fullShared.clear_83b12c")}</Button> : null}</FlyoutHeader>
     <div className="task-filters-grid">
-      <FilterGroup title={fullSharedT("sidebar.status")} optionsKey="statuses">
-        {issueStatusOrder.map(status => <FilterRow key={status} label={issueFilterLabel(status)} checked={state.statuses.includes(status)} onToggle={() => onChange({ statuses: toggleIssueFilterValue(state.statuses, status) })} icon={<StatusIcon status={status} />} />)}
-      </FilterGroup>
+      <div className="task-filter-group">
+        <FilterGroup title={fullSharedT("sidebar.status")} optionsKey="statuses">
+          {issueStatusOrder.map(status => <FilterRow key={status} label={issueFilterLabel(status)} checked={state.statuses.includes(status)} onToggle={() => onChange({ statuses: toggleIssueFilterValue(state.statuses, status) })} icon={<StatusIcon status={status} />} />)}
+        </FilterGroup>
+        {enableLiveRunsFilter || enableAgentCreatedVisibilityFilter || enableRoutineTasksFilter ? <FilterGroup title={translateUi("issueFilters.visibility")} optionsKey="visibility">
+          {enableLiveRunsFilter ? <FilterRow label={translateUi("issueFilters.liveOnly")} checked={state.liveOnly === true} onToggle={() => onChange({ liveOnly: !state.liveOnly })} /> : null}
+          {enableAgentCreatedVisibilityFilter ? <FilterRow label={translateUi("interfaceUpdates.show_agent_created_tasks_716d2a63")} checked={state.showAgentCreatedTasks} onToggle={() => onChange({ showAgentCreatedTasks: !state.showAgentCreatedTasks })} /> : null}
+          {enableRoutineTasksFilter ? <FilterRow label={translateUi("interfaceUpdates.routine_tasks_e956b3d0")} checked={state.routineTasksOnly === true} onToggle={() => onChange({ routineTasksOnly: !state.routineTasksOnly })} /> : null}
+        </FilterGroup> : null}
+      </div>
       <FilterGroup title={fullSharedT("newIssue.project")} optionsKey="projects" searchLabel="projects" query={queries.projects} onQueryChange={search("projects")}>
         {visibleProjects.map(project => <FilterRow key={project.id} label={project.name} checked={state.projects.includes(project.id)} onToggle={() => onChange({ projects: toggleIssueFilterValue(state.projects, project.id) })} />)}
         {!visibleProjects.length ? <p className="task-filter-empty">{queries.projects ? fullSharedT("fullShared.no_projects_match_cca6fc") : fullSharedT("fullShared.no_projects_available_c3c79b")}</p> : null}

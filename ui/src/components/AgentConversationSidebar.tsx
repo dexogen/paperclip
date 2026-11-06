@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useId, useRef, useState } from "react";
@@ -17,6 +19,7 @@ export interface AgentConversationSidebarProps {
   availableAgents?: Agent[];
   activeId?: string;
   previews?: Record<string, string>;
+  unreadAgentIds?: readonly string[];
   loading?: boolean;
   error?: Error | null;
   onRetry?: () => void;
@@ -30,7 +33,8 @@ export interface AgentConversationSidebarProps {
 }
 
 /** Searchable navigation for one conversation per agent. */
-export function AgentConversationSidebar({ agents, existingChatAgentIds, availableAgents = agents, activeId, previews = {}, loading = false, error, onRetry, initialSearch = "", onSelect, onBrowse, onAddChat, historyLoading, historyError, onRetryHistory }: AgentConversationSidebarProps) {
+export function AgentConversationSidebar({ agents, existingChatAgentIds, availableAgents = agents, activeId, previews = {}, unreadAgentIds = [], loading = false, error, onRetry, initialSearch = "", onSelect, onBrowse, onAddChat, historyLoading, historyError, onRetryHistory }: AgentConversationSidebarProps) {
+  useUiTranslation();
   useFullSharedTranslation();
   const navigate = useNavigate();
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -85,6 +89,7 @@ export function AgentConversationSidebar({ agents, existingChatAgentIds, availab
             <span className="truncate text-sm font-medium">{agent.name}</span>
             <span className="truncate text-xs text-muted-foreground">{agent.status === "terminated" ? fullSharedT("fullShared.terminated_56a88f") : agent.status === "paused" ? fullSharedT("fullShared.paused_e159b0") : previews[agent.id] ?? agent.title ?? fullSharedT("fullShared.start_a_conversation_258150")}</span>
           </span>
+          {unreadAgentIds.includes(agent.id) && <span role="img" aria-label={translateUi("interfaceUpdates.unread_messages_from_value_46a46085", { value1: (agent.name) })} className="size-2 shrink-0 rounded-full bg-primary" />}
         </Link>)}
       </nav> : !agents.length && (historyLoading || historyError) ? null : <div className="flex flex-col items-start gap-2 px-2 py-6">
         <p className="text-sm font-medium">{agents.length ? fullSharedT("fullShared.no_agents_found_066161") : fullSharedT("fullShared.no_chats_yet_269208")}</p>

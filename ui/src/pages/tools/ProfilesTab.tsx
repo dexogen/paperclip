@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useMemo, useState } from "react";
@@ -25,7 +27,6 @@ import {
   type ToolProfileEntryInput,
   type UpdateToolProfileInput,
 } from "@/api/tools";
-import { ApiError } from "@/api/client";
 import { queryKeys } from "@/lib/queryKeys";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -52,14 +53,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/context/ToastContext";
 import { EmptyState } from "@/components/EmptyState";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import {
   CapabilityBadges,
-  ErrorState,
   LoadingState,
   RelativeTime,
   RiskBadge,
   ToolsPageHeader,
 } from "./shared";
+import { describeError } from "@/api/errors";
 
 const SELECTOR_TYPES: Array<{ value: ToolProfileEntrySelectorType; label: string }> = [
   { value: "tool_name", get label() { return fullAppsT("fullApps.tool_name_c506c9"); } },
@@ -475,6 +477,7 @@ function EntryFields({
 }
 
 export function EffectiveAgentPanel({ companyId, agentOptions }: { companyId: string; agentOptions: Array<{ id: string; name: string }> }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const [agentId, setAgentId] = useState("");
   const effective = useQuery({
@@ -484,6 +487,7 @@ export function EffectiveAgentPanel({ companyId, agentOptions }: { companyId: st
     queryFn: () => toolsApi.getEffectiveProfilesForAgent(companyId, agentId),
     enabled: Boolean(agentId),
   });
+  const effectiveView = useQueryView(effective);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -492,11 +496,18 @@ export function EffectiveAgentPanel({ companyId, agentOptions }: { companyId: st
         <AgentSelect agents={agentOptions} value={agentId} onChange={setAgentId} />
       </div>
       {!agentId ? (
-        <div className="rounded-lg border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">{fullAppsT("fullApps.pick_an_agent_to_see_what_it_can_use_right_now_720bc8")}</div>
-      ) : effective.isLoading ? (
-        <LoadingState label={fullAppsT("fullApps.checking_access_705975")} />
-      ) : effective.error ? (
-        <ErrorState t={fullAppsI18n.t} error={effective.error} onRetry={() => effective.refetch()} />
+        <div className="rounded-lg border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+          {translateUi("fullApps.pick_an_agent_to_see_what_it_can_use_right_now_720bc8")}
+        </div>
+      ) : effective.isLoading || effectiveView.kind === "reconnecting" ? (
+        <LoadingState label={translateUi("fullApps.checking_access_705975")} />
+      ) : effectiveView.kind === "error" ? (
+        <QueryErrorState
+          error={effective.error}
+          action="check this agent's access"
+          onRetry={effectiveView.retry}
+          retrying={effectiveView.isFetching}
+        />
       ) : (
         <div className="min-h-0 space-y-5 overflow-y-auto pr-1">
           <div className="space-y-2">
@@ -632,6 +643,7 @@ function AllowList({ rows, catalogLoading }: { rows: AllowListRow[]; catalogLoad
 }
 
 export function ProfilesTab({ companyId }: { companyId: string }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const qc = useQueryClient();
   const { pushToast } = useToast();
@@ -667,6 +679,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     queryKey: queryKeys.tools.profiles(companyId),
     queryFn: () => toolsApi.listProfiles(companyId),
   });
+  const profilesView = useQueryView(profiles);
 
   const connectionList = lookups.connections.data?.connections ?? [];
   // Company-wide catalog, assembled per connection (there is no aggregate
@@ -727,7 +740,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_create_profile_6156b9"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
@@ -743,7 +756,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_update_profile_275119"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
@@ -759,7 +772,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_add_entry_5dfe33"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
@@ -772,7 +785,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_remove_entry_18b1c0"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
@@ -789,7 +802,7 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_bind_profile_b20f66"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
@@ -806,13 +819,22 @@ export function ProfilesTab({ companyId }: { companyId: string }) {
     },
     onError: (error) => pushToast({
       title: fullAppsT("fullApps.could_not_remove_binding_49e507"),
-      body: error instanceof ApiError ? error.message : String(error),
+      body: describeError(error).body,
       tone: "error",
     }),
   });
 
-  if (profiles.isLoading) return <LoadingState />;
-  if (profiles.error) return <ErrorState t={fullAppsI18n.t} error={profiles.error} onRetry={() => profiles.refetch()} />;
+  if (profiles.isLoading || profilesView.kind === "reconnecting") return <LoadingState />;
+  if (profilesView.kind === "error") {
+    return (
+      <QueryErrorState
+        error={profiles.error}
+        action="load profiles"
+        onRetry={profilesView.retry}
+        retrying={profilesView.isFetching}
+      />
+    );
+  }
 
   const list = profiles.data?.profiles ?? [];
   const selected = list.find((p) => p.id === selectedId) ?? list[0] ?? null;

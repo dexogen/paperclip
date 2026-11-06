@@ -151,7 +151,7 @@ describe("AuthPage", () => {
   it("fails closed when deployment metadata cannot be loaded", async () => {
     healthMock.mockRejectedValue(new Error("offline"));
     const { root } = await mount();
-    await vi.waitFor(() => expect(container.textContent).toContain("Unable to check sign-in"));
+    await vi.waitFor(() => expect(container.textContent).toContain("Couldn't check sign-in"));
     expect(container.querySelector("form")).toBeNull();
     await act(() => root.unmount());
   });
@@ -306,6 +306,7 @@ describe("AuthPage", () => {
 
   it("invalidates anonymous health metadata after sign-in", async () => {
     const { root, queryClient } = await mount();
+    const invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
     queryClient.setQueryData(queryKeys.health, {
       status: "ok",
       deploymentMode: "authenticated",
@@ -337,6 +338,7 @@ describe("AuthPage", () => {
       password: "supersecret",
     });
     expect(healthMock).toHaveBeenCalledTimes(2);
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: queryKeys.health });
 
     await act(async () => {
       root.unmount();
@@ -424,7 +426,7 @@ describe("CliAuthPage rate-limit recovery", () => {
   it.each([400, 401, 403, 404, 410, 500])("does not retry an ordinary approval GET failure with HTTP%s", async status => {
     fetchCli.mockImplementation(async () => response({ error: "Challenge unavailable" }, status));
     await mountCli();
-    expect(cliContainer.textContent).toContain("CLI auth challenge unavailable");
+    expect(cliContainer.querySelector('[data-query-view="error"]')).not.toBeNull();
     expect(cliClient!.getQueryState(challengeQueryKey)?.error).toBeInstanceOf(ApiError);
     await advance(10 * 60_000);
     expect(fetchCli).toHaveBeenCalledTimes(1);
@@ -444,7 +446,7 @@ describe("CliAuthPage rate-limit recovery", () => {
     expect(fetchCli).toHaveBeenCalledTimes(4);
     expect(cliClient!.getQueryState(challengeQueryKey)).toMatchObject({ status: "error", fetchStatus: "idle", error: { status: 429 } });
     await advance(1);
-    expect(cliContainer.textContent).toContain("CLI auth challenge unavailable");
+    expect(cliContainer.querySelector('[data-query-view="error"]')).not.toBeNull();
     await advance(10 * 60_000);
     expect(fetchCli).toHaveBeenCalledTimes(4);
   });
@@ -457,7 +459,7 @@ describe("CliAuthPage rate-limit recovery", () => {
     await reactAct(async () => { void cliClient!.invalidateQueries({ queryKey: challengeQueryKey }); });
     await advance(0);
     expect(fetchCli).toHaveBeenCalledTimes(2);
-    expect(cliContainer.textContent).toContain("CLI auth challenge unavailable");
+    expect(cliContainer.querySelector('[data-query-view="error"]')).not.toBeNull();
     await advance(10 * 60_000);
     expect(fetchCli).toHaveBeenCalledTimes(2);
   });
@@ -465,7 +467,7 @@ describe("CliAuthPage rate-limit recovery", () => {
   it("does not shorten a hint that falls outside the finite page retry window", async () => {
     fetchCli.mockImplementation(async () => response({ error: "Too many CLI auth requests", details: { retryAfterSeconds: 600 } }, 429));
     await mountCli();
-    expect(cliContainer.textContent).toContain("CLI auth challenge unavailable");
+    expect(cliContainer.querySelector('[data-query-view="error"]')).not.toBeNull();
     await advance(20 * 60_000);
     expect(fetchCli).toHaveBeenCalledTimes(1);
   });

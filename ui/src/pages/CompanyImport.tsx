@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { pageValueLabel } from "./full-pages-labels";
 import { i18n } from "@/i18n";
 import { Trans } from "@/i18n";
@@ -75,6 +76,7 @@ import {
   writeStoredImportJob,
 } from "../lib/import-job-watch";
 import { Badge } from "@/components/ui/badge";
+import { describeError } from "@/api/errors";
 
 // ── Import-specific helpers ───────────────────────────────────────────
 
@@ -1099,7 +1101,6 @@ export function CompanyImport() {
   const { data: experimentalSettings } = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
     queryFn: () => instanceSettingsApi.getExperimental(),
-    retry: false,
   });
   const runnerInstalled = availableAdapterTypes?.has("paperclip_runner") === true;
   const nativeRunnerAvailable = runnerInstalled && experimentalSettings?.enableNativeRunner === true;
@@ -1241,8 +1242,8 @@ export function CompanyImport() {
       if (generation !== previewGenerationRef.current) return;
       pushToast({
         tone: "error",
-        title: t("fullPages.previewFailed"),
-        body: err instanceof Error ? err.message : t("fullPages.failedToPreviewImport"),
+        title: translateUi("fullPages.previewFailed"),
+        body: describeError(err).body,
       });
     },
   });
@@ -1395,8 +1396,8 @@ export function CompanyImport() {
       setResumedWatchJobId(null);
       pushToast({
         tone: "error",
-        title: t("skillsGap.importFailed"),
-        body: err instanceof Error ? err.message : t("fullPages.failedToApplyImport"),
+        title: translateUi("skillsGap.importFailed"),
+        body: describeError(err).body,
       });
     },
   });
@@ -1449,8 +1450,8 @@ export function CompanyImport() {
     } catch (err) {
       pushToast({
         tone: "error",
-        title: t("fullPages.packageReadFailed"),
-        body: err instanceof Error ? err.message : t("fullPages.failedToReadFolder"),
+        title: translateUi("fullPages.packageReadFailed"),
+        body: describeError(err).body,
       });
     }
   }
@@ -1659,7 +1660,7 @@ export function CompanyImport() {
         }
         nextActivated.add(item.key);
       } catch (err) {
-        nextFailures[item.key] = err instanceof Error ? err.message : t("fullPages.activationFailed");
+        nextFailures[item.key] = describeError(err).body;
       }
     }
     setActivatedKeys(nextActivated);
@@ -2148,14 +2149,15 @@ export function CompanyImport() {
             </p>
           </div>
         )}
-        {previewMutation.isError &&
+        {previewMutation.isError && // query-error-ok: mutation outcome for the upload the user just started, not a read
           !previewMutation.isPending &&
           previewMutation.variables === previewGenerationRef.current && (
           <div className="mt-3 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2.5">
-            <p className="text-xs text-destructive">{t("fullPages.previewFailed_4a2591")}{" "}
-              {previewMutation.error instanceof Error
-                ? previewMutation.error.message
-                : t("fullPages.theRequestDidNotComplete")}{" "}{t("fullPages.retryOrReExportThePackageWithout")}</p>
+            <p className="text-xs text-destructive">
+              {translateUi("fullPages.previewFailed_4a2591")}{" "}
+              {describeError(previewMutation.error).body}{" "}
+              {translateUi("fullPages.retryOrReExportThePackageWithout")}
+            </p>
           </div>
         )}
       </div>
@@ -2238,12 +2240,13 @@ export function CompanyImport() {
               </p>
             </div>
           )}
-          {importMutation.isError && !importMutation.isPending && (
+          {importMutation.isError && !importMutation.isPending && ( // query-error-ok: mutation outcome for the import the user just started, not a read
             <div className="mx-5 mt-3 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2.5">
-              <p className="text-xs text-destructive">{t("fullPages.importFailed")}{" "}
-                {importMutation.error instanceof Error
-                  ? importMutation.error.message
-                  : t("fullPages.theRequestDidNotComplete")}{" "}{t("fullPages.nothingMayHaveBeenCreatedOrThe")}</p>
+              <p className="text-xs text-destructive">
+                {translateUi("fullPages.importFailed")}{" "}
+                {describeError(importMutation.error).body}{" "}
+                {translateUi("fullPages.nothingMayHaveBeenCreatedOrThe")}
+              </p>
             </div>
           )}
 

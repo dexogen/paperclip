@@ -2,6 +2,7 @@ import { renderAppError } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { useAccountIdentity } from "@/api/companies-query";
 import { queryKeys } from "@/lib/queryKeys";
@@ -36,7 +37,7 @@ export function ArcadeDiscoverySetup({ connection, onClose }: { connection: Tool
         <p className="text-xs text-muted-foreground">{fullAppsT("fullApps.use_the_end_user_id_configured_for_this_gateway_s_si_40f288")}</p>
         <Input id="arcade-discovery-user" autoComplete="off" required value={userId} onChange={event => setUserId(event.target.value)} />
       </div>
-      {save.isError ? <p role="alert" className="text-sm text-destructive">{save.error instanceof Error ? renderAppError(save.error) : fullAppsT("fullApps.couldn_t_save_account_sync_try_again_a3341a")}</p> : null}
+      {save.error ? <p role="alert" className="text-sm text-destructive">{describeError(save.error).body}</p> : null}
       <DialogFooter className="sm:justify-between"><Button type="button" variant="ghost" disabled={save.isPending} onClick={onClose}>{fullAppsT("fullApps.cancel_19766e")}</Button>
         <Button type="submit" disabled={!settled || save.isPending || !apiKey.trim() || !userId.trim()}>{save.isPending ? fullAppsT("fullApps.saving_23e392") : fullAppsT("fullApps.save_and_sync_61cc38")}</Button>
       </DialogFooter>

@@ -7,6 +7,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { TaskChatItem, TaskChatProviderActivityItem } from "./task-chat-model";
 import {
   TaskChatTurnStatusIsland,
+  taskChatTurnPlanRows,
+  taskChatTurnPlanSegment,
   taskChatTurnStatusModel,
 } from "./TaskChatTurnStatusIsland";
 
@@ -59,6 +61,24 @@ describe("TaskChatTurnStatusIsland", () => {
     act(() => { void i18n.changeLanguage("en"); });
   });
 
+  it("updates plan progress on language changes without changing the supplied steps", async () => {
+    const steps = [
+      { id: "first", label: "Customer-provided text", status: "completed" as const },
+      { id: "next", label: "Keep this label", status: "pending" as const },
+    ];
+    const model = taskChatTurnStatusModel([plan(steps)])!;
+    render(model);
+    const next = container.querySelector('[data-step-status="pending"]');
+    expect(container.textContent).toContain("Up next: Keep this label");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Далее: Keep this label");
+    expect(container.textContent).toContain("Выполнено шагов: 1 из 2");
+    expect(container.querySelector('[data-step-status="pending"]')).toBe(next);
+    expect(steps[0].label).toBe("Customer-provided text");
+    await act(async () => { await i18n.changeLanguage("en"); });
+    expect(container.textContent).toContain("Up next: Keep this label");
+  });
+
   it("selects in-progress, blocked, pending, then final completed steps", () => {
     const inProgress = taskChatTurnStatusModel([plan([
       { id: "one", label: "Done", status: "completed" },
@@ -95,67 +115,122 @@ describe("TaskChatTurnStatusIsland", () => {
     ]);
   });
 
-  it("renders a focusable plan capsule and opens the complete checklist", () => {
-    const model = taskChatTurnStatusModel([
+  function render(model: NonNullable<ReturnType<typeof taskChatTurnStatusModel>>, props: { defaultCollapsed?: boolean; compact?: boolean } = {}) {
+    act(() => root.render(<TaskChatTurnStatusIsland model={model} {...props} />));
+    return container.querySelector<HTMLElement>('[data-testid="task-chat-turn-status-island"]')!;
+  }
+  const checklist = () => container.querySelector('[aria-label="Within-turn checklist"]');
+  const header = () => container.querySelector<HTMLElement>('[data-testid="task-chat-turn-plan-header"]')!;
+
+  it("shows the checklist inline with the current step highlighted", () => {
+    const island = render(taskChatTurnStatusModel([
       plan([
         { id: "one", label: "Inspect", status: "completed" },
         { id: "two", label: "Build the island", status: "in_progress" },
         { id: "three", label: "Verify", status: "pending" },
       ]),
       workspace,
-    ])!;
-    act(() => root.render(<TaskChatTurnStatusIsland model={model} />));
-    const island = container.querySelector('[data-testid="task-chat-turn-status-island"]') as HTMLButtonElement;
-    expect(island.tagName).toBe("BUTTON");
-    expect(island.textContent).toContain("Step 2 / 3");
-    expect(island.textContent).toContain("2 files changed");
-    expect(island.getAttribute("aria-label")).toContain("Build the island");
-
-    act(() => island.focus());
-    const checklist = document.body.querySelector('[aria-label="Within-turn checklist"]');
-    expect(checklist?.textContent).toContain("Inspect");
-    expect(checklist?.textContent).toContain("Build the island");
-    expect(checklist?.textContent).toContain("Verify");
-    expect(checklist?.querySelector('[aria-current="step"]')?.textContent).toContain("Build the island");
-    const current = checklist?.querySelector('[aria-current="step"]');
-    const focused = document.activeElement;
-    act(() => { void i18n.changeLanguage("ru"); });
-    expect(container.querySelector('[data-testid="task-chat-turn-status-island"]')).toBe(island);
-    expect(document.activeElement).toBe(focused);
-    expect(current?.textContent).toContain("Build the island");
-    expect(current?.closest("ol, ul")).not.toBeNull();
-    expect(island.textContent).toContain("Шаг 2 / 3");
-    act(() => { void i18n.changeLanguage("en"); });
-    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).toBe(checklist);
-    expect(checklist?.querySelector('[aria-current="step"]')).toBe(current);
-  });
-
-  it("renders diff-only status without an empty interactive popover", () => {
-    const model = taskChatTurnStatusModel([workspace])!;
-    act(() => root.render(<TaskChatTurnStatusIsland model={model} />));
-    const island = container.querySelector('[data-testid="task-chat-turn-status-island"]') as HTMLElement;
-    expect(island.tagName).toBe("DIV");
-    expect(island.getAttribute("role")).toBe("status");
+    ])!);
+    expect(island.getAttribute("data-plan-state")).toBe("active");
+    expect(container.querySelector('[data-testid="task-chat-turn-plan-headline"]')?.textContent).toBe("Build the island");
+    expect(container.querySelector('[data-testid="task-chat-turn-plan-progress"]')?.textContent).toContain("1/3");
     expect(island.textContent).toContain("+12");
-    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).toBeNull();
+    expect(checklist()?.textContent).toContain("Inspect");
+    expect(checklist()?.textContent).toContain("Verify");
+    expect(checklist()?.querySelector('[aria-current="step"]')?.textContent).toContain("Build the island");
+    expect(header().getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("toggles the checklist for touch/click input and closes it with Escape", () => {
-    const model = taskChatTurnStatusModel([plan([
+  it("collapses and reopens from the header", () => {
+    render(taskChatTurnStatusModel([plan([
       { id: "one", label: "Inspect", status: "completed" },
       { id: "two", label: "Build", status: "in_progress" },
+    ])])!);
+    expect(document.getElementById(header().getAttribute("aria-controls")!)).toBe(checklist());
+    act(() => header().click());
+    expect(checklist()).toBeNull();
+    expect(header().getAttribute("aria-expanded")).toBe("false");
+    expect(header().hasAttribute("aria-controls")).toBe(false);
+    act(() => header().click());
+    expect(checklist()).not.toBeNull();
+  });
+
+  it("auto-collapses a completed plan but lets the viewer reopen it", () => {
+    render(taskChatTurnStatusModel([plan([
+      { id: "one", label: "Inspect", status: "completed" },
+      { id: "two", label: "Build", status: "completed" },
+    ])])!);
+    expect(container.querySelector('[data-testid="task-chat-turn-plan-headline"]')?.textContent).toBe("All 2 steps done");
+    expect(checklist()).toBeNull();
+    act(() => header().click());
+    expect(checklist()?.querySelector('[aria-current="step"]')).toBeNull();
+  });
+
+  it("headlines blocked and not-yet-started plans", () => {
+    render(taskChatTurnStatusModel([plan([
+      { id: "one", label: "Inspect", status: "completed" },
+      { id: "two", label: "Run tests", status: "blocked" },
+    ])])!);
+    expect(container.querySelector('[data-testid="task-chat-turn-plan-headline"]')?.textContent).toBe("Blocked: Run tests");
+    expect(container.querySelector('[data-plan-state]')?.getAttribute("data-plan-state")).toBe("blocked");
+
+    render(taskChatTurnStatusModel([plan([
+      { id: "a", label: "Inspect", status: "pending" },
+      { id: "b", label: "Build", status: "pending" },
+    ], 2)])!);
+    expect(container.querySelector('[data-testid="task-chat-turn-plan-headline"]')?.textContent).toBe("Up next: Inspect");
+  });
+
+  it("renders header-only for single steps, compact mode, and collapsed-by-default", () => {
+    const twoSteps = taskChatTurnStatusModel([plan([
+      { id: "one", label: "Inspect", status: "in_progress" },
+      { id: "two", label: "Build", status: "pending" },
     ])])!;
-    act(() => root.render(<TaskChatTurnStatusIsland model={model} />));
-    const island = container.querySelector<HTMLButtonElement>('[data-testid="task-chat-turn-status-island"]')!;
+    render(taskChatTurnStatusModel([plan([{ id: "one", label: "Answer", status: "in_progress" }])])!);
+    expect(checklist()).toBeNull();
+    expect(header().tagName).toBe("DIV");
 
-    act(() => island.click());
-    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).not.toBeNull();
-    act(() => island.click());
-    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).toBeNull();
+    act(() => root.unmount());
+    root = createRoot(container);
+    render(twoSteps, { compact: true });
+    expect(checklist()).toBeNull();
+    expect(header().tagName).toBe("DIV");
 
-    act(() => island.click());
-    act(() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
-    expect(document.body.querySelector('[aria-label="Within-turn checklist"]')).toBeNull();
+    act(() => root.unmount());
+    root = createRoot(container);
+    render(twoSteps, { defaultCollapsed: true });
+    expect(checklist()).toBeNull();
+    expect(header().getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("windows long plans around the current step and expands on demand", () => {
+    const labels = Array.from({ length: 12 }, (_, index) => `Step ${index + 1}`);
+    const steps = labels.map((label, index) => ({
+      id: `s${index}`,
+      label,
+      status: index < 6 ? "completed" as const : index === 6 ? "in_progress" as const : "pending" as const,
+    }));
+    const segment = taskChatTurnPlanSegment(steps);
+    const rows = taskChatTurnPlanRows(segment, false);
+    expect(rows[0]).toEqual({ kind: "earlier", count: 5, allCompleted: true });
+    expect(rows.filter((row) => row.kind === "step")).toHaveLength(5);
+    expect(rows.at(-1)).toEqual({ kind: "more", count: 2 });
+    expect(taskChatTurnPlanRows(segment, true)).toHaveLength(12);
+    expect(taskChatTurnPlanRows(taskChatTurnPlanSegment(steps.slice(0, 7)), false)).toHaveLength(7);
+
+    render(taskChatTurnStatusModel([plan(steps)])!);
+    expect(checklist()?.querySelectorAll("[data-step-status]")).toHaveLength(5);
+    act(() => container.querySelector<HTMLButtonElement>('[data-testid="task-chat-turn-plan-more"]')!.click());
+    expect(checklist()?.querySelectorAll("[data-step-status]")).toHaveLength(12);
+  });
+
+  it("renders diff-only status as a pill without a checklist", () => {
+    const island = render(taskChatTurnStatusModel([workspace])!);
+    expect(island.tagName).toBe("DIV");
+    expect(island.getAttribute("role")).toBe("status");
+    expect(island.textContent).toContain("2 files changed");
+    expect(island.textContent).toContain("+12");
+    expect(checklist()).toBeNull();
   });
 
   it("hides empty snapshots", () => {

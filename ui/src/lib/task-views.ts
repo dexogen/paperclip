@@ -63,7 +63,7 @@ export const TASK_VIEW_GROUPS: TaskViewGroup[] = [
     get label() { return fullSharedT("sidebar.organization"); },
     views: [
       { key: "all", get label() { return fullSharedT("taskViews.all"); }, surface: "issues", statuses: [], get hint() { return fullSharedT("taskViews.hints.all"); } },
-      { key: "active", get label() { return fullSharedT("fullShared.active_923406"); }, surface: "issues", statuses: ["todo", "in_progress", "in_review", "blocked"], get hint() { return fullSharedT("taskViews.hints.active"); } },
+      { key: "active", get label() { return fullSharedT("fullShared.active_923406"); }, surface: "issues", statuses: ["todo", "in_progress", "monitoring", "in_review", "blocked"], get hint() { return fullSharedT("taskViews.hints.active"); } },
       { key: "backlog", get label() { return fullSharedT("taskViews.backlog"); }, surface: "issues", statuses: ["backlog"], get hint() { return fullSharedT("taskViews.hints.backlog"); } },
       { key: "done", get label() { return fullSharedT("fullShared.done_11a676"); }, surface: "issues", statuses: ["done", "cancelled"], get hint() { return fullSharedT("taskViews.hints.done"); } },
     ],
@@ -136,6 +136,7 @@ export const ORGANIZATION_SCOPED_PARAMS = [
   "assignee",
   "workspace",
   "participantAgentId",
+  "originKind",
   "q",
 ] as const;
 

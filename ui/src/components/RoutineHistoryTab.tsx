@@ -20,6 +20,8 @@ import {
   type RestoreRoutineRevisionResponse,
 } from "../api/routines";
 import { ApiError } from "../api/client";
+import { describeError } from "../api/errors";
+import { QueryErrorState, useQueryView } from "./QueryView";
 import { queryKeys } from "../lib/queryKeys";
 import { buildLineDiff, type DiffRow } from "../lib/line-diff";
 import { relativeTime } from "../lib/utils";
@@ -92,6 +94,7 @@ export function RoutineHistoryTab({
     queryKey: queryKeys.routines.revisions(routine.id),
     queryFn: () => routinesApi.listRevisions(routine.id),
   });
+  const revisionsView = useQueryView(revisionsQuery);
 
   const revisions = useMemo(() => revisionsQuery.data ?? [], [revisionsQuery.data, t]);
   const sortedRevisions = useMemo(
@@ -158,7 +161,7 @@ export function RoutineHistoryTab({
     onError: (error) => {
       pushToast({
         title: t("fullRoutinesSecrets.failedToRestoreRevision"),
-        body: error instanceof Error ? error.message : i18n.t("fullRoutinesSecrets.paperclipCouldNotRestoreTheRevision"),
+        body: describeError(error, { action: "restore the revision" }).body,
         tone: "error",
       });
     },
@@ -187,7 +190,9 @@ export function RoutineHistoryTab({
     });
   };
 
-  if (revisionsQuery.isLoading) {
+  // A loaded revision list stays on screen through a failed refetch; an outage
+  // before the first load shows the skeleton, a real failure shows copy.
+  if (revisionsView.kind === "loading" || revisionsView.kind === "reconnecting") {
     return (
       <div className="grid gap-5 md:grid-cols-(--gtc-9)">
         <div className="space-y-2">
@@ -200,19 +205,14 @@ export function RoutineHistoryTab({
     );
   }
 
-  if (revisionsQuery.error) {
+  if (revisionsView.kind === "error") {
     return (
-      <div className="rounded-md border border-l-2 border-l-destructive border-border p-4 space-y-3">
-        <div>
-          <p className="text-sm font-medium">{t("fullRoutinesSecrets.couldNotLoadRevisions")}</p>
-          <p className="text-xs text-muted-foreground">
-            {revisionsQuery.error instanceof Error
-              ? revisionsQuery.error.message
-              : t("fullRoutinesSecrets.unknownErrorLoadingRevisions")}
-          </p>
-        </div>
-        <Button size="sm" variant="outline" onClick={() => revisionsQuery.refetch()}>{t("fullRoutinesSecrets.retry")}</Button>
-      </div>
+      <QueryErrorState
+        error={revisionsView.error}
+        action="load revisions"
+        onRetry={revisionsView.retry}
+        retrying={revisionsView.isFetching}
+      />
     );
   }
 

@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t, useTranslation, i18n } from "@/i18n";
 import { ProjectSkillRepositoryRow } from "@/components/skill-studio/ProjectSkillRepositoryRow";
 import { SkillSourceConnectionRepair } from "@/components/skill-studio/SkillSourceConnectionRepair";
@@ -15,6 +16,8 @@ import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import { queryKeys } from '@/lib/queryKeys';
 import { skillSourcesApi } from '@/api/skillSources';
 import { ApiError } from '@/api/client';
+import { describeError } from '@/api/errors';
+import { QueryErrorState, useQueryView } from '@/components/QueryView';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { appSourceConnectHref } from './apps/app-connect-policy';
 import { Button } from '@/components/ui/button';
@@ -50,18 +53,20 @@ export function SkillSources() {
   const repairSource = query.data?.find(source => source.id === repairSourceId);
   const branchSource = query.data?.find(source => source.id === branchSourceId);
   const projectRepositories = useQuery({ queryKey: queryKeys.skillSources.projects(companyId), queryFn: () => skillSourcesApi.projectRepositories(companyId), enabled: Boolean(companyId), refetchInterval: 5000 });
+  const view = useQueryView(query);
+  const projectsView = useQueryView(projectRepositories);
   async function invalidate() {
     await Promise.all([client.invalidateQueries({ queryKey: queryKeys.skillSources.projects(companyId) }), client.invalidateQueries({ queryKey: sourceKey(companyId) }), client.invalidateQueries({ queryKey: queryKeys.companySkills.list(companyId) })]);
   }
   const refresh = useMutation({ mutationFn: (id: string) => skillSourcesApi.refresh(companyId, id), onSuccess: async result => {
     setResults(prev => ({ ...prev, [result.source.id]: null })); await invalidate();
-  }, onError: (error, id) => { setResults(prev => ({ ...prev, [id]: { message: error.message, failedAt: Date.now(), operation: 'refresh' } })); void invalidate(); } });
+  }, onError: (error, id) => { setResults(prev => ({ ...prev, [id]: { message: describeError(error).body, failedAt: Date.now(), operation: 'refresh' } })); void invalidate(); } });
   const adopt = useMutation({ mutationFn: async (group: ReturnType<typeof groupProjectSkillRepositories>[number]) => {
     for (const workspace of group.importableWorkspaces) await skillSourcesApi.adoptProject(companyId, workspace.workspaceId);
   }, onSuccess: invalidate, onError: () => { void invalidate(); } });
   const settings = useMutation({ mutationFn: ({ source, enabled }: { source: SkillSource; enabled: boolean }) => skillSourcesApi.settings(companyId, source.id, { revision: source.revision, automaticUpdates: enabled }),
     onSuccess: async (_result, variables) => { setResults(prev => ({ ...prev, [variables.source.id]: null })); await invalidate(); },
-    onError: (error, variables) => setResults(prev => ({ ...prev, [variables.source.id]: { message: error.message, failedAt: Date.now(), operation: 'settings' } })) });
+    onError: (error, variables) => setResults(prev => ({ ...prev, [variables.source.id]: { message: describeError(error).body, failedAt: Date.now(), operation: 'settings' } })) });
   const availableProjects = groupProjectSkillRepositories(Array.isArray(projectRepositories.data) ? projectRepositories.data.filter(repo => !repo.sourceId) : []);
   const groupSource = (group: typeof availableProjects[number]) => query.data?.find(source => source.repositoryUrl.toLowerCase() === group.repository.repositoryUrl.toLowerCase() && source.trackingRef === group.repository.trackingRef);
   const uninstalledProjects = availableProjects.filter(group => !groupSource(group));
@@ -101,12 +106,12 @@ export function SkillSources() {
       </div>
     </header>
     <SkillsPageNavigation activeView="sources" />
-    {query.isPending && <p role="status" className="text-sm text-muted-foreground">{t("skillsGap.loadingSources")}</p>}
-    {query.error && <p role="alert" className="text-sm text-destructive">{query.error.message} <Button variant="ghost" size="sm" onClick={() => void query.refetch()}>{t("skillsGap.tryAgain")}</Button></p>}
-    {query.data?.length === 0 && availableProjects.length === 0 && <div className="flex flex-col items-start gap-3 py-8"><p className="text-sm text-muted-foreground">{selectedCompany?.name ? t("skillsGap.noRepositoriesForCompany", { company: selectedCompany.name }) : t("skillsGap.noRepositoriesYet")}</p><Button variant="outline" onClick={() => navigate('/skills/sources/new')}>{t("skillsGap.importFromGithub")}</Button></div>}
-    {projectRepositories.error && <p role="alert" className="text-sm text-destructive">{projectRepositories.error.message} <Button variant="ghost" size="sm" onClick={() => void projectRepositories.refetch()}>{t("skillsGap.tryAgain")}</Button></p>}
-    {adopt.error && <p role="alert" className="text-sm text-destructive">{adopt.error.message}</p>}
-    {uninstalledProjects.length > 0 && <div className="divide-y divide-border" aria-label={t("skillsGap.projectRepositories")}>
+    {(view.kind === 'loading' || view.kind === 'reconnecting') && <p role="status" className="text-sm text-muted-foreground">{translateUi("skillsGap.loadingSources")}</p>}
+    {view.kind === 'error' && <QueryErrorState error={query.error} action="load skill sources" onRetry={view.retry} retrying={view.isFetching} />}
+    {query.data?.length === 0 && availableProjects.length === 0 && <div className="flex flex-col items-start gap-3 py-8"><p className="text-sm text-muted-foreground">{selectedCompany?.name ? t("skillsGap.noRepositoriesForCompany", { company: selectedCompany.name }) : t("skillsGap.noRepositoriesYet")}</p><Button variant="outline" onClick={() => navigate('/skills/sources/new')}>{translateUi("skillsGap.importFromGithub")}</Button></div>}
+    {projectsView.kind === 'error' && <p role="alert" className="text-sm text-destructive">{describeError(projectRepositories.error).body} <Button variant="ghost" size="sm" onClick={() => void projectRepositories.refetch()}>{translateUi("skillsGap.tryAgain")}</Button></p>}
+    {adopt.error && <p role="alert" className="text-sm text-destructive">{describeError(adopt.error).body}</p>}
+    {uninstalledProjects.length > 0 && <div className="divide-y divide-border" aria-label={translateUi("skillsGap.projectRepositories")}>
       {uninstalledProjects.map(group => <ProjectSkillRepositoryRow key={group.key} repository={group.repository} backgroundPending={group.hasPending} disabled={adopt.isPending}
         pending={adopt.isPending && adopt.variables?.key === group.key} onImport={() => adopt.mutate(group)} />)}
     </div>}
@@ -257,7 +262,9 @@ function SourceDialog({ companyId, source, onClose, onSaved }: {
   const [discovery, setDiscovery] = useState<SkillSourceDiscovery | null>(!source && draft.packageMode === 'skills' ? null : draft.discovery ?? null);
   const [selected, setSelected] = useState<Set<string>>(() => new Set(draft.selectedPaths ?? (source ? source.entries.filter(entry => entry.selection !== 'excluded').map(entry => entry.path) : [])));
   const [excludedFolders, setExcludedFolders] = useState<string[]>(draft.excludedFolders ?? source?.excludedFolders ?? []);
-  const repositories = useQuery({ queryKey: queryKeys.skillSources.repositories(companyId), queryFn: () => skillSourcesApi.repositories(companyId), refetchOnMount: 'always', retry: false });
+  const repositories = useQuery({ queryKey: queryKeys.skillSources.repositories(companyId), queryFn: () => skillSourcesApi.repositories(companyId), refetchOnMount: 'always' });
+  const repositoriesView = useQueryView(repositories);
+  const repositoriesLoading = repositories.isPending || repositoriesView.kind === 'reconnecting';
   const availableRepositories = repositories.data?.repositories ?? [];
   const parsedRepository = parseGitHubSkillRepositoryUrl(repositoryUrl);
   const matchingRepository = availableRepositories.find(repo => parseGitHubSkillRepositoryUrl(repo.url)?.repositoryUrl === parsedRepository?.repositoryUrl);
@@ -329,7 +336,7 @@ function SourceDialog({ companyId, source, onClose, onSaved }: {
             </div>
             <Button asChild variant="outline" size="sm"><Link onClick={rememberReturn} to={connectHref}><Plus className="size-4" />{t("skillsGap.addRepos")}</Link></Button>
           </div>}
-          {repositories.isPending && <p role="status" className="text-sm text-muted-foreground">{t("skillsGap.loadingYourGithubRepositories")}</p>}
+          {repositoriesLoading && <p role="status" className="text-sm text-muted-foreground">{t("skillsGap.loadingYourGithubRepositories")}</p>}
           {availableRepositories.length > 0 && <Command className="h-auto border border-border" label={t("skillsGap.sourceRepositories")}>
               <CommandInput placeholder={t("skillsGap.searchRepositories")} aria-label={t("skillsGap.searchRepositories_22ea13")} disabled={busy} />
               <CommandList className="max-h-48">
@@ -347,12 +354,12 @@ function SourceDialog({ companyId, source, onClose, onSaved }: {
                 </CommandGroup>
               </CommandList>
           </Command>}
-          {(repositories.error || Boolean(repositories.data?.failedConnectionCount)) && <p role="alert" className="text-xs text-destructive">
+          {(repositoriesView.kind === 'error' || Boolean(repositories.data?.failedConnectionCount)) && <p role="alert" className="text-xs text-destructive">
             {availableRepositories.length ? t("skillsGap.someGithubConnectionsCouldNotLoadRepositories") : t("skillsGap.couldNotLoadGithubRepositories")}{' '}
             <Button variant="ghost" size="sm" disabled={repositories.isFetching} onClick={() => void repositories.refetch()}>{t("skillsGap.tryAgain")}</Button>
             <Link to="/apps" className="underline">{t("skillsGap.manageConnections")}</Link>
           </p>}
-          {!repositories.isPending && availableRepositories.length === 0 && <Button asChild variant="outline" className="h-28 w-full flex-col gap-3 whitespace-normal text-center">
+          {!repositoriesLoading && availableRepositories.length === 0 && <Button asChild variant="outline" className="h-28 w-full flex-col gap-3 whitespace-normal text-center">
             <Link onClick={rememberReturn} to={connectHref}><GithubIcon className="size-6" />{t("skillsGap.connectGithubToSeeYourRepos")}</Link>
           </Button>}
           <Button type="button" variant="link" size="sm" className="h-auto self-end p-0 text-xs font-normal text-muted-foreground underline" disabled={busy} aria-expanded={showRepositoryUrl} aria-controls="source-repository-url" onClick={() => setShowRepositoryUrl(true)}>{t("skillsGap.orAddPublicRepoByUrl")}</Button>
@@ -372,7 +379,7 @@ function SourceDialog({ companyId, source, onClose, onSaved }: {
         {selectionTree}
         <SkillImportWarnings warnings={warnings} />
       </div>}
-      {error && <p role="alert" className="text-sm text-destructive">{error.message}{' '}<Link onClick={rememberReturn} to={connectHref} className="underline">{t("skillsGap.connectAGithubAccount")}</Link></p>}
+      {error && <p role="alert" className="text-sm text-destructive">{describeError(error).body}{' '}<Link onClick={rememberReturn} to={connectHref} className="underline">{t("skillsGap.connectAGithubAccount")}</Link></p>}
       {scan.isPending && <SkillImportProgress repository={parsedRepository?.fullName ?? repositoryUrl} progress={progress} found={found} />}
       {save.isPending && <SkillImportProgress importing repository={source?.fullName ?? discovery!.fullName} count={selectedCount}
         found={candidates.filter(candidate => selected.has(candidate.path) && !candidate.error).map(candidate => ({ ...candidate, fileCount: candidate.inspection?.files.length ?? 1 }))} />}

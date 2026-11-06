@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { FastResponseHistory } from "../components/fast-responses/FastResponseHistory";
@@ -634,7 +635,7 @@ export function Costs({
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div data-canonical-toolbar="cost-range" role="toolbar" aria-label={translateUi("interfaceUpdates.cost_date_range_d6b49e11")} className="flex flex-wrap items-center gap-2">
               {PRESET_KEYS.map((key) => (
                 <Button
                   key={key}
@@ -650,7 +651,7 @@ export function Costs({
           </div>
 
           {preset === "custom" ? (
-            <div className="flex flex-wrap items-center gap-2 border border-border p-3">
+            <div data-canonical-toolbar="cost-dates" className="flex flex-wrap items-center gap-2 border border-border p-3">
               <input
                 type="date"
                 value={customFrom}

@@ -1,5 +1,6 @@
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
+import { useQueryView } from "@/components/QueryView";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { casesApi, type CaseHandoffView, type CaseWorkIssue } from "@/api/cases";
@@ -30,12 +31,14 @@ export function CaseHandoffHistory({ caseId, task, agents }: { caseId: string; t
     queryFn: ({ pageParam }) => casesApi.listHandoffs(caseId, pageParam),
     getNextPageParam: page => page.nextCursor ?? undefined,
   });
+  const historyView = useQueryView(history);
+  const waiting = ["loading", "reconnecting"].includes(historyView.kind);
   const handoffs = history.data?.pages.flatMap(page => page.items) ?? [];
   return <section className="space-y-3" aria-label={fullSharedT("fullShared.case_handoffs_914538")}>
     <h2 className="text-sm font-semibold">{fullSharedT("fullShared.handoffs_29f217")}</h2>
-    {history.isLoading ? <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_handoffs_81321f")}</p> : null}
-    {history.isError ? <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.handoffs_couldn_t_be_loaded_e8af21")}</p> : null}
-    {!history.isLoading && !history.isError && handoffs.length === 0 ? <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.no_handoffs_yet_e4dae1")}</p> : null}
+    {waiting ? <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_handoffs_81321f")}</p> : null}
+    {(historyView.kind === "error") ? <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.handoffs_couldn_t_be_loaded_e8af21")}</p> : null}
+    {!waiting && !(historyView.kind === "error") && handoffs.length === 0 ? <p className="text-sm text-muted-foreground">{fullSharedT("fullShared.no_handoffs_yet_e4dae1")}</p> : null}
     <ol className="divide-y divide-border">{handoffs.map(handoff => <HandoffRow key={handoff.id} handoff={handoff} task={task} agents={agents} />)}</ol>
     {history.hasNextPage ? <Button variant="ghost" size="sm" disabled={history.isFetchingNextPage} onClick={() => void history.fetchNextPage()}>{fullSharedT("fullShared.load_older_handoffs_42fe77")}</Button> : null}
   </section>;

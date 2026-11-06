@@ -22,6 +22,7 @@ import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSh
 import {
   Component,
   createElement,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -40,6 +41,8 @@ import type {
 } from "@paperclipai/shared";
 import { pluginsApi, type PluginUiContribution } from "@/api/plugins";
 import { authApi } from "@/api/auth";
+import { describeError, isTransientError } from "@/api/errors";
+import { queryViewKind } from "@/components/QueryView";
 import { queryKeys } from "@/lib/queryKeys";
 import { cn } from "@/lib/utils";
 import {
@@ -116,9 +119,18 @@ type SlotFilters = {
 };
 
 type UsePluginSlotsResult = {
+  /** The last loaded slots. Kept through a transient failure so chrome never disappears. */
   slots: ResolvedPluginSlot[];
+  /** True while nothing has loaded yet, including while reconnecting after an outage. */
   isLoading: boolean;
+  /**
+   * Readable copy for a non-transient failure (`describeError`), or null. A
+   * transient failure never sets this: outlets collapse or render the last
+   * loaded slots, and the app-level connection banner explains the outage.
+   */
   errorMessage: string | null;
+  error: unknown;
+  retry: () => void;
 };
 
 /**
@@ -152,11 +164,6 @@ function usePluginRegistrySubscription(): void {
 
 function requiresEntityType(slotType: PluginUiSlotType): boolean {
   return slotType === "detailTab" || slotType === "taskDetailView" || slotType === "contextMenuItem" || slotType === "commentAnnotation" || slotType === "commentContextMenuItem" || slotType === "projectSidebarItem" || slotType === "toolbarButton";
-}
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error && error.message) return error.message;
-  return "Unknown error";
 }
 
 /**
@@ -650,11 +657,18 @@ function usePluginModuleLoader(contributions: PluginUiContribution[] | undefined
  */
 export function usePluginSlots(filters: SlotFilters): UsePluginSlotsResult {
   const queryEnabled = filters.enabled ?? true;
-  const { data, isLoading: isQueryLoading, error } = useQuery({
+  const query = useQuery({
     queryKey: queryKeys.plugins.uiContributions,
     queryFn: () => pluginsApi.listUiContributions(),
     enabled: queryEnabled,
   });
+  const { data, isLoading: isQueryLoading, error, refetch } = query;
+  // One failed fetch backs every outlet on the page, so an outage must not
+  // fan out into red boxes: only a real (non-transient) failure is reported.
+  const viewKind = queryViewKind(query);
+  const retry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   const slotTypesKey = useMemo(() => [...filters.slotTypes].sort().join("|"), [filters.slotTypes]);
 
@@ -696,12 +710,19 @@ export function usePluginSlots(filters: SlotFilters): UsePluginSlotsResult {
   }, [data, slots]);
   usePluginModuleLoader(contributions);
   const modulesLoaded = contributions ? aggregateLoadState(contributions) === "loaded" : true;
-  const isLoading = queryEnabled && (isQueryLoading || !modulesLoaded);
+  // Plugin chrome never shows red for a transient failure, even one that
+  // outlasts the retry policy while the server is reachable: with nothing
+  // loaded the outlets stay collapsed, and the next mount or focus refetches.
+  const transientFailure = viewKind === "error" && isTransientError(error);
+  const reportedError = viewKind === "error" && !transientFailure ? error : null;
+  const isLoading = queryEnabled && (isQueryLoading || viewKind === "reconnecting" || transientFailure || !modulesLoaded);
 
   return {
     slots,
     isLoading,
-    errorMessage: error ? getErrorMessage(error) : null,
+    errorMessage: reportedError ? describeError(reportedError).body : null,
+    error: reportedError,
+    retry,
   };
 }
 
@@ -907,38 +928,29 @@ type PluginSlotOutletProps = {
   entityType?: PluginUiSlotEntityType | null;
   className?: string;
   itemClassName?: string;
-  errorClassName?: string;
   missingBehavior?: "hidden" | "placeholder";
-  /**
-   * `hidden` suppresses the inline error and keeps rendering the last loaded
-   * slots, so ambient chrome (the sidebar) stays quiet while the server is
-   * unreachable.
-   */
-  errorBehavior?: "inline" | "hidden";
 };
 
+/**
+ * Renders the plugin slots for a host location. An outlet never shows a
+ * fetch error: while the contributions cannot be loaded it renders the last
+ * loaded slots, or nothing if none have loaded yet. Failures are reported on
+ * the plugin settings pages, where someone can act on them.
+ */
 export function PluginSlotOutlet({
   slotTypes,
   context,
   entityType,
   className,
   itemClassName,
-  errorClassName,
   missingBehavior = "hidden",
-  errorBehavior = "inline",
 }: PluginSlotOutletProps) {
   useFullSharedTranslation();
-  const { slots, errorMessage } = usePluginSlots({
+  const { slots } = usePluginSlots({
     slotTypes,
     entityType,
     companyId: context.companyId,
   });
-
-  if (errorMessage && errorBehavior === "inline") {
-    return (
-      <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}><FullSharedTrans i18nKey="fullShared.plugin_extensions_unavailable_6f84c2" components={{ part1: <>{errorMessage}</> }} /></div>
-    );
-  }
 
   if (slots.length === 0) return null;
 

@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { i18n } from "@/i18n";
 import { Trans } from "@/i18n";
 import { t, useTranslation } from "@/i18n";
@@ -8,12 +9,17 @@ import { Link, useParams } from "@/lib/router";
 import type { McpConnection, McpConnectionRequest, McpDotPairingPreview } from "@paperclipai/shared";
 import { deriveInitials, Identity } from "@/components/Identity";
 import { assistantConnectionDisplayName } from "./apps/connection-owner";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { CompanyPatternIcon } from "@/components/CompanyPatternIcon";
+import { useResilientFetch } from "@/hooks/useResilientFetch";
 import { api } from "../api/client";
+import { describeError } from "../api/errors";
+
+const PAIRING_CODE_PATTERN = /^[A-Za-z0-9_-]{32}$/;
 
 // Bundle known-origin icons so opening consent never contacts a client-selected site.
 // Client-supplied names never select branding.
@@ -56,21 +62,24 @@ function McpConnectRequest({ id, device = false, agentPairingOnly = false, onEdi
   const requestPrefix = agentPairingOnly ? "/dot-mcp/requests" : "/mcp/requests";
   const [companyId, setCompanyId] = useState("");
   const [pairingCode, setPairingCode] = useState("");
-  const [pairingPreview, setPairingPreview] = useState<McpDotPairingPreview | null>(null);
-  const [pairingPreviewError, setPairingPreviewError] = useState("");
   const [writeEnabled, setWriteEnabled] = useState(true);
   const [deviceResult, setDeviceResult] = useState<"approved" | "denied" | null>(null);
-  const request = useQuery({ queryKey: [device ? "mcp-device" : agentPairingOnly ? "dot-mcp-request" : "mcp-request", id], queryFn: () => api.get<McpConnectionRequest>(device ? `/mcp/device?user_code=${encodeURIComponent(id)}` : `${requestPrefix}/${encodeURIComponent(id)}`), retry: false });
+  const request = useQuery({ queryKey: [device ? "mcp-device" : agentPairingOnly ? "dot-mcp-request" : "mcp-request", id], queryFn: () => api.get<McpConnectionRequest>(device ? `/mcp/device?user_code=${encodeURIComponent(id)}` : `${requestPrefix}/${encodeURIComponent(id)}`) });
+  const requestView = useQueryView(request);
   const data = request.data;
-  useEffect(() => {
-    setPairingPreview(null); setPairingPreviewError("");
-    if (!data?.agentConnection || device || !/^[A-Za-z0-9_-]{32}$/.test(pairingCode.trim())) return;
-    let current = true;
-    void api.post<McpDotPairingPreview>(`${requestPrefix}/${encodeURIComponent(id)}/dot-pairing/preview`, { pairingCode: pairingCode.trim() })
-      .then(preview => { if (current) setPairingPreview(preview); })
-      .catch(error => { if (current) setPairingPreviewError(error instanceof Error ? error.message : t("fullPages.unableToVerifyThisPairingCode")); });
-    return () => { current = false; };
-  }, [id, device, requestPrefix, data?.agentConnection, pairingCode, i18n.language]);
+  const trimmedPairingCode = pairingCode.trim();
+  const previewEnabled = Boolean(data?.agentConnection) && !device && PAIRING_CODE_PATTERN.test(trimmedPairingCode);
+  // A read-only preview behind a POST. The code is part of the key so an older
+  // preview is dropped the moment the code changes and a late response for an
+  // old code is ignored; it stays in this component's memory, never in the
+  // shared query cache.
+  const preview = useResilientFetch({
+    key: ["dot-pairing-preview", requestPrefix, id, trimmedPairingCode],
+    enabled: previewEnabled,
+    fetcher: (signal) => api.post<McpDotPairingPreview>(`${requestPrefix}/${encodeURIComponent(id)}/dot-pairing/preview`, { pairingCode: trimmedPairingCode }, { signal }),
+  });
+  const pairingPreview = previewEnabled && (preview.view.kind === "ready" || preview.view.kind === "stale") ? preview.data ?? null : null;
+  const previewPending = previewEnabled && (preview.view.kind === "loading" || preview.view.kind === "reconnecting");
   const selectedCompanyId = data?.requestedCompanyId ?? (companyId || data?.companies[0]?.id || "");
   // Pin the default once loaded so a refetch cannot silently switch organizations.
   useEffect(() => {
@@ -101,14 +110,16 @@ function McpConnectRequest({ id, device = false, agentPairingOnly = false, onEdi
       </div>
       {clientOrigin && <ClientOrigin key={clientOrigin} origin={clientOrigin} />}
       {!device && data?.redirectOrigin && data.redirectOrigin !== clientOrigin && <ClientOrigin key={data.redirectOrigin} origin={data.redirectOrigin} />}
-      {device && <p className="text-sm">{t("fullPages.confirmThisMatchesTheCodeShownBy")}{" "}<strong className="font-mono">{id.toUpperCase()}</strong></p>}
-      {request.isPending && <p className="text-sm text-muted-foreground">{t("fullPages.loadingConnectionRequest")}</p>}
-      {request.error && <p className="text-sm text-destructive">{request.error.message}{" "}{t("fullPages.startANewConnectionFromYourAssistant")}</p>}
-      {device && request.error && <Button variant="outline" onClick={onEditCode}>{t("fullPages.enterADifferentCode")}</Button>}
+      {device && <p className="text-sm">{translateUi("fullPages.confirmThisMatchesTheCodeShownBy")} <strong className="font-mono">{id.toUpperCase()}</strong></p>}
+      {(requestView.kind === "loading" || requestView.kind === "reconnecting") && <p role="status" className="text-sm text-muted-foreground">{translateUi("fullPages.loadingConnectionRequest")}</p>}
+      {requestView.kind === "error" && <QueryErrorState error={requestView.error} action="load this connection request" onRetry={requestView.retry} retrying={requestView.isFetching} />}
+      {requestView.kind === "error" && <p className="text-sm text-muted-foreground">{translateUi("fullPages.startANewConnectionFromYourAssistant")}</p>}
+      {device && requestView.kind === "error" && <Button variant="outline" onClick={onEditCode}>{translateUi("fullPages.enterADifferentCode")}</Button>}
       {data?.agentConnection && !device && <form className="space-y-3" onSubmit={event => { event.preventDefault(); pairDot.mutate(); }}>
         <p className="text-sm">{t("fullPages.enterTheOneUseCodeFromPaperclip")}</p>
         <label htmlFor="dot-pairing-code" className="text-sm">{t("fullPages.pairingCode")}</label>
-        <Input id="dot-pairing-code" type="password" autoComplete="off" value={pairingCode} onChange={event => { setPairingPreview(null); setPairingPreviewError(""); setPairingCode(event.target.value); }} required maxLength={32} />
+        <Input id="dot-pairing-code" type="password" autoComplete="off" value={pairingCode} onChange={event => setPairingCode(event.target.value)} required maxLength={32} />
+        {previewPending && <p role="status" className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.checking_pairing_code_76c3df9c")}</p>}
         {pairingPreview?.providerKind === "grok_bot" && <p className="text-sm font-medium">{t("fullPages.allowConnectionAsAgent", { agent: pairingPreview.agent.name, company: pairingPreview.company.name })}</p>}
         {pairingPreview && <dl className="space-y-2 rounded-md border border-border p-3 text-sm">
           <div><dt className="text-muted-foreground">{t("skillsGap.company")}</dt><dd>{pairingPreview.company.name} <span className="text-xs text-muted-foreground">({pairingPreview.company.id})</span></dd></div>
@@ -117,9 +128,9 @@ function McpConnectRequest({ id, device = false, agentPairingOnly = false, onEdi
           {pairingPreview.authorizingPerson && <div><dt className="text-muted-foreground">{t("fullPages.authorizedBy")}</dt><dd>{pairingPreview.authorizingPerson}</dd></div>}
           <div><dt className="text-muted-foreground">{t("fullPages.accessDuration")}</dt><dd>{pairingPreview.accessDuration}</dd></div>
         </dl>}
-        {pairingPreviewError && <p role="alert" className="text-sm text-destructive">{pairingPreviewError}</p>}
-        {pairDot.error && <p role="alert" className="text-sm text-destructive">{pairDot.error.message}</p>}
-        <div className="flex justify-end"><Button type="submit" disabled={!pairingPreview || !/^[A-Za-z0-9_-]{32}$/.test(pairingCode.trim()) || pairDot.isPending}>{pairDot.isPending ? t("accessGate.connecting") : t("fullPages.allowAgentConnection")}</Button></div>
+        {previewEnabled && preview.view.kind === "error" && <QueryErrorState size="inline" error={preview.error} action="check this pairing code" onRetry={preview.view.retry} retrying={preview.view.isFetching} />}
+        {pairDot.error && <p role="alert" className="text-sm text-destructive">{describeError(pairDot.error, { action: "connect Dot" }).body}</p>}
+        <div className="flex justify-end"><Button type="submit" disabled={!pairingPreview || !PAIRING_CODE_PATTERN.test(trimmedPairingCode) || pairDot.isPending}>{pairDot.isPending ? t("accessGate.connecting") : t("fullPages.allowAgentConnection")}</Button></div>
       </form>}
       {data && <>
         {data.requiresSignIn ? <Button asChild><Link to={`/auth?next=${encodeURIComponent(returnPath)}`}>{t("bootstrap.signIn")}</Link></Button> : <>
@@ -146,7 +157,7 @@ function McpConnectRequest({ id, device = false, agentPairingOnly = false, onEdi
             <span>{t("fullPages.writeAllOfYourPaperclipData")}</span>
           </label>}
           {company && !company.canWrite && <p className="text-sm text-muted-foreground">{t("fullPages.yourRoleInThisOrganizationIsRead")}</p>}
-          {consent.error && <p className="text-sm text-destructive">{consent.error.message}</p>}
+          {consent.error && <p role="alert" className="text-sm text-destructive">{describeError(consent.error).body}</p>}
           <div className="flex items-center justify-between gap-3">
             <Button variant="outline" disabled={consent.isPending} onClick={() => consent.mutate("deny")}>{t("fullPages.cancel")}</Button>
             <Button className="h-auto min-h-10 min-w-0 shrink whitespace-normal" disabled={!company || (data.agentConnection && !company.canWrite) || consent.isPending} onClick={() => consent.mutate("approve")}>{consent.isPending ? t("accessGate.connecting") : data.agentConnection ? t("fullPages.connectDotAgent") : t("fullPages.connectOrganization")}</Button>
@@ -160,7 +171,8 @@ function McpConnectRequest({ id, device = false, agentPairingOnly = false, onEdi
 export function AssistantConnectionsPage() {
   useTranslation();
   const client = useQueryClient();
-  const connections = useQuery({ queryKey: ["mcp-connections"], queryFn: () => api.get<McpConnection[]>("/mcp/connections"), retry: false });
+  const connections = useQuery({ queryKey: ["mcp-connections"], queryFn: () => api.get<McpConnection[]>("/mcp/connections") });
+  const connectionsView = useQueryView(connections);
   const active = connections.data?.filter(connection => !connection.revokedAt);
   const revoke = useMutation({ mutationFn: (id: string) => api.delete(`/mcp/connections/${id}`), onSuccess: (_, id) => {
     client.setQueryData<McpConnection[]>(["mcp-connections"], rows => rows?.filter(row => row.id !== id));
@@ -169,8 +181,9 @@ export function AssistantConnectionsPage() {
   return <div className="mx-auto max-w-xl space-y-4 py-10">
     <h1 className="text-xl font-semibold">{t("fullPages.assistantConnections")}</h1>
     <p className="text-sm text-muted-foreground">{t("fullPages.revokingAConnectionStopsItsFutureTool")}</p>
-    {connections.isPending && <p className="text-sm">{t("providerSetup.select.loading")}</p>}
-    {(connections.error || revoke.error) && <p className="text-sm text-destructive">{(connections.error ?? revoke.error)?.message}</p>}
+    {(connectionsView.kind === "loading" || connectionsView.kind === "reconnecting") && <p role="status" className="text-sm text-muted-foreground">{t("providerSetup.select.loading")}</p>}
+    {connectionsView.kind === "error" && <QueryErrorState error={connectionsView.error} action="load assistant connections" onRetry={connectionsView.retry} retrying={connectionsView.isFetching} />}
+    {revoke.error && <p role="alert" className="text-sm text-destructive">{describeError(revoke.error, { action: "revoke the connection" }).body}</p>}
     {active?.length === 0 && <p className="text-sm">{t("fullPages.noAssistantConnections")}</p>}
     {active?.map((connection) => <Card key={connection.id} className="block space-y-2 p-4">
       <h2 className="font-medium"><Identity name={assistantConnectionDisplayName(connection)} avatarUrl={connection.user?.image} initials={deriveInitials(connection.user?.name ?? "You")} /></h2>

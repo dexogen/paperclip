@@ -1,5 +1,7 @@
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
+import { useQueryView } from "@/components/QueryView";
+import { describeError } from "@/api/errors";
 import { useId, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ExecutionBlocker } from "@paperclipai/shared";
@@ -23,6 +25,7 @@ export function WorkspaceReconstructionRecovery({ issueId, blocker, canManage, o
   const [acknowledged, setAcknowledged] = useState(false);
   const files = useQuery({ queryKey: queryKeys.issues.attachments(issueId),
     queryFn: () => issuesApi.listAttachments(issueId), enabled: canManage });
+  const filesView = useQueryView(files);
   const currentSelection = selected.filter(id => files.data?.some(file => file.id === id));
   const submit = useMutation({
     mutationFn: () => issuesApi.reconstructWorkspace(issueId, {
@@ -63,8 +66,8 @@ export function WorkspaceReconstructionRecovery({ issueId, blocker, canManage, o
         <Button disabled={submit.isPending || !acknowledged || currentSelection.length === 0 || missingWork.trim().length < 20 || outcomeEvidence.trim().length < 20}
           onClick={() => submit.mutate()}>{submit.isPending ? fullSharedT("fullShared.queuing_37255b") : fullSharedT("fullShared.rebuild_and_continue_f95a0b")}</Button>
       </div>
-      {files.isError && <p role="alert" className="text-destructive">{files.error.message}</p>}
-      {submit.isError && <p role="alert" className="text-destructive">{submit.error.message}</p>}
+      {(filesView.kind === "error") && <p role="alert" className="text-destructive">{describeError(files.error).body}</p>}
+      {submit.error && <p role="alert" className="text-destructive">{describeError(submit.error).body}</p>}
     </div> : <p>{fullSharedT("fullShared.a_board_member_with_runtime_access_can_continue_from_bff7d5")}</p>}
   </details>;
 }

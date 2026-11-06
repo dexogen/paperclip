@@ -1,0 +1,39 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import type { Agent } from "@paperclipai/shared";
+import { AgentChatPicker } from "./AgentChatPicker";
+import { AgentAvatar } from "./AgentAvatar";
+import { Button } from "./ui/button";
+import { useAgentChatNavigation } from "@/hooks/useAgentChatNavigation";
+import { useNavigate } from "@/lib/router";
+import { agentRouteRef } from "@/lib/utils";
+
+/** Switching opens the existing conversation or its unsaved draft view.
+ * The production chat controller persists it only when the user sends. */
+export function CoordinatorAgentSwitcher({ agent }: { agent: Agent }) {
+  useUiTranslation();
+  const [open, setOpen] = useState(false);
+  const { agents, chats } = useAgentChatNavigation();
+  const navigate = useNavigate();
+  return (
+    <AgentChatPicker
+      open={open}
+      onOpenChange={setOpen}
+      trigger={
+        <Button variant="ghost" size="sm" className="min-w-0 max-w-full gap-1.5 px-1.5 text-foreground" aria-label={translateUi("interfaceUpdates.switch_agent_currently_value_8c465de0", { value1: (agent.name) })} aria-current="page" title={translateUi("interfaceUpdates.switch_agent_a31fc91f")}>
+          <AgentAvatar agent={agent} size={24} />
+          <span data-agent-name className="truncate">{agent.name}</span>
+          <ChevronDown className="size-4" />
+        </Button>
+      }
+      agents={(agents.data ?? []).filter(item => item.status !== "terminated")}
+      loading={agents.isPending}
+      error={agents.error}
+      onRetry={() => { void agents.refetch(); }}
+      existingChatAgentIds={(chats.data ?? []).flatMap(chat => chat.conversationAgentId ? [chat.conversationAgentId] : [])}
+      onSelect={next => { navigate(`/chats/${encodeURIComponent(agentRouteRef(next))}`); }}
+    />
+  );
+}

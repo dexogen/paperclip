@@ -1,7 +1,11 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Agent } from "@paperclipai/shared";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { queryKeys } from "@/lib/queryKeys";
 import { AgentMultiSelect } from "@/components/AgentMultiSelect";
 import { RadioCardGroup } from "@/components/ui/radio-card";
@@ -15,6 +19,7 @@ export function EmailConnectionAccess({
   connectionId: string;
   agents: Agent[];
 }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const cache = useQueryClient();
   const grants = useQuery({
@@ -35,12 +40,20 @@ export function EmailConnectionAccess({
       });
     },
   });
-  if (grants.isLoading || installs.isLoading)
-    return <p className="text-sm text-muted-foreground">{fullSharedT("fullStaleReview.loadingAccess")}</p>;
-  if (grants.error || installs.error)
+  const grantsView = useQueryView(grants);
+  const installsView = useQueryView(installs);
+  const failedView = [grantsView, installsView].find((view) => view.kind === "error");
+  if (failedView)
     return (
-      <p role="alert" className="text-sm text-destructive">{fullSharedT("fullShared.connection_access_could_not_be_loaded_953390")}</p>
+      <QueryErrorState
+        error={failedView.error}
+        action="load connection access"
+        onRetry={failedView.retry}
+        retrying={failedView.isFetching}
+      />
     );
+  if (grants.isLoading || installs.isLoading || grantsView.kind === "reconnecting" || installsView.kind === "reconnecting")
+    return <p className="text-sm text-muted-foreground">{translateUi("fullStaleReview.loadingAccess")}</p>;
   const active = grants.data?.grants.filter((g) => g.status === "active") ?? [];
   const everyone = active.some((g) => g.kind === "organization");
   const personal = active.find((g) => g.kind === "user");
@@ -105,7 +118,7 @@ export function EmailConnectionAccess({
         <p className="text-xs text-muted-foreground">{fullSharedT("fullShared.removing_an_assigned_agent_stops_receiving_and_sendi_e816d5")}</p>
         {save.error && (
           <p role="alert" className="text-sm text-destructive">
-            {save.error.message}
+            {describeError(save.error).body}
           </p>
         )}
       </section>

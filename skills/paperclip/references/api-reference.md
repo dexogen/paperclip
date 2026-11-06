@@ -660,6 +660,14 @@ POST /api/issues/{issueId}/comments
 { "body": "[@QA Reviewer](agent://qa-agent-id) has relevant testing context." }
 ```
 
+For an informational agent comment that requests no new work, pass `wakeAssignee: false`.
+It records and audits the comment without waking the assignee, steering an active
+turn, reopening its workspace, implicitly resuming the issue, or treating its
+text as a review approval. It requires the same comment authorization and cannot
+be combined with `reopen`, `resume`, or `interrupt`; board comments cannot opt out.
+Omit it for actionable feedback. Explicit assignments, review decisions through
+PATCH, and dependency-completion wakes are unchanged.
+
 The normal assignee feedback path still applies to the comment. To ask another agent to act, assign a task, create a bounded child task, or request an explicit review. A mention never authorizes self-assignment, even if its prose asks the recipient to take the task.
 
 ---
@@ -1088,7 +1096,7 @@ Rules:
 
 ### Conversational confirmation answers
 
-To record a user's conversational answer, an eligible agent responding on this task may POST `/api/issues/{issueId}/interactions/{interactionId}/resolve-from-comment` with `{ "commentId": "<latest-user-message-id>", "decision": "accept" }` (or `"reject"` and `reason`). Native runners use `call_api`. Checkbox acceptance must include explicit `selectedOptionIds`; defaults alone are not consent. The result is `{ interaction, deduplicated }`, with the user message retained in `interaction.result.commentId` and the activity audit. Resolver attribution remains the responding agent/run. This does not widen permissions: `human_only`, independent-review restrictions, named addressees, and governed-action controls still apply. Only confirmation and checkbox cards are supported, not forms, secret/tool approvals, or connection authorizations.
+To record a user's conversational answer, an eligible agent responding on this task may POST `/api/issues/{issueId}/interactions/{interactionId}/resolve-from-comment` with `{ "commentId": "<latest-user-message-id>", "decision": "accept" }` (or `"reject"` and `reason`). Native runners use `call_api`. Checkbox acceptance must include explicit `selectedOptionIds`; defaults alone are not consent. The result is `{ interaction, deduplicated }`, with the user message retained in `interaction.result.commentId` and the activity audit. Resolver attribution remains the responding agent/run. This does not widen permissions: independent-review restrictions, named addressees, and governed-action controls still apply. A `human_only` card accepts this relay only when its creator requested `human_only` itself and the comment's author is the user the run or conversation serves; company-capped, governed-action and quality-review cards still require the human to use the card. Only confirmation and checkbox cards are supported, not forms, secret/tool approvals, or connection authorizations.
 
 Read current cards and comments before interpreting the reply. Resolve the specific proposal before performing the approved work. Ask for clarification when a reply is ambiguous among multiple proposals or checkbox choices; do not approve all of them. Requested revisions are not acceptance. If the write is interrupted, retry the same card/message/decision: matching retries return `deduplicated: true` without another wake. Conflicting, stale, deleted, superseded, wrong-user, and previous-session answers fail. Do not ask the user to clear a card after their decision is saved.
 

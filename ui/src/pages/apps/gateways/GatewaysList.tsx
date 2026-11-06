@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { renderAppError } from "@/pages/apps/app-display-text";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
@@ -13,11 +15,12 @@ import { queryKeys } from "@/lib/queryKeys";
 import { toolsApi } from "@/api/tools";
 import { agentsApi } from "@/api/agents";
 import { projectsApi } from "@/api/projects";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
-import { ErrorState, RelativeTime } from "@/pages/tools/shared";
+import { RelativeTime } from "@/pages/tools/shared";
 import { CopyableGatewayUrl } from "./CopyableGatewayUrl";
 import { NewGatewayDialog, gatewaysQueryKey } from "./NewGatewayDialog";
 import { gatewayTabHref } from "./gateway-tabs";
@@ -30,8 +33,10 @@ import {
   isGatewayOn,
   latestTokenActivity,
 } from "./gateway-helpers";
+import { describeError } from "@/api/errors";
 
 export function GatewaysList() {
+  useUiTranslation();
   useFullAppsTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -79,6 +84,7 @@ export function GatewaysList() {
     queryFn: () => projectsApi.list(selectedCompanyId!),
     enabled: !!selectedCompanyId,
   });
+  const gatewaysView = useQueryView(gatewaysQuery);
 
   const profileById = useMemo(
     () => new Map((profilesQuery.data?.profiles ?? []).map((profile) => [profile.id, profile])),
@@ -112,7 +118,7 @@ export function GatewaysList() {
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.couldn_t_update_the_gateway_539a9e"),
-        body: error instanceof Error ? renderAppError(error) : String(error),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -141,18 +147,23 @@ export function GatewaysList() {
         <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.a_gateway_is_one_safe_mcp_endpoint_that_exposes_only_9f0042")}</p>
       </header>
 
-      {gatewaysQuery.isLoading ? (
+      {gatewaysQuery.isLoading || gatewaysView.kind === "reconnecting" ? (
         <div className="space-y-3 pt-2">
           <Skeleton className="h-9 w-full max-w-sm" />
           <Skeleton className="h-52 w-full" />
         </div>
-      ) : gatewaysQuery.isError ? (
-        <ErrorState t={fullAppsI18n.t} error={gatewaysQuery.error} onRetry={() => gatewaysQuery.refetch()} />
+      ) : gatewaysView.kind === "error" ? (
+        <QueryErrorState
+          error={gatewaysQuery.error}
+          action="load gateways"
+          onRetry={gatewaysView.retry}
+          retrying={gatewaysView.isFetching}
+        />
       ) : gateways.length === 0 ? (
         <EmptyGateways onCreate={() => setCreating(true)} />
       ) : (
         <div className="space-y-4 pt-1">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div data-canonical-toolbar="gateways" role="toolbar" aria-label={translateUi("interfaceUpdates.gateway_controls_653b19e8")} className="flex flex-wrap items-center justify-between gap-3">
             <div className="relative w-full max-w-sm">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -163,7 +174,7 @@ export function GatewaysList() {
                 aria-label={fullAppsT("fullApps.search_gateways_774e93")}
               />
             </div>
-            <Button onClick={() => setCreating(true)}>
+            <Button data-toolbar-primary className="ml-auto" onClick={() => setCreating(true)}>
               <Plus className="mr-1.5 h-4 w-4" />{fullAppsT("fullApps.new_gateway_9dff4b")}</Button>
           </div>
 

@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation, Trans } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { KeyRound, Plus, ServerCog, Trash2, Variable } from "lucide-react";
@@ -285,7 +286,7 @@ export function AgentSecretAccessEditor({
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">{t("agentConfigUi.noSecrets")}</p>
+        <p className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.no_company_secret_references_are_bound_to_this_age_35b2c2bc")}</p>
       )}
 
       {/* Pending binding proposals targeting this agent (PAP-14731). */}

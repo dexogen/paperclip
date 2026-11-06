@@ -9,6 +9,7 @@ import { useMuseConnection, useMuseConnectionState } from "@/hooks/useMuseConnec
 import { clearMuseInvitationDraft, readMuseInvitationDraft, saveMuseInvitationDraft, type MuseInvitationDraft } from "@/lib/muse-invitation-draft";
 import { accessApi } from "@/api/access";
 import { dotInvitationsApi, type DotInvitation, type DotPairing } from "@/api/dotInvitations";
+import { describeError } from "@/api/errors";
 import { instanceSettingsApi } from "@/api/instanceSettings";
 import { useCompany } from "@/context/CompanyContext";
 import { queryKeys } from "@/lib/queryKeys";
@@ -48,7 +49,6 @@ export function ExternalAgentInviteDialog({ companyId, onClose, onBack, initialP
   const state = useQuery({ queryKey: key,
     queryFn: ({ signal }) => dotInvitationsApi.connection(companyId, invitation!.agent.id, signal),
     enabled: preset === "dot" && !!invitation,
-    retry: false,
     staleTime: 0,
     refetchInterval: query => query.state.error ? false : query.state.data?.agentLifecycleState === "ready" && query.state.data.canConfigureConnection
       && query.state.data.binding?.status === "ready" && query.state.data.binding.subscriptionVerified ? false : 2500,
@@ -88,7 +88,7 @@ export function ExternalAgentInviteDialog({ companyId, onClose, onBack, initialP
   const canPreparePairing = preset === "dot" && state.data?.enabled && !!state.data.resourceUrl
     && state.data.canConfigureConnection
     && (!binding || binding.status === "pairing");
-  const preparePairing = canPreparePairing && !pairing && !state.error && !pair.isError
+  const preparePairing = canPreparePairing && !pairing && !state.error && !pair.error
     && !attemptedAutomaticPairing.current
     && (!expiredPairingBindingId || binding?.id === expiredPairingBindingId);
   useEffect(() => {
@@ -117,7 +117,7 @@ export function ExternalAgentInviteDialog({ companyId, onClose, onBack, initialP
       : binding?.hasPendingChallenge ? "testing" : binding?.subscriptionVerified ? "subscribed" : binding?.connected ? "connected" : "waiting",
     problem: state.error ? "offline"
       : checksReady && !agentReady && !finishingSetup ? "agent_unavailable"
-      : binding?.status === "pairing" && !preparePairing && !pair.isPending && !state.isFetching && !pair.isError && pairing?.bindingId !== binding.id ? "prompt_unavailable"
+      : binding?.status === "pairing" && !preparePairing && !pair.isPending && !state.isFetching && !pair.error && pairing?.bindingId !== binding.id ? "prompt_unavailable" // query-error-ok: derived connection-state label;copy rendered by the dialog
       : binding?.challengeExpiresAt && !binding.hasPendingChallenge && binding.status !== "ready" ? "event_timeout" : undefined,
   };
   const pendingApproval = (state.data?.agentStatus ?? invitation?.agent.status) === "pending_approval";
@@ -141,7 +141,7 @@ export function ExternalAgentInviteDialog({ companyId, onClose, onBack, initialP
       preset === "grok_bot" ? <GrokBotSetup companyNameIsFallback={selectedCompany?.name == null} companyId={companyId} companyName={selectedCompany?.name ?? "your organization"} onClose={onClose} onBack={() => setPreset(null)} /> :
       <ExternalAgentInviteContent companyNameIsFallback={selectedCompany?.name == null} grokDisabledReasonIsDuplicate={experimental.isPending} preset={preset === "muse" ? null : preset} prompt={prompt} companyName={selectedCompany?.name ?? "your organization"}
         connection={connection} museEnabled={experimental.data?.enableMuse === true && experimental.data?.enableNativeRunner === true} dotDisabledReason={dotDisabledReason} grokDisabledReason={grokDisabledReason} busy={busy}
-        error={preset === "muse" ? experimental.isPending ? undefined : t("externalAgentUi.invite.enableMuse") : error?.message ?? (unavailable ? state.data?.agentLifecycleState === "terminated" ? t("externalAgentUi.invite.dotTerminated") : t("externalAgentUi.invite.dotResume") : undefined)}
+        error={preset === "muse" ? experimental.isPending ? undefined : t("externalAgentUi.invite.enableMuse") : (error ? describeError(error).body : undefined) ?? (unavailable ? state.data?.agentLifecycleState === "terminated" ? t("externalAgentUi.invite.dotTerminated") : t("externalAgentUi.invite.dotResume") : undefined)}
         approvalHref={pendingApproval && invitation?.approvalId ? `/approvals/${invitation.approvalId}` : undefined}
         onSelect={kind => { setPreset(kind); if (kind !== "muse" && kind !== "grok_bot" && (kind === "dot" ? !invitation : !genericPrompt)) generate.mutate(kind); }}
         onBack={() => setPreset(null)} onClose={preset ? onClose : onBack} onCopied={() => { if (preset === "dot") void state.refetch(); }}
@@ -167,7 +167,7 @@ function MuseInvitationController({ companyId, companyName, companyNameIsFallbac
   const invitationKey = ["muse-invitation", companyId, identity.userId];
   const resume = useQuery({ queryKey: invitationKey,
     queryFn: ({ signal }) => museInvitationsApi.resume(companyId, signal), enabled: identity.settled,
-    retry: false, staleTime: 0, refetchOnMount: "always",
+    staleTime: 0, refetchOnMount: "always",
     refetchInterval: query => query.state.data?.agent.status === "pending_approval" ? 2500 : false });
   const resumedInvitation = resume.isFetchedAfterMount ? resume.data : null;
   useEffect(() => {
@@ -195,7 +195,7 @@ function MuseInvitationController({ companyId, companyName, companyNameIsFallbac
     // The creation receipt contains no ticket; pairing happens in the mounted connection hook.
   }, gcTime: 0 });
   const b = muse.binding;
-  const canPrepare = !!invitation && !muse.state.isError && muse.state.data?.enabled && muse.state.data.canConfigureConnection
+  const canPrepare = !!invitation && !(muse.state.status === "error") && muse.state.data?.enabled && muse.state.data.canConfigureConnection
     && !!muse.state.data.publicOrigin && (!b || b.status === "pairing");
   useEffect(() => {
     if (canPrepare && muse.state.isFetchedAfterMount && !muse.state.isFetching && !muse.pair.isPending
@@ -205,7 +205,7 @@ function MuseInvitationController({ companyId, companyName, companyNameIsFallbac
     }
   }, [canPrepare, muse.state.isFetchedAfterMount, muse.state.isFetching, muse.pair.isPending, muse.pairing, b?.id, b?.revision]);
   useEffect(() => {
-    if (!muse.state.isError && b?.paired && b.credentialState === "active" && b.receiverDetected && !b.backgroundReplyVerified && !b.challengeExpiresAt
+    if (!(muse.state.status === "error") && b?.paired && b.credentialState === "active" && b.receiverDetected && !b.backgroundReplyVerified && !b.challengeExpiresAt
       && muse.state.data?.enabled && muse.state.data.canConfigureConnection
       && muse.state.isFetchedAfterMount && !muse.state.isFetching && !muse.verify.isPending && !muse.verify.isError) {
       const identity = `${b.id}:${b.generation}`;
@@ -214,13 +214,13 @@ function MuseInvitationController({ companyId, companyName, companyNameIsFallbac
         muse.verify.mutate(b);
       }
     }
-  }, [b, muse.state.data, muse.state.isError, muse.state.isFetchedAfterMount, muse.state.isFetching, muse.verify.isPending, muse.verify.isError]);
+  }, [b, muse.state.data, (muse.state.status === "error"), muse.state.isFetchedAfterMount, muse.state.isFetching, muse.verify.isPending, muse.verify.isError]);
   const pendingApproval = (muse.state.data?.agentStatus ?? invitation?.agent.status) === "pending_approval";
   const busy = create.isPending || muse.pair.isPending || muse.verify.isPending || (!invitation && (resume.isPending && !identity.failed || !identity.settled && !identity.failed))
     || (!!invitation && muse.state.isPending);
   const promptUnavailable = !!b && !b.paired && b.status === "pairing" && !muse.pairing
     && attemptedAutomaticPairing.current && !muse.pair.isPending && !muse.state.isFetching;
-  const connection = useMuseConnectionState(muse.state.data, { offline: muse.state.isError, promptUnavailable });
+  const connection = useMuseConnectionState(muse.state.data, { offline: (muse.state.status === "error"), promptUnavailable });
   const verifyError = muse.verify.error instanceof ApiError && muse.verify.error.status === 409 && b?.challengeExpiresAt
     && Date.parse(b.challengeExpiresAt) > Date.now() ? null : muse.verify.error;
   const error = create.error ?? resume.error ?? muse.state.error ?? muse.pair.error ?? verifyError;
@@ -229,14 +229,14 @@ function MuseInvitationController({ companyId, companyName, companyNameIsFallbac
   const missingPublicOrigin = !!invitation && muse.state.isSuccess && !muse.state.data.publicOrigin;
   const errorMessage = missingPublicOrigin ? t("externalAgentUi.invite.publicOrigin") : operatorRequired ? t("externalAgentUi.invite.operatorRequired") : error?.message;
   return <ExternalAgentInviteContent preset="muse" companyName={companyName} companyNameIsFallback={companyNameIsFallback} prompt={muse.pairing?.setupInstruction ?? ""}
-    connection={{ phase: "waiting" }} museConnection={invitation && !missingPublicOrigin && (muse.state.data || muse.state.isError) ? connection : undefined} busy={busy} error={identity.failed ? t("externalAgentUi.invite.identityFailed") : errorMessage}
+    connection={{ phase: "waiting" }} museConnection={invitation && !missingPublicOrigin && (muse.state.data || (muse.state.status === "error")) ? connection : undefined} busy={busy} error={identity.failed ? t("externalAgentUi.invite.identityFailed") : errorMessage}
     approvalHref={pendingApproval && invitation?.approvalId ? `/approvals/${invitation.approvalId}` : undefined}
     museDraft={!invitation && resume.isSuccess && identity.settled ? draft : undefined}
     onMuseDraftChange={value => { setDraftState({ scopeKey, value }); saveMuseInvitationDraft(companyId, identity.userId, value); }}
     onMuseContinue={() => create.mutate(draft)} onSelect={() => {}} onBack={onBack}
     onClose={() => { if (connection.ready) { clearMuseInvitationDraft(companyId, identity.userId); void cache.invalidateQueries({ queryKey: queryKeys.agents.list(companyId) }); } onClose(); }}
     onCopied={() => { void muse.state.refetch(); }}
-    onRetry={() => { if (identity.failed) { void cache.invalidateQueries({ queryKey: queryKeys.auth.session }); return; } if (resume.isError) { void resume.refetch(); return; } if (missingPublicOrigin) { void muse.state.refetch(); return; } if (create.isError && !invitation) { create.mutate(draft); return; }
-      if (muse.state.isError) { void muse.state.refetch(); return; } if (b?.paired) muse.verify.mutate(b); else muse.repair(); }}
+    onRetry={() => { if (identity.failed) { void cache.invalidateQueries({ queryKey: queryKeys.auth.session }); return; } if ((resume.status === "error")) { void resume.refetch(); return; } if (missingPublicOrigin) { void muse.state.refetch(); return; } if (create.error && !invitation) { create.mutate(draft); return; }
+      if ((muse.state.status === "error")) { void muse.state.refetch(); return; } if (b?.paired) muse.verify.mutate(b); else muse.repair(); }}
     onNewPrompt={() => muse.repair()} />;
 }

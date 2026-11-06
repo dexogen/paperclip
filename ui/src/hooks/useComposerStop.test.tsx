@@ -7,7 +7,7 @@ import { useComposerStop } from "./useComposerStop";
 
 let root: Root; let host: HTMLDivElement; let control: ReturnType<typeof useComposerStop>;
 function Harness({ stop }: { stop: () => Promise<void> }) {
-  const { t } = useTranslation(); control = useComposerStop(stop, false, t);
+  const { t } = useTranslation(); control = useComposerStop(stop, false, undefined, t);
   return <div><button disabled={control.stopping} onClick={() => void control.stop()}>Stop</button><output>{control.error}</output></div>;
 }
 beforeEach(async () => { await i18n.changeLanguage("en"); host = document.createElement("div"); document.body.append(host); root = createRoot(host); });

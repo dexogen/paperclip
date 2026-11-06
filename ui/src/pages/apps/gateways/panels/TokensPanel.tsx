@@ -31,6 +31,7 @@ import {
   tokenStatus,
   type TokenStatus,
 } from "../gateway-helpers";
+import { describeError } from "@/api/errors";
 
 const DEFAULT_ACTIONS: ToolMcpGatewayTokenAction[] = ["tools/list", "tools/call"];
 const TOKEN_PAGE_SIZE = 10;
@@ -142,7 +143,7 @@ export function TokensPanel({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.token_was_not_issued_2f956f"),
-        body: error instanceof Error ? renderAppError(error) : String(error),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -158,7 +159,7 @@ export function TokensPanel({
     onError: (error) =>
       pushToast({
         title: fullAppsT("fullApps.token_was_not_revoked_bae52f"),
-        body: error instanceof Error ? renderAppError(error) : String(error),
+        body: describeError(error).body,
         tone: "error",
       }),
   });
@@ -170,7 +171,7 @@ export function TokensPanel({
     } catch (error) {
       pushToast({
         title: fullAppsT("taskPanels.viewer.copy.failed"),
-        body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.clipboard_access_is_unavailable_0899c2"),
+        body: describeError(error).body,
         tone: "error",
       });
     }

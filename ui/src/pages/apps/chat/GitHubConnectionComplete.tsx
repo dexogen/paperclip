@@ -1,6 +1,7 @@
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, Copy } from "lucide-react";
+import { useQueryView } from "@/components/QueryView";
 import { resolveAgentAppearance, type GitHubAppWizardState } from "@paperclipai/shared";
 import type { ChatEndpoint } from "@/api/chatEndpoints";
 import { githubChatApi } from "@/api/githubChat";
@@ -38,6 +39,7 @@ export function GitHubConnectionComplete({
     queryKey: ["github-connected-repositories", endpoint.id],
     queryFn: () => githubChatApi.repositories(endpoint.id, { limit: 1 }),
   });
+  const repositoriesView = useQueryView(repositories);
   const avatar = agent ?? { id: endpoint.assignedAgentId, name: endpoint.assignedAgentName };
   const mention = `${gitHubBotMention(endpoint) || "@your-bot"} review this pull request`;
   const count = repositories.data?.enabledCount;
@@ -77,7 +79,7 @@ export function GitHubConnectionComplete({
                   </>}
                 </p>
                 <Link to={`/apps/chat/${endpoint.id}/access`} className="inline-block text-xs text-muted-foreground underline underline-offset-4">
-                  {repositories.isError ? fullAppsT("fullApps.repository_access_unavailable_4d9cb1") : count === undefined ? fullAppsT("fullApps.repository_access_3e3d7e") : count === 0 ? fullAppsT("fullApps.no_repositories_enabled_b75b5a") : fullAppsT("fullApps.repositoriesEnabled", { count })}
+                  {repositoriesView.kind === "error" ? fullAppsT("fullApps.repository_access_unavailable_4d9cb1") : count === undefined ? fullAppsT("fullApps.repository_access_3e3d7e") : count === 0 ? fullAppsT("fullApps.no_repositories_enabled_b75b5a") : fullAppsT("fullApps.repositoriesEnabled", { count })}
                 </Link>
               </div>
             </div>

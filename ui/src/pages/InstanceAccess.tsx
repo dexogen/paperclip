@@ -1,9 +1,10 @@
+import { t as translateUi } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Shield, ShieldCheck } from "lucide-react";
 import { accessApi } from "@/api/access";
-import { ApiError } from "@/api/client";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
@@ -34,11 +35,13 @@ export function InstanceAccess() {
     queryKey: queryKeys.access.adminUsers(search),
     queryFn: () => accessApi.searchAdminUsers(search),
   });
+  const usersView = useQueryView(usersQuery);
 
   const companiesQuery = useQuery({
     ...companyDirectoryQueryOptions(accountUserId),
     enabled: accountSettled && usersQuery.isSuccess,
   });
+  const companiesView = useQueryView(companiesQuery);
   const companies = companiesQuery.data ?? [];
 
   const selectedUser = useMemo(
@@ -51,6 +54,7 @@ export function InstanceAccess() {
     queryFn: () => accessApi.getUserCompanyAccess(selectedUserId!),
     enabled: !!selectedUserId,
   });
+  const userAccessView = useQueryView(userAccessQuery);
 
   useEffect(() => {
     if (!selectedUserId && usersQuery.data?.[0]) {
@@ -115,26 +119,39 @@ export function InstanceAccess() {
     }
   }
 
-  if (usersQuery.isLoading || !accountSettled || (usersQuery.isSuccess && companiesQuery.isPending)) {
+  if (
+    usersQuery.isLoading ||
+    usersView.kind === "reconnecting" ||
+    !accountSettled ||
+    (usersQuery.isSuccess && (companiesQuery.isPending || companiesView.kind === "reconnecting"))
+  ) {
     return <div className="text-sm text-muted-foreground">{t("instanceAccess.loading")}</div>;
   }
 
-  if (usersQuery.error) {
-    const message =
-      usersQuery.error instanceof ApiError && usersQuery.error.status === 403
-        ? t("instanceAccess.adminRequired")
-        : usersQuery.error instanceof Error
-          ? usersQuery.error.message
-          : t("instanceAccess.usersFailed");
-    return <div className="text-sm text-destructive">{message}</div>;
+  if (usersView.kind === "error") {
+    if (usersView.errorKind === "forbidden") {
+      return <div className="text-sm text-destructive">{translateUi("instanceAccess.adminRequired")}</div>;
+    }
+    return (
+      <QueryErrorState
+        size="page"
+        error={usersQuery.error}
+        action="load users"
+        onRetry={usersView.retry}
+        retrying={usersView.isFetching}
+      />
+    );
   }
 
-  if (companiesQuery.error) {
+  if (companiesView.kind === "error") {
     return (
-      <div className="space-y-3">
-        <p className="text-sm text-destructive">{t("instanceAccess.organizationsFailed")}</p>
-        <Button onClick={() => void companiesQuery.refetch()}>{t("instanceAccess.retry")}</Button>
-      </div>
+      <QueryErrorState
+        size="page"
+        error={companiesQuery.error}
+        action="load organizations"
+        onRetry={companiesView.retry}
+        retrying={companiesView.isFetching}
+      />
     );
   }
 
@@ -192,13 +209,16 @@ export function InstanceAccess() {
 
         <Card className="block space-y-4 p-5">
           {!selectedUserId ? (
-            <div className="text-sm text-muted-foreground">{t("instanceAccess.selectUser")}</div>
-          ) : userAccessQuery.isLoading ? (
-            <div className="text-sm text-muted-foreground">{t("instanceAccess.loadingUser")}</div>
-          ) : userAccessQuery.error ? (
-            <div className="text-sm text-destructive">
-              {userAccessQuery.error instanceof Error ? userAccessQuery.error.message : t("instanceAccess.userAccessFailed")}
-            </div>
+            <div className="text-sm text-muted-foreground">{translateUi("instanceAccess.selectUser")}</div>
+          ) : userAccessQuery.isLoading || userAccessView.kind === "reconnecting" ? (
+            <div className="text-sm text-muted-foreground">{translateUi("instanceAccess.loadingUser")}</div>
+          ) : userAccessView.kind === "error" ? (
+            <QueryErrorState
+              error={userAccessQuery.error}
+              action="load user access"
+              onRetry={userAccessView.retry}
+              retrying={userAccessView.isFetching}
+            />
           ) : (
             <>
               <div className="flex flex-wrap items-start justify-between gap-4">

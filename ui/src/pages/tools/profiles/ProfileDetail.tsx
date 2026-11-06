@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { i18n as fullAppsI18n } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo, useState } from "react";
@@ -16,6 +18,7 @@ import { useNavigate, useSearchParams } from "@/lib/router";
 import { toolsApi } from "@/api/tools";
 import { queryKeys } from "@/lib/queryKeys";
 import { cn, formatShortDate } from "@/lib/utils";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -30,7 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/context/ToastContext";
-import { ErrorState, LoadingState, RelativeTime, ToolsPageHeader } from "../shared";
+import { LoadingState, RelativeTime, ToolsPageHeader } from "../shared";
 import { ProfileActionDialog, type ProfileActionDialogKind } from "./ProfileActionDialog";
 import { allowsLabel, STATUS_LABEL } from "./profile-summary";
 import { useProfilesData } from "./useProfilesData";
@@ -59,12 +62,14 @@ export function ProfileDetail({
   initialCreated?: boolean;
   initialReviewOpen?: boolean;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const data = useProfilesData(companyId);
+  const profilesView = useQueryView(data.profiles);
   const [dialog, setDialog] = useState<DialogKind>(null);
   const [assignmentToRemove, setAssignmentToRemove] = useState<ToolProfileBinding | null>(null);
   const [reviewOpen, setReviewOpen] = useState(Boolean(initialReviewOpen));
@@ -78,6 +83,8 @@ export function ProfileDetail({
     queryFn: () => toolsApi.getProfileNewTools(profileId),
     enabled: pendingNewTools > 0,
   });
+  const newToolsView = useQueryView(newTools);
+  const newToolsLoading = newTools.isLoading || newToolsView.kind === "reconnecting";
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.tools.profiles(companyId) });
@@ -164,8 +171,18 @@ export function ProfileDetail({
     onError: (error: unknown) => pushToast({ title: fullAppsT("fullApps.could_not_submit_review_c3272c"), body: errorBody(error), tone: "error" }),
   });
 
-  if (data.profiles.isLoading) return <LoadingState label={fullAppsT("profile.loading")} />;
-  if (data.profiles.isError) return <ErrorState t={fullAppsI18n.t} error={data.profiles.error} onRetry={() => data.profiles.refetch()} />;
+  if (data.profiles.isLoading || profilesView.kind === "reconnecting") return <LoadingState label={translateUi("profile.loading")} />;
+  if (profilesView.kind === "error") {
+    return (
+      <QueryErrorState
+        size="page"
+        error={data.profiles.error}
+        action="load the profile"
+        onRetry={profilesView.retry}
+        retrying={profilesView.isFetching}
+      />
+    );
+  }
   if (!profile) {
     return (
       <div className="space-y-4">
@@ -230,7 +247,7 @@ export function ProfileDetail({
         <NewToolsReviewBanner
           count={pendingNewTools}
           tools={reviewItems}
-          loading={newTools.isLoading}
+          loading={newToolsLoading}
           onReview={() => setReviewOpen(true)}
         />
       ) : null}
@@ -293,12 +310,13 @@ export function ProfileDetail({
       <NewToolsReviewDialog
         open={reviewOpen}
         tools={reviewItems}
-        loading={newTools.isLoading}
-        error={newTools.error}
+        loading={newToolsLoading}
+        error={newToolsView.kind === "error" ? newTools.error : null}
         decisions={reviewDecisions}
         pending={reviewNewTools.isPending}
         onClose={() => setReviewOpen(false)}
-        onRetry={() => newTools.refetch()}
+        onRetry={newToolsView.retry}
+        retrying={newToolsView.isFetching}
         onDecision={(catalogEntryId, decision) =>
           setReviewDecisions((current) => ({ ...current, [catalogEntryId]: decision }))
         }
@@ -343,17 +361,20 @@ function NewToolsReviewDialog({
   pending,
   onClose,
   onRetry,
+  retrying,
   onDecision,
   onSubmit,
 }: {
   open: boolean;
   tools: ToolProfileNewToolReviewItem[];
   loading: boolean;
+  /** Set only for a real (non-transient) failure with nothing to show. */
   error: unknown;
   decisions: Record<string, ToolProfileNewToolReviewDecision>;
   pending: boolean;
   onClose: () => void;
   onRetry: () => void;
+  retrying: boolean;
   onDecision: (catalogEntryId: string, decision: ToolProfileNewToolReviewDecision) => void;
   onSubmit: () => void;
 }) {
@@ -368,7 +389,7 @@ function NewToolsReviewDialog({
         {loading ? (
           <LoadingState label={fullAppsT("fullApps.loading_new_tools_f78da7")} />
         ) : error ? (
-          <ErrorState t={fullAppsI18n.t} error={error} onRetry={onRetry} />
+          <QueryErrorState error={error} action="load new tools" onRetry={onRetry} retrying={retrying} />
         ) : tools.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">{fullAppsT("fullApps.there_are_no_new_tools_waiting_for_review_035709")}</div>
         ) : (

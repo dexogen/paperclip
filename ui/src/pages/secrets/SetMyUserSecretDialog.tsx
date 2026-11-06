@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { secretsApi } from "../../api/secrets";
-import { ApiError } from "../../api/client";
 import { queryKeys } from "../../lib/queryKeys";
 import { useToastActions } from "../../context/ToastContext";
 import { UserSecretChip } from "./user-secret-presentation";
+import { describeError } from "@/api/errors";
 
 /**
  * Shared "set my value" dialog for a user-secret definition. Used both from the
@@ -86,11 +86,7 @@ export function SetMyUserSecretDialog({
     },
     onError: (err) => {
       setError(
-        err instanceof ApiError
-          ? err.message
-          : err instanceof Error
-            ? err.message
-            : t("fullRoutinesSecrets.failedToSaveValue"),
+        describeError(err).body,
       );
     },
   });

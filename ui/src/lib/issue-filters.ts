@@ -38,6 +38,7 @@ export type IssueFilterState = {
    */
   externalObjectStatuses: string[];
   showAgentCreatedTasks: boolean;
+  routineTasksOnly?: boolean;
 };
 
 export const defaultIssueFilterState: IssueFilterState = {
@@ -51,6 +52,7 @@ export const defaultIssueFilterState: IssueFilterState = {
   liveOnly: false,
   externalObjectStatuses: [],
   showAgentCreatedTasks: false,
+  routineTasksOnly: false,
 };
 
 export const externalObjectFilterOrder = [
@@ -79,12 +81,12 @@ export function externalObjectFilterLabel(value: string): string {
   return EXTERNAL_OBJECT_FILTER_LABELS[value] ?? issueFilterLabel(value);
 }
 
-export const issueStatusOrder = ["in_progress", "todo", "backlog", "in_review", "blocked", "done", "cancelled"];
+export const issueStatusOrder = ["in_progress", "monitoring", "todo", "backlog", "in_review", "blocked", "done", "cancelled"];
 export const issuePriorityOrder = ["critical", "high", "medium", "low"];
 
 export const issueQuickFilterPresets = [
   { get label() { return fullSharedT("agents.filterAll"); }, statuses: [] as string[] },
-  { get label() { return fullSharedT("fullShared.active_923406"); }, statuses: ["todo", "in_progress", "in_review", "blocked"] },
+  { get label() { return fullSharedT("fullShared.active_923406"); }, statuses: ["todo", "in_progress", "monitoring", "in_review", "blocked"] },
   { get label() { return fullSharedT("taskViews.backlog"); }, statuses: ["backlog"] },
   { get label() { return fullSharedT("fullShared.done_11a676"); }, statuses: ["done", "cancelled"] },
 ];
@@ -119,6 +121,7 @@ export function normalizeIssueFilterState(value: unknown): IssueFilterState {
     liveOnly: candidate.liveOnly === true,
     externalObjectStatuses: normalizeIssueFilterValueArray(candidate.externalObjectStatuses),
     showAgentCreatedTasks: candidate.showAgentCreatedTasks === true,
+    routineTasksOnly: candidate.routineTasksOnly === true,
   };
 }
 
@@ -211,6 +214,19 @@ function issueMatchesExternalObjectStatusFilter(
   }
 }
 
+/** Keep creation visibility and routine origin consistent across collection reads. */
+export function issueCreationRequestFilters(
+  state: Pick<IssueFilterState, "routineTasksOnly" | "showAgentCreatedTasks">,
+  enableAgentCreatedVisibilityFilter = false,
+) {
+  if (state.routineTasksOnly) {
+    return { originKind: "routine_execution", includeRoutineExecutions: true, includeAgentCreatedTasks: true };
+  }
+  return enableAgentCreatedVisibilityFilter
+    ? { includeRoutineExecutions: true, includeAgentCreatedTasks: state.showAgentCreatedTasks }
+    : {};
+}
+
 export function applyIssueFilters(
   issues: Issue[],
   state: IssueFilterState,
@@ -223,10 +239,13 @@ export function applyIssueFilters(
   if (state.liveOnly) {
     result = result.filter((issue) => liveIssueIds?.has(issue.id) === true);
   }
-  if (enableAgentCreatedVisibilityFilter && !state.showAgentCreatedTasks) {
+  if (state.routineTasksOnly) {
+    result = result.filter((issue) => issue.originKind === "routine_execution");
+  }
+  if (enableAgentCreatedVisibilityFilter && !state.showAgentCreatedTasks && !state.routineTasksOnly) {
     result = result.filter((issue) => !isAgentCreatedIssue(issue));
   }
-  if (state.statuses.length > 0) result = result.filter((issue) => state.statuses.includes(issue.status));
+  if (state.statuses.length > 0) result = result.filter((issue) => state.statuses.includes(issue.displayStatus ?? issue.status));
   if (state.priorities.length > 0) result = result.filter((issue) => state.priorities.includes(issue.priority));
   if (state.assignees.length > 0) {
     result = result.filter((issue) => {
@@ -285,6 +304,7 @@ export function countActiveIssueFilters(
   if (state.projects.length > 0) count += 1;
   if (state.workspaces.length > 0) count += 1;
   if (state.liveOnly) count += 1;
+  if (state.routineTasksOnly) count += 1;
   if (state.externalObjectStatuses.length > 0) count += 1;
   if (enableAgentCreatedVisibilityFilter && state.showAgentCreatedTasks) count += 1;
   return count;

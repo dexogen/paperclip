@@ -1,30 +1,35 @@
 import type { TFunction } from "i18next";
 import { i18n } from "@/i18n";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { StopVerificationError } from "@/lib/wait-for-stopped-runs";
 
 /** Keeps stop requests independent of draft submission and prevents double clicks. */
-export function useComposerStop(onStop?: () => Promise<void>, pending = false, t: TFunction = i18n.getFixedT("en")) {
+export function useComposerStop(onStop?: () => Promise<void>, pending = false, confirmedStoppedRunIds?: ReadonlySet<string>, t: TFunction = i18n.getFixedT("en")) {
   const inFlight = useRef(false);
   const [stopping, setStopping] = useState(false);
-  const [errorState, setError] = useState<{ message: string } | { fallback: true } | null>(null);
-  const error = errorState ? "message" in errorState ? errorState.message : t("taskChatUi.composer.stopFailed") : null;
+  const [failure, setFailure] = useState<{ message?: string; fallback?: true; runIds?: readonly string[] } | null>(null);
+  useEffect(() => {
+    if (failure?.runIds?.length && failure.runIds.every((id) => confirmedStoppedRunIds?.has(id))) {
+      // A queued effect from an older attempt must not clear a newer failure.
+      setFailure((current) => current === failure ? null : current);
+    }
+  }, [failure, confirmedStoppedRunIds]);
 
   async function stop() {
     if (!onStop || inFlight.current || pending) return;
     inFlight.current = true;
     setStopping(true);
-    setError(null);
+    setFailure(null);
     try {
       await onStop();
     } catch (err) {
-      setError(
-        err instanceof Error ? { message: err.message } : { fallback: true },
-      );
+      setFailure({ ...(err instanceof Error ? { message: err.message } : { fallback: true }),
+        ...(err instanceof StopVerificationError ? { runIds: err.runIds } : {}) });
     } finally {
       inFlight.current = false;
       setStopping(false);
     }
   }
 
-  return { stop, stopping: stopping || pending, error };
+  return { stop, stopping: stopping || pending, error: failure ? failure.message ?? t("taskChatUi.composer.stopFailed") : null };
 }

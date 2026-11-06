@@ -263,7 +263,7 @@ export function summarizeToolResult(
   density: TranscriptDensity = "comfortable",
   t: TFunction = i18n.getFixedT("en"),
 ): string {
-  if (!result) return isError ? t("runUi.transcript.failed") : t("runUi.transcript.waiting");
+  if (!result) return isError ? t("runUi.transcript.failed") : t("runUi.transcript.waiting"); // query-error-ok: tool-result flag, not a query read
   const structured = parseStructuredToolResult(result);
   if (structured) {
     if (structured.body) {

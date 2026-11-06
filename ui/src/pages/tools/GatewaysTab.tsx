@@ -14,11 +14,13 @@ import { Check, ChevronDown, Copy, KeyRound, Link as LinkIcon, Plus, RotateCcw, 
 import { agentsApi } from "@/api/agents";
 import { projectsApi } from "@/api/projects";
 import { toolsApi } from "@/api/tools";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/context/ToastContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { copyTextToClipboard } from "@/lib/clipboard";
-import { ErrorState, LoadingState, RelativeTime, ToolsPageHeader } from "./shared";
+import { LoadingState, RelativeTime, ToolsPageHeader } from "./shared";
+import { describeError } from "@/api/errors";
 
 type CreateGatewayDraft = {
   name: string;
@@ -142,6 +144,7 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
     queryKey: queryKeys.projects.list(companyId, { includeArchived: true }),
     queryFn: () => projectsApi.list(companyId, { includeArchived: true }),
   });
+  const gatewaysView = useQueryView(gatewaysQuery);
 
   const origin = useMemo(() => {
     if (typeof window === "undefined") return "";
@@ -175,7 +178,7 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
       await invalidateGateways();
     },
     onError: (error) => {
-      pushToast({ title: fullAppsT("fullApps.gateway_was_not_created_449e74"), body: error instanceof Error ? renderAppError(error) : String(error), tone: "error" });
+      pushToast({ title: fullAppsT("fullApps.gateway_was_not_created_449e74"), body: describeError(error).body, tone: "error" });
     },
   });
 
@@ -198,7 +201,7 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
       await invalidateGateways();
     },
     onError: (error) => {
-      pushToast({ title: fullAppsT("fullApps.token_was_not_issued_2f956f"), body: error instanceof Error ? renderAppError(error) : String(error), tone: "error" });
+      pushToast({ title: fullAppsT("fullApps.token_was_not_issued_2f956f"), body: describeError(error).body, tone: "error" });
     },
   });
 
@@ -210,7 +213,7 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
       await invalidateGateways();
     },
     onError: (error) => {
-      pushToast({ title: fullAppsT("fullApps.token_was_not_revoked_bae52f"), body: error instanceof Error ? renderAppError(error) : String(error), tone: "error" });
+      pushToast({ title: fullAppsT("fullApps.token_was_not_revoked_bae52f"), body: describeError(error).body, tone: "error" });
     },
   });
 
@@ -219,7 +222,7 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
       await copyTextToClipboard(value);
       pushToast({ title: fullAppsT("taskDetail.copy.copied"), body: label, tone: "success" });
     } catch (error) {
-      pushToast({ title: fullAppsT("taskPanels.viewer.copy.failed"), body: error instanceof Error ? renderAppError(error) : fullAppsT("fullApps.clipboard_access_is_unavailable_0899c2"), tone: "error" });
+      pushToast({ title: fullAppsT("taskPanels.viewer.copy.failed"), body: describeError(error).body, tone: "error" });
     }
   }
 
@@ -252,8 +255,17 @@ export function GatewaysTab({ companyId }: { companyId: string }) {
     createTokenMutation.mutate(gatewayId);
   }
 
-  if (gatewaysQuery.isLoading) return <LoadingState label={fullAppsT("fullApps.loading_gateways_ed4b4d")} />;
-  if (gatewaysQuery.isError) return <ErrorState t={fullAppsI18n.t} error={gatewaysQuery.error} />;
+  if (gatewaysQuery.isLoading || gatewaysView.kind === "reconnecting") return <LoadingState label={fullAppsT("fullApps.loading_gateways_ed4b4d")} />;
+  if (gatewaysView.kind === "error") {
+    return (
+      <QueryErrorState
+        error={gatewaysQuery.error}
+        action="load gateways"
+        onRetry={gatewaysView.retry}
+        retrying={gatewaysView.isFetching}
+      />
+    );
+  }
 
   const gateways = gatewaysQuery.data?.gateways ?? [];
   const profileLoading = profilesQuery.isLoading;

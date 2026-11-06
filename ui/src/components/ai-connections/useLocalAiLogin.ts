@@ -2,6 +2,7 @@ import { useTranslation } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import type { AiConnectionLoginIntent, LocalAiLoginAttempt, LocalAiLoginStatus } from "@paperclipai/shared";
 import { aiConnectionsApi } from "@/api/ai-connections";
+import { describeError } from "@/api/errors";
 
 type LocalLoginError = { message: string } | { kind: "expired" | "check" | "submit" };
 
@@ -20,6 +21,7 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
   const [authorizationUrl, setAuthorizationUrl] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
   const [error, setError] = useState<LocalLoginError | null>(null);
+  const [accountLabel, setAccountLabel] = useState<string | null>(null);
   const [generation, setGeneration] = useState(0);
   const latestIntent = useRef(intent);
   const restartRequested = useRef(false);
@@ -37,6 +39,7 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
   useEffect(() => {
     setAttempt(null);
     setError(null);
+    setAccountLabel(null);
     setStatus(null);
     setAuthorizationUrl(null);
     setCode(null);
@@ -69,6 +72,7 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
         setStatus(next.status);
         setAuthorizationUrl(next.authorizationUrl ?? null);
         setCode(next.code ?? null);
+        setAccountLabel(next.accountLabel ?? null);
         setError(next.error != null ? { message: next.error } : next.status === "expired" ? { kind: "expired" } : null);
         // Stop polling a verified account. Focus rechecks after the provider
         // browser visit; sign-in never requires repeated Connect clicks.
@@ -96,6 +100,7 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
     command: attempt?.command,
     authorizationUrl,
     code,
+    accountLabel,
     status,
     preparing: active && !status && !errorMessage,
     error: errorMessage,

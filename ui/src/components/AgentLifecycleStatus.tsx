@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation } from "../i18n";
 import { useQuery } from "@tanstack/react-query";
 import { agentsApi } from "../api/agents";
@@ -31,7 +32,7 @@ export function useAgentLifecycleStatus(agent?: Agent) {
     queryKey: [...queryKeys.agents.detail(agent?.id ?? ""), "lifecycle", agent?.companyId],
     queryFn: () => agentsApi.get(agent!.id, agent!.companyId),
     enabled: Boolean(agent),
-    select: current => ({ status: current.status, lifecycleState: current.lifecycleState,
+    select: current => ({ status: current.status, pauseReason: current.pauseReason, pausedAt: current.pausedAt, lifecycleState: current.lifecycleState,
       lifecycleVersion: current.lifecycleVersion, lifecycleError: current.lifecycleError }),
     refetchInterval: query => agentLifecycleRefetchInterval(query.state.data?.lifecycleState ?? agent?.lifecycleState),
   });
@@ -61,6 +62,8 @@ export function AgentLifecycleStatus({ agent, onRetry, retryPending, refreshErro
         {t(retryPending ? "agentDetailUi.lifecycle.retrying" : "agentDetailUi.lifecycle.retry")}
       </Button>
     </div>}
-    {phase && agent.lifecycleError && <p className="text-muted-foreground">{t("agentDetailUi.lifecycle.retryHint")}</p>}
+    {phase && agent.lifecycleError && <p className="text-muted-foreground">{agent.lifecycleState === "verifying"
+      ? translateUi("interfaceUpdates.retry_now_checks_the_saved_configuration_again_imm_37ecae01")
+      : translateUi("agentDetailUi.lifecycle.retryHint")}</p>}
   </div>;
 }

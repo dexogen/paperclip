@@ -21,6 +21,7 @@ import {
   OnboardingLoginCard,
 } from "../AdapterLoginChrome";
 import { ModelSourceTiles, type ModelConnectionMode } from "../onboarding/ModelSourceTiles";
+import { useQueryView } from "../QueryView";
 import { CredentialModeLink } from "../onboarding/CredentialModeLink";
 import { FooterNav } from "../onboarding/FooterNav";
 import { MAKE_ROOM, CARD_ENTER } from "../onboarding/onboarding-motion";
@@ -52,7 +53,7 @@ export function AgentProviderConnection({
   advancedConnection,
 }: {
   companyId: string;
-  adapterType: "claude_local" | "codex_local" | "grok_local";
+  adapterType: "claude_local" | "codex_local" | "grok_local" | "antigravity_runtime";
   environmentId: string | null;
   canLogin: boolean;
   localEnvironment?: boolean;
@@ -80,6 +81,10 @@ export function AgentProviderConnection({
     retrieveSaved: t("providerSetup.credentials.errors.retrieveSaved"),
   };
   const health = useQuery({ queryKey: queryKeys.health, queryFn: healthApi.get, enabled: localEnvironment });
+  // Read health through the shared view: a transient failure keeps the saved
+  // local-login path usable,anda no-data failure shows readable copy.
+
+  const healthView = useQueryView(health);
   const canUseLocalLogin = localEnvironment && (health.data?.localAiLoginSupported ?? health.data?.deploymentMode === "local_trusted");
   const epoch = useRef(0);
   useEffect(
@@ -107,10 +112,10 @@ export function AgentProviderConnection({
   const [error, setError] = useState<ProviderConnectionError | null>(null);
   const [storedConnection, setStoredConnection] =
     useState<ProviderConnection | null>(null);
-  const provider = adapterType === "claude_local" ? "Claude" : adapterType === "grok_local" ? "Grok" : "OpenAI";
+  const provider = adapterType === "antigravity_runtime" ? "Google" : adapterType === "claude_local" ? "Claude" : adapterType === "grok_local" ? "Grok" : "OpenAI";
   const envKey =
-    adapterType === "claude_local" ? "ANTHROPIC_API_KEY" : adapterType === "grok_local" ? "XAI_API_KEY" : "OPENAI_API_KEY";
-  const aiProvider = adapterType === "claude_local" ? "anthropic" : adapterType === "grok_local" ? "xai" : "openai";
+    adapterType === "antigravity_runtime" ? "GEMINI_API_KEY" : adapterType === "claude_local" ? "ANTHROPIC_API_KEY" : adapterType === "grok_local" ? "XAI_API_KEY" : "OPENAI_API_KEY";
+  const aiProvider = adapterType === "antigravity_runtime" ? "google" : adapterType === "claude_local" ? "anthropic" : adapterType === "grok_local" ? "xai" : "openai";
   const availableKeys = useSavedProviderKeys(companyId, envKey);
   // Add/reconnect creates the requested account, never copies a saved account's
   // credential or silently changes its ownership. Agent setup retains reuse.
@@ -132,6 +137,10 @@ export function AgentProviderConnection({
   const storedLogin = managedAccount
     ? { ...savedKeys.storedLogin, data: undefined, isPending: false, isError: false }
     : savedKeys.storedLogin;
+  // Read the saved-login status through the shared view: cached results stay
+  // visible during a transient refetch failure,and a no-data failure shows copy.
+
+  const storedLoginView = useQueryView(storedLogin);
   const savedManagedAccount = useRef<{ connectionId: string; grantId: string } | null>(null);
   const method = methodChoice ?? (
     (savedKeys.subscriptions.length > 0 || (adapterType === "claude_local" && !savedSubscription && storedLogin.data))
@@ -167,8 +176,7 @@ export function AgentProviderConnection({
         adapterType,
         environmentId ?? undefined,
       ),
-    retry: false,
-    enabled: !managedAccount && !advanced,
+    enabled: !managedAccount && !advanced && adapterType !== "antigravity_runtime",
   });
   async function connect() {
     if (busy || managedAccount?.disabled) return;
@@ -240,7 +248,7 @@ export function AgentProviderConnection({
   }
   const needsLogin =
     method === "subscription" &&
-    canLogin &&
+    canLogin && adapterType !== "antigravity_runtime" &&
     environmentId &&
     !savedSubscription &&
     !savedKeys.loading &&
@@ -421,7 +429,7 @@ export function AgentProviderConnection({
           </div>
         )}
       </motion.div>
-      {method === "subscription" && storedLogin.isError && (
+      {!managedAccount && method === "subscription" && storedLoginView.kind === "error" && (
         <p role="alert" className="mt-4 text-sm text-destructive">
           {t("providerSetup.credentials.savedClaudeError")}
         </p>
@@ -431,7 +439,7 @@ export function AgentProviderConnection({
           {testError ?? errorMessage}
         </p>
       )}
-      {localEnvironment && health.isError && (
+      {localEnvironment && healthView.kind === "error" && (
         <p role="alert" className="mt-4 text-sm text-destructive">{t("providerSetup.credentials.prepareError")}</p>
       )}
       <FooterNav
@@ -458,7 +466,7 @@ export function AgentProviderConnection({
           (Boolean(managedAccount) && method === "subscription" && !canLogin && !canUseLocalLogin) ||
           (localEnvironment && health.isPending) || localLogin.preparing || Boolean(localLogin.error) ||
           (method === "subscription" && canUseLocalLogin && !savedSubscription && !storedLogin.data && localLogin.status !== "ready") ||
-          (!managedAccount && auth.isPending) ||
+          (!managedAccount && adapterType !== "antigravity_runtime" && auth.isPending) ||
           savedKeys.loading ||
           (adapterType === "claude_local" && storedLogin.isPending) ||
           // The saved-subscription chooser renders outside the opened section,

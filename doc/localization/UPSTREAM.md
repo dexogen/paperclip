@@ -22,12 +22,18 @@ the release commit, a metadata-only PR promotes it to stable and still requires
 review and verification.
 
 During the transition, the accepted source is master commit
-`0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20`, which is newer than `v2026.1023.0`.
-The stable tracker waits for a release that contains that commit; it must neither
-publish this master tree as `v2026.1023.0` nor deploy the older release. The already
-approved PR #32 deployment is the final exception before this stable policy takes
-effect. Later master updates require explicit owner authorization for merge and
-deployment, in addition to selecting the manual master channel.
+`fb2e07ebdd17a813965c4e415696e72cc6f9eed2`, which is newer than `v2026.1023.0`.
+The owner explicitly requested this integration and deployment in PR #37.
+The stable tracker waits for a release containing that commit; it must neither
+label this master tree as `v2026.1023.0` nor deploy an older release. Further
+master updates require explicit owner authorization for merge and deployment,
+in addition to selecting the manual master channel.
+
+Upstream `f5e5b05a333ad8ee5d5dbbca2c3c67693a4844aa` supersedes the fork's
+preparer-lease cleanup fix `82d22e84ec4327a18f779f0a2174d377bf6e16c1`.
+Native admission now retires preparation ownership atomically with the native
+coordinator handoff. Keep the upstream Stop, workspace recovery, and resource
+ownership checks; do not restore the old preparer lease after that handoff.
 
 Stable builds display `<upstream-version>+ru.<revision>`, for example
 `2026.1023.0+ru.1`. The GitHub release tag uses `v<upstream-version>-ru.<revision>`,
@@ -352,3 +358,18 @@ required checks or treat a separate local test run as a successful hosted run.
 Keep prior image digests for rollback. Reverting an image is insufficient when an
 upstream update changed database compatibility; take and test appropriate backups
 before deployment. Automatic deployment is intentionally outside this workflow.
+
+### Runtime efficiency patches
+
+The resumed-usage fix uses the existing `session_cumulative` adapter contract and
+normalization service. The informational-comment option is additive and defaults
+to the upstream behavior. Neither change adds a database migration. Keep these
+patches separate from upstream merges; remove an individual patch when upstream
+provides equivalent behavior and its regression tests pass.
+
+The runtime skill has a compact entry point and topic references. During an
+upstream sync, reconcile new runtime instructions into the matching reference and
+keep essential authorization, checkout and completion rules in the entry point.
+Update the capability source list and regenerate its catalog after moving
+headings. Preserve the routine entry-point size check. This changes documentation
+loading, not the Runner protocol or the upstream update workflow.

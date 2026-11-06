@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t, useTranslation, i18n } from "@/i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -11,8 +12,10 @@ import {
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { queryKeys } from "../lib/queryKeys";
+import { ArtifactEmptyGraphic } from "@/components/artifacts/v1/ArtifactEmptyGraphic";
 import { EmptyState } from "../components/EmptyState";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { QueryErrorState, useQueryView } from "../components/QueryView";
 import { ArtifactCard } from "../components/artifacts/ArtifactCard";
 import { ArtifactGroupCard } from "../components/artifacts/ArtifactGroupCard";
 import { useSearchParams, Link } from "@/lib/router";
@@ -169,15 +172,7 @@ export function Artifacts() {
     [buildTo, groupBy],
   );
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    error,
-  } = useInfiniteQuery({
+  const artifactsQuery = useInfiniteQuery({
     queryKey: queryKeys.artifacts.list(selectedCompanyId!, kind, query, groupBy, groupIssueId),
     queryFn: ({ pageParam }) =>
       artifactsApi.list(selectedCompanyId!, {
@@ -192,6 +187,14 @@ export function Artifacts() {
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
+  const {
+    data,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = artifactsQuery;
+  const artifactsView = useQueryView(artifactsQuery);
 
   useEffect(() => {
     const target = loadMoreRef.current;
@@ -243,8 +246,8 @@ export function Artifacts() {
       : viewingSelectedStack
         ? t("surfacesGap.artifacts.noStackMatch")
         : kind === "all"
-          ? t("surfacesGap.artifacts.empty")
-          : t("surfacesGap.artifacts.emptyKind");
+          ? translateUi("interfaceUpdates.no_artifacts_yet_outputs_attached_to_tasks_will_ap_5f9d555f")
+          : translateUi("surfacesGap.artifacts.emptyKind");
 
   return (
     <div className="w-full max-w-6xl space-y-5">
@@ -277,12 +280,20 @@ export function Artifacts() {
         </div>
       ) : null}
 
-      {error && <p className="text-sm text-destructive">{error.message}</p>}
-
-      {isLoading ? (
+      {/* Loaded artifacts stay on screen through a failed refetch; an outage
+          before the first load shows the skeleton, a real failure shows copy. */}
+      {artifactsView.kind === "loading" || artifactsView.kind === "reconnecting" ? (
         <PageSkeleton variant="list" />
+      ) : artifactsView.kind === "error" ? (
+        <QueryErrorState
+          error={artifactsView.error}
+          action="load artifacts"
+          onRetry={artifactsView.retry}
+          retrying={artifactsView.isFetching}
+        />
       ) : items.length === 0 ? (
-        <EmptyState icon={showGroupCards ? Layers : Package} message={emptyMessage} />
+        <EmptyState icon={showGroupCards ? Layers : Package} message={emptyMessage}
+          graphic={<ArtifactEmptyGraphic stack={showGroupCards} kind={kind === "all" ? "file" : kind === "text" ? "code" : kind} />} />
       ) : v1 ? (
         <>
           {/* Artifacts V1 (doc/plans/2026-10-22-artifacts-mvp-v1.md): a task with several artifacts is a stack

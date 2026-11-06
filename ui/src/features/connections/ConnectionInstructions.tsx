@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { useId, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,9 +12,11 @@ import {
   type ConnectionInstructionTemplate,
   type ToolConnection,
 } from "@paperclipai/shared";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { queryKeys } from "@/lib/queryKeys";
 import { Link } from "@/lib/router";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
@@ -70,7 +73,7 @@ export function ConnectionInstructionsSettings({ connection, provider, template,
   const dirty = JSON.stringify(value) !== JSON.stringify(saved);
   return <div className="space-y-4">
     <ConnectionInstructionsEditor provider={provider} template={template} value={value} onChange={setDraft} disabled={!canConfigure || mutation.isPending} />
-    {mutation.isError && <div role="alert"><InlineBanner tone="danger">{mutation.error instanceof Error ? mutation.error.message : t("agentConnectionUi.instructions.saveError")}</InlineBanner></div>}
+    {mutation.isError && <div role="alert"><InlineBanner tone="danger">{describeError(mutation.error).body}</InlineBanner></div>}
     {dirty && <div className="flex items-center justify-between">
       <Button variant="ghost" disabled={mutation.isPending} onClick={() => { setDraft(null); mutation.reset(); }}>{t("agentConnectionUi.instructions.cancel")}</Button>
       <Button disabled={!canConfigure || mutation.isPending || !value.text.trim()} onClick={() => mutation.mutate()}>{mutation.isPending ? t("agentConnectionUi.instructions.saving") : t("agentConnectionUi.instructions.save")}</Button>
@@ -81,9 +84,10 @@ export function ConnectionInstructionsSettings({ connection, provider, template,
 export function AgentConnectionInstructions({ companyId, agentId }: { companyId: string; agentId: string }) {
   const { t } = useTranslation();
   const query = useQuery({ queryKey: queryKeys.tools.effectiveProfilesForAgent(companyId, agentId), queryFn: () => toolsApi.getEffectiveProfilesForAgent(companyId, agentId) });
+  const view = useQueryView(query);
   const sources = query.data?.installedConnections.filter((connection) => connection.agentInstructions && connection.enabled && connection.status === "active") ?? [];
-  if (query.isLoading) return <p className="text-sm text-muted-foreground">{t("agentConnectionUi.instructions.loading")}</p>;
-  if (query.isError) return <InlineBanner tone="danger" actions={<Button variant="ghost" onClick={() => void query.refetch()}>{t("agentConnectionUi.instructions.retry")}</Button>}>{t("agentConnectionUi.instructions.loadError")}</InlineBanner>;
+  if (query.isLoading || view.kind === "reconnecting") return <p className="text-sm text-muted-foreground">{translateUi("agentConnectionUi.instructions.loading")}</p>;
+  if (view.kind === "error") return <QueryErrorState error={query.error} action="load connection instructions" onRetry={view.retry} retrying={view.isFetching} />;
   if (!sources.length) return null;
   return <section className="mt-8 space-y-4" aria-label={t("agentConnectionUi.instructions.fromConnections")}>
     <h3 className="text-sm font-medium">{t("agentConnectionUi.instructions.fromConnections")}</h3>

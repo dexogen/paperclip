@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t, useTranslation, i18n, Trans } from "@/i18n";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { useEffect, useMemo, useState } from "react";
@@ -25,6 +26,8 @@ import { auditApi, type AuditActionRecord, type AuditActionFilters } from "@/api
 import { agentsApi } from "@/api/agents";
 import { accessApi } from "@/api/access";
 import { ApiError } from "@/api/client";
+import { describeError } from "@/api/errors";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { useToastActions } from "@/context/ToastContext";
 import { instanceSettingsApi } from "@/api/instanceSettings";
 
@@ -363,7 +366,6 @@ export function AuditFeed({
   const userDirectory = useQuery({
     queryKey: queryKeys.access.companyUserDirectory(companyId),
     queryFn: () => accessApi.listUserDirectory(companyId),
-    retry: false,
   });
 
   const agentMap = useMemo(
@@ -421,9 +423,11 @@ export function AuditFeed({
       auditApi.listAgentActions(companyId, { ...filters, limit: PAGE_SIZE, cursor: pageParam ?? undefined }),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    retry: (count, error) => !(error instanceof ApiError && error.status === 403) && count < 2,
+    // The shared retry policy already covers this: a 403 never retries, a
+    // transient failure pauses across an outage and retries with backoff.
   });
 
+  const feedView = useQueryView(feed);
   const permissionDenied = feed.error instanceof ApiError && feed.error.status === 403;
   const hasBasicPage = feed.data?.pages.some((page) => page.accessTier === "basic") ?? false;
   const hasFullPage = feed.data?.pages.some((page) => page.accessTier === "full") ?? false;
@@ -548,8 +552,8 @@ export function AuditFeed({
       pushToast({ title: t("surfacesGap.audit.exported"), body: t("surfacesGap.audit.exportHint"), tone: "success" });
     } catch (error) {
       pushToast({
-        title: t("surfacesGap.audit.exportFailed"),
-        body: error instanceof Error ? error.message : t("surfacesGap.audit.exportError"),
+        title: translateUi("surfacesGap.audit.exportFailed"),
+        body: describeError(error, { action: "export the audit log" }).body,
         tone: "error",
       });
     } finally {
@@ -577,8 +581,8 @@ export function AuditFeed({
       ) : null}
 
       {showModeToggle ? (
-        <Tabs value={resolvedMode} onValueChange={(value) => onModeChange?.(value as AuditFeedMode)}>
-          <TabsList aria-label={t("surfacesGap.audit.scope")}>
+        <Tabs data-canonical-toolbar="audit-scope" value={resolvedMode} onValueChange={(value) => onModeChange?.(value as AuditFeedMode)}>
+          <TabsList className="design-view-toggle" aria-label={t("surfacesGap.audit.scope")}>
             <TabsTrigger value="all">{t("surfacesGap.audit.activity")}</TabsTrigger>
             <TabsTrigger
               value="agents"
@@ -603,7 +607,7 @@ export function AuditFeed({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-end gap-3 border-y border-border py-3">
+      <div data-canonical-toolbar="audit-activity" role="toolbar" aria-label={translateUi("interfaceUpdates.audit_filters_1cf1e43e")} className="flex flex-wrap items-end gap-3 border-y border-border py-3">
         {canUseAdvancedControls && !lockedAgentId && !lockedRunId ? (
           <label className="grid gap-1 text-(length:--text-micro) font-medium text-muted-foreground">
             <span>{t("surfacesGap.audit.agent")}</span>
@@ -743,21 +747,17 @@ export function AuditFeed({
             {t("surfacesGap.audit.refreshAccess")}
           </CardContent>
         </Card>
-      ) : feed.isLoading ? (
+      ) : feedView.kind === "loading" || feedView.kind === "reconnecting" ? (
         <Card>
           <CardContent className="py-14 text-center text-sm text-muted-foreground">{t("surfacesGap.audit.loading")}</CardContent>
         </Card>
-      ) : feed.error ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <p className="text-sm text-muted-foreground">
-              {feed.error instanceof Error ? feed.error.message : t("surfacesGap.audit.loadError")}
-            </p>
-            <Button variant="outline" size="sm" onClick={() => feed.refetch()}>
-              {t("surfacesGap.audit.tryAgain")}
-            </Button>
-          </CardContent>
-        </Card>
+      ) : feedView.kind === "error" ? (
+        <QueryErrorState
+          error={feedView.error}
+          action="load the audit log"
+          onRetry={feedView.retry}
+          retrying={feedView.isFetching}
+        />
       ) : items.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">

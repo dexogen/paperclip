@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -5,6 +7,7 @@ import { ArrowDown, ArrowUp, ExternalLink, Loader2, MoreHorizontal, Plus, Search
 import { aiConnectionRouterAppDefinition, type AiConnectionPool, type AiConnectionPoolConfig, type AiConnectionPoolMember, type AiManagedConnectionSummary, type ToolConnection } from "@paperclipai/shared";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { aiConnectionPoolsApi, type PoolInspection } from "@/api/ai-connection-pools";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { agentsApi } from "@/api/agents";
 import { useCompany } from "@/context/CompanyContext";
@@ -16,6 +19,7 @@ import { AppLogo } from "@/pages/apps/AppLogo";
 import { AppDetailHeader } from "@/pages/apps/AppDetail";
 import { StepHeader } from "@/features/connections/ConnectionSetupHeader";
 import { Button } from "@/components/ui/button";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -42,6 +46,7 @@ export function AiConnectionPoolConnector({ pluginKey, connection }: { pluginKey
   return selectedCompanyId ? <PoolConnector key={`${selectedCompanyId}:${connection?.id ?? pluginKey}`} companyId={selectedCompanyId} pluginKey={pluginKey} connection={connection} /> : <p>{fullSharedT("fullShared.select_a_company_to_continue_6f8b3b")}</p>;
 }
 function PoolConnector({ companyId, pluginKey, connection }: { companyId: string; pluginKey: string; connection?: ToolConnection }) {
+  useUiTranslation();
   useFullSharedTranslation();
   const navigate = useNavigate();
   const client = useQueryClient();
@@ -50,6 +55,9 @@ function PoolConnector({ companyId, pluginKey, connection }: { companyId: string
   const accountsQuery = useQuery({ queryKey: ["pool-accounts", companyId], queryFn: () => aiConnectionsApi.list(companyId) });
   const poolsQuery = useQuery({ queryKey: ["ai-connection-pools", companyId], queryFn: () => aiConnectionPoolsApi.list(companyId), enabled: accountsQuery.data?.canManageConnections === true });
   const galleryQuery = useQuery({ queryKey: queryKeys.apps.gallery(companyId), queryFn: () => toolsApi.listGallery(companyId) });
+  const accountsView = useQueryView(accountsQuery);
+  const poolsView = useQueryView(poolsQuery);
+  const galleryView = useQueryView(galleryQuery);
   const [editing, setEditing] = useState<AiConnectionPool>();
   const [draft, setDraft] = useState(emptyConfig);
   const [step, setStep] = useState(0);
@@ -68,6 +76,7 @@ function PoolConnector({ companyId, pluginKey, connection }: { companyId: string
   const canManage = Boolean(accountsQuery.data?.canManageConnections);
   const disabled = busy || !canManage || unavailable;
   const agentsQuery = useQuery({ queryKey: queryKeys.agents.list(companyId), queryFn: () => agentsApi.list(companyId), enabled: Boolean(connection) && canManage });
+  const agentsView = useQueryView(agentsQuery);
   const usingAgents = (agentsQuery.data ?? []).filter(agent => agent.status !== "terminated" && agent.runtimeConfig?.aiConnection?.mode === "router" && agent.runtimeConfig.aiConnection.connectionId === connection?.id).sort((a, b) => a.name.localeCompare(b.name));
   useEffect(() => {
     if (connection && !editing && canManage) {
@@ -101,24 +110,26 @@ function PoolConnector({ companyId, pluginKey, connection }: { companyId: string
       await invalidate();
       pushToast({ title: connection ? fullSharedT("fullShared.connection_pool_saved_dea14a") : fullSharedT("fullShared.connection_pool_created_334b94"), tone: "success" });
       if (!connection) navigate(`/apps/${saved.id}/permissions`);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
+    } catch (cause) { setError(describeError(cause).body); }
     finally { setBusy(false); }
   }
   async function remove() {
     if (!editing) return;
     setBusy(true); setError("");
     try { await aiConnectionPoolsApi.remove(companyId, editing.id, editing.revision); await invalidate(); navigate("/apps"); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
+    catch (cause) { setError(describeError(cause).body); }
     finally { setBusy(false); }
   }
   function move(index: number, offset: number) {
     setDraft(value => { const members = [...value.members]; [members[index], members[index + offset]] = [members[index + offset]!, members[index]!]; return { ...value, members }; });
   }
-  const loadError = accountsQuery.error ?? poolsQuery.error ?? galleryQuery.error;
-  if (accountsQuery.isSuccess && !canManage) return <p role="alert" className="text-sm text-muted-foreground">{fullSharedT("fullShared.a_connection_manager_can_view_and_edit_connection_po_2179a1")}</p>;
-  if (loadError) return <div className="space-y-4"><p role="alert" className="text-sm text-destructive">{loadError.message}</p><Button variant="outline" onClick={() => { void accountsQuery.refetch(); void poolsQuery.refetch(); void galleryQuery.refetch(); }}>{fullSharedT("fullShared.try_again_d8b839")}</Button></div>;
-  if (accountsQuery.isPending || poolsQuery.isPending || galleryQuery.isPending || (connection && !editing && poolsQuery.data?.some(pool => pool.id === connection.id))) return <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" />{fullSharedT("providerSetup.select.loading")}</p>;
-  if (connection && !editing) return <p role="alert">{fullSharedT("fullShared.this_connection_pool_is_no_longer_available_b9b364")}</p>;
+  // Loaded data stays on screen through a transient refetch failure; only a real failure replaces the pool.
+  const failedViews = [accountsView, poolsView, galleryView].filter(view => view.kind === "error");
+  const reconnecting = [accountsView, poolsView, galleryView].some(view => view.kind === "reconnecting");
+  if (accountsQuery.data && !canManage) return <p role="alert" className="text-sm text-muted-foreground">{translateUi("fullShared.a_connection_manager_can_view_and_edit_connection_po_2179a1")}</p>;
+  if (failedViews.length > 0) return <QueryErrorState error={failedViews[0]!.error} action="load connections" onRetry={() => failedViews.forEach(view => view.retry())} retrying={failedViews.some(view => view.isFetching)} />;
+  if (accountsQuery.isPending || poolsQuery.isPending || galleryQuery.isPending || reconnecting || (connection && !editing && poolsQuery.data?.some(pool => pool.id === connection.id))) return <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" />{translateUi("providerSetup.select.loading")}</p>;
+  if (connection && !editing) return <p role="alert">{translateUi("fullShared.this_connection_pool_is_no_longer_available_b9b364")}</p>;
   const name = entry?.name ?? "AI connection pool";
   const logoEntry = entry ?? aiConnectionRouterAppDefinition(pluginKey, { name, description: fullSharedT("fullShared.use_existing_ai_connections_86b556") });
   const orderedMembers = <ol aria-label={fullSharedT("fullShared.connection_order_f65234")} className="divide-y divide-border rounded-lg border border-border">
@@ -158,9 +169,9 @@ function PoolConnector({ companyId, pluginKey, connection }: { companyId: string
           {draft.members.map((member, index) => <div key={member.id} className="space-y-2"><p className="text-sm font-medium">{accounts.find(account => account.id === member.binding.connectionId)?.name ?? fullSharedT("fullShared.connection_unavailable_a05d49")}</p><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-1 text-xs text-muted-foreground">{fullSharedT("onboarding.model.label")}<Input aria-label={fullSharedT("fullShared.model_for_connection_4ab79b", { value1: index + 1 })} value={member.profile.model} onChange={event => setDraft({ ...draft, members: draft.members.map(row => row.id === member.id ? { ...row, profile: { ...row.profile, model: event.target.value } } : row) })} /></label><label className="space-y-1 text-xs text-muted-foreground">{fullSharedT("fullShared.effort_optional_9151d5")}<Input aria-label={fullSharedT("fullShared.effort_for_connection_e59367", { value1: index + 1 })} value={member.profile.effort ?? ""} onChange={event => { const { effort: _old, ...profile } = member.profile; setDraft({ ...draft, members: draft.members.map(row => row.id === member.id ? { ...row, profile: { ...profile, ...(event.target.value.trim() ? { effort: event.target.value.trim() } : {}) } } : row) }); }} /></label></div></div>)}
         </fieldset></details>
         <section aria-labelledby="pool-used-by" className="space-y-3">
-          <h2 id="pool-used-by" className="text-sm font-semibold">{fullSharedT("skillsGap.usedBy")}</h2>
-          {agentsQuery.isPending ? <p role="status" className="text-sm text-muted-foreground">{fullSharedT("fullShared.loading_agents_ae0c14")}</p>
-            : agentsQuery.isError ? <div className="flex items-center gap-2"><p role="alert" className="text-sm text-muted-foreground">{fullSharedT("fullShared.couldn_t_load_agents_47c8b8")}</p><Button variant="ghost" size="sm" onClick={() => void agentsQuery.refetch()}>{fullSharedT("newIssue.retry")}</Button></div>
+          <h2 id="pool-used-by" className="text-sm font-semibold">{translateUi("skillsGap.usedBy")}</h2>
+          {agentsQuery.isPending || agentsView.kind === "reconnecting" ? <p role="status" className="text-sm text-muted-foreground">{translateUi("fullShared.loading_agents_ae0c14")}</p>
+            : agentsView.kind === "error" ? <QueryErrorState size="inline" error={agentsQuery.error} action="load agents" onRetry={agentsView.retry} retrying={agentsView.isFetching} />
             : usingAgents.length ? <ul className="flex flex-wrap gap-x-6 gap-y-3">{usingAgents.map(agent => <li key={agent.id} className="min-w-0 max-w-full"><Link to={`/agents/${agent.id}`} className="inline-flex max-w-full rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><AgentIdentity agent={agent} /></Link></li>)}</ul>
             : <p className="text-sm text-muted-foreground">{fullSharedT("providerSetup.access.picker.empty")}</p>}
         </section>

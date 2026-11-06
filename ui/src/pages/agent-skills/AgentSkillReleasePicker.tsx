@@ -1,4 +1,4 @@
-import type { CompanySkillVersion } from "@paperclipai/shared";
+import type { CompanySkillVersionSummary } from "@paperclipai/shared";
 import type { TFunction } from "i18next";
 import { i18n, useTranslation } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ export const RELEASE_DEFAULT_VALUE = "default";
  * v7-roster manifest entry) render verbatim; full timestamps collapse to their
  * local calendar day so the picker reads `released 2026-07-21`.
  */
-export function formatReleaseDate(value: CompanySkillVersion["releasedAt"]): string | null {
+export function formatReleaseDate(value: CompanySkillVersionSummary["releasedAt"]): string | null {
   if (!value) return null;
   const raw = typeof value === "string" ? value : value.toISOString();
   if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
@@ -31,25 +31,25 @@ export function formatReleaseDate(value: CompanySkillVersion["releasedAt"]): str
 }
 
 /** Release display name, e.g. `V7 — Roster champion` (no date). */
-export function releaseName(release: CompanySkillVersion, t: TFunction = i18n.getFixedT("en")): string {
+export function releaseName(release: CompanySkillVersionSummary, t: TFunction = i18n.getFixedT("en")): string {
   return release.releaseName ?? release.label ?? release.releaseId ?? t("agentSkillsUi.release.fallback");
 }
 
 /** Full option label, e.g. `V7 — Roster champion · released 2026-07-21`. */
-export function releaseOptionLabel(release: CompanySkillVersion, t: TFunction = i18n.getFixedT("en")): string {
+export function releaseOptionLabel(release: CompanySkillVersionSummary, t: TFunction = i18n.getFixedT("en")): string {
   const name = releaseName(release, t);
   const date = formatReleaseDate(release.releasedAt);
   return date ? t("agentSkillsUi.release.dated", { name, date }) : name;
 }
 
 /** Compact badge label for a pinned release, e.g. `V7`. */
-export function releaseShortLabel(release: CompanySkillVersion, t: TFunction = i18n.getFixedT("en")): string {
+export function releaseShortLabel(release: CompanySkillVersionSummary, t: TFunction = i18n.getFixedT("en")): string {
   const name = releaseName(release, t);
   return name.split(" — ")[0]!.trim();
 }
 
 export interface AgentSkillReleasePickerProps {
-  releases: CompanySkillVersion[];
+  releases: CompanySkillVersionSummary[];
   /** Currently pinned version id, or null for the live default. */
   value: string | null;
   disabled?: boolean;

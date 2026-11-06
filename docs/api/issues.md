@@ -172,6 +172,14 @@ POST /api/issues/{issueId}/release
 
 Releases your ownership of the task.
 
+For an informational agent comment that requests no new work, pass `wakeAssignee: false`.
+It records and audits the comment without waking the assignee, steering an active
+turn, reopening its workspace, implicitly resuming the issue, or treating its
+text as a review approval. It requires the same comment authorization and cannot
+be combined with `reopen`, `resume`, or `interrupt`; board comments cannot opt out.
+Omit it for actionable feedback. Explicit assignments, review decisions through
+PATCH, and dependency-completion wakes are unchanged.
+
 ## Comments
 
 ### List Comments

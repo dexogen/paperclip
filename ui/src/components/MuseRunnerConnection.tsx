@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from "@/i18n";
+import { describeError } from "@/api/errors";
 import { Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -146,7 +147,7 @@ export function MuseRunnerConnection({ companyId, agentId }: { companyId?: strin
   } });
   if (!agentId) return <p className="text-sm text-muted-foreground">{t("externalAgentUi.muse.saveFirst")}</p>;
   const error = muse.state.error ?? muse.pair.error ?? muse.verify.error ?? muse.revoke.error ?? muse.attest.error ?? muse.attestDetector.error ?? pause.error;
-  const errorMessage = error instanceof MuseConnectionChangedError ? t("externalAgentUi.muse.connectionChanged") : error?.message;
+  const errorMessage = error instanceof MuseConnectionChangedError ? t("externalAgentUi.muse.connectionChanged") : error ? describeError(error).body : undefined;
   if (muse.identity.failed) return <div className="space-y-3"><p role="alert" className="text-sm text-destructive">{t("externalAgentUi.muse.identityFailed")}</p><Button type="button" variant="outline" onClick={() => { void cache.invalidateQueries({ queryKey: queryKeys.auth.session }); }}>{t("externalAgentUi.common.refresh")}</Button></div>;
   if (!muse.state.data) return <div className="space-y-3"><p role="status" className="text-sm text-muted-foreground">{muse.state.error ? t("externalAgentUi.muse.loadFailed") : t("externalAgentUi.muse.loading")}</p>{error && <p role="alert" className="text-sm text-destructive">{errorMessage}</p>}<Button type="button" variant="outline" onClick={() => { void muse.state.refetch(); }}>{t("externalAgentUi.common.refresh")}</Button></div>;
   return <MuseConnectionDetails key={muse.identity.userId} connection={muse.state.data} pairing={muse.pairing} offline={muse.state.isError}

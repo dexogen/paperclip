@@ -10,6 +10,8 @@ import type { Project } from "@paperclipai/shared";
 import { accessApi } from "@/api/access";
 import { agentsApi } from "@/api/agents";
 import { projectsApi } from "@/api/projects";
+import { describeError } from "@/api/errors";
+import { useQueryView } from "@/components/QueryView";
 import { useToastActions } from "@/context/ToastContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { Button } from "@/components/ui/button";
@@ -38,6 +40,13 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
     queryFn: () => agentsApi.list(project.companyId),
     enabled: open,
   });
+  // Read all three through the shared view: cached data stays usable during a
+  // transient refetch failure,and a no-data failure drops into readable copy.
+
+  const membersView = useQueryView(membersQuery);
+  const directoryView = useQueryView(directoryQuery);
+  const agentsView = useQueryView(agentsQuery);
+  const membersWaiting = ["loading", "reconnecting"].includes(membersView.kind);
   const activeKeys = useMemo(
     () => new Set((membersQuery.data ?? []).map((member) => `${member.subjectType}:${member.subjectId}`)),
     [membersQuery.data],
@@ -78,7 +87,7 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       pushToast({ title: t("projectConfigUi.access.added"), tone: "success" });
     },
-    onError: (error) => pushToast({ title: t("projectConfigUi.access.addFailed"), body: (error as Error).message, tone: "error" }),
+    onError: (error) => pushToast({ title: t("projectConfigUi.access.addFailed"), body: describeError(error).body, tone: "error" }),
   });
   const removeMember = useMutation({
     mutationFn: (memberId: string) => projectsApi.removeAccessMember(project.id, memberId, project.companyId),
@@ -88,7 +97,7 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       pushToast({ title: t("projectConfigUi.access.removed"), tone: "success" });
     },
-    onError: (error) => pushToast({ title: t("projectConfigUi.access.removeFailed"), body: (error as Error).message, tone: "error" }),
+    onError: (error) => pushToast({ title: t("projectConfigUi.access.removeFailed"), body: describeError(error).body, tone: "error" }),
   });
 
   return (
@@ -105,7 +114,7 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            {directoryQuery.isError || agentsQuery.isError ? (
+            {directoryView.kind === "error" || agentsView.kind === "error" ? (
               <p className="text-sm text-destructive">{t("projectConfigUi.access.directoryFailed")}</p>
             ) : null}
             <div className="flex items-end gap-2">
@@ -118,7 +127,7 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
                 placeholder={t("projectConfigUi.access.addPrompt")}
                 searchPlaceholder={t("projectConfigUi.access.search")}
                 emptyMessage={t("projectConfigUi.access.noMore")}
-                loading={directoryQuery.isLoading || agentsQuery.isLoading}
+                loading={[directoryView.kind, agentsView.kind].some(kind => ["loading", "reconnecting"].includes(kind))}
                 className="min-w-0 flex-1"
               />
               <Button size="sm" disabled={!canManage || !selection || addMember.isPending} onClick={() => addMember.mutate()}>
@@ -155,8 +164,8 @@ export function ProjectAccessMembers({ project, canManage }: { project: Project;
                   </div>
                 );
               })}
-              {membersQuery.isLoading ? <p className="py-3 text-sm text-muted-foreground">{t("projectConfigUi.access.loading")}</p> : null}
-              {membersQuery.isError ? (
+              {membersWaiting ? <p className="py-3 text-sm text-muted-foreground">{t("projectConfigUi.access.loading")}</p> : null}
+              {membersView.kind === "error" ? (
                 <p className="py-3 text-sm text-destructive">{t("projectConfigUi.access.membersFailed")}</p>
               ) : null}
             </div>

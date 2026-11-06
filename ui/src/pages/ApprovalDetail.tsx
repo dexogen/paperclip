@@ -1,6 +1,7 @@
 import { i18n } from "@/i18n";
 import { Trans, useTranslation } from "@/i18n";
 import { formatDateTime } from "../lib/utils";
+import { describeError } from "../api/errors";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "@/lib/router";

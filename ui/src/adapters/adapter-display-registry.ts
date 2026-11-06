@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { t as fullSharedTailT } from "@/i18n";
 import { t as fullSharedT } from "@/i18n";
 /**
@@ -20,6 +21,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { OpenCodeLogoIcon } from "@/components/OpenCodeLogoIcon";
+import { pendingAgentSetupDisplayAdapter } from "@/lib/agent-setup-choice";
 
 // ---------------------------------------------------------------------------
 // Type suffix parsing
@@ -63,7 +65,9 @@ export interface AdapterDisplayInfo {
 }
 
 const adapterDisplayMap: Record<string, AdapterDisplayInfo> = {
+  antigravity_runtime: { get label() { return translateUi("interfaceUpdates.google_antigravity_4b61c9d9"); }, get description() { return translateUi("interfaceUpdates.antigravity_through_paperclip_runner_adab0110"); }, icon: Gem, hideFromVisualSelection: true },
   copilot_runtime: { label: "GitHub Copilot", get description() { return fullSharedT("fullShared.copilot_through_paperclip_runner_2bf511"); }, icon: Code, hideFromVisualSelection: true },
+  kimi_runtime: { get label() { return translateUi("interfaceUpdates.kimi_code_runner_3e672cbf"); }, get description() { return translateUi("interfaceUpdates.kimi_code_through_paperclip_runner_0c747793"); }, icon: Moon, hideFromVisualSelection: true },
   acpx_local: {
     get label() { return fullSharedT("agentConfigUi.retiredAcpx"); },
     get description() { return fullSharedT("fullShared.retired_standalone_acpx_adapter_b063be"); },
@@ -79,7 +83,7 @@ const adapterDisplayMap: Record<string, AdapterDisplayInfo> = {
     recommended: true,
   },
   codex_local: {
-    label: "Codex",
+    get label() { return translateUi("interfaceUpdates.codex_616efbe9"); },
     get description() { return fullSharedT("fullShared.codex_cli_harness_8544df"); },
     icon: Code,
     recommended: true,
@@ -218,13 +222,15 @@ export function getAdapterDisplay(type: string): AdapterDisplayInfo {
   };
 }
 
-export function agentDisplayAdapterType(agent: { adapterType: string; adapterConfig: Record<string, unknown> }): string {
+export function agentDisplayAdapterType(agent: { adapterType: string; adapterConfig: Record<string, unknown>; pauseReason?: unknown; metadata?: unknown }): string {
+  const pendingSetup = pendingAgentSetupDisplayAdapter(agent);
+  if (pendingSetup) return pendingSetup;
   if (agent.adapterType !== "paperclip_runner") return agent.adapterType;
   if (agent.adapterConfig.provider === "openai_dot" || agent.adapterConfig.provider === "grok_bot" || agent.adapterConfig.provider === "muse") {
     return agent.adapterConfig.provider;
   }
   const harness = agentHarnessType(agent.adapterType, agent.adapterConfig);
-  return ["codex_local", "claude_local", "opencode_local", "pi_local"].includes(harness) ? harness : agent.adapterType;
+  return ["codex_local", "claude_local", "opencode_local", "pi_local", "antigravity_runtime"].includes(harness) ? harness : agent.adapterType;
 }
 
 export function isKnownAdapterType(type: string): boolean {

@@ -80,6 +80,7 @@ interface IssueUpdateOptions extends BaseClientOptions {
 }
 
 interface IssueCommentOptions extends BaseClientOptions {
+  wake?: boolean;
   body: string;
   attachmentId?: string[];
   reopen?: boolean;
@@ -368,6 +369,7 @@ export function registerIssueCommands(program: Command): void {
     issue
       .command("comment")
       .description("Add comment to issue")
+      .option("--no-wake", "Record an informational agent comment without waking or resuming the assignee")
       .argument("<issueId>", "Issue ID")
       .requiredOption("--body <text>", "Comment body")
       .option(
@@ -382,6 +384,7 @@ export function registerIssueCommands(program: Command): void {
           const payload = addIssueCommentSchema.parse({
             body: opts.body,
             attachmentIds: opts.attachmentId,
+            ...(opts.wake === false ? { wakeAssignee: false } : {}),
             reopen: opts.reopen,
             resume: opts.resume,
           });

@@ -9,6 +9,8 @@ import { MarkdownBody, type MarkdownExternalReferenceMap } from "@/components/Ma
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { MentionOption } from "@/components/MarkdownEditor";
 import { formatTaskChatTimestamp } from "./task-chat-adapter";
+import { useCoordinatorPresentation } from "../coordinator/CoordinatorPresentation";
+import { CoordinatorRelativeTime } from "../coordinator/CoordinatorRelativeTime";
 
 /**
  * Host binding for the description-as-first-bubble (PAP-375): the LIVE issue
@@ -61,6 +63,7 @@ function initialsForName(name: string) {
  */
 export function TaskChatDescriptionBubble({ brief }: TaskChatDescriptionBubbleProps) {
   const { t } = useTranslation();
+  const coordinator = useCoordinatorPresentation();
   const [editing, setEditing] = useState(false);
   const isHuman = brief.author === "human";
   const hasDescription = brief.description.trim().length > 0;
@@ -106,7 +109,9 @@ export function TaskChatDescriptionBubble({ brief }: TaskChatDescriptionBubblePr
     );
   }
 
-  const timestamp = formatTaskChatTimestamp(brief.createdAt, t);
+  const timestamp = coordinator && brief.createdAt
+    ? <CoordinatorRelativeTime value={brief.createdAt} />
+    : formatTaskChatTimestamp(brief.createdAt, t);
   return (
     <div
       className={cn(

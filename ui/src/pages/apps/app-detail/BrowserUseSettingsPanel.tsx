@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useId, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -6,6 +8,7 @@ import type {
   ToolConnection,
 } from "@paperclipai/shared";
 import { browserUseApi } from "@/api/browser-use";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +21,7 @@ function CredentialSettings({
   companyId: string;
   grantId: string;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const id = useId();
   const saved = useQuery({
@@ -27,8 +31,9 @@ function CredentialSettings({
   const profiles = useQuery({
     queryKey: ["browser-use-cloud-profiles", grantId],
     queryFn: () => browserUseApi.profiles(companyId, grantId),
-    retry: false,
   });
+  const savedView = useQueryView(saved);
+  const profilesView = useQueryView(profiles);
   const [allowed, setAllowed] = useState<string[]>([]);
   const [limit, setLimit] = useState("");
   useEffect(() => {
@@ -90,21 +95,31 @@ function CredentialSettings({
         {profiles.data?.length === 0 && (
           <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.no_saved_profiles_700c63")}</p>
         )}
-        {profiles.isLoading && (
+        {(profiles.isLoading || profilesView.kind === "reconnecting") && (
           <p className="text-sm text-muted-foreground">{fullAppsT("fullApps.loading_profiles_16b0bb")}</p>
         )}
-        {profiles.isError && (
-          <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_load_profiles_a6c9d7")}{" "}
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => void profiles.refetch()}
-            >{fullAppsT("newIssue.retry")}</Button>
-          </p>
+        {profilesView.kind === "error" && (
+          <QueryErrorState
+            size="inline"
+            error={profiles.error}
+            action="load profiles"
+            onRetry={profilesView.retry}
+            retrying={profilesView.isFetching}
+          />
         )}
       </fieldset>
-      {saved.isError || save.isError ? (
-        <p role="alert" className="text-sm text-destructive">{fullAppsT("fullApps.could_not_save_or_load_browser_settings_check_your_c_45cef7")}</p>
+      {savedView.kind === "error" ? (
+        <QueryErrorState
+          error={saved.error}
+          action="load browser settings"
+          onRetry={savedView.retry}
+          retrying={savedView.isFetching}
+        />
+      ) : null}
+      {save.error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {translateUi("interfaceUpdates.could_not_save_browser_settings_check_your_credent_83b50130")}
+        </p>
       ) : null}
       {save.isSuccess && (
         <p role="status" className="text-sm text-muted-foreground">{fullAppsT("fullApps.browser_settings_saved_654337")}</p>

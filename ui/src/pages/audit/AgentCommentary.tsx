@@ -1,4 +1,6 @@
+import { t as translateUi } from "@/i18n";
 import { t, useTranslation, i18n } from "@/i18n";
+import { describeError } from "@/api/errors";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { AgentCommentaryEntry, AgentCommentaryKind } from "@paperclipai/shared";
@@ -65,7 +67,7 @@ function CommentaryDetail({ companyId, id, onClose, triggerRef }: { companyId: s
           <DialogDescription>{entry ? t("surfacesGap.commentary.submittedAt", { date: new Date(entry.createdAt).toLocaleString(i18n.resolvedLanguage) }) : t("surfacesGap.commentary.detail")}</DialogDescription>
         </DialogHeader>
         {detail.isPending ? <p role="status" className="text-sm text-muted-foreground">{t("surfacesGap.commentary.loadingMessage")}</p> : detail.error ? (
-          <div role="alert" className="flex flex-col items-start gap-3"><p className="text-sm text-destructive">{detail.error.message}</p><Button variant="outline" size="sm" onClick={() => void detail.refetch()}>{t("surfacesGap.audit.tryAgain")}</Button></div>
+          <div role="alert" className="flex flex-col items-start gap-3"><p className="text-sm text-destructive">{describeError(detail.error).body}</p><Button variant="outline" size="sm" onClick={() => void detail.refetch()}>{t("surfacesGap.audit.tryAgain")}</Button></div>
         ) : entry ? <>
           <div className="flex shrink-0 flex-wrap items-center gap-3"><Link to={`/agents/${entry.agent.id}`}><AgentIdentity agent={entry.agent} size="sm" /></Link><MessageKind kind={entry.kind} /></div>
           <div className="min-h-0 overflow-y-auto overscroll-contain break-words pr-2"><MarkdownBody>{entry.body}</MarkdownBody></div>
@@ -123,7 +125,7 @@ export function AgentCommentary({ companyId }: { companyId: string }) {
   return (
     <section className="flex flex-col gap-5" aria-label={t("surfacesGap.audit.commentary")}>
       <div className="flex flex-col gap-1"><h2 className="text-lg font-semibold">{t("surfacesGap.audit.commentary")}</h2><p className="text-sm text-muted-foreground">{t("surfacesGap.commentary.description")}</p></div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div data-canonical-toolbar="audit-commentary" role="toolbar" aria-label={translateUi("interfaceUpdates.commentary_filters_8f81dcfd")} className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-48 flex-1 sm:max-w-sm"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input aria-label={t("surfacesGap.commentary.search")} placeholder={t("surfacesGap.commentary.placeholder")} maxLength={200} value={search} onChange={(event) => setSearch(event.target.value)} className="pl-9" /></div>
         <Select value={agentId} onValueChange={(value) => updateFilters({ agentId: value })}><SelectTrigger aria-label={t("surfacesGap.commentary.agentFilter")} className="min-w-40"><SelectValue placeholder={t("surfacesGap.audit.allAgents")} /></SelectTrigger><SelectContent><SelectItem value={ALL}>{t("surfacesGap.audit.allAgents")}</SelectItem>{agents.data?.map((agent) => <SelectItem key={agent.id} value={agent.id}><AgentIdentity agent={agent} size="xs" /></SelectItem>)}</SelectContent></Select>
         <Select value={kind ?? ALL} onValueChange={(value) => updateFilters({ kind: value })}><SelectTrigger aria-label={t("surfacesGap.commentary.typeFilter")} className="min-w-36"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={ALL}>{t("surfacesGap.commentary.allTypes")}</SelectItem><SelectItem value="suggestion">{t("surfacesGap.commentary.suggestions")}</SelectItem><SelectItem value="complaint">{t("surfacesGap.commentary.complaints")}</SelectItem></SelectContent></Select>
@@ -131,7 +133,7 @@ export function AgentCommentary({ companyId }: { companyId: string }) {
       </div>
       {agents.error && <p role="alert" className="text-sm text-destructive">{t("surfacesGap.commentary.agentError")} <button type="button" className="underline" onClick={() => void agents.refetch()}>{t("surfacesGap.audit.tryAgain")}</button></p>}
       {messages.isPending ? <p role="status" className="py-12 text-center text-sm text-muted-foreground">{t("surfacesGap.commentary.loading")}</p> : messages.error ? (
-        <div role="alert" className="flex flex-col items-center gap-3 py-12"><p className="text-sm text-destructive">{messages.error.message}</p><Button variant="outline" size="sm" onClick={() => void messages.refetch()}>{t("surfacesGap.audit.tryAgain")}</Button></div>
+        <div role="alert" className="flex flex-col items-center gap-3 py-12"><p className="text-sm text-destructive">{describeError(messages.error).body}</p><Button variant="outline" size="sm" onClick={() => void messages.refetch()}>{t("surfacesGap.audit.tryAgain")}</Button></div>
       ) : messages.data?.items.length === 0 ? (
         <EmptyState icon={Lightbulb} message={offset > 0 ? t("surfacesGap.commentary.emptyPage") : hasFilters ? t("surfacesGap.commentary.noMatch") : t("surfacesGap.commentary.empty")} description={offset > 0 ? t("surfacesGap.commentary.returnLatest") : hasFilters ? t("surfacesGap.commentary.changeFilters") : t("surfacesGap.commentary.emptyHint")} action={offset > 0 ? t("surfacesGap.commentary.latest") : hasFilters ? t("surfacesGap.audit.clear") : undefined} onAction={offset > 0 ? () => updateFilters({ offset: "" }) : hasFilters ? clearFilters : undefined} hideActionIcon />
       ) : messages.data ? <>

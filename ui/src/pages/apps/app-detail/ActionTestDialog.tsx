@@ -1,3 +1,5 @@
+import { useTranslation as useUiTranslation } from "@/i18n";
+import { t as translateUi } from "@/i18n";
 import { renderAppError } from "@/pages/apps/app-display-text";
 import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -24,9 +26,11 @@ import type {
 } from "@paperclipai/shared";
 import { checkOAuthEndpointUrl } from "@paperclipai/shared";
 import { Link } from "@/lib/router";
+import { describeError } from "@/api/errors";
 import { toolsApi } from "@/api/tools";
 import { queryKeys } from "@/lib/queryKeys";
 import { useCompany } from "@/context/CompanyContext";
+import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -91,12 +95,14 @@ export function ActionTestDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const testAgentsQuery = useQuery({
     queryKey: queryKeys.tools.testAgents(connectionId),
     queryFn: () => toolsApi.listTestAgents(connectionId),
     enabled: open && !!connectionId,
   });
+  const testAgentsView = useQueryView(testAgentsQuery);
   const agents = useMemo(
     () => [...(testAgentsQuery.data?.agents ?? [])].sort(
       (a, b) => a.orgDepth - b.orgDepth || a.name.localeCompare(b.name),
@@ -116,6 +122,7 @@ export function ActionTestDialog({
     gcTime: TEST_ACCESS_GC_TIME_MS,
     refetchOnWindowFocus: false,
   });
+  const accessView = useQueryView(accessQuery);
   const selectedAgent = useMemo<TestAgentWithAccess | null>(() => (
     selectedAgentBase && accessQuery.data
       ? { ...selectedAgentBase, effectiveAccess: accessQuery.data.access }
@@ -137,20 +144,28 @@ export function ActionTestDialog({
           <DialogDescription>{fullAppsT("fullApps.run_a_real_action_with_the_same_permissions_and_cred_c96dff")}</DialogDescription>
         </DialogHeader>
 
-        {testAgentsQuery.isLoading ? (
+        {testAgentsQuery.isLoading || testAgentsView.kind === "reconnecting" ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground" role="status">
-            <Loader2 className="h-4 w-4 animate-spin" />{fullAppsT("fullApps.loading_agents_ae0c14")}</div>
-        ) : testAgentsQuery.isError ? (
-          <TestLoadError
-            message={fullAppsT("fullApps.we_couldn_t_load_the_agents_available_for_testing_30f10d")}
-            onRetry={() => { void testAgentsQuery.refetch(); }}
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {translateUi("fullApps.loading_agents_ae0c14")}
+          </div>
+        ) : testAgentsView.kind === "error" ? (
+          <QueryErrorState
+            className="my-6"
+            error={testAgentsQuery.error}
+            action="load the agents available for testing"
+            onRetry={testAgentsView.retry}
+            retrying={testAgentsView.isFetching}
           />
         ) : agents.length === 0 ? (
-          <p className="py-6 text-sm text-muted-foreground">{fullAppsT("fullApps.no_agents_are_available_to_test_as_3d77dc")}</p>
-        ) : accessQuery.isError && !accessQuery.data ? (
-          <TestLoadError
-            message={fullAppsT("fullApps.we_couldn_t_load_s_permissions_303200", { value1: selectedAgentBase?.name ?? fullAppsT("fullApps.copy_b2dcc8dd0d6c") })}
-            onRetry={() => { void accessQuery.refetch(); }}
+          <p className="py-6 text-sm text-muted-foreground">{translateUi("fullApps.no_agents_are_available_to_test_as_3d77dc")}</p>
+        ) : accessView.kind === "error" ? (
+          <QueryErrorState
+            className="my-6"
+            error={accessQuery.error}
+            action={`load ${selectedAgentBase?.name ?? "this agent"}'s permissions`}
+            onRetry={accessView.retry}
+            retrying={accessView.isFetching}
           />
         ) : !selectedAgent ? (
           <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground" role="status">
@@ -214,16 +229,6 @@ function DecisionBadge({ decision }: { decision: ToolConnectionTestDecision }) {
     >
       {meta.label}
     </span>
-  );
-}
-
-function TestLoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
-  useFullAppsTranslation();
-  return (
-    <div className="py-8 text-center">
-      <p className="text-sm font-medium text-foreground">{message}</p>
-      <Button className="mt-3" size="sm" variant="outline" onClick={onRetry}>{fullAppsT("fullApps.try_again_d8b839")}</Button>
-    </div>
   );
 }
 
@@ -424,6 +429,7 @@ function ActionTester({
   allAgents: ToolConnectionTestAgent[];
   onSelectAgent: (agentId: string) => void;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const queryClient = useQueryClient();
   const { selectedCompanyId } = useCompany();
@@ -561,8 +567,8 @@ function ActionTester({
         <RunningCard entry={entry} appName={appName} agentName={agent.name} elapsedMs={elapsedMs} onCancel={onCancelRunning} />
       )}
 
-      {run.isError && !running && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"><FullAppsTrans i18nKey="fullApps.couldn_t_reach_7ff5ed" components={{ part1: <>{agent.name}</>, part2: <>{run.error instanceof Error ? renderAppError(run.error) : fullAppsT("fullApps.please_try_again_eea4fb")}</> }} /></div>
+      {run.error && !running && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"><FullAppsTrans i18nKey="fullApps.couldn_t_reach_7ff5ed" components={{ part1: <>{agent.name}</>, part2: <>{describeError(run.error).body}</> }} /></div>
       )}
 
       {outcome && !running && (
@@ -623,6 +629,7 @@ function ResultPanel({
   connectionId: string;
   agent?: TestAgentWithAccess;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const { result } = outcome;
   if (result.upstreamPending) return <ProviderPendingResult pending={result.upstreamPending} appName={appName} connectionId={connectionId} agent={agent} />;
@@ -630,9 +637,10 @@ function ResultPanel({
     return <AskFirstResult outcome={outcome} entry={entry} appName={appName} connectionId={connectionId} agent={agent} />;
   }
   if (result.decision === "off") {
+    const offMessage = result.error?.message ?? translateUi("fullApps.this_action_is_off_and_won_t_run_78cf41"); // query-error-ok: the tool call's own result error, not a query or mutation error
     return (
       <div className="rounded-md border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
-        {result.error?.message ?? fullAppsT("fullApps.this_action_is_off_and_won_t_run_78cf41")}
+        {offMessage}
       </div>
     );
   }
@@ -651,11 +659,12 @@ function ProviderPendingResult({ pending, appName, connectionId, agent }: { pend
   const [resumed, setResumed] = useState<{ outcome: RunOutcome; entry: ToolCatalogEntry; action: "accept" | "decline" | "cancel" } | null>(null);
   const resumeError = resumed && (resumed.outcome.result.error ?? mcpToolError(resumed.outcome.result.result));
   const stoppedByUser = resumed && resumeError?.reasonCode === "tool_error" &&
-    ((resumed.action === "decline" && /request was declined by the user/i.test(resumeError.message)) ||
-      (resumed.action === "cancel" && /request was cancelled by the user/i.test(resumeError.message)));
+    ((resumed.action === "decline" && /request was declined by the user/i.test(resumeError.message)) || // query-error-ok: classifies the tool result, nothing is rendered here
+      (resumed.action === "cancel" && /request was cancelled by the user/i.test(resumeError.message))); // query-error-ok: classifies the tool result, nothing is rendered here
+  const resumeMessage = stoppedByUser ? resumeError.message : null; // query-error-ok: the tool call's own result error, not a query or mutation error
   if (stoppedByUser) return <div role="status" className="space-y-2 rounded-md border border-border bg-muted/40 p-4 text-sm">
     <p className="font-medium">{resumed.action === "decline" ? fullAppsT("fullApps.request_declined_1df48b") : fullAppsT("fullApps.request_cancelled_710818")}</p>
-    <p>{resumeError.message}</p>
+    <p>{resumeMessage}</p>
     <p className="text-muted-foreground">{fullAppsT("fullApps.the_original_call_was_not_repeated_019849")}</p>
     {pending.executionId && <p><FullAppsTrans i18nKey="fullApps.execution_ef6a09" components={{ part1: <code className="break-all">{pending.executionId}</code> }} /></p>}
   </div>;
@@ -685,8 +694,10 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
   pending: ToolUpstreamPending; connectionId: string; agent: TestAgentWithAccess;
   onResult: (result: { outcome: RunOutcome; entry: ToolCatalogEntry; action: "accept" | "decline" | "cancel" }) => void;
 }) {
+  useUiTranslation();
   useFullAppsTranslation();
   const catalog = useQuery({ queryKey: queryKeys.tools.catalog(connectionId), queryFn: () => toolsApi.listCatalog(connectionId) });
+  const catalogView = useQueryView(catalog);
   const entry = catalog.data?.catalog.find((item) => item.toolName === pending.resumeTool && item.status === "active");
   const schema = (pending.requestedSchema ?? { type: "object", properties: {} }) as JsonSchemaNode;
   const [content, setContent] = useState<Record<string, unknown>>(() => getDefaultValues(schema));
@@ -717,8 +728,8 @@ function ProviderResumeControls({ pending, connectionId, agent, onResult }: {
     </div>
     {expired && <p>{fullAppsT("fullApps.this_provider_approval_expired_check_the_provider_be_6de678")}</p>}
     {permission === "off" && <p>{fullAppsT("fullApps.allow_the_resume_action_in_permissions_before_contin_7f7e0e")}</p>}
-    {catalog.isError && <p role="alert">{fullAppsT("fullApps.could_not_load_the_resume_action_close_this_test_and_0049bd")}</p>}
-    {resume.isError && <p role="alert">{resume.error instanceof Error ? renderAppError(resume.error) : fullAppsT("fullApps.could_not_resume_check_the_provider_before_trying_ag_f0ab46")}</p>}
+    {catalogView.kind === "error" && <QueryErrorState size="inline" error={catalog.error} action="load the resume action" onRetry={catalogView.retry} retrying={catalogView.isFetching} />}
+    {resume.error && <p role="alert">{describeError(resume.error).body}</p>}
   </div>;
 }
 
@@ -1049,7 +1060,8 @@ function ErrorResult({
   error: { message: string; reasonCode: string | null };
 }) {
   useFullAppsTranslation();
-  const hints = errorHints(error.message, error.reasonCode);
+  const toolErrorMessage = error.message; // query-error-ok: the tool call's own result error, not a query or mutation error
+  const hints = errorHints(toolErrorMessage, error.reasonCode);
   const needsReconnect = isReconnectError(error.reasonCode);
   return (
     <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-4">
@@ -1062,7 +1074,7 @@ function ErrorResult({
       </p>
       <div className="mt-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"><FullAppsTrans i18nKey="fullApps.what_said_47c64d" components={{ part1: <>{appName}</> }} /></p>
-        <p className="mt-1 break-words text-sm text-foreground">{error.message}</p>
+        <p className="mt-1 break-words text-sm text-foreground">{toolErrorMessage}</p>
         {error.reasonCode && <p className="mt-0.5 text-xs text-muted-foreground"><FullAppsTrans i18nKey="fullApps.code_c4138e" components={{ part1: <>{error.reasonCode}</> }} /></p>}
       </div>
       <div className="mt-3">

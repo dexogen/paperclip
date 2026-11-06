@@ -3,6 +3,7 @@ import { t as fullAppsT, Trans as FullAppsTrans, useTranslation as useFullAppsTr
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { describeError } from "@/api/errors";
 
 export function ChatCommunicationInstructions({ value, onSave }: {
   value: string;

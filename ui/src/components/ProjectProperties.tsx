@@ -1,3 +1,4 @@
+import { t as translateUi } from "@/i18n";
 import { Trans, useTranslation } from "@/i18n";
 import { authApi } from "@/api/auth";
 import { accessApi } from "@/api/access";
@@ -245,7 +246,6 @@ export function ProjectProperties({ project, repositories, onUpdate, onFieldUpda
   const { data: experimentalSettings } = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
     queryFn: () => instanceSettingsApi.getExperimental(),
-    retry: false,
   });
   const environmentsEnabled = experimentalSettings?.enableEnvironments === true;
   const { data: availableSecrets = [] } = useQuery({
@@ -259,7 +259,6 @@ export function ProjectProperties({ project, repositories, onUpdate, onFieldUpda
       : ["user-secret-definitions", "none"],
     queryFn: () => secretsApi.listUserSecretDefinitions(selectedCompanyId!),
     enabled: Boolean(selectedCompanyId),
-    retry: false,
   });
   const createSecret = useMutation({
     mutationFn: (input: { name: string; value: string }) => {
@@ -746,13 +745,16 @@ export function ProjectProperties({ project, repositories, onUpdate, onFieldUpda
           {workspaceError && (
             <p className="text-xs text-destructive">{t("projectConfigUi.properties.absolutePath")}</p>
           )}
-          {createWorkspace.isError && (
+          {createWorkspace.isError && ( // query-error-ok: mutation result
+
             <p className="text-xs text-destructive">{t("projectConfigUi.properties.saveWorkspaceFailed")}</p>
           )}
-          {removeWorkspace.isError && (
+          {removeWorkspace.isError && ( // query-error-ok: mutation result
+
             <p className="text-xs text-destructive">{t("projectConfigUi.properties.deleteWorkspaceFailed")}</p>
           )}
-          {updateWorkspace.isError && (
+          {updateWorkspace.isError && ( // query-error-ok: mutation result
+
             <p className="text-xs text-destructive">{t("projectConfigUi.properties.updateWorkspaceFailed")}</p>
           )}
         </div>}
@@ -767,26 +769,26 @@ export function ProjectProperties({ project, repositories, onUpdate, onFieldUpda
               id="workspace-storage-provider"
               aria-label={t("projectConfigUi.properties.storageProvider")}
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              disabled={!onUpdate && !onFieldUpdate}
-              value={storedExecutionWorkspacePolicy?.storageProviderPluginId === null ? "core" : storedExecutionWorkspacePolicy?.storageProviderPluginId ?? "inherit"}
+              disabled={Boolean(storedExecutionWorkspacePolicy?.storageProviderPluginId) || (!onUpdate && !onFieldUpdate)}
+              value={storedExecutionWorkspacePolicy?.storageProviderPluginId ?? "core"}
               onChange={(event) => {
                 const policy = { enabled: true, ...storedExecutionWorkspacePolicy };
-                if (event.target.value === "inherit") delete policy.storageProviderPluginId;
-                else policy.storageProviderPluginId = event.target.value === "core" ? null : event.target.value;
+                policy.storageProviderPluginId = event.target.value === "core" ? null : event.target.value;
                 commitField("workspace_storage_provider", { executionWorkspacePolicy: policy });
               }}
             >
-              <option value="inherit">{t("projectConfigUi.properties.inheritStorage")}</option>
-              <option value="core">{t("projectConfigUi.properties.coreStorage")}</option>
+              <option value="core">{translateUi("projectConfigUi.properties.coreStorage")}</option>
               {providerConfiguration.providers.map(provider => (
-                <option key={provider.id} value={provider.id}>{provider.isDefault ? t("projectConfigUi.properties.defaultProvider", { name: provider.displayName }) : provider.displayName}</option>
+                <option key={provider.id} value={provider.id}>{provider.displayName}</option>
               ))}
               {storedExecutionWorkspacePolicy?.storageProviderPluginId && !providerConfiguration.providers.some(provider => provider.id === storedExecutionWorkspacePolicy.storageProviderPluginId) ? (
                 <option value={storedExecutionWorkspacePolicy.storageProviderPluginId}>{t("projectConfigUi.properties.unavailableStorage")}</option>
               ) : null}
             </select>
             <p className="text-xs text-muted-foreground">
-              {providerConfiguration.source === "default" ? t("projectConfigUi.properties.inheritedProvider", { name: providerConfiguration.displayName }) : t("projectConfigUi.properties.selectedProvider", { name: providerConfiguration.displayName })}
+              {storedExecutionWorkspacePolicy?.storageProviderPluginId
+                ? translateUi("interfaceUpdates.this_project_stays_on_value_f1dadb3d", { value1: (providerConfiguration.displayName) })
+                : translateUi("interfaceUpdates.a_project_moved_to_a_storage_plugin_stays_on_that__c8a979d5")}
             </p>
             {providerConfiguration.error ? <p role="alert" className="text-xs text-destructive">{providerConfiguration.error}</p> : null}
           </div>
