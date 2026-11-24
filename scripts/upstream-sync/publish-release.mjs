@@ -4,25 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { assertSha, git } from './git.mjs';
 import { request, FORK } from './run.mjs';
 import { buildMetadata } from './build-metadata.mjs';
+import { inspectPublication, sourceMarker } from './publication-state.mjs';
+import { verifyBuild } from './verify-build.mjs';
 
-const sourceMarker = (sha) => `<!-- paperclip-ru-source:${assertSha(sha)} -->`;
-
-// An existing release is immutable. A rerun skips it; new fork edits need a new
-// reviewed RU revision, even when the upstream release itself did not change.
-export async function inspectPublication(metadata, api = request) {
-  if (metadata.channel !== 'stable') return { alreadyPublished: false };
-  const tag = encodeURIComponent(metadata.releaseTag);
-  const ref = await api(`/repos/${FORK}/git/ref/tags/${tag}`, { allowNotFound: true });
-  if (ref && (ref.object?.type !== 'commit' || ref.object.sha !== metadata.fullSourceSha)) {
-    throw new Error(`Immutable release tag ${metadata.releaseTag} belongs to another source; review and increment ruRevision`);
-  }
-  const release = await api(`/repos/${FORK}/releases/tags/${tag}`, { allowNotFound: true });
-  if (release && (!ref || release.draft || release.prerelease || !release.published_at ||
-      release.tag_name !== metadata.releaseTag || !release.body?.includes(sourceMarker(metadata.fullSourceSha)))) {
-    throw new Error(`Existing release ${metadata.releaseTag} is not a completed publication of this source; investigate without overwriting it`);
-  }
-  return { alreadyPublished: Boolean(release), ref, release };
-}
+export { inspectPublication };
 
 export async function reservePublication(metadata, api = request) {
   if (metadata.channel !== 'stable') throw new Error('Only stable sources reserve release tags');
@@ -80,7 +65,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   try {
     // Recheck current accepted source and latest green CI after the potentially
     // long image build, before making a release visible.
-    const { verifyBuild } = await import('./verify-build.mjs');
     const verified = await verifyBuild();
     const metadata = buildMetadata(process.cwd(), verified.sha);
     const notes = readReleaseNotes(process.cwd(), metadata);

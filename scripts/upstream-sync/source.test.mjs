@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
@@ -142,6 +142,71 @@ function publication() {
     versionTag: `ghcr.io/dexogen/paperclip:${metadata.imageTag}` };
   return { metadata, manifest, verificationRun: 123, notes: '## Что изменилось\n\nДобавили чаты с агентами.' };
 }
+
+test('release CLI reserves and publishes a verified stable source', async (t) => {
+  const { cwd, next: upstreamSha } = fixture(t);
+  const { metadata: { releaseTag }, manifest, notes } = publication();
+  const fork = '/repos/dexogen/paperclip';
+  git(cwd, ['tag', stable.tag, upstreamSha]);
+  git(cwd, ['config', `url.${cwd}.insteadOf`, 'https://github.com/paperclipai/paperclip.git']);
+  mkdirSync(join(cwd, 'doc/localization'), { recursive: true });
+  mkdirSync(join(cwd, 'releases'));
+  writeFileSync(join(cwd, `releases/${releaseTag}.md`), notes);
+  writeFileSync(join(cwd, 'doc/localization/upstream.json'), JSON.stringify({
+    schemaVersion: 2, upstreamRepository: 'paperclipai/paperclip', upstreamBranch: 'master',
+    forkBranch: 'russian', syncBranch: 'codex/upstream-sync', trackingChannel: 'stable',
+    lastAcceptedUpstreamSha: upstreamSha, acceptedSource: { ...stable, upstreamSha },
+  }));
+  git(cwd, ['add', 'doc', 'releases']); git(cwd, ['commit', '-qm', 'Accept stable release']);
+  const sha = git(cwd, ['rev-parse', 'HEAD']).stdout;
+  writeFileSync(join(cwd, 'image-manifest.json'), JSON.stringify({ ...manifest, forkSha: sha, upstreamSha,
+    sourceTree: git(cwd, ['rev-parse', 'HEAD^{tree}']).stdout, tag: `ghcr.io/dexogen/paperclip:ru-${sha}` }));
+  writeFileSync(join(cwd, 'event.json'), JSON.stringify({ workflow_run: { id: 123, event: 'push', head_branch: 'russian' } }));
+
+  // Only the HTTP transport is replaced. The CLI still verifies Git ancestry,
+  // the latest workflow run, the committed notes and the supplied image manifest.
+  const preload = join(cwd, 'github.mjs');
+  writeFileSync(preload, `
+    import { appendFileSync, readFileSync } from 'node:fs';
+    const routes = JSON.parse(readFileSync('routes.json', 'utf8'));
+    globalThis.fetch = (url, { method, body }) => {
+      const route = method + ' ' + url;
+      if (!Object.hasOwn(routes, route)) throw new Error('Unexpected fixture request: ' + route);
+      if (method === 'POST') appendFileSync('writes.jsonl', JSON.stringify({ url, body: JSON.parse(body) }) + '\\n');
+      return Response.json(routes[route], { status: routes[route] === null ? 404 : 200 });
+    };`);
+  const github = 'https://api.github.com';
+  for (const reserve of [true, false]) {
+    await t.test(reserve ? 'reserve tag' : 'publish release', () => {
+      const writePath = `${fork}/${reserve ? 'git/refs' : 'releases'}`;
+      writeFileSync(join(cwd, 'writes.jsonl'), '');
+      writeFileSync(join(cwd, 'routes.json'), JSON.stringify({
+        [`GET ${github}${fork}/branches/russian`]: { commit: { sha } },
+        [`GET ${github}${fork}/actions/workflows/localization-check.yml/runs?event=push&head_sha=${sha}&per_page=100`]: {
+          workflow_runs: [{ id: 123, event: 'push', status: 'completed', conclusion: 'success', head_sha: sha,
+            head_branch: 'russian', head_repository: { full_name: 'dexogen/paperclip' }, path: '.github/workflows/localization-check.yml' }] },
+        [`GET ${github}/repos/paperclipai/paperclip/releases/42`]: released,
+        [`GET ${github}${fork}/git/ref/tags/${releaseTag}`]: reserve ? null : { object: { type: 'commit', sha } },
+        [`GET ${github}${fork}/releases/tags/${releaseTag}`]: null,
+        [`POST ${github}${writePath}`]: { html_url: 'https://example.invalid/release' },
+      }));
+      const result = spawnSync(process.execPath, ['--import', preload, resolve(import.meta.dirname, 'publish-release.mjs'),
+        reserve ? '--reserve' : 'image-manifest.json'], { cwd, encoding: 'utf8', timeout: 10_000,
+        env: { PATH: process.env.PATH, GIT_ALLOW_PROTOCOL: 'file', GH_TOKEN: 'fixture',
+          GITHUB_REPOSITORY: 'dexogen/paperclip', SOURCE_SHA: sha, GITHUB_EVENT_PATH: join(cwd, 'event.json') } });
+      assert.ifError(result.error);
+      assert.equal(result.status, 0, result.stderr);
+      const write = JSON.parse(readFileSync(join(cwd, 'writes.jsonl'), 'utf8'));
+      assert.equal(write.url, github + writePath);
+      if (reserve) assert.deepEqual(write.body, { ref: `refs/tags/${releaseTag}`, sha });
+      else {
+        assert.equal(write.body.tag_name, releaseTag);
+        assert.equal(write.body.target_commitish, sha);
+        assert.ok(write.body.body.includes(notes));
+      }
+    });
+  }
+});
 
 test('release notes come from the verified commit even if the checkout changes', (t) => {
   const { cwd, next } = fixture(t);
