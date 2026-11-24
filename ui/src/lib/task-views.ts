@@ -22,6 +22,7 @@ export const TASK_VIEW_KEYS = [
   "blocked",
   "recent",
   "everything",
+  "needs_attention",
   "all",
   "active",
   "backlog",
@@ -41,6 +42,7 @@ export interface TaskView {
   statuses?: string[];
   /** One-line description shown in the Views menu. */
   hint: string;
+  coordinatorOnly?: boolean;
 }
 
 export interface TaskViewGroup {
@@ -62,6 +64,7 @@ export const TASK_VIEW_GROUPS: TaskViewGroup[] = [
   {
     get label() { return fullSharedT("sidebar.organization"); },
     views: [
+      { key: "needs_attention", get label() { return fullSharedT("inboxUi.blocked.variant.needs_attention"); }, surface: "issues", statuses: [], get hint() { return fullSharedT("taskViews.hints.needsAttention"); }, coordinatorOnly: true },
       { key: "all", get label() { return fullSharedT("taskViews.all"); }, surface: "issues", statuses: [], get hint() { return fullSharedT("taskViews.hints.all"); } },
       { key: "active", get label() { return fullSharedT("fullShared.active_923406"); }, surface: "issues", statuses: ["todo", "in_progress", "monitoring", "in_review", "blocked"], get hint() { return fullSharedT("taskViews.hints.active"); } },
       { key: "backlog", get label() { return fullSharedT("taskViews.backlog"); }, surface: "issues", statuses: ["backlog"], get hint() { return fullSharedT("taskViews.hints.backlog"); } },
@@ -74,7 +77,7 @@ const VIEWS_BY_KEY = new Map<TaskViewKey, TaskView>(
   TASK_VIEW_GROUPS.flatMap((group) => group.views.map((view) => [view.key, view] as const)),
 );
 
-export const DEFAULT_TASK_VIEW: TaskViewKey = "mine";
+export const DEFAULT_TASK_VIEW: TaskViewKey = "all";
 export const TASK_VIEW_PARAM = "view";
 export const TASK_LAST_VIEW_KEY = "paperclip:tasks:last-view";
 

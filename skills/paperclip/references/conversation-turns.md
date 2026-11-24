@@ -3,8 +3,10 @@
 When the task context says **Chat mode** (the issue has `conversationAgentId`),
 follow that directive for the conversation lifecycle. Research, clarify, and
 revise the conversation's `plan` document here. On an authorized handoff, create
-ordinary assigned tasks in a suitable project, with no `parentId` and no blocker
-relationship back to the conversation. Link them in your reply and let them run
+ordinary assigned tasks in a suitable project, never with the conversation as
+`parentId` and with no blocker relationship back to the conversation. Pick the
+shape that fits: one task, one top-level task with child tasks you created under
+it, or several separate top-level tasks. Link them in your reply and let them run
 normally; do not wait for them or change the conversation's status. Default new
 tasks and task suggestions to the participant in this chat (yourself), unless the user
 explicitly specifies another owner. "For me" alone is not a request to

@@ -1,12 +1,14 @@
 import type { TFunction } from "i18next";
+import { formatContextTokens } from "@/lib/context-tokens";
 import { i18n } from "@/i18n";
 import { toolActivityPresentation } from "./tool-taxonomy";
 import type { TaskChatMarkerItem } from "./task-chat-model";
 
-export type RunMarkerLabelMessage = { code: "marker.newSession" | "marker.waitingToResume" | "marker.runtimeMissing" | "marker.modelUnavailable" | "marker.approvalRequired" | "marker.usageLimitReached" | "marker.runCancelled" | "marker.runInterrupted" | "marker.runTimedOut" | "marker.runFailed" | "marker.startingBranchUnavailable" | "marker.workspaceRestoreFailed" | "marker.aiConnectionNeeded" | "marker.stopped" | "marker.couldNotStart" | "marker.runCompleted" | "marker.turnStarted" | "marker.turnCompleted" };
+export type RunMarkerLabelMessage = { code: "marker.newSession" | "marker.waitingToResume" | "marker.runtimeMissing" | "marker.modelUnavailable" | "marker.approvalRequired" | "marker.usageLimitReached" | "marker.runCancelled" | "marker.runInterrupted" | "marker.runTimedOut" | "marker.runFailed" | "marker.startingBranchUnavailable" | "marker.workspaceRestoreFailed" | "marker.aiConnectionNeeded" | "marker.stopped" | "marker.couldNotStart" | "marker.runCompleted" | "marker.turnStarted" | "marker.turnCompleted" | "marker.contextCompacted" };
 
 export type RunRetryPresentation = "scheduled" | "available" | "preserved";
 export type RunMarkerDetailMessage =
+  | { code: "detail.compactedTokens"; before: number; after?: number }
   | { code: "detail.sessionHistory" | "detail.executionWait" | "detail.runtimeMissing" | "detail.approvalRequired" | "detail.usageLimit" | "detail.providerOutputLimit" | "detail.repairStartingBranch" | "detail.connectionPending" | "detail.connectionUnavailable" | "detail.executionReconciliation" | "detail.executionStopped" | "detail.cancelledBeforeResponse" | "detail.noResponse" }
   | { code: "detail.nativeCancelled" | "detail.nativeInterrupted"; afterFinalResponse: boolean }
   | { code: "detail.nativeTimedOut" | "detail.nativeStopped"; afterFinalResponse: boolean; errorCode: string }
@@ -168,6 +170,17 @@ export function formatRunDisplayText<S extends keyof RunDisplaySlots>(
       return slot === "markerLabel" && Object.keys(value).length === 1 ? t("runUi.marker.runCompleted", { defaultValue: fallback }) : fallback;
     case "marker.turnStarted":
       return slot === "markerLabel" && Object.keys(value).length === 1 ? t("runUi.marker.turnStarted", { defaultValue: fallback }) : fallback;
+    case "marker.contextCompacted":
+      return slot === "markerLabel" && Object.keys(value).length === 1 ? t("interfaceUpdates.context_compacted_99ca2ce2") : fallback;
+    case "detail.compactedTokens": {
+      if (slot !== "markerDetail" || Object.keys(value).some(key => !["code", "before", "after"].includes(key))
+        || typeof value.before !== "number" || !Number.isFinite(value.before) || value.before < 0) return fallback;
+      const locale = "lng" in t && typeof t.lng === "string" ? t.lng : i18n.resolvedLanguage;
+      const before = formatContextTokens(value.before, locale);
+      if (value.after === undefined) return t("runUi.detail.compactedFrom", { before });
+      if (typeof value.after !== "number" || !Number.isFinite(value.after) || value.after < 0) return fallback;
+      return t("runUi.detail.compactedRange", { before, after: formatContextTokens(value.after, locale) });
+    }
     case "marker.turnCompleted":
       return slot === "markerLabel" && Object.keys(value).length === 1 ? t("runUi.marker.turnCompleted", { defaultValue: fallback }) : fallback;
     case "detail.sessionHistory":

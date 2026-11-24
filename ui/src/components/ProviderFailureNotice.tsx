@@ -15,7 +15,7 @@ export function ProviderFailureNotice({ failure, actions, children, className }:
   failure: ProviderFailure; actions?: ReactNode; children?: ReactNode; className?: string;
 }) {
   useUiTranslation();
-  const provider = ({ anthropic: "Claude", openai: "OpenAI" } as Record<string, string>)[failure.provider] ?? failure.provider;
+  const provider = ({ anthropic: "Claude", openai: "OpenAI", sandbox: translateUi("taskChatUi.blockers.sandboxProvider") } as Record<string, string>)[failure.provider] ?? failure.provider;
   return (
     <InlineBanner tone="danger" title={translateUi("interfaceUpdates.value_value_ca7577d5", { value1: (provider), value2: (labels[failure.category]) })} actions={actions} className={className}>
       <div className="flex flex-col gap-2">

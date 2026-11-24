@@ -6900,6 +6900,42 @@
     {
       "id": "fa2bac41f72b1b3e1563c07cb7654abd1be57971e2cf35690ec98de5d348bded",
       "reason": "Compatibility default for currentUserAssigneeOption when no translator is supplied. Explicit translation callers use taskDisplay.assignees.me; the default remains English and this pure module can be imported by server contract tests without initializing browser localization."
+    },
+    {
+      "id": "9d76947c03964993a85f913d45c7715d25612187697125a02431b3b7c5205ea3",
+      "reason": "GitHub link metadata retains its product name and canonical owner/repository#number reference."
+    },
+    {
+      "id": "a392bcb6d9dcb2e5f2bafa6488438f3d1b9bfaa7d9ffaa9584268da81be2365d",
+      "reason": "GitHub link metadata retains its product name and canonical owner/repository#number reference."
+    },
+    {
+      "id": "da96b4ce42b567fbf8f5b1d345c9a6e296bdf702fbda2b87d1c5295e0ef0ddae",
+      "reason": "The instruction filename field demonstrates the literal Markdown filename TOOLS.md; its name and extension must be valid on disk."
+    },
+    {
+      "id": "61eed8e19f49c1b2b63b3f8298ac67798473e023447a325619e91a93d5adc70f",
+      "reason": "The instruction filename field demonstrates the literal Markdown filename TOOLS.md; its name and extension must be valid on disk."
+    },
+    {
+      "id": "1b9cae4321de5487d00a780c7b17be1845c40bfd159f91c8aa4904580dcc6fb4",
+      "reason": "The save indicator uses this internal animation state to control a transition. Its visible and accessible messages use the locale catalog."
+    },
+    {
+      "id": "010b116f77e882f915090607caa682786a223986ffb3c8f555024fad7cb7c9dd",
+      "reason": "The save indicator uses this internal animation state to control a transition. Its visible and accessible messages use the locale catalog."
+    },
+    {
+      "id": "9b73754123cb6cd1f83ba4595b03240dcb4c0939544c3c80343ffbc3f119140a",
+      "reason": "The save indicator uses this internal animation state to control a transition. Its visible and accessible messages use the locale catalog."
+    },
+    {
+      "id": "8de67dd798b9553d3993f5a884eb8900b2bde44b708fb0962bcfbc31d52bc36b",
+      "reason": "The save indicator uses this internal animation state to control a transition. Its visible and accessible messages use the locale catalog."
+    },
+    {
+      "id": "de57afb2f4ab919a22e14f502c6dd8265b92d9f246b156378e2268459bebce55",
+      "reason": "The save indicator uses this internal animation state to control a transition. Its visible and accessible messages use the locale catalog."
     }
   ]
 }

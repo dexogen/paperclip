@@ -72,7 +72,8 @@ export const executionWorkspaceCloseActionKindSchema = z.enum([
 ]);
 
 const workspaceCloseMessageSchema = z.discriminatedUnion("code", [
-  z.object({ code: z.enum(["no_local_path", "git_unverified", "shared_session", "storage_unavailable"]) }).strict(),
+  z.object({ code: z.enum(["no_local_path", "git_unverified", "shared_session"]) }).strict(),
+  z.object({ code: z.literal("storage_unavailable"), params: z.object({ error: z.string() }).strict().optional() }).strict(),
   z.object({ code: z.enum(["missing_path", "keep_project_directory"]), params: z.object({ path: z.string() }).strict() }).strict(),
   z.object({ code: z.enum(["git_inspection_failed", "git_status_failed"]), params: z.object({ path: z.string(), error: z.string() }).strict() }).strict(),
   z.object({ code: z.literal("git_comparison_failed"), params: z.object({ baseRef: z.string(), error: z.string() }).strict() }).strict(),

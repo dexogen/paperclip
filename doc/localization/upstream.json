@@ -5,11 +5,12 @@
   "forkBranch": "russian",
   "syncBranch": "codex/upstream-sync",
   "trackingChannel": "stable",
-  "lastAcceptedUpstreamSha": "fb2e07ebdd17a813965c4e415696e72cc6f9eed2",
+  "lastAcceptedUpstreamSha": "c0f132898d2a2677312d8c72096187b27a3d9a38",
   "acceptedSource": {
-    "channel": "master",
-    "upstreamSha": "fb2e07ebdd17a813965c4e415696e72cc6f9eed2",
-    "baseTag": "v2026.1023.0",
-    "baseSha": "1b4c803816e82b0265c8422e1a804327a7ed8c54"
+    "channel": "stable",
+    "tag": "v2026.1117.0",
+    "releaseId": 450629104,
+    "upstreamSha": "c0f132898d2a2677312d8c72096187b27a3d9a38",
+    "ruRevision": 1
   }
 }

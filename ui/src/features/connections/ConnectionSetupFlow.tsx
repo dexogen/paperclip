@@ -635,6 +635,9 @@ export interface ConnectionSetupFlowProps {
   host?: "page" | "dialog";
   serviceSlug?: string;
   requestedAgentId?: string;
+  /** Task requester must be included without restricting the audience to it. */
+  requiredAgentId?: string;
+  setupAccess?: import("@paperclipai/shared").ConnectionIntentInteraction["payload"]["setupAccess"];
   interactionId?: string;
   forceNewConnection?: boolean;
   existingConnections?: ConnectionIntentSetupConnection[];
@@ -713,6 +716,7 @@ function StandardConnectionSetupFlow({
   host = "page",
   serviceSlug,
   requestedAgentId,
+  requiredAgentId,
   interactionId,
   forceNewConnection = false,
   existingConnections = [],
@@ -1453,6 +1457,17 @@ function StandardConnectionSetupFlow({
     // not identity: an organization Notion connection must stay organization-
     // scoped, while a personal one must put its token back on that user grant.
     mutationFn: async (connection: ToolConnection) => {
+      // Resumed setup hides audience controls and promises to retain access.
+      // Leave the durable selection untouched instead of saving form defaults.
+      if (connectionIntentId && !aiConnection && !resumeConnectionId && !reconnectConnection && !resumableOAuthConnection) {
+        if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+          throw new Error(translateUi("githubSetupUi.includeAgentToContinue"));
+        }
+        await connectionIntentsApi.setPhase(connectionIntentId, "authorizing", {
+          connectionId: connection.id,
+          access: installChoice === "all" ? "all_agents" : { agentIds: [...installAgentIds] },
+        });
+      }
       // Persist before navigation, including retries that reuse an existing OAuth draft.
       if (instructionValue && JSON.stringify(instructionValue) !== JSON.stringify(connection.agentInstructions)) {
         await toolsApi.updateConnection(connection.id, { agentInstructions: instructionValue });
@@ -1508,7 +1523,7 @@ function StandardConnectionSetupFlow({
    */
   const applyAccessInstalls = async (connectionId: string) => {
     // The task completion endpoint adds the requester atomically with resolution.
-    if (requestedAgentId) return;
+    if (connectionIntentId) return;
     const dedicatedIdentity = (fixedGrantKind ?? grantKind) === "agent";
     const installState = !dedicatedIdentity && installChoice === "all"
       ? { onAll: true, agentIds: new Set<string>() }
@@ -1520,6 +1535,10 @@ function StandardConnectionSetupFlow({
   const effectiveGrantKind = fixedGrantKind ?? grantKind;
   const connectMutation = useMutation({
     mutationFn: async (entryOverride?: AppDefinition) => {
+      if (requiredAgentId && !resumeConnectionId && !reconnectConnectionId
+        && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+        throw new Error(translateUi("githubSetupUi.includeAgentToContinue"));
+      }
       const connectEntry = entryOverride ?? entry;
       let result: ConnectToolAppResult;
       if (connectEntry) {
@@ -1988,6 +2007,9 @@ function StandardConnectionSetupFlow({
         connected,
         (catalogEntryId) => Boolean(enabledMap[catalogEntryId]),
       );
+      if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+        throw new Error(translateUi("githubSetupUi.includeAgentToContinue"));
+      }
       // The Access step asks one question about agent reach, so profile access
       // and installs are committed to the same target set instead of drifting
       // apart behind two separate wizard screens.
@@ -2281,6 +2303,7 @@ function StandardConnectionSetupFlow({
             ?? t("githubSetupUi.configurerOnly")
           : null,
         requestedAgentId ? t("githubSetupUi.requestingAgentOnly") : null,
+        requiredAgentId ? t("githubSetupUi.includeRequestingAgent") : null,
       ].filter((reason): reason is string => Boolean(reason))}
       authKind={accessStepAuthKind}
       grantKinds={fixedGrantKind ? [fixedGrantKind] : accessStepMethod?.grantKinds}

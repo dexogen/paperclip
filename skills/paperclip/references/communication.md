@@ -59,3 +59,7 @@ Submitted CTO hire request and linked it for board review.
 - Source issue: [PAP-142](/PAP/issues/PAP-142)
 - Depends on: [PAP-224](/PAP/issues/PAP-224)
 ```
+
+**No raw IDs in prose (required):** People read comments, titles, and descriptions. Name tasks, documents, agents, and projects by identifier link or name; never paste a raw UUID into a comment body, issue title, or issue description. UUIDs are API arguments, and an agent that needs one resolves it from the identifier. Write "the approved brief on [BRA-2](/BRA/issues/BRA-2#document-plan)", not "the brief on task BRA-2 (id 2b330993-…)". Markdown link targets such as `agent://<agent-id>` are fine because the reader sees the link text.
+
+**Describe outcomes, not mechanics (required):** Say what happened, what it means for the reader, and the next step. Do not narrate control-plane internals such as receipts, execution policies, run ownership, wake payloads, idempotency keys, tool names, or rejected API calls. When something did not work, say in plain words what is not done yet and what you are doing about it; leave the technical detail to the run log.

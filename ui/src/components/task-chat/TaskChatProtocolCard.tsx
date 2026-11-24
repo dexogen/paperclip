@@ -6,6 +6,8 @@ import { useTranslation } from "@/i18n";
 import { formatRunDisplayText } from "./task-chat-display";
 import { formatTaskChatResource } from "./task-chat-adapter";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { TaskChatImageGrid } from "./TaskChatImageGrid";
+import { imageResourceSource } from "./image-resources";
 import { TaskChatStatusNotice } from "./TaskChatStatusNotice";
 import { isStatusNotice } from "./status-notice-presentation";
 import {
@@ -1136,6 +1138,9 @@ function ResourceCard({
 }) {
   const { t } = useTranslation();
   const { enabled: artifactsV1 } = useArtifactsV1Enabled();
+  if (imageResourceSource(item)) {
+    return <TaskChatImageGrid items={item.imageItems ?? [item]} />;
+  }
   const display = formatTaskChatResource(item, t);
   if (artifactsV1) {
     // Artifacts V1 (doc/plans/2026-10-22-artifacts-mvp-v1.md): one full-width row named after the file. A

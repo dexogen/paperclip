@@ -280,12 +280,45 @@ export function describeError(err: unknown, options: DescribeErrorOptions = {}, 
   let body: string;
   if (coded) body = coded.body;
   else if (kind === "transient" || kind === "aborted") body = fallback.body;
-  else body = readableServerMessage(err) ?? fallback.body;
+  else {
+    const raw = readableServerMessage(err);
+    body = raw ? runtimeDiagnosticMessage(record(record(record(err)?.body)?.details)?.code, raw, t) : fallback.body;
+  }
 
   const title = options.action && kind !== "transient"
     ? t("interfaceUpdates.couldn_t_value_de6573d0", { value1: errorActionCopy(options.action, t) })
     : (coded?.title ?? fallback.title);
   return { title, body, retryable };
+}
+
+/** Translate known first-party messages only when the producer code and source copy agree. */
+export function runtimeDiagnosticMessage(code: unknown, raw: string, t: TFunction): string {
+  const en = i18n.getFixedT("en");
+  switch (code) {
+    case "ownership_owner_stop_required":
+      if (raw === en("ownedDiagnostic.runtime.releaseResource")) return t("ownedDiagnostic.runtime.releaseResource");
+      return raw;
+    case "native_controller_stop_required":
+      if (raw === en("ownedDiagnostic.runtime.resumeRun")) return t("ownedDiagnostic.runtime.resumeRun");
+      return raw;
+    case "workspace_owner_stop_required":
+      if (raw === en("ownedDiagnostic.runtime.resumeSave")) return t("ownedDiagnostic.runtime.resumeSave");
+      return raw;
+    case "chat_context_owner_required":
+      if (raw === en("ownedDiagnostic.runtime.chatOwner")) return t("ownedDiagnostic.runtime.chatOwner");
+      return raw;
+    case "routine_responsibility_board_required":
+      if (raw === en("ownedDiagnostic.runtime.routineOwner")) return t("ownedDiagnostic.runtime.routineOwner");
+      return raw;
+    case "ai_connection_required":
+      if (raw === en("ownedDiagnostic.runtime.managedConnection")) return t("ownedDiagnostic.runtime.managedConnection");
+      if (raw === en("ownedDiagnostic.runtime.isolatedHome")) return t("ownedDiagnostic.runtime.isolatedHome");
+      return raw;
+    case "runner_environment_unavailable":
+      if (raw === en("ownedDiagnostic.runtime.pluginComputer")) return t("ownedDiagnostic.runtime.pluginComputer");
+      return raw;
+    default: return raw;
+  }
 }
 
 /**
@@ -295,6 +328,6 @@ export function describeError(err: unknown, options: DescribeErrorOptions = {}, 
  */
 export function apiErrorMessage(status: number, body: unknown): string {
   const raw = stringField(record(body)?.error);
-  if (raw && !isRawErrorCode(raw)) return raw;
+  if (raw && !isRawErrorCode(raw)) return runtimeDiagnosticMessage(record(record(body)?.details)?.code, raw, i18n.t);
   return describeError({ status, body, code: raw }).body;
 }

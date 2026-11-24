@@ -1,5 +1,6 @@
 import type { AdapterEnvironmentCheck } from "@paperclipai/shared";
 import type { TFunction } from "i18next";
+import { runtimeDiagnosticMessage } from "@/api/errors";
 import { ApiError } from "@/api/client";
 import { i18n } from "@/i18n";
 
@@ -48,7 +49,11 @@ export function formatOwnedApiError(error: Error, t: TFunction = i18n.t.bind(i18
 /** Codex owns the retirement hint, but the native failure and raw detail remain provider data. */
 export function formatCodexProbeField(check: AdapterEnvironmentCheck, field: "message" | "hint", t: TFunction): string | null | undefined {
   const raw = check[field];
-  if (typeof raw !== "string" || !Object.hasOwn(check, "codexRetirement")) return raw;
+  if (typeof raw !== "string") return raw;
+  if (field === "message" && (check.code === "ai_connection_required" || check.code === "runner_environment_unavailable")) {
+    return runtimeDiagnosticMessage(check.code, raw, t);
+  }
+  if (!Object.hasOwn(check, "codexRetirement")) return raw;
   const metadata = record(check.codexRetirement);
   if (!metadata || !["source", "version", "model", "retiredOn", "replacement"].every(key => Object.hasOwn(metadata, key)) ||
       metadata.source !== "paperclip-codex" || metadata.version !== 1 ||

@@ -1,4 +1,5 @@
 import { isRetryableFailureMarker } from "./task-chat-display";
+import { groupImageResources } from "./image-resources";
 import { TaskBrowserActivity } from "../task-side-panel/TaskBrowserActivity";
 import { TaskChatProjectCreatedCard } from "./TaskChatProjectCreatedCard";
 import { TaskChatSkillCreatedCard } from "./TaskChatSkillCreatedCard";
@@ -332,7 +333,8 @@ export function TaskChatThreadView({
   onOpenBrowser,
 }: TaskChatThreadViewProps) {
   const streamlined = useStreamlinedTaskChatPresentation();
-  const { items: visibleItems, retryMarkers } = useMemo(() => compactAdjacentErrors(items), [items]);
+  const { items: compactedItems, retryMarkers } = useMemo(() => compactAdjacentErrors(items), [items]);
+  const visibleItems = useMemo(() => groupImageResources(compactedItems), [compactedItems]);
   const retryableMarkerId =
     onRetryFailedRun || onTryAgainNoLiveExecutionPath
       ? [...visibleItems]

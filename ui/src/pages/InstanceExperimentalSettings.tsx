@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "@/lib/router";
-import { CoordinatorWorkspaceSetting } from "@/components/CoordinatorWorkspaceSetting";
+import { ClassicWorkspaceSetting } from "@/components/ClassicWorkspaceSetting";
 import { describeError } from "@/api/errors";
 
 type WorktreeRunExecutionDisplayState =
@@ -188,7 +188,7 @@ export function InstanceExperimentalSettings() {
   if (experimentalQuery.isLoading || experimentalView.kind === "reconnecting") {
     return (
       <div className="max-w-6xl space-y-6">
-        <CoordinatorWorkspaceSetting key="personal-workspace" />
+        <ClassicWorkspaceSetting key="personal-workspace" />
         <div className="text-sm text-muted-foreground">{t("fullPages.loadingExperimentalSettings")}</div>
       </div>
     );
@@ -196,7 +196,7 @@ export function InstanceExperimentalSettings() {
 
   if (experimentalView.kind === "error") {
     return (
-<div className="max-w-6xl space-y-6"><CoordinatorWorkspaceSetting key="personal-workspace" />      <QueryErrorState
+<div className="max-w-6xl space-y-6"><ClassicWorkspaceSetting key="personal-workspace" />      <QueryErrorState
         size="page"
         error={experimentalQuery.error}
         action="load experimental settings"
@@ -276,7 +276,7 @@ export function InstanceExperimentalSettings() {
         <p className="text-sm text-muted-foreground">{t("fullPages.optIntoFeaturesThatAreStillBeing")}</p>
       </div>
 
-      <CoordinatorWorkspaceSetting key="personal-workspace" />
+      <ClassicWorkspaceSetting key="personal-workspace" />
 
       <div
         role="alert"
@@ -302,18 +302,6 @@ export function InstanceExperimentalSettings() {
           <h2 id="experimental-features-heading" className="text-sm font-semibold">{t("fullPages.experimentalFeatures")}</h2>
           <p className="text-sm text-muted-foreground">{t("fullPages.optionalProductFeaturesThatAreStillBeing")}</p>
         </div>
-
-        <ExperimentalToggleCard
-          title={t("fullPages.agentChat")}
-          description={t("fullPages.talkToEachAgentInOneOngoing")}
-          footnote={t("fullPages.turningThisOffPreservesConversationsAndLets")}
-          checked={experimentalQuery.data?.enableAgentChat ?? false}
-          onCheckedChange={(checked) => toggleMutation.mutate({ enableAgentChat: checked })}
-          disabled={toggleMutation.isPending}
-          settingKey="enableAgentChat"
-          managed={managedKeys.enableAgentChat}
-          ariaLabel={t("fullPages.toggleAgentChatExperimentalSetting")}
-        />
 
         <ExperimentalToggleCard
           title={translateUi("fullPages.assistantConnectionsMcp")}
@@ -375,8 +363,8 @@ export function InstanceExperimentalSettings() {
 
         <ExperimentalToggleCard
           title={t("fullPages.combinedInboxTaskList")}
-          description={t("fullPages.foldInboxIntoTasksOneTasksRow")}
-          footnote={t("fullPages.oldInboxLinksRedirectToTheMatching")}
+          description={t("experimental.classicCombinedDescription")}
+          footnote={t("experimental.classicCombinedFootnote")}
           checked={experimentalQuery.data?.enableCombinedInboxTasks ?? false}
           onCheckedChange={(checked) => toggleMutation.mutate({ enableCombinedInboxTasks: checked })}
           disabled={toggleMutation.isPending}

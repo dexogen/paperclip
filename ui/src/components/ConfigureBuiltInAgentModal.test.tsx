@@ -12,9 +12,6 @@ import type { BuiltInAgentState } from "@/api/builtInAgents";
 const provisionMock = vi.hoisted(() => vi.fn());
 const updateMock = vi.hoisted(() => vi.fn());
 const adapterModelsMock = vi.hoisted(() => vi.fn());
-const adapterDiscoveryMock = vi.hoisted(() => vi.fn());
-
-vi.mock("@/api/adapters", () => ({ adaptersApi: { list: adapterDiscoveryMock } }));
 
 vi.mock("@/api/builtInAgents", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/api/builtInAgents")>();
@@ -130,7 +127,6 @@ describe("ConfigureBuiltInAgentModal (PAP-12978)", () => {
     provisionMock.mockReset();
     updateMock.mockReset();
     adapterModelsMock.mockReset().mockResolvedValue([]);
-    adapterDiscoveryMock.mockReset().mockResolvedValue([{ type: "codex_local", supportedRunners: ["paperclip", "legacy"], defaultRunner: "legacy" }]);
     onOpenChange.mockReset();
     onConfigured.mockReset();
   });
@@ -151,7 +147,7 @@ describe("ConfigureBuiltInAgentModal (PAP-12978)", () => {
     await renderModal(rawState);
     const input = document.body.querySelector<HTMLInputElement>('[data-testid="model-input"]')!;
     input.focus(); input.setSelectionRange(2, 4);
-    const reads = [adapterModelsMock.mock.calls.length, adapterDiscoveryMock.mock.calls.length];
+    const reads = adapterModelsMock.mock.calls.length;
     try {
       await setLocale("ru"); await flushReact();
       expect(document.body.textContent).toContain("Настройка: Briefs Agent <strong>raw</strong>");
@@ -164,7 +160,7 @@ describe("ConfigureBuiltInAgentModal (PAP-12978)", () => {
       await flushReact();
       await setLocale("en"); await flushReact();
       expect(document.body.textContent).toContain("Configuring…");
-      expect([adapterModelsMock.mock.calls.length, adapterDiscoveryMock.mock.calls.length]).toEqual(reads);
+      expect(adapterModelsMock.mock.calls.length).toBe(reads);
       expect(provisionMock).toHaveBeenCalledExactlyOnceWith("c1", key, { adapterType: "codex_local", adapterConfig: { model: "gpt-custom" } });
       resolveProvision({ ...rawState, status: "ready", agentId: "a1" }); await flushReact();
       expect(onConfigured).toHaveBeenCalledTimes(1);
@@ -272,21 +268,16 @@ describe("ConfigureBuiltInAgentModal (PAP-12978)", () => {
     ["paperclip_runner", "ready"],
     ["codex_local", "paused"],
     ["paperclip_runner", "paused"],
-  ] as const)("lets the server translate saved %s settings for a runner-only change while %s", async (adapterType, status) => {
+  ] as const)("preserves saved %s settings without offering runner selection while %s", async (adapterType, status) => {
     const savedConfig = { model: "gpt-5", timeoutSec: 45, modelReasoningEffort: "high", env: { CODEX_HOME: { type: "secret_ref", secretId: "account-1" } }, ...(adapterType === "paperclip_runner" ? { provider: "codex", codexPermissionMode: "never", lifecycleMode: "per_turn" } : {}) };
     const state = makeState({ status, agentId: "a1", agent: makeSavedAgent(adapterType, savedConfig) });
     provisionMock.mockResolvedValue(state);
     await renderModal(state);
-    const summary = document.querySelector("summary")!;
-    flushSync(() => summary.dispatchEvent(new MouseEvent("click", { bubbles: true })));
-    flushSync(() => document.querySelector('[aria-label="Runner"]')!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
-    await flushReact();
-    const runner = adapterType === "paperclip_runner" ? "legacy" : "paperclip";
-    flushSync(() => document.querySelector(`[role="option"][data-value="${runner}"]`)!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
-    await flushReact();
+    expect(document.querySelector('[aria-label="Runner"]')).toBeNull();
+    expect(document.querySelector("summary")).toBeNull();
     flushSync(() => findButton("Configure")!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
     await flushReact();
-    expect(provisionMock).toHaveBeenCalledWith("c1", "briefs", { runner });
+    expect(provisionMock).toHaveBeenCalledWith("c1", "briefs", {});
     expect(state.agent?.adapterConfig).toEqual(savedConfig);
   });
 

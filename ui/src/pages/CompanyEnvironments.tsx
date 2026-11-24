@@ -139,6 +139,9 @@ function environmentDeleteBlockMessage(impact: EnvironmentDeleteBlastRadius, t: 
     return t("environmentsUi.delete.cleanupBlock");
   }
   if (impact.reusableSandboxLeaseCount > 0) {
+    if (impact.reusableSandboxLeaseHolders.some(holder => holder.leasePolicy === "retain_on_failure")) {
+      return t("environmentsUi.delete.recoveryBlock");
+    }
     return t("environmentsUi.delete.leaseBlock");
   }
   return null;
@@ -612,7 +615,7 @@ function EnvironmentCustomImageBrowserTerminal({
       cursorStyle: "bar",
       cursorWidth: 2,
       customGlyphs: true,
-      fontFamily: CUSTOM_IMAGE_TERMINAL_FONT_FAMILY,
+      fontFamily: `${getComputedStyle(element).getPropertyValue("--font-mono").trim()}, ${CUSTOM_IMAGE_TERMINAL_FONT_FAMILY}`,
       fontSize: 12,
       letterSpacing: 0,
       lineHeight: 1.35,
@@ -1973,6 +1976,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   }
   // One row per workspace holding blocking sandbox leases (several leases can
   // share a workspace). A lease whose workspace FK was nulled groups alone.
+  const retainedFailureSourceCount = (deleteBlastRadius?.reusableSandboxLeaseHolders ?? [])
+    .filter(holder => holder.leasePolicy === "retain_on_failure").length;
   const reusableLeaseHolderGroups = (() => {
     const groups = new Map<
       string,
@@ -2600,6 +2605,11 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                           ?? ([
                             reusableLeaseOnlyBlock && deleteBlastRadius
                               ? t("environmentsUi.delete.sandboxes", { count: deleteBlastRadius.reusableSandboxLeaseCount })
+                              : null,
+                            reusableLeaseOnlyBlock && retainedFailureSourceCount > 0
+                              ? retainedFailureSourceCount === 1
+                                ? t("environmentsUi.delete.oneRecoveryCopy")
+                                : t("environmentsUi.delete.recoveryCopies", { number: retainedFailureSourceCount })
                               : null,
                             agentsUsingEnvironment.length > 0
                               ? t("environmentsUi.delete.agents", { count: agentsUsingEnvironment.length })

@@ -175,7 +175,7 @@ export function CoordinatorNeedsYou() {
   const filtersActive = Boolean(query.trim() || agentFilter || projectFilter);
   const closeHistory = useCallback(() => { setHistoryOpen(false); closePanel(); }, [closePanel]);
   const showHistory = () => { setHistoryOpen(true); if (!isMobile) setPanelVisible(true); };
-  useEffect(() => { setBreadcrumbs([{ label: translateUi("interfaceUpdates.needs_you_74b6abdf") }]); }, [setBreadcrumbs]);
+  useEffect(() => { setBreadcrumbs([{ label: translateUi("inboxUi.title") }]); }, [setBreadcrumbs]);
   useEffect(() => {
     setSettling([]); setHistoryOpen(false); setNow(Date.now()); closePanel();
     return closePanel;
@@ -202,14 +202,14 @@ export function CoordinatorNeedsYou() {
   };
   const duration = typeof document === "undefined" ? 0 : parseCssTimeMs(getComputedStyle(document.documentElement).getPropertyValue("--motion-duration-base")) / 1_000;
   if (!selectedCompanyId) return <p className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.choose_a_company_to_see_its_decisions_ba231bf5")}</p>;
-  return <LayoutGroup id="coordinator-decisions"><section className="coordinator-needs-you mx-auto w-full max-w-4xl space-y-6" aria-label={translateUi("interfaceUpdates.needs_you_74b6abdf")}>
+  return <LayoutGroup id="coordinator-decisions"><section className="coordinator-needs-you mx-auto w-full max-w-4xl space-y-6" aria-label={translateUi("inboxUi.title")}>
     {isMobile ? <Sheet open={historyOpen} onOpenChange={open => { if (!open) closeHistory(); }}>
       <SheetContent side="bottom" aria-describedby={undefined} className="mobile-task-side-panel inset-0 h-dvh max-h-dvh w-full max-w-none gap-0 border-0 p-0 pt-(--sz-safe-top) pb-(--sz-safe-bottom)">
         <SheetHeader><SheetTitle>{translateUi("interfaceUpdates.decision_history_b211a726")}</SheetTitle></SheetHeader>
         <div className="min-h-0 flex-1 overflow-y-auto p-4"><HistoryPanel companyId={selectedCompanyId} agents={agentQuery.data ?? []} onClose={closeHistory} mobile /></div>
       </SheetContent>
     </Sheet> : null}
-    <header className="flex items-center justify-between gap-3"><h1 className="text-2xl font-medium">{translateUi("interfaceUpdates.needs_you_74b6abdf")}</h1><Button variant="ghost" onClick={showHistory}><History className="size-4" />{translateUi("interfaceUpdates.decision_history_b211a726")}</Button></header>
+    <header className="flex items-center justify-between gap-3"><h1 className="text-2xl font-medium">{translateUi("inboxUi.title")}</h1><Button variant="ghost" onClick={showHistory}><History className="size-4" />{translateUi("interfaceUpdates.decision_history_b211a726")}</Button></header>
     <div data-canonical-toolbar="coordinator-decisions" role="toolbar" aria-label={translateUi("decisionsUi.toolbar.label")} className="flex flex-wrap items-center gap-2">
       <ToolbarSearch query={query} onQueryChange={setQuery} label={translateUi("decisionsUi.toolbar.search")} placeholder={translateUi("interfaceUpdates.search_decisions_or_task_ids_30cc4653")} />
       <NativeSelect aria-label={translateUi("interfaceUpdates.filter_decisions_by_agent_2b6bef36")} value={agentFilter} onChange={(event) => setAgentFilter(event.target.value)} className="w-auto"><option value="">{translateUi("surfacesGap.audit.allAgents")}</option>{(agentQuery.data ?? []).map((agent) => <option key={agent.id} value={agent.id}>{agent.name}</option>)}</NativeSelect>

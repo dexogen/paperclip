@@ -54,7 +54,7 @@ export function RunWorkspaceSourceInspection({ issueId, runId, companyId }: { is
         <p className="font-mono text-muted-foreground">{translateUi("runUi.inspector.action")} {current.actionId}</p>
         <p className="text-muted-foreground">{translateUi("interfaceUpdates.this_read_only_observation_checks_recorded_identit_652889e2")}</p>
         {current.status === "verified" ? <p>{translateUi("interfaceUpdates.recorded_source_identity_verified_0db2db4d")}</p>
-          : current.status === "not_inspected" ? <p>{translateUi("interfaceUpdates.source_not_inspected_this_record_exceeds_the_inspe_f5ae2713")}</p>
+          : current.status === "not_inspected" ? <p>{translateUi("runUi.workspaceExport.inspectionLimit")}</p>
           : <p>{translateUi("interfaceUpdates.blocked_3e75b484")} <code className="font-mono">{current.sourceVerification?.reason ?? current.failureCode}</code>
             {current.sourceVerification?.observedLeasePolicy ? <> {translateUi("interfaceUpdates.lease_policy_30e31761")} <code className="font-mono">{current.sourceVerification.observedLeasePolicy}</code></> : null}</p>}
         <p className="font-mono text-muted-foreground">{translateUi("projectConfigUi.budget.observed")} {formatDateTime(current.observedAt)}</p>

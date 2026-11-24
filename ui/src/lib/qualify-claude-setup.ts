@@ -55,7 +55,7 @@ export async function qualifyRunnerEnvironment(input: {
     || typeof probe.details.leaseId !== "string" || !probe.details.leaseId) {
     throw new Error(typeof probe.details?.platformQualificationDiagnostic === "string"
       ? probe.details.platformQualificationDiagnostic
-      : probe.summary || t("onboarding.errors.platformQualification"));
+      : probe.summary || t("onboarding.errors.retryPlatformProbe"));
   }
   adapters = await input.readAdapters();
   if (!input.isCurrent()) return undefined;

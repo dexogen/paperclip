@@ -1,6 +1,7 @@
 import { t as fullSharedT } from "@/i18n";
 import type { TFunction } from "i18next";
 import { useTranslation } from "@/i18n";
+import { groupImageResources } from "./image-resources";
 import { useRef, type ReactNode } from "react";
 import type { ExecutionProjection } from "@paperclipai/shared";
 import { useSecondTick } from "@/hooks/useSecondTick";
@@ -19,6 +20,7 @@ import { TaskChatSubagentTree } from "./TaskChatSubagentCard";
 import { TaskChatRunHealthBanner, partitionRunHealthItems } from "./TaskChatRunHealthBanner";
 import { TaskChatProtocolCard } from "./TaskChatProtocolCard";
 import { TaskChatPlanPreviewCard } from "./TaskChatPlanPreviewCard";
+import { TaskChatMarker } from "./TaskChatMarker";
 import { TaskChatShimmerScope, useTaskChatShimmer } from "./TaskChatShimmer";
 import {
   buildTurnTimelineRows,
@@ -257,10 +259,10 @@ export function TaskChatRunnerTurn({
   const final = finalRef.current.item;
   const timelineItems = paperclipRunnerTimelineItems(turnItems);
   const currentActivityItems = currentActivityStatusItems(timelineItems);
-  const timelineRows = buildTurnTimelineRows(
+  const timelineRows = groupImageResources(buildTurnTimelineRows(
     omitProgressRepeatedByResponse(timelineItems, final?.text),
     !terminal,
-  );
+  ));
 
   return (
     <TaskChatShimmerScope items={items}><div
@@ -303,6 +305,8 @@ export function TaskChatRunnerTurn({
                       : "task-chat-plan-preview"
                   }
                 />
+              ) : row.kind === "marker" ? (
+                <TaskChatMarker item={row} />
               ) : row.kind === "subagent_group" ? (
                 <TaskChatSubagentTree subagents={row.subagents} />
               ) : row.kind === "protocol" ? (

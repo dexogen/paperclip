@@ -18,7 +18,9 @@ function messageLabel(value: unknown, t: TFunction): string | null {
     case "no_local_path": return t("projectWorkspacesUi.closeMessages.noLocalPath");
     case "git_unverified": return t("projectWorkspacesUi.closeMessages.gitUnverified");
     case "shared_session": return t("projectWorkspacesUi.closeMessages.sharedSession");
-    case "storage_unavailable": return t("projectWorkspacesUi.closeMessages.storageUnavailable");
+    case "storage_unavailable": return typeof params.error === "string"
+      ? t("projectWorkspacesUi.closeMessages.storageUnavailableDetail", { error: params.error })
+      : t("projectWorkspacesUi.closeMessages.storageUnavailable");
     case "missing_path": return typeof params.path === "string"
       ? t("projectWorkspacesUi.closeMessages.missingPath", { path: params.path }) : null;
     case "keep_project_directory": return typeof params.path === "string"

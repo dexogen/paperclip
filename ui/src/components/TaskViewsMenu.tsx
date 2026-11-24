@@ -13,23 +13,26 @@ import { TASK_VIEW_GROUPS, taskView, type TaskViewKey } from "@/lib/task-views";
 import { cn } from "@/lib/utils";
 
 /**
- * The single control that replaced both the Inbox tab bar and the implicit
- * "all tasks" default on Tasks (PAP-670). One menu, grouped by scope, so the
+ * The single control for Inbox views and task status presets (PAP-670).
+ * One menu, grouped by scope, so the
  * nav does not have to grow a row every time a view is added.
  */
 export function TaskViewsMenu({
   value,
   onChange,
   badgeCount,
+  coordinator = false,
 }: {
   value: TaskViewKey;
   onChange: (next: TaskViewKey) => void;
   /** Unread count surfaced next to the My-work group, mirroring the nav badge. */
   badgeCount?: number;
+  coordinator?: boolean;
 }) {
   const { t } = useTranslation();
   const active = taskView(value);
   const labels: Record<TaskViewKey, string> = {
+    needs_attention: t("inboxUi.blocked.variant.needs_attention"),
     mine: t("taskViews.mine"),
     unread: t("taskViews.unread"),
     blocked: t("taskViews.blocked"),
@@ -41,6 +44,7 @@ export function TaskViewsMenu({
     done: t("taskViews.done"),
   };
   const hints: Record<TaskViewKey, string> = {
+    needs_attention: t("taskViews.hints.needsAttention"),
     mine: t("taskViews.hints.mine"),
     unread: t("taskViews.hints.unread"),
     blocked: t("taskViews.hints.blocked"),
@@ -76,7 +80,7 @@ export function TaskViewsMenu({
                 </span>
               ) : null}
             </DropdownMenuLabel>
-            {group.views.map((view) => {
+            {group.views.filter(view => coordinator || !view.coordinatorOnly).map((view) => {
               const selected = view.key === value;
               return (
                 <DropdownMenuItem

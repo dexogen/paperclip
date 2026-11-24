@@ -2,7 +2,7 @@ import { useTranslation } from "@/i18n";
 import { formatRunDisplayText } from "./task-chat-display";
 import { useId, useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronDown, CircleDot, OctagonX, Square, Flag, KeyRound } from "lucide-react";
+import { ChevronDown, CircleDot, FoldVertical, OctagonX, Square, Flag, KeyRound } from "lucide-react";
 import { useStreamlinedTaskChatPresentation } from "./presentation-mode";
 import type { TaskChatMarkerItem } from "./task-chat-model";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const VARIANT_ICON = {
   session_start: CircleDot,
   interrupted: OctagonX,
   turn_boundary: Flag,
+  context_compacted: FoldVertical,
 } as const;
 
 /**
