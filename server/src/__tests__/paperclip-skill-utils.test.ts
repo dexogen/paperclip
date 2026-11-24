@@ -308,10 +308,16 @@ describe("paperclip skill utils", () => {
   });
 
   it("tells agents to batch independent human-input questions into one card", async () => {
-    const skillBody = (await fs.readFile(path.resolve("skills/paperclip/SKILL.md"), "utf8")).replace(/\s+/g, " ");
-    const referenceBody = (await fs.readFile(path.resolve("skills/paperclip/references/api-reference.md"), "utf8"))
+    const skillDir = path.resolve("skills/paperclip");
+    const skillBody = await fs.readFile(path.join(skillDir, "SKILL.md"), "utf8");
+    const procedurePath = "references/heartbeat-procedure.md";
+    const anchor = "asking-for-human-input";
+    expect(skillBody).toContain(`](${procedurePath}#${anchor})`);
+    const procedure = await fs.readFile(path.join(skillDir, procedurePath), "utf8");
+    const referenceBody = (await fs.readFile(path.join(skillDir, "references/api-reference.md"), "utf8"))
       .replace(/\s+/g, " ");
-    const humanInput = skillBody.split("**Human input questions.**")[1]?.split("When a saved interaction is answered")[0];
+    const humanInput = procedure.split(`<a id="${anchor}"></a>`)[1]
+      ?.split("When a saved interaction is answered")[0].replace(/\s+/g, " ");
 
     expect(humanInput).toContain("ask them together in one card");
     expect(humanInput).toContain("Do not post one card per question");

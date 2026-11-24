@@ -956,30 +956,22 @@ const recoveryFakeCodex = resolve(
         ),
         previousDriverSessionId: checkpoint.sessionId,
       });
-      const [epoch] = await readdir(join(root, "authority-epochs"));
+      const archiveParent = join(root, "continuity-breaks");
+      const archives = await readdir(archiveParent);
+      expect(archives).toHaveLength(1);
+      const archiveRoot = join(archiveParent, archives[0]!);
+      // Replacement retires the old authority epochs alongside the provider state.
+      expect(await readdir(root)).not.toContain("authority-epochs");
+      const epochsRoot = join(archiveRoot, "authority-epochs");
+      const epochs = await readdir(epochsRoot);
+      expect(epochs).toHaveLength(1);
       const digest = (value: Buffer) =>
         createHash("sha256").update(value).digest("hex");
       expect(
-        digest(
-          await readFile(
-            join(root, "authority-epochs", epoch!, "runner-state.json"),
-          ),
-        ),
+        digest(await readFile(join(epochsRoot, epochs[0]!, "runner-state.json"))),
       ).toBe(digest(damagedRunnerBytes));
-      const [continuityArchive] = await readdir(
-        join(root, "continuity-breaks"),
-      );
       const archivedProvider = JSON.parse(
-        await readFile(
-          join(
-            root,
-            "continuity-breaks",
-            continuityArchive!,
-            "runner",
-            "codex-provider-state.json",
-          ),
-          "utf8",
-        ),
+        await readFile(join(archiveRoot, "runner", "codex-provider-state.json"), "utf8"),
       );
       // Restoration may append a lifecycle notice, but must neither consume
       // nor rewrite the old semantic input to make attachment succeed.
@@ -999,13 +991,7 @@ const recoveryFakeCodex = resolve(
       });
       const priorProvider = JSON.parse(
         await readFile(
-          join(
-            root,
-            "continuity-breaks",
-            continuityArchive!,
-            "codex-home",
-            "fake-state.json",
-          ),
+          join(archiveRoot, "codex-home", "fake-state.json"),
           "utf8",
         ),
       );

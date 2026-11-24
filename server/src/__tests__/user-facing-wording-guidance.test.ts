@@ -11,15 +11,24 @@ import { describe, expect, it } from "vitest";
 const read = (relative: string) => readFile(new URL(relative, import.meta.url), "utf8");
 
 function section(markdown: string, heading: string): string {
-  const start = markdown.indexOf(heading);
+  // An example comment can have its own headings inside a fenced code block.
+  const prose = markdown.replace(/^```[^\n]*\n[\s\S]*?^```[ \t]*$/gm, "");
+  const start = prose.indexOf(heading);
   if (start < 0) throw new Error(`Missing section: ${heading}`);
-  const next = markdown.indexOf("\n## ", start + heading.length);
-  return markdown.slice(start, next < 0 ? undefined : next);
+  const next = prose.indexOf("\n## ", start + heading.length);
+  return prose.slice(start, next < 0 ? undefined : next);
+}
+
+async function readCommentStyle(): Promise<string> {
+  const skill = await read("../../../skills/paperclip/SKILL.md");
+  const reference = "references/communication.md";
+  expect(section(skill, "## Complete and verify the write")).toContain(`](${reference})`);
+  return section(await read(`../../../skills/paperclip/${reference}`), "## Comment Style (Required)");
 }
 
 describe("agent-written text names tasks by identifier, never by UUID", () => {
   it("the paperclip skill's comment style forbids raw UUIDs in comments and descriptions", async () => {
-    const style = section(await read("../../../skills/paperclip/SKILL.md"), "## Comment Style (Required)");
+    const style = await readCommentStyle();
     expect(style).toContain("**No raw IDs in prose (required):**");
     expect(style).toMatch(/never paste a raw UUID/i);
     expect(style).toContain("[BRA-2](/BRA/issues/BRA-2#document-plan)");
@@ -53,7 +62,8 @@ describe("chat agents describe outcomes, not internal mechanics", () => {
   });
 
   it("the paperclip skill applies the rule to every user-facing comment", async () => {
-    const style = section(await read("../../../skills/paperclip/SKILL.md"), "## Comment Style (Required)");
+    const style = await readCommentStyle();
     expect(style).toContain("**Describe outcomes, not mechanics (required):**");
+    expect(style).toContain("Say what happened, what it means for the reader, and the next step.");
   });
 });

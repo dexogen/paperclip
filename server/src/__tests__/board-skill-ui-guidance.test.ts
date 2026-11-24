@@ -11,6 +11,8 @@ const read = (relPath: string) => readFileSync(path.join(repoRoot, relPath), "ut
 describe("paperclip-board skill web UI guidance", () => {
   const skill = read("skills/paperclip-board/SKILL.md");
   const palette = read("ui/src/components/CommandPalette.tsx");
+  const en = JSON.parse(read("ui/src/i18n/locales/en.json"));
+  const ru = JSON.parse(read("ui/src/i18n/locales/ru.json"));
   const section = skill.slice(skill.indexOf("## Finding Things in the Web UI"), skill.indexOf("## Presentation Rules"));
 
   it("documents the quick-search shortcut the command palette actually binds", () => {
@@ -22,7 +24,12 @@ describe("paperclip-board skill web UI guidance", () => {
 
   it("documents the handoff to full search and the search route it opens", () => {
     expect(palette).toMatch(/event\.key === "Enter" && \(event\.metaKey \|\| event\.ctrlKey\)/);
-    expect(palette).toContain("Search all for");
+    const searchAllItem = palette.match(/<CommandItem\b[^>]*onSelect=\{goFullSearch\}[^>]*>([\s\S]*?)<\/CommandItem>/)?.[1];
+    expect(searchAllItem).toContain('i18nKey="searchUi.palette.searchAll"');
+    expect(searchAllItem).toContain("values={{ query: searchQuery }}");
+    expect(en.searchUi.palette.searchAll).toMatch(/^Search all for .*\{\{query\}\}/);
+    expect(ru.searchUi.palette.searchAll).toMatch(/^Искать везде.*\{\{query\}\}/);
+    expect(palette).toContain("go(buildFullSearchPath(searchQuery, parserContext))");
     expect(section).toContain("**Search all**");
     expect(section).toContain("Cmd/Ctrl+Enter");
     expect(read("ui/src/App.tsx")).toContain('<Route path="search"');
@@ -30,8 +37,11 @@ describe("paperclip-board skill web UI guidance", () => {
   });
 
   it("keeps the overlay promise to the shortcut and describes the sidebar Search item as full search", () => {
-    // The classic sidebar Search item is a link to the full search page, not the overlay.
-    expect(read("ui/src/components/Sidebar.tsx")).toMatch(/<SidebarNavItem to="\/search" label="Search"/);
+    // Classic exposes the link directly. Coordinator lists it under More.
+    expect(read("ui/src/components/Sidebar.tsx")).toMatch(/<SidebarNavItem\s+to="\/search"\s+label=\{t\("sidebar\.search"\)\}/);
+    expect(read("ui/src/components/CoordinatorSidebar.tsx")).toMatch(/get label\(\)\s*\{\s*return translateUi\("sidebar\.search"\);\s*\},\s*to: "\/search"/);
+    expect(en.sidebar.search).toBe("Search");
+    expect(ru.sidebar.search).toBe("Поиск");
     expect(section).toMatch(/sidebar \*\*Search\*\* item[^\n]*opens the full search page/);
     expect(section).not.toMatch(/search icon[^\n]*opens over the current page/i);
   });
