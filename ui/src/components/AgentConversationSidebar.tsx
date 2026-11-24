@@ -1,4 +1,4 @@
-import { agentConfigRoleLabel } from "./agent-config-primitives";
+import { useAgentRoleLabels } from "./agent-config-primitives";
 import { t as fullSharedT, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { Plus, Search, Users, X } from "lucide-react";
@@ -36,7 +36,7 @@ export interface AgentConversationSidebarProps {
 
 /** Searchable navigation for one conversation per agent. */
 export function AgentConversationSidebar({ agents, existingChatAgentIds, availableAgents = agents, activeId, previews = {}, unreadAgentIds = [], unreadMessageCounts, loading = false, error, onRetry, initialSearch = "", onSelect, onBrowse, onAddChat, historyLoading, historyError, onRetryHistory, onCreateAgent, renderAgentAction }: AgentConversationSidebarProps) {
-  const { t } = useFullSharedTranslation();
+  const translatedRoles = useAgentRoleLabels();
   const navigate = useNavigate();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [search, setSearch] = useState(initialSearch);
@@ -44,7 +44,7 @@ export function AgentConversationSidebar({ agents, existingChatAgentIds, availab
   const headingId = useId();
   const unreadIds = useMemo(() => new Set(unreadAgentIds), [unreadAgentIds]);
   const query = search.trim().toLocaleLowerCase();
-  const visible = agents.filter(agent => `${agent.name} ${agent.title ?? ""} ${agent.role} ${agentConfigRoleLabel(agent.role, t)}`.toLocaleLowerCase().includes(query));
+  const visible = query ? agents.filter(agent => `${agent.name} ${agent.title ?? ""} ${agent.role} ${translatedRoles.get(agent.role) ?? agent.role}`.toLocaleLowerCase().includes(query)) : agents;
   function focusSearch() {
     setSearch("");
     searchRef.current?.focus();
@@ -84,7 +84,7 @@ export function AgentConversationSidebar({ agents, existingChatAgentIds, availab
           <AgentAvatar agent={agent} size={40} />
           <span className="agent-pin-text flex min-w-0 flex-1 flex-col gap-0.5">
             <span className="truncate text-sm font-medium">{agent.name}</span>
-            <span className="truncate text-xs text-muted-foreground">{agent.status === "terminated" ? fullSharedT("fullShared.terminated_56a88f") : agent.title ?? agentConfigRoleLabel(agent.role, t)}</span>
+            <span className="truncate text-xs text-muted-foreground">{agent.status === "terminated" ? fullSharedT("fullShared.terminated_56a88f") : agent.title ?? translatedRoles.get(agent.role) ?? agent.role}</span>
           </span>
           {unreadCount > 0 ? <Badge variant="ghost" aria-label={fullSharedT("agentEdition.unreadFrom", { count: unreadCount, name: agent.name })} className="shrink-0 bg-primary font-mono tabular-nums text-primary-foreground">{unreadCount}</Badge>
             : unreadIds.has(agent.id) && <span role="img" aria-label={fullSharedT("interfaceUpdates.unread_messages_from_value_46a46085", { value1: agent.name })} className="size-2 shrink-0 rounded-full bg-primary" />}

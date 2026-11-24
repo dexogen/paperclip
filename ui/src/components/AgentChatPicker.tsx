@@ -1,4 +1,4 @@
-import { agentConfigRoleLabel } from "./agent-config-primitives";
+import { useAgentRoleLabels } from "./agent-config-primitives";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Agent } from "@paperclipai/shared";
@@ -41,7 +41,7 @@ export function AgentChatPicker({ open, onOpenChange, trigger, ...props }: Agent
 
 function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, onRetry, existingChatAgentIds, unreadMessageCounts, renderAgentIcon }: Omit<AgentChatPickerProps, "open" | "onOpenChange"> & { onComplete: () => void }) {
   const existingIds = useMemo(() => new Set(existingChatAgentIds), [existingChatAgentIds]);
-  const { t } = useFullSharedTranslation();
+  const translatedRoles = useAgentRoleLabels();
   const mounted = useRef(false);
   const selection = useRef<AbortController | null>(null);
   useEffect(() => {
@@ -97,7 +97,7 @@ function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, 
           <CommandGroup>
             {agents.map((agent) => {
               const unreadCount = unreadMessageCounts?.get(agent.id) ?? 0;
-              const roleLabel = agentConfigRoleLabel(agent.role, t);
+              const roleLabel = translatedRoles.get(agent.role) ?? agent.role;
               return (
                 <CommandItem
                   key={agent.id}
