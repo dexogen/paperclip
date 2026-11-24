@@ -119,8 +119,10 @@ export function buildMonitorSurfaceCopy(
     };
   }
 
-  const eta = formatMonitorEta(derived.nextCheckAt, now, fullSharedT); // "in 2h 12m" | "due now" | "overdue by 18m"
-  const absolute = formatMonitorAbsolute(derived.nextCheckAt, { locale: fullSharedI18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }, now, fullSharedT); // local time, e.g. "Today, 4:08 PM"
+  const language = fullSharedI18n.resolvedLanguage ?? fullSharedI18n.language;
+  const timeLabels = fullSharedI18n.getFixedT(language);
+  const eta = formatMonitorEta(derived.nextCheckAt, now, timeLabels); // "in 2h 12m" | "due now" | "overdue by 18m"
+  const absolute = formatMonitorAbsolute(derived.nextCheckAt, { locale: language === "ru" ? "ru-RU" : undefined }, now, timeLabels); // local time, e.g. "Today, 4:08 PM"
   const awaitingPullRequestReview = derived.source === "monitor" && derived.serviceName?.toLowerCase() === "github" && pendingPullRequestReviews > 0;
   if (derived.source === "monitor" && hasActiveRun) {
     const hint = fullSharedT("taskChatUi.monitor.saveFirst");
