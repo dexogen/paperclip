@@ -6,6 +6,8 @@ import { useTranslation } from "@/i18n";
 import { formatRunDisplayText } from "./task-chat-display";
 import { formatTaskChatResource } from "./task-chat-adapter";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { TaskChatImageGrid } from "./TaskChatImageGrid";
+import { imageResourceSource } from "./image-resources";
 import { TaskChatStatusNotice } from "./TaskChatStatusNotice";
 import { isStatusNotice } from "./status-notice-presentation";
 import {
@@ -370,7 +372,7 @@ function ProviderActivityCard({
               className="rounded-sm bg-muted/40 px-2.5 py-2 text-sm"
             >
               <div className="flex items-center gap-2">
-                <StatusIcon status={formatRunDisplayText("protocolChildStatus", child.status, child.display?.status, t)} className="shrink-0" />
+                <StatusIcon status={child.status} className="shrink-0" />
                 <strong className="font-medium">{formatRunDisplayText("protocolChildTitle", child.title, child.display?.title, t)}</strong>
                 <span
                   className={cn(
@@ -506,7 +508,7 @@ function WorkspaceChangeFileRow({
         {file.operation !== "modify" ? (
           <span className="shrink-0 text-(length:--text-micro) capitalize text-muted-foreground">
             {file.binary ? translateUi("taskChatUi.protocol.binary") : ""}
-            {OPERATION_LABEL[file.operation] ?? file.operation.replaceAll("_", " ")}
+            {fileChangeLabel(file.operation)}
           </span>
         ) : file.binary ? (
           <span className="shrink-0 text-(length:--text-micro) text-muted-foreground">{translateUi("interfaceUpdates.binary_9a3a45d0")}</span>
@@ -530,12 +532,15 @@ function WorkspaceChangeFileRow({
   );
 }
 
-const OPERATION_LABEL: Record<string, string> = {
-  create: "new",
-  delete: "deleted",
-  rename: "renamed",
-  mode_change: "mode change",
-};
+function fileChangeLabel(operation: TaskChatWorkspaceChangeItem["files"][number]["operation"]) {
+  switch (operation) {
+    case "create": return translateUi("runUi.protocol.fileChange.create");
+    case "delete": return translateUi("runUi.protocol.fileChange.delete");
+    case "rename": return translateUi("runUi.protocol.fileChange.rename");
+    case "mode_change": return translateUi("runUi.protocol.fileChange.mode_change");
+    default: return operation.replaceAll("_", " ");
+  }
+}
 
 function WorkspaceChangeCard({ item }: { item: TaskChatWorkspaceChangeItem }) {
   const { t } = useTranslation();
@@ -1136,6 +1141,9 @@ function ResourceCard({
 }) {
   const { t } = useTranslation();
   const { enabled: artifactsV1 } = useArtifactsV1Enabled();
+  if (imageResourceSource(item)) {
+    return <TaskChatImageGrid items={item.imageItems ?? [item]} />;
+  }
   const display = formatTaskChatResource(item, t);
   if (artifactsV1) {
     // Artifacts V1 (doc/plans/2026-10-22-artifacts-mvp-v1.md): one full-width row named after the file. A

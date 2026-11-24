@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { HeartbeatRun, Issue, IssueRecoveryAction } from "@paperclipai/shared";
 import { RunWorkspaceRecoverySurface } from "./RunWorkspaceRecoverySurface";
+import { i18n } from "../i18n";
 import { ToastProvider } from "../context/ToastContext";
 
 const navigateMock = vi.hoisted(() => vi.fn());
@@ -264,6 +265,16 @@ describe("RunWorkspaceRecoverySurface", () => {
     click(node.querySelector("button"));
     await flush();
     expect(node.textContent).toContain("Recorded failure: source_binding_invalid · lease_policy_not_retained · lease policy reuse_by_environment");
+    const requests = recoveryActionsMock.mock.calls.length;
+    try {
+      await i18n.changeLanguage("ru");
+      await flush();
+      expect(node.textContent).toContain("source_binding_invalid · lease_policy_not_retained · политика аренды reuse_by_environment");
+      expect(recoveryActionsMock).toHaveBeenCalledTimes(requests);
+    } finally {
+      await i18n.changeLanguage("en");
+      await flush();
+    }
     expect(node.textContent).not.toContain("secret-reason");
     expect(node.textContent).not.toContain("secret-policy");
     const choices = () => [...node.querySelectorAll("button")].filter(button => button.textContent === "Inspect current source");

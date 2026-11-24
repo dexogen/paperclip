@@ -15,6 +15,15 @@ describe("task chat display provenance", () => {
     expect(t).not.toHaveBeenCalled();
   });
 
+  it("formats a compaction marker from its measured token counts in the requested language", () => {
+    const detail = { code: "detail.compactedTokens", before: 1200, after: 500 } as const;
+    const en = i18n.getFixedT("en");
+    const ru = i18n.getFixedT("ru");
+    expect(formatRunDisplayText("markerDetail", "raw", detail, en)).toBe("1.2k → 500 tokens");
+    expect(formatRunDisplayText("markerDetail", "raw", detail, ru)).toMatch(/^Токены: 1,2.* → 500$/);
+    expect(formatRunDisplayText("markerDetail", "raw", { ...detail, before: -1 }, ru)).toBe("raw");
+  });
+
   it.each([
     { code: "future.code" }, { code: "marker.runFailed", lng: "ru" },
     { code: "detail.nativeStopped", afterFinalResponse: "yes", errorCode: "raw" },

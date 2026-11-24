@@ -7,7 +7,7 @@ import test from 'node:test';
 import { git } from './git.mjs';
 import { buildIdentity, fetchReleaseCommit, nearestStableAncestor, releaseIdentity, resolveSource, selectSource, validateSource, verifyAcceptedSource } from './source.mjs';
 import { buildMetadata } from './build-metadata.mjs';
-import { inspectPublication, publishRelease, reservePublication, validateImageManifest } from './publish-release.mjs';
+import { inspectPublication, publishRelease, readReleaseNotes, reservePublication, validateImageManifest } from './publish-release.mjs';
 import { verifyUnusedImageTags } from './verify-image-tags.mjs';
 
 const a = 'a'.repeat(40), b = 'b'.repeat(40), c = 'c'.repeat(40);
@@ -140,8 +140,22 @@ function publication() {
     verificationRun: '123', lockSha256: 'd'.repeat(64), translationSha256: 'e'.repeat(64),
     image: `ghcr.io/dexogen/paperclip@sha256:${'f'.repeat(64)}`, tag: `ghcr.io/dexogen/paperclip:ru-${c}`,
     versionTag: `ghcr.io/dexogen/paperclip:${metadata.imageTag}` };
-  return { metadata, manifest, verificationRun: 123 };
+  return { metadata, manifest, verificationRun: 123, notes: '## Что изменилось\n\nДобавили чаты с агентами.' };
 }
+
+test('release notes come from the verified commit even if the checkout changes', (t) => {
+  const { cwd, next } = fixture(t);
+  const releaseTag = 'v2026.1117.0-ru.1';
+  const path = `releases/${releaseTag}.md`;
+  mkdirSync(join(cwd, 'releases'));
+  writeFileSync(join(cwd, path), 'Проверенные изменения.\n');
+  git(cwd, ['add', path]);
+  git(cwd, ['commit', '-qm', 'Reviewed notes']);
+  const fullSourceSha = git(cwd, ['rev-parse', 'HEAD']).stdout;
+  writeFileSync(join(cwd, path), 'Uncommitted draft');
+  assert.equal(readReleaseNotes(cwd, { releaseTag, fullSourceSha }), 'Проверенные изменения.');
+  assert.throws(() => readReleaseNotes(cwd, { releaseTag, fullSourceSha: next }), /git show failed/);
+});
 
 test('a stable release binds the immutable tag, complete provenance and successful CI', async () => {
   const f = publication();
@@ -150,6 +164,7 @@ test('a stable release binds the immutable tag, complete provenance and successf
   const release = await publishRelease({ ...f, api });
   const writes = calls.filter(({ options }) => options?.method === 'POST');
   assert.equal(writes.length, 2);
+  assert.ok(release.body.includes(f.notes));
   assert.deepEqual(writes[0].options.body, { ref: `refs/tags/${f.metadata.releaseTag}`, sha: c });
   assert.equal(release.prerelease, false); assert.equal(release.target_commitish, c);
   assert.ok(release.body.includes(f.manifest.image)); assert.ok(release.body.includes('actions/runs/123'));

@@ -5,6 +5,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AttentionItem, DecisionHistoryItem } from "@paperclipai/shared";
+import { i18n } from "@/i18n";
 import { CoordinatorNeedsYou } from "./CoordinatorNeedsYou";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -58,6 +59,63 @@ async function click(text: string) {
   await act(async () => button!.click()); await flush();
 }
 describe("Coordinator Needs You", () => {
+  it("keeps bilingual search and localizes pending cards, recent history and grouping in the open inbox", async () => {
+    fixture.pending = [{
+      ...fixture.pending[0], sourceKind: "join_request", severity: "medium", decisionVerbs: [], inlineResolvable: false,
+      subject: { id: "join", kind: "join_request", companyId: "company", identifier: null, status: "pending", href: "/requests/join", title: "Agent join request", display: { title: { code: "title.join.agent" } } },
+      whyNow: "This membership request is pending.", display: { whyNow: { code: "why.join.pending" } },
+      relatedIssue: null,
+    }];
+    const now = new Date().toISOString();
+    const receipt: DecisionHistoryItem = {
+      id: "decision:approved", sourceId: "approved", sourceKind: "decision", title: "Approval", issueId: "issue-20", issueTitle: "Launch",
+      issueIdentifier: "PAP-20", agentId: null, agentName: null, projectId: "project", projectName: null,
+      outcome: "decided", label: "Approved", resolvedAt: now, resolvedByUserId: "board", resolvedByAgentId: null, href: "/issues/PAP-20", target: null,
+    };
+    fixture.history = [receipt, { ...receipt, id: "interaction:approved", sourceKind: "issue_thread_interaction",
+      issueIdentifier: "PAP-21", display: { label: { code: "approved" } } },
+      { ...receipt, id: "interaction:verdicts", sourceKind: "issue_thread_interaction", issueIdentifier: "PAP-22",
+        label: "2 approved · 1 deferred", display: { label: { code: "itemVerdicts", args: { approve: 2, reject: 0, defer: 1 } } } }];
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const previous = i18n.language;
+    try {
+      await act(async () => { await i18n.changeLanguage("en"); root.render(<QueryClientProvider client={client}><MemoryRouter><CoordinatorNeedsYou /></MemoryRouter></QueryClientProvider>); });
+      await flush();
+      const group = container.querySelector<HTMLSelectElement>('select[aria-label="Group decisions"]')!;
+      await act(async () => { group.value = "agent"; group.dispatchEvent(new Event("change", { bubbles: true })); });
+      const search = container.querySelector<HTMLInputElement>('input[aria-label="Search decisions"]')!;
+      const setSearch = (value: string) => act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, value);
+        search.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await setSearch("присоединение");
+      expect(container.querySelector("article h2")?.textContent).toBe("Agent join request");
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(search.value).toBe("присоединение");
+      expect(container.querySelector("article h2")?.textContent).toBe("Запрос на присоединение агента");
+      expect(container.querySelector("article p")?.textContent).toBe(i18n.t("decisionsUi.feed.why.join.pending"));
+      expect(fixture.breadcrumbs).toHaveBeenLastCalledWith([{ label: "Входящие" }]);
+      expect(container.querySelector('h2.text-muted-foreground')?.textContent).toBe("Другие агенты");
+      expect(search.getAttribute("aria-label")).toBe("Поиск решений");
+      expect(group.value).toBe("agent");
+      expect(container.querySelector('option[value="project"]')?.textContent).toBe("Проект без названия");
+      await setSearch("одобрено");
+      const receipts = () => [...container.querySelectorAll(".coordinator-decision-receipt")].map(node => node.textContent);
+      expect(receipts()).toHaveLength(2);
+      expect(receipts().join()).toContain("ОдобреноPAP-21");
+      expect(receipts().join()).toContain("Одобрено: 2 · Отложено: 1");
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(receipts()).toHaveLength(2);
+      expect(receipts().join()).toContain("2 approved · 1 deferred");
+      await setSearch("PAP-20");
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(receipts()).toEqual(["ApprovedPAP-20 · Launch"]);
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previous); });
+      client.clear();
+    }
+  });
+
   it("reveals and focuses a linked decision beyond the first rendering window, then consumes only its URL parameter", async () => {
     fixture.url = "/decisions?decisionId=target&q=kept";
     fixture.pending = Array.from({ length: 61 }, (_, index) => ({ ...fixture.pending[0], id: `decision-${index}`, sourceKind: "decision",
@@ -95,6 +153,17 @@ describe("Coordinator Needs You", () => {
       expect(dialog).not.toBeNull();
       expect(dialog!.querySelector('[aria-label="Search decision history"]')).not.toBeNull();
       expect(dialog!.textContent).toContain("Earlier launch");
+      const time = dialog!.querySelector("time")!;
+      const date = new Date(fixture.history[0].resolvedAt);
+      const previous = i18n.language;
+      try {
+        expect(time.textContent).toBe(date.toLocaleString("en"));
+        await act(async () => { await i18n.changeLanguage("ru"); });
+        expect(time.textContent).toBe(date.toLocaleString("ru"));
+        expect(time.dateTime).toBe(fixture.history[0].resolvedAt);
+      } finally {
+        await act(async () => { await i18n.changeLanguage(previous); });
+      }
       expect(fixture.openPanel).not.toHaveBeenCalled();
       const close = [...dialog!.querySelectorAll("button")].find(button => button.textContent === "Close");
       await act(async () => close!.click()); await flush();

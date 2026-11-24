@@ -288,7 +288,7 @@ function ConnectFlowPreview({
         : phase === "ready"
         ? { label: signInLabel, icon: "none" as const, disabled: false }
         : phase === "waiting"
-          ? { label: fullSharedT("onboarding.progress.waitingCode"), icon: "spinner" as const, disabled: true }
+          ? { label: selectedId === "codex_local" ? fullSharedT("onboarding.progress.waitingAuth") : fullSharedT("onboarding.progress.waitingCode"), icon: "spinner" as const, disabled: true }
           : phase === "connecting"
             ? { label: fullSharedT("onboarding.progress.connectingLabel"), icon: "spinner" as const, disabled: true }
             : { label: fullSharedT("fullShared.next_1ff57a"), icon: "arrow" as const, disabled: true };

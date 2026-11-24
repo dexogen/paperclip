@@ -1,5 +1,5 @@
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
-import type { ComponentProps, Ref } from "react";
+import type { ComponentProps, ReactNode, Ref } from "react";
 import { ChevronDown, CirclePlus, Columns3, List, ListTree } from "lucide-react";
 import { IssueFiltersPopover } from "./IssueFiltersPopover";
 import { Button } from "./ui/button";
@@ -10,10 +10,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { taskListViews as views, type TaskListView } from "@/lib/task-list-views";
 
 /** Canonical proposed task toolbar; review under Components / Toolbars / Tasks. */
-export function TaskListToolbar({ view, onViewChange, viewOptions = views, query, onQueryChange, searchRef, layout, onLayoutChange, allExpanded, onToggleExpanded, onNewTask, filters }: {
+export function TaskListToolbar({ view, onViewChange, viewOptions = views, viewControl, query, onQueryChange, searchRef, layout, onLayoutChange, allExpanded, onToggleExpanded, onNewTask, filters }: {
   view: TaskListView;
   onViewChange: (view: TaskListView) => void;
   viewOptions?: readonly { value: TaskListView; label: string }[];
+  viewControl?: ReactNode;
   query: string;
   onQueryChange: (query: string) => void;
   searchRef?: Ref<HTMLInputElement>;
@@ -27,7 +28,7 @@ export function TaskListToolbar({ view, onViewChange, viewOptions = views, query
   useFullSharedTranslation();
   return (
     <div data-canonical-toolbar="tasks" className="design-page-toolbar" role="toolbar" aria-label={fullSharedT("fullShared.task_list_controls_515af1")}>
-      <DropdownMenu>
+      {viewControl ?? <DropdownMenu>
         <DropdownMenuTrigger asChild><Button variant="outline" className="design-toolbar-button design-view-trigger" aria-label={fullSharedT("fullShared.task_view_4fffa6", { value1: viewOptions.find(option => option.value === view)!.label })}>{viewOptions.find(option => option.value === view)!.label}<ChevronDown aria-hidden /></Button></DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="task-list-options" aria-label={fullSharedT("fullShared.task_views_eb704b")}>
           <DropdownMenuLabel asChild><FlyoutHeader className="task-list-options-heading">{fullSharedT("fullShared.views_69c404")}</FlyoutHeader></DropdownMenuLabel>
@@ -35,7 +36,7 @@ export function TaskListToolbar({ view, onViewChange, viewOptions = views, query
             {viewOptions.map(option => <DropdownMenuRadioItem className="task-list-options-item" key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>)}
           </FlyoutOptions></DropdownMenuRadioGroup>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu>}
       <ToolbarSearch query={query} onQueryChange={onQueryChange} inputRef={searchRef} label={fullSharedT("tasks.search")} placeholder={fullSharedT("fullShared.search_tasks_945d1c")} />
       <div className="design-view-toggle" role="group" aria-label={fullSharedT("fullShared.task_layout_9d37ef")}>
         {[{ value: "list", label: fullSharedT("agents.listView"), icon: List }, { value: "board", label: fullSharedT("tasks.boardView"), icon: Columns3 }].map(({ value, label, icon: Icon }) => (

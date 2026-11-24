@@ -9,6 +9,7 @@ import {
   Play,
   Plus,
   MoreHorizontal,
+  MessagesSquare,
   Loader2,
   Copy,
   RotateCcw,
@@ -68,7 +69,7 @@ export function RunButton({
   return (
     <Button variant="outline" size={size} onClick={onClick} disabled={disabled}>
       <Play className="h-3.5 w-3.5 sm:mr-1" />
-      <span className="hidden sm:inline">{label === undefined ? t("agentDetailUi.actions.run") : label}</span>
+      <span className="sr-only sm:not-sr-only">{label ?? t("agentDetailUi.actions.run")}</span>
     </Button>
   );
 }
@@ -91,7 +92,7 @@ export function PauseResumeButton({
     return (
       <Button variant="outline" size={size} onClick={onResume} disabled={disabled}>
         <Play className="h-3.5 w-3.5 sm:mr-1" />
-        <span className="hidden sm:inline">{t("agentDetailUi.actions.resume")}</span>
+        <span className="sr-only sm:not-sr-only">{t("agentDetailUi.actions.resume")}</span>
       </Button>
     );
   }
@@ -99,7 +100,7 @@ export function PauseResumeButton({
   return (
     <Button variant="outline" size={size} onClick={onPause} disabled={disabled}>
       <Pause className="h-3.5 w-3.5 sm:mr-1" />
-      <span className="hidden sm:inline">{t("agentDetailUi.actions.pause")}</span>
+      <span className="sr-only sm:not-sr-only">{t("agentDetailUi.actions.pause")}</span>
     </Button>
   );
 }
@@ -187,8 +188,10 @@ export function AgentActionButtons({
   agent,
   companyId,
   size = "sm",
-  assignLabel,
-  runLabel,
+  assignLabel: customAssignLabel,
+  showAssignIcon = true,
+  showChat = false,
+  runLabel: customRunLabel,
   showStatus = true,
   showRun = true,
   actionsDisabled = false,
@@ -211,6 +214,8 @@ export function AgentActionButtons({
   companyId?: string | null;
   size?: "sm" | "default";
   assignLabel?: string;
+  showAssignIcon?: boolean;
+  showChat?: boolean;
   runLabel?: string;
   showStatus?: boolean;
   showRun?: boolean;
@@ -247,6 +252,8 @@ export function AgentActionButtons({
   className?: string;
 }) {
   const { t } = useTranslation();
+  const assignLabel = customAssignLabel ?? t("agentDetailUi.actions.assign");
+  const runLabel = customRunLabel ?? t("agentDetailUi.actions.run");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { openNewIssue } = useDialogActions();
@@ -562,6 +569,10 @@ export function AgentActionButtons({
             )}
           </PopoverContent>
         </Popover>
+        {showChat && <Button variant="outline" size="icon" aria-label={t("agentEdition.chatWith", { name: agent.name })} title={t("agentEdition.chatWithAgent")}
+          disabled={disabled} onClick={() => { if (!onBeforeNavigate || onBeforeNavigate()) navigate(`/chats/${canonicalAgentRef}`); }}>
+          <MessagesSquare className="size-4" />
+        </Button>}
         {needsSetup ? (
           <Button size={size} disabled={disabled} onClick={finishSetup}>
             <Play className="size-4" />
@@ -574,7 +585,7 @@ export function AgentActionButtons({
             disabled={assignAndRunDisabled}
             title={workActionsDisabled ? workActionsDisabledReason : undefined}
           >
-            <Plus className="size-4" />
+            {showAssignIcon && <Plus className="size-4" />}
             {assignLabel}
           </Button>
         )}
@@ -602,7 +613,7 @@ export function AgentActionButtons({
         title={workActionsDisabled ? workActionsDisabledReason : undefined}
       >
         <Plus className="h-3.5 w-3.5 sm:mr-1" />
-        <span className="hidden sm:inline">{assignLabel === undefined ? t("agentDetailUi.actions.assign") : assignLabel}</span>
+        <span className="sr-only sm:not-sr-only">{assignLabel}</span>
       </Button>
       {needsSetup ? (
         <Button variant="outline" size={size} disabled={disabled} onClick={() => {

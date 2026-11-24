@@ -33,9 +33,11 @@ export function CoordinatorChatPendingQuestion({ item }: { item: AttentionItem }
   const { userId } = useCoordinatorWorkspaceEnabled();
   const task = item.relatedIssue;
   if (!task) return null;
+  const agent = item.originAgentName ?? translateUi("interfaceUpdates.your_agent_1ffbc15d");
+  const taskTitle = task.title ?? task.identifier;
   const href = `${(task.href ?? `/issues/${task.id}`).split("#")[0]}#interaction-${item.subject.id}`;
   return <section data-testid="coordinator-chat-pending-question" className="space-y-3">
-    <p className="text-sm text-muted-foreground">{item.originAgentName ?? translateUi("interfaceUpdates.your_agent_1ffbc15d")} {translateUi("interfaceUpdates.needs_your_input_on_4345cd80")} {task.title ?? task.identifier ?? translateUi("interfaceUpdates.this_task_5249804f")}.</p>
+    <p className="text-sm text-muted-foreground">{taskTitle ? translateUi("agentEdition.inputOnTask", { agent, task: taskTitle }) : translateUi("agentEdition.inputOnThisTask", { agent })}</p>
     <article className="coordinator-decision-card space-y-4 rounded-xl border border-border bg-card p-6">
       <AttentionInteractionResolver companyId={task.companyId} issueId={task.id} interactionId={item.subject.id} currentUserId={userId} presentation="coordinator-decision" footerSlot={<Link to={href} className="flex max-w-full items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <span className="shrink-0">{task.identifier ?? translateUi("interfaceUpdates.open_task_6b5c9394")}</span><span className="truncate">{task.title}</span><ArrowUpRight className="size-4 shrink-0" />

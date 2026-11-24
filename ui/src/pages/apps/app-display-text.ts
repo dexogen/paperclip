@@ -28,6 +28,7 @@ type AppDisplayErrorKey =
   | "fullApps.use_an_https_console_url_without_credentials_f9e019";
 
 type AppDisplayKey = AppDisplayErrorKey
+  | "githubSetupUi.includeAgentToContinue"
   | "agentConnectionUi.instructions.saveError"
   | "fullApps.changes_saved_12b3f1"
   | "fullApps.child_9cc6d48cfb"

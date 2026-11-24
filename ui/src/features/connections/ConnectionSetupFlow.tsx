@@ -96,7 +96,7 @@ import { OAuthHandoffError, prepareOAuthNavigation, savePendingCloudHandoff } fr
 import { redactUrlSecrets } from "@/lib/redact-url-secrets";
 import { askFirstCatalogEntryIdsFor } from "./connection-defaults";
 import { AppLogo } from "@/pages/apps/AppLogo";
-import { appApplicationSourceSlug, appConnectionSourceSlug } from "@/pages/apps/app-definition-display";
+import { appApplicationSourceSlug, appConnectionSourceSlug, appDefinitionDescription, appAvailabilityReason, vercelConnectAvailabilityReason } from "@/pages/apps/app-definition-display";
 import { UnverifiedServerBadge } from "@/pages/apps/UnverifiedServerBadge";
 import {
   appSourceConnectHref,
@@ -194,7 +194,7 @@ function githubRecoveryUrl(value: string | null): string | null {
   }
 }
 
-type ConnectionSetupErrorCode = "callbackDenied" | "githubAccessRequired" | "callbackIncomplete" | "popupBlocked" | "popupClosed" | "preserveFailed" | "startFailed" | "cancelled" | "incomplete" | "githubPopupClosed" | "finishInWindow" | "confirmFailed" | "enrollmentTab" | "enrollmentLinkMissing" | "cloudUnreachable" | "expired" | "lookupFailed" | "existingFailed";
+type ConnectionSetupErrorCode = "callbackDenied" | "githubAccessRequired" | "callbackIncomplete" | "popupBlocked" | "popupClosed" | "preserveFailed" | "startFailed" | "cancelled" | "incomplete" | "githubPopupClosed" | "finishInWindow" | "confirmFailed" | "enrollmentTab" | "enrollmentLinkMissing" | "cloudUnreachable" | "expired" | "lookupFailed" | "existingFailed" | "notConfirmed" | "includeAgent";
 
 class ConnectionSetupError extends Error {
   constructor(readonly code: ConnectionSetupErrorCode) {
@@ -253,6 +253,8 @@ function setupErrorCodeText(code: ConnectionSetupErrorCode, t: TFunction): strin
     case "cloudUnreachable": return t("githubSetupUi.errors.cloudUnreachable");
     case "expired": return t("githubSetupUi.errors.expired");
     case "lookupFailed": return t("githubSetupUi.errors.lookupFailed");
+    case "notConfirmed": return t("githubSetupUi.errors.notConfirmed");
+    case "includeAgent": return t("githubSetupUi.includeAgentToContinue");
     case "existingFailed": return t("githubSetupUi.errors.existingFailed");
   }
 }
@@ -635,6 +637,9 @@ export interface ConnectionSetupFlowProps {
   host?: "page" | "dialog";
   serviceSlug?: string;
   requestedAgentId?: string;
+  /** Task requester must be included without restricting the audience to it. */
+  requiredAgentId?: string;
+  setupAccess?: import("@paperclipai/shared").ConnectionIntentInteraction["payload"]["setupAccess"];
   interactionId?: string;
   forceNewConnection?: boolean;
   existingConnections?: ConnectionIntentSetupConnection[];
@@ -713,6 +718,7 @@ function StandardConnectionSetupFlow({
   host = "page",
   serviceSlug,
   requestedAgentId,
+  requiredAgentId,
   interactionId,
   forceNewConnection = false,
   existingConnections = [],
@@ -995,12 +1001,12 @@ function StandardConnectionSetupFlow({
           try {
             const verified = await connectionIntentsApi.setupOptions(connectionIntentId);
             if (disposed || !account.isCurrentScope()) return;
-            if (verified.interaction.status !== "accepted") throw new Error("Authorization has not been confirmed yet. Try again.");
+            if (verified.interaction.status !== "accepted") throw new ConnectionSetupError("notConfirmed");
             navigate(`/issues/${verified.interaction.issueId}`);
           } catch (error) {
             if (disposed || !account.isCurrentScope()) return;
             setOAuthPhase("error");
-            setOAuthError(describeError(error).body);
+            setOAuthError(error instanceof ConnectionSetupError ? error : describeError(error).body);
           }
         }
         return;
@@ -1453,6 +1459,17 @@ function StandardConnectionSetupFlow({
     // not identity: an organization Notion connection must stay organization-
     // scoped, while a personal one must put its token back on that user grant.
     mutationFn: async (connection: ToolConnection) => {
+      // Resumed setup hides audience controls and promises to retain access.
+      // Leave the durable selection untouched instead of saving form defaults.
+      if (connectionIntentId && !aiConnection && !resumeConnectionId && !reconnectConnection && !resumableOAuthConnection) {
+        if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+          throw new ConnectionSetupError("includeAgent");
+        }
+        await connectionIntentsApi.setPhase(connectionIntentId, "authorizing", {
+          connectionId: connection.id,
+          access: installChoice === "all" ? "all_agents" : { agentIds: [...installAgentIds] },
+        });
+      }
       // Persist before navigation, including retries that reuse an existing OAuth draft.
       if (instructionValue && JSON.stringify(instructionValue) !== JSON.stringify(connection.agentInstructions)) {
         await toolsApi.updateConnection(connection.id, { agentInstructions: instructionValue });
@@ -1508,7 +1525,7 @@ function StandardConnectionSetupFlow({
    */
   const applyAccessInstalls = async (connectionId: string) => {
     // The task completion endpoint adds the requester atomically with resolution.
-    if (requestedAgentId) return;
+    if (connectionIntentId) return;
     const dedicatedIdentity = (fixedGrantKind ?? grantKind) === "agent";
     const installState = !dedicatedIdentity && installChoice === "all"
       ? { onAll: true, agentIds: new Set<string>() }
@@ -1520,6 +1537,10 @@ function StandardConnectionSetupFlow({
   const effectiveGrantKind = fixedGrantKind ?? grantKind;
   const connectMutation = useMutation({
     mutationFn: async (entryOverride?: AppDefinition) => {
+      if (requiredAgentId && !resumeConnectionId && !reconnectConnectionId
+        && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+        throw new ConnectionSetupError("includeAgent");
+      }
       const connectEntry = entryOverride ?? entry;
       let result: ConnectToolAppResult;
       if (connectEntry) {
@@ -1682,7 +1703,7 @@ function StandardConnectionSetupFlow({
       }
       pushToast({
         title: currentT("githubSetupUi.connectFailed"),
-        body: describeError(error).body,
+        body: error instanceof ConnectionSetupError ? setupErrorCodeText(error.code, t) : describeError(error).body,
         tone: "error",
       });
     },
@@ -1988,6 +2009,9 @@ function StandardConnectionSetupFlow({
         connected,
         (catalogEntryId) => Boolean(enabledMap[catalogEntryId]),
       );
+      if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
+        throw new ConnectionSetupError("includeAgent");
+      }
       // The Access step asks one question about agent reach, so profile access
       // and installs are committed to the same target set instead of drifting
       // apart behind two separate wizard screens.
@@ -2020,7 +2044,7 @@ function StandardConnectionSetupFlow({
       setAppStep("key");
       pushToast({
         title: currentT("githubSetupUi.finishFailed"),
-        body: describeError(error).body,
+        body: error instanceof ConnectionSetupError ? setupErrorCodeText(error.code, t) : describeError(error).body,
         tone: "error",
       });
     },
@@ -2281,6 +2305,7 @@ function StandardConnectionSetupFlow({
             ?? t("githubSetupUi.configurerOnly")
           : null,
         requestedAgentId ? t("githubSetupUi.requestingAgentOnly") : null,
+        requiredAgentId ? t("githubSetupUi.includeRequestingAgent") : null,
       ].filter((reason): reason is string => Boolean(reason))}
       authKind={accessStepAuthKind}
       grantKinds={fixedGrantKind ? [fixedGrantKind] : accessStepMethod?.grantKinds}
@@ -2461,7 +2486,7 @@ function StandardConnectionSetupFlow({
             oauthPopupRef.current?.close();
             oauthPopupRef.current = null;
             setOAuthPhase("error");
-            setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
+            setOAuthError(new ConnectionSetupError("lookupFailed"));
           } finally {
             if (pendingOAuthLookupRef.current === lookup) {
               if (!isCurrentLookup()) {
@@ -3176,6 +3201,7 @@ function GalleryStep({
     linkInputRef.current?.select();
     linkInputSelectedRef.current = true;
   }, [byo, byoOnly, loading]);
+  const vercelReason = vercelConnectAvailabilityReason(vercelConnectAvailability?.reason);
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return apps.filter((app) => !q || app.name.toLowerCase().includes(q));
@@ -3222,7 +3248,7 @@ function GalleryStep({
           </div>
           {vercelConnectAvailability?.available === false ? (
             <InlineBanner tone="danger" compact className="mt-4">
-              {vercelConnectAvailability.reason ?? fullAppsT("fullApps.vercel_connect_is_unavailable_on_this_instance_e4932f")}
+              {vercelReason ?? fullAppsT("fullApps.vercel_connect_is_unavailable_on_this_instance_e4932f")}
             </InlineBanner>
           ) : null}
         </div>
@@ -3242,7 +3268,7 @@ function GalleryStep({
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {filtered.map((app) => {
-              const copy = appCopyFor(app.slug, app.description);
+              const copy = appCopyFor(app.slug, appDefinitionDescription(app));
               const methods = availableToolConnectionMethods(app);
               const oauthBlocked = methods.length === 0 || methods.every((candidate) =>
                 candidate.auth === "oauth"
@@ -3251,16 +3277,13 @@ function GalleryStep({
               );
               const unavailable = app.availability?.available === false
                 || (vercelConnect && vercelConnectAvailability?.available !== true);
+              const reason = appAvailabilityReason(app) ?? vercelReason;
               return (
                 <button
                   key={app.slug}
                   type="button"
                   disabled={oauthBlocked || unavailable}
-                  title={
-                    unavailable
-                      ? app.availability?.reason ?? vercelConnectAvailability?.reason ?? undefined
-                      : undefined
-                  }
+                  title={unavailable ? reason : undefined}
                   onClick={() => onPick(app)}
                   className={cn(
                     "flex flex-col rounded-xl border border-border bg-card p-4 text-left transition-colors",
@@ -3273,7 +3296,7 @@ function GalleryStep({
                   <div className="mt-3 text-xs font-semibold text-foreground">
                     {unavailable ? (
                       <span className="text-muted-foreground">
-                        {app.availability?.reason ?? vercelConnectAvailability?.reason ?? fullAppsT("fullApps.unavailable_on_this_instance_4276fc")}
+                        {reason ?? fullAppsT("fullApps.unavailable_on_this_instance_4276fc")}
                       </span>
                     ) : oauthBlocked ? (
                       <span className="text-muted-foreground">{fullAppsT("taskProperties.locked.unavailable")}</span>

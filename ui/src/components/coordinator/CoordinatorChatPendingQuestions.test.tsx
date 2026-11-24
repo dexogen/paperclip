@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -39,6 +40,25 @@ describe("pending task questions in agent chat", () => {
     await paint(false); expect(mocks.get).not.toHaveBeenCalled();
     mocks.enabled = false; await paint(); expect(mocks.get).not.toHaveBeenCalled();
   });
+  it("localizes the question without changing the task title, canonical link or pending answer", async () => {
+    const previous = i18n.language;
+    mocks.get.mockResolvedValue([{
+      ...coordinatorTaskQuestionAttention,
+      originAgentName: "Mira",
+      relatedIssue: { ...coordinatorTaskQuestionAttention.relatedIssue!, title: "Write the launch post" },
+    }]);
+    try {
+      await paint();
+      const href = host.querySelector("a")?.getAttribute("href");
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(host.textContent).toContain("Mira ждёт ответа по задаче «Write the launch post».");
+      expect(host.querySelector("a")?.getAttribute("href")).toBe(href);
+      expect(mocks.answer).not.toHaveBeenCalled();
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previous); });
+    }
+  });
+
   it("answers the canonical task question and refreshes all decision surfaces", async () => {
     const invalidate = vi.spyOn(client, "invalidateQueries");
     await paint();

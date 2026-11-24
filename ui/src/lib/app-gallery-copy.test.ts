@@ -26,6 +26,14 @@ describe("app gallery display copy", () => {
     expect(generic.tagline).toBe("Give your agents access to this app.");
   });
 
+  it("keeps provider names and readable Russian copy in the app picker", async () => {
+    await i18n.changeLanguage("ru");
+    expect(appCopyFor("airtable", "Подключите MCP-сервер, который предоставляет Airtable.").short)
+      .toBe("Подключите сервис, который предоставляет Airtable.");
+    expect(appCopyFor("executor", "Используйте ваше MCP-подключение Executor.").short)
+      .toBe("Используйте ваше подключение Executor.");
+  });
+
   it("localizes the owned credential label while preserving its app name", async () => {
     const name = "Private App {{region}}";
     await i18n.changeLanguage("ru");

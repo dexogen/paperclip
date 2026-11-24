@@ -389,7 +389,8 @@
       "all": "Every task in the organization",
       "active": "Open tasks, running or not",
       "backlog": "Not started yet",
-      "done": "Completed and cancelled"
+      "done": "Completed and cancelled",
+      "needsAttention": "Tasks with pending decisions"
     },
     "changeView": "Change view — currently {{view}}",
     "myWork": "My work",
@@ -708,7 +709,8 @@
       "loadGateway": "Your saved gateway connection could not be loaded. Retry to choose a model and connect your agent.",
       "browserLoginUnavailable": "This environment does not support browser sign-in. Choose another sign-in environment or connect with an API key.",
       "storeKeyDetail": "Could not store the API key: {{detail}}",
-      "openCodeUnavailable": "Configured OpenCode model is unavailable: {{model}}"
+      "openCodeUnavailable": "Configured OpenCode model is unavailable: {{model}}",
+      "retryPlatformProbe": "The environment's platform qualification could not be confirmed. Retry the connection probe."
     },
     "progress": {
       "creatingAgent": "Creating your agent…",
@@ -718,7 +720,8 @@
       "waitingCode": "Waiting for code",
       "connectingLabel": "Connecting",
       "creating": "Creating...",
-      "launching": "Launching..."
+      "launching": "Launching...",
+      "waitingAuth": "Waiting for auth…"
     },
     "actions": {
       "retry": "Retry",
@@ -1063,7 +1066,12 @@
       "localAccount": "Connect uses your local {{provider}} account on the machine running Paperclip.",
       "provider": "Sign in to {{provider}}",
       "preparingDots": "Preparing...",
-      "redirectInstructions": "Sign in to <signIn>{{provider}}</signIn> then return here"
+      "redirectInstructions": "Sign in to <signIn>{{provider}}</signIn> then return here",
+      "expiredTitle": "This sign-in expired",
+      "unfinishedTitle": "Sign-in didn’t finish",
+      "retryInstructions": "Retry sign-in to get a fresh code. Your setup is saved.",
+      "retrySignIn": "Retry sign-in",
+      "waitingForAuth": "Waiting for auth…"
     },
     "model": {
       "label": "Model",
@@ -1222,7 +1230,8 @@
         "done": "Done",
         "noMatches": "No matches.",
         "cancel": "Cancel"
-      }
+      },
+      "newConnectionDefault": "New connections default to all agents; you can choose fewer during setup. Reusing an account adds access for this agent."
     },
     "select": {
       "connection": "Connection",
@@ -1525,7 +1534,16 @@
       "markdownTooLarge": "This Markdown file is too large to preview. Use Raw or Download instead.",
       "markdownUnsupported": "This file can't be previewed as Markdown. Use Raw or Download instead.",
       "failed": "Preview failed to load.",
-      "preparing": "Preparing preview…"
+      "preparing": "Preparing preview…",
+      "httpError": "Could not load file ({{status}}).",
+      "emptyResponse": "The file response is empty.",
+      "tooLarge": "This file is too large to preview. Download it instead.",
+      "binary": "This file contains binary data. Download it instead.",
+      "unavailableDownload": "File preview is unavailable. Download the file to view it.",
+      "patchName": "{{title}} patch",
+      "previewPatch": "Preview patch",
+      "loadPatch": "load the patch preview",
+      "loadingPatch": "Loading patch preview…"
     },
     "retry": "Retry",
     "document": {
@@ -1823,7 +1841,9 @@
       "source": "Source: {{source}}",
       "markdownRevision": "Markdown · revision {{revision}}",
       "viewImageName": "View image: {{title}}",
-      "openVideoName": "Open video: {{title}}"
+      "openVideoName": "Open video: {{title}}",
+      "patch": "Patch",
+      "patchRevision": "Patch · revision {{revision}}"
     },
     "workspace": {
       "remoteTitle": "Remote workspace preview not supported",
@@ -2038,6 +2058,16 @@
       "terms": "Read our terms of service",
       "deny": "Don't allow",
       "allow": "Always allow"
+    },
+    "usage": {
+      "loadingLimit": "Loading usage limit",
+      "unavailable": "Compaction is unavailable right now.",
+      "failed": "Could not compact the context",
+      "load": "load the context window",
+      "task_closed": "Available while the task is open.",
+      "no_assignee": "Assign an agent to compact its context.",
+      "unsupported": "This agent's harness can't compact on request.",
+      "agent_busy": "Available when the agent finishes its current run."
     }
   },
   "taskDetailCommon": {
@@ -2552,7 +2582,8 @@
       "attempt_one": "Attempt {{count}}",
       "attempt_other": "Attempt {{count}}",
       "afterAttempt_one": "after attempt {{count}}",
-      "afterAttempt_other": "after attempt {{count}}"
+      "afterAttempt_other": "after attempt {{count}}",
+      "requestManualCheck": "Check now to request a manual check"
     },
     "retry": {
       "pendingSchedule": "Pending schedule",
@@ -3317,7 +3348,8 @@
       "retry": "Retry",
       "retrying": "Retrying…",
       "retryFailed": "Run retry failed",
-      "retryFallback": "Unable to retry run"
+      "retryFallback": "Unable to retry run",
+      "confirmOwnerStop": "Confirm the previous server stopped"
     },
     "join": {
       "agentNamed": "Agent join request: {{name}}",
@@ -4122,7 +4154,8 @@
       "liveLabel": "Tasks waiting on live work",
       "live": "Waiting on live work",
       "stillLive": "Still waiting on live work",
-      "nowRunning": "Now running"
+      "nowRunning": "Now running",
+      "sandboxProvider": "Sandbox provider"
     },
     "resource": {
       "openPreview": "Open preview",
@@ -4196,7 +4229,11 @@
       "stillQueued": "Messages are still queued.",
       "waitingForStop": "Queued messages will be sent when the previous run has stopped.",
       "submitted": "Queued messages submitted. Waiting for the agent.",
-      "sendError": "Couldn’t send. Message is still queued."
+      "sendError": "Couldn’t send. Message is still queued.",
+      "editPending": "Edit before it is sent",
+      "keepQueued": "Keep this message in the queue",
+      "sendIn": "Sending in {{seconds}}s",
+      "autoSteer": "Queued message will be sent into the active turn in a few seconds. Edit or Cancel to keep it."
     },
     "worktree": {
       "new": "New worktree",
@@ -4866,6 +4903,34 @@
       "summaryQuestionsExpired_one": "Question expired",
       "summaryQuestionsExpired_other": "Questions expired",
       "summaryRequestedConfirmation": "Requested confirmation"
+    },
+    "monitor": {
+      "reviewDuringSave": "Review on GitHub while the current run finishes saving its work.",
+      "saveFirst": "The check can start after the current run finishes saving its work.",
+      "waitingForRun": "Monitor waits for current run",
+      "scheduledLocal": "Scheduled for {{time}} (your time)",
+      "scheduled": "Scheduled for {{time}}",
+      "taskBlocked": "This task is blocked. You can ask the agent to check now.",
+      "resumeToCheck": "Resume this task to continue checking.",
+      "workspaceAvailable": "Work starts automatically when the workspace is available.",
+      "prReview": "Pull request review requested",
+      "keepAccountResume": "Tasks with a selected account keep it while waiting. Work resumes when usage permits.",
+      "keepAccount": "Tasks with a selected account keep it while waiting.",
+      "retryDue": "Agent retry due now",
+      "monitorDue": "Waiting on monitor — due now",
+      "due": "Due now",
+      "soon": "Checking momentarily…",
+      "nextTick": "Fires on next tick",
+      "prNextLocal": "Next check {{eta}} · {{absolute}} (your time)",
+      "prNext": "Next check {{eta}} · {{absolute}}",
+      "usageNextLocal": "Usage recheck {{eta}} · {{absolute}} (your time)",
+      "usageNext": "Usage recheck {{eta}} · {{absolute}}",
+      "agentResumes": "Agent resumes {{eta}}",
+      "monitorResumes": "Waiting on monitor — resumes {{eta}}",
+      "resumes": "Resumes {{eta}}",
+      "retryOverdue": "Agent retry {{eta}}",
+      "monitorOverdue": "Waiting on monitor — {{eta}}",
+      "yourTime": "{{absolute}} (your time)"
     }
   },
   "runUi": {
@@ -4934,7 +4999,9 @@
           "available": "The run failed ({{errorCode}}). You can retry this message now.",
           "preserved": "The run failed ({{errorCode}}). Your message is preserved."
         }
-      }
+      },
+      "compactedRange": "{{before}} → {{after}} tokens",
+      "compactedFrom": "from {{before}} tokens"
     },
     "author": {
       "agent": "Agent",
@@ -5654,11 +5721,86 @@
       "taskStatus": "Task status",
       "failed": "Couldn’t finish this attempt. Your message is saved.",
       "retryMinutes": "Trying again in {{count}}m…",
-      "retrySeconds": "Trying again in {{count}}s…"
+      "retrySeconds": "Trying again in {{count}}s…",
+      "budgetAdmission": "Waiting for the budget to allow new work. The task starts automatically when it does.",
+      "dependencyCancelled": "Retry is waiting on a cancelled task this one depends on. Remove or replace that dependency to continue. Your Retry is saved.",
+      "dependencyBlocked": "Retry is waiting on a blocked task this one depends on. Retry or unblock it; this task continues when it is done. Your Retry is saved.",
+      "dependencySaving": "Retry is waiting for a finished task this one depends on to save its files. Your Retry is saved.",
+      "dependencyUnfinished": "Retry is waiting for the tasks this one depends on to finish. Your Retry is saved.",
+      "workspaceRepairRequired": "Retry is waiting for Paperclip to recover the saved files. Your message is saved.",
+      "remoteCleanup": "Retry is waiting for the previous environment to stop. Your message is saved.",
+      "localCleanup": "Retry is waiting for the previous execution to finish cleanup. Your message is saved.",
+      "executionSettling": "Retry is waiting for the previous execution to stop. Your message is saved.",
+      "controllerSettling": "Retry is waiting for the previous execution to finish recovery. Your message is saved.",
+      "processIdentityMissing": "Retry is waiting for Paperclip to verify that the previous execution stopped. Your message is saved.",
+      "executionActive": "Retry is waiting for the current run to finish. Your message is saved.",
+      "decisionPending": "Retry is waiting for a pending approval or question to be resolved. Your message is saved.",
+      "budgetBlocked": "Retry is waiting for the budget to allow new work. Check Costs for unrecorded or unpriced usage.",
+      "finalizingSavedResult": "Paperclip is finishing the saved result before Retry can continue.",
+      "savedWorkRecoveryFailed": "Saving the agent's files failed after automatic retries. Retry to try again; the agent will not repeat its work.",
+      "workspaceOwnerStopRequired": "Retry is waiting until Paperclip confirms that the previous server stopped saving files. The agent's result and your Retry are saved.",
+      "cleanupQuarantined": "Retry cannot continue this attempt. Send a new message after the previous execution has stopped.",
+      "cancelledByOperator": "This attempt was stopped. Send a new message to continue from saved work.",
+      "retryAuthorityDenied": "Retry could not start with the requesting user's access. Press Retry to start it with yours.",
+      "retrySourceChanged": "Retry cannot continue because its saved message changed. Send a new message to continue from saved work.",
+      "executionRecovery": "Retry is waiting for execution checks. Your message is saved.",
+      "checking_previous_run": "Checking that the previous attempt stopped",
+      "saving_previous_files": "Saving files from the previous attempt",
+      "finishing_recovery": "Finishing recovery of saved work",
+      "blocked": "Blocked: open it to Retry",
+      "cancelled": "Cancelled: remove or replace it",
+      "done": "Saving its files"
     },
     "workspaceExport": {
       "restoring": "Restoring saved work…",
-      "assistance": "Workspace recovery needs operator assistance. The agent’s result is saved."
+      "assistance": "Workspace recovery needs operator assistance. The agent’s result is saved.",
+      "inspectionLimit": "Source not inspected: this record exceeds the inspection limit.",
+      "agentResultSafe": "Saved work is not recovered yet. The agent’s result is saved.",
+      "ownerUnknown": "{{resource}} was recorded before Paperclip stored which server held it, so Paperclip can’t verify that the server stopped. It stays reserved until then.",
+      "sourceReason": "Paperclip can’t verify the saved files’ recorded source ({{code}}).",
+      "verifyBeforeApplying": "Paperclip does not apply files it can’t verify.",
+      "sandboxLease": "A sandbox lease from this task’s earlier run",
+      "releaseLease": "Releasing the sandbox lease…",
+      "previousRun": "This task’s earlier run",
+      "recoverRun": "Recovering the run…",
+      "sandboxCleanup": "A sandbox cleanup from this task’s earlier run",
+      "resumeSandboxCleanup": "Resuming the sandbox cleanup…",
+      "sandboxCreation": "A sandbox this task’s earlier run was creating",
+      "reconcileSandbox": "Reconciling the sandbox…",
+      "workspaceChange": "A workspace service change from this task’s earlier run",
+      "releaseWorkspace": "Releasing the workspace…",
+      "workspaceSave": "A workspace save from this task’s earlier run",
+      "releaseSave": "Releasing the workspace save…",
+      "resultHandling": "The result handling of this task’s earlier run",
+      "resumeResult": "Resuming the result handling…",
+      "cleanup": "The cleanup of this task’s earlier run",
+      "resumeCleanup": "Resuming the cleanup…",
+      "resource": "A resource from this task’s earlier run",
+      "releaseResource": "Releasing the resource…",
+      "unverifiedServer": "This run’s previous server was recorded before Paperclip stored which host it ran on, so Paperclip can’t verify that it stopped. The run’s saved state is kept.",
+      "confirmQuestion": "How did you confirm that the previous server stopped?",
+      "containerExample": "For example: the old server container was replaced and is no longer running.",
+      "resumeRun": "Resuming the run…",
+      "stoppedSaving": "The previous server stopped while it was saving this task’s files, and Paperclip can’t verify that it stopped. The agent’s result is saved.",
+      "checkingAccess": "Checking access…",
+      "awaitingStop": "Paperclip is waiting to confirm that the previous server stopped.",
+      "confirmStop": "Confirm the previous server stopped",
+      "confirmCopy": "How did you confirm that the previous server and its file copy stopped?",
+      "processExample": "For example: the old server process exited and was not restarted.",
+      "confirmAndResume": "Confirm and resume",
+      "failedConfirmation": "The confirmation was not accepted. Refresh the task and try again.",
+      "tooManySources": "Paperclip can’t check the saved files’ source here because the run recorded too many sources.",
+      "uncertainSandbox": "Paperclip can’t confirm that this run alone used the sandbox that holds the saved files.",
+      "sourceChanged": "File recovery changed. Inspect its current status before requesting recovery.",
+      "sourceUnverified": "The saved files’ source could not be verified.",
+      "accountChanged": "Your account changed. Refresh before requesting file recovery.",
+      "priorFailed": "The previous failed recovery is not confirmed. Check its status before trying again.",
+      "localSaveFailed": "The recovery request could not be saved in this browser. No request was sent.",
+      "ackFailed": "The recovery acknowledgement could not be confirmed.",
+      "superseded": "This file recovery was replaced. Showing the task’s current recovery.",
+      "unapplied": "File recovery has not finished. The saved files remain protected and are not applied.",
+      "showCurrent": "This file recovery was replaced. Check its status to show the task’s current recovery.",
+      "noRecordedFailure": "No recorded system recovery failure."
     },
     "projectAccess": {
       "label": "Project access",
@@ -6054,7 +6196,11 @@
         "running": "Waiting",
         "completed": "Finished waiting",
         "failed": "Wait failed",
-        "interrupted": "Wait stopped"
+        "interrupted": "Wait stopped",
+        "planned": "Waiting {{duration}}",
+        "elapsed": "Waited {{duration}}",
+        "stoppedAfter": "Stopped waiting after {{duration}}",
+        "remaining": "{{duration}} left"
       },
       "notice": {
         "running": "Provider notice",
@@ -6072,7 +6218,19 @@
       "files_one": "{{count}} file",
       "files_other": "{{count}} files",
       "failedFallback": "{{label}} · failed",
-      "interruptedFallback": "{{label}} · interrupted"
+      "interruptedFallback": "{{label}} · interrupted",
+      "planProposal": {
+        "running": "Writing a plan",
+        "completed": "Proposed a plan",
+        "failed": "Plan proposal failed",
+        "interrupted": "Plan proposal stopped"
+      },
+      "verification": {
+        "running": "Running a check",
+        "passed": "Check passed",
+        "notRun": "Check not run"
+      },
+      "patternOnPage": "“{{pattern}}” in {{page}}"
     },
     "transcript": {
       "executing": "Executing command",
@@ -6239,6 +6397,23 @@
         "delete": "delete",
         "rename": "rename",
         "mode_change": "mode change"
+      },
+      "fileChange": {
+        "create": "new",
+        "delete": "deleted",
+        "rename": "renamed",
+        "mode_change": "mode change"
+      },
+      "verificationReason": {
+        "environment_unavailable": "Environment unavailable",
+        "tool_unavailable": "Tool unavailable",
+        "dependency_missing": "Dependency missing",
+        "permission_denied": "Permission denied",
+        "credential_missing": "Credential missing",
+        "policy_restricted": "Policy restricted",
+        "external_service_unavailable": "External service unavailable",
+        "budget_exhausted": "Budget exhausted",
+        "other": "Other"
       }
     },
     "activityGroup": {
@@ -7636,7 +7811,9 @@
     "unknownProvider": "{{provider}} (unknown provider)",
     "redetectModel": "Re-detect model",
     "process": "Process",
-    "retiredAcpx": "ACPX (retired)"
+    "retiredAcpx": "ACPX (retired)",
+    "runnerLifecycleAutomaticHint": "Automatic keeps Codex and OpenCode warm on this computer for 5 minutes after a run, so a follow-up starts faster, and runs other harnesses turn by turn. Turn by turn suspends after each run. Warm keeps the same provider process available between governed runs.",
+    "automaticLifecycle": "Automatic"
   },
   "agentDetailUi": {
     "nav": {
@@ -7816,7 +7993,9 @@
       "unsaved": "You have unsaved changes.",
       "discard": "Discard",
       "saving": "Saving…",
-      "save": "Save changes"
+      "save": "Save changes",
+      "unsavedAgentChanges": "Unsaved agent changes",
+      "savedChanges": "Saved changes"
     },
     "overview": {
       "liveRun": "Live Run",
@@ -7860,7 +8039,9 @@
       "audit": "Audit",
       "more": "+{{count}} more",
       "moreTasks_one": "+{{count}} more task",
-      "moreTasks_other": "+{{count}} more tasks"
+      "moreTasks_other": "+{{count}} more tasks",
+      "createdByOn": "Created by {{creator}} · {{date}}",
+      "createdOn": "Created {{date}}"
     },
     "common": {
       "loading": "Loading…",
@@ -7946,7 +8127,18 @@
       "copyPreservedNamed": "Copy preserved edits for {{path}}",
       "readOnlyNamed": "Read only: {{path}}. To keep any of these edits in {{entry}}, copy them and edit the current entry explicitly.",
       "download": "Download {{path}}",
-      "placeholder": "# Agent instructions"
+      "placeholder": "# Agent instructions",
+      "rootBadge": "ROOT",
+      "advancedManagement": "Advanced management",
+      "externalDirectory": "Point this agent at a directory on disk. Paperclip checks that the root file exists before it switches over.",
+      "rootFile": "Root file",
+      "newMarkdownName": "New Markdown file name",
+      "markdownNameHint": "Use letters, numbers, hyphens or underscores.",
+      "fileCopied": "File copied",
+      "editContents": "Edit {{file}} contents",
+      "updatedDate": "Last updated {{date}}",
+      "createdDate": "Date created {{date}}",
+      "unknownDate": "Date unavailable"
     },
     "log": {
       "loading": "Loading run logs...",
@@ -8104,7 +8296,8 @@
       "avatar": "{{name}} avatar",
       "changeHelp": "This will make {{name}} your primary agent, do you want to do this?",
       "failed": "Couldn't change your primary agent.",
-      "retry": "Retry"
+      "retry": "Retry",
+      "openHarnessSettings": "Open {{name}} harness settings"
     },
     "resource": {
       "ready": "Ready",
@@ -9221,7 +9414,8 @@
       "behind_one": "This workspace is {{count}} commit behind {{baseRef}}.",
       "behind_other": "This workspace is {{count}} commits behind {{baseRef}}.",
       "aheadBaseRef": "the base ref",
-      "behindBaseRef": "the base ref"
+      "behindBaseRef": "the base ref",
+      "storageUnavailableDetail": "Workspace storage inspection is unavailable; data was retained. {{error}}"
     }
   },
   "environmentsUi": {
@@ -9484,7 +9678,10 @@
       "reassign_one": "Reassign agent to",
       "reassign_other": "Reassign agents to",
       "destroy_one": "Destroy {{count}} sandbox and delete",
-      "destroy_other": "Destroy {{count}} sandboxes and delete"
+      "destroy_other": "Destroy {{count}} sandboxes and delete",
+      "recoveryBlock": "Cannot delete this environment while it keeps a failed run's workspace copy (a stopped sandbox kept for file recovery). Deleting the environment with consent destroys that sandbox and the files only it holds.",
+      "oneRecoveryCopy": "1 of them is a failed run's workspace copy kept for file recovery; destroying it loses the files only it holds.",
+      "recoveryCopies": "{{number}} of them are a failed run's workspace copy kept for file recovery; destroying it loses the files only it holds."
     }
   },
   "dashboardUi": {
@@ -9618,7 +9815,8 @@
       "cloudUnreachable": "Paperclip couldn’t reach Paperclip Cloud. Try again.",
       "expired": "Your authorization expired or was revoked. Reconnect to continue.",
       "lookupFailed": "Paperclip couldn’t check for an existing connection. Try again.",
-      "existingFailed": "Couldn’t use this connection."
+      "existingFailed": "Couldn’t use this connection.",
+      "notConfirmed": "Authorization has not been confirmed yet. Try again."
     },
     "cancel": "Cancel",
     "back": "Back",
@@ -9785,7 +9983,9 @@
       "copilot": "GitHub Copilot personal access token",
       "keyLabel": "Your GitHub key",
       "keyHelp": "Repository contents, issues, pull requests and other granted toolsets; selected repos and installation/PAT permissions apply. Create a key with read and write permissions for these actions; Paperclip cannot increase an existing key’s permissions."
-    }
+    },
+    "includeRequestingAgent": "Include the requesting agent when choosing specific agents.",
+    "includeAgentToContinue": "Include the requesting agent or choose all agents to continue this task."
   },
   "costsUi": {
     "financeLedger": "Finance ledger",
@@ -19655,6 +19855,16 @@
       "rejected": "The Codex backend rejected {{model}} for this ChatGPT account.",
       "retired": "OpenAI retired {{model}} from Codex with ChatGPT sign-in on {{date}}. Choose {{replacement}}, or use an OpenAI API key; API-key sessions are not affected.",
       "solReplacement": "gpt-6.1-sol (gpt-6-luna on Free and Go plans)"
+    },
+    "runtime": {
+      "releaseResource": "Confirm that the previous server stopped to release this resource.",
+      "resumeRun": "Confirm that the previous server stopped to resume this run.",
+      "resumeSave": "Paperclip is still confirming that the previous server stopped. Saving resumes without repeating the agent's work.",
+      "chatOwner": "Only the conversation owner can compact a chat agent's context",
+      "routineOwner": "Only people can change routine responsibility",
+      "managedConnection": "This agent's environment requires a managed AI connection. Choose an AI connection for this agent in Configuration, then retry.",
+      "isolatedHome": "This agent's environment requires a managed AI connection, which a preconfigured Runner home does not use. Switch this agent to an isolated Runner home in Configuration, then retry.",
+      "pluginComputer": "The selected plugin environment could not describe its Runner. Check the environment's computer and plugin status, then retry."
     }
   },
   "documentUi": {
@@ -20484,5 +20694,196 @@
     "ranChecks": "Ran checks",
     "switchedModels": "Switched models",
     "reconnecting": "Reconnecting"
+  },
+  "navigation": {
+    "savePinsFailed": "Couldn’t save pinned items. Allow browser storage and try again."
+  },
+  "experimental": {
+    "classicCombinedDescription": "In the Classic workspace, fold Inbox into Tasks. One Tasks row carries the unread badge, and a Views menu reaches every personal and organization task view.",
+    "classicCombinedFootnote": "Coordinator always includes personal views in Tasks. For Classic, turning this off restores its separate Inbox. No data changes."
+  },
+  "appsUi": {
+    "defaults": {
+      "load": "load AI account defaults",
+      "unavailable": "Default unavailable"
+    }
+  },
+  "githubLinks": {
+    "pullRequest": "GitHub pull request: {{label}}",
+    "issue": "GitHub issue: {{label}}",
+    "repository": "GitHub repository: {{repo}}"
+  },
+  "agentImport": {
+    "runnerUnavailable": "Paperclip Runner is unavailable here. Choose another harness."
+  },
+  "agentEdition": {
+    "chatWith": "Chat with {{name}}",
+    "chatWithAgent": "Chat with this agent",
+    "unreadFrom_one": "{{count}} unread message from {{name}}",
+    "unreadFrom_other": "{{count}} unread messages from {{name}}",
+    "unpinChat": "Unpin {{name}}",
+    "pinChat": "Pin {{name}}",
+    "chatContacts": "Chat contacts",
+    "searchChats": "Search chats",
+    "createAgent": "Create a new agent",
+    "classicWorkspace": "Classic workspace",
+    "classicWorkspaceDescription": "Use the previous workspace instead of the standard Coordinator workspace. This changes your interface across companies on this instance.",
+    "classicWorkspaceHelp": "Off by default. Turn it off to return to Coordinator. Your work and your teammates’ settings stay the same.",
+    "enableClassic": "Enable classic workspace",
+    "compacting": "Compacting…",
+    "compactNow": "Compact now",
+    "compactingHelp": "The agent is summarizing its conversation. This usually takes under a minute.",
+    "compactHelp": "Summarizes the conversation so far so the agent has room to keep working.",
+    "window": "Context window",
+    "windowFull": "Close to full. The agent will compact its context soon.",
+    "input": "Input",
+    "output": "Output",
+    "reasoning": "Reasoning",
+    "lastRequest": "Last request",
+    "compactions": "Compactions",
+    "tokensUsed": "{{used}} of {{total}} tokens",
+    "updated": "updated {{time}}",
+    "compactThreshold": "Compacts automatically near {{total}}.",
+    "cached": "{{input}} · {{cached}} cached",
+    "requestTokens": "{{input}} in · {{output}} out",
+    "windowUsage": "Context window: {{percent}}% of {{total}} tokens used",
+    "ofWindow": "of {{total}}",
+    "pinned": "Pinned",
+    "openOriginal": "Open original",
+    "openOriginalFile": "Open original {{filename}}",
+    "linkTitle": "{{description}}\n{{url}}",
+    "pullRequestPrefix": "GitHub pull request: ",
+    "issuePrefix": "GitHub issue: ",
+    "githubPrefix": "GitHub: ",
+    "waitingCode": "Waiting for code…",
+    "defaultAccountNote": "This will be your default {{provider}} account.",
+    "chooseSubscription": "Choose a subscription account in Connections, then retry setup.",
+    "chooseApi": "Choose a connected API account before continuing.",
+    "replaceApi": "Choose a connected API account or Enter a new API key to replace this agent’s connected account.",
+    "unpin": "Unpin {{name}}",
+    "reorder": "Reorder pinned {{name}}",
+    "dragReorder": "Drag to reorder {{name}}",
+    "stalledDependencies_one": "A dependency needs the board",
+    "stalledDependencies_other": "{{count}} dependencies need the board",
+    "childTask": "Child",
+    "blockingTask": "Blocker",
+    "reload": "Reload",
+    "loadStateError": "Could not load this task's state: {{error}}",
+    "retryTask": "Retry {{identifier}}",
+    "retryUnnamedTask": "Retry task",
+    "copyFailed": "Couldn’t copy",
+    "copyAuditHash": "Copy audit hash",
+    "auditHashHelp": "Copy the hash that identifies these exact arguments",
+    "auditHash": "Audit hash",
+    "providerDefault": "Default for {{provider}}",
+    "setProviderDefault": "Set as default for {{provider}}",
+    "yourProviderDefault": "Your {{provider}} default",
+    "ownDefault": "Your default for {{provider}}",
+    "reconnectDefault": "Reconnect this account before making it your default.",
+    "defaultError": "Couldn’t change your {{provider}} default.",
+    "accountChanged": "Your account changed. Refresh your connections.",
+    "unavailableDefault": "This account is unavailable as your default. Refresh or reconnect it, then try again.",
+    "defaultSet": "{{account}} is now your {{provider}} default",
+    "defaultUpdated": "Your {{provider}} default was updated",
+    "defaultChangeFailed": "Couldn’t change your {{provider}} default",
+    "lastDefault": "The latest saved selection is shown in Connectors.",
+    "justNow": "Just now",
+    "unnamedProject": "Unnamed project",
+    "receipt": {
+      "answeredInTask": "Answered in task",
+      "recorded": "Decision recorded",
+      "reviewRecorded": "Review recorded"
+    },
+    "inputOnTask": "{{agent}} needs your input on {{task}}.",
+    "inputOnThisTask": "{{agent}} needs your input on this task.",
+    "rosterChanged": "The selected agents changed. Refresh the roster and select them again."
+  },
+  "routineResponsibilityPicker": {
+    "none": "No responsible user",
+    "unavailable": "Unavailable user",
+    "findPerson": "Find a person…",
+    "findResponsible": "Find a responsible user",
+    "noPeople": "No people found.",
+    "current": "Current responsible user",
+    "explanation": "Automatic tasks use this person. Manual runs use the person who starts them.",
+    "conflict": "This routine changed. Reload before changing responsibility.",
+    "change": "change responsibility",
+    "changeLabel": "Change responsible user: {{label}}"
+  },
+  "appCatalog": {
+    "providerHosted": "Connect {{name}}'s provider-hosted MCP server.",
+    "1password": "Read and manage items and secrets in the vaults you authorize.",
+    "anthropic": "Use Anthropic APIs with a restricted key.",
+    "api-key-generic": "Connect an API using a key from your provider.",
+    "arcade": "Use the tools exposed by your Arcade MCP connection.",
+    "bedrock": "Use Claude through Amazon Bedrock with a Bedrock API key and AWS region.",
+    "braintrust": "Explore AI traces, manage evaluation datasets and scorers, and run Braintrust evaluations.",
+    "browser-use-cloud": "Delegate browser tasks and watch them live in Paperclip.",
+    "calendly": "Review Calendly event types and availability, and use supported scheduling actions.",
+    "chat-completions-api": "Connect any compatible harness to a Chat Completions-compatible provider or gateway.",
+    "clickup": "Search ClickUp workspaces and manage tasks, docs, and conversations through the official MCP server.",
+    "cognee": "Build and recall shared graph memory from documents and conversations.",
+    "composio": "Discover and use connected apps through Composio Connect.",
+    "context7": "Search public library documentation and retrieve current code examples.",
+    "daytona": "Manage Daytona sandboxes, files, commands, Git, snapshots, volumes, and account resources.",
+    "discord": "Let people start and continue Paperclip work with an agent from Discord.",
+    "ditto": "Search and reuse approved product copy, follow your style guide, and edit and translate text.",
+    "enterpret": "Ask questions about your customer feedback and pull verbatim quotes with citations.",
+    "exa": "Search the public web and read source pages with Exa.",
+    "executor": "Use the tools exposed by your Executor MCP connection.",
+    "firecrawl": "Search, scrape, and parse public web pages with Firecrawl.",
+    "fireflies": "Search meeting transcripts, read summaries and action items, and connect meeting-ready routines.",
+    "gauge": "Track how AI answers mention your brand, research keywords and traffic, and run content workflows.",
+    "github": "Connect GitHub repository access or authenticate GitHub Copilot agents.",
+    "gmail": "Search and read Gmail messages and create drafts without enabling mail sending.",
+    "google": "Connect Google Antigravity accounts or Gemini API keys for your agents.",
+    "google-calendar": "Read calendars and manage Google Calendar events.",
+    "google-chat": "Search and read Google Chat conversations and send messages.",
+    "google-docs": "Read and update Google Docs documents.",
+    "google-drive": "Search, read, create, and copy files in Google Drive.",
+    "google-people": "Search contacts and directory profiles with the Google People API.",
+    "google-sheets": "Read and update Google Sheets spreadsheets.",
+    "google-slides": "Read and update Google Slides presentations.",
+    "google-workspace": "Connect Gmail, Drive, Docs, Sheets, Slides, and Calendar with one Google account.",
+    "google-workspace-search": "Search Gmail, Drive, Calendar, and Chat through one read-only Google Workspace search tool.",
+    "gsc-wizard": "Read Google Search Console, Bing Webmaster, and analytics data for connected properties.",
+    "honcho": "Remember conversations and retrieve context about peers.",
+    "imessage-photon": "Message a Paperclip agent from Apple Messages using Photon Cloud. Pro supports DMs; dedicated lines also support groups.",
+    "klaviyo": "Review Klaviyo campaign performance and prepare campaign changes for review.",
+    "linear": "Create, update, and read Linear issues.",
+    "local": "Use a local model server in the agent’s execution environment.",
+    "mem0": "Remember preferences, conversations, events, and agent state.",
+    "messages-api": "Connect any compatible harness to an Anthropic Messages-compatible provider or gateway.",
+    "microsoft-teams": "Let people start and continue Paperclip work with an agent from Microsoft Teams.",
+    "monday": "Read and manage boards and work items in monday.com.",
+    "neon": "Manage Postgres projects and branches, run SQL, and inspect schemas in Neon.",
+    "notion": "Read and update pages in your Notion workspace.",
+    "oauth-generic": "Connect a provider using your own OAuth client.",
+    "openai": "Connect OpenAI accounts for your agents.",
+    "openrouter": "Connect OpenRouter accounts for your agents.",
+    "paperclip-notebook": "Publish, find, and share reports, files, and interactive pages with your Paperclip Cloud account.",
+    "parallel-search": "Search the public web and extract source pages with Parallel.",
+    "posthog": "Analyze product usage, errors, feature flags, and experiments with PostHog's hosted MCP server.",
+    "railway": "Inspect services and logs, deploy applications, and run commands in your Railway containers.",
+    "responses-api": "Connect any compatible harness to an OpenAI Responses-compatible provider or gateway, including Emissary.",
+    "sentry": "Investigate errors, releases, and production issues.",
+    "shopify": "Search a store's products and policies, and manage shopping carts.",
+    "slack": "Give agents Slack tools or let people start and continue Paperclip work from Slack.",
+    "speko": "Talk with a Paperclip agent through an experimental hosted voice connection.",
+    "supabase": "Create Supabase projects, deploy Edge Functions, manage databases, and configure application authentication and APIs.",
+    "superagent": "Review security findings, start red-team reports, and score content and packages before agents trust them.",
+    "supermemory": "Search and save shared memories, documents, and profiles.",
+    "tavily": "Search the public web and extract page content with Tavily’s hosted MCP server.",
+    "telegram": "Let people start and continue Paperclip work with an agent from Telegram.",
+    "telem": "Search the web and read pages across many search providers with one API key.",
+    "unikraft": "Manage Unikraft Cloud instances, services, volumes, images, certificates, autoscaling, and sandbox commands and files.",
+    "vercel": "Deploy websites and configure projects, environment variables, and domains in your Vercel team.",
+    "windsor-ai": "Query connected marketing, analytics, CRM, and warehouse data through Windsor.ai.",
+    "xai": "Connect Grok accounts for your agents.",
+    "zapier": "Reach thousands of apps through your Zapier account.",
+    "zep": "Retrieve temporal graph memory and authorized business context.",
+    "vercelOidcRequired": "Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.",
+    "vercelDisabled": "Vercel Connect setup is disabled on this Paperclip instance.",
+    "routingDisabled": "Ask your instance operator to enable AI connection routing."
   }
 }

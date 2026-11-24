@@ -1,21 +1,49 @@
 import { and, asc, desc, eq, ilike, inArray, isNotNull, notInArray, or, sql, type SQL } from "drizzle-orm";
 import { agents, companies, decisions, decisionTargetIssues, issues, issueThreadInteractions, projects, type Db } from "@paperclipai/db";
-import type { DecisionHistoryItem, DecisionHistoryPage, DecisionHistoryQuery } from "@paperclipai/shared";
+import type { DecisionHistoryItem, DecisionHistoryLabelMessage, DecisionHistoryPage, DecisionHistoryQuery } from "@paperclipai/shared";
 import { issueReadSqlCondition, type AuthorizationActor } from "./authorization.js";
 import { badRequest } from "../errors.js";
 
 type HistoryOptions = DecisionHistoryQuery & { actor: AuthorizationActor; userId: string; issueIds?: string[] };
 type Cursor = { at: string; id: string; sort: "newest" | "oldest" };
 
-export function itemVerdictsHistoryLabel(result: unknown): string | null {
+function systemLabel(label: string, code: Exclude<DecisionHistoryLabelMessage["code"], "itemVerdicts">) {
+  return { label, display: { label: { code } } };
+}
+
+const recorded = systemLabel("Decision recorded", "recorded");
+const decisionLabels = new Map([
+  ["expired", systemLabel("Expired", "expired")],
+  ["cancelled", systemLabel("Cancelled", "cancelled")],
+]);
+const superseded = systemLabel("Superseded", "superseded");
+const interactionLabels = new Map([
+  ...decisionLabels,
+  ["accepted", systemLabel("Approved", "approved")],
+  ["rejected", systemLabel("Changes requested", "changesRequested")],
+  ["answered", systemLabel("Answers recorded", "answersRecorded")],
+  ["failed", systemLabel("Failed", "failed")],
+  ["stale_target", superseded],
+  ["superseded_by_newer_request", superseded],
+  ["superseded_by_comment", systemLabel("Answered in task", "answeredInTask")],
+]);
+
+function itemVerdictsPresentation(result: unknown): Pick<DecisionHistoryItem, "label" | "display"> | null {
   if (!result || typeof result !== "object" || !("outcome" in result) || result.outcome !== "resolved"
     || !("items" in result) || !Array.isArray(result.items)) return null;
   const counts = { approve: 0, reject: 0, defer: 0 };
   for (const item of result.items) {
     if (item?.verdict === "approve" || item?.verdict === "reject" || item?.verdict === "defer") counts[item.verdict as keyof typeof counts]++;
   }
-  return [counts.approve ? `${counts.approve} approved` : null, counts.reject ? `${counts.reject} rejected` : null,
-    counts.defer ? `${counts.defer} deferred` : null].filter(Boolean).join(" · ") || "Review recorded";
+  const label = [counts.approve ? `${counts.approve} approved` : null, counts.reject ? `${counts.reject} rejected` : null,
+    counts.defer ? `${counts.defer} deferred` : null].filter(Boolean).join(" · ");
+  return label
+    ? { label, display: { label: { code: "itemVerdicts", args: counts } } }
+    : systemLabel("Review recorded", "reviewRecorded");
+}
+
+export function itemVerdictsHistoryLabel(result: unknown): string | null {
+  return itemVerdictsPresentation(result)?.label ?? null;
 }
 
 export function decodeDecisionHistoryCursor(value: string | undefined, sort: Cursor["sort"]): Cursor | null {
@@ -132,17 +160,21 @@ export function decisionHistoryService(db: Db) {
     const interactionItems: DecisionHistoryItem[] = interactionRows.map(({ kind, payload, result, ...row }) => {
       const target = decisionHistoryTarget(payload);
       const resultOutcome = result && "outcome" in result ? String(result.outcome) : row.outcome;
-      const labels: Record<string, string> = { accepted: "Approved", rejected: "Changes requested", answered: "Answers recorded", cancelled: "Cancelled", expired: "Expired", failed: "Failed", stale_target: "Superseded", superseded_by_newer_request: "Superseded", superseded_by_comment: "Answered in task" };
+      const presentation = (kind === "request_item_verdicts" ? itemVerdictsPresentation(result) : null)
+        ?? interactionLabels.get(resultOutcome) ?? interactionLabels.get(row.outcome) ?? recorded;
       return { ...row, title: row.title ?? row.issueTitle, resolvedAt: new Date(row.resolvedAt!).toISOString(),
-        id: `issue_thread_interaction:${row.sourceId}`, sourceKind: "issue_thread_interaction", label: (kind === "request_item_verdicts" ? itemVerdictsHistoryLabel(result) : null) ?? labels[resultOutcome] ?? labels[row.outcome] ?? "Decision recorded", target,
+        id: `issue_thread_interaction:${row.sourceId}`, sourceKind: "issue_thread_interaction", ...presentation, target,
         href: decisionHistoryHref(company.prefix, row.issueIdentifier ?? row.issueId, "issue_thread_interaction", row.sourceId, target) };
     });
-    const decisionItems: DecisionHistoryItem[] = decisionRows.map(({ chosenOptionId, options: choices, ...row }) => ({
-      ...row, id: `decision:${row.sourceId}`, sourceKind: "decision", resolvedByAgentId: null,
-      resolvedAt: new Date(row.resolvedAt).toISOString(), target: null,
-      label: choices.find((choice) => choice.id === chosenOptionId)?.label ?? (row.outcome === "expired" ? "Expired" : row.outcome === "cancelled" ? "Cancelled" : "Decision recorded"),
-      href: decisionHistoryHref(company.prefix, row.issueIdentifier ?? row.issueId, "decision", row.sourceId, null),
-    }));
+    const decisionItems: DecisionHistoryItem[] = decisionRows.map(({ chosenOptionId, options: choices, ...row }) => {
+      const label = choices.find((choice) => choice.id === chosenOptionId)?.label;
+      const presentation = label != null ? { label } : decisionLabels.get(row.outcome) ?? recorded;
+      return {
+        ...row, id: `decision:${row.sourceId}`, sourceKind: "decision", resolvedByAgentId: null,
+        resolvedAt: new Date(row.resolvedAt).toISOString(), target: null, ...presentation,
+        href: decisionHistoryHref(company.prefix, row.issueIdentifier ?? row.issueId, "decision", row.sourceId, null),
+      };
+    });
     return pageDecisionHistory([...interactionItems, ...decisionItems], limit, sort);
   } };
 }

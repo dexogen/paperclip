@@ -421,28 +421,40 @@ export function OnboardingCardField({
 export function ProviderSubscriptionCard({
   providerName,
   authorizationUrl,
+  onOpenAuthorization,
   mode,
   loading,
+  failure,
+  onRetry,
   children,
 }: {
   providerName: string;
   authorizationUrl?: string;
+  onOpenAuthorization?: () => void;
+  failure?: "expired" | "failed";
+  onRetry?: () => void;
   mode: "submitted_code" | "displayed_code" | "browser_redirect";
   loading?: boolean;
   children: ReactNode;
 }) {
-  useTranslation();
+  const { t } = useTranslation();
   return (
     <OnboardingLoginCard
       loading={loading}
-      instruction={
+      instruction={failure ? (failure === "expired" ? t("providerSetup.login.expiredTitle") : t("providerSetup.login.unfinishedTitle")) : (
         <Trans
           i18nKey={mode === "browser_redirect" ? "providerSetup.login.redirectInstructions" : mode === "submitted_code" ? "providerSetup.login.submitInstructions" : "providerSetup.login.displayInstructions"}
           values={{ provider: providerName }}
-          components={{ signIn: <a href={authorizationUrl} target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-foreground" /> }}
+          components={{ signIn: <a href={authorizationUrl} onClick={event => { if (onOpenAuthorization) { event.preventDefault(); onOpenAuthorization(); } }} target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-foreground" /> }}
         />
-      }
+      )}
     >
+      {failure && (
+        <div className="flex flex-col items-start gap-3 px-2">
+          <p role="alert" className="text-sm text-muted-foreground">{t("providerSetup.login.retryInstructions")}</p>
+          {onRetry && <Button type="button" variant="outline" onClick={onRetry}>{t("providerSetup.login.retrySignIn")}</Button>}
+        </div>
+      )}
       {children}
     </OnboardingLoginCard>
   );

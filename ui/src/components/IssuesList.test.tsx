@@ -1849,6 +1849,8 @@ describe("IssuesList", () => {
 
   it.each([true, false])("retains loaded context while revealing a large automated tree (streamlined=%s)", async (streamlined) => {
     mockInstanceSettingsApi.getExperimental.mockResolvedValue({ enableStreamlinedUi: streamlined });
+    // Use the ID-only layout so this pagination test only mounts the fields it reads.
+    localStorage.setItem("paperclip:test-tree:company-1:issue-columns", JSON.stringify(["id"]));
     const parent = createIssue({ id: "human-root", createdByUserId: "person", originKind: "manual" });
     const children = Array.from({ length: 250 }, (_, index) => createIssue({
       id: `automated-child-${index}`, title: `Automated child ${index}`,
@@ -1870,7 +1872,7 @@ describe("IssuesList", () => {
         enableAgentCreatedVisibilityFilter onUpdateIssue={() => undefined} />,
       container,
     );
-    await waitForAssertion(() => expect(container.querySelectorAll("[data-testid='issue-row']")).toHaveLength(100));
+    await waitForAssertion(() => expect(container.querySelectorAll("[data-testid='issue-row']").length).toBe(100));
     holdNextRead = true;
     act(() => {
       setDocumentScrollMetrics({ innerHeight: 600, scrollY: 1500, scrollHeight: 2000 });
@@ -1883,7 +1885,7 @@ describe("IssuesList", () => {
     });
     await act(async () => releaseRead!());
     await waitForAssertion(() => {
-      expect(container.querySelectorAll("[data-testid='issue-row']")).toHaveLength(251);
+      expect(container.querySelectorAll("[data-testid='issue-row']").length).toBe(251);
       expect(container.textContent).toContain("Automated child 249");
     }, 60);
     act(() => root.unmount());

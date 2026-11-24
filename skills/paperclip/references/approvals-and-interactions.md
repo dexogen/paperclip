@@ -33,7 +33,7 @@ Five issue-thread interaction kinds are supported. Pick the smallest kind that f
 | `request_checkbox_confirmation` | A responder selects any subset of a known list (up to 200 options) and then confirms or rejects. | Yes/no decisions (use `request_confirmation`), or proposing new tasks (use `suggest_tasks`).        |
 | `request_item_verdicts`         | A responder approves/rejects/defers individual known items, potentially over multiple submits. | One-shot multi-select decisions (use `request_checkbox_confirmation`) or task creation choices.    |
 | `ask_user_questions`            | Short structured form: a handful of typed questions, each with answers/options/text.         | Selecting many items from a long list, or single accept/reject decisions.                          |
-| `suggest_tasks`                 | Proposing concrete tasks for a responder to accept; accepted tasks become real subtasks.     | Confirming a plan or an arbitrary selection. Tasks are the unit; not arbitrary ids.                |
+| `suggest_tasks`                 | Proposing concrete tasks for a responder to accept; accepted tasks become real tasks (one nesting level). | Confirming a plan or an arbitrary selection. Tasks are the unit; not arbitrary ids.                |
 | `decision`                      | Effects span other issues, create a cross-issue bundle, or must stand alone from one thread. | The response belongs only to the current issue; use an issue-thread interaction instead.           |
 
 Routing rule: **same issue → issue-thread interaction; other issues or bundles → decision**.

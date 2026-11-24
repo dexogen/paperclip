@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react
 import type { Agent, Environment, EnvironmentCapabilities } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ToastProvider } from "../context/ToastContext";
 import type { BuiltInAgentState } from "../api/builtInAgents";
 import { Agents, filterAgents, filterOrgTree } from "./Agents";
@@ -323,9 +324,9 @@ describe("agent search", () => {
 function renderAgentsView(root: ReturnType<typeof createRoot> | null, queryClient: QueryClient) {
   root!.render(
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>
+      <TooltipProvider><ToastProvider>
         <Agents />
-      </ToastProvider>
+      </ToastProvider></TooltipProvider>
     </QueryClientProvider>,
   );
 }
@@ -403,7 +404,7 @@ describe("Agents", () => {
       makeAgent({ id: "beta", name: "Beta", role: "designer" }),
     ]);
     root = createRoot(container);
-    await act(async () => root!.render(<QueryClientProvider client={queryClient}><ToastProvider><Agents /></ToastProvider></QueryClientProvider>));
+    await act(async () => root!.render(<QueryClientProvider client={queryClient}><TooltipProvider><ToastProvider><Agents /></ToastProvider></TooltipProvider></QueryClientProvider>));
     await flushReact();
     await flushReact();
     const input = container.querySelector<HTMLInputElement>('input[aria-label="Search agents"]')!;
@@ -421,7 +422,7 @@ describe("Agents", () => {
   it.each([
     ["streamlined", Agents],
     ["production", ProductionAgents],
-  ] as const)("omits the action bar from %s agent list rows", async (_mode, AgentList) => {
+  ] as const)("omits the action bar from %s agent list rows", async (mode, AgentList) => {
     mockAgentsApi.list.mockResolvedValue([
       makeAgent({ name: "Alpha", status: "active" }),
       makeAgent({ id: "agent-paused", name: "Paused agent", status: "paused" }),
@@ -430,9 +431,9 @@ describe("Agents", () => {
     await act(async () => {
       root!.render(
         <QueryClientProvider client={queryClient}>
-          <ToastProvider>
+          <TooltipProvider><ToastProvider>
             <AgentList />
-          </ToastProvider>
+          </ToastProvider></TooltipProvider>
         </QueryClientProvider>,
       );
     });
@@ -846,7 +847,7 @@ describe("Agents", () => {
 
     root = createRoot(container);
     await act(async () => {
-      root!.render(<QueryClientProvider client={queryClient}><ToastProvider><AgentList /></ToastProvider></QueryClientProvider>);
+      root!.render(<QueryClientProvider client={queryClient}><TooltipProvider><ToastProvider><AgentList /></ToastProvider></TooltipProvider></QueryClientProvider>);
     });
     await flushReact();
     await flushReact();
@@ -909,7 +910,7 @@ describe("Agents", () => {
   it.each([
     ["streamlined", Agents],
     ["production", ProductionAgents],
-  ] as const)("preserves bulk selection, hidden agents and order across locales in the %s roster", async (_mode, AgentList) => {
+  ] as const)("preserves bulk selection, hidden agents and order across locales in the %s roster", async (mode, AgentList) => {
     const roster = Array.from({ length: 21 }, (_, index) => makeAgent({
       id: `agent-${index}`, name: index === 0 ? "Alpha <strong>&" : `Agent ${String(index).padStart(2, "0")}`,
       adapterType: index < 2 ? "claude_local" : "codex_local", adapterConfig: { model: "Harness default" },
@@ -930,7 +931,11 @@ describe("Agents", () => {
     const initialCalls = [mockAgentsApi.list.mock.calls.length, vi.mocked(aiConnectionsApi.list).mock.calls.length];
     let selected = 0;
     for (const [count, russian] of [[1, "Выбран 1 агент"], [2, "Выбрано 2 агента"], [5, "Выбрано 5 агентов"], [21, "Выбран 21 агент"]] as const) {
-      for (; selected < count; selected++) await reactAct(async () => { boxes[selected].click(); });
+      if (count === boxes.length) {
+        await reactAct(async () => { container.querySelector<HTMLButtonElement>('thead [role="checkbox"]')!.click(); });
+      } else {
+        for (; selected < count; selected++) await reactAct(async () => { boxes[selected].click(); });
+      }
       expect(document.querySelector('[aria-label="Bulk actions"]')?.textContent).toContain(`${count} selected`);
       await reactAct(async () => { await i18n.changeLanguage("ru"); });
       expect(document.querySelector('[aria-label="Массовые действия"]')?.textContent).toContain(russian);
@@ -963,20 +968,20 @@ describe("Agents", () => {
     expect(filterButtons.map(button => button.textContent)).toEqual(filterLabels);
     expect([mockAgentsApi.list.mock.calls.length, vi.mocked(aiConnectionsApi.list).mock.calls.length]).toEqual(initialCalls);
     expect(mockRouterState.navigate).not.toHaveBeenCalled();
-    expect(Array.from(container.querySelectorAll("th")).map(cell => cell.textContent)).toEqual(["", "Agent", "Status", "Harness", "Connection", "Default model"]);
-  });
+    expect(Array.from(container.querySelectorAll("th")).map(cell => cell.textContent)).toEqual(["", "Agent", ...(mode === "streamlined" ? ["Chat"] : []), "Status", "Harness", "Connection", "Default model"]);
+  }, 15_000);
 
   it.each([
     ["streamlined", Agents],
     ["production", ProductionAgents],
-  ] as const)("omits star and leave/join actions from %s agent index list and org views", async (_mode, AgentList) => {
+  ] as const)("omits star and leave/join actions from %s agent index list and org views", async (mode, AgentList) => {
     root = createRoot(container);
     await act(async () => {
       root!.render(
         <QueryClientProvider client={queryClient}>
-          <ToastProvider>
+          <TooltipProvider><ToastProvider>
             <AgentList />
-          </ToastProvider>
+          </ToastProvider></TooltipProvider>
         </QueryClientProvider>,
       );
     });
@@ -1034,7 +1039,7 @@ describe("Agents", () => {
 
     root = createRoot(container);
     await act(async () => {
-      root!.render(<QueryClientProvider client={queryClient}><ToastProvider><AgentList /></ToastProvider></QueryClientProvider>);
+      root!.render(<QueryClientProvider client={queryClient}><TooltipProvider><ToastProvider><AgentList /></ToastProvider></TooltipProvider></QueryClientProvider>);
     });
     await flushReact();
     await flushReact();
@@ -1069,14 +1074,14 @@ describe("Agents", () => {
     it.each([
       ["streamlined", Agents],
       ["production", ProductionAgents],
-    ] as const)("%s: keeps a loaded list on screen when a refetch fails transiently", async (_mode, AgentList) => {
+    ] as const)("%s: keeps a loaded list on screen when a refetch fails transiently", async (mode, AgentList) => {
       root = createRoot(container);
       await act(async () => {
         root!.render(
           <QueryClientProvider client={queryClient}>
-            <ToastProvider>
+            <TooltipProvider><ToastProvider>
               <AgentList />
-            </ToastProvider>
+            </ToastProvider></TooltipProvider>
           </QueryClientProvider>,
         );
       });
@@ -1101,16 +1106,16 @@ describe("Agents", () => {
     it.each([
       ["streamlined", Agents],
       ["production", ProductionAgents],
-    ] as const)("%s: shows readable copy with Retry on a real failure before the first load", async (_mode, AgentList) => {
+    ] as const)("%s: shows readable copy with Retry on a real failure before the first load", async (mode, AgentList) => {
       mockAgentsApi.list.mockReset();
       mockAgentsApi.list.mockRejectedValue(new ApiError("boom_stack_trace", 500, { error: "boom_stack_trace" }));
       root = createRoot(container);
       await act(async () => {
         root!.render(
           <QueryClientProvider client={queryClient}>
-            <ToastProvider>
+            <TooltipProvider><ToastProvider>
               <AgentList />
-            </ToastProvider>
+            </ToastProvider></TooltipProvider>
           </QueryClientProvider>,
         );
       });
@@ -1127,7 +1132,7 @@ describe("Agents", () => {
     it.each([
       ["streamlined", Agents],
       ["production", ProductionAgents],
-    ] as const)("%s: shows the skeleton, not an empty roster, when the first load is paused on an outage", async (_mode, AgentList) => {
+    ] as const)("%s: shows the skeleton, not an empty roster, when the first load is paused on an outage", async (mode, AgentList) => {
       // Paused queries report isLoading=false, so gating on it alone would
       // render the empty roster during an outage; the view state must win.
       mockAgentsApi.list.mockReset();
@@ -1138,9 +1143,9 @@ describe("Agents", () => {
         await act(async () => {
           root!.render(
             <QueryClientProvider client={queryClient}>
-              <ToastProvider>
+              <TooltipProvider><ToastProvider>
                 <AgentList />
-              </ToastProvider>
+              </ToastProvider></TooltipProvider>
             </QueryClientProvider>,
           );
         });

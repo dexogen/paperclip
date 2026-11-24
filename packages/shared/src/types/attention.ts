@@ -406,6 +406,11 @@ export interface AttentionTaskIndex extends AttentionSummary {
   taskIds: string[];
 }
 /** Read-only projection of canonical task decisions; never a second write store. */
+export type DecisionHistoryLabelMessage =
+  | AttentionNoArgsMessage<"approved" | "changesRequested" | "answersRecorded" | "cancelled" | "expired"
+      | "failed" | "superseded" | "answeredInTask" | "recorded" | "reviewRecorded">
+  | { code: "itemVerdicts"; args: { approve: number; reject: number; defer: number } };
+
 export interface DecisionHistoryItem {
   id: string;
   sourceKind: "issue_thread_interaction" | "decision";
@@ -420,6 +425,8 @@ export interface DecisionHistoryItem {
   title: string;
   outcome: string;
   label: string;
+  /** Provided for system-generated labels only. A selected option keeps its author's text. */
+  display?: { label: DecisionHistoryLabelMessage };
   resolvedAt: string;
   resolvedByUserId: string | null;
   resolvedByAgentId: string | null;

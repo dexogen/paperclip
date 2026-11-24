@@ -11,6 +11,14 @@ const suspended = "The Paperclip GitHub installation is suspended. Unsuspend it 
 const descriptor = { source: "paperclip-github", version: 1, code: "installation_suspended" };
 
 describe("owned server diagnostics", () => {
+  it("localizes the Runner connection check and preserves other diagnostics", () => {
+    const message = en("ownedDiagnostic.runtime.isolatedHome");
+    const check = { code: "ai_connection_required", level: "error" as const, message };
+    expect(formatCodexProbeField(check, "message", ru)).toBe(ru("ownedDiagnostic.runtime.isolatedHome"));
+    expect(formatCodexProbeField({ ...check, code: "unknown" }, "message", ru)).toBe(message);
+    expect(formatCodexProbeField({ ...check, message: "Provider diagnostic" }, "message", ru)).toBe("Provider diagnostic");
+  });
+
   it("translates retained API failures using the current locale without rewriting their source", () => {
     const error = new ApiError(suspended, 422, { details: { displayMessage: descriptor } });
     expect(formatOwnedApiError(error, en)).toBe(suspended);

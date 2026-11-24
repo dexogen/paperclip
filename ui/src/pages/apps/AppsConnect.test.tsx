@@ -17,7 +17,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 vi.mock("@/api/companies-query", () => ({ useAccountIdentity: () => ({ userId: "board-user", settled: true, failed: false }), resolveAccountUserId: async () => "board-user" }));
 
 const intentSetupMock = vi.hoisted(() => vi.fn());
-vi.mock("@/api/connection-intents", () => ({ connectionIntentsApi: { setupOptions: intentSetupMock } }));
+const intentPhaseMock = vi.hoisted(() => vi.fn().mockResolvedValue({}));
+vi.mock("@/api/connection-intents", () => ({ connectionIntentsApi: { setupOptions: intentSetupMock, setPhase: intentPhaseMock } }));
 
 const listGalleryMock = vi.hoisted(() => vi.fn());
 const experimentalMock = vi.hoisted(() => vi.fn());
@@ -591,6 +592,10 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
     await act(async () => setInputValue(container.querySelector<HTMLInputElement>('input[type="password"]')!, "https://provider.example/mcp"));
     await act(async () => buttonByText(connectLabel)!.click());
     await vi.waitFor(() => expect(startOAuthMock).toHaveBeenCalledWith(connection.id, { asCurrentUser: true, interactionId: "intent-inline" }));
+    expect(intentPhaseMock).toHaveBeenCalledWith("intent-inline", "authorizing", {
+      connectionId: connection.id, access: { agentIds: ["agent-1"] },
+    });
+    expect(intentPhaseMock.mock.invocationCallOrder[0]).toBeLessThan(startOAuthMock.mock.invocationCallOrder[0]);
     expect(popup.location.assign).toHaveBeenCalled();
     expect(popup.opener).toBe(window);
     popup.closed = true;
@@ -690,11 +695,23 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
 
   it("inline aggregator saves and resumes a draft without storing credentials in browser storage", async () => {
     const onCancel = vi.fn();
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const intentKey = ["connection-intent", "intent-inline", "setup-options"];
+    client.setQueryData(intentKey, { interaction: { payload: { phase: "requested" } } });
+    intentPhaseMock.mockImplementation(async (_id, phase, setupAccess) => ({ payload: { phase, setupAccess } }));
     const connection = { id: "conn-inline-draft", status: "draft", credentialPolicy: "per_user", authKind: "none", config: { url: "https://provider.example/mcp", sourceTemplateKey: "zapier", connectionMethodKey: "generated-url" } };
     connectAppMock.mockResolvedValue({ connectionId: connection.id, connection, catalog: [] });
     getConnectionMock.mockResolvedValue(connection);
-    const content = <ConnectionSetupFlow host="dialog" serviceSlug="zapier" requestedAgentId="agent-1" interactionId="intent-inline" onCancel={onCancel} />;
-    const root = await render(undefined, false, content);
+    getConnectionInstallsMock.mockResolvedValue({ installs: [] });
+    const content = (setupAccess?: { connectionId: string; access: { agentIds: string[] } }) => <ConnectionSetupFlow host="dialog" serviceSlug="zapier" requiredAgentId="agent-1" setupAccess={setupAccess} interactionId="intent-inline" onCancel={onCancel} />;
+    const root = await render(client, false, content());
+    await openAccessAdvanced();
+    await act(async () => radioContaining("Just agents I pick")!.click());
+    await flushReact();
+    await act(async () => buttonByText("Select agents")!.click());
+    await flushReact();
+    await act(async () => document.body.querySelector<HTMLElement>('[aria-label="Allow Ada"]')!.click());
+    await flushReact();
     await act(async () => setInputValue(container.querySelector<HTMLInputElement>('input[type="password"]')!, "https://provider.example/mcp?token=fixture-secret"));
     await act(async () => buttonByText("Save & exit")!.click());
     await vi.waitFor(() => expect(onCancel).toHaveBeenCalled());
@@ -703,13 +720,19 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
     expect(JSON.stringify(sessionStorage)).not.toContain("fixture-secret");
     expect(finishAppMock).not.toHaveBeenCalled();
     expect(putConnectionInstallsMock).not.toHaveBeenCalled();
+    expect(intentPhaseMock).toHaveBeenCalledWith("intent-inline", "requested", {
+      connectionId: connection.id, access: { agentIds: ["agent-1"] },
+    });
+    const saved = client.getQueryData<{ interaction: { payload: { setupAccess: { connectionId: string; access: { agentIds: string[] } } } } }>(intentKey)!;
+    expect(saved.interaction.payload.setupAccess).toEqual({ connectionId: connection.id, access: { agentIds: ["agent-1"] } });
     await act(async () => root.unmount());
     mountedRoot = null;
-    await render(undefined, false, content);
+    await render(client, false, content(saved.interaction.payload.setupAccess));
     await vi.waitFor(() => expect(container.textContent).toContain("MCP server URL"));
     expect(getConnectionMock).toHaveBeenCalledWith(connection.id);
     // Resuming lands on the same single screen it was saved from, not "step 2".
     expect(container.textContent).not.toContain("Step 2 of 2");
+    expect(container.textContent).toContain("available to 1 selected agent");
   });
 
   it.each(["page", "dialog"] as const)("lets %s setup cancel after an invalid provider URL without trying to save it", async (host) => {
@@ -2728,15 +2751,23 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
           enabled: true,
           authentication: null,
           manageUrl: "https://vercel.com/connect",
-          reason: "Vercel Connect needs workload OIDC or an instance access token.",
+          reason: "Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.",
         },
       },
     });
     await render(undefined, false, <AppsConnect credentialSource="vercel_connect" />);
 
     expect(container.textContent).toContain("Connect through Vercel");
-    expect(container.textContent).toContain("Vercel Connect needs workload OIDC or an instance access token.");
+    expect(container.textContent).toContain("Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.");
     expect(buttonContaining("PostHog")?.disabled).toBe(true);
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("настройте OIDC для рабочих нагрузок");
+      expect(buttonContaining("PostHog")?.title).toContain("задайте переменную PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN");
+      expect(buttonContaining("PostHog")?.disabled).toBe(true);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
     expect(container.textContent).not.toContain("Where are credentials managed?");
   });
 
@@ -3154,9 +3185,30 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
       asCurrentUser: true,
       interactionId,
     });
+    // The task already stores its restricted audience. Hidden form defaults
+    // must not replace it with all_agents when sign-in is resumed.
+    expect(intentPhaseMock.mock.calls.some(call => call[2] !== undefined)).toBe(false);
     expect(popupAssignMock).toHaveBeenCalledWith(
       "https://mcp.notion.com/authorize?state=existing",
     );
+  });
+
+  it("requires the task requester in a new OAuth audience before starting provider sign-in", async () => {
+    listGalleryMock.mockResolvedValue({ apps: [NOTION] });
+    connectAppMock.mockResolvedValue({ connectionId: "conn-notion", connection: { id: "conn-notion", credentialPolicy: "shared" }, auth: { kind: "oauth" } });
+    await render(undefined, false, <ConnectionSetupFlow host="dialog" serviceSlug="notion" interactionId="intent-1" requiredAgentId="agent-1" />);
+    await openAccessAdvanced();
+    await act(async () => radioContaining("Just agents I pick")!.click());
+    await flushReact();
+    await act(async () => buttonByText("Select agents")!.click());
+    await flushReact();
+    await act(async () => document.body.querySelector<HTMLElement>('[aria-label="Allow Grace"]')!.click());
+    await flushReact();
+    await passAccessStep();
+    await submitCuratedOAuthSetup();
+    expect(connectAppMock).not.toHaveBeenCalled();
+    expect(startOAuthMock).not.toHaveBeenCalled();
+    expect(intentPhaseMock).not.toHaveBeenCalled();
   });
 
   it("resumes the exact draft selected by Finish setup", async () => {
@@ -3872,6 +3924,15 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
 
     expect(container.textContent).toContain("couldn’t check for an existing connection");
     expect(buttonByText("Try again")).toBeTruthy();
+    const attempts = listApplicationsMock.mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Не удалось проверить существующие подключения.");
+      expect(listApplicationsMock).toHaveBeenCalledTimes(attempts);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+    expect(container.textContent).toContain("couldn’t check for an existing connection");
     expect(connectAppMock).not.toHaveBeenCalled();
     expect(startOAuthMock).not.toHaveBeenCalled();
   });

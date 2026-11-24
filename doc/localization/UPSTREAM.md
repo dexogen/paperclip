@@ -21,13 +21,9 @@ divergent release fails for investigation. If the accepted master commit is exac
 the release commit, a metadata-only PR promotes it to stable and still requires
 review and verification.
 
-During the transition, the accepted source is master commit
-`fb2e07ebdd17a813965c4e415696e72cc6f9eed2`, which is newer than `v2026.1023.0`.
-The owner explicitly requested this integration and deployment in PR #37.
-The stable tracker waits for a release containing that commit; it must neither
-label this master tree as `v2026.1023.0` nor deploy an older release. Further
-master updates require explicit owner authorization for merge and deployment,
-in addition to selecting the manual master channel.
+Stable release candidates include reviewed Russian release notes in
+`releases/<fork-release-tag>.md`. The publisher reads this file from the verified
+commit before reserving its tag and includes the notes in the GitHub Release.
 
 Upstream `f5e5b05a333ad8ee5d5dbbca2c3c67693a4844aa` supersedes the fork's
 preparer-lease cleanup fix `82d22e84ec4327a18f779f0a2174d377bf6e16c1`.

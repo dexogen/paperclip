@@ -428,6 +428,7 @@ export function FailedRunInboxRow({
         : interruption?.state === "waiting_for_user" ? ({
           approval: t("inboxUi.run.approvalRequired"), reconnect: t("inboxUi.run.reconnect"), assign_agent: t("inboxUi.run.assignAgent"), choose_model: t("inboxUi.run.chooseModel"),
           resume: t("inboxUi.run.paused"), budget: t("inboxUi.run.budget"),
+          confirm_owner_stop: t("inboxUi.run.confirmOwnerStop"),
           project_access: t("inboxUi.run.projectAccess"),
         }[interruption.userAction ?? "resume"]) : runFailureMessage(run, t);
   const retryAvailable = !interruption || interruption.canRetry;
@@ -3128,7 +3129,7 @@ function StreamlinedInbox({
                           {t("inboxUi.subtaskCount", { count: childCount })}
                         </span>
                       ) : undefined}
-                      mobileTitleMeta={streamlinedUiEnabled ? issueActivityTimestamp(issue) : undefined}
+                      mobileTitleMeta={streamlinedUiEnabled ? issueActivityTimestamp(issue, t) : undefined}
                       mobileMeta={streamlinedUiEnabled ? undefined : issueActivityText(issue, t).toLowerCase()}
                       mobileLeading={!streamlinedUiEnabled ? (
                         depth === 0 && hasChildren && collapseParentId ? (
@@ -3148,6 +3149,7 @@ function StreamlinedInbox({
                         )
                       ) : undefined}
                       unreadState={isUnread ? "visible" : isFading ? "fading" : "hidden"}
+                      showUnreadIndicator={false}
                       onMarkRead={() => markReadMutation.mutate(issue.id)}
                       onArchive={allowArchive ? () => archiveIssueMutation.mutate(issue.id) : undefined}
                       archiveDisabled={isArchiving}
@@ -3182,7 +3184,7 @@ function StreamlinedInbox({
                           />
                         ) : undefined
                       }
-                      trailingMeta={streamlinedUiEnabled && showTaskTimestamp ? issueActivityTimestamp(issue) : null}
+                      trailingMeta={streamlinedUiEnabled && showTaskTimestamp ? issueActivityTimestamp(issue, t) : null}
                     />
                   );
                 };

@@ -104,14 +104,14 @@ export function InstructionsBundleSettings({
     <Collapsible defaultOpen={mode === "external"} className="flex flex-col gap-(--agent-detail-module-gap)">
       <CollapsibleTrigger className="group flex w-fit items-center gap-1.5 rounded-sm text-sm text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:text-foreground">
         <Settings2 className="size-4" aria-hidden />
-        {translateUi("projectConfigUi.budget.advanced")}
+        {translateUi("agentDetailUi.instructions.advancedManagement")}
         <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden />
       </CollapsibleTrigger>
-      <CollapsibleContent>
-        <AgentPanel className="gap-4 p-(--agent-detail-module-inset)" aria-label={translateUi("interfaceUpdates.external_management_4b81b102")}>
+      <CollapsibleContent data-agent-disclosure>
+        <AgentPanel className="gap-4 p-(--agent-identity-panel-gap)" aria-label={translateUi("interfaceUpdates.external_management_4b81b102")}>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground">{translateUi("interfaceUpdates.external_management_4b81b102")}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">{translateUi("interfaceUpdates.point_this_agent_at_a_directory_on_disk_paperclip__7f68f070")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{translateUi("agentDetailUi.instructions.externalDirectory")}</p>
           </div>
           <div className="grid gap-(--agent-detail-module-gap) sm:grid-cols-2">
             <label className="flex min-w-0 flex-col gap-1.5">
@@ -126,7 +126,7 @@ export function InstructionsBundleSettings({
               />
             </label>
             <label className="flex min-w-0 flex-col gap-1.5">
-              <span className="text-xs text-muted-foreground">{translateUi("agentDetailUi.instructions.entry")}</span>
+              <span className="text-xs text-muted-foreground">{translateUi("agentDetailUi.instructions.rootFile")}</span>
               <Input
                 value={entry}
                 onChange={(event) => edit(setEntry)(event.target.value)}

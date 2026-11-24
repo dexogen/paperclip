@@ -1,7 +1,8 @@
 import { useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useTranslation, Trans, i18n } from "@/i18n";
+import { selectableLocales } from "@/i18n/locales";
 import type { TFunction } from "i18next";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -152,6 +153,18 @@ export function agentConfigRoleLabel(role: string, t: TFunction = i18n.getFixedT
     general: "searchUi.palette.roles.general",
   };
   return Object.hasOwn(keys, role) ? t(keys[role]) : role;
+}
+
+export const agentRoleSearchTerms = new Map(
+  Object.keys(roleLabels).map(role => [role, selectableLocales.map(locale => agentConfigRoleLabel(role, i18n.getFixedT(locale)))]),
+);
+
+export function useAgentRoleLabels() {
+  const { t } = useTranslation();
+  return useMemo(
+    () => new Map(Object.keys(roleLabels).map(role => [role, agentConfigRoleLabel(role, t)])),
+    [t],
+  );
 }
 
 /* ---- Primitive components ---- */

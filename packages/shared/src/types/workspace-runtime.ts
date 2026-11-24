@@ -123,7 +123,8 @@ export interface WorkspaceRuntimeControlTarget {
 }
 
 export type WorkspaceCloseMessage =
-  | { code: "no_local_path" | "git_unverified" | "shared_session" | "storage_unavailable" }
+  | { code: "no_local_path" | "git_unverified" | "shared_session" }
+  | { code: "storage_unavailable"; params?: { error: string } }
   | { code: "missing_path" | "keep_project_directory"; params: { path: string } }
   | { code: "git_inspection_failed" | "git_status_failed"; params: { path: string; error: string } }
   | { code: "git_comparison_failed"; params: { baseRef: string; error: string } }

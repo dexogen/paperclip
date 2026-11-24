@@ -5,6 +5,7 @@ import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { contextCompactedMarker } from "./transcript-adapter";
 import { TaskChatMarker } from "./TaskChatMarker";
 import { TaskChatThreadView, taskChatContentKey } from "./TaskChatThreadView";
 import type { TaskChatItem } from "./task-chat-model";
@@ -34,6 +35,19 @@ describe("TaskChatMarker", () => {
     container.remove();
     vi.useRealTimers();
     void i18n.changeLanguage("en");
+  });
+
+  it("reformats compaction counts when switching the locale of a mounted transcript", () => {
+    const marker = contextCompactedMarker({
+      kind: "provider_activity", ts: "2026-11-17T12:00:00Z", family: "context", eventType: "context.compacted",
+      title: "Context compacted", summary: "Context compacted", status: "completed", payload: { preTokens: 1250, postTokens: 21 },
+    }, "compaction");
+    flushSync(() => root!.render(<ThemeProvider><TaskChatMarker item={marker} /></ThemeProvider>));
+    expect(container.textContent).toContain("1.3k → 21 tokens");
+    flushSync(() => { void i18n.changeLanguage("ru"); });
+    expect(container.textContent).toContain("Контекст сжат");
+    expect(container.textContent).toMatch(/Токены: 1,3\s*тыс\. → 21/);
+    expect(marker.detail).toBe("1.3k → 21 tokens");
   });
 
   it("localizes an expanded generated marker without changing raw identity or retry target", async () => {

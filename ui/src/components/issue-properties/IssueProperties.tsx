@@ -82,6 +82,7 @@ import { invalidateInboxIssueQueries } from "../../lib/inboxArchiveCache";
 import { Button } from "@/components/ui/button";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -121,6 +122,7 @@ import {
 } from "./helpers";
 import { PropertyPicker } from "./property-picker";
 import { PropertyChip, PropertyRow, PropertySection } from "./primitives";
+import { IssueContextUsageRow } from "./context-usage-row";
 import {
   buildWorkspaceSelectionUpdate,
   currentWorkspaceSelection,
@@ -218,6 +220,8 @@ interface IssuePropertiesProps {
   documentDeepLink?: IssuePropertiesDocumentDeepLink | null;
   /** Render only the Properties body when a parent owns the side-panel tabs. */
   sidePanelContentOnly?: boolean;
+  /** Overrides the fetched Context row (Storybook fixtures); null hides it. */
+  contextUsage?: import("react").ReactNode;
 }
 
 export interface IssuePropertiesDocumentDeepLink {
@@ -256,6 +260,7 @@ export function IssueProperties({
   checkingMonitorNow = false,
   documentDeepLink,
   sidePanelContentOnly = false,
+  contextUsage,
 }: IssuePropertiesProps) {
   const { t, i18n } = useTranslation();
   const policyResult = useExecutionPolicy(issue.executionPolicy);
@@ -437,7 +442,7 @@ export function IssueProperties({
     enabled: !!companyId,
   });
   const assigneeRuntimeAgentId = issue.assigneeAgentId ?? null;
-  const { data: assigneeRuntimeState } = useQuery({
+  const { data: assigneeRuntimeState, isLoading: assigneeRuntimeStateLoading } = useQuery({
     queryKey: queryKeys.agents.runtimeState(assigneeRuntimeAgentId ?? ""),
     queryFn: () => agentsApi.runtimeState(assigneeRuntimeAgentId!, companyId ?? undefined),
     // Optional detail: a 403 for board users without agent management access
@@ -1341,21 +1346,22 @@ export function IssueProperties({
   const monitorPaused = areAutomaticMonitorChecksPaused(issue);
   const canCheckMonitorNow = canCheckIssueMonitorNow(issue, monitorServiceName);
   const monitorNow = useMonitorCountdown(monitorPaused ? null : monitorNextCheckAt);
+  const monitorLocale = i18n.resolvedLanguage === "ru" ? "ru-RU" : "en-US";
   const monitorRelative = monitorNextCheckAt ? formatMonitorEta(monitorNextCheckAt, monitorNow, t) : null;
   const monitorDisplayState = deriveMonitorState({ monitorNextCheckAt }, monitorNow).state;
   const monitorIsDueNow = monitorDisplayState === "due-now";
   const monitorIsOverdue = monitorDisplayState === "overdue";
   const monitorPrimary = monitorNextCheckAt
-    ? monitorPaused ? "Automatic checks paused" : formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
+    ? monitorPaused ? t("interfaceUpdates.automatic_checks_paused_03d978cd") : formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
     : monitorState?.status === "cleared"
       ? t("taskProperties.monitor.cleared")
       : t("taskProperties.fields.none");
   const monitorSecondary = monitorNextCheckAt
     ? monitorPaused
-      ? canCheckMonitorNow ? "Check now to request a manual check" : "Resume this task to continue checking"
+      ? canCheckMonitorNow ? t("taskProperties.monitor.requestManualCheck") : t("taskChatUi.monitor.resumeToCheck")
       : monitorIsDueNow
       ? t("taskProperties.monitor.checkingMomentarily")
-      : [formatMonitorAbsolute(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }, monitorNow, t), monitorIsOverdue ? t("taskProperties.monitor.firesNextTick") : monitorAttemptCount > 0 ? t("taskProperties.monitor.attempt", { count: monitorAttemptCount }) : null].filter(Boolean).join(" · ")
+      : [formatMonitorAbsolute(monitorNextCheckAt, { locale: monitorLocale }, monitorNow, t), monitorIsOverdue ? t("taskProperties.monitor.firesNextTick") : monitorAttemptCount > 0 ? t("taskProperties.monitor.attempt", { count: monitorAttemptCount }) : null].filter(Boolean).join(" · ")
     : monitorState?.status === "cleared"
       ? [
           monitorLastTriggeredAt ? t("taskProperties.monitor.lastChecked", { time: timeAgo(monitorLastTriggeredAt, t) }) : null,
@@ -1395,7 +1401,7 @@ export function IssueProperties({
           <div className="space-y-3 px-4 py-3 text-left">
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.nextCheck")}</div>
-              <div className="text-sm">{formatMonitorAbsoluteFull(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined })}</div>
+              <div className="text-sm">{formatMonitorAbsoluteFull(monitorNextCheckAt, { locale: monitorLocale })}</div>
               <div className="text-xs text-muted-foreground">{monitorPaused ? translateUi("interfaceUpdates.automatic_checks_paused_03d978cd") : monitorRelative}</div>
             </div>
             <div>
@@ -1408,7 +1414,7 @@ export function IssueProperties({
             </div>
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.lastTriggered")}</div>
-              <div className="text-sm">{monitorLastTriggeredAt ? formatMonitorAbsoluteFull(monitorLastTriggeredAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }) : t("taskProperties.fields.notTriggered")}</div>
+              <div className="text-sm">{monitorLastTriggeredAt ? formatMonitorAbsoluteFull(monitorLastTriggeredAt, { locale: monitorLocale }) : t("taskProperties.fields.notTriggered")}</div>
             </div>
           </div>
           <div className="flex gap-2 border-t border-border px-4 py-3">
@@ -2415,12 +2421,16 @@ export function IssueProperties({
           </PropertyPicker>
         ) : null}
 
-        {assigneeRateLimits && summarizeProviderRateLimits(assigneeRateLimits, Date.now()) ? (
+        {assigneeRuntimeStateLoading || (assigneeRateLimits && summarizeProviderRateLimits(assigneeRateLimits, Date.now())) ? (
           <PropertyRow label={translateUi("interfaceUpdates.usage_limit_2d163051")}>
-            <AgentRateLimitPropertyValue
-              snapshot={assigneeRateLimits}
-              detailsHref={assigneeRateLimitAgent ? agentUrl(assigneeRateLimitAgent) : undefined}
-            />
+            {assigneeRuntimeStateLoading ? (
+              <Skeleton className="h-4 w-32" role="status" aria-label={translateUi("taskPanels.usage.loadingLimit")} />
+            ) : (
+              <AgentRateLimitPropertyValue
+                snapshot={assigneeRateLimits}
+                detailsHref={assigneeRateLimitAgent ? agentUrl(assigneeRateLimitAgent) : undefined}
+              />
+            )}
           </PropertyRow>
         ) : null}
 
@@ -2761,6 +2771,10 @@ export function IssueProperties({
         >
           {watchdogContent}
         </PropertyPicker>
+
+        {contextUsage !== undefined
+          ? contextUsage ? <PropertyRow label={translateUi("agentDetailUi.invocation.context")}>{contextUsage}</PropertyRow> : null
+          : <IssueContextUsageRow issueId={issue.id} assigneeAgentId={issue.assigneeAgentId ?? null} issueStatus={issue.status} hasActiveRun={hasActiveRun} />}
       </PropertySection>
 
       {workspacePickerEligible || hasWorkspaceRuntimeControls || issue.currentExecutionWorkspace?.branchName || issue.currentExecutionWorkspace?.cwd || issue.executionWorkspaceId ? (

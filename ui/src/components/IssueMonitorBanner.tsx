@@ -70,6 +70,7 @@ export interface MonitorSurfaceCopy {
   pullRequestReview?: boolean;
   automaticChecksPaused?: boolean;
   checkUnavailable?: boolean;
+  executionWait?: boolean;
 }
 
 function capitalize(value: string): string {
@@ -87,17 +88,18 @@ export function buildMonitorSurfaceCopy(
   scheduledRetryReason?: string | null,
   pendingPullRequestReviews = 0,
   issueStatus?: string,
+  hasActiveRun = false,
 ): MonitorSurfaceCopy | null {
   if (!isWaitingMonitorState(derived.state) || !derived.nextCheckAt) return null;
 
   if (derived.source === "monitor" && areAutomaticMonitorChecksPaused({ status: issueStatus })) {
     const canCheckNow = canCheckIssueMonitorNow({ status: issueStatus }, derived.serviceName);
     const hint = canCheckNow
-      ? "This task is blocked. You can ask the agent to check now."
-      : "Resume this task to continue checking.";
+      ? fullSharedT("taskChatUi.monitor.taskBlocked")
+      : fullSharedT("taskChatUi.monitor.resumeToCheck");
     return {
-      bannerTitle: "Automatic checks paused",
-      stripTitle: "Automatic checks paused",
+      bannerTitle: fullSharedT("interfaceUpdates.automatic_checks_paused_03d978cd"),
+      stripTitle: fullSharedT("interfaceUpdates.automatic_checks_paused_03d978cd"),
       bannerMeta: [hint],
       stripMeta: [hint],
       tone: "info",
@@ -108,33 +110,49 @@ export function buildMonitorSurfaceCopy(
 
   if (derived.source === "scheduled-retry" && scheduledRetryReason === "workspace_busy") {
     return {
-      bannerTitle: "Waiting for workspace",
-      stripTitle: "Waiting for workspace",
-      bannerMeta: ["Another task is using this workspace. Work starts automatically when it is available."],
-      stripMeta: ["Work starts automatically when the workspace is available."],
+      bannerTitle: fullSharedT("taskProperties.fields.waitingForWorkspace"),
+      stripTitle: fullSharedT("taskProperties.fields.waitingForWorkspace"),
+      bannerMeta: [fullSharedT("runUi.scheduledRetry.workspaceHint")],
+      stripMeta: [fullSharedT("taskChatUi.monitor.workspaceAvailable")],
       tone: "info",
       workspaceWait: true,
     };
   }
 
-  const eta = formatMonitorEta(derived.nextCheckAt, now); // "in 2h 12m" | "due now" | "overdue by 18m"
-  const absolute = formatMonitorAbsolute(derived.nextCheckAt, {}, now); // local time, e.g. "Today, 4:08 PM"
-  if (derived.source === "monitor" && derived.serviceName?.toLowerCase() === "github" && pendingPullRequestReviews > 0) {
+  const language = fullSharedI18n.resolvedLanguage ?? fullSharedI18n.language;
+  const timeLabels = fullSharedI18n.getFixedT(language);
+  const eta = formatMonitorEta(derived.nextCheckAt, now, timeLabels); // "in 2h 12m" | "due now" | "overdue by 18m"
+  const absolute = formatMonitorAbsolute(derived.nextCheckAt, { locale: language === "ru" ? "ru-RU" : "en-US" }, now, timeLabels); // local time, e.g. "Today, 4:08 PM"
+  const awaitingPullRequestReview = derived.source === "monitor" && derived.serviceName?.toLowerCase() === "github" && pendingPullRequestReviews > 0;
+  if (derived.source === "monitor" && hasActiveRun) {
+    const hint = fullSharedT("taskChatUi.monitor.saveFirst");
     return {
-      bannerTitle: "Pull request review requested",
-      stripTitle: "Pull request review requested",
-      bannerMeta: [`Next check ${eta} · ${absolute} (your time)`],
-      stripMeta: [`Next check ${eta} · ${absolute}`],
+      bannerTitle: fullSharedT("taskChatUi.monitor.waitingForRun"),
+      stripTitle: fullSharedT("taskChatUi.monitor.waitingForRun"),
+      bannerMeta: [hint, fullSharedT("taskChatUi.monitor.scheduledLocal", { time: absolute })],
+      stripMeta: [hint, fullSharedT("taskChatUi.monitor.scheduled", { time: absolute })],
+      tone: "info",
+      executionWait: true,
+      checkUnavailable: true,
+      pullRequestReview: awaitingPullRequestReview,
+    };
+  }
+  if (awaitingPullRequestReview) {
+    return {
+      bannerTitle: fullSharedT("taskChatUi.monitor.prReview"),
+      stripTitle: fullSharedT("taskChatUi.monitor.prReview"),
+      bannerMeta: [fullSharedT("taskChatUi.monitor.prNextLocal", { eta, absolute })],
+      stripMeta: [fullSharedT("taskChatUi.monitor.prNext", { eta, absolute })],
       tone: derived.state === "overdue" ? "warning" : "info",
       pullRequestReview: true,
     };
   }
   if (derived.source === "scheduled-retry" && scheduledRetryReason === "ai_connection_pool_wait") {
     return {
-      bannerTitle: "Pool exhausted",
-      stripTitle: "Pool exhausted",
-      bannerMeta: [`Usage recheck ${eta} · ${absolute} (your time)`, "Tasks with a selected account keep it while waiting. Work resumes when usage permits."],
-      stripMeta: [`Usage recheck ${eta} · ${absolute}`, "Tasks with a selected account keep it while waiting."],
+      bannerTitle: fullSharedT("runUi.ledger.retry.poolExhausted"),
+      stripTitle: fullSharedT("runUi.ledger.retry.poolExhausted"),
+      bannerMeta: [fullSharedT("taskChatUi.monitor.usageNextLocal", { eta, absolute }), fullSharedT("taskChatUi.monitor.keepAccountResume")],
+      stripMeta: [fullSharedT("taskChatUi.monitor.usageNext", { eta, absolute }), fullSharedT("taskChatUi.monitor.keepAccount")],
       tone: "info",
     };
   }
@@ -147,26 +165,26 @@ export function buildMonitorSurfaceCopy(
   switch (derived.state) {
     case "scheduled":
     case "retrying":
-      bannerTitle = isScheduledRetryOnly ? `Agent resumes ${eta}` : `Waiting on monitor — resumes ${eta}`;
-      stripTitle = `Resumes ${eta}`;
+      bannerTitle = isScheduledRetryOnly ? fullSharedT("taskChatUi.monitor.agentResumes", { eta }) : fullSharedT("taskChatUi.monitor.monitorResumes", { eta });
+      stripTitle = fullSharedT("taskChatUi.monitor.resumes", { eta });
       break;
     case "due-now":
-      bannerTitle = isScheduledRetryOnly ? "Agent retry due now" : "Waiting on monitor — due now";
-      stripTitle = "Due now";
-      statusHint = "Checking momentarily…";
+      bannerTitle = isScheduledRetryOnly ? fullSharedT("taskChatUi.monitor.retryDue") : fullSharedT("taskChatUi.monitor.monitorDue");
+      stripTitle = fullSharedT("taskChatUi.monitor.due");
+      statusHint = fullSharedT("taskChatUi.monitor.soon");
       break;
     case "overdue":
     default:
-      bannerTitle = isScheduledRetryOnly ? `Agent retry ${eta}` : `Waiting on monitor — ${eta}`;
+      bannerTitle = isScheduledRetryOnly ? fullSharedT("taskChatUi.monitor.retryOverdue", { eta }) : fullSharedT("taskChatUi.monitor.monitorOverdue", { eta });
       stripTitle = capitalize(eta);
-      statusHint = "Fires on next tick";
+      statusHint = fullSharedT("taskChatUi.monitor.nextTick");
       break;
   }
 
   const attemptLabel = derived.attemptCount >= 1 ? fullSharedT("fullShared.attempt_7a5e67", { value1: derived.attemptCount }) : null;
   const serviceLabel = derived.serviceName ? fullSharedT("fullShared.watching_27a2bb", { value1: derived.serviceName }) : null;
 
-  const bannerMeta = [statusHint, `${absolute} (your time)`, attemptLabel, serviceLabel].filter(
+  const bannerMeta = [statusHint, fullSharedT("taskChatUi.monitor.yourTime", { absolute }), attemptLabel, serviceLabel].filter(
     (piece): piece is string => Boolean(piece),
   );
   const stripMeta = [statusHint, absolute, attemptLabel, serviceLabel].filter(
@@ -182,7 +200,7 @@ export function buildMonitorSurfaceCopy(
   };
 }
 
-function useMonitorSurfaceCopy(issue: Issue, pendingPullRequestReviews: number): MonitorSurfaceCopy | null {
+function useMonitorSurfaceCopy(issue: Issue, pendingPullRequestReviews: number, hasActiveRun: boolean): MonitorSurfaceCopy | null {
   // `nextCheckAt` is stable for a given issue; derive once to seed the ticking
   // countdown cadence, then re-derive against the live clock so the surfaces
   // roll scheduled → due → overdue on their own.
@@ -191,7 +209,7 @@ function useMonitorSurfaceCopy(issue: Issue, pendingPullRequestReviews: number):
     return derived.source === "monitor" && areAutomaticMonitorChecksPaused(issue) ? null : derived.nextCheckAt;
   }, [issue]);
   const now = useMonitorCountdown(nextCheckAt);
-  return useMemo(() => buildMonitorSurfaceCopy(deriveMonitorState(issue, now), now, issue.scheduledRetry?.scheduledRetryReason, pendingPullRequestReviews, issue.status), [fullSharedI18n.language, issue, now, pendingPullRequestReviews]);
+  return useMemo(() => buildMonitorSurfaceCopy(deriveMonitorState(issue, now), now, issue.scheduledRetry?.scheduledRetryReason, pendingPullRequestReviews, issue.status, hasActiveRun), [fullSharedI18n.language, issue, now, pendingPullRequestReviews, hasActiveRun]);
 }
 
 function CheckNowButton({
@@ -259,6 +277,7 @@ function CancelMonitorButton({ onCancel }: { onCancel: () => Promise<unknown> })
 
 export interface IssueMonitorSurfaceProps {
   issue: Issue;
+  hasActiveRun?: boolean;
   onCheckNow?: (() => void) | null;
   checkingNow?: boolean;
   workProducts?: IssueWorkProduct[] | null;
@@ -273,6 +292,7 @@ export interface IssueMonitorSurfaceProps {
  */
 export function IssueMonitorBanner({
   issue,
+  hasActiveRun = false,
   onCheckNow = null,
   checkingNow = false,
   workProducts,
@@ -281,8 +301,12 @@ export function IssueMonitorBanner({
 }: IssueMonitorSurfaceProps) {
   useFullSharedTranslation();
   const reviews = getIssuePullRequests(workProducts).filter(pullRequestNeedsReview);
-  const copy = useMonitorSurfaceCopy(issue, reviews.length);
+  const copy = useMonitorSurfaceCopy(issue, reviews.length, hasActiveRun);
   if (!copy) return null;
+
+  // A busy workspace is a transient system wait the user cannot act on. It stays
+  // a quiet status (composer strip, properties row), never a pinned notice.
+  if (copy.workspaceWait) return null;
 
   const canCancel = onCancelMonitor && deriveMonitorState(issue).source === "monitor";
 
@@ -311,6 +335,7 @@ export function IssueMonitorBanner({
  */
 export function IssueMonitorComposerStrip({
   issue,
+  hasActiveRun = false,
   onCheckNow = null,
   checkingNow = false,
   workProducts,
@@ -320,7 +345,7 @@ export function IssueMonitorComposerStrip({
   useUiTranslation();
   useFullSharedTranslation();
   const reviews = getIssuePullRequests(workProducts).filter(pullRequestNeedsReview);
-  const copy = useMonitorSurfaceCopy(issue, reviews.length);
+  const copy = useMonitorSurfaceCopy(issue, reviews.length, hasActiveRun);
   if (!copy) return null;
 
   return (
@@ -342,9 +367,11 @@ export function IssueMonitorComposerStrip({
       </div>
       {!copy.automaticChecksPaused ? (
         <p className="mt-1.5 text-xs text-muted-foreground">
-          {copy.pullRequestReview
+          {copy.pullRequestReview && copy.executionWait
+            ? translateUi("taskChatUi.monitor.reviewDuringSave")
+            : copy.pullRequestReview
             ? translateUi("fullShared.review_on_github_then_check_status_to_have_the_agent_138c83")
-            : copy.workspaceWait
+            : copy.workspaceWait || copy.executionWait
             ? translateUi("fullShared.you_can_keep_sending_instructions_while_the_agent_wa_863825")
             : translateUi("fullShared.sending_a_reply_wakes_the_agent_now_before_the_sched_c39c87")}
         </p>

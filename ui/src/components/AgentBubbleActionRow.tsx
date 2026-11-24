@@ -1,4 +1,4 @@
-import { t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
+import { i18n, t as fullSharedTailT, Trans as FullSharedTailTrans, useTranslation as useFullSharedTailTranslation } from "@/i18n";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useState, type ReactNode } from "react";
 import type {
@@ -38,7 +38,7 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 export function agentBubbleDateLabel(date: Date | string | undefined): string {
   if (!date) return "";
   const then = new Date(date).getTime();
-  if (Date.now() - then < WEEK_MS) return timeAgo(date);
+  if (Date.now() - then < WEEK_MS) return timeAgo(date, i18n.getFixedT(i18n.language));
   return formatShortDate(date);
 }
 

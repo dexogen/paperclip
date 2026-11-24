@@ -56,19 +56,22 @@ describe("agent configuration locale boundaries", () => {
     await act(async () => trigger.click());
     await act(async () => { await setLocale("ru"); });
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    expect(document.body.textContent).toContain("Без руководителя");
-    expect(document.body.textContent).toContain(rawName);
-    expect(document.body.textContent).toContain("Инженер");
-    expect(document.body.textContent).toContain("toString");
-    expect(document.body.querySelector("strong")).toBeNull();
+    const picker = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Выбрать руководителя"]')!;
+    const options = [...picker.querySelectorAll<HTMLButtonElement>("button[aria-pressed]")];
+    expect(options.find(button => button.textContent === "Без руководителя")?.getAttribute("aria-pressed")).toBe("true");
+    const choice = options.find(button => button.textContent === rawName)!;
+    expect(choice.getAttribute("aria-pressed")).toBe("false");
+    expect(picker.querySelector("strong")).toBeNull();
     expect(onChange).not.toHaveBeenCalled();
-    const choice = [...document.body.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.includes(rawName))!;
     await act(async () => choice.click());
     expect(onChange).toHaveBeenCalledExactlyOnceWith("manager-1");
     expect(trigger.textContent).toContain(`Руководитель: ${rawName}`);
     await act(async () => { await setLocale("en"); });
     expect(container.querySelector("button")).toBe(trigger);
     expect(trigger.textContent).toContain(`Reports to ${rawName}`);
+    await act(async () => trigger.click());
+    const reopened = document.querySelector('[role="dialog"][aria-label="Choose manager"]')!;
+    expect(reopened.querySelector('button[aria-pressed="true"]')?.textContent).toBe(rawName);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 

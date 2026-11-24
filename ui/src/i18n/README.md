@@ -94,6 +94,9 @@ Closed mappings use own-property checks; unknown lifecycle values must not becom
 active phases. The following boundaries require source review when producers change:
 
 - Attention display slots validate their slot, code and primitive arguments.
+  Decision history includes an optional `display.label` for system outcomes.
+  Render the supplied `label` for a selected option or a response without display
+  metadata, even when the author's wording matches a built-in outcome.
   Workspace-close descriptors preserve the ordered raw reasons, warnings and
   actions, with validated indexes and action identity. The current strict SDK
   validator accepts legacy responses without descriptors and current descriptors;

@@ -33,6 +33,8 @@ const BANNED_RE = new RegExp(`\\b(${BANNED_WORDS.join("|")})s?\\b`, "gi");
  */
 export function sanitizeProsumerCopy(text: string): string {
   return text
+    .replace(/MCP-сервер/gi, "сервис")
+    .replace(/MCP-подключени/gi, "подключени")
     .replace(BANNED_RE, "")
     .replace(/\s{2,}/g, " ")
     .replace(/\s+([.,])/g, "$1")

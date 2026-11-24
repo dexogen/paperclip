@@ -61,7 +61,8 @@ dispatch substitutes for the required push check.
    version is published, every new fork SHA needs an increment for that same
    upstream version, including translation-only and documentation-only changes.
    A green source CI does not permit reuse of the previous publication version. Do not
-   reuse or overwrite an existing version tag for different source.
+   reuse or overwrite an existing version tag for different source. Add the Russian
+   highlights and upgrade notes in `releases/<fork-release-tag>.md` before verification.
 6. Push the complete candidate to `codex/upstream-sync` using the configured App or
    owner identity. Open or update the PR against `russian` using its template. Wait
    for **Fork integration verified** from an eligible push run of the exact final
@@ -95,10 +96,6 @@ dispatch substitutes for the required push check.
    this task's accepted temporary worktrees and expired recovery materials.
 
 If upstream changes again during this batch, leave those commits for the next run.
-At the policy transition, accepted master commit
-`0cb3fc7db591ba23e21fbbc70042bc44ec7d6f20` is newer than release `v2026.1023.0`.
-Wait for a release containing the accepted commit; do not label the current build
-with that older stable version or downgrade the installation.
 If the merge succeeds but deployment fails, the next run must resume deployment of
 the accepted source before integrating another batch. A blocked action must retain
 its exact source, PR, CI run, and next step without claiming success.

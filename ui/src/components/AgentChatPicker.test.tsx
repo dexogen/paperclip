@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act } from "react";
+import { i18n } from "@/i18n";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Agent } from "@paperclipai/shared";
@@ -42,6 +43,83 @@ afterEach(async () => {
 });
 
 describe("AgentChatPicker", () => {
+  it("updates unread message labels in place when the language or count changes", async () => {
+    const language = i18n.language;
+    try {
+      await render({ unreadMessageCounts: new Map([["first", 2]]) });
+      const option = options()[0];
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      for (const [count, label] of [
+        [1, "1 непрочитанное сообщение от агента «Alex»"],
+        [2, "2 непрочитанных сообщения от агента «Alex»"],
+        [5, "5 непрочитанных сообщений от агента «Alex»"],
+      ] as const) {
+        await render({ unreadMessageCounts: new Map([["first", count]]) });
+        expect(option.querySelector('[aria-label*="Alex"]')?.getAttribute("aria-label")).toBe(label);
+      }
+    } finally {
+      await act(async () => { await i18n.changeLanguage(language); });
+    }
+  });
+
+  it("searches by a Russian role and updates a failed selection in the same dialog", async () => {
+    const previous = i18n.language;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      const onSelect = vi.fn().mockRejectedValueOnce(null).mockRejectedValueOnce(new Error("E_CHAT_OFFLINE"));
+      await render({ onSelect });
+      await search("дизайнер");
+      expect(options()).toHaveLength(1);
+      await act(async () => options()[0].click());
+      expect(onSelect).toHaveBeenCalledWith(agents[1], expect.any(AbortSignal));
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("Не удалось открыть чат. Повторите попытку.");
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("Couldn’t open chat. Try again.");
+      expect(document.querySelector<HTMLInputElement>("[role=combobox]")?.value).toBe("дизайнер");
+      expect(options()).toHaveLength(1);
+      await act(async () => options()[0].click());
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("E_CHAT_OFFLINE");
+      expect(props.onOpenChange).not.toHaveBeenCalled();
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previous); });
+    }
+  });
+
+  it("shows unread per agent through search and clears it when read state updates", async () => {
+    await render({ existingChatAgentIds: ["first", "second"], unreadMessageCounts: new Map([["first", 0], ["second", 12]]) });
+    expect(options()[0].querySelector('[aria-label*="unread message"]')).toBeNull();
+    expect(options()[1].querySelector('[aria-label="12 unread messages from Alex"]')?.textContent).toBe("12");
+    await search("designer");
+    expect(options()).toHaveLength(1);
+    expect(options()[0].textContent).toContain("12");
+    await render({ unreadMessageCounts: new Map([["second", 0]]) });
+    expect(options()[0].textContent).not.toContain("12");
+    expect(options()[0].textContent).toContain("Open chat");
+  });
+
+  it("uses indexed counts and memoized chat membership for a large team", async () => {
+    const roster = Array.from({ length: 500 }, (_, index) => ({ ...agents[index % 2], id: `agent-${index}`, name: `Agent ${index}` }));
+    let visits = 0;
+    const ids = roster.map(agent => agent.id);
+    const boundedIds = new Proxy(ids, { get(target, key, receiver) {
+      if (typeof key === "string" && /^\d+$/.test(key) && ++visits > ids.length * 2) throw new Error("Repeated chat membership scan");
+      return Reflect.get(target, key, receiver);
+    } });
+    const counts = new Map(ids.map(id => [id, 7]));
+    const getCount = vi.spyOn(counts, "get");
+    await render({ agents: roster, existingChatAgentIds: boundedIds, unreadMessageCounts: counts });
+    expect(options()).toHaveLength(500);
+    expect(document.querySelectorAll('[aria-label^="7 unread messages from"]')).toHaveLength(500);
+    expect(visits).toBe(500);
+    expect(getCount).toHaveBeenCalledTimes(500);
+    await search("Agent 499");
+    expect(options().length).toBeLessThan(500);
+    expect(options().some(option => option.textContent?.includes("Agent 499"))).toBe(true);
+    expect(visits).toBe(500);
+    expect(getCount).toHaveBeenCalledTimes(1000);
+  });
+
   it("shows saved custom avatars and default avatars in agent choices", async () => {
     await render({ agents: [
       { ...agents[0], appearance: { ...appearanceForPalette("deep-tide"), customAvatarAssetId: "22222222-2222-4222-8222-222222222222" } },

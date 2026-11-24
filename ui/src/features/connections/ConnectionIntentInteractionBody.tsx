@@ -244,7 +244,11 @@ export function ConnectionIntentInteractionBody({
     upstreamServiceName: interaction.payload.upstreamService?.name,
     serviceSlug: interaction.payload.serviceSlug.startsWith("connection:") ? undefined : interaction.payload.serviceSlug,
     configuredConnection: interaction.payload.serviceSlug.startsWith("connection:") ? setupQuery.data.existingConnections[0] : undefined,
-    requestedAgentId: setupQuery.data.requestedAgentId,
+    // Tool setup uses the same audience defaults and controls as Apps.
+    // Runtime authentication and inboxes still belong to the requesting agent.
+    requestedAgentId: interaction.payload.purpose ? setupQuery.data.requestedAgentId : undefined,
+    requiredAgentId: interaction.payload.purpose ? undefined : setupQuery.data.requestedAgentId,
+    setupAccess: setupQuery.data.interaction?.payload.setupAccess,
     aiConnection: setupQuery.data.aiConnection,
     interactionId: interaction.id,
     existingConnections: setupQuery.data.existingConnections,
@@ -475,7 +479,7 @@ export function ConnectionIntentInteractionBody({
                 ? translateUi("fullApps.this_task_can_t_run_until_the_agent_has_a_valid_ai_c_fe44fc")
                 : isChatHandoff ? translateUi("interfaceUpdates.complete_the_human_sign_in_step_in_the_saved_setup_a86f87f3")
                 : isEmail ? translateUi("fullApps.connect_agentmail_to_create_an_email_address_for_thi_a69d55")
-                : translateUi("fullApps.connect_your_identity_or_reuse_an_eligible_connectio_ce8bf3")}
+                : translateUi("providerSetup.access.newConnectionDefault")}
             </p>
           </div>
         </div>

@@ -12,6 +12,7 @@ import type { ProviderDetailKey, RunDisplaySlots } from "./task-chat-display";
 import { foldApprovedAutoReviews } from "./fold-auto-reviews";
 import { isFatalProviderError, isStatusNotice, isStatusNoticePayload, statusNoticeCategory } from "./status-notice-presentation";
 import type { TranscriptEntry } from "@/adapters";
+import { formatContextTokens } from "@/lib/context-tokens";
 import { turnChangesFromEditRows } from "./turn-file-changes";
 import type {
   TaskChatDiff,
@@ -28,6 +29,7 @@ import type {
   TaskChatMessageItem,
   TaskChatPlanDocumentItem,
   TaskChatRuntimeRequestItem,
+  TaskChatMarkerItem,
   TaskChatSubagent,
   TaskChatSubagentGroupItem,
 } from "./task-chat-model";
@@ -137,6 +139,37 @@ export function flattenSelfTalk(text: string): string {
     .trim();
 }
 
+/** "Context compacted · 230k → 38k tokens" divider for a provider compaction. */
+export function contextCompactedMarker(
+  entry: Extract<TranscriptEntry, { kind: "provider_activity" }>,
+  id: string,
+): TaskChatMarkerItem {
+  const count = (value: unknown) =>
+    typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
+  const pre = count(entry.payload.preTokens);
+  const post = count(entry.payload.postTokens);
+  const detail = pre !== null && post !== null
+    ? `${formatContextTokens(pre)} → ${formatContextTokens(post)} tokens`
+    : pre !== null
+      ? `from ${formatContextTokens(pre)} tokens`
+      : undefined;
+  return {
+    id,
+    kind: "marker",
+    variant: "context_compacted",
+    label: translateUi("interfaceUpdates.context_compacted_99ca2ce2", { lng: "en" }),
+    display: {
+      label: { code: "marker.contextCompacted" },
+      ...(pre === null ? {} : { detail: {
+        code: "detail.compactedTokens", before: pre,
+        ...(post === null ? {} : { after: post }),
+      } }),
+    },
+    ...(detail ? { detail } : {}),
+    createdAtIso: entry.ts,
+  };
+}
+
 function diffKind(changeType: string): "add" | "remove" | "context" | "hunk" {
   if (changeType === "add") return "add";
   if (changeType === "remove") return "remove";
@@ -161,6 +194,30 @@ const TARGET_KEYS = [
 
 const TARGET_MAX = 96;
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Argument keys that name one Paperclip task by its id. */
+const TASK_REF_KEYS = ["taskId", "task_id", "issueId", "issue_id"] as const;
+
+/** A raw id is an internal handle, never something a person reads. */
+function isOpaqueId(value: unknown): boolean {
+  return typeof value === "string" && UUID_RE.test(value.trim());
+}
+
+/**
+ * The task a tool call is about, when its input names one by UUID. The row
+ * shows that task's identifier (resolved at render time) instead of the id.
+ */
+export function toolInputTaskRef(input: unknown): string | undefined {
+  if (input == null || typeof input !== "object" || Array.isArray(input)) return undefined;
+  const record = input as Record<string, unknown>;
+  for (const key of TASK_REF_KEYS) {
+    const value = record[key];
+    if (isOpaqueId(value)) return (value as string).trim();
+  }
+  return undefined;
+}
+
 function clip(text: string, max: number): string {
   const oneLine = text.replace(/\s+/g, " ").trim();
   return oneLine.length > max ? `${oneLine.slice(0, max - 1)}…` : oneLine;
@@ -174,21 +231,23 @@ function clip(text: string, max: number): string {
 export function summarizeToolInput(input: unknown): string | undefined {
   if (input == null) return undefined;
   if (typeof input === "string")
-    return input.trim() ? clip(input, TARGET_MAX) : undefined;
+    return input.trim() && !isOpaqueId(input) ? clip(input, TARGET_MAX) : undefined;
   if (typeof input !== "object") return clip(String(input), TARGET_MAX);
   const record = input as Record<string, unknown>;
   for (const key of TARGET_KEYS) {
     const value = record[key];
-    if (typeof value === "string" && value.trim())
+    if (typeof value === "string" && value.trim() && !isOpaqueId(value))
       return clip(value, TARGET_MAX);
   }
   // The acpx log parser synthesizes { text, status } onto tool inputs from the
-  // event's summary line — presentation noise, not call parameters.
+  // event's summary line — presentation noise, not call parameters. Raw ids
+  // (task, agent, run UUIDs) are handles for the API, not for people.
   const entries = Object.entries(record).filter(
     ([k, v]) =>
       (typeof v === "string" ||
         typeof v === "number" ||
         typeof v === "boolean") &&
+      !isOpaqueId(v) &&
       k !== "text" &&
       k !== "status",
   );
@@ -875,6 +934,7 @@ export function transcriptToTaskChatItems(
             ...(isGenericToolName(entry.name) ? { display: { name: { code: "tool.unnamed" as const } } } : {}),
             rawName: entry.name ?? undefined,
             target: summarizeToolInput(entry.input),
+            ...(toolInputTaskRef(entry.input) ? { taskRefId: toolInputTaskRef(entry.input) } : {}),
             status: "in_progress",
             ...(entry.parentToolUseId ? { parentToolUseId: entry.parentToolUseId } : {}),
           };
@@ -991,6 +1051,12 @@ export function transcriptToTaskChatItems(
         break;
       }
       case "provider_activity": {
+        if (entry.eventType === "context.compacted") {
+          // One entry per compaction; producers may reuse a thread-scoped id.
+          items.push(contextCompactedMarker(entry, `${runId}:compaction:${String(entry.payload.compactionId ?? "")}:${i}`));
+          resetInline();
+          break;
+        }
         // Use producer classification, including the legacy generic Codex
         // categories, never message-text matching. The run transcript still
         // retains these diagnostics.
@@ -1265,7 +1331,26 @@ export function transcriptToTaskChatItems(
 export function settledRunChildren(
   parsed: readonly TaskChatItem[],
 ): TaskChatTurnChildItem[] {
-  return buildTurnTimelineRows(parsed, false);
+  // A finished run's compactions render as thread dividers (see
+  // settledCompactionMarkers), not inside its collapsed turn.
+  return buildTurnTimelineRows(parsed, false).filter((item) => !isCompactionDivider(item));
+}
+
+/**
+ * Compaction dividers of a finished run. A compaction divides the whole
+ * conversation, so the thread places them between messages rather than
+ * inside the run's collapsed activity, where they would stay hidden.
+ */
+export function settledCompactionMarkers(
+  entries: readonly TranscriptEntry[],
+  runId: string,
+): TaskChatMarkerItem[] {
+  const markers: TaskChatMarkerItem[] = [];
+  entries.forEach((entry, index) => {
+    if (entry.kind !== "provider_activity" || entry.eventType !== "context.compacted") return;
+    markers.push(contextCompactedMarker(entry, `${runId}:compaction:${String(entry.payload.compactionId ?? "")}:${index}`));
+  });
+  return markers;
 }
 
 /**
@@ -1382,7 +1467,7 @@ export function paperclipRunnerActivityItems(
         return normalizedName !== "paperclip_finish";
       }
       case "marker":
-        return item.variant === "interrupted";
+        return item.variant === "interrupted" || item.variant === "context_compacted";
       case "protocol":
         // Completion is already represented by task state and the final answer.
         // Keep its event in the inspector, but omit it from feed rows and counts.
@@ -2073,6 +2158,10 @@ export function buildTurnTimelineRows(
       current = null;
       rows.push(item);
     } else if (item.kind === "plan_document") {
+      current = null;
+      rows.push(item);
+    } else if (item.kind === "marker" && item.variant === "context_compacted") {
+      // A compaction divides the turn, so it closes the current phase.
       current = null;
       rows.push(item);
     } else if (
