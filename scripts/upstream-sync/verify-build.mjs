@@ -6,7 +6,7 @@ import { request, FORK } from './run.mjs';
 import { readState } from './prepare.mjs';
 import { verifyAcceptedSource } from './source.mjs';
 import { buildMetadata } from './build-metadata.mjs';
-import { inspectPublication } from './publish-release.mjs';
+import { inspectPublication } from './publication-state.mjs';
 
 export function selectVerifiedRun(runs, sha) {
   assertSha(sha);

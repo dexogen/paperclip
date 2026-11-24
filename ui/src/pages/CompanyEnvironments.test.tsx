@@ -1789,17 +1789,19 @@ describe("CompanyEnvironments — test provider button", () => {
     await act(async () => {
       root!.render(renderCompanyEnvironments(queryClient));
     });
-    await flushReact();
+    const defaultPicker = 'select[aria-label="Default environment"]';
+    await waitForAssertion(() => {
+      const picker = container.querySelector<HTMLSelectElement>(defaultPicker);
+      expect(picker?.querySelector('option[value="env-1"]')?.textContent).toContain("Alpha");
+      expect(picker?.querySelector('option[value=""]:disabled')?.textContent).toBe("Select environment");
+    });
 
-    const options = Array.from(container.querySelectorAll("option"));
-    expect(options.some((option) => option.textContent?.trim() === "Local")).toBe(false);
-    // Saved non-local environments remain selectable defaults.
-    expect(options.some((option) => option.textContent?.includes("Alpha"))).toBe(true);
+    const select = container.querySelector<HTMLSelectElement>(defaultPicker)!;
+    expect(Array.from(select.options).some((option) => option.textContent?.trim() === "Local")).toBe(false);
     let finishDefault!: () => void;
     mockInstanceSettingsApi.update.mockImplementationOnce(() => new Promise((resolve) => { finishDefault = () => resolve({ defaultEnvironmentId: "env-2" }); }));
-    const select = container.querySelector<HTMLSelectElement>('select[aria-label="Default environment"]')!;
     await act(async () => { setSelectValue(select, "env-2"); });
-    expect(select.disabled).toBe(true);
+    await waitForAssertion(() => { expect(select.disabled).toBe(true); });
     await reactAct(async () => { await i18n.changeLanguage("ru"); });
     expect(select.getAttribute("aria-label")).toBe("Среда по умолчанию");
     expect(Array.from(select.options).some((option) => option.textContent === "Локальная среда")).toBe(false);
