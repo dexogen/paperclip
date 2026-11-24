@@ -974,17 +974,16 @@ describe("CompanyEnvironments — test provider button", () => {
     });
     await flushReact();
 
-    await act(async () => click(findButton(document.body, "Cancel")));
-    await flushReact();
+    await reactAct(async () => click(findButton(page, "Cancel")));
 
     expect(confirmSpy).toHaveBeenCalledWith("Discard unsaved environment changes?");
     expect(getEnvironmentFormPage()).not.toBeNull();
 
     confirmSpy.mockReturnValue(true);
-    await act(async () => click(findButton(document.body, "Cancel")));
-    await flushReact();
-
-    expect(getEnvironmentFormPage()).toBeNull();
+    await reactAct(async () => click(findButton(page, "Cancel")));
+    await waitForAssertion(() => {
+      expect(getEnvironmentFormPage()).toBeNull();
+    });
   });
 
   it("keeps unload and in-app link warnings after env var changes are staged into the form", async () => {

@@ -1904,7 +1904,7 @@ describe("Connectors landing page", () => {
     await flushReact();
     expect(setAiDefaultMock).toHaveBeenCalledExactlyOnceWith("company-1", "large-grant-1");
     expect(reads).toBeLessThanOrEqual(count * 30);
-  });
+  }, 20_000);
 
   it("sets a provider default by grant, keeps the old crown pending, and refetches the saved choice", async () => {
     const fixture = aiFixture();

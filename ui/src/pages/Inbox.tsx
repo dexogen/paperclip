@@ -3129,7 +3129,7 @@ function StreamlinedInbox({
                           {t("inboxUi.subtaskCount", { count: childCount })}
                         </span>
                       ) : undefined}
-                      mobileTitleMeta={streamlinedUiEnabled ? issueActivityTimestamp(issue) : undefined}
+                      mobileTitleMeta={streamlinedUiEnabled ? issueActivityTimestamp(issue, t) : undefined}
                       mobileMeta={streamlinedUiEnabled ? undefined : issueActivityText(issue, t).toLowerCase()}
                       mobileLeading={!streamlinedUiEnabled ? (
                         depth === 0 && hasChildren && collapseParentId ? (
@@ -3184,7 +3184,7 @@ function StreamlinedInbox({
                           />
                         ) : undefined
                       }
-                      trailingMeta={streamlinedUiEnabled && showTaskTimestamp ? issueActivityTimestamp(issue) : null}
+                      trailingMeta={streamlinedUiEnabled && showTaskTimestamp ? issueActivityTimestamp(issue, t) : null}
                     />
                   );
                 };

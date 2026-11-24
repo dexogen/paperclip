@@ -2070,8 +2070,8 @@ describe("Inbox toolbar", () => {
     localStorage.setItem("paperclip:inbox:collapsed-groups:company-1", JSON.stringify(["approval"]));
     apiMocks.approvalsList.mockResolvedValue([createApproval({ payload: { name: "Operator <strong>name</strong>" } })]);
     const rows = [
-      createIssue({ id: "locale-first", identifier: "PAP-9901", title: "First <strong>literal</strong>", updatedAt: new Date("2026-03-13T00:00:00Z") }),
-      createIssue({ id: "locale-second", identifier: "PAP-9902", title: "Second literal", updatedAt: new Date("2026-03-12T00:00:00Z") }),
+      createIssue({ id: "locale-first", identifier: "PAP-9901", title: "First <strong>literal</strong>", lastActivityAt: new Date(Date.now() - 60 * 60_000) }),
+      createIssue({ id: "locale-second", identifier: "PAP-9902", title: "Second literal", lastActivityAt: new Date(Date.now() - 120 * 60_000) }),
     ];
     setIssueRows(rows);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity, gcTime: 0 } } });
@@ -2104,6 +2104,9 @@ describe("Inbox toolbar", () => {
         expect(container.textContent).toContain(language === "ru" ? "Согласования" : "Approvals");
         expect(container.textContent).not.toContain(rows[0]!.title);
         expect(container.textContent).not.toContain("Operator <strong>name</strong>");
+        const remainingRow = container.querySelector("[data-inbox-issue-link]")?.closest("[data-inbox-item]");
+        expect(remainingRow?.textContent).toContain(language === "ru" ? "2 ч назад" : "2h ago");
+        expect(remainingRow?.textContent).not.toContain(language === "ru" ? "2h ago" : "2 ч назад");
         expect(rowIds()).toEqual(initialIds.slice(1));
         expect(localStorage.getItem("paperclip:inbox:collapsed-groups:company-1")).toBe(initialStorage);
         expect(apiMocks.archiveFromInbox.mock.calls).toEqual([["locale-first"]]);

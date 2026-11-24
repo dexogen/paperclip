@@ -34,6 +34,8 @@ vi.mock("@/lib/router", () => ({
 }));
 vi.mock("../context/CompanyContext", async original => ({ ...await original<typeof import("../context/CompanyContext")>(), useCompany: () => ({ selectedCompanyId: "c1", selectedCompany: { id: "c1", issuePrefix: "PAP" } }) }));
 vi.mock("../context/BreadcrumbContext", async original => ({ ...await original<typeof import("../context/BreadcrumbContext")>(), useBreadcrumbs: () => ({ setBreadcrumbs: nav.breadcrumbs }) }));
+// The revision form and terminal history drawer belong to the classic decisions desk.
+vi.mock("../hooks/useCoordinatorWorkspaceEnabled", () => ({ useCoordinatorWorkspaceEnabled: () => ({ enabled: false }) }));
 vi.mock("../api/attention", () => ({ attentionApi: { list: vi.fn() } }));
 vi.mock("../api/agents", () => ({ agentsApi: { list: vi.fn(async () => []) } }));
 vi.mock("../api/auth", () => ({ authApi: { getSession: vi.fn(async () => ({ user: { id: "user-test" } })) } }));
