@@ -1346,21 +1346,22 @@ export function IssueProperties({
   const monitorPaused = areAutomaticMonitorChecksPaused(issue);
   const canCheckMonitorNow = canCheckIssueMonitorNow(issue, monitorServiceName);
   const monitorNow = useMonitorCountdown(monitorPaused ? null : monitorNextCheckAt);
+  const monitorLocale = i18n.resolvedLanguage === "ru" ? "ru-RU" : "en-US";
   const monitorRelative = monitorNextCheckAt ? formatMonitorEta(monitorNextCheckAt, monitorNow, t) : null;
   const monitorDisplayState = deriveMonitorState({ monitorNextCheckAt }, monitorNow).state;
   const monitorIsDueNow = monitorDisplayState === "due-now";
   const monitorIsOverdue = monitorDisplayState === "overdue";
   const monitorPrimary = monitorNextCheckAt
-    ? monitorPaused ? "Automatic checks paused" : formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
+    ? monitorPaused ? t("interfaceUpdates.automatic_checks_paused_03d978cd") : formatMonitorEtaLabel(monitorNextCheckAt, monitorNow, t)
     : monitorState?.status === "cleared"
       ? t("taskProperties.monitor.cleared")
       : t("taskProperties.fields.none");
   const monitorSecondary = monitorNextCheckAt
     ? monitorPaused
-      ? canCheckMonitorNow ? "Check now to request a manual check" : "Resume this task to continue checking"
+      ? canCheckMonitorNow ? t("taskProperties.monitor.requestManualCheck") : t("taskChatUi.monitor.resumeToCheck")
       : monitorIsDueNow
       ? t("taskProperties.monitor.checkingMomentarily")
-      : [formatMonitorAbsolute(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }, monitorNow, t), monitorIsOverdue ? t("taskProperties.monitor.firesNextTick") : monitorAttemptCount > 0 ? t("taskProperties.monitor.attempt", { count: monitorAttemptCount }) : null].filter(Boolean).join(" · ")
+      : [formatMonitorAbsolute(monitorNextCheckAt, { locale: monitorLocale }, monitorNow, t), monitorIsOverdue ? t("taskProperties.monitor.firesNextTick") : monitorAttemptCount > 0 ? t("taskProperties.monitor.attempt", { count: monitorAttemptCount }) : null].filter(Boolean).join(" · ")
     : monitorState?.status === "cleared"
       ? [
           monitorLastTriggeredAt ? t("taskProperties.monitor.lastChecked", { time: timeAgo(monitorLastTriggeredAt, t) }) : null,
@@ -1400,7 +1401,7 @@ export function IssueProperties({
           <div className="space-y-3 px-4 py-3 text-left">
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.nextCheck")}</div>
-              <div className="text-sm">{formatMonitorAbsoluteFull(monitorNextCheckAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined })}</div>
+              <div className="text-sm">{formatMonitorAbsoluteFull(monitorNextCheckAt, { locale: monitorLocale })}</div>
               <div className="text-xs text-muted-foreground">{monitorPaused ? translateUi("interfaceUpdates.automatic_checks_paused_03d978cd") : monitorRelative}</div>
             </div>
             <div>
@@ -1413,7 +1414,7 @@ export function IssueProperties({
             </div>
             <div>
               <div className="text-xs text-muted-foreground">{t("taskProperties.fields.lastTriggered")}</div>
-              <div className="text-sm">{monitorLastTriggeredAt ? formatMonitorAbsoluteFull(monitorLastTriggeredAt, { locale: i18n.resolvedLanguage === "ru" ? "ru-RU" : undefined }) : t("taskProperties.fields.notTriggered")}</div>
+              <div className="text-sm">{monitorLastTriggeredAt ? formatMonitorAbsoluteFull(monitorLastTriggeredAt, { locale: monitorLocale }) : t("taskProperties.fields.notTriggered")}</div>
             </div>
           </div>
           <div className="flex gap-2 border-t border-border px-4 py-3">

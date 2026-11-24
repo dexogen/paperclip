@@ -1004,7 +1004,7 @@ export function AgentDetail() {
           menuItems={[{ label: translateUi("agentDetailUi.nav.history"), icon: HistoryIcon, onSelect: () => setHistoryOpen(true) }]}
           actionsDisabled={agentAction.isPending || (activeView === "advanced" && configSaving)}
           workActionsDisabled={hasInvalidOrgChain}
-          workActionsDisabledReason="Repair this agent's reporting chain before assigning tasks or starting runs"
+          workActionsDisabledReason={t("agentDetailUi.header.repairBeforeWork")}
           hasPendingNavigationChanges={configDirty}
           onBeforeNavigate={prepareAgentNavigation}
           onActionFailure={(failure) => setActionError(failure ? { kind: "buttons", failure } : null)}

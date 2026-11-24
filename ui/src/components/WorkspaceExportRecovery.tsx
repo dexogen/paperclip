@@ -220,6 +220,21 @@ function unverifiedSourceText(inspected: WorkspaceSourceInspection | undefined):
     : translateUi("runUi.workspaceExport.sourceReason", { code });
 }
 
+type RecoveryNotice =
+  | { localize: () => string }
+  | { inspection: WorkspaceSourceInspection | undefined }
+  | { rejected: true; message?: string }
+  | { message: string };
+
+function recoveryNoticeText(notice: RecoveryNotice): string {
+  if ("localize" in notice) return notice.localize();
+  if ("inspection" in notice) return unverifiedSourceText(notice.inspection) || translateUi("runUi.workspaceExport.sourceUnverified");
+  if ("rejected" in notice) return translateUi("interfaceUpdates.recoveryUnconfirmed", {
+    message: notice.message ?? translateUi("interfaceUpdates.inspectRecoveryStatus"),
+  });
+  return notice.message;
+}
+
 function RetainedFilesRecovery({ action, issueId, companyId, className, onRecoveryControlChange }: {
   action: IssueRecoveryAction; issueId: string; companyId: string; className?: string;
   onRecoveryControlChange?: (owns: boolean) => void;
@@ -232,7 +247,7 @@ function RetainedFilesRecovery({ action, issueId, companyId, className, onRecove
   const busy = useRef(false);
   const [acknowledged, setAcknowledged] = useState(false);
   const [checkedUnconfirmed, setCheckedUnconfirmed] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<RecoveryNotice | null>(null);
   const access = useQuery({ queryKey: queryKeys.access.currentBoardAccess,
     queryFn: () => accessApi.getCurrentBoardAccess() });
   const accessView = useQueryView(access);
@@ -289,23 +304,23 @@ function RetainedFilesRecovery({ action, issueId, companyId, className, onRecove
       const fresh = boundAction(observed.data);
       const state = asObject(fresh?.evidence.workspaceRecovery);
       if (observed.error || !fresh || state.status !== "blocked" || state.retryable !== true)
-        throw new Error(translateUi("runUi.workspaceExport.sourceChanged"));
+        return setNotice({ localize: () => translateUi("runUi.workspaceExport.sourceChanged") });
       if (!sourceVerified(observed.data))
-        throw new Error(unverifiedSourceText(observed.data?.sourceInspection) || translateUi("runUi.workspaceExport.sourceUnverified"));
+        return setNotice({ inspection: observed.data?.sourceInspection });
       if (!canMutate || !owner || readOwner() !== owner || !storageKey)
-        throw new Error(translateUi("runUi.workspaceExport.accountChanged"));
+        return setNotice({ localize: () => translateUi("runUi.workspaceExport.accountChanged") });
       const previous = readPendingSend(storageKey, matchesInput);
       if (restartFailedAttempt && (!previous || !Array.isArray(state.requestIds)
         || !state.requestIds.includes(previous.idempotencyKey)
         || asObject(fresh.evidence.systemRecovery).state !== "exhausted"))
-        throw new Error(translateUi("runUi.workspaceExport.priorFailed"));
+        return setNotice({ localize: () => translateUi("runUi.workspaceExport.priorFailed") });
       // Unknown acceptance reuses its identity. A new bounded request requires
       // an explicit operator click and a freshly confirmed exhausted attempt.
       const record = (!restartFailedAttempt && previous) || {
         idempotencyKey: createUuid(), payload: { actionId: action.id, runId }, createdAt: Date.now(),
       };
       if (!writePendingSend(storageKey, record))
-        throw new Error(translateUi("runUi.workspaceExport.localSaveFailed"));
+        return setNotice({ localize: () => translateUi("runUi.workspaceExport.localSaveFailed") });
       try {
         const result = await issuesApi.recoverWorkspace(issueId, { ...record.payload, idempotencyKey: record.idempotencyKey });
         if (result.actionId !== action.id || !["queued", "recovering", "blocked", "recovered"].includes(result.status))
@@ -316,11 +331,11 @@ function RetainedFilesRecovery({ action, issueId, companyId, className, onRecove
         await source.refetch();
       } catch (error) {
         setNotice(classifySendFailure(error) === "rejected"
-          ? translateUi("interfaceUpdates.recoveryUnconfirmed", { message: error instanceof Error ? error.message : translateUi("interfaceUpdates.inspectRecoveryStatus") })
-          : translateUi("interfaceUpdates.the_recovery_request_could_not_be_confirmed_check__bb2016df"));
+          ? { rejected: true, message: error instanceof Error ? error.message : undefined }
+          : { localize: () => translateUi("interfaceUpdates.the_recovery_request_could_not_be_confirmed_check__bb2016df") });
       }
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : translateUi("interfaceUpdates.unable_to_inspect_file_recovery_74345cd6"));
+      setNotice(error instanceof Error ? { message: error.message } : { localize: () => translateUi("interfaceUpdates.unable_to_inspect_file_recovery_74345cd6") });
     } finally { busy.current = false; }
   } });
   const check = useMutation({ retry: false, mutationFn: async () => { // query-error-ok: operator checks run once; the source read uses the shared query retry policy.
@@ -331,13 +346,13 @@ function RetainedFilesRecovery({ action, issueId, companyId, className, onRecove
       // The task's current recovery replaced this record. Reload the task so it
       // shows that recovery, instead of asking for a refresh that changes nothing.
       invalidate();
-      throw new Error(translateUi("runUi.workspaceExport.superseded"));
+      return setNotice({ localize: () => translateUi("runUi.workspaceExport.superseded") });
     }
     const state = asObject(fresh.evidence.workspaceRecovery);
     const ids = state.requestIds;
     const unconfirmed = Boolean(pending && Array.isArray(ids) && !ids.includes(pending.idempotencyKey));
     setCheckedUnconfirmed(unconfirmed);
-    setNotice(unconfirmed ? translateUi("interfaceUpdates.no_recovery_request_is_confirmed_yet_trying_again__0475773a") : null);
+    setNotice(unconfirmed ? { localize: () => translateUi("interfaceUpdates.no_recovery_request_is_confirmed_yet_trying_again__0475773a") } : null);
     invalidate();
   } });
   const checkError = isTransientError(check.error) ? null : check.error;
@@ -370,7 +385,7 @@ function RetainedFilesRecovery({ action, issueId, companyId, className, onRecove
       </Button> : null}
       {sourceView.kind === "loading" || sourceView.kind === "reconnecting" ? <p className="text-xs text-muted-foreground">{translateUi("interfaceUpdates.inspecting_the_recorded_file_source_72d7b1bc")}</p> : null}
       {sourceView.kind === "error" || checkError || notice ? <p role="alert" className="text-sm text-destructive">
-        {notice ?? (checkError instanceof Error ? checkError.message : translateUi("interfaceUpdates.file_recovery_could_not_be_inspected_check_its_sta_9e47d7cc"))}
+        {notice ? recoveryNoticeText(notice) : (checkError instanceof Error ? checkError.message : translateUi("interfaceUpdates.file_recovery_could_not_be_inspected_check_its_sta_9e47d7cc"))}
       </p> : null}
       {current && recovery.status === "blocked" && (serverAcknowledged || recovery.retryable !== true)
         ? <p role="alert">{translateUi("runUi.workspaceExport.unapplied")}</p> : null}

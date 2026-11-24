@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 
 import { act } from "react";
 import { queryKeys } from "@/lib/queryKeys";
@@ -80,6 +81,23 @@ describe("pending agent roster display", () => {
     await act(async () => editButton().click());
     await vi.waitFor(() => expect(container.querySelector('[data-testid="bulk-editor"]')).not.toBeNull());
     expect(api.get).toHaveBeenCalledTimes(2);
+  });
+
+  it("relabels a stale selection without opening the editor or repeating the read", async () => {
+    const previous = i18n.language;
+    const display = renderEditable();
+    api.get.mockResolvedValueOnce({ ...display, companyId: "another-company" });
+    try {
+      await act(async () => editButton().click());
+      const alert = container.querySelector('[role="alert"]');
+      expect(alert?.textContent).toBe("The selected agents changed. Refresh the roster and select them again.");
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(alert?.textContent).toBe("Данные выбранных агентов изменились. Обновите список и выберите агентов ещё раз.");
+      expect(api.get).toHaveBeenCalledTimes(1);
+      expect(container.querySelector('[data-testid="bulk-editor"]')).toBeNull();
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previous); });
+    }
   });
 
   it("rejects a complete-agent response delivered after the account switches", async () => {

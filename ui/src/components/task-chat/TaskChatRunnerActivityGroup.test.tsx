@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -95,6 +96,19 @@ describe("TaskChatRunnerActivityGroup", () => {
     )!;
   const viewport = () =>
     container.querySelector('[data-testid="task-chat-activity-viewport"]')!;
+
+  it("formats token usage and cost in the selected language", async () => {
+    render([{ id: "tokens", kind: "usage", usage: { used: 12000, size: 64000, inputTokens: 11400, outputTokens: 600, costUsd: 0.8125 } }]);
+    expect(viewport().textContent).toContain("12,000/64,000 ctx");
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(viewport().textContent).toMatch(/Контекст: 12\s000\/64\s000/);
+      expect(viewport().textContent).toMatch(/↑11\s400 ↓600/);
+      expect(viewport().textContent).toContain("$0,8125");
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+  });
 
   it("aligns runner commentary with the following agent reply", () => {
     act(() => root.render(
@@ -356,7 +370,7 @@ describe("TaskChatRunnerActivityGroup", () => {
       ),
     ).toBeNull();
   });
-  it("shows research sources, check outcomes and a wait countdown in expanded history", () => {
+  it("shows research sources, check outcomes and a wait countdown in expanded history", async () => {
     const search = providerItem("search", "research", "completed", [
       { label: "Action", value: "search" },
       { label: "Query", value: "temporal week dates" },
@@ -412,5 +426,15 @@ describe("TaskChatRunnerActivityGroup", () => {
 
     expect(container.querySelector('[data-activity-row="wait"]')?.textContent).toContain("Waiting 30s");
     expect(container.querySelector('[data-testid="task-chat-wait-countdown"]')?.textContent).toMatch(/^1[78]s left$/);
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(passedRow.textContent).toContain("Проверка пройдена");
+      expect(passedRow.textContent).toContain("6 tests passed");
+      expect(container.querySelector('[data-activity-row="check-3"]')?.textContent).toContain("Запрещено политикой");
+      expect(container.querySelector('[data-activity-row="wait"]')?.textContent).toContain("Ожидает 30 с");
+      expect(container.querySelector('[data-testid="task-chat-wait-countdown"]')?.textContent).toMatch(/^Осталось \d+ с$/);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
   });
 });

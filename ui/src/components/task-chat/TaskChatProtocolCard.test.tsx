@@ -554,8 +554,8 @@ describe("TaskChatProtocolCard", () => {
       files: [
         {
           path: "ui/src/App.tsx",
-          operation: "modify",
-          previousPath: null,
+          operation: "rename",
+          previousPath: "ui/src/OldApp.tsx",
           additions: 1,
           deletions: 1,
           binary: false,
@@ -573,6 +573,9 @@ describe("TaskChatProtocolCard", () => {
     await act(async () => row?.click());
     const diff = container.querySelector('[data-testid="task-chat-diff-view"]');
     expect(diff?.textContent).toContain("Line 1");
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(row?.textContent).toContain("переименован");
+    expect(row?.textContent).toContain("ui/src/OldApp.tsx");
     expect(diff?.textContent).toContain("old");
     expect(diff?.textContent).toContain("new");
   });

@@ -147,7 +147,7 @@ function runnerWaitingLabel({ runId, status, execution, preparationLabel }: Runn
       : execution.label;
   }
   if (!runId && preparationLabel) return preparationLabel;
-  return status === "queued" ? execution?.label ?? "Queued" : null;
+  return status === "queued" ? execution?.label ?? t("taskChatUi.bubble.queued") : null;
 }
 
 /** One identity stays mounted while admission discovers the run's renderer. */

@@ -11,6 +11,7 @@ describe("decision receipt navigation", () => {
     expect(itemVerdictsHistoryLabel({ outcome: "resolved", items: [{ verdict: "approve" }, { verdict: "reject" }, { verdict: "defer" }] }))
       .toBe("1 approved · 1 rejected · 1 deferred");
     expect(itemVerdictsHistoryLabel({ outcome: "resolved", items: [{ verdict: "reject" }] })).toBe("1 rejected");
+    expect(itemVerdictsHistoryLabel({ outcome: "resolved", items: [] })).toBe("Review recorded");
     expect(itemVerdictsHistoryLabel({ outcome: "cancelled", items: [{ verdict: "approve" }] })).toBeNull();
   });
   it("pins the reviewed document and interaction and ignores arbitrary custom URLs", () => {
@@ -51,7 +52,10 @@ const support = await getEmbeddedPostgresTestSupport();
         { id: "extra", verdict: "defer", resolvedAt: new Date().toISOString() },
       ] } });
     const page = await decisionHistoryService(db).list(companyId, { actor: { type: "board", userId: "reviewer" }, userId: "reviewer" });
-    expect(page.items[0]?.label).toBe("1 approved · 1 rejected · 1 deferred");
+    expect(page.items[0]).toMatchObject({
+      label: "1 approved · 1 rejected · 1 deferred",
+      display: { label: { code: "itemVerdicts", args: { approve: 1, reject: 1, defer: 1 } } },
+    });
   });
 
   it("returns a cross-task document receipt whose exact revision belongs to the target, not the origin", async () => {
@@ -132,7 +136,7 @@ const support = await getEmbeddedPostgresTestSupport();
       { companyId, issueId: hiddenId, kind: "ask_user_questions", status: "answered", title: "Secret", resolvedAt: at, payload: { version: 1, questions: [] } },
       { companyId: otherCompanyId, issueId: otherIssueId, kind: "ask_user_questions", status: "answered", title: "Other secret", resolvedAt: at, payload: { version: 1, questions: [] } },
     ]);
-    await db.insert(decisions).values({ id: visual, companyId, originIssueId: issueId, originAgentId: agentId, originRunId: runId, title: "Visual review", body: "Choose", options: [{ id: "yes", label: "Visual approved", effects: [] }], chosenOptionId: "yes", status: "decided", decidedAt: at, expiresAt: at, decidedByUserId: "reviewer", signedSpec: "test", targetSnapshots: {} });
+    await db.insert(decisions).values({ id: visual, companyId, originIssueId: issueId, originAgentId: agentId, originRunId: runId, title: "Visual review", body: "Choose", options: [{ id: "yes", label: "Approved", effects: [] }], chosenOptionId: "yes", status: "decided", decidedAt: at, expiresAt: at, decidedByUserId: "reviewer", signedSpec: "test", targetSnapshots: {} });
     // PostgreSQL now() can have more precision than the JSON Date cursor.
     await db.execute(sql`update ${issueThreadInteractions} set resolved_at = '2026-10-26T12:00:00.123456Z'::timestamptz where id = ${copy}`);
     await db.execute(sql`update ${issueThreadInteractions} set resolved_at = '2026-10-26T12:00:00.123789Z'::timestamptz where id = ${question}`);
@@ -147,7 +151,12 @@ const support = await getEmbeddedPostgresTestSupport();
     } while (cursor);
     expect(new Set(result.map((item) => item.sourceId))).toEqual(new Set([copy, visual, question]));
     expect(result).toHaveLength(3);
-    expect(result.find((item) => item.sourceId === question)?.label).toBe("Answers recorded");
+    expect(result.find((item) => item.sourceId === question)).toMatchObject({
+      label: "Answers recorded", display: { label: { code: "answersRecorded" } },
+    });
+    const chosenOption = result.find((item) => item.sourceId === visual);
+    expect(chosenOption?.label).toBe("Approved");
+    expect(chosenOption).not.toHaveProperty("display");
     const filtered = await service.list(companyId, { ...options, search: "channels", sort: "oldest" });
     expect(filtered.items.map((item) => item.sourceId)).toEqual([question]);
     expect((await service.list(companyId, { ...options, limit: 100, since: "2026-10-26T12:00:00.100Z" })).items).toHaveLength(2);

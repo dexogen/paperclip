@@ -176,6 +176,7 @@ export type {
   AttentionJoinTitleMessage,
   AttentionDisplayMessage,
   DecisionHistoryItem,
+  DecisionHistoryLabelMessage,
   DecisionHistoryQuery,
   DecisionHistoryPage,
   AttentionDetailImage,

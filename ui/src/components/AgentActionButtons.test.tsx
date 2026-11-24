@@ -158,6 +158,23 @@ describe("AgentActionButtons", () => {
     await flushReact();
   }
 
+  it("keeps the default task and run commands named when the action menu changes language", async () => {
+    render(makeAgent(), { workActionsInMenu: true, runLabel: undefined });
+    await flushReact();
+    await openMenu();
+    const run = [...document.body.querySelectorAll("button")].find(button => button.textContent === "Run now");
+    const assign = [...container.querySelectorAll("button")].find(button => button.textContent === "Assign Task");
+    expect(run).toBeTruthy();
+    expect(assign).toBeTruthy();
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    await flushReact();
+    expect(run!.textContent).toBe("Запустить сейчас");
+    expect(assign!.textContent).toBe("Назначить задачу");
+    await act(() => run!.click());
+    await flushReact();
+    expect(mockAgentsApi.invoke).toHaveBeenCalledExactlyOnceWith("agent-1", "company-1");
+  });
+
   it("keeps the same pending invocation across EN/RU/EN without dispatching twice", async () => {
     let resolveInvoke!: (run: { id: string }) => void;
     mockAgentsApi.invoke.mockReturnValue(new Promise(resolve => { resolveInvoke = resolve; }));

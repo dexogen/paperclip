@@ -1,18 +1,32 @@
 import { useTranslation as useUiTranslation } from "@/i18n";
 import { t as translateUi } from "@/i18n";
+import type { TFunction } from "i18next";
 import { ArrowUpRight, Check, MessageSquare, X } from "lucide-react";
 import type { IssueThreadInteraction } from "@/lib/issue-thread-interactions";
 import { Link } from "@/lib/router";
 import { CoordinatorRelativeTime } from "./CoordinatorRelativeTime";
 import { decisionReceiptHref } from "@/lib/decision-receipt-navigation";
 
+function interactionReceiptLabel(status: IssueThreadInteraction["status"], t: TFunction): string {
+  switch (status) {
+    case "answered": return t("interfaceUpdates.answers_recorded_37d183a4");
+    case "accepted": return t("interfaceUpdates.approved_87b42e40");
+    case "rejected": return t("fullDiagnostics.changesRequested");
+    case "pending": return t("decisionForms.common.pending");
+    case "cancelled": return t("decisionForms.common.cancelled");
+    case "expired": return t("decisionForms.common.expired");
+    case "failed": return t("decisionForms.common.failed");
+    default: return String(status).replaceAll("_", " ");
+  }
+}
+
 /** Compact notification; the original request and its full result stay in the task. */
 export function CoordinatorInteractionReceipt({ interaction }: { interaction: IssueThreadInteraction }) {
-  useUiTranslation();
+  const { t } = useUiTranslation();
   const target = "target" in interaction.payload ? interaction.payload.target : null;
   const accepted = interaction.status === "accepted";
   const answered = interaction.status === "answered";
-  const label = answered ? translateUi("interfaceUpdates.answers_recorded_37d183a4") : accepted ? translateUi("interfaceUpdates.approved_87b42e40") : interaction.status === "rejected" ? translateUi("fullDiagnostics.changesRequested") : interaction.status.replaceAll("_", " ");
+  const label = interactionReceiptLabel(interaction.status, t);
   const Icon = answered ? MessageSquare : accepted ? Check : X;
   const answerAnchor = `comment-interaction-response:${interaction.id}`;
   const href = answered ? `#${answerAnchor}` : decisionReceiptHref({ issueHref: `/issues/${interaction.issueId}`, interactionId: interaction.id, target });

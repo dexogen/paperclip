@@ -50,11 +50,11 @@ const READ_RUN_MIN = 3;
 
 /** "120ms", "1.2s", "14s", "2m 03s". */
 export function formatToolDuration(ms: number): string {
-  if (ms < 1_000) return `${Math.max(0, Math.round(ms))}ms`;
-  if (ms < 10_000) return `${(ms / 1_000).toFixed(1)}s`;
+  if (ms < 1_000) return translateUi("fullPages.millisecondsShort", { value: Math.max(0, Math.round(ms)) });
+  if (ms < 10_000) return translateUi("runUi.turn.seconds", { seconds: formatNumber(ms / 1_000, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
   const seconds = Math.round(ms / 1_000);
-  if (seconds < 60) return `${seconds}s`;
-  return `${Math.floor(seconds / 60)}m ${String(seconds % 60).padStart(2, "0")}s`;
+  if (seconds < 60) return translateUi("runUi.turn.seconds", { seconds });
+  return translateUi("runUi.turn.minutesSeconds", { minutes: Math.floor(seconds / 60), seconds: String(seconds % 60).padStart(2, "0") });
 }
 
 function toolPresentation(item: ToolActivity, t?: TFunction) {
@@ -111,7 +111,7 @@ function providerTrailing(item: Extract<Activity, { kind: "protocol" }>): Pick<A
   return {};
 }
 
-function presentation(item: Activity, active: boolean, t?: TFunction, taskLabel?: string): ActivityRowPresentation | null {
+function presentation(item: Activity, active: boolean, t: TFunction, taskLabel?: string): ActivityRowPresentation | null {
   if (item.kind === "tool") {
     const tool = toolPresentation(item, t);
     const running =
@@ -164,7 +164,7 @@ function presentation(item: Activity, active: boolean, t?: TFunction, taskLabel?
     const running = active && Boolean(item.streaming);
     return {
       icon: Brain,
-      label: t ? running ? t("runUi.activityGroup.thinking") : t("runUi.thinking.settled") : running ? translateUi("runUi.activityGroup.thinking") : translateUi("runUi.thinking.settled"),
+      label: running ? t("runUi.activityGroup.thinking") : t("runUi.thinking.settled"),
       target:
         latestReasoningHeadline(item.lines.join("\n")) ??
         item.lines
@@ -192,27 +192,27 @@ function presentation(item: Activity, active: boolean, t?: TFunction, taskLabel?
   if (item.kind === "marker")
     return {
       icon: CirclePause,
-      label: t ? formatRunDisplayText("markerLabel", item.label, item.display?.label, t) : item.label,
-      target: (t ? formatRunDisplayText("markerDetail", item.detail, item.display?.detail, t) : item.detail) ?? undefined,
+      label: formatRunDisplayText("markerLabel", item.label, item.display?.label, t),
+      target: formatRunDisplayText("markerDetail", item.detail, item.display?.detail, t) ?? undefined,
       mono: false,
       running: false,
     };
   const { used, size, inputTokens, outputTokens, costUsd } = item.usage;
   const usage = [
     size > 0
-      ? t ? t("runUi.activityGroup.context", { used: formatNumber(used), size: formatNumber(size) }) : `${used.toLocaleString()}/${size.toLocaleString()} ctx`
+      ? t("runUi.activityGroup.context", { used: formatNumber(used), size: formatNumber(size) })
       : undefined,
     inputTokens != null || outputTokens != null
-      ? `↑${(inputTokens ?? 0).toLocaleString()} ↓${(outputTokens ?? 0).toLocaleString()}`
+      ? `↑${formatNumber(inputTokens ?? 0)} ↓${formatNumber(outputTokens ?? 0)}`
       : undefined,
-    costUsd != null ? `$${costUsd.toFixed(4)}` : undefined,
+    costUsd != null ? `$${formatNumber(costUsd, { minimumFractionDigits: 4, maximumFractionDigits: 4, useGrouping: false })}` : undefined,
   ]
     .filter(Boolean)
     .join(" · ");
   return {
     icon: Gauge,
-    label: t ? formatRunDisplayText("usageLabel", item.label, item.display?.label, t) ?? t("runUi.activityGroup.tokenUsage") : item.label ?? translateUi("runUi.activityGroup.tokenUsage"),
-    target: usage || (t ? formatRunDisplayText("usageDetail", item.detail, item.display?.detail, t) : item.detail) || undefined,
+    label: formatRunDisplayText("usageLabel", item.label, item.display?.label, t) ?? t("runUi.activityGroup.tokenUsage"),
+    target: usage || formatRunDisplayText("usageDetail", item.detail, item.display?.detail, t) || undefined,
     mono: false,
     running: false,
   };
@@ -477,6 +477,7 @@ function ExpandedActivity({
   item: Activity;
   active: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useTaskChatExpansion(
     `runner-detail:${item.id}`,
     false,
@@ -484,7 +485,7 @@ function ExpandedActivity({
   const detailId = useId();
   const expandable = hasActivityDetails(item);
   const content = <ActivityContent item={item} active={active} />;
-  const row = presentation(item, active);
+  const row = presentation(item, active, t);
   const note = row?.note;
   return (
     <li className="min-w-0" data-activity-item-id={item.id}>
@@ -574,7 +575,7 @@ function ReadRunActivity({ items }: { items: ToolActivity[] }) {
             <BookOpen className="size-3.5" aria-hidden="true" />
           </span>
           <span className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden whitespace-nowrap">
-            <span className="shrink-0 text-xs">{translateUi("fullApps.caption_9b9a8d05a7")} {items.length} {translateUi("fullDiagnostics.unit_file_other")}</span>
+            <span className="shrink-0 text-xs">{translateUi("runUi.phase.readCount", { count: items.length })}</span>
             <span className="truncate font-mono text-xs text-muted-foreground">{readRunPreview(items)}</span>
           </span>
         </span>
@@ -606,7 +607,7 @@ export function TaskChatRunnerActivityGroup({
   );
   const historyId = useId();
   const activities = item.items.filter(
-    (activity) => presentation(activity, false) !== null,
+    (activity) => presentation(activity, false, t) !== null,
   );
   const latest = activities.at(-1);
   const summary = completedActivitySummary(activities, t);

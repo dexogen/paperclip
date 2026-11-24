@@ -200,7 +200,7 @@ export function RemoteMcpProductionSetup({ providerId, connection, host = "page"
   const submit = async (saveDraft = false) => {
     if (busy.current || !selectedCompanyId || !instructionsValid || (connection && !installs.data)) return;
     if (!saveDraft && (!connection || connection.status === "draft") && requiredAgentId && !state.allAgents && !state.agentIds.includes(requiredAgentId)) {
-      edit({ notice: translateUi("githubSetupUi.includeAgentToContinue") });
+      edit({ notice: ownAppDisplayText("githubSetupUi.includeAgentToContinue") });
       return;
     }
     try {

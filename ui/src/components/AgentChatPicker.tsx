@@ -1,4 +1,4 @@
-import { useAgentRoleLabels } from "./agent-config-primitives";
+import { agentRoleSearchTerms, useAgentRoleLabels } from "./agent-config-primitives";
 import { t as fullSharedT, Trans as FullSharedTrans, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Agent } from "@paperclipai/shared";
@@ -50,7 +50,7 @@ function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, 
   }, []);
   const [search, setSearch] = useState("");
   const [openingId, setOpeningId] = useState<string | null>(null);
-  const [selectionError, setSelectionError] = useState<string | null>(null);
+  const [selectionError, setSelectionError] = useState<{ message?: string } | null>(null);
   async function selectAgent(agent: Agent) {
     if (openingId) return;
     setOpeningId(agent.id);
@@ -61,7 +61,7 @@ function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, 
       await onSelect(agent, request.signal);
       if (mounted.current) onComplete();
     } catch (error) {
-      setSelectionError(error instanceof Error ? error.message : "Couldn’t open chat. Try again.");
+      setSelectionError({ message: error instanceof Error ? error.message : undefined });
     } finally {
       setOpeningId(null);
     }
@@ -74,7 +74,7 @@ function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, 
         value={search}
         onValueChange={setSearch}
       />
-      {selectionError && <p role="alert" className="px-4 py-3 text-sm text-destructive">{selectionError}</p>}
+      {selectionError && <p role="alert" className="px-4 py-3 text-sm text-destructive">{selectionError.message || fullSharedT("fullPages.couldnTOpenChatTryAgain")}</p>}
       {openingId && <p role="status" className="sr-only">{fullSharedT("fullShared.opening_conversation_12a7ad")}</p>}
       {error ? (
         <div role="alert" className="flex flex-col items-start gap-2 p-4 text-sm">
@@ -102,7 +102,7 @@ function AgentChatPickerResults({ agents, onSelect, onComplete, loading, error, 
                 <CommandItem
                   key={agent.id}
                   value={agent.id}
-                  keywords={[agent.name, agent.title ?? "", agent.role, roleLabel]}
+                  keywords={[agent.name, agent.title ?? "", agent.role, ...(agentRoleSearchTerms.get(agent.role) ?? [])]}
                   onSelect={() => { void selectAgent(agent); }}
                   disabled={openingId !== null}
                   className="gap-3 px-3 py-3"

@@ -2582,7 +2582,8 @@
       "attempt_one": "Attempt {{count}}",
       "attempt_other": "Attempt {{count}}",
       "afterAttempt_one": "after attempt {{count}}",
-      "afterAttempt_other": "after attempt {{count}}"
+      "afterAttempt_other": "after attempt {{count}}",
+      "requestManualCheck": "Check now to request a manual check"
     },
     "retry": {
       "pendingSchedule": "Pending schedule",
@@ -5798,7 +5799,8 @@
       "ackFailed": "The recovery acknowledgement could not be confirmed.",
       "superseded": "This file recovery was replaced. Showing the task’s current recovery.",
       "unapplied": "File recovery has not finished. The saved files remain protected and are not applied.",
-      "showCurrent": "This file recovery was replaced. Check its status to show the task’s current recovery."
+      "showCurrent": "This file recovery was replaced. Check its status to show the task’s current recovery.",
+      "noRecordedFailure": "No recorded system recovery failure."
     },
     "projectAccess": {
       "label": "Project access",
@@ -6194,7 +6196,11 @@
         "running": "Waiting",
         "completed": "Finished waiting",
         "failed": "Wait failed",
-        "interrupted": "Wait stopped"
+        "interrupted": "Wait stopped",
+        "planned": "Waiting {{duration}}",
+        "elapsed": "Waited {{duration}}",
+        "stoppedAfter": "Stopped waiting after {{duration}}",
+        "remaining": "{{duration}} left"
       },
       "notice": {
         "running": "Provider notice",
@@ -6212,7 +6218,19 @@
       "files_one": "{{count}} file",
       "files_other": "{{count}} files",
       "failedFallback": "{{label}} · failed",
-      "interruptedFallback": "{{label}} · interrupted"
+      "interruptedFallback": "{{label}} · interrupted",
+      "planProposal": {
+        "running": "Writing a plan",
+        "completed": "Proposed a plan",
+        "failed": "Plan proposal failed",
+        "interrupted": "Plan proposal stopped"
+      },
+      "verification": {
+        "running": "Running a check",
+        "passed": "Check passed",
+        "notRun": "Check not run"
+      },
+      "patternOnPage": "“{{pattern}}” in {{page}}"
     },
     "transcript": {
       "executing": "Executing command",
@@ -6379,6 +6397,23 @@
         "delete": "delete",
         "rename": "rename",
         "mode_change": "mode change"
+      },
+      "fileChange": {
+        "create": "new",
+        "delete": "deleted",
+        "rename": "renamed",
+        "mode_change": "mode change"
+      },
+      "verificationReason": {
+        "environment_unavailable": "Environment unavailable",
+        "tool_unavailable": "Tool unavailable",
+        "dependency_missing": "Dependency missing",
+        "permission_denied": "Permission denied",
+        "credential_missing": "Credential missing",
+        "policy_restricted": "Policy restricted",
+        "external_service_unavailable": "External service unavailable",
+        "budget_exhausted": "Budget exhausted",
+        "other": "Other"
       }
     },
     "activityGroup": {
@@ -9780,7 +9815,8 @@
       "cloudUnreachable": "Paperclip couldn’t reach Paperclip Cloud. Try again.",
       "expired": "Your authorization expired or was revoked. Reconnect to continue.",
       "lookupFailed": "Paperclip couldn’t check for an existing connection. Try again.",
-      "existingFailed": "Couldn’t use this connection."
+      "existingFailed": "Couldn’t use this connection.",
+      "notConfirmed": "Authorization has not been confirmed yet. Try again."
     },
     "cancel": "Cancel",
     "back": "Back",
@@ -20750,7 +20786,17 @@
     "defaultSet": "{{account}} is now your {{provider}} default",
     "defaultUpdated": "Your {{provider}} default was updated",
     "defaultChangeFailed": "Couldn’t change your {{provider}} default",
-    "lastDefault": "The latest saved selection is shown in Connectors."
+    "lastDefault": "The latest saved selection is shown in Connectors.",
+    "justNow": "Just now",
+    "unnamedProject": "Unnamed project",
+    "receipt": {
+      "answeredInTask": "Answered in task",
+      "recorded": "Decision recorded",
+      "reviewRecorded": "Review recorded"
+    },
+    "inputOnTask": "{{agent}} needs your input on {{task}}.",
+    "inputOnThisTask": "{{agent}} needs your input on this task.",
+    "rosterChanged": "The selected agents changed. Refresh the roster and select them again."
   },
   "routineResponsibilityPicker": {
     "none": "No responsible user",
@@ -20763,5 +20809,81 @@
     "conflict": "This routine changed. Reload before changing responsibility.",
     "change": "change responsibility",
     "changeLabel": "Change responsible user: {{label}}"
+  },
+  "appCatalog": {
+    "providerHosted": "Connect {{name}}'s provider-hosted MCP server.",
+    "1password": "Read and manage items and secrets in the vaults you authorize.",
+    "anthropic": "Use Anthropic APIs with a restricted key.",
+    "api-key-generic": "Connect an API using a key from your provider.",
+    "arcade": "Use the tools exposed by your Arcade MCP connection.",
+    "bedrock": "Use Claude through Amazon Bedrock with a Bedrock API key and AWS region.",
+    "braintrust": "Explore AI traces, manage evaluation datasets and scorers, and run Braintrust evaluations.",
+    "browser-use-cloud": "Delegate browser tasks and watch them live in Paperclip.",
+    "calendly": "Review Calendly event types and availability, and use supported scheduling actions.",
+    "chat-completions-api": "Connect any compatible harness to a Chat Completions-compatible provider or gateway.",
+    "clickup": "Search ClickUp workspaces and manage tasks, docs, and conversations through the official MCP server.",
+    "cognee": "Build and recall shared graph memory from documents and conversations.",
+    "composio": "Discover and use connected apps through Composio Connect.",
+    "context7": "Search public library documentation and retrieve current code examples.",
+    "daytona": "Manage Daytona sandboxes, files, commands, Git, snapshots, volumes, and account resources.",
+    "discord": "Let people start and continue Paperclip work with an agent from Discord.",
+    "ditto": "Search and reuse approved product copy, follow your style guide, and edit and translate text.",
+    "enterpret": "Ask questions about your customer feedback and pull verbatim quotes with citations.",
+    "exa": "Search the public web and read source pages with Exa.",
+    "executor": "Use the tools exposed by your Executor MCP connection.",
+    "firecrawl": "Search, scrape, and parse public web pages with Firecrawl.",
+    "fireflies": "Search meeting transcripts, read summaries and action items, and connect meeting-ready routines.",
+    "gauge": "Track how AI answers mention your brand, research keywords and traffic, and run content workflows.",
+    "github": "Connect GitHub repository access or authenticate GitHub Copilot agents.",
+    "gmail": "Search and read Gmail messages and create drafts without enabling mail sending.",
+    "google": "Connect Google Antigravity accounts or Gemini API keys for your agents.",
+    "google-calendar": "Read calendars and manage Google Calendar events.",
+    "google-chat": "Search and read Google Chat conversations and send messages.",
+    "google-docs": "Read and update Google Docs documents.",
+    "google-drive": "Search, read, create, and copy files in Google Drive.",
+    "google-people": "Search contacts and directory profiles with the Google People API.",
+    "google-sheets": "Read and update Google Sheets spreadsheets.",
+    "google-slides": "Read and update Google Slides presentations.",
+    "google-workspace": "Connect Gmail, Drive, Docs, Sheets, Slides, and Calendar with one Google account.",
+    "google-workspace-search": "Search Gmail, Drive, Calendar, and Chat through one read-only Google Workspace search tool.",
+    "gsc-wizard": "Read Google Search Console, Bing Webmaster, and analytics data for connected properties.",
+    "honcho": "Remember conversations and retrieve context about peers.",
+    "imessage-photon": "Message a Paperclip agent from Apple Messages using Photon Cloud. Pro supports DMs; dedicated lines also support groups.",
+    "klaviyo": "Review Klaviyo campaign performance and prepare campaign changes for review.",
+    "linear": "Create, update, and read Linear issues.",
+    "local": "Use a local model server in the agent’s execution environment.",
+    "mem0": "Remember preferences, conversations, events, and agent state.",
+    "messages-api": "Connect any compatible harness to an Anthropic Messages-compatible provider or gateway.",
+    "microsoft-teams": "Let people start and continue Paperclip work with an agent from Microsoft Teams.",
+    "monday": "Read and manage boards and work items in monday.com.",
+    "neon": "Manage Postgres projects and branches, run SQL, and inspect schemas in Neon.",
+    "notion": "Read and update pages in your Notion workspace.",
+    "oauth-generic": "Connect a provider using your own OAuth client.",
+    "openai": "Connect OpenAI accounts for your agents.",
+    "openrouter": "Connect OpenRouter accounts for your agents.",
+    "paperclip-notebook": "Publish, find, and share reports, files, and interactive pages with your Paperclip Cloud account.",
+    "parallel-search": "Search the public web and extract source pages with Parallel.",
+    "posthog": "Analyze product usage, errors, feature flags, and experiments with PostHog's hosted MCP server.",
+    "railway": "Inspect services and logs, deploy applications, and run commands in your Railway containers.",
+    "responses-api": "Connect any compatible harness to an OpenAI Responses-compatible provider or gateway, including Emissary.",
+    "sentry": "Investigate errors, releases, and production issues.",
+    "shopify": "Search a store's products and policies, and manage shopping carts.",
+    "slack": "Give agents Slack tools or let people start and continue Paperclip work from Slack.",
+    "speko": "Talk with a Paperclip agent through an experimental hosted voice connection.",
+    "supabase": "Create Supabase projects, deploy Edge Functions, manage databases, and configure application authentication and APIs.",
+    "superagent": "Review security findings, start red-team reports, and score content and packages before agents trust them.",
+    "supermemory": "Search and save shared memories, documents, and profiles.",
+    "tavily": "Search the public web and extract page content with Tavily’s hosted MCP server.",
+    "telegram": "Let people start and continue Paperclip work with an agent from Telegram.",
+    "telem": "Search the web and read pages across many search providers with one API key.",
+    "unikraft": "Manage Unikraft Cloud instances, services, volumes, images, certificates, autoscaling, and sandbox commands and files.",
+    "vercel": "Deploy websites and configure projects, environment variables, and domains in your Vercel team.",
+    "windsor-ai": "Query connected marketing, analytics, CRM, and warehouse data through Windsor.ai.",
+    "xai": "Connect Grok accounts for your agents.",
+    "zapier": "Reach thousands of apps through your Zapier account.",
+    "zep": "Retrieve temporal graph memory and authorized business context.",
+    "vercelOidcRequired": "Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.",
+    "vercelDisabled": "Vercel Connect setup is disabled on this Paperclip instance.",
+    "routingDisabled": "Ask your instance operator to enable AI connection routing."
   }
 }

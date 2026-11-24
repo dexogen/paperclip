@@ -77,15 +77,15 @@ export function compactUrl(href: string): string {
 }
 
 /** Whole-second duration such as "30s" or "2m 5s" from a millisecond detail. */
-export function durationLabel(value: string | undefined): string | undefined {
+export function durationLabel(value: string | undefined, t: TFunction): string | undefined {
   if (!value) return undefined;
   const ms = Number(value);
   if (!Number.isFinite(ms) || ms < 0) return undefined;
   const totalSeconds = Math.round(ms / 1000);
-  if (totalSeconds < 60) return `${totalSeconds}s`;
+  if (totalSeconds < 60) return t("runUi.turn.seconds", { seconds: totalSeconds });
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  return seconds === 0 ? `${minutes}m` : `${minutes}m ${seconds}s`;
+  return seconds === 0 ? t("runUi.turn.minutes", { minutes }) : t("runUi.turn.minutesSeconds", { minutes, seconds });
 }
 
 function modelRouteDetail(item: TaskChatProviderActivityItem): string | undefined {
@@ -110,7 +110,7 @@ export function providerActivityPresentation(item: TaskChatProviderActivityItem,
       }
       if (action === "find_in_page") {
         const pattern = providerDetail(item, "Pattern");
-        return { icon: Search, runningLabel: t("runUi.activity.findPage.running"), completedLabel: t("runUi.activity.findPage.completed"), failedLabel: t("runUi.activity.findPage.failed"), interruptedLabel: t("runUi.activity.findPage.interrupted"), detail: [pattern ? `“${pattern}”` : undefined, url ? compactUrl(url) : undefined].filter(Boolean).join(" in ") || detail };
+        return { icon: Search, runningLabel: t("runUi.activity.findPage.running"), completedLabel: t("runUi.activity.findPage.completed"), failedLabel: t("runUi.activity.findPage.failed"), interruptedLabel: t("runUi.activity.findPage.interrupted"), detail: pattern && url ? t("runUi.activity.patternOnPage", { pattern, page: compactUrl(url) }) : url ? compactUrl(url) : pattern ? `“${pattern}”` : detail };
       }
       return { icon: Search, runningLabel: t("runUi.activity.web.running"), completedLabel: t("runUi.activity.web.completed"), failedLabel: t("runUi.activity.web.failed"), interruptedLabel: t("runUi.activity.web.interrupted"), detail: query ? `“${query}”` : detail };
     }
@@ -149,7 +149,7 @@ export function providerActivityPresentation(item: TaskChatProviderActivityItem,
       };
     }
     case "plan_proposal":
-      return { icon: FileText, runningLabel: "Writing a plan", completedLabel: "Proposed a plan", failedLabel: "Plan proposal failed", interruptedLabel: "Plan proposal stopped", detail };
+      return { icon: FileText, runningLabel: t("runUi.activity.planProposal.running"), completedLabel: t("runUi.activity.planProposal.completed"), failedLabel: t("runUi.activity.planProposal.failed"), interruptedLabel: t("runUi.activity.planProposal.interrupted"), detail };
     case "plan":
       return { icon: ListChecks, runningLabel: t("runUi.activity.plan.running"), completedLabel: t("runUi.activity.plan.completed"), failedLabel: t("runUi.activity.plan.failed"), interruptedLabel: t("runUi.activity.plan.interrupted"), detail };
     case "delegation": {
@@ -193,28 +193,28 @@ export function providerActivityPresentation(item: TaskChatProviderActivityItem,
       };
     }
     case "memory":
-      return { icon: BookOpen, runningLabel: "Checking memory", completedLabel: "Referenced memory", failedLabel: "Memory lookup failed", interruptedLabel: "Memory lookup stopped", detail };
+      return { icon: BookOpen, runningLabel: t("runUi.activity.memory.running"), completedLabel: t("runUi.activity.memory.completed"), failedLabel: t("runUi.activity.memory.failed"), interruptedLabel: t("runUi.activity.memory.interrupted"), detail };
     case "terminal":
       return { icon: TerminalSquare, runningLabel: t("runUi.activity.terminal.running"), completedLabel: t("runUi.activity.terminal.completed"), failedLabel: t("runUi.activity.terminal.failed"), interruptedLabel: t("runUi.activity.terminal.interrupted"), detail };
     case "wait": {
-      const planned = durationLabel(providerDetail(item, "Planned Duration Ms"));
-      const elapsed = durationLabel(providerDetail(item, "Elapsed Duration Ms"));
+      const planned = durationLabel(providerDetail(item, "Planned Duration Ms"), t);
+      const elapsed = durationLabel(providerDetail(item, "Elapsed Duration Ms"), t);
       return {
         icon: Clock3,
-        runningLabel: planned ? `Waiting ${planned}` : t("runUi.activity.wait.running"),
-        completedLabel: elapsed ?? planned ? `Waited ${elapsed ?? planned}` : t("runUi.activity.wait.completed"),
+        runningLabel: planned ? t("runUi.activity.wait.planned", { duration: planned }) : t("runUi.activity.wait.running"),
+        completedLabel: elapsed || planned ? t("runUi.activity.wait.elapsed", { duration: elapsed ?? planned }) : t("runUi.activity.wait.completed"),
         failedLabel: t("runUi.activity.wait.failed"),
-        interruptedLabel: elapsed ? `Stopped waiting after ${elapsed}` : t("runUi.activity.wait.interrupted"),
+        interruptedLabel: elapsed ? t("runUi.activity.wait.stoppedAfter", { duration: elapsed }) : t("runUi.activity.wait.interrupted"),
       };
     }
     case "verification": {
       const status = providerDetail(item, "Status");
       return {
         icon: status === "passed" ? CircleCheck : status === "failed" ? CircleX : CircleDashed,
-        runningLabel: "Running a check",
-        completedLabel: status === "not_run" ? "Check not run" : "Check passed",
-        failedLabel: "Check failed",
-        interruptedLabel: "Check not run",
+        runningLabel: t("runUi.activity.verification.running"),
+        completedLabel: status === "not_run" ? t("runUi.activity.verification.notRun") : t("runUi.activity.verification.passed"),
+        failedLabel: t("runtimeUpdates.checkFailed"),
+        interruptedLabel: t("runUi.activity.verification.notRun"),
         detail: item.summary,
       };
     }

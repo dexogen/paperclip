@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -146,6 +147,14 @@ describe("governed retained-file recovery", () => {
     await mount(); await click("Recover saved files");
     expect(api.recover).not.toHaveBeenCalled();
     expect(container.textContent).toContain("File recovery changed");
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.querySelector('[role="alert"]')?.textContent).toContain("Состояние восстановления изменилось");
+      expect(api.recover).not.toHaveBeenCalled();
+      expect(api.inspect).toHaveBeenCalledTimes(2);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
   });
 
   it("does not offer an unverified source", async () => {

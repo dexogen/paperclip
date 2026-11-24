@@ -101,6 +101,7 @@ import { buildCompanyUserProfileMap } from "@/lib/company-members";
 import { AppLogo } from "./AppLogo";
 import {
   appApplicationSourceSlug,
+  appAvailabilityReason,
   appConnectionSourceSlug,
   appDefinitionDarkLogoUrl,
   appDefinitionDescription,
@@ -310,7 +311,7 @@ function connectorAction(
   href: string | null;
   title?: string;
 } {
-  if (row.entry?.aiConnectionRouter) return { label: fullAppsT("fullApps.add_connection_pool_f45fe2"), href: row.entry.availability?.available === false ? null : connectHrefFor(row.entry), title: row.entry.availability?.reason };
+  if (row.entry?.aiConnectionRouter) return { label: fullAppsT("fullApps.add_connection_pool_f45fe2"), href: row.entry.availability?.available === false ? null : connectHrefFor(row.entry), title: appAvailabilityReason(row.entry) };
   if (row.aggregatorApp && isInstalled(row)) return { label: fullAppsT("agentDetailUi.overview.manage"), href: null };
   const applicationId = row.applications[0]?.id ?? null;
   const chatHref = (row.slug === "agentmail" || chatConnectorsEnabled)
@@ -339,7 +340,7 @@ function connectorAction(
       label: fullAppsT("taskProperties.locked.unavailable"),
       href: null,
       title:
-        row.entry.availability.reason ??
+        appAvailabilityReason(row.entry) ??
         fullAppsT("fullApps.this_connector_is_unavailable_on_this_instance_1ff1cb"),
     };
   }

@@ -1,4 +1,4 @@
-import { useAgentRoleLabels } from "./agent-config-primitives";
+import { agentRoleSearchTerms, useAgentRoleLabels } from "./agent-config-primitives";
 import { t as fullSharedT, useTranslation as useFullSharedTranslation } from "@/i18n";
 import { useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { Plus, Search, Users, X } from "lucide-react";
@@ -44,7 +44,7 @@ export function AgentConversationSidebar({ agents, existingChatAgentIds, availab
   const headingId = useId();
   const unreadIds = useMemo(() => new Set(unreadAgentIds), [unreadAgentIds]);
   const query = search.trim().toLocaleLowerCase();
-  const visible = query ? agents.filter(agent => `${agent.name} ${agent.title ?? ""} ${agent.role} ${translatedRoles.get(agent.role) ?? agent.role}`.toLocaleLowerCase().includes(query)) : agents;
+  const visible = query ? agents.filter(agent => `${agent.name} ${agent.title ?? ""} ${agent.role} ${agentRoleSearchTerms.get(agent.role)?.join(" ") ?? ""}`.toLocaleLowerCase().includes(query)) : agents;
   function focusSearch() {
     setSearch("");
     searchRef.current?.focus();

@@ -1,5 +1,8 @@
 import { useTranslation as useUiTranslation } from "@/i18n";
-import { t as translateUi } from "@/i18n";
+import { i18n } from "@/i18n";
+import { selectableLocales } from "@/i18n/locales";
+import { decisionHistoryLabel } from "./decision-history-label";
+import { formatAttentionDisplayText } from "@/lib/attention-display";
 import { useQueryView } from "@/components/QueryView";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
@@ -18,7 +21,7 @@ import { useCoordinatorWorkspaceEnabled } from "@/hooks/useCoordinatorWorkspaceE
 import { useNavigate, useSearchParams } from "@/lib/router";
 import { queryKeys } from "@/lib/queryKeys";
 import { coordinatorAttentionQueryKey, COORDINATOR_RECENT_DECISION_MS, recentDecisionReceipts } from "@/lib/coordinator-attention";
-import { attentionDetailLine, isInlineResolvable } from "@/lib/attention";
+import { attentionDetailLine, defaultAttentionFilterState, filterAttentionItems, isInlineResolvable } from "@/lib/attention";
 import { AttentionInteractionResolver } from "@/components/AttentionInteractionResolver";
 import { StalledReviewActions } from "@/components/StalledReviewActions";
 import { DecisionResolver } from "@/components/DecisionResolver";
@@ -36,7 +39,7 @@ import { CoordinatorTaskMotion } from "./CoordinatorTaskCommitment";
 type Group = "none" | "task" | "agent" | "project";
 
 function HistoryPanel({ companyId, agents, onClose, mobile = false }: { companyId: string; agents: Agent[]; onClose: () => void; mobile?: boolean }) {
-  useUiTranslation();
+  const { t: translateUi, i18n } = useUiTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [outcome, setOutcome] = useState("");
@@ -76,13 +79,13 @@ function HistoryPanel({ companyId, agents, onClose, mobile = false }: { companyI
     {historyWaiting ? <p role="status" className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.loading_decisions_627476df")}</p> : null}
     {(historyView.kind === "error") ? <div role="alert" className="space-y-2 text-sm"><p>{translateUi("interfaceUpdates.decision_history_could_not_be_loaded_b57cd47b")}</p><Button variant="outline" onClick={() => void history.refetch()}>{translateUi("newIssue.retry")}</Button></div> : null}
     {!historyWaiting && !(historyView.kind === "error") && !items.length ? <p className="text-sm text-muted-foreground">{translateUi("interfaceUpdates.no_decisions_match_these_filters_d1bb591a")}</p> : null}
-    <div className="space-y-4">{[...groups].map(([label, entries]) => <section key={label} className="space-y-3">{label ? <h3 className="text-sm font-medium text-muted-foreground">{label}</h3> : null}{entries.map((item) => <div key={item.id} className="space-y-1"><Receipt item={item} onOpen={navigate} /><p className="px-1 text-xs text-muted-foreground"><time dateTime={item.resolvedAt}>{new Date(item.resolvedAt).toLocaleString()}</time></p></div>)}</section>)}</div>
+    <div className="space-y-4">{[...groups].map(([label, entries]) => <section key={label} className="space-y-3">{label ? <h3 className="text-sm font-medium text-muted-foreground">{label}</h3> : null}{entries.map((item) => <div key={item.id} className="space-y-1"><Receipt item={item} onOpen={navigate} /><p className="px-1 text-xs text-muted-foreground"><time dateTime={item.resolvedAt}>{new Date(item.resolvedAt).toLocaleString(i18n.resolvedLanguage)}</time></p></div>)}</section>)}</div>
     {history.hasNextPage ? <Button variant="outline" disabled={history.isFetchingNextPage} onClick={() => void history.fetchNextPage()}>{history.isFetchingNextPage ? translateUi("taskPanels.loading") : translateUi("interfaceUpdates.load_more_decisions_10e74bc6")}</Button> : null}
   </div>;
 }
 
 export function CoordinatorNeedsYou() {
-  useUiTranslation();
+  const { t: translateUi } = useUiTranslation();
   const { selectedCompanyId } = useCompany();
   const { userId } = useCoordinatorWorkspaceEnabled();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -120,7 +123,9 @@ export function CoordinatorNeedsYou() {
     if (settlingIds.has(item.id)) return false;
     if (agentFilter && item.agentId !== agentFilter) return false;
     if (projectFilter && item.projectId !== projectFilter) return false;
-    return [item.title, item.issueTitle, item.issueIdentifier, item.agentName, item.projectName, item.label]
+    if (!query.trim()) return true;
+    const labels = selectableLocales.map(locale => decisionHistoryLabel(item, i18n.getFixedT(locale)));
+    return [item.title, item.issueTitle, item.issueIdentifier, item.agentName, item.projectName, item.label, ...labels]
       .join(" ").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
   }).sort((a, b) => (sort === "oldest" ? 1 : -1) * (Date.parse(a.resolvedAt) - Date.parse(b.resolvedAt))),
   [recentItems, settlingIds, agentFilter, projectFilter, query, sort]);
@@ -133,18 +138,17 @@ export function CoordinatorNeedsYou() {
       result.set(label, [...(result.get(label) ?? []), item]);
     }
     return [...result];
-  }, [visibleRecentItems, groupBy]);
+  }, [visibleRecentItems, groupBy, translateUi]);
   const pendingItems = useMemo(() => {
     const receipts = new Set(recentItems.map((item) => item.id));
     const items = new Map((feed.data?.items ?? []).map((item) => [`${item.sourceKind}:${item.subject.id}`, item]));
     for (const item of settling) if (!items.has(`${item.sourceKind}:${item.subject.id}`)) items.set(`${item.sourceKind}:${item.subject.id}`, item);
     return [...items].filter(([key]) => settlingIds.has(key) || (!receipts.has(key) && !savedIds.has(key))).map(([, item]) => item);
   }, [feed.data, settling, settlingIds, recentItems, savedIds]);
-  const filtered = useMemo(() => pendingItems.filter((item) => {
+  const filtered = useMemo(() => filterAttentionItems(pendingItems, defaultAttentionFilterState, query).filter((item) => {
     const agentId = String(item.subject.metadata?.createdByAgentId ?? item.subject.metadata?.originAgentId ?? "");
     if (agentFilter && agentId !== agentFilter && item.originAgentName !== agentMap.get(agentFilter)?.name) return false;
-    if (projectFilter && item.project?.id !== projectFilter) return false;
-    return [item.subject.title, item.relatedIssue?.title, item.relatedIssue?.identifier, item.originAgentName, item.project?.name, attentionDetailLine(item)].join(" ").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
+    return !projectFilter || item.project?.id === projectFilter;
   }).sort((a, b) => (sort === "oldest" ? 1 : -1) * (Date.parse(a.activityAt) - Date.parse(b.activityAt))), [pendingItems, agentFilter, projectFilter, query, sort, agentMap]);
   const groups = useMemo(() => {
     const result = new Map<string, AttentionItem[]>();
@@ -154,7 +158,7 @@ export function CoordinatorNeedsYou() {
       result.set(label, [...(result.get(label) ?? []), item]);
     }
     return [...result];
-  }, [filtered, groupBy, renderLimit]);
+  }, [filtered, groupBy, renderLimit, translateUi]);
   useEffect(() => {
     if (!deepLinkDecisionId || !selectedCompanyId || !pendingItems.some(item => item.sourceKind === "decision" && item.subject.id === deepLinkDecisionId)) return;
     // A saved decision link takes precedence over local toolbar filters and the
@@ -170,12 +174,12 @@ export function CoordinatorNeedsYou() {
   }, [deepLinkDecisionId, selectedCompanyId, pendingItems, filtered, query, agentFilter, projectFilter, renderLimit, reducedMotion, setSearchParams]);
   const projects = useMemo(() => [...new Map([
     ...pendingItems.flatMap((item) => item.project ? [[item.project.id, item.project.name] as const] : []),
-    ...recentItems.flatMap((item) => item.projectId ? [[item.projectId, item.projectName ?? "Unnamed project"] as const] : []),
-  ]).entries()], [pendingItems, recentItems]);
+    ...recentItems.flatMap((item) => item.projectId ? [[item.projectId, item.projectName ?? translateUi("agentEdition.unnamedProject")] as const] : []),
+  ]).entries()], [pendingItems, recentItems, translateUi]);
   const filtersActive = Boolean(query.trim() || agentFilter || projectFilter);
   const closeHistory = useCallback(() => { setHistoryOpen(false); closePanel(); }, [closePanel]);
   const showHistory = () => { setHistoryOpen(true); if (!isMobile) setPanelVisible(true); };
-  useEffect(() => { setBreadcrumbs([{ label: translateUi("inboxUi.title") }]); }, [setBreadcrumbs]);
+  useEffect(() => { setBreadcrumbs([{ label: translateUi("inboxUi.title") }]); }, [setBreadcrumbs, translateUi]);
   useEffect(() => {
     setSettling([]); setHistoryOpen(false); setNow(Date.now()); closePanel();
     return closePanel;
@@ -227,6 +231,8 @@ export function CoordinatorNeedsYou() {
       const stalledReview = item.sourceKind === "review" && item.subject.kind === "issue" && isInlineResolvable(item) && item.subject.metadata?.reviewAttentionState === "stalled";
       const taskRef = item.relatedIssue ?? (item.subject.kind === "issue" ? item.subject : null);
       const taskLink = taskRef?.href ? <button type="button" onClick={() => { if (taskRef.href) navigate(taskRef.href); }} className="flex max-w-full items-center gap-2 text-left text-sm text-muted-foreground hover:text-foreground"><span className="shrink-0">{taskRef.identifier ?? translateUi("interfaceUpdates.open_task_6b5c9394")}</span><span className="truncate">{taskRef.title}</span><ArrowUpRight className="size-4 shrink-0" /></button> : null;
+      const whyNow = formatAttentionDisplayText("whyNow", item.whyNow, item.display?.whyNow, translateUi);
+      const title = formatAttentionDisplayText("subjectTitle", item.subject.title, item.subject.display?.title, translateUi);
       const id = `${item.sourceKind}:${item.subject.id}`;
       const receipt = settlingIds.has(id) ? recentItems.find(entry => entry.id === id) : undefined;
       const phase = !receipt ? "pending" : ["cancelled", "expired"].includes(receipt.outcome) ? "closed" : "resolved";
@@ -239,8 +245,8 @@ export function CoordinatorNeedsYou() {
           onResolved(item);
         }} />
           : decision ? <DecisionResolver companyId={selectedCompanyId} decisionId={item.subject.id} originIssue={item.relatedIssue} agentMap={agentMap} onResolved={() => onResolved(item)} />
-          : stalledReview ? <><h2 className="text-lg font-medium">{translateUi("interfaceUpdates.choose_how_this_task_continues_11a940b3")}</h2><p className="text-sm">{translateUi("interfaceUpdates.this_task_is_still_in_review_with_no_active_review_1e925f44")}</p><StalledReviewActions footerSlot={taskLink} issueId={item.subject.id} companyId={selectedCompanyId} reviewPolicy={readIssueReviewPolicyMetadata(item.subject.metadata)} approveLabel="Mark task done" onResolved={() => { void feed.refetch(); void recent.refetch(); }} /></>
-          : <><h2 className="text-lg font-medium">{item.subject.title ?? item.whyNow}</h2><p className="text-sm">{attentionDetailLine(item) ?? item.whyNow}</p><Button disabled={!item.subject.href} onClick={() => { if (item.subject.href) navigate(item.subject.href); }}>{translateUi("interfaceUpdates.open_to_review_c7bb7cad")}<ArrowUpRight className="size-4" /></Button></>}
+          : stalledReview ? <><h2 className="text-lg font-medium">{translateUi("interfaceUpdates.choose_how_this_task_continues_11a940b3")}</h2><p className="text-sm">{translateUi("interfaceUpdates.this_task_is_still_in_review_with_no_active_review_1e925f44")}</p><StalledReviewActions footerSlot={taskLink} issueId={item.subject.id} companyId={selectedCompanyId} reviewPolicy={readIssueReviewPolicyMetadata(item.subject.metadata)} approveLabel={translateUi("runUi.recovery.resolveDone")} onResolved={() => { void feed.refetch(); void recent.refetch(); }} /></>
+          : <><h2 className="text-lg font-medium">{title ?? whyNow}</h2><p className="text-sm">{attentionDetailLine(item, translateUi) ?? whyNow}</p><Button disabled={!item.subject.href} onClick={() => { if (item.subject.href) navigate(item.subject.href); }}>{translateUi("interfaceUpdates.open_to_review_c7bb7cad")}<ArrowUpRight className="size-4" /></Button></>}
         {!interaction && !stalledReview ? taskLink : null}
       </article>}
       </CoordinatorTaskMotion>

@@ -247,7 +247,18 @@ export function verificationOutcome(item: TaskChatProviderActivityItem): string 
   const detail = item.details.find((entry) => entry.label === "Detail")?.value;
   if (detail) return detail;
   const reason = item.details.find((entry) => entry.label === "Reason Code")?.value;
-  return reason ? reason.replaceAll("_", " ").replace(/^\w/, (letter) => letter.toUpperCase()) : undefined;
+  switch (reason) {
+    case "environment_unavailable": return translateUi("runUi.protocol.verificationReason.environment_unavailable");
+    case "tool_unavailable": return translateUi("runUi.protocol.verificationReason.tool_unavailable");
+    case "dependency_missing": return translateUi("runUi.protocol.verificationReason.dependency_missing");
+    case "permission_denied": return translateUi("runUi.protocol.verificationReason.permission_denied");
+    case "credential_missing": return translateUi("runUi.protocol.verificationReason.credential_missing");
+    case "policy_restricted": return translateUi("runUi.protocol.verificationReason.policy_restricted");
+    case "external_service_unavailable": return translateUi("runUi.protocol.verificationReason.external_service_unavailable");
+    case "budget_exhausted": return translateUi("runUi.protocol.verificationReason.budget_exhausted");
+    case "other": return translateUi("runUi.protocol.verificationReason.other");
+    default: return reason;
+  }
 }
 
 /** The full check: command and untruncated outcome, wrapped. */
@@ -343,13 +354,13 @@ export function ResearchSourceStrip({ item }: { item: TaskChatProviderActivityIt
 
 /** Live "12s left" for an intentional wait with a planned duration. */
 export function WaitCountdown({ item }: { item: TaskChatProviderActivityItem }) {
-  useUiTranslation();
+  const { t } = useTranslation();
   useSecondTick(true);
   const planned = Number(item.details.find((detail) => detail.label === "Planned Duration Ms")?.value);
   const startedAtMs = item.startedAt ? Date.parse(item.startedAt) : Number.NaN;
   if (!Number.isFinite(planned) || !Number.isFinite(startedAtMs)) return null;
   const remaining = Math.max(0, planned - (Date.now() - startedAtMs));
-  return <span className="shrink-0 tabular-nums" data-testid="task-chat-wait-countdown">{durationLabel(String(remaining))} {translateUi("interfaceUpdates.left_360f8403")}</span>;
+  return <span className="shrink-0 tabular-nums" data-testid="task-chat-wait-countdown">{t("runUi.activity.wait.remaining", { duration: durationLabel(String(remaining), t) })}</span>;
 }
 
 export function verificationTone(item: TaskChatProviderActivityItem): string | undefined {

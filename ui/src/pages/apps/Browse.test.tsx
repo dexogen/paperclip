@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Browse } from "./Browse";
+import { i18n } from "@/i18n";
 import { ApiError } from "@/api/client";
 import { aiConnectionRouterAppDefinition, CONNECTABLE_APP_DEFINITIONS, getAppStoreDefinition } from "@paperclipai/shared";
 import { queryKeys } from "@/lib/queryKeys";
@@ -271,6 +272,28 @@ describe("Connectors landing page", () => {
     }
     return client;
   }
+
+  it("updates bundled app descriptions on language changes and preserves overrides on built-in slugs", async () => {
+    const vercel = getAppStoreDefinition("vercel")!;
+    const customDescription = "SRE team: deploy previews for PRs.";
+    listGalleryMock.mockResolvedValue({ apps: [
+      { ...vercel, displaySource: { registry: "paperclip-app-definitions", version: 1 } },
+      { ...getAppStoreDefinition("1password")!, description: customDescription },
+    ] });
+    await renderBrowse();
+    const card = (slug: string) => container.querySelector(`[data-app-slug="${slug}"]`);
+    const calls = listGalleryMock.mock.calls.length;
+    expect(card("vercel")?.textContent).toContain(vercel.description);
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(card("vercel")?.textContent).toContain("переменные окружения и домены своей команды Vercel");
+      expect(card("1password")?.textContent).toContain(customDescription);
+      expect(listGalleryMock).toHaveBeenCalledTimes(calls);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+    expect(card("vercel")?.textContent).toContain(vercel.description);
+  });
 
   it("shows provider catalog rows and splits legacy gateway accounts by API format", async () => {
     const slugs = ["notion", "openrouter", "bedrock", "google", "responses-api", "messages-api", "chat-completions-api", "local"];

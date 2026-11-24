@@ -9,17 +9,20 @@ import { WorkspaceExportRecovery } from "./WorkspaceExportRecovery";
 
 function recordedFailure(evidence: Record<string, unknown>): string {
   const recovery = evidence.systemRecovery;
-  if (!recovery || typeof recovery !== "object" || !("failure" in recovery)) return "No recorded system recovery failure.";
+  if (!recovery || typeof recovery !== "object" || !("failure" in recovery)) return translateUi("runUi.workspaceExport.noRecordedFailure");
   const failure = recovery.failure;
   if (!failure || typeof failure !== "object" || !("code" in failure) || typeof failure.code !== "string")
-    return "No recorded system recovery failure.";
+    return translateUi("runUi.workspaceExport.noRecordedFailure");
   const detail = "sourceVerification" in failure ? failure.sourceVerification : null;
   if (!detail || typeof detail !== "object" || !("reason" in detail) || typeof detail.reason !== "string" ||
     !(WORKSPACE_SOURCE_VERIFICATION_REASONS as readonly string[]).includes(detail.reason)) return failure.code;
   const policy = "observedLeasePolicy" in detail ? detail.observedLeasePolicy : null;
   const allowedPolicy = typeof policy === "string" &&
     (policy === "unrecognized" || (ENVIRONMENT_LEASE_POLICIES as readonly string[]).includes(policy));
-  return [failure.code, detail.reason, ...(allowedPolicy ? [`lease policy ${policy}`] : [])].join(" · ");
+  const failureAndReason = `${failure.code} · ${detail.reason}`;
+  return allowedPolicy
+    ? `${failureAndReason} ${translateUi("interfaceUpdates.lease_policy_30e31761")} ${policy}`
+    : failureAndReason;
 }
 
 export function RunWorkspaceSourceInspection({ issueId, runId, companyId }: { issueId: string; runId: string; companyId: string }) {

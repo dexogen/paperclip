@@ -6,6 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { Agent } from "@paperclipai/shared";
 import { AgentConversationsSidebar } from "./AgentConversationsSidebar";
 import type { AgentConversationSidebarProps } from "./AgentConversationSidebar";
+import { i18n } from "@/i18n";
 import { queryKeys } from "@/lib/queryKeys";
 const state = vi.hoisted(() => ({ companyId: "company-a", navigate: vi.fn(), closeSidebar: vi.fn(), ensure: vi.fn(), getAgent: vi.fn(), newAgent: vi.fn() }));
 const sidebarInputs = vi.hoisted(() => [] as Pick<AgentConversationSidebarProps, "existingChatAgentIds" | "unreadAgentIds" | "unreadMessageCounts">[]);
@@ -70,6 +71,29 @@ it("opens every contact without creating a conversation before the first message
   await openContact("alice");
   expect(state.navigate).toHaveBeenLastCalledWith("/chats/alice");
   expect(container.querySelectorAll('a[href="/chats/bob"]')).toHaveLength(1);
+});
+it("finds the same contact by Russian role through a language switch and keeps their custom job title", async () => {
+  const previous = i18n.language;
+  client.setQueryData(queryKeys.agents.list("company-a"), [roster[0], { ...roster[1], role: "designer", title: "Product Designer" }]);
+  try {
+    await act(async () => { await i18n.changeLanguage("en"); });
+    await render();
+    const search = container.querySelector<HTMLInputElement>('[aria-label="Search chats"]')!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, "дизайнер");
+      search.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const rows = () => [...container.querySelectorAll("nav a")];
+    expect(rows().map(row => row.getAttribute("href"))).toEqual(["/chats/bob"]);
+    await act(async () => { await i18n.changeLanguage("ru"); });
+    expect(search.value).toBe("дизайнер");
+    expect(rows()).toHaveLength(1);
+    expect(rows()[0].textContent).toContain("Product Designer");
+    await openContact("bob");
+    expect(state.navigate).toHaveBeenCalledWith("/chats/bob");
+  } finally {
+    await act(async () => { await i18n.changeLanguage(previous); });
+  }
 });
 it("opens the existing create-agent dialog and persists a company-scoped chat pin", async () => {
   await render();

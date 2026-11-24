@@ -2751,15 +2751,23 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
           enabled: true,
           authentication: null,
           manageUrl: "https://vercel.com/connect",
-          reason: "Vercel Connect needs workload OIDC or an instance access token.",
+          reason: "Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.",
         },
       },
     });
     await render(undefined, false, <AppsConnect credentialSource="vercel_connect" />);
 
     expect(container.textContent).toContain("Connect through Vercel");
-    expect(container.textContent).toContain("Vercel Connect needs workload OIDC or an instance access token.");
+    expect(container.textContent).toContain("Vercel Connect needs workload OIDC or PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN.");
     expect(buttonContaining("PostHog")?.disabled).toBe(true);
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("настройте OIDC для рабочих нагрузок");
+      expect(buttonContaining("PostHog")?.title).toContain("задайте переменную PAPERCLIP_VERCEL_CONNECT_ACCESS_TOKEN");
+      expect(buttonContaining("PostHog")?.disabled).toBe(true);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
     expect(container.textContent).not.toContain("Where are credentials managed?");
   });
 
@@ -3916,6 +3924,15 @@ describe("AppsConnect — Connect with a link (M4 frame)", () => {
 
     expect(container.textContent).toContain("couldn’t check for an existing connection");
     expect(buttonByText("Try again")).toBeTruthy();
+    const attempts = listApplicationsMock.mock.calls.length;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(container.textContent).toContain("Не удалось проверить существующие подключения.");
+      expect(listApplicationsMock).toHaveBeenCalledTimes(attempts);
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
+    expect(container.textContent).toContain("couldn’t check for an existing connection");
     expect(connectAppMock).not.toHaveBeenCalled();
     expect(startOAuthMock).not.toHaveBeenCalled();
   });

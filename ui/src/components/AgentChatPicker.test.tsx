@@ -62,6 +62,30 @@ describe("AgentChatPicker", () => {
     }
   });
 
+  it("searches by a Russian role and updates a failed selection in the same dialog", async () => {
+    const previous = i18n.language;
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      const onSelect = vi.fn().mockRejectedValueOnce(null).mockRejectedValueOnce(new Error("E_CHAT_OFFLINE"));
+      await render({ onSelect });
+      await search("дизайнер");
+      expect(options()).toHaveLength(1);
+      await act(async () => options()[0].click());
+      expect(onSelect).toHaveBeenCalledWith(agents[1], expect.any(AbortSignal));
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("Не удалось открыть чат. Повторите попытку.");
+      await act(async () => { await i18n.changeLanguage("en"); });
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("Couldn’t open chat. Try again.");
+      expect(document.querySelector<HTMLInputElement>("[role=combobox]")?.value).toBe("дизайнер");
+      expect(options()).toHaveLength(1);
+      await act(async () => options()[0].click());
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(document.querySelector('[role="alert"]')?.textContent).toBe("E_CHAT_OFFLINE");
+      expect(props.onOpenChange).not.toHaveBeenCalled();
+    } finally {
+      await act(async () => { await i18n.changeLanguage(previous); });
+    }
+  });
+
   it("shows unread per agent through search and clears it when read state updates", async () => {
     await render({ existingChatAgentIds: ["first", "second"], unreadMessageCounts: new Map([["first", 0], ["second", 12]]) });
     expect(options()[0].querySelector('[aria-label*="unread message"]')).toBeNull();

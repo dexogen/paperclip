@@ -4854,11 +4854,11 @@
       "reviewedAt": "2026-10-26T11:07:06.725Z"
     },
     "agentDetailUi.actions.assign": {
-      "sourceHash": "fa682f26edb78aecdcf36cdc48bea133deae986718790637ecc98b40606e6f2c",
+      "sourceHash": "90ccaca2311988e8ec4788eeacc998ace608d3416ca812cb0a98a0a38c1ae1d9",
       "translationHash": "77efc53abb6b8e480a97426388fed72f0612987fc14ea9233ecde306b1f759d3",
-      "reviewer": "Codex agent /root with independent A3 component and editorial reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T10:07:55.230Z"
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
     },
     "agentDetailUi.actions.cancel": {
       "sourceHash": "17c36814a233f04e0d54434337dd6ba061b0dbc7e99a2ccef02921d7830e2b5f",
@@ -5001,11 +5001,11 @@
       "reviewedAt": "2026-11-05T21:48:56.626Z"
     },
     "agentDetailUi.actions.run": {
-      "sourceHash": "8f1faf5017cad0b43c2438bb774577f6a63a4efcf27f0e7db179a2f8a3e47f46",
+      "sourceHash": "20d744e6d34241f0ad538e657a05bc310103411d0fedce672e5416693bcf90f4",
       "translationHash": "575981d67e2f1219bc465d7b3f05b2b6e6d6f9d08c73da50bedfe68bcb64593e",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.417Z"
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
     },
     "agentDetailUi.actions.terminate": {
       "sourceHash": "bbcf440c4ec16c94cbe1897ffd26b157456d23c3bd51ce6d6eb47cf81e4eef58",
@@ -5813,11 +5813,11 @@
       "reviewedAt": "2026-10-26T23:13:04.417Z"
     },
     "agentDetailUi.header.repairBeforeWork": {
-      "sourceHash": "5d60c42c6478b32d24b965cbec30d8533836f1ce3a79760db29c195044398cb6",
+      "sourceHash": "6481c6efedc76758b43a24b51f980ef0bc31b54bb27887bb90f8eb7a689828e3",
       "translationHash": "43b1724f7453ad1ffb568f87e750f695153c37fb24128d219b74c311391a3d64",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.626Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
     },
     "agentDetailUi.header.repairChain": {
       "sourceHash": "14ab52eff196f79e21f6f170f01550f13a3d1e2ce6b36f2ff780eb90b056ffba",
@@ -6941,10 +6941,10 @@
     },
     "agentDetailUi.nav.history": {
       "sourceHash": "b506a8c73bc172c4ed0951383ec54c0a0c33d500dc317c6fe241b48f1957e203",
-      "translationHash": "da3e30b438fedce971cc5d18a3e51110b2554258d199f706b7b8581f970142b4",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.627Z"
+      "translationHash": "60e4a02b378e5f9b2e2654f06f68fa1e22ad7c18280444498a00ca2f8cede8e2",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
     },
     "agentDetailUi.nav.identity": {
       "sourceHash": "7ecbdad4008441932cc936e6ef261e3de389d423b5c3b2671753af86d35e9013",
@@ -8535,12 +8535,33 @@
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.243Z"
     },
+    "agentEdition.inputOnTask": {
+      "sourceHash": "26aae71a344fc1f8b3be59db7a8f56db962ee0b8792e0040d3ab5243d81fbbc8",
+      "translationHash": "57d80aa314bcac6c3dc497072fbd4177c76d1e5b84873edda7f5bfbdd5621ac4",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
+    },
+    "agentEdition.inputOnThisTask": {
+      "sourceHash": "6ac3b7cfeb6f5955c670dbdec40d581a43afc966d46c3c27bf035cebb01e76aa",
+      "translationHash": "6e6d684db44b1c1cca65ba6dee78eebd6c27cb06bc58197cce6cec56c6aa6799",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
+    },
     "agentEdition.issuePrefix": {
       "sourceHash": "750f05210e678ee41f7f6c84f10454ebe2ec03f466a679637ea22f10a1bcf69b",
       "translationHash": "ccfc103e5a86032b2934a4520c6447de821262d25ad5bc5b11f613d217751006",
       "reviewer": "Russian edition localization",
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.243Z"
+    },
+    "agentEdition.justNow": {
+      "sourceHash": "41143319b8b31cb44ced8e0098261100b32473e5b757b538cb5660f7ae2b0741",
+      "translationHash": "e38ee3597b4068a259286db5486cf37b6e72c1ffe6a35755cd09ec4203e3bae9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.903Z"
     },
     "agentEdition.lastDefault": {
       "sourceHash": "a9d9b45f16fadfe09b5746f7c61bf2f85506defbb907bd1d328b2061c10a676c",
@@ -8628,10 +8649,10 @@
     },
     "agentEdition.pullRequestPrefix": {
       "sourceHash": "14929adb7a326f5c2b2eab6345756d50285f5166b5c3ea7167ca9832ae8e76e7",
-      "translationHash": "63b9d5211134d686b7b26d8db25414ed72a146da10372c3647d466dd85bd0cc6",
+      "translationHash": "29d8212f35061036ea7583b8c56a6d3059fc4ae7cf846aa79a170b56c6d82d4d",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:42:19.243Z"
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
     },
     "agentEdition.reasoning": {
       "sourceHash": "ac575c42aeb425c45a7dffe0a5be44421b706a2df6cabfcba64f8deb9c4aa601",
@@ -8639,6 +8660,27 @@
       "reviewer": "Russian edition localization",
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.243Z"
+    },
+    "agentEdition.receipt.answeredInTask": {
+      "sourceHash": "cdf1f70640d6c6aace4250d8a3c70607821840b915a088891685c302a71eff6e",
+      "translationHash": "455ef11f0be27d51cc84d9021c5b58e32aac0f69703ea0f6ef07806ef4a713f0",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
+    "agentEdition.receipt.recorded": {
+      "sourceHash": "aa00f3a1a71f6dedb4be1a927da8cc59b3305c3fe9d0dfbc510f6f09c0ace28e",
+      "translationHash": "18a8cb4ae78c311f9a27676a69f0e7df3e07cd56d7efa25ec102067e55cc6e3c",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
+    "agentEdition.receipt.reviewRecorded": {
+      "sourceHash": "83228d0ea3e394df59438b2ddbd2c1dffd8eb3ac77ed7a51dd13f7626ba50e56",
+      "translationHash": "641c88ffcd664d96b35bb8edf1c5661f33214a8734e635a0250a02cae00714ac",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
     },
     "agentEdition.reconnectDefault": {
       "sourceHash": "890656d82cf9b0054dee4637c5d9aad7c7f1db45b8c3ceeb41fe3b5192d61676",
@@ -8689,6 +8731,13 @@
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.244Z"
     },
+    "agentEdition.rosterChanged": {
+      "sourceHash": "e279682751227e2e36aa166cf62cf8dce2b95d3ddafffa3f612a40198085cc6f",
+      "translationHash": "a7b48091343ca525aeceb92e7d5e2f228950f2d0eeb046542df30ecae9ce5662",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
     "agentEdition.searchChats": {
       "sourceHash": "a9f18ccf4194d08949180b1a40ca967fee73c804fcbc6b2f8843ad342e669de9",
       "translationHash": "811ee625a3e991a20f6d70c627ac31827ca22e167d8b36459bb062a56a70fc38",
@@ -8723,6 +8772,13 @@
       "reviewer": "Russian edition localization",
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.244Z"
+    },
+    "agentEdition.unnamedProject": {
+      "sourceHash": "08a3a6ae16d3b35346edb80b77065120b04f3f4b5c56337f1f680e9b8b101a55",
+      "translationHash": "e0e23226f128db4d463462018bda230009e21608aa948345037820454e4d8b9a",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
     },
     "agentEdition.unpin": {
       "sourceHash": "27dafcf80c4291e8b3b868b070ec707995427167558b469cf0df01024870c768",
@@ -10907,6 +10963,524 @@
       "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
       "method": "agent",
       "reviewedAt": "2026-10-26T23:13:04.421Z"
+    },
+    "appCatalog.1password": {
+      "sourceHash": "ca341925eefdd2ab54c677b22f70f68fe7e3711832ade7a0cfc3327629ce802e",
+      "translationHash": "7c064952001535e501038499ce4e9275000d7f85328c7d20d3349404ee860a03",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
+    "appCatalog.anthropic": {
+      "sourceHash": "753600b9f0276f58513f4f40de9fa05809850e367601642e1329cb4d116b5298",
+      "translationHash": "1127ae4715339b1475daa0abe569b4011da993ecb46bdb6141723e3cc3fe62c0",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
+    "appCatalog.api-key-generic": {
+      "sourceHash": "930f808c17fac704a3467413b961d805ac312e723c636cdc31a153a7c3a276c6",
+      "translationHash": "b7952e56c0b67178419cddaa954026819ab18bc86ef40bc812ed130262ae350d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.904Z"
+    },
+    "appCatalog.arcade": {
+      "sourceHash": "9867584ab4643af77e183d8ee92e33559de90ab47a3a47434caedd837301b8c4",
+      "translationHash": "24bc3a5b5f58b2d8fdb061b58744efad28c01312c8c1048eb52d63377a8ca6e0",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.bedrock": {
+      "sourceHash": "9bd831b211d0a0b6773144c8c347f1c1867732334af00e5d58b1ea61f9693f0e",
+      "translationHash": "def40e3d9496d7f633bd9e6adc11be5105733c2bb26a52d7e176241e0ae2027e",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.braintrust": {
+      "sourceHash": "ab86a19551c818dade5ac5d7a7b9ad30a799171d8888ea621a66bdcea5917976",
+      "translationHash": "e971645f8065c3f1f2811465d2e775959d98f5ebc69418dda17ba8a73a4ade96",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.browser-use-cloud": {
+      "sourceHash": "caa87122015f3199591270368377fb4a2ff3d3d24c49002cc33c1a379345ebdb",
+      "translationHash": "d41ae5080c53b0ec696fdc96574aba7332945ac53e7319681ce93d8f20b6afaf",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.calendly": {
+      "sourceHash": "5beb869f5942f46428560d204f1383462d5fcce39a1810ab6bf8fa5ecfc8d5fa",
+      "translationHash": "87d6fc8b7e0d188837e63557987f90390750f860e30a9f2c5e737fb12b72e81c",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.chat-completions-api": {
+      "sourceHash": "49427638053d918a97d3f2f9d56adcee9b55db766f6e31577075ecb2ea772f3e",
+      "translationHash": "ea1f407e58397ec74767afda378fc8310d63be1467053e6a0d2a7d5423d398e5",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.clickup": {
+      "sourceHash": "252444d233b8e8288ed36b27cf798560ec5447f98d9df67471d1427060b773d1",
+      "translationHash": "be5d3f44391d93b7e74402510523e37b73f4a035a664e191027c98183845eb61",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.cognee": {
+      "sourceHash": "6f47dbebfaef35e7f9a1ff52f533eb5ca0ddeaebd0e32669cba82b7307a350ba",
+      "translationHash": "a119decfc13de43422b929bf489efc19758926b6a993a7529b6116027e898bf4",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.composio": {
+      "sourceHash": "e973a2dabe89d42ee8ca9a743cdb4878ccc15a669096b7a7e3a0b407f58268b0",
+      "translationHash": "e6ad89bedb2281241a03bdbee5a57fa0556cd40e8515affef49ccd7ab9f3ee70",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.context7": {
+      "sourceHash": "0eab8143688a738fb4d2a5474583f6ff74def28c8e717917080949067a89f529",
+      "translationHash": "bfa91a950868cae227c1e4ad5eb17f9ed82b12cf95296a1a49e104baf3f8099f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.daytona": {
+      "sourceHash": "89f309abfe33bd7dffd2b673f2b9bf5b9cbb64aea63b86655e3b37b22a785c7b",
+      "translationHash": "f28e22e1b083fcd4d29b4eca853998dd4e6ad6651dbe422aedbdaabce5f06ef9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.discord": {
+      "sourceHash": "753ccd7b8b981b357e566f8d993aa9b3ed38a397003dca95286293b18f65dd78",
+      "translationHash": "16e87e568a0e45f1b668a6c13a21c301f8dc7cd34631300d9958e3ab1e0bb678",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.ditto": {
+      "sourceHash": "1cedc4dc08c4e6565fd0844d9b91db9092f96db2b8fceb40791e71a716497d68",
+      "translationHash": "4cb9387ee214ae4747b4c84b88f7b8ac8ffb39f49a032dad3514a6084b7a973f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.enterpret": {
+      "sourceHash": "1dc73fc65b74777e33070b439db57a77935926eb4bda39cb618ae8e6fb502668",
+      "translationHash": "bd81296c1cb79e0aa96f7884186da76fa56082c51b4689d3332391072f50dd9d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.exa": {
+      "sourceHash": "7fea898f20c12e0d35abebea2d4d2d8205afbcdcff893799e208b2cc8269bae2",
+      "translationHash": "3a630825047b4c5a126949e9a6fc3ad563e68764b99771ab95fafd127c9b64e0",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.executor": {
+      "sourceHash": "b1796b097056a2cda642382663a1bcaaef200bd4d301f0bef5c7334b7d67b1fb",
+      "translationHash": "e93abbe2bfb970706a1cd584b2e131f9013e63afb6473a74b91d5db94cb1bfdb",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.firecrawl": {
+      "sourceHash": "59aceb7f31c6555c9a84d77ab6616e2423e83b911b8e92899e4eb5fdd324529c",
+      "translationHash": "9f0e707360d5e58f3ae2818a22c54f3b3896565a4a417f3568a9de497d5b5548",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.fireflies": {
+      "sourceHash": "c80a52e8374ba4dc954ec184ff63609348fb3f925f6dbbeb579634a4f8b039f8",
+      "translationHash": "af10ac84b81cdbc0ecf614b6bedef3edabc002b0a10dd0d381b870eecaab3407",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.gauge": {
+      "sourceHash": "c74408f0be12a4001a3626d1c47919540a8ffbe5ab962435bfd5c83b2c764ef9",
+      "translationHash": "44f606b1b2340a58400c8970c97a55e2b42e872e5acf9664f5b175c6278e0d50",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.github": {
+      "sourceHash": "9dce9b4e2a3d7e811b99b5c3e60766c93174dba543e0b2b753399d968e785108",
+      "translationHash": "c746478256b308009397a58c1a0fd0a8ab6501f6868c8398a6b1b2c8f805f43d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.gmail": {
+      "sourceHash": "d18f946d163f56c9b7e08d00395a18b08b5051c96a7784477b55c7206ce9d9e6",
+      "translationHash": "21ea649d063e1981c6b0e74f8a5a26656de6385ceb8666a945c8e0d104f04123",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google": {
+      "sourceHash": "735b110de5c652361b70d41878bf3e6d8ae9aefe63e03a51c3699fd7ff9fb00a",
+      "translationHash": "50af662142ae42672220e25468b4805e92f63600eb9c68eee5df2c0b0cb2a7db",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-calendar": {
+      "sourceHash": "e3136748288afc83cd07db12913ff9e93ed92185fef278f53904d8d35a04dec4",
+      "translationHash": "83db9d90503a0e091894a17c8bbca4e82e8d3c8c7a7dbbe20d40d0f4b27dd919",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-chat": {
+      "sourceHash": "eca86191bfb799a32d6e818e4c16d8a9257216cb61144580ca983a8d3afb4ac4",
+      "translationHash": "6a9e468cc953f68b2d8268b639a0bf81b189dfe79f6bc2f6d4a3a05ebf1a9234",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-docs": {
+      "sourceHash": "34f2888b59077bfadff5fa61074430480b169c6f1f8c7d27a0a3f4a473ac84ab",
+      "translationHash": "036f88b1b7297b256b889bc52faa9c45e0372ca68349ca47403401f0e105bd64",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-drive": {
+      "sourceHash": "25911aa5477bef4c892ee71fede7d6bb808445305852ac5473726a1cd2dc7722",
+      "translationHash": "78a68ac6f2bc8f2558863d7000ca2d7ac3036394246accea4478a15aed35826e",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-people": {
+      "sourceHash": "9c2e6e1037615082cb5f53fe725f12f7438d84d459efdb786cf14a8ba17a8226",
+      "translationHash": "30cfde7726b4ba44d1d840286963b3160e3c5b83f065950fa6dfeaf1d6766902",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-sheets": {
+      "sourceHash": "7200a57134347c926675707fa27b4f7289465193a091c9a209537444deac0d80",
+      "translationHash": "2f256db8baeff8c09fd0621a95d3788968e8a13e51d3df52d8f5fdaca2265e3d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-slides": {
+      "sourceHash": "26ece6cdbfa0fc2acf6c0976c7172edd10b9ff123895aeeea5ccc80c18234144",
+      "translationHash": "f360b447888a595ada37a7a6516a7b1a38a59f8f8b0ad37ed2274e909bf59848",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.905Z"
+    },
+    "appCatalog.google-workspace": {
+      "sourceHash": "2bcbce77cde451902fd1be6fa07a68445a5096e02c449f5ac6385a95dd82b96e",
+      "translationHash": "13e85ad6f0ac8f4af67ac48360b7cf5587534c7013819dcabb9603e744bd9cc7",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.google-workspace-search": {
+      "sourceHash": "dd6d2b9b25e9cbf7cabce952b29d6112c99cf503c8703ad3fb7eea95102f1e05",
+      "translationHash": "d524bfc0e549a84279e4580cd80ac905d10960bb546a75b207282bb14efb9d73",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.gsc-wizard": {
+      "sourceHash": "bb5ff3a0933efa5d914f30beee20c8fa21e34cdec3d0de12f3eb16038bc12071",
+      "translationHash": "b9e19ccf7a5cd1696305ebb88d4629551a510ef47d45613412683a1914146e5f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.honcho": {
+      "sourceHash": "032801ca5fe13651d187f23728783b307553990e576648247d6c76cbfcb90ff6",
+      "translationHash": "df7ed247b0b583100ab246ad56565ff4de360224eec88d8439b7bc9e298586f1",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.imessage-photon": {
+      "sourceHash": "f00db61c10b04035c59faaabf997bd9cd3d59eedaa9586111a112329e8a797bd",
+      "translationHash": "56dc8cd96d8acbbd12bd1bf11c12868ff7073b683532d5320f3b94458506e75e",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.klaviyo": {
+      "sourceHash": "37f966fcfaa73b4b55bea624380f6cab53867de6db69fe5a96396ef79cb89566",
+      "translationHash": "1fb017d622798a382a7697df3871902e06f9e9c16bdef444c453812bcffbbb01",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.linear": {
+      "sourceHash": "ed1b210b37c1218ed2fbf0c8470cb3125f52e81fb9713c1062dabfbaa5dcf007",
+      "translationHash": "b1f1133ae2d6d1f916c4a05a539c7ee4d08cc91e38a781ec1e2292c6ce3e5240",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.local": {
+      "sourceHash": "5fb34f40c2fd5a44c0437bd4de4b110b0bed627855677f5a3cb240072183f9b2",
+      "translationHash": "cebb62cac482594b6e1c01239f1885af0ff92913ee1ddad5c36845326a6dada8",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.mem0": {
+      "sourceHash": "cd88ccc3a2bec1d8c54e0c27dd9eafa58f45d93136231fa066009f91329f285e",
+      "translationHash": "1c58adfd45a4be8778d1b0d4e8f65130877dd3a056493e000ed0af00715e0a1e",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.messages-api": {
+      "sourceHash": "50e061e38de5af35eff79ce0af7a187009826b233734c35ed49c62b7cefe6b8c",
+      "translationHash": "ad31f5d98924bc28c78ad0157217e326ed236edef0c8ad3a7154f92e32c3c347",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.microsoft-teams": {
+      "sourceHash": "cc6690e3b143d22dde65d61da44df5d3444682dde60cce24a108c580b0844701",
+      "translationHash": "c566d391d95abf8c17870c89d830a9f33b4662636bf415141c537600fb477daf",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.monday": {
+      "sourceHash": "9c56e594481b28d0fca2766e9ba31666277d9f71fd56e31f6c1e07c4d88debc3",
+      "translationHash": "bc695b921cd456b28fdf3e7d42211e3a5dc807eec6168664c1cfeef5f3dd2807",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.neon": {
+      "sourceHash": "862da7eecab05d83afdaee0344436b7892133b7bfaa4a33940fdbb2188a25c69",
+      "translationHash": "bd1c82e4fa7f62b2bb1da2d7a4eb68f4ded69711c401779919579aa363c9bb37",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.notion": {
+      "sourceHash": "c44f87e9a4f4aa762279a107dbf82fc89fab5b882b23dbf1e22493f22b594622",
+      "translationHash": "013773ced2bb1758dfe58248f3da420d83312b8afe99d445717ac9879120a4db",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.oauth-generic": {
+      "sourceHash": "0e2768c1ad4436d577d45ab0d84af87ee63a4b50b1a658ac5d7de1805b89b2f8",
+      "translationHash": "1bea64455240bff186ea320ae8c026d1e4ead8cdb9ee50db0e24cd9869a56bfb",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.openai": {
+      "sourceHash": "29f9d40e363e6e79eaff983dd136f6c5a5a5e76fbbe3289a6649774e03fdaf98",
+      "translationHash": "c8c00cd1553e6689ee9d78af934ad76ac576b8e070ce76ee25305ffaf133097d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.openrouter": {
+      "sourceHash": "2cef63f155fe04fd52d7cecbb324bbb8fd4ee6c310d300360c35058a096ee277",
+      "translationHash": "c8ef43c4f7143e018e3de532a6a49e07b39c3eab11449a97625e645121d8ef65",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.paperclip-notebook": {
+      "sourceHash": "3947deb405e29b93ccc3620190639cdf5adff7e708d71ffd0bea8a6f431c9761",
+      "translationHash": "a6bc32c45b552dd55f45c5eb2fe7010a695c5eacc5f043b6aca75521479a8b46",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.parallel-search": {
+      "sourceHash": "e4ca2e289d8e946bc2ad6ab99d23cdaf7327ecb19d19677c6c89e8c3f6f3c862",
+      "translationHash": "a0a38413c8b07fb3f3a59791b15ab1deb3487d0ba321b7676a518906cd321a82",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.posthog": {
+      "sourceHash": "8b8d0e40f52b2b7cbfe3f2623a4f63af24db9809d3b1c05f439c573a23aa4117",
+      "translationHash": "5617ee3f881e1757d852ad78130a137923e445482d3712289bbf151868197077",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.providerHosted": {
+      "sourceHash": "b5c5309093bfa47ba3fe22850d0315c0c6b42e6323bbc4dccb82e73e4d2556de",
+      "translationHash": "d49c2d2aab95230ec304eff14e4f6f1e2607b05a740a77ff9fe121b7c6878bbe",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.railway": {
+      "sourceHash": "ba140e4954eaea1ac562bd70e4e7d2f44958caa7ce34b7a792c50876d079fd7d",
+      "translationHash": "caa0d5ed3a4604f0e3dc13d1f28ac7c76229dfc95893f8825963d4cc29a8a2b0",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.responses-api": {
+      "sourceHash": "83e248cff293804c6078c6e491c8a93bfea8444ef1e20aaad358e56c14ea3fb1",
+      "translationHash": "4dc82fe26614280aec6dac89652227199f3ff0fef76b9b81fd1f0fdf313f0552",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.routingDisabled": {
+      "sourceHash": "309c2f9e3fc2d7a62a193c93689d412fd611c8287bfa7bb8ac3456fada3c3dad",
+      "translationHash": "42b1d215de6aab6bac9ba7ddc2768a31cc62897cbbbd176fb124924c540a33de",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.sentry": {
+      "sourceHash": "a7c47b892f11a91583f65ba54986224b1a1d442cff31d60ca3ad5a23980b1a9a",
+      "translationHash": "60592492d05eaefb87eaf387a24a9ed1f049fdd8885d6f36738dc2a8e66a5002",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.shopify": {
+      "sourceHash": "999e233e9c2142fa40e7da274b71bc284c04b80c51d731931a933c7a09556183",
+      "translationHash": "2183be06e633307562fcb924709e75e4a603259620870de2cb740d0e5c89674d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.slack": {
+      "sourceHash": "293679624977ed30107bab8f15a0efb1ae32e19119908ae2fb0237584643ab78",
+      "translationHash": "6c2c1d54742540ac674719d77ad911e26ad3ca3c98f83a1dac85005035304c67",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.speko": {
+      "sourceHash": "b82403b224d66ad5d25995414b474e247d2661b9dce2f0975470f7febcab3812",
+      "translationHash": "e52cdcd44b8ea5c36d9c93e02c78a2f0a91e717a06f9655ca7f14ec5eef888de",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.supabase": {
+      "sourceHash": "b14ff5de5a75852ec73efd0fb4ca91734cc84f920180c0327f8aa36e7180c37a",
+      "translationHash": "10ff32935181f09cc94089aebf9dcf3d4fd6b59b0364608214c61ddda5530b77",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.superagent": {
+      "sourceHash": "c0072e134958378b3e1458c7f71a0292da202636a7a61f6eef25b424cd405bfa",
+      "translationHash": "a42e4ffd5096ff3c2e0050f4a16a002245bbdecd1d942a1b9fdfb9726c41470f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.supermemory": {
+      "sourceHash": "af3d539bd08b9f5633077393402786cd894172d6877c8988da6a086a4669fb97",
+      "translationHash": "627ee00f801f3ca7284988d836b29d9c099e9703b339fe8fbf4c241a08882b16",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.tavily": {
+      "sourceHash": "86af934349e1c87af1979a9373fb09195ceb6381ca6e035b292255f7c9f0f78f",
+      "translationHash": "6b8514d6ab3d6458203d54e960bd6c10f4cf6b92cb166d94a5d44b9981f30a8b",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.telegram": {
+      "sourceHash": "2323c4adad06e9b288da785644083dd4b0ea183fc5dc7bb6fd0c8e5a3c1a08c1",
+      "translationHash": "b1ce8629ff200f013a3f629952e332b401e428b9a51dbd2f1343674465d3c46c",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.telem": {
+      "sourceHash": "8953679aa45e3ce0243212d5e53de3142d84e1dac93988050e45b1589d71ec79",
+      "translationHash": "ea4e36daaadf6c81a2ca99bcb1cc235e9d682b61db29a0f59468471e6513c2d9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.unikraft": {
+      "sourceHash": "b641d9e2e77bc0faf03d86286f41cfd518701437c5e70b28f90fc97af9630801",
+      "translationHash": "f5349472c467929a95a9115ebf5a18fd721a3e3d63de702db1fec9484af6887d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.vercel": {
+      "sourceHash": "b5d39649f8e0050ede6f91dbc5c51d165ce799a67960645ae17fa6e401d92748",
+      "translationHash": "4be92549cfdda603940de70a40006742db9b3b476cd85f5962acebd7faf87731",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.vercelDisabled": {
+      "sourceHash": "a5ba3096cdbc59b6d07f3716d42b8313f224792632570edbb0d7958bcece2dd5",
+      "translationHash": "e545962c4f4383a84584affb6ca5d205e20a26e203f3bdd838ecacb421a08bd7",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.vercelOidcRequired": {
+      "sourceHash": "e2fea9dc68571719ac393ba704ecd356ce40a7941c868e216d96dd6dfd82040d",
+      "translationHash": "4be65f200e069d0ffbaa660b8cf7c98cd3512e9fbd60157c1c60aee4b93c7b9a",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.windsor-ai": {
+      "sourceHash": "281617390c445a304ef691dc4109f81bffbaaddcb2cfd06b04107edba0635988",
+      "translationHash": "4f8686501eefc4e3f5382c1a17ea88694ecbd24817c4b9b1aa0d54d7fafe9450",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.xai": {
+      "sourceHash": "49cc62b1c65259ba46de693af4bc35338a9fdd3c7548a216399caf6bb00b6443",
+      "translationHash": "6e5015d6c3befd69b93538dc82bddf1ea8c315e8b4b27d044f60a5251c4e5e4d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.zapier": {
+      "sourceHash": "6b5902a043c822d241985a0566aa9c38ef6faf87c6bfa657603dbd7797e18032",
+      "translationHash": "d31b8a9da26b1da631428d5bcfe30b905479c4df37f3d59b20217345c8c47243",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
+    },
+    "appCatalog.zep": {
+      "sourceHash": "47b7a5495acd1e00896a285d91e7a57bbcef9c041ffc761ba25a7832008519de",
+      "translationHash": "39590726909981d625012d7b0114b23ac5bf241ee7aaf1ff6f4b60bbeaa7e805",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "approvalsUi.adapter": {
       "sourceHash": "88e255804684cc31e32ad99dae24c579fbef7aea9454f59fc361d3ac580e8e16",
@@ -15851,11 +16425,11 @@
       "reviewedAt": "2026-10-26T23:13:04.423Z"
     },
     "decisionForms.common.approved": {
-      "sourceHash": "b1e1ffdc400e02a641ccade673229f7f5a590853d6cec77cf79d6e2fd1814c5f",
+      "sourceHash": "ffc82b38c2d0e61792e89b6186b93d28648d046c07423376426adf48aee58f04",
       "translationHash": "9fe65910a05d6330fa2027a45c40ec73a0eb774fe96bcce0ab624d5621bafffc",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.504Z"
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "decisionForms.common.approving": {
       "sourceHash": "71d359a2826b058953f2f79e0811b75144cfafbb1a07d7193d0ba7ae091c692f",
@@ -15879,11 +16453,11 @@
       "reviewedAt": "2026-10-26T04:41:50.504Z"
     },
     "decisionForms.common.cancelled": {
-      "sourceHash": "e5497d97caec53b26b8400a19940ba3dfb30d7ea81ec899e0feba0897b8dc016",
+      "sourceHash": "b4c4d8fd86fd79c9a51bcedc763785a3f728b06e867d0d20bb3fc2a38de08cd4",
       "translationHash": "45a72132bf09fda8de19b0c9ffb2e41d89a6c57dfabc8423d16a86b885f245b2",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.504Z"
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "decisionForms.common.confirmed": {
       "sourceHash": "1eb6aef4a6df66db17ffd8fcc9cbd1ec5ea04785fd2b37efe0120b4ee4bd6570",
@@ -15900,18 +16474,18 @@
       "reviewedAt": "2026-10-26T23:13:04.423Z"
     },
     "decisionForms.common.expired": {
-      "sourceHash": "b66329a07120ac6c095db2e385bff4f229ef074903b021c7440652e7c58c2d20",
+      "sourceHash": "eb01af0a42b06c27405985ad7c58f49899e04bba57899ca65120b7ef4f9aa447",
       "translationHash": "0109693b4e9d8689448ce05b75511985c30c11e4bb5e3fb0e3c7a8c5893914d3",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.504Z"
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "decisionForms.common.failed": {
-      "sourceHash": "544d5cf99a0a98775a6e79bfa59ca425c98ff473cfb66849d3ff196bb104d1e4",
+      "sourceHash": "62c4bb95b604d8833218f8e9028bba8eea8f1a0e257b7ba789e8951a9f873479",
       "translationHash": "5fc789134423733fd7f6330a3d050273c633e49e237df5771c9385a2a88a1390",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.504Z"
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "decisionForms.common.jumpComment": {
       "sourceHash": "c15c68ebd29b62d8049eb4c4c3f8ee7a1dca7bec7a6c67eb9274810779d8ff5b",
@@ -15963,11 +16537,11 @@
       "reviewedAt": "2026-10-26T04:41:50.504Z"
     },
     "decisionForms.common.pending": {
-      "sourceHash": "d43b8dc9da6f13e959871decdaba8dcdb607ea5ba663d0da3e7b442187038fe2",
+      "sourceHash": "59c7d9e4cea4886cc2d5e219232ac9476100f9f43b84ab032ee8c155da74a4ea",
       "translationHash": "4c855aa0e66e2233813614d40867791e2ebb274ac4c00f1ed6657ebe9a3a0a4e",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.504Z"
+      "reviewedAt": "2026-11-24T12:59:39.906Z"
     },
     "decisionForms.common.plan": {
       "sourceHash": "886531c438844efa0b7c4531132c5ad95f4832f8895b7a3f635bece3939a05e0",
@@ -16845,11 +17419,11 @@
       "reviewedAt": "2026-10-26T04:41:50.506Z"
     },
     "decisionForms.interaction.changesRequested": {
-      "sourceHash": "589c92c32da469b3a093a23284bef5110fca50956e6a0f15ffd2e0f04f3b1a92",
+      "sourceHash": "fca52f0718628350f9c02ab12e770fc08840f7a64c5bcc6b4542646ac7f20fc7",
       "translationHash": "93b53556644ba71b1d3c73cce84f78de53979e441c7aa396afb9daebe45d43db",
-      "reviewer": "Codex root: source-context and Russian editorial review, 2026-10-26",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T04:41:50.506Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "decisionForms.interaction.checkboxConfirmation": {
       "sourceHash": "0647ecc6932e39fcd36ad1b187db8205581691c5803515926c2709963130349c",
@@ -28647,11 +29221,11 @@
       "reviewedAt": "2026-10-26T23:04:34.836Z"
     },
     "fullApps.caption_9b9a8d05a7": {
-      "sourceHash": "a249ec28ab2ce40a1cb4236eaa89a3e358da5a6755c37caf59d89529fd14a401",
+      "sourceHash": "3ebc8da3b243f42722503d75691444ed8193d6915865eeef008a5a1171b7595e",
       "translationHash": "59ca8885b3226bceb927d8174c6f0fe170b92c12fc48cdafdcf3474c1acbdcd4",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.631Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullApps.caption_abccc78cc9": {
       "sourceHash": "7efcffc4514ca8cc2259ab9e7e842554ed10910e8140cf81b8b0cf76c2185910",
@@ -28724,11 +29298,11 @@
       "reviewedAt": "2026-10-26T23:04:34.836Z"
     },
     "fullApps.caption_e5830d2654": {
-      "sourceHash": "1e0a985dacff34185453c0617185a84f83455c392eeb5e342f04efbc4a03501b",
+      "sourceHash": "3ec3181f8bf961f7da07109ab10f8bb2bfd882ac00bafaa94e539dd6554cc960",
       "translationHash": "2c879361991be53622111d46676582c0b9a226867fdcd3916ae091ff7a8e3ca3",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.836Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullApps.caption_e8e116ae12": {
       "sourceHash": "6d6a194b6be1c10ad1c164e1d101c6779f10274f44efdc1537446eeebb06a046",
@@ -33701,11 +34275,11 @@
       "reviewedAt": "2026-10-27T09:10:53.931Z"
     },
     "fullApps.give_agents_email_inboxes_and_handle_each_conversati_d29107": {
-      "sourceHash": "9f176fbdfb72d3ff6e14212f11a944daca0c2cc64a22437d4d26805a0ab47887",
+      "sourceHash": "95ce7ec5940816463fa9fc045556291776e574e757d3cf93f9c50759bf004ccc",
       "translationHash": "febdfdffa9e77878ef616cdb532d8be6df80a011cfe3eb77444344a77fb1e37c",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.865Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullApps.give_an_agent_an_email_address_1597b6": {
       "sourceHash": "dd3757790d6b27eae764184d609334f9aa8e6ecbf8eee08451b02b6e9f67bf5a",
@@ -33799,11 +34373,11 @@
       "reviewedAt": "2026-10-26T23:04:34.865Z"
     },
     "fullApps.have_an_agent_review_pull_requests_and_respond_to_gi_d0bfaf": {
-      "sourceHash": "ec946b5a20591e02833041ca8205adbee00a6fa033eea221851d4f0781771733",
-      "translationHash": "7ae22446e47df61a81ae9943b9cfbc8912d237397783d2de075e4dd8197c2a23",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "sourceHash": "f52eb9a381fa6f6f59828ba5d9bd0d5032e6f8a9db6a1517adbb52d0f9481d54",
+      "translationHash": "f4d4aaae2c13aa46efc5aa24b52371718ed225dcf9e056b3f060f76e25cb4f11",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.865Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullApps.header_ba5caa": {
       "sourceHash": "0008b45f7b9af4fa189d1907f34059bfe38bbb55bd877551d84e2bfb40f5e5d4",
@@ -45510,11 +46084,11 @@
       "reviewedAt": "2026-10-26T23:04:34.932Z"
     },
     "fullDiagnostics.changesRequested": {
-      "sourceHash": "6f7dcca33475520698326d6c8eb7a3d38ed944c502239fd528e49d0cc097e905",
+      "sourceHash": "112e5dd753987d7d54fbf4820f76db8c4c29f16920e01833d200769a5ca35388",
       "translationHash": "b04954896c32ef4644f03185cf285f500a749d009f8f94945340387d8b00b786",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.632Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullDiagnostics.changesRequestedCount": {
       "sourceHash": "511e464e3f3c4631a3da0177b925674a089726424134235cad713d4ca052641f",
@@ -50018,11 +50592,11 @@
       "reviewedAt": "2026-10-26T23:04:34.951Z"
     },
     "fullDiagnostics.unit_file": {
-      "sourceHash": "030c8a1838fa56a52487a3a85f9ac9678842cb21916a9d7df420f376719396dd",
+      "sourceHash": "41552547098db0bd4686f3d6ee214a77b9a4741eee349ffc3fa1837aacbb4334",
       "translationHash": "86c97377579b16a335bd7fe9803b3478e09c8e37e112c39e611fe72232c42442",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.632Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullDiagnostics.unit_image": {
       "sourceHash": "06690d59cf5e0b575cde2c2bd83dbbf991f37851dd3d6463c513df521107dabc",
@@ -52510,11 +53084,11 @@
       "reviewedAt": "2026-11-05T21:48:56.633Z"
     },
     "fullPages.couldnTOpenChatTryAgain": {
-      "sourceHash": "fccffd1e7407e2dc41f4cabb58d9296398f2225619b9a556998cf40dc1c5d824",
+      "sourceHash": "ffc9e4fc02c6fbc8523e36c39f5bb15508f602e0020212811c4c0937824f05f8",
       "translationHash": "894905fb2f75aaaa19cfbee1cb82b43ba96a96ef671edac65403857d4a05d24d",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.962Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullPages.countAsAChange": {
       "sourceHash": "b7bbb3cb6434ff01980f40bad992bc4fca373fd521bb0dea8a0b49c8a3fe36b3",
@@ -54981,11 +55555,11 @@
       "reviewedAt": "2026-10-26T23:04:34.974Z"
     },
     "fullPages.millisecondsShort": {
-      "sourceHash": "8d4a8ed584530ab747a54a9cba113f014ebf8a7114848b1f0bef53a28eb5893c",
+      "sourceHash": "c34e9500d160201a58cbd042993f6b3c28870395156bd4fe026763b8fdf3caf4",
       "translationHash": "7feb3bc1f1b33dd460b2cb8118c9fd24c2b56bdfff52b4c6976bc501935e53f1",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:34.974Z"
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
     },
     "fullPages.min": {
       "sourceHash": "60c110114c5ce36561bd247fe4824101a111ce3de19a3026a4a7713b12e13c2c",
@@ -70395,11 +70969,11 @@
       "reviewedAt": "2026-10-26T23:04:35.072Z"
     },
     "fullShared.enable_the_connection_pool_plugin_in_plugins_1bbd62": {
-      "sourceHash": "e3b7fddef983ca556770fda8531ecf0a5ba932f9242d7aa9267fd68a36ccd779",
+      "sourceHash": "ea4a40b5d761d18fb64f4fa192106471b0c4c810898d0197d4260b27eb1155f5",
       "translationHash": "fc01b7bbabed7804589c610ac762e27012165632fcabed84995b951eb2613905",
-      "reviewer": "Codex localization team (context review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:04:35.072Z"
+      "reviewedAt": "2026-11-24T13:00:49.975Z"
     },
     "fullShared.enable_this_pool_07f26d": {
       "sourceHash": "d782567503c0a1bf943a0779676fd406a8aa30952cb261ae1e8fe501e8840536",
@@ -78535,6 +79109,13 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T12:59:56.691Z"
     },
+    "githubSetupUi.errors.notConfirmed": {
+      "sourceHash": "a07e4be89e2b7a168c27ae31da1b81bd260a57821259fd3c9e5aff3bc4ebed06",
+      "translationHash": "07fab3413ac187e9da0d06a70f8caf6777ecad36530706be01c58871830b137a",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.907Z"
+    },
     "githubSetupUi.errors.popupBlocked": {
       "sourceHash": "68b4b6280c8879b92ba52297a991c9f2b36b9bf9aaf7b371a9090b042df6cef4",
       "translationHash": "59c0bea49b96c2b298c09284ec6870962aeef3f26179420aa97061f1caa35e2f",
@@ -78683,11 +79264,11 @@
       "reviewedAt": "2026-10-26T12:59:56.691Z"
     },
     "githubSetupUi.includeAgentToContinue": {
-      "sourceHash": "38091cd233f7362f4ee0314f62d7d25af7dfc39882aac818980bcda9b3b11db9",
+      "sourceHash": "c571a870fd2cd9997d8e60b6dd77a834bbda8a5e3608efe8034a1cf18c4fd687",
       "translationHash": "66ba947d38b58d3ac14e1655dd977dbad93dfdc62c498d9d20ef5810728fa940",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:42:19.252Z"
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "githubSetupUi.includeRequestingAgent": {
       "sourceHash": "cad06e1fadc3456003737b7152de0da41f0b869d7aa913aa9073ac3dbd0b5003",
@@ -81883,10 +82464,10 @@
     },
     "interfaceUpdates.agent_chat_is_disabled_for_this_instance_an_admini_3583739d": {
       "sourceHash": "74b6dc13732bdb829e91ced7a25537102d363513a3ba6e481302e85d9b7b7bf8",
-      "translationHash": "028a1160a32333a3406920c4dd64b702914f5be717ff4287fe591007155a6193",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.642Z"
+      "translationHash": "e9d6c704152b39f02b18e8cf359e9fc9fd69fcc7892d452bb758b525540bb655",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "interfaceUpdates.agent_chat_is_off_for_this_instance_an_administrat_dd51f711": {
       "sourceHash": "ec4c473002fc512cef91b6cb2c58ff7bc81b1080ad221f1e35e03d70a695d05a",
@@ -81959,11 +82540,11 @@
       "reviewedAt": "2026-11-05T21:48:56.642Z"
     },
     "interfaceUpdates.answers_recorded_37d183a4": {
-      "sourceHash": "bed4c7d08bb832c70283538292351d7345368f5bdd5eda68606c1a008aea0929",
+      "sourceHash": "e45a4deacca3d2666830f3f4cc19c7c2ab5afb1957dd8e87364d96d06246418a",
       "translationHash": "044a1993eb545a5344d919159d02f231e0d658cdc1c3663fb8521e5b38360e2f",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.642Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "interfaceUpdates.antigravity_sign_in_or_gemini_api_key_1605caf1": {
       "sourceHash": "40a9409b70880dbcccc9269029a8ed77dc03fbd5b29ff6ddc20c35d64300dac4",
@@ -81994,11 +82575,11 @@
       "reviewedAt": "2026-11-05T21:48:56.643Z"
     },
     "interfaceUpdates.approved_87b42e40": {
-      "sourceHash": "561dfa48a578b9eba9b719ba5fec8c5fa6512e696edabf5b0eb91043a3e61dfe",
+      "sourceHash": "b9ba07eefbff357cfc6e2e638a5b1e6a9bf58b957eb2c58b727b9cb6b3f42cf5",
       "translationHash": "953ffe839c3c21769e77f812061e4a0b484c810188315272f409fed8a4f8efad",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.643Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "interfaceUpdates.ask_an_administrator_to_enable_agent_chat_in_exper_01fdb7b2": {
       "sourceHash": "3e3d3c50cd0ee108f4daaed315bf041a3341cfe557b02b1ef9879d3c37727c76",
@@ -82106,11 +82687,11 @@
       "reviewedAt": "2026-11-05T21:48:56.644Z"
     },
     "interfaceUpdates.automatic_checks_paused_03d978cd": {
-      "sourceHash": "62c112984f94c03c484a5df66833639a09105f4e42197ebfe55e050dca77a12c",
+      "sourceHash": "3cead71f617c948954741834b51ab6a37932527a3d25b8059810d07c3aa86e0e",
       "translationHash": "85cabbd42a2e099bde54b66a065a4977c7ab5acff978b552951fde3c7b840701",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:44:39.481Z"
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "interfaceUpdates.back_online_47bfa636": {
       "sourceHash": "ee886387100e79f93922486644b4a1f3a08adbc03220869b0e3a89b936389b18",
@@ -82121,10 +82702,10 @@
     },
     "interfaceUpdates.back_to_agents_7da2164b": {
       "sourceHash": "db871b6accc438b1ec7127cf7ac366bf16bee26809ef41769fe14b1a21e14f5f",
-      "translationHash": "2ca39b57da61db44ca75f3e34c27869839f1f32bd3f5497268d5ff7e44d9095f",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.644Z"
+      "translationHash": "5a1949506dd52db89da735f99122c7f05925dd2c112a94fe25beabe1c1d29617",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.908Z"
     },
     "interfaceUpdates.binary_9a3a45d0": {
       "sourceHash": "3b5fbcc22e4c24810d21530eae6b9a2b570481e6dda6547c2d714b8b11aa8565",
@@ -82275,10 +82856,10 @@
     },
     "interfaceUpdates.chat_with_this_agent_2a6342f4": {
       "sourceHash": "0c5b03141297818e941cbc5f85ada414590b9b127d54f46f01dedbe7732090e4",
-      "translationHash": "100774ecdedcaa8edf2c6568ad5febc859ae8875b1c26b5a19fa491459b0e1b2",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.646Z"
+      "translationHash": "792ce2704dcd8d332ad2039e33c914b75c16c1fc9e3870d02efeeb5d7177db4c",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.909Z"
     },
     "interfaceUpdates.chat_with_value_3023548d": {
       "sourceHash": "1524b73a168ab14dd54443ef70e39fb4ca304696496368533683c878501fa28c",
@@ -82548,10 +83129,10 @@
     },
     "interfaceUpdates.copy_agent_id_adca9433": {
       "sourceHash": "92140d2154b23f95611cf7553cd5280242afe467bd88743aa0e67d24c54ec87e",
-      "translationHash": "3ceeeb2eca03d8e8d51248992ef06281d73825c09833b362aa1beb36c3516a06",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.648Z"
+      "translationHash": "0295c7d89c4c4151671b599d5b094926e936e49b23ca25ed524dd2c50a9e6c32",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.909Z"
     },
     "interfaceUpdates.copy_this_key_now_it_won_t_be_shown_again_after_le_27f03edf": {
       "sourceHash": "57c702fbbc86daaa7b1dd466a3dde30e818df1dad179cc99c3adfa7180ac1f2e",
@@ -82919,10 +83500,10 @@
     },
     "interfaceUpdates.duplicate_agent_3a91c2af": {
       "sourceHash": "c9d7b5060a9830d768542519ac9502d50ce93c8a15f7de7f2f58bbddf0c02912",
-      "translationHash": "993a30df65631214c7b8c0edb5cbd8098eafd961e821229bdb9e4257d2d7b750",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.652Z"
+      "translationHash": "ba182070284b258d1aaee7e56f83dbaf1b19f9a566406b047f1ccbaf1d3f9025",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.909Z"
     },
     "interfaceUpdates.earlier_2a51d354": {
       "sourceHash": "72946e524a32bae9b12cd16600dfc46ede4ab18542e14e844ef8687e3f4f28c9",
@@ -83213,10 +83794,10 @@
     },
     "interfaceUpdates.filter_decision_history_by_agent_054d244d": {
       "sourceHash": "a0141f2aaefa46d185cc922d58eb205d2de27a0e0cc874f8ba91c7bfd0f73be8",
-      "translationHash": "d869f5c3bead7d87df82329f78cacd65ee72cf9b4f96389159099db37d2ac46d",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.655Z"
+      "translationHash": "775e95888116630e6812b7df556676b23835a30913d564bd345d458d997c5ae6",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.909Z"
     },
     "interfaceUpdates.filter_decision_history_by_project_f001d035": {
       "sourceHash": "170945232de99afae9cf5f96cd62ee46a2af1f0701d32380503ce36ce10fef8a",
@@ -83234,10 +83815,10 @@
     },
     "interfaceUpdates.filter_decisions_by_agent_2b6bef36": {
       "sourceHash": "572469965fc8117b6cf4baab337df57a3fd545ab1dcb6b5a6907032f6131da79",
-      "translationHash": "b69a4322f7203a831e1e1ee0cdbb8c07bcfb4a413734ed68f4529c7e6771907d",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.655Z"
+      "translationHash": "f2ce513c7dd0c7112a343089b5c56903896164164fe3970abfe0ff4c1cb77983",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.909Z"
     },
     "interfaceUpdates.filter_decisions_by_project_acdc140d": {
       "sourceHash": "22cc2e0098f0e9325d806563875e3281cb808f52125dc7f81e0f3515c62779b9",
@@ -83255,10 +83836,10 @@
     },
     "interfaceUpdates.finishing_agent_setup_4c48019a": {
       "sourceHash": "e0553684a759cb04c75371f076dabd878d7ed24bac137fd5cb30500556a57692",
-      "translationHash": "ae9380ce9072de3092efdf664ac3d7c1789875a4e012edf9c8160f17a9825538",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.655Z"
+      "translationHash": "cb3f7f19543c714ab84029f61cafbb57622a9eb72d64549f906777253c05c8ed",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.first_check_activity_discarding_this_browser_recor_a333dfb1": {
       "sourceHash": "8258ac07f88d7bfa1de67ffcf3e48683093855fb060612cef339abe0a8657325",
@@ -83346,10 +83927,10 @@
     },
     "interfaceUpdates.google_antigravity_is_not_available_yet_you_can_co_0c6af11d": {
       "sourceHash": "19b6e4b8e80aa61b9da11baac04f333d519e939fa3465cb90a3f22f8e78b618a",
-      "translationHash": "fae558cbe952e4b224913189a17f26303d73fd1daa93908568ef7dce80d23202",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.656Z"
+      "translationHash": "880f9eaabcba4c1ced1e4803cd84d63bddbe5c63ec96b472912b330eeab84cc9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.google_ce770667": {
       "sourceHash": "84e49679b65ac832b79796d085aee5b2f62564e428600e25a56febf64710f613",
@@ -83485,11 +84066,11 @@
       "reviewedAt": "2026-11-05T21:48:56.658Z"
     },
     "interfaceUpdates.inspectRecoveryStatus": {
-      "sourceHash": "3f62cd8eaaa09fc226c014cfa67b2429f0f61989d32eb4804a7d3441fcbc6dc4",
-      "translationHash": "b51cf9ad1f23306a5c6ae68f8734996dd961d6e7a860534e955ac3c0f625cbc4",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.657Z"
+      "sourceHash": "f455e0647df18ba06f2143c69eb5ac7f11d5800e3d0d238c0f78e464412509a5",
+      "translationHash": "4d2d711e4e923c5157a8321ff58d8b07512a5325be1873fa470d0f12052aed3b",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.instructions_238fa28a": {
       "sourceHash": "f6d1741cf06cb699d7ac1ff71f11af76abdcc634235536085981ea0fcff87be3",
@@ -83562,18 +84143,18 @@
       "reviewedAt": "2026-11-05T21:48:56.658Z"
     },
     "interfaceUpdates.lease_policy_30e31761": {
-      "sourceHash": "3b4b4db2456e66d7b8fc0aa74585a50678ce044b8dcd80421b6d3f0fc579b209",
+      "sourceHash": "5d68c11e2d71ac62dd7c310b5fa1dee98703a55c3273f2b4a4751a6d6496f675",
       "translationHash": "32bb58dad915ee9d6db139433956de8e98b6a07edd5c494c5d10f59b60e89e6d",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.659Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.left_360f8403": {
-      "sourceHash": "1d9201e7dfd1ae86489fd26810565ee8a550d2b5873c58c0e4bd7c6c049906ae",
+      "sourceHash": "fdbd962e41bfe2d974ca8c66d2fa5c7492f2c68310277aa2c4b3ae8914d05066",
       "translationHash": "3b77c4913b869fe52c26572560ad002bc02aef74028bf488a3f6f90a9d398a23",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.659Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.limit_reached_work_continues_on_account_credits_41e3f497": {
       "sourceHash": "48c6c9e80b893a5bfdeb4147201364dc4e99f8c0a8b3b28adc8773b2d7828a5b",
@@ -83682,10 +84263,10 @@
     },
     "interfaceUpdates.loading_current_agent_settings_04d4f295": {
       "sourceHash": "68b76e1e6bc92ba1afd242b4189d43a2ee288796b92e76709fadeaf3c6366501",
-      "translationHash": "cec80ba2d6c245bf2254c26c86bd84140411cfe5257bb352d76f9eb465dbce0b",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.660Z"
+      "translationHash": "cf9f9fcd334821117c3db11117f169ef329ad339bd351c8b13d14a222a2d1877",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.loading_decision_model_fdc4a114": {
       "sourceHash": "51c8459343c52207c85800320f704dba2a17b16c062d6af3271b9c0ae238210f",
@@ -83766,10 +84347,10 @@
     },
     "interfaceUpdates.loading_your_agent_setup_0fddbaff": {
       "sourceHash": "df79270940aeebbf4c3c5fec9658a7a66de615f221efcdeb9360dda20cc549a1",
-      "translationHash": "1a5c16b4385fcb987464b99060eedae4f07758671b50261bb4ad52576e638263",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.661Z"
+      "translationHash": "ebddcef35b4d7a8d8d1cce6439d8fe4f3eb40217c20d3c75ac013a6e89188523",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.910Z"
     },
     "interfaceUpdates.loading_your_preference_c765a3fb": {
       "sourceHash": "f9544f1d45f825634b06357c636db7a832fb748f1abcdd4948bac8c2269d8b28",
@@ -83884,11 +84465,11 @@
       "reviewedAt": "2026-11-24T11:42:19.257Z"
     },
     "interfaceUpdates.needs_your_input_on_4345cd80": {
-      "sourceHash": "aa5861986a8306d10a19c5c59e5d6ce19f4cd63e3d54e1c3c7fa680dd026fcf6",
+      "sourceHash": "7d94ac2c186165d082141de62e5181556b88e3ed1183fbadb570e765740dc043",
       "translationHash": "dd455204d4c6838238853f6853420fffee275c0bc705fa78a2464a4c01ae790d",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.662Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.911Z"
     },
     "interfaceUpdates.new_runs_will_not_start_until_the_agent_is_resumed_0315b0db": {
       "sourceHash": "587360f6c8da43b937993b297413af83a616f7c91c7e1d4304ad64ce4ed7d9ce",
@@ -84144,10 +84725,10 @@
     },
     "interfaceUpdates.other_agents_2dc61bda": {
       "sourceHash": "1a3590c48b3338294dd9fbc77599a5cc78cf909094017206d03684c4dc7531b4",
-      "translationHash": "efa9d31e2c01a4b3f33adecb53f7a94ef1a63a5e8f2b2ac01ae2b1beb46c782a",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.664Z"
+      "translationHash": "1a03598ee40cbdf719da18199f02c3ec8b2646b14ddb78bed8f6b9621bb67c2a",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.911Z"
     },
     "interfaceUpdates.other_decisions_e8d0efb5": {
       "sourceHash": "202e73beb06223ccd97db7090d0ec18c60b6e79c5ffd7bbaea0b1d208f76a66c",
@@ -84165,10 +84746,10 @@
     },
     "interfaceUpdates.paperclip_is_preparing_and_verifying_your_agent_yo_acea527b": {
       "sourceHash": "a9f213c383fd852d5b11a79b97ef1ebedbd48b87fa6eb3a90b2985b78896c040",
-      "translationHash": "a7e9a2259bd256b89520457484ee464a987a103fcd5af1f32d1f5e3f485b1cee",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.665Z"
+      "translationHash": "011abd5aa7bac3ce25a9e2c7905583388a3f1e40b606dc54eec5218aba4bd28d",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.911Z"
     },
     "interfaceUpdates.paperclip_is_restarting_or_updating_please_try_aga_03614221": {
       "sourceHash": "de341602265bb35c12eedca023bda085fb6efa9dbeedf104bb2ce76f24e5188b",
@@ -84465,11 +85046,11 @@
       "reviewedAt": "2026-11-05T21:48:56.668Z"
     },
     "interfaceUpdates.recoveryUnconfirmed": {
-      "sourceHash": "7a67d1e341d252cb208a201b78c35b80f1b2398013670e3d75138726f6fa4697",
+      "sourceHash": "f632796748ac41c9998c59c9d6dd7ea721acb7b8dd367b20ab5d7cf51d902f06",
       "translationHash": "fea8628e01f627f2eebff4106a80ddb34c214247177c281e9b39205629023b5b",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.668Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.911Z"
     },
     "interfaceUpdates.reload_saved_0348fff1": {
       "sourceHash": "10c86c7b0d8743e86a1b9caa38fd4c37248de702df18f607e2b99ccbb980a41a",
@@ -84697,10 +85278,10 @@
     },
     "interfaceUpdates.review_the_agent_s_status_in_configuration_before__c07db7aa": {
       "sourceHash": "b63060cd6c516cd8c7f967a39cbac0f8624e50726a5be40a6aa89a42fd1669f5",
-      "translationHash": "76e044ad7670e1198db26b02149d1efa33fd1ebf2ed78a070b58f58651a6803a",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.670Z"
+      "translationHash": "1512f621da25168c2f40b8d4060573602901c06502ab839b4613722548588006",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.reviewed_revision_unavailable_a189552a": {
       "sourceHash": "fd34b5ba7702852866617daa8adbf7dab87eaeb079e78e100c6eb59f9fbdcd12",
@@ -85201,17 +85782,17 @@
     },
     "interfaceUpdates.switch_agent_a31fc91f": {
       "sourceHash": "85bf879b5bc6841dac003a68a0d512ae6ae4fd7dbb7d1849574e5c0e15165800",
-      "translationHash": "8eeb9f8ddffff883ee12b719f72fafb30885bfe7ddceaad436a68c91abc97221",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.675Z"
+      "translationHash": "0c2bf9f132d5af97b2fdc6dbcdd56afbe192d1b615dd40f9ece947ce0b02ca5f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.switch_agent_currently_value_8c465de0": {
       "sourceHash": "0da5f56db0dd3b114563e648cbaacaec29214abbdbc394a19594f5f30086e3b1",
-      "translationHash": "3a56c5b4831caceeeb8b971ec05d96f68f4c39534c96dcd446f65689fa9d6f36",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.675Z"
+      "translationHash": "914c241427741997b6c1ad39bae13aa90ab219ce1d542f113f11bfd546b63fdb",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.task_access_could_not_be_checked_refresh_before_re_1db596b7": {
       "sourceHash": "2f6b67c12d6709503e033bdda83aabae87af4e346b7193fbfbe28c5887d9587a",
@@ -85466,11 +86047,11 @@
       "reviewedAt": "2026-11-05T21:48:56.678Z"
     },
     "interfaceUpdates.this_task_5249804f": {
-      "sourceHash": "e1d7c8631ceea5fb7a18d61357f151c8641c50dfd99f67d891787c58d2965a51",
+      "sourceHash": "d319d86a58281a5955e4b4a8ae75dabdd8e41696c116e6fb194c6fec0f2de8a6",
       "translationHash": "a5926bc21e0df6d85b5e09e6b273f40c8f4677aee7f4a87896fbb72c3d3506aa",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.678Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.this_task_is_still_in_review_with_no_active_review_1e925f44": {
       "sourceHash": "a1bd6e1035b6509e1b1ef365330a639b1fa3a98f849cf038054e4e150a7a89c7",
@@ -86005,18 +86586,18 @@
       "reviewedAt": "2026-11-05T21:48:56.684Z"
     },
     "interfaceUpdates.your_agent_1ffbc15d": {
-      "sourceHash": "178e91663c8d3fd03859d134a4b55d663bd02d78ccedba1df21b8636160512e4",
-      "translationHash": "0b6a973e99cb15dd88ececb1e91bb29d740a5187ff30a26b7f60b3288592d01e",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.684Z"
+      "sourceHash": "8258b87679843233101c3d3f77b1a8ddfa975f3ca9cfc447c03c3d8a781454c5",
+      "translationHash": "dfcdca7e7b7cda26a8dc0dece2dde3912bcc294f49fa87131f2ef4c916d842c9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.your_agent_is_paused_418f9106": {
       "sourceHash": "de6442105937a415b1e9ffcf9fe8185518893c38cb2c15ec996633e134ef2e8d",
-      "translationHash": "7e58660b01f9aa89de229653440d6134aed5d76b5b1ec82e01c83b53b1739e12",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.684Z"
+      "translationHash": "10c9fa834e33b14ab05ee47645d719a76d6413b0bd07226c7b39209a0186ee41",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.912Z"
     },
     "interfaceUpdates.your_exact_draft_and_request_identity_are_kept_aut_227ee75a": {
       "sourceHash": "7ce3298da42a06d8dc3f4a4d9acdeca7428f084171b6d80677a31f2a9ee30553",
@@ -94622,11 +95203,11 @@
       "reviewedAt": "2026-11-05T22:04:08.702Z"
     },
     "runtimeUpdates.checkFailed": {
-      "sourceHash": "ab3141342b1fea3ef527da9f2cb5fc476df278ab55c3178adef489f1c353008b",
+      "sourceHash": "e6a3d90587b064cdfb59cc616ccf2908865bdb085ed5c03f981b4c8773bd83e6",
       "translationHash": "1fe5cd6b014db9cc5ff4df5926166bcde94257e451c34ddff8fd8c5da0a9cc9e",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T22:04:08.702Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.921Z"
     },
     "runtimeUpdates.checksSkipped": {
       "sourceHash": "b26640e0a738f482b8b647ab40844d1710588039eaf9714eef82a35d9e2d9872",
@@ -95049,32 +95630,32 @@
       "reviewedAt": "2026-10-26T07:06:16.913Z"
     },
     "runUi.activity.memory.completed": {
-      "sourceHash": "2d8b1e58d8c2f82a7214a544ea2ede2b21225275e4ec3dbd5b1ecaf0900b0bf6",
+      "sourceHash": "11e4ba9a20abbe6e8037056ae572d67e6c894c73c221daf23d002e264c18565c",
       "translationHash": "61560bb4bcbcf859c3be35f549db4ea9c102ce0e08990cdc7fcef8427ca244b0",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.692Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.913Z"
     },
     "runUi.activity.memory.failed": {
-      "sourceHash": "b1a7ee16ed43fdf99ff8e3c7dce7d054d1ebf8ab5dca02ad2847d7b20cf4424b",
+      "sourceHash": "54a01550bdb5d05df5b5a6b63ce86ad119fb3492eadb85c6ab2114eb000a5a24",
       "translationHash": "71ab7ce6f040dd6d34cf24592904f9090d547878b24e06f074c0a63032d7c4e5",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.692Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.913Z"
     },
     "runUi.activity.memory.interrupted": {
-      "sourceHash": "98b00b3f9a57dc9918c316ad6e99f3763e4d84acd12d30057a8f936b0324894d",
+      "sourceHash": "3efcd100fc8677e51ed0ef77d332019b5f79d21b4190e00cbabb8c5d73e88ca2",
       "translationHash": "81220dcbb98a4e1fa233d3e5fdf11e1ac23dd28fa0115b46c56c12120b98eb28",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.692Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.913Z"
     },
     "runUi.activity.memory.running": {
-      "sourceHash": "0386118f8d01b951cda8124ead36817c881c93f02f924bc06fa854734c62e8e7",
+      "sourceHash": "8b4a7c3902e182e81685798f072a9a182044610a990cbec28f8089032d86bb0b",
       "translationHash": "7782e03c657a4a008b9e4f77edf1c7ed9c6071e7cfb525d46d5cff6e71d73116",
-      "reviewer": "Localization review",
-      "method": "source-review",
-      "reviewedAt": "2026-11-05T21:48:56.692Z"
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.913Z"
     },
     "runUi.activity.messageAgent.completed": {
       "sourceHash": "67f8cd3ca874e1ea3573698d2053d4acab928275f53d79a4998ba04ff20daa7a",
@@ -95160,6 +95741,13 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.913Z"
     },
+    "runUi.activity.patternOnPage": {
+      "sourceHash": "0c1c9c0f889743e31e76aaf8d343b6b2f5ca2d3c6f2e06a0b7bdef89f6bccfc0",
+      "translationHash": "c6c40b7779e24eb346750ea7756287b5de33a0401281894425b6b421fb7b12c5",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.914Z"
+    },
     "runUi.activity.plan.completed": {
       "sourceHash": "12677d57389cd545ea1165bfa850e6b1655e9b2e9cf6630a8f82d5bb0053e96d",
       "translationHash": "3ea1adcd6c6d9e00f2c891bccb3ed80d8564990711afbb79e5365e9250b6937b",
@@ -95187,6 +95775,34 @@
       "reviewer": "Codex root with independent task-chat and run-presentation reviews",
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.913Z"
+    },
+    "runUi.activity.planProposal.completed": {
+      "sourceHash": "c89efd1c844e92b16017cf6e488eb999f33041f98610b77e7267a5610a121430",
+      "translationHash": "d9337ba7a91180993420ee94d4512ed28f5f2daa3fea0057e944d7cba4efaa09",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.914Z"
+    },
+    "runUi.activity.planProposal.failed": {
+      "sourceHash": "3a85f1c3ac1ad2e2e840b36465f58e6ccd41708e9b564d872bf6f738dfc0bea1",
+      "translationHash": "744b22b43c1ea7e9dc34ba21fcf942ca4fdea94d1728e8358db19cef02824078",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.914Z"
+    },
+    "runUi.activity.planProposal.interrupted": {
+      "sourceHash": "280e95ee88c980b0b60066f195633ef1c1556c1e9e089ee62a0e2a64a4d54e1b",
+      "translationHash": "0b438cc9d62556ce460763c27c82283e5bcb14830e93f3ef4ea371988e8aa9dd",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.914Z"
+    },
+    "runUi.activity.planProposal.running": {
+      "sourceHash": "e7bcf5375d776ec31d2a91728e690277affb302bcdfb8d53d86ca4645b9c753f",
+      "translationHash": "162b231ff7020fcf8fe7e9716fd3ee611e2daac21717171ef7f6d7e6a344e45c",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.914Z"
     },
     "runUi.activity.referenced": {
       "sourceHash": "997454c2259c82388f807889511049d7ca8389d4519e8056e2c71ab70a039883",
@@ -95349,6 +95965,27 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.914Z"
     },
+    "runUi.activity.verification.notRun": {
+      "sourceHash": "1e2cca36edb7451dca79fbf26261ee24323a30e6ae9a02e27c2bc14627d2fd89",
+      "translationHash": "4e4f84da4023e581cff2704f9dbabf00d902609b93750cd5f434c883fdb97334",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.915Z"
+    },
+    "runUi.activity.verification.passed": {
+      "sourceHash": "fb77b69a2140594e30f2c14764717d7fc876c39b84e826f988cd1d5fa8a8f5b7",
+      "translationHash": "5bc607ace4e0822cd593f0effeab7b246f0aa4c02240baef734802fa8c1cd619",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.915Z"
+    },
+    "runUi.activity.verification.running": {
+      "sourceHash": "bbb108bb1d87d9a450abdc6f75665371e3ab21ae08db79799c2568e20914887e",
+      "translationHash": "8e3bad4e041f8a156ff35da186e9243ed9678f6d9f7672faad67147983cea2cc",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.915Z"
+    },
     "runUi.activity.verifyModel.completed": {
       "sourceHash": "3ff3c41fe92a769a46317bbdfc2c41f4ea675c562170adfbe1fed39275e72985",
       "translationHash": "61a2bce3a27c18aaf29aeed6eb6ea283359e84c194a5f81c6a393f3a53e46be2",
@@ -95412,6 +96049,13 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.914Z"
     },
+    "runUi.activity.wait.elapsed": {
+      "sourceHash": "1e8dbce8cdc267470bbfce701bdb5c1095f66f98e04a2db5b6764bba0239c891",
+      "translationHash": "0a4881eceab0d44005eb76b84ddfe7a7859efaa86522bca77bf273476fc3c6e9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.915Z"
+    },
     "runUi.activity.wait.failed": {
       "sourceHash": "98f20da13954c49a51499bb97ebff7c6f66c793692e35b9721079452a0232253",
       "translationHash": "5dd78aa69195ad400be72d7d2150aa05052b4ffb6950b4481885d9c95b83c177",
@@ -95426,12 +96070,33 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.914Z"
     },
+    "runUi.activity.wait.planned": {
+      "sourceHash": "1d505c87df1678d96a9405d3e76666b350bb6d0e144cf4790a14b03b4dbb2bba",
+      "translationHash": "490ca87154960195ef449f9b7ab186ea3f7f8100eba143e5056ec36c02d950eb",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.915Z"
+    },
+    "runUi.activity.wait.remaining": {
+      "sourceHash": "341ab0c2303efce0236de4e6c4fabee9516dec019d9f81f622bfc8d5bd989d85",
+      "translationHash": "e100ad2cfc66aa718b5a4bdacfe9cb231928e20179c74be9df81fb66dcea6562",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.916Z"
+    },
     "runUi.activity.wait.running": {
       "sourceHash": "c438f4e65cb792275b09808bbad859554112e899204294c9aaeb3fd12dcaa98d",
       "translationHash": "3d649ca95e015772181c36799b0072a858add5e2ecacfa26d4dd016e0baa7388",
       "reviewer": "Codex root with independent task-chat and run-presentation reviews",
       "method": "agent",
       "reviewedAt": "2026-10-26T07:06:16.914Z"
+    },
+    "runUi.activity.wait.stoppedAfter": {
+      "sourceHash": "d20794187bcf61242d079eee5fe424ce9f1c0ccb63db96798c403582341fbae2",
+      "translationHash": "8e32251f9e9ff02d6615009c2617978cf80c1041a270efa7ac9a338ce53a9b21",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.916Z"
     },
     "runUi.activity.waitAgents.completed": {
       "sourceHash": "cca081f6f1cc4236fcad345359c875e0d379cbe03bb354eedbfd006e4e2da5e3",
@@ -96506,10 +97171,10 @@
     },
     "runUi.detail.compactedFrom": {
       "sourceHash": "c74db66a7d1fcca2e5337fbe96bfcbd174ff3371c43f40ddac3712dc77ae9685",
-      "translationHash": "b1893a820dc504daf5bae0a36ecd4e1cda4d7ab5f9bcf45e586dcf8fbfa6bc29",
+      "translationHash": "7e177dc3e0664b180b37a6205c26188658d898724a32736db79e14c0570cf708",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:42:19.285Z"
+      "reviewedAt": "2026-11-24T12:59:39.916Z"
     },
     "runUi.detail.compactedRange": {
       "sourceHash": "4111852405b03ba68112580a17191a33d57914dd61a015c24e766369cc1981b4",
@@ -99207,11 +99872,11 @@
       "reviewedAt": "2026-10-26T07:06:16.928Z"
     },
     "runUi.phase.readCount": {
-      "sourceHash": "7c7fc89b00b41c407203f34b600d893ab4b8589c186e8a50a94ab9d797eff343",
+      "sourceHash": "46a32462f847be89cee4bd07e9b15f4835d31423f4becbfc8f0db8a7154a3258",
       "translationHash": "9ae51fec5c7addf28b83b37ebc28d7bacc4ec98a267fb963f395b96194308b81",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.928Z"
+      "reviewedAt": "2026-11-24T12:59:39.916Z"
     },
     "runUi.phase.readSingle": {
       "sourceHash": "0d03b76136e6d32104c9ee739c51384f00868268db29af3b1de953a394db6369",
@@ -99514,6 +100179,34 @@
       "method": "agent",
       "reviewedAt": "2026-10-26T23:13:04.461Z"
     },
+    "runUi.protocol.fileChange.create": {
+      "sourceHash": "d70ac1906c44291dfcd4abb7d0ce379ce0d2b466e172794646a76ed1d370464a",
+      "translationHash": "7231a2fe39489c3653703dedf9ebcad044d5d4ec2c96852d0b29221da50b7042",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.916Z"
+    },
+    "runUi.protocol.fileChange.delete": {
+      "sourceHash": "996ffbee88d36bfd19dcfb87a6191103cbf51891c68128a09a18213230f90a36",
+      "translationHash": "84f0201993b0f607a90bb70afa8c3988d52dcd61c060a6079c65da33bc800bf7",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.917Z"
+    },
+    "runUi.protocol.fileChange.mode_change": {
+      "sourceHash": "76e147598e9f20627c4867d4aa54bc3d76d748aaf088574b985a7cf89a7f539b",
+      "translationHash": "32c4babd2e7d2a66702422531fcaeb30f2ecb590b702972b6d284c52fd061278",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.917Z"
+    },
+    "runUi.protocol.fileChange.rename": {
+      "sourceHash": "e6fe925acedcf17e38a5266a7ed156b57cc992be0e37af7195339cba61ef7a7f",
+      "translationHash": "0fc613f556d1caaa961ab023a1856045725c76c5e49abab8e8789b585174ec7b",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.917Z"
+    },
     "runUi.protocol.inspector": {
       "sourceHash": "d0f1a0d67c0ff6b0ac9871520caed2d1bf1c6976ccb6d185758c91b8ebca5f9c",
       "translationHash": "877e1030cd2e5ed7e7b31434ac74b781653adebc8fa935b2e1e8e0911ec8ef76",
@@ -99639,6 +100332,69 @@
       "reviewer": "Localization review",
       "method": "source-review",
       "reviewedAt": "2026-11-05T21:48:56.695Z"
+    },
+    "runUi.protocol.verificationReason.budget_exhausted": {
+      "sourceHash": "1398ad4a2ac8edaf553c41057a57498678fa95813465fd00cc334720dc8a97e3",
+      "translationHash": "3139879f9d14a44bee03e03234a2075eb6cbf8cf3101a57e47e7c9b525823397",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.917Z"
+    },
+    "runUi.protocol.verificationReason.credential_missing": {
+      "sourceHash": "95bbd2c83a65e6011fd74e685738782a95d51af321850208b89aa83be61d091a",
+      "translationHash": "89722698509fe9de70f044371e36d0e1f4763a08ceafd0e580ff6fddeb8059cc",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.917Z"
+    },
+    "runUi.protocol.verificationReason.dependency_missing": {
+      "sourceHash": "c6c0ea556ea363669e3c6586bf2b43b10cbf98a86fa4ddbab113eca192293fe6",
+      "translationHash": "0bde05d94f57d2a7744d58f22238f2858ad51bf73ce2a32df0e74df9bc9432a2",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.918Z"
+    },
+    "runUi.protocol.verificationReason.environment_unavailable": {
+      "sourceHash": "522017a39459f670cb6d36f9ff7178c253ec7479118081a749d729623a6c33d2",
+      "translationHash": "1eff0be1ab129a7b0bd2ae44b2f5eafa3efda2924ba43411663b058a52ec83af",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.918Z"
+    },
+    "runUi.protocol.verificationReason.external_service_unavailable": {
+      "sourceHash": "6d83288b368d8d90cc4bf9971c444d71c77c010e0bbc482d50b442ccc64cc464",
+      "translationHash": "32e9da9107f0d456279a1e822a22135d33ca03b33158a042a909c918b384cef9",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.918Z"
+    },
+    "runUi.protocol.verificationReason.other": {
+      "sourceHash": "918870de4fd99e5d3e1fe92fb2009e299aa21c40eadd9c7177d40b549b7eb3dc",
+      "translationHash": "9d06d1a4e6f7ccf944ac45e3157744dd9ae9a3e77cfdc4f965a2aad618879130",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
+    },
+    "runUi.protocol.verificationReason.permission_denied": {
+      "sourceHash": "9430393616252b7f0b8d03dfd7974202ae5ad17c708d152b36cd8e20a55adf52",
+      "translationHash": "0d5cf436099cd35b39914ce5a0a36ed868cd3e7130c6b300c08bd669bc29b31f",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
+    },
+    "runUi.protocol.verificationReason.policy_restricted": {
+      "sourceHash": "b37b5a7b276e4343abaf1e51e86c92f7b9d6901f58db3b9be1f5e33a6a3a044e",
+      "translationHash": "6e9196478ef9365c5ca7cf1d064b87dfd6e025a1f77fa683540666d24e8f2e04",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
+    },
+    "runUi.protocol.verificationReason.tool_unavailable": {
+      "sourceHash": "e54d19ea37649aef823877464be95a4c8db66cf015803762690401b0286d84e7",
+      "translationHash": "0d074183fcee98cd5d766786e80878e858704109c203aa0c0c9fe569e665a5d7",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
     },
     "runUi.protocol.warning": {
       "sourceHash": "4e72a88bd4c488991dc2ea479df0283edb78cf150978386a7dd943603a5d64f6",
@@ -99859,17 +100615,17 @@
     },
     "runUi.provider.detail.postTokens": {
       "sourceHash": "9e689f178182732e73e97561901915d0382849a1e6e3a25005b6e761892289ce",
-      "translationHash": "2ed79323c53df3f7bc8195f580abf935fdd0ab973f18d2a5343626708ad98a5d",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "translationHash": "efa4c83dbe3769a8b07d5b93cc2cf9cd77a1a4245ee6dca3b1ec57b3f05db97e",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.930Z"
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
     },
     "runUi.provider.detail.preTokens": {
       "sourceHash": "720d3615bf63051065711c8d497f58fbfd3af77e8e0d4147c24e325f248f12c4",
-      "translationHash": "4d26f1996dbc5265a18525190ece97f54c8a126b8e6e07fceddbbb238dadf48f",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "translationHash": "732df0d1378efe97cc291b172a56b18d919141494a3864dae328b3b2fbdf712c",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.930Z"
+      "reviewedAt": "2026-11-24T12:59:39.919Z"
     },
     "runUi.provider.detail.progress": {
       "sourceHash": "df661375e30b9b8e741bf35462cab393d6e4cc44b0711fe632e282545ba395b5",
@@ -100810,11 +101566,11 @@
       "reviewedAt": "2026-10-26T07:06:16.935Z"
     },
     "runUi.recovery.resolveDone": {
-      "sourceHash": "08217cab1b51ad838e68ee7a2a2df056fc9f595fdc5936e1463d6207e6fb8f86",
+      "sourceHash": "e4a89f20b4ca2348028b4b1ad9e8aba601bc9533ea7e95b0323d68682a417118",
       "translationHash": "ee8c1175b919ff803a16f4ddb8d371b5787415b1aa436c29c23c8703f9f5530e",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.934Z"
+      "reviewedAt": "2026-11-24T12:59:39.920Z"
     },
     "runUi.recovery.resolveDoneDetail": {
       "sourceHash": "47eb93a57dd318d3b040153b25961cb6ac8be7551ac12e3c26f0ac907bc23cda",
@@ -103932,18 +104688,18 @@
       "reviewedAt": "2026-10-26T07:06:16.950Z"
     },
     "runUi.turn.minutes": {
-      "sourceHash": "8cdcd4ae42588ead69d9e80a802d565e48b61c6260faba46472eea6cc3626a6c",
+      "sourceHash": "6e45bc4b5ca5028edebf585c038e4db3bb3ec66c23bc3e212f9c42df199744c2",
       "translationHash": "2bd4e1f315e04638b92bd3cc8fab96bd465a3d7fd32fa5e3c95d4eaefbc56f36",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.950Z"
+      "reviewedAt": "2026-11-24T12:59:39.920Z"
     },
     "runUi.turn.minutesSeconds": {
-      "sourceHash": "71be15b3265506738f71f7b7cbc08f67bfc53201d09abeafcd8b6de77df2b8e6",
+      "sourceHash": "8f4ffde5a607f2eb0ce7f32fdd5aed1fe7958d45478cbdd0ab3eb6f04ac2206f",
       "translationHash": "70775a8fc838750ac039fe90863067a2a131718bc7df566625c0e341a06d4199",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.950Z"
+      "reviewedAt": "2026-11-24T12:59:39.920Z"
     },
     "runUi.turn.ranCommands": {
       "sourceHash": "517efe67e26021bfac7a913734190dc23f4abe4dfe82c8a88e0ebe873d8fdae4",
@@ -103953,11 +104709,11 @@
       "reviewedAt": "2026-10-26T07:06:16.950Z"
     },
     "runUi.turn.seconds": {
-      "sourceHash": "2c96943ce4c5d8aefced6aff416f2bbdd98d6195594d248a3a1d9738178c2ca9",
+      "sourceHash": "41271f6e7f449720bfff3b7e6c41fdcd73cc12ed783cf7975480b92bc726214d",
       "translationHash": "b3e11e4af7832579a18b5f1934886dd9db220b04fcb6d2d95c0acf7dea8842a9",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.950Z"
+      "reviewedAt": "2026-11-24T12:59:39.921Z"
     },
     "runUi.turn.stopped": {
       "sourceHash": "dcad5edefe04dc88e9884de4d06285c6d409d44bf410887be70de0ab1047c3cb",
@@ -104694,6 +105450,13 @@
       "method": "agent",
       "reviewedAt": "2026-11-24T11:42:19.293Z"
     },
+    "runUi.workspaceExport.noRecordedFailure": {
+      "sourceHash": "a4679f43aecce49c8b8681dfbd0b936dffd769b525f2cde7733e4aec837a179f",
+      "translationHash": "aa70bce50b766ce42f3c8ca7b241afb8284f42c7286f869592121d3aef0cf7f5",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.921Z"
+    },
     "runUi.workspaceExport.ownerUnknown": {
       "sourceHash": "9a814a8bc0c095201d8dd7e5065554bf59800eccaeb305518b5c630f2d9f52ec",
       "translationHash": "65225b7fe6770f900bf659925fce02de76a6ba20d005dff4be9c6a9181430c84",
@@ -104856,11 +105619,11 @@
       "reviewedAt": "2026-11-24T11:42:19.303Z"
     },
     "runUi.workspaceExport.sourceUnverified": {
-      "sourceHash": "9af9c4bd9a90e90d63924c024f4b0f1074c81bcc9362af396633c71143875d94",
+      "sourceHash": "2fc689daf7464de58cb2eece1698bd3c037e4acc092abf4346fdfeee7569421b",
       "translationHash": "ffcb0f394e43ea7db9a22328fd8f318cfdc7bada68169116f87b746c65c9f194",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:42:19.304Z"
+      "reviewedAt": "2026-11-24T12:59:39.921Z"
     },
     "runUi.workspaceExport.stoppedSaving": {
       "sourceHash": "6e3998498ac04f34a0c5a133d7d03dc4e135a356194c9dcda412b05a44ef9854",
@@ -116546,11 +117309,11 @@
       "reviewedAt": "2026-10-26T07:06:16.957Z"
     },
     "taskChatUi.bubble.queued": {
-      "sourceHash": "4874a991feb38d7f6445b8a9d61ce4be814b1a158e10931653fd407d1ce2df93",
+      "sourceHash": "5a5b45593376304c82746836fe51bf6663787d9d5ef2d83650104f59435c2b49",
       "translationHash": "a2c3a53e5becadfc139ec8e10e7cb4140d51130db9520166914259492a064892",
-      "reviewer": "Codex localization team (context and upstream integration review, PR 31)",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T23:13:04.487Z"
+      "reviewedAt": "2026-11-24T12:59:39.922Z"
     },
     "taskChatUi.bubble.sending": {
       "sourceHash": "38931d7fe6a007103986802ca1b7e346877dbb433809e142f63a944fdd2b1cb4",
@@ -118065,11 +118828,11 @@
       "reviewedAt": "2026-10-26T07:06:16.967Z"
     },
     "taskChatUi.compactInteraction.summaryApproved": {
-      "sourceHash": "a38fc1ca30b5b1c8d79471b54fdb44b1e30b4a4864b599283a7ada4b1c76d01f",
+      "sourceHash": "f99a6e2d6cab0d29bca3633b1e03dde20e2d6e6c55516654be8473b711be6491",
       "translationHash": "a072e54f4fb9f5cd39dddc5db6a40470a22006ce1a812e443602af41bca5f2b1",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.967Z"
+      "reviewedAt": "2026-11-24T12:59:39.922Z"
     },
     "taskChatUi.compactInteraction.summaryAskedQuestions": {
       "sourceHash": "556e850a4c517e1075921fddc4802d2de95c5b025f751bcba27fd0f39b88f05e",
@@ -118177,11 +118940,11 @@
       "reviewedAt": "2026-10-26T07:06:16.968Z"
     },
     "taskChatUi.compactInteraction.summaryDeferred": {
-      "sourceHash": "902256cebb5f5521b977fdd29b3bfb5f6f01774b94646b0f458847e34ddeaead",
+      "sourceHash": "c5e11e05b5f1d69a262795389a8f1dba59c1d42d247d9c57f31b0eeaf3d5ded2",
       "translationHash": "ed4044ccb542f7a1ffc7fa7386600391e8fff101510985a4f9b1870b6f2de8eb",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.968Z"
+      "reviewedAt": "2026-11-24T12:59:39.922Z"
     },
     "taskChatUi.compactInteraction.summaryIssueClosed": {
       "sourceHash": "559ccb57fd4e1d1bcd20b34d76d1651b0a7cfa624e259d4a3c3b3bd4577ebf3f",
@@ -118212,11 +118975,11 @@
       "reviewedAt": "2026-10-26T07:06:16.968Z"
     },
     "taskChatUi.compactInteraction.summaryRejected": {
-      "sourceHash": "8b977cd25f82aafddd49e25e00402eb62f75a55a2397ea881a174aee4c46954f",
+      "sourceHash": "935ab463e016b257cf4ce91b805d363527acf9aa54b128dc610fdf9f09c07014",
       "translationHash": "9b3b8c320690b569dc117381ff15d48f5c6c14a527d7b64a4ac337983a09f365",
-      "reviewer": "Codex root with independent task-chat and run-presentation reviews",
+      "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-10-26T07:06:16.968Z"
+      "reviewedAt": "2026-11-24T12:59:39.922Z"
     },
     "taskChatUi.compactInteraction.summaryRejectedTasks": {
       "sourceHash": "2fde46fdefd0a4da736a9a78051d57da6aa2054987d8e41b03903155f987867d",
@@ -119613,10 +120376,10 @@
     },
     "taskChatUi.monitor.prReview": {
       "sourceHash": "6581bfd26c849e12585f30ffe36377612d6739d737636ce816f4349ac655ad20",
-      "translationHash": "5a5a64ddb95b9d14050424c57a6c191e8799697b6147732f2e0a9e4151120b18",
+      "translationHash": "21796fd4a01e880dd28e49377bdcc67ba011dc3b4aa74f5c516e7297f3ab83b9",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:44:39.486Z"
+      "reviewedAt": "2026-11-24T12:59:39.923Z"
     },
     "taskChatUi.monitor.resumes": {
       "sourceHash": "a25bb26cde72e22f350e350ca883ca82aa91078de212f1d7e1181268d39d072e",
@@ -119626,11 +120389,11 @@
       "reviewedAt": "2026-11-24T11:44:39.486Z"
     },
     "taskChatUi.monitor.resumeToCheck": {
-      "sourceHash": "401b8b0ca90da74ad28cf725317ce5ca75d524c3c4ccfb55cc7f17e89ae0feb5",
+      "sourceHash": "41ded2dd3c662497e92289e08cb454b959be3f29d0b7e9ad3dbcd3cf0afe8238",
       "translationHash": "02ced3768dff57fc6622e0773ac6455315871fe40c5aa7af519397355e6cc9cd",
       "reviewer": "Russian edition localization",
       "method": "agent",
-      "reviewedAt": "2026-11-24T11:44:39.486Z"
+      "reviewedAt": "2026-11-24T12:59:39.923Z"
     },
     "taskChatUi.monitor.retryDue": {
       "sourceHash": "e1b60a13d5dad84b3150052bc64499f4e67bb9891b502be6bec10ad53b324589",
@@ -128920,6 +129683,13 @@
       "reviewer": "Codex agent /root/translate_task_panels",
       "method": "agent",
       "reviewedAt": "2026-10-26T03:04:53.683Z"
+    },
+    "taskProperties.monitor.requestManualCheck": {
+      "sourceHash": "bba05e8b5b5fba94b34a4b9b0384f6c699ab1117720d7ed9d38b7356ec49438e",
+      "translationHash": "9bd7c47d68af98ef007379e8847abe0b57fafa79f666d4b1ee4fdea11bedcbd3",
+      "reviewer": "Russian edition localization",
+      "method": "agent",
+      "reviewedAt": "2026-11-24T12:59:39.923Z"
     },
     "taskProperties.moreCount": {
       "sourceHash": "c25ebfc44fd4736955e97b2fe99bdf8f4052c0e471498d21f442ba8c7779f73d",

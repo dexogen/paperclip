@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 
 import type { ComponentProps, ReactNode } from "react";
 import { flushSync } from "react-dom";
@@ -3184,6 +3185,13 @@ describe("IssueProperties", () => {
     await flush();
     expect(monitorRowText()).toContain("Automatic checks paused");
     expect(monitorRowText()).toContain("Check now to request a manual check");
+    try {
+      flushSync(() => { void i18n.changeLanguage("ru"); });
+      expect(monitorRowText()).toContain("Автоматические проверки приостановлены");
+      expect(monitorRowText()).toContain("запустить проверку вручную");
+    } finally {
+      flushSync(() => { void i18n.changeLanguage("en"); });
+    }
     expect(monitorRowText()).not.toMatch(/overdue|next tick/i);
 
     renderMonitor(createIssue({

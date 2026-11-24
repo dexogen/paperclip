@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { i18n } from "@/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -54,7 +55,7 @@ describe("tool row grammar", () => {
     expect(container.querySelector('[data-activity-row="f2"]')?.textContent).toContain("· stopped");
   });
 
-  it("shows the command with its exit code and duration, hides exit 0 on reads, and explains a refusal", () => {
+  it("shows the command with its exit code and duration, hides exit 0 on reads, and explains a refusal", async () => {
     act(() => root.render(
       <TaskChatRunnerActivityGroup
         defaultExpanded
@@ -76,5 +77,14 @@ describe("tool row grammar", () => {
     const blocked = container.querySelector('[data-activity-row="t2"]');
     expect(blocked?.textContent).toContain("Blocked");
     expect(blocked?.querySelector("[data-tool-blocked-reason]")?.textContent).toBe("Denied by rule");
+    try {
+      await act(async () => { await i18n.changeLanguage("ru"); });
+      expect(readRun?.textContent).toContain("Прочитал 4 файла");
+      expect(command?.querySelector("[data-tool-duration]")?.textContent).toBe("1,8 с");
+      expect(command?.querySelector("[data-tool-exit-code]")?.textContent).toBe("код выхода 1");
+      expect(blocked?.textContent).toContain("Denied by rule");
+    } finally {
+      await act(async () => { await i18n.changeLanguage("en"); });
+    }
   });
 });
